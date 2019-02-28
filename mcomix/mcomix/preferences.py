@@ -5,7 +5,6 @@ write them.  """
 
 import json
 import os
-import pickle
 
 from mcomix import constants
 
@@ -40,7 +39,7 @@ prefs = {
                                               constants.SHOW_DOUBLE_AS_ONE_WIDE,
     'double step in double page mode': True,
     'show page numbers on thumbnails': True,
-    'thumbnail size': 80,
+    'thumbnail size': 90,
     'create thumbnails': True,
     'archive thumbnail as icon': False,
     'number of pixels to scroll per key event': 50,
@@ -63,7 +62,7 @@ prefs = {
     'previous quit was quit and save': False,
     'show scrollbar': True,
     'show statusbar': True,
-    'show toolbar': True,
+    'show toolbar': False,
     'show thumbnails': True,
     'rotation': 0,
     'auto rotate from exif': True,
@@ -96,7 +95,7 @@ prefs = {
     'max threads': 3,
     'max extract threads': 1,
     'wrap mouse scroll': False,
-    'scaling quality': 2,  # GdkPixbuf.InterpType.BILINEAR
+    'scaling quality': 3,  # GdkPixbuf.InterpType.BILINEAR
     'escape quits': True,
     'fit to size mode': constants.ZOOM_MODE_HEIGHT,
     'fit to size px': 1800,
