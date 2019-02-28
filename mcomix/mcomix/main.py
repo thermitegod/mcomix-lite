@@ -2,6 +2,7 @@
 
 """main.py - Main window."""
 
+import errno
 import math
 import operator
 import os
@@ -992,10 +993,51 @@ class MainWindow(Gtk.Window):
 
         save_dialog.destroy()
 
+    def move_file(self, *args):
+        """The currently opened file/archive will be moved to ./keep"""
+        # TODO pref config option for relative path
+        current_file = self.imagehandler.get_real_path()
+        dir_target = os.path.join(os.path.dirname(current_file), 'keep')
+        file_target = os.path.join(dir_target, os.path.basename(current_file))
+
+        if not os.path.exists(dir_target):
+            try:
+                os.makedirs(dir_target)
+            except OSError as exc:  # Guard against race condition
+                if exc.errno != errno.EEXIST:
+                    raise
+
+        if self.filehandler.archive_type is not None:
+            next_opened = self.filehandler._open_next_archive()
+            if not next_opened:
+                next_opened = self.filehandler._open_previous_archive()
+            if not next_opened:
+                self.filehandler.close_file()
+
+            if os.path.isfile(current_file):
+                os.rename(current_file, file_target)
+        else:
+            if self.imagehandler.get_number_of_pages() > 1:
+                # Open the next/previous file
+                if self.imagehandler.get_current_page() >= self.imagehandler.get_number_of_pages():
+                    self.flip_page(-1)
+                else:
+                    self.flip_page(+1)
+                # Move the desired file
+                if os.path.isfile(current_file):
+                    os.rename(current_file, file_target)
+
+                # Refresh the directory
+                self.filehandler.refresh_file()
+            else:
+                self.filehandler.close_file()
+                if os.path.isfile(current_file):
+                    os.rename(current_file, file_target)
+
     def delete(self, *args):
         """ The currently opened file/archive will be deleted after showing
         a confirmation dialog. """
-
+        # TODO send2trash support and pref option to toggle
         current_file = self.imagehandler.get_real_path()
         dialog = message_dialog.MessageDialog(self, Gtk.DialogFlags.MODAL, Gtk.MessageType.QUESTION,
                                               Gtk.ButtonsType.NONE)

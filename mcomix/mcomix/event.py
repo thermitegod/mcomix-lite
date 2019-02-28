@@ -275,6 +275,10 @@ class EventHandler(object):
                          ['<Control><Shift>s'],
                          self._window.extract_page)
 
+        manager.register('move_file',
+                         ['Insert', 'grave'],
+                         self._window.move_file)
+
         manager.register('refresh_archive',
                          ['<control><shift>R'],
                          self._window.filehandler.refresh_file)

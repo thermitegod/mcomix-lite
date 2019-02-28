@@ -122,6 +122,7 @@ BINDING_INFO = {
     'slideshow': {'title': 'Start slideshow', 'group': 'User interface'},
 
     # File operations
+    'move_file': {'title': 'Move to subdirectory', 'group': 'File'},
     'delete': {'title': 'Delete', 'group': 'File'},
     'refresh_archive': {'title': 'Refresh', 'group': 'File'},
     'close': {'title': 'Close', 'group': 'File'},
