@@ -1,19 +1,14 @@
+# -*- coding: utf-8 -*-
+
 """recent.py - Recent files handler."""
 
 import urllib
-import itertools
-from gi.repository import Gtk
-from gi.repository import Gtk
-import glib
-from gi.repository import GObject
-import sys
 
-from mcomix import preferences
-from mcomix import i18n
-from mcomix import portability
-from mcomix import archive_tools
-from mcomix import image_tools
-from mcomix import log
+import glib
+from gi.repository import GObject, Gtk
+
+from mcomix import archive_tools, i18n, image_tools, log, preferences
+
 
 class RecentFilesMenu(Gtk.RecentChooserMenu):
 
@@ -24,10 +19,6 @@ class RecentFilesMenu(Gtk.RecentChooserMenu):
 
         self.set_sort_type(Gtk.RecentSortType.MRU)
         self.set_show_tips(True)
-        # Missing icons crash GTK on Win32
-        if sys.platform == 'win32':
-            self.set_show_icons(False)
-            self.set_show_numbers(True)
 
         rfilter = Gtk.RecentFilter()
         supported_formats = {}
@@ -35,7 +26,7 @@ class RecentFilesMenu(Gtk.RecentChooserMenu):
         supported_formats.update(archive_tools.get_supported_formats())
         for name in sorted(supported_formats):
             mime_types, extensions = supported_formats[name]
-            patterns = ['*'+ext for ext in extensions]
+            patterns = ['*' + ext for ext in extensions]
             for mime in mime_types:
                 rfilter.add_mime_type(mime)
             for pat in patterns:
@@ -59,15 +50,13 @@ class RecentFilesMenu(Gtk.RecentChooserMenu):
     def add(self, path):
         if not preferences.prefs['store recent file info']:
             return
-        uri = (portability.uri_prefix()
-            + urllib.request.pathname2url(i18n.to_utf8(path)))
+        uri = ('file://' + urllib.request.pathname2url(i18n.to_utf8(path)))
         self._manager.add_item(uri)
 
     def remove(self, path):
         if not preferences.prefs['store recent file info']:
             return
-        uri = (portability.uri_prefix()
-            + urllib.request.pathname2url(i18n.to_utf8(path)))
+        uri = ('file://' + urllib.request.pathname2url(i18n.to_utf8(path)))
         try:
             self._manager.remove_item(uri)
         except glib.GError:
@@ -80,6 +69,3 @@ class RecentFilesMenu(Gtk.RecentChooserMenu):
             self._manager.purge_items()
         except GObject.GError as error:
             log.debug(error)
-
-
-# vim: expandtab:sw=4:ts=4

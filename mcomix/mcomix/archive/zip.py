@@ -10,7 +10,6 @@ from mcomix import log
 from mcomix.archive import archive_base
 
 
-
 def is_py_supported_zipfile(path):
     """Check if a given zipfile has all internal files stored with Python supported compression
     """
@@ -20,6 +19,7 @@ def is_py_supported_zipfile(path):
             if file_info.compress_type not in (zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED):
                 return False
     return True
+
 
 class ZipArchive(archive_base.NonUnicodeArchive):
     def __init__(self, archive):
@@ -45,13 +45,10 @@ class ZipArchive(archive_base.NonUnicodeArchive):
 
         zipinfo = self.zip.getinfo(self._original_filename(filename))
         if len(content) != zipinfo.file_size:
-            log.warning(_('%(filename)s\'s extracted size is %(actual_size)d bytes,'
-                ' but should be %(expected_size)d bytes.'
-                ' The archive might be corrupt or in an unsupported format.'),
-                { 'filename' : filename, 'actual_size' : len(content),
-                  'expected_size' : zipinfo.file_size })
-
-
+            log.warning('%(filename)s\'s extracted size is %(actual_size)d bytes, but should '
+                        'be %(expected_size)d bytes. The archive might be corrupt or in an unsupported format.',
+                        {'filename': filename, 'actual_size': len(content),
+                            'expected_size': zipinfo.file_size})
 
     def close(self):
         self.zip.close()
@@ -60,9 +57,7 @@ class ZipArchive(archive_base.NonUnicodeArchive):
         """ Checks all files in the archive for encryption.
         Returns True if at least one encrypted file was found. """
         for zipinfo in self.zip.infolist():
-            if zipinfo.flag_bits & 0x1: # File is encrypted
+            if zipinfo.flag_bits & 0x1:  # File is encrypted
                 return True
 
         return False
-
-# vim: expandtab:sw=4:ts=4

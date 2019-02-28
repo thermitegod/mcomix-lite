@@ -2,14 +2,13 @@
 
 """ PDF handler. """
 
-from mcomix import log
-from mcomix import process
-from mcomix.archive import archive_base
-
-from distutils.version import LooseVersion
 import math
 import os
 import re
+from distutils.version import LooseVersion
+
+from mcomix import log, process
+from mcomix.archive import archive_base
 
 # Default DPI for rendering.
 PDF_RENDER_DPI_DEF = 72 * 4
@@ -21,8 +20,8 @@ _mutool_exec = None
 _mudraw_exec = None
 _mudraw_trace_args = None
 
-class PdfArchive(archive_base.BaseArchive):
 
+class PdfArchive(archive_base.BaseArchive):
     """ Concurrent calls to extract welcome! """
     support_concurrent_extractions = True
 
@@ -54,8 +53,8 @@ class PdfArchive(archive_base.BaseArchive):
                     continue
                 matrix = [float(f) for f in match.group('matrix').split()]
                 for size, coeff1, coeff2 in (
-                    (int(match.group('width')), matrix[0], matrix[1]),
-                    (int(match.group('height')), matrix[2], matrix[3]),
+                        (int(match.group('width')), matrix[0], matrix[1]),
+                        (int(match.group('height')), matrix[2], matrix[3]),
                 ):
                     if size < max_size:
                         continue
@@ -76,7 +75,7 @@ class PdfArchive(archive_base.BaseArchive):
         if _pdf_possible is not None:
             return _pdf_possible
         global _mutool_exec, _mudraw_exec, _mudraw_trace_args
-        mutool = process.find_executable((u'mutool',))
+        mutool = process.find_executable(('mutool',))
         _pdf_possible = False
         version = None
         if mutool is None:
@@ -101,7 +100,7 @@ class PdfArchive(archive_base.BaseArchive):
                 _pdf_possible = True
             else:
                 # Separate mudraw executable.
-                mudraw = process.find_executable((u'mudraw',))
+                mudraw = process.find_executable(('mudraw',))
                 if mudraw is None:
                     log.debug('mudraw executable not found')
                 else:
@@ -119,5 +118,3 @@ class PdfArchive(archive_base.BaseArchive):
         else:
             log.info('MuPDF not available.')
         return _pdf_possible
-
-# vim: expandtab:sw=4:ts=4

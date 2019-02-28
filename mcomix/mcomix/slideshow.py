@@ -1,12 +1,13 @@
+# -*- coding: utf-8 -*-
+
 """slideshow.py - Slideshow handler."""
 
-from gi.repository import Gtk
-from gi.repository import GLib
+from gi.repository import GLib, Gtk
 
 from mcomix.preferences import prefs
 
-class Slideshow(object):
 
+class Slideshow(object):
     """Slideshow handler that manages starting and stopping of slideshows."""
 
     def __init__(self, window):
@@ -28,7 +29,6 @@ class Slideshow(object):
 
     def _next(self):
         if prefs['number of pixels to scroll per slideshow event'] != 0:
-
             self._window.scroll_with_flipping(0, prefs['number of pixels to scroll per slideshow event'])
         else:
             self._window.flip_page(+1)
@@ -39,12 +39,12 @@ class Slideshow(object):
         """Toggle a slideshow on or off."""
         if action.get_active():
             self._start()
-            self._window.uimanager.get_widget('/Tool/slideshow').set_stock_id( Gtk.STOCK_MEDIA_STOP )
-            self._window.uimanager.get_widget('/Tool/slideshow').set_tooltip_text( _('Stop slideshow')  )
+            self._window.uimanager.get_widget('/Tool/slideshow').set_stock_id(Gtk.STOCK_MEDIA_STOP)
+            self._window.uimanager.get_widget('/Tool/slideshow').set_tooltip_text('Stop slideshow')
         else:
             self._stop()
-            self._window.uimanager.get_widget('/Tool/slideshow').set_stock_id( Gtk.STOCK_MEDIA_PLAY )
-            self._window.uimanager.get_widget('/Tool/slideshow').set_tooltip_text( _('Start slideshow') )
+            self._window.uimanager.get_widget('/Tool/slideshow').set_stock_id(Gtk.STOCK_MEDIA_PLAY)
+            self._window.uimanager.get_widget('/Tool/slideshow').set_tooltip_text('Start slideshow')
 
     def is_running(self):
         """Return True if a slideshow is currently running."""
@@ -55,6 +55,3 @@ class Slideshow(object):
         if self.is_running():
             self._stop()
             self._start()
-
-
-# vim: expandtab:sw=4:ts=4

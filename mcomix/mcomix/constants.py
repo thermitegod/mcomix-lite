@@ -1,20 +1,17 @@
 # -*- coding: utf-8 -*-
+
 """constants.py - Miscellaneous constants."""
 
-import re
 import os
-import operator
-
-from mcomix import tools
 
 APPNAME = 'MComix'
 VERSION = '1.3.0.dev0'
 
 REQUIRED_PIL_VERSION = '5.1.0'
 
-HOME_DIR = tools.get_home_directory()
-CONFIG_DIR = tools.get_config_directory()
-DATA_DIR = tools.get_data_directory()
+HOME_DIR = os.path.expanduser('~')
+CONFIG_DIR = os.path.join(os.getenv('XDG_CONFIG_HOME', os.path.join(HOME_DIR, '.config')), 'mcomix')
+DATA_DIR = os.path.join(os.getenv('XDG_CONFIG_HOME', os.path.join(HOME_DIR, '.local/share')), 'mcomix')
 
 BASE_PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 THUMBNAIL_PATH = os.path.join(HOME_DIR, '.thumbnails/normal')
@@ -72,22 +69,20 @@ SIZE_HUGE, SIZE_LARGE, SIZE_NORMAL, SIZE_SMALL, SIZE_TINY = MAX_LIBRARY_COVER_SI
 ACCEPTED_COMMENT_EXTENSIONS = ['txt', 'nfo', 'xml']
 
 ZIP_FORMATS = (
-        ('application/x-zip', 'application/zip', 'application/x-zip-compressed', 'application/x-cbz'),
-        ('zip', 'cbz'))
+    ('application/x-zip', 'application/zip', 'application/x-zip-compressed', 'application/x-cbz'),
+    ('zip', 'cbz'))
 RAR_FORMATS = (
-        ('application/x-rar', 'application/x-cbr'),
-        ('rar', 'cbr'))
+    ('application/x-rar', 'application/x-cbr'),
+    ('rar', 'cbr'))
 TAR_FORMATS = (
-        ('application/x-tar', 'application/x-gzip', 'application/x-bzip2', 'application/x-cbt'),
-        ('tar', 'gz', 'bz2', 'bzip2', 'cbt'))
+    ('application/x-tar', 'application/x-gzip', 'application/x-bzip2', 'application/x-cbt'),
+    ('tar', 'gz', 'bz2', 'bzip2', 'cbt'))
 SZIP_FORMATS = (
-        ('application/x-7z-compressed', 'application/x-cb7'),
-        ('7z', 'cb7', 'xz', 'lzma'))
+    ('application/x-7z-compressed', 'application/x-cb7'),
+    ('7z', 'cb7', 'xz', 'lzma'))
 LHA_FORMATS = (
-        ('application/x-lzh', 'application/x-lha', 'application/x-lzh-compressed'),
-        ('lha', 'lzh'))
+    ('application/x-lzh', 'application/x-lha', 'application/x-lzh-compressed'),
+    ('lha', 'lzh'))
 PDF_FORMATS = (
-        ('application/pdf',),
-        ('pdf',))
-
-# vim: expandtab:sw=4:ts=4
+    ('application/pdf',),
+    ('pdf',))

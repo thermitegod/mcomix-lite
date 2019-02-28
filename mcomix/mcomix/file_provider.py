@@ -1,17 +1,12 @@
 # -*- coding: utf-8 -*-
+
 """ file_provider.py - Handles listing files for the current directory and
     switching to the next/previous directory. """
 
 import os
-import re
 
-from mcomix import image_tools
-from mcomix import archive_tools
-from mcomix import tools
-from mcomix import constants
-from mcomix import preferences
-from mcomix import i18n
-from mcomix import log
+from mcomix import archive_tools, constants, i18n, image_tools, log, preferences, tools
+
 
 def get_file_provider(filelist):
     """ Initialize a FileProvider with the files in <filelist>.
@@ -33,13 +28,14 @@ def get_file_provider(filelist):
 
 
     elif (preferences.prefs['auto load last file']
-        and os.path.isfile(preferences.prefs['path to last file'])):
+          and os.path.isfile(preferences.prefs['path to last file'])):
         provider = OrderedFileProvider(preferences.prefs['path to last file'])
 
     else:
         provider = None
 
     return provider
+
 
 class FileProvider(object):
     """ Base class for various file listing strategies. """
@@ -70,7 +66,7 @@ class FileProvider(object):
             tools.alphanumeric_sort(files)
         elif preferences.prefs['sort by'] == constants.SORT_LAST_MODIFIED:
             # Most recently modified file first
-            files.sort(key=lambda filename: os.path.getmtime(filename)*-1)
+            files.sort(key=lambda filename: os.path.getmtime(filename) * -1)
         elif preferences.prefs['sort by'] == constants.SORT_SIZE:
             # Smallest file first
             files.sort(key=lambda filename: os.stat(filename).st_size)
@@ -101,7 +97,7 @@ class OrderedFileProvider(FileProvider):
             dir = os.path.dirname(file_or_directory)
         else:
             # Passed file doesn't exist
-            raise ValueError(_("Invalid path: '%s'") % file_or_directory)
+            raise ValueError("Invalid path: '%s'" % file_or_directory)
 
         self.base_dir = os.path.abspath(dir)
 
@@ -120,18 +116,18 @@ class OrderedFileProvider(FileProvider):
             should_accept = lambda file: True
 
         try:
-            files = [ os.path.join(self.base_dir, filename) for filename in
-                      # Explicitly convert all files to Unicode, even when
-                      # os.listdir returns a mixture of byte/unicode strings.
-                      # (MComix bug #3424405)
-                      [ i18n.to_unicode(fn) for fn in os.listdir(self.base_dir) ]
-                      if should_accept(os.path.join(self.base_dir, filename)) ]
+            files = [os.path.join(self.base_dir, filename) for filename in
+                # Explicitly convert all files to Unicode, even when
+                # os.listdir returns a mixture of byte/unicode strings.
+                # (MComix bug #3424405)
+                [i18n.to_unicode(fn) for fn in os.listdir(self.base_dir)]
+                if should_accept(os.path.join(self.base_dir, filename))]
 
             FileProvider.sort_files(files)
 
             return files
         except OSError:
-            log.warning(u'! ' + _('Could not open %s: Permission denied.'), self.base_dir)
+            log.warning('! ' + 'Could not open %s: Permission denied.', self.base_dir)
             return []
 
     def next_directory(self):
@@ -146,7 +142,6 @@ class OrderedFileProvider(FileProvider):
             return True
         else:
             return False
-
 
     def previous_directory(self):
         """ Switches to the previous sibling directory. Next call to
@@ -166,9 +161,9 @@ class OrderedFileProvider(FileProvider):
             already sorted. """
 
         parent_dir = os.path.dirname(dir)
-        directories = [ os.path.join(parent_dir, directory)
-                for directory in os.listdir(parent_dir)
-                if os.path.isdir(os.path.join(parent_dir, directory)) ]
+        directories = [os.path.join(parent_dir, directory)
+            for directory in os.listdir(parent_dir)
+            if os.path.isdir(os.path.join(parent_dir, directory))]
 
         tools.alphanumeric_sort(directories)
         return directories
@@ -185,7 +180,7 @@ class PreDefinedFileProvider(FileProvider):
 
         should_accept = self.__get_file_filter(files)
 
-        self.__files = [ ]
+        self.__files = []
 
         for file in files:
             if os.path.isdir(file):
@@ -194,7 +189,6 @@ class PreDefinedFileProvider(FileProvider):
 
             elif should_accept(file):
                 self.__files.append(os.path.abspath(file))
-
 
     def list_files(self, mode=FileProvider.IMAGES):
         """ Returns the files as passed to the constructor. """
@@ -215,6 +209,3 @@ class PreDefinedFileProvider(FileProvider):
 
         # Default filter only accepts images.
         return image_tools.is_image_file
-
-
-# vim: expandtab:sw=4:ts=4

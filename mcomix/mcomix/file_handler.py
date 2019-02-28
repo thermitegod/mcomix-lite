@@ -1,30 +1,23 @@
+# -*- coding: utf-8 -*-
+
 """file_handler.py - File handler that takes care of opening archives and images."""
-from __future__ import with_statement
 
 import os
+import pickle
+import re
 import shutil
 import tempfile
 import threading
-import re
-import pickle
+
 from gi.repository import Gtk
 
-from mcomix.preferences import prefs
-from mcomix import archive_extractor
-from mcomix import archive_tools
-from mcomix import image_tools
-from mcomix import tools
-from mcomix import constants
-from mcomix import file_provider
-from mcomix import callback
-from mcomix import log
-from mcomix import last_read_page
-from mcomix import message_dialog
+from mcomix import archive_extractor, archive_tools, callback, constants, file_provider, image_tools, last_read_page, \
+    log, message_dialog, tools
 from mcomix.library import backend
+from mcomix.preferences import prefs
 
 
 class FileHandler(object):
-
     """The FileHandler keeps track of the actual files/archives opened.
 
     While ImageHandler takes care of pages/images, this class provides
@@ -143,7 +136,7 @@ class FileHandler(object):
         self.file_opened()
 
         if not image_files:
-            msg = _("No images in '%s'") % os.path.basename(self._current_file)
+            msg = "No images in '%s'" % os.path.basename(self._current_file)
             self._window.statusbar.set_message(msg)
             self._window.osd.show(msg)
 
@@ -162,7 +155,7 @@ class FileHandler(object):
                                                             len(image_files),
                                                             self._current_file)
                 if self._start_page or \
-                   prefs['stored dialog choices'].get('resume-from-last-read-page', False):
+                        prefs['stored dialog choices'].get('resume-from-last-read-page', False):
                     current_image_index = last_image_index
                 else:
                     # Don't switch to last page yet; since we have not asked
@@ -176,7 +169,7 @@ class FileHandler(object):
 
             if self.archive_type is not None:
                 if last_image_index != current_image_index and \
-                   self._ask_goto_last_read_page(self._current_file, last_image_index + 1):
+                        self._ask_goto_last_read_page(self._current_file, last_image_index + 1):
                     self._window.set_page(last_image_index + 1)
 
             self.write_fileinfo_file()
@@ -250,7 +243,7 @@ class FileHandler(object):
             # A single file was passed - use Comix' classic open mode
             # and open all files in its directory.
             if self._file_provider is None or not keep_fileprovider:
-                self._file_provider = file_provider.get_file_provider([ path ])
+                self._file_provider = file_provider.get_file_provider([path])
 
             return path
 
@@ -261,10 +254,10 @@ class FileHandler(object):
         @return: An appropriate error string, or C{None} if no error was found.
         """
         if not os.path.exists(path):
-            return _('Could not open %s: No such file.') % path
+            return 'Could not open %s: No such file.' % path
 
         elif not os.access(path, os.R_OK):
-            return _('Could not open %s: Permission denied.') % path
+            return 'Could not open %s: Permission denied.' % path
 
         else:
             return None
@@ -277,19 +270,18 @@ class FileHandler(object):
 
         @return: A tuple containing C{(image_files, image_index)}. """
 
-        self._tmp_dir_ctx = tempfile.TemporaryDirectory(prefix='mcomix.',dir=prefs['temporary directory'])
+        self._tmp_dir_ctx = tempfile.TemporaryDirectory(prefix='mcomix.', dir=prefs['temporary directory'])
         self._tmp_dir = self._tmp_dir_ctx.name
         self._base_path = path
         try:
             self._condition = self._extractor.setup(self._base_path,
-                                                self._tmp_dir,
-                                                self.archive_type)
+                                                    self._tmp_dir,
+                                                    self.archive_type)
         except Exception:
             self._condition = None
             raise
 
     def _listed_contents(self, archive, files):
-
         if not self.file_loading:
             return
         self.file_loading = False
@@ -297,17 +289,17 @@ class FileHandler(object):
         files = self._extractor.get_files()
         archive_images = [image for image in files
             if image_tools.is_image_file(image)
-            # Remove MacOS meta files from image list
-            and not u'__MACOSX' in os.path.normpath(image).split(os.sep)]
+               # Remove MacOS meta files from image list
+               and not '__MACOSX' in os.path.normpath(image).split(os.sep)]
 
         self._sort_archive_images(archive_images)
-        image_files = [ os.path.join(self._tmp_dir, f)
-                        for f in archive_images ]
+        image_files = [os.path.join(self._tmp_dir, f)
+            for f in archive_images]
 
         comment_files = list(filter(self._comment_re.search, files))
         tools.alphanumeric_sort(comment_files)
-        self._comment_files = [ os.path.join(self._tmp_dir, f)
-                                for f in comment_files ]
+        self._comment_files = [os.path.join(self._tmp_dir, f)
+            for f in comment_files]
 
         self._name_table = dict(zip(image_files, archive_images))
         self._name_table.update(zip(self._comment_files, comment_files))
@@ -357,15 +349,15 @@ class FileHandler(object):
         read_date = self.last_read_page.get_date(path)
 
         dialog = message_dialog.MessageDialog(self._window, Gtk.DialogFlags.MODAL, Gtk.MessageType.INFO,
-            Gtk.ButtonsType.YES_NO)
+                                              Gtk.ButtonsType.YES_NO)
         dialog.set_default_response(Gtk.ResponseType.YES)
         dialog.set_should_remember_choice('resume-from-last-read-page',
-            (Gtk.ResponseType.YES, Gtk.ResponseType.NO))
+                                          (Gtk.ResponseType.YES, Gtk.ResponseType.NO))
         dialog.set_text(
-            (_('Continue reading from page %d?') % last_read_page),
-            _('You stopped reading here on %(date)s, %(time)s. '
-            'If you choose "Yes", reading will resume on page %(page)d. Otherwise, '
-            'the first page will be loaded.') % {'date': read_date.date().strftime("%x"),
+            ('Continue reading from page %d?' % last_read_page),
+            ('You stopped reading here on %(date)s, %(time)s. '
+             'If you choose "Yes", reading will resume on page %(page)d. Otherwise, '
+             'the first page will be loaded.') % {'date': read_date.date().strftime("%x"),
                 'time': read_date.time().strftime("%X"), 'page': last_read_page})
         result = dialog.run()
 
@@ -457,7 +449,6 @@ class FileHandler(object):
         Returns True if a new archive was opened, False otherwise.
         """
         if self.archive_type is not None:
-
             files = self._file_provider.list_files(file_provider.FileProvider.ARCHIVES)
             absolute_path = os.path.abspath(self._base_path)
             if absolute_path not in files: return
@@ -477,7 +468,6 @@ class FileHandler(object):
         Returns True if a new archive was opened, False otherwise.
         """
         if self.archive_type is not None:
-
             files = self._file_provider.list_files(file_provider.FileProvider.ARCHIVES)
             absolute_path = os.path.abspath(self._base_path)
             if absolute_path not in files: return
@@ -599,7 +589,7 @@ class FileHandler(object):
                 while not self._extractor.is_ready(name) and not self._stop_waiting:
                     self._condition.wait()
         except Exception as ex:
-            log.error(u'Waiting on extraction of "%s" failed: %s', path, ex)
+            log.error('Waiting on extraction of "%s" failed: %s', path, ex)
             return
 
     def _ask_for_files(self, files):
@@ -631,10 +621,9 @@ class FileHandler(object):
 
         if self.file_loaded:
             with open(constants.FILEINFO_PICKLE_PATH, 'wb') as config:
-
                 path = self._window.imagehandler.get_real_path()
                 page_index = self._window.imagehandler.get_current_page() - 1
-                current_file_info = [ path, page_index ]
+                current_file_info = [path, page_index]
 
                 pickle.dump(current_file_info, config, pickle.HIGHEST_PROTOCOL)
 
@@ -648,9 +637,9 @@ class FileHandler(object):
                 with open(constants.FILEINFO_PICKLE_PATH, 'rb') as config:
                     fileinfo = pickle.load(config)
             except Exception as ex:
-                log.error(_('! Corrupt preferences file "%s", deleting...'),
-                        constants.FILEINFO_PICKLE_PATH )
-                log.info(u'Error was: %s', ex)
+                log.error('! Corrupt preferences file "%s", deleting...',
+                          constants.FILEINFO_PICKLE_PATH)
+                log.info('Error was: %s', ex)
                 os.remove(constants.FILEINFO_PICKLE_PATH)
 
         return fileinfo
@@ -672,6 +661,3 @@ class FileHandler(object):
         except ValueError:
             # The book no longer exists in the library and has been deleted
             pass
-
-
-# vim: expandtab:sw=4:ts=4

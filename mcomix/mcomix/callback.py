@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
+import threading
 import traceback
 import weakref
-import threading
+
 from gi.repository import GLib
 
 from mcomix import log
+
 
 class CallbackList(object):
     """ Helper class for implementing callbacks within the main thread.
@@ -66,7 +68,6 @@ class CallbackList(object):
     def __run_callbacks(self, *args, **kwargs):
         """ Executes callback functions. """
         for obj_ref, func in self.__callbacks:
-
             if obj_ref is None:
                 # Callback is a normal function
                 callback = func
@@ -83,15 +84,15 @@ class CallbackList(object):
                 try:
                     callback(*args, **kwargs)
                 except Exception as e:
-                    log.error(_('! Callback %(function)r failed: %(error)s'),
-                              { 'function' : callback, 'error' : e })
+                    log.error('! Callback %(function)r failed: %(error)s',
+                              {'function': callback, 'error': e})
                     log.debug('Traceback:\n%s', traceback.format_exc())
 
     def __callback_deleted(self, obj_ref):
         """ Called whenever one of the callback objects is collected by gc.
         This removes all callback functions registered by the object. """
         self.__callbacks = filter(lambda callback: callback[0] != obj_ref,
-            self.__callbacks)
+                                  self.__callbacks)
 
     def __get_function(self, func):
         """ If <func> is a normal function, return (None, func).
@@ -100,9 +101,10 @@ class CallbackList(object):
         weak references do not work on bound methods. """
 
         if hasattr(func, "im_self") and getattr(func, "im_self") is not None:
-            return (weakref.ref(func.im_self, self.__callback_deleted), func.im_func)
+            return weakref.ref(func.im_self, self.__callback_deleted), func.im_func
         else:
-            return (None, func)
+            return None, func
+
 
 class Callback(object):
     """ Decorator class for using the CallbackList helper. """
@@ -117,5 +119,3 @@ class Callback(object):
         Do not ask me why or how this actually works, I simply do not know. """
 
         return CallbackList(obj, self.__function)
-
-# vim: expandtab:sw=4:ts=4

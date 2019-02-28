@@ -1,19 +1,20 @@
+# -*- coding: utf-8 -*-
+
 """bookmark_dialog.py - Bookmarks dialog handler."""
 
-from gi.repository import Gdk, GdkPixbuf, Gtk, GObject
+from gi.repository import GObject, Gdk, GdkPixbuf, Gtk
 
-from mcomix import constants
-from mcomix import bookmark_menu_item
+from mcomix import bookmark_menu_item, constants
 from mcomix.tools import cmp
 
-class _BookmarksDialog(Gtk.Dialog):
 
+class _BookmarksDialog(Gtk.Dialog):
     """_BookmarksDialog lets the user remove or rearrange bookmarks."""
 
     _SORT_TYPE, _SORT_NAME, _SORT_PAGE, _SORT_ADDED = 100, 101, 102, 103
 
     def __init__(self, window, bookmarks_store):
-        super(_BookmarksDialog, self).__init__(title=_('Edit Bookmarks'), destroy_with_parent=True)
+        super(_BookmarksDialog, self).__init__(title=('Edit Bookmarks'), destroy_with_parent=True)
         self.set_transient_for(window)
 
         self.add_buttons(
@@ -35,7 +36,8 @@ class _BookmarksDialog(Gtk.Dialog):
         self.vbox.pack_start(scrolled, True, True, 0)
 
         self._liststore = Gtk.ListStore(GdkPixbuf.Pixbuf, GObject.TYPE_STRING,
-            GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING, bookmark_menu_item._Bookmark)
+                                        GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING,
+                                        bookmark_menu_item._Bookmark)
 
         self._treeview = Gtk.TreeView(model=self._liststore)
         self._treeview.set_rules_hint(True)
@@ -51,12 +53,12 @@ class _BookmarksDialog(Gtk.Dialog):
         cellrenderer_text = Gtk.CellRendererText()
         cellrenderer_pbuf = Gtk.CellRendererPixbuf()
 
-        self._icon_col = Gtk.TreeViewColumn(_('Type'), cellrenderer_pbuf)
-        self._name_col = Gtk.TreeViewColumn(_('Name'), cellrenderer_text)
-        self._page_col = Gtk.TreeViewColumn(_('Page'), cellrenderer_text)
-        self._path_col = Gtk.TreeViewColumn(_('Location'), cellrenderer_text)
+        self._icon_col = Gtk.TreeViewColumn(('Type'), cellrenderer_pbuf)
+        self._name_col = Gtk.TreeViewColumn(('Name'), cellrenderer_text)
+        self._page_col = Gtk.TreeViewColumn(('Page'), cellrenderer_text)
+        self._path_col = Gtk.TreeViewColumn(('Location'), cellrenderer_text)
         # TRANSLATORS: "Added" as in "Date Added"
-        self._date_add_col = Gtk.TreeViewColumn(_('Added'), cellrenderer_text)
+        self._date_add_col = Gtk.TreeViewColumn(('Added'), cellrenderer_text)
 
         self._treeview.append_column(self._icon_col)
         self._treeview.append_column(self._name_col)
@@ -72,13 +74,13 @@ class _BookmarksDialog(Gtk.Dialog):
         self._name_col.set_expand(True)
 
         self._liststore.set_sort_func(_BookmarksDialog._SORT_TYPE,
-            self._sort_model, ('_archive_type', '_name', '_page'))
+                                      self._sort_model, ('_archive_type', '_name', '_page'))
         self._liststore.set_sort_func(_BookmarksDialog._SORT_NAME,
-            self._sort_model, ('_name', '_page', '_path'))
+                                      self._sort_model, ('_name', '_page', '_path'))
         self._liststore.set_sort_func(_BookmarksDialog._SORT_PAGE,
-            self._sort_model, ('_page', '_numpages', '_name'))
+                                      self._sort_model, ('_page', '_numpages', '_name'))
         self._liststore.set_sort_func(_BookmarksDialog._SORT_ADDED,
-            self._sort_model, ('_date_added',))
+                                      self._sort_model, ('_date_added',))
 
         self._icon_col.set_sort_column_id(_BookmarksDialog._SORT_TYPE)
         self._name_col.set_sort_column_id(_BookmarksDialog._SORT_NAME)
@@ -119,7 +121,6 @@ class _BookmarksDialog(Gtk.Dialog):
         treeiter = self._selection.get_selected()[1]
 
         if treeiter is not None:
-
             bookmark = self._liststore.get_value(treeiter, 5)
             self._liststore.remove(treeiter)
             self._bookmarks_store.remove_bookmark(bookmark)
@@ -149,7 +150,7 @@ class _BookmarksDialog(Gtk.Dialog):
 
         for field in user_data:
             result = cmp(getattr(bookmark1, field),
-                getattr(bookmark2, field))
+                         getattr(bookmark2, field))
             if result != 0:
                 return result
 
@@ -157,7 +158,6 @@ class _BookmarksDialog(Gtk.Dialog):
         return 0
 
     def _response(self, dialog, response):
-
         if response == Gtk.ResponseType.CLOSE:
             self._close()
 
@@ -168,7 +168,6 @@ class _BookmarksDialog(Gtk.Dialog):
             self.destroy()
 
     def _key_press_event(self, dialog, event, *args):
-
         if event.keyval == Gdk.KEY_Delete:
             self._remove_selected()
 
@@ -189,6 +188,3 @@ class _BookmarksDialog(Gtk.Dialog):
             self._bookmarks_store.add_bookmark(bookmark)
 
         self.destroy()
-
-
-# vim: expandtab:sw=4:ts=4

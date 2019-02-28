@@ -1,15 +1,19 @@
+# -*- coding: utf-8 -*-
+
 """comment.py - Comments dialog."""
 
 import os
+
 from gi.repository import Gtk
 
 from mcomix import i18n
 
+
 class _CommentsDialog(Gtk.Dialog):
 
     def __init__(self, window):
-        super(_CommentsDialog, self).__init__(_('Comments'), window, 0,
-            (Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE))
+        super(_CommentsDialog, self).__init__(('Comments'), window, 0,
+                                              (Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE))
 
         self.set_resizable(True)
         self.set_default_response(Gtk.ResponseType.CLOSE)
@@ -45,7 +49,6 @@ class _CommentsDialog(Gtk.Dialog):
         self._notebook.show_all()
 
     def _update_comments(self):
-
         if self._notebook is not None:
             self._notebook.destroy()
             self._notebook = None
@@ -70,7 +73,6 @@ class _CommentsDialog(Gtk.Dialog):
         self._notebook.show_all()
 
     def _add_comment(self, path, num):
-
         name = os.path.basename(path)
 
         page = Gtk.VBox(False)
@@ -89,7 +91,7 @@ class _CommentsDialog(Gtk.Dialog):
 
         text = self._window.filehandler.get_comment_text(num)
         if text is None:
-            text = _('Could not read %s') % name
+            text = 'Could not read %s' % name
 
         text_buffer = Gtk.TextBuffer(tag_table=self._tag_table)
         text_buffer.set_text(i18n.to_unicode(text))
@@ -101,6 +103,3 @@ class _CommentsDialog(Gtk.Dialog):
         outbox.modify_bg(Gtk.StateType.NORMAL, bg_color)
         tab_label = Gtk.Label(label=i18n.to_unicode(name))
         self._notebook.insert_page(page, tab_label, -1)
-
-
-# vim: expandtab:sw=4:ts=4

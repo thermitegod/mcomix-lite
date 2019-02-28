@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """ openwith_menu.py - Menu shell for the Open with... menu. """
 
 from gi.repository import Gtk
@@ -9,6 +11,7 @@ _openwith_manager = openwith.OpenWithManager()
 # Reference to the edit dialog (to keep only one instance)
 _openwith_edit_diag = None
 
+
 class OpenWithMenu(Gtk.Menu):
     def __init__(self, ui, window):
         """ Constructor. """
@@ -19,8 +22,8 @@ class OpenWithMenu(Gtk.Menu):
 
         actiongroup = Gtk.ActionGroup(name='mcomix-openwith')
         actiongroup.add_actions([
-            ('edit_commands', Gtk.STOCK_EDIT, _('_Edit commands'),
-             None, None, self._edit_commands)])
+            ('edit_commands', Gtk.STOCK_EDIT, '_Edit commands',
+            None, None, self._edit_commands)])
 
         action = actiongroup.get_action('edit_commands')
         action.set_accel_group(ui.get_accel_group())
@@ -52,8 +55,8 @@ class OpenWithMenu(Gtk.Menu):
             if not command.is_separator():
                 menuitem = Gtk.MenuItem(command.get_label())
                 menuitem.connect('activate', self._commandmenu_clicked,
-                        command.get_command(), command.get_label(),
-                        command.get_cwd(), command.is_disabled_for_archives())
+                                 command.get_command(), command.get_label(),
+                                 command.get_cwd(), command.is_disabled_for_archives())
             else:
                 menuitem = Gtk.SeparatorMenuItem()
 
@@ -80,7 +83,7 @@ class OpenWithMenu(Gtk.Menu):
         global _openwith_edit_diag
         if not _openwith_edit_diag:
             _openwith_edit_diag = openwith.OpenWithEditor(self._window,
-                    self._openwith_manager)
+                                                          self._openwith_manager)
             _openwith_edit_diag.connect_after('response', self._dialog_closed)
 
         _openwith_edit_diag.show_all()
@@ -91,5 +94,3 @@ class OpenWithMenu(Gtk.Menu):
         global _openwith_edit_diag
         _openwith_edit_diag.destroy()
         _openwith_edit_diag = None
-
-# vim: expandtab:sw=4:ts=4

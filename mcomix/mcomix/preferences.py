@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
+
 """ preferences.py - Contains the preferences and the functions to read and
 write them.  """
 
+import json
 import os
 import pickle
-import json
 
 from mcomix import constants
 
@@ -40,7 +42,7 @@ prefs = {
     'show page numbers on thumbnails': True,
     'thumbnail size': 80,
     'create thumbnails': True,
-    'archive thumbnail as icon' : False,
+    'archive thumbnail as icon': False,
     'number of pixels to scroll per key event': 50,
     'number of pixels to scroll per mouse wheel event': 50,
     'slideshow delay': 3000,
@@ -104,6 +106,7 @@ prefs = {
     'temporary directory': None,
 }
 
+
 def read_preferences_file():
     """Read preferences data from disk."""
 
@@ -116,8 +119,8 @@ def read_preferences_file():
         except:
             # Gettext might not be installed yet at this point.
             corrupt_name = "%s.broken" % constants.PREFERENCE_PATH
-            print ('! Corrupt preferences file, moving to "%s".' %
-                   corrupt_name)
+            print('! Corrupt preferences file, moving to "%s".' %
+                  corrupt_name)
             if os.path.isfile(corrupt_name):
                 os.unlink(corrupt_name)
 
@@ -133,13 +136,14 @@ def read_preferences_file():
             os.unlink(constants.PREFERENCE_PICKLE_PATH)
         except Exception:
             # Gettext might not be installed yet at this point.
-            print ('! Corrupt legacy preferences file "%s", ignoring...' %
-                   constants.PREFERENCE_PICKLE_PATH)
+            print('! Corrupt legacy preferences file "%s", ignoring...' %
+                  constants.PREFERENCE_PICKLE_PATH)
 
     if saved_prefs:
         for key in saved_prefs:
             if key in prefs:
                 prefs[key] = saved_prefs[key]
+
 
 def write_preferences_file():
     """Write preference data to disk."""
@@ -151,5 +155,3 @@ def write_preferences_file():
         # file by adding a `{'version': constants.VERSION, 'prefs': config}`
         # dict or a list.  Adding an extra init line sounds bad too.
         json.dump(prefs, config_file, indent=2)
-
-# vim: expandtab:sw=4:ts=4

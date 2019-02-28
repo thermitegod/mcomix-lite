@@ -3,19 +3,15 @@
 """ Glue around libunrar.so/unrar.dll to extract RAR files without having to
 resort to calling rar/unrar manually. """
 
-import sys, os
-import ctypes, ctypes.util
+import ctypes
+import ctypes.util
+import os
 
-from mcomix import constants
-from mcomix.archive import archive_base
 from mcomix import log
+from mcomix.archive import archive_base
 
-if sys.platform == 'win32':
-    UNRARCALLBACK = ctypes.WINFUNCTYPE(ctypes.c_int, ctypes.c_uint,
-        ctypes.c_long, ctypes.c_long, ctypes.c_long)
-else:
-    UNRARCALLBACK = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_uint,
-        ctypes.c_long, ctypes.c_long, ctypes.c_long)
+UNRARCALLBACK = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_uint, ctypes.c_long, ctypes.c_long, ctypes.c_long)
+
 
 class RarArchive(archive_base.BaseArchive):
     """ Wrapper class for libunrar. All string values passed to this class must be unicode objects.
@@ -26,13 +22,13 @@ class RarArchive(archive_base.BaseArchive):
 
     class _OpenMode(object):
         """ Rar open mode """
-        RAR_OM_LIST    = 0
+        RAR_OM_LIST = 0
         RAR_OM_EXTRACT = 1
 
     class _ProcessingMode(object):
         """ Rar file processing mode """
-        RAR_SKIP       = 0
-        RAR_EXTRACT    = 2
+        RAR_SKIP = 0
+        RAR_EXTRACT = 2
 
     class _ErrorCode(object):
         """ Rar error codes """
@@ -54,52 +50,51 @@ class RarArchive(archive_base.BaseArchive):
         """ Archive header structure. Used by DLL calls. """
         _pack_ = 1
         _fields_ = [("ArcName", ctypes.c_char_p),
-                      ("ArcNameW", ctypes.c_wchar_p),
-                      ("OpenMode", ctypes.c_uint),
-                      ("OpenResult", ctypes.c_uint),
-                      ("CmtBuf", ctypes.c_char_p),
-                      ("CmtBufSize", ctypes.c_uint),
-                      ("CmtSize", ctypes.c_uint),
-                      ("CmtState", ctypes.c_uint),
-                      ("Flags", ctypes.c_uint),
-                      ("Callback", UNRARCALLBACK),
-                      ("UserData", ctypes.c_long),
-                      ("Reserved", ctypes.c_uint * 28)]
+            ("ArcNameW", ctypes.c_wchar_p),
+            ("OpenMode", ctypes.c_uint),
+            ("OpenResult", ctypes.c_uint),
+            ("CmtBuf", ctypes.c_char_p),
+            ("CmtBufSize", ctypes.c_uint),
+            ("CmtSize", ctypes.c_uint),
+            ("CmtState", ctypes.c_uint),
+            ("Flags", ctypes.c_uint),
+            ("Callback", UNRARCALLBACK),
+            ("UserData", ctypes.c_long),
+            ("Reserved", ctypes.c_uint * 28)]
 
     class _RARHeaderDataEx(ctypes.Structure):
         """ Archive file structure. Used by DLL calls. """
         _pack_ = 1
         _fields_ = [("ArcName", ctypes.c_char * 1024),
-                      ("ArcNameW", ctypes.c_wchar * 1024),
-                      ("FileName", ctypes.c_char * 1024),
-                      ("FileNameW", ctypes.c_wchar * 1024),
-                      ("Flags", ctypes.c_uint),
-                      ("PackSize", ctypes.c_uint),
-                      ("PackSizeHigh", ctypes.c_uint),
-                      ("UnpSize", ctypes.c_uint),
-                      ("UnpSizeHigh", ctypes.c_uint),
-                      ("HostOS", ctypes.c_uint),
-                      ("FileCRC", ctypes.c_uint),
-                      ("FileTime", ctypes.c_uint),
-                      ("UnpVer", ctypes.c_uint),
-                      ("Method", ctypes.c_uint),
-                      ("FileAttr", ctypes.c_uint),
-                      ("CmtBuf", ctypes.c_char_p),
-                      ("CmtBufSize", ctypes.c_uint),
-                      ("CmtSize", ctypes.c_uint),
-                      ("CmtState", ctypes.c_uint),
-                      ("Reserved", ctypes.c_uint * 1024)]
-
+            ("ArcNameW", ctypes.c_wchar * 1024),
+            ("FileName", ctypes.c_char * 1024),
+            ("FileNameW", ctypes.c_wchar * 1024),
+            ("Flags", ctypes.c_uint),
+            ("PackSize", ctypes.c_uint),
+            ("PackSizeHigh", ctypes.c_uint),
+            ("UnpSize", ctypes.c_uint),
+            ("UnpSizeHigh", ctypes.c_uint),
+            ("HostOS", ctypes.c_uint),
+            ("FileCRC", ctypes.c_uint),
+            ("FileTime", ctypes.c_uint),
+            ("UnpVer", ctypes.c_uint),
+            ("Method", ctypes.c_uint),
+            ("FileAttr", ctypes.c_uint),
+            ("CmtBuf", ctypes.c_char_p),
+            ("CmtBufSize", ctypes.c_uint),
+            ("CmtSize", ctypes.c_uint),
+            ("CmtState", ctypes.c_uint),
+            ("Reserved", ctypes.c_uint * 1024)]
 
     @staticmethod
     def is_available():
         """ Returns True if unrar.dll can be found, False otherwise. """
-        return bool(_get_unrar_dll())
+        return bool(_get_unrar_so())
 
     def __init__(self, archive):
         """ Initialize Unrar.dll. """
         super(RarArchive, self).__init__(archive)
-        self._unrar = _get_unrar_dll()
+        self._unrar = _get_unrar_so()
         self._handle = None
         self._callback_function = None
         self._is_solid = False
@@ -158,7 +153,7 @@ class RarArchive(archive_base.BaseArchive):
         while True:
             # Check if the current entry matches the requested file.
             if self._current_filename is not None:
-                if (self._current_filename == filename):
+                if self._current_filename == filename:
                     # It's the entry we're looking for, extract it.
                     dest = ctypes.c_wchar_p(os.path.join(destination_dir, filename))
                     self._process(dest)
@@ -241,7 +236,7 @@ class RarArchive(archive_base.BaseArchive):
 
     def _password_callback(self, msg, userdata, buffer_address, buffer_size):
         """ Called by the unrar library in case of missing password. """
-        if msg == 2: # UCM_NEEDPASSWORD
+        if msg == 2:  # UCM_NEEDPASSWORD
             self._get_password()
             if len(self._password) == 0:
                 # Abort extraction
@@ -254,12 +249,13 @@ class RarArchive(archive_base.BaseArchive):
             # Continue operation
             return 1
 
+
 class UnrarException(Exception):
     """ Exception class for RarArchive. """
 
     _exceptions = {
         RarArchive._ErrorCode.ERAR_END_ARCHIVE: "End of archive",
-        RarArchive._ErrorCode.ERAR_NO_MEMORY:" Not enough memory to initialize data structures",
+        RarArchive._ErrorCode.ERAR_NO_MEMORY: " Not enough memory to initialize data structures",
         RarArchive._ErrorCode.ERAR_BAD_DATA: "Bad data, CRC mismatch",
         RarArchive._ErrorCode.ERAR_BAD_ARCHIVE: "Volume is not valid RAR archive",
         RarArchive._ErrorCode.ERAR_UNKNOWN_FORMAT: "Unknown archive format",
@@ -280,62 +276,7 @@ class UnrarException(Exception):
         else:
             return "Unkown error"
 
-# Filled on-demand by _get_unrar_dll
-_unrar_dll = -1
 
-def _get_unrar_dll():
-    """ Tries to load libunrar and will return a handle of it.
-    Returns None if an error occured or the library couldn't be found. """
-    global _unrar_dll
-    if _unrar_dll != -1:
-        return _unrar_dll
-
-    # Load unrar.dll on win32
-    if sys.platform == 'win32':
-
-        # First, search for unrar.dll in PATH
-        unrar_path = ctypes.util.find_library("unrar.dll")
-        if unrar_path:
-            try:
-                return ctypes.windll.LoadLibrary(unrar_path)
-            except WindowsError:
-                pass
-
-        # The file wasn't found in PATH, try MComix' root directory
-        try:
-            return ctypes.windll.LoadLibrary(os.path.join(constants.BASE_PATH, "unrar.dll"))
-        except WindowsError:
-            pass
-
-        # Last attempt, just use the current directory
-        try:
-            _unrar_dll = ctypes.windll.LoadLibrary("unrar.dll")
-        except WindowsError:
-            _unrar_dll = None
-
-        return _unrar_dll
-
-    # Load libunrar.so on UNIX
-    else:
-        # find_library on UNIX uses various mechanisms to determine the path
-        # of a library, so one could assume the library is not installed
-        # when find_library fails
-        unrar_path = ctypes.util.find_library("unrar") or \
-            '/usr/lib/libunrar.so'
-
-        if unrar_path:
-            try:
-                _unrar_dll = ctypes.cdll.LoadLibrary(unrar_path)
-                return _unrar_dll
-            except OSError:
-                pass
-
-        # Last attempt, try the current directory
-        try:
-            _unrar_dll = ctypes.cdll.LoadLibrary(os.path.join(os.getcwd(), "libunrar.so"))
-        except OSError:
-            _unrar_dll = None
-
-        return _unrar_dll
-
-# vim: expandtab:sw=4:ts=4
+def _get_unrar_so():
+    """load libunrar or returns None if it can not be found"""
+    return ctypes.cdll.LoadLibrary(ctypes.util.find_library("unrar"))

@@ -1,8 +1,11 @@
+# -*- coding: utf-8 -*-
+
 """cursor_handler.py - Cursor handler."""
 
-from gi.repository import Gdk, GLib
+from gi.repository import GLib, Gdk
 
 from mcomix import constants
+
 
 class CursorHandler(object):
 
@@ -33,7 +36,6 @@ class CursorHandler(object):
         self._current_cursor = cursor
 
         if self._auto_hide:
-
             if cursor == constants.NORMAL_CURSOR:
                 self._set_hide_timer()
             else:
@@ -80,6 +82,3 @@ class CursorHandler(object):
 
     def _get_hidden_cursor(self):
         return Gdk.Cursor.new(Gdk.CursorType.BLANK_CURSOR)
-
-
-# vim: expandtab:sw=4:ts=4

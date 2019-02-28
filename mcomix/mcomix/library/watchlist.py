@@ -1,17 +1,19 @@
+# -*- coding: utf-8 -*-
+
 """ Library watch list dialog and backend classes. """
 
 import os
-from gi.repository import Gtk
-from gi.repository import GLib, GObject
+
+from gi.repository import GLib, GObject, Gtk
 
 from mcomix.library import backend_types
 from mcomix.preferences import prefs
-
 
 COL_DIRECTORY = 0
 COL_COLLECTION = 0
 COL_COLLECTION_ID = 1
 COL_RECURSIVE = 2
+
 
 class WatchListDialog(Gtk.Dialog):
     """ Dialog for managing watched directories. """
@@ -23,11 +25,11 @@ class WatchListDialog(Gtk.Dialog):
         @param library: Dialog parent window, should be library window.
         """
         super(WatchListDialog, self).__init__(
-            title=_("Library watch list"), modal=True, destroy_with_parent=True
+            title="Library watch list", modal=True, destroy_with_parent=True
         )
 
         self.add_buttons(
-            _('_Scan now'), WatchListDialog.RESPONSE_SCANNOW,
+            '_Scan now', WatchListDialog.RESPONSE_SCANNOW,
             Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE
         )
 
@@ -44,7 +46,7 @@ class WatchListDialog(Gtk.Dialog):
         self._treeview.get_selection().connect('changed', self._item_selected_cb)
 
         dir_renderer = Gtk.CellRendererText()
-        dir_column = Gtk.TreeViewColumn(_("Directory"), dir_renderer)
+        dir_column = Gtk.TreeViewColumn("Directory", dir_renderer)
         dir_column.set_attributes(dir_renderer, text=COL_DIRECTORY)
         dir_column.set_expand(True)
         self._treeview.append_column(dir_column)
@@ -56,16 +58,16 @@ class WatchListDialog(Gtk.Dialog):
         collection_renderer.set_property('editable', True)
         collection_renderer.set_property('has-entry', False)
         collection_renderer.connect('changed', self._collection_changed_cb, collection_model)
-        collection_column = Gtk.TreeViewColumn(_("Collection"), collection_renderer)
+        collection_column = Gtk.TreeViewColumn("Collection", collection_renderer)
         collection_column.set_cell_data_func(collection_renderer,
-                self._treeview_collection_id_to_name)
+                                             self._treeview_collection_id_to_name)
         self._treeview.append_column(collection_column)
 
         recursive_renderer = Gtk.CellRendererToggle()
         recursive_renderer.set_activatable(True)
         recursive_renderer.connect('toggled', self._recursive_changed_cb)
-        recursive_column = Gtk.TreeViewColumn(_("With subdirectories"),
-                recursive_renderer)
+        recursive_column = Gtk.TreeViewColumn("With subdirectories",
+                                              recursive_renderer)
         recursive_column.add_attribute(recursive_renderer, 'active', COL_RECURSIVE)
         self._treeview.append_column(recursive_column)
 
@@ -89,7 +91,7 @@ class WatchListDialog(Gtk.Dialog):
         self.vbox.pack_start(main_box, True, True, 0)
 
         auto_checkbox = Gtk.CheckButton(
-            label=_('Automatically scan for new books when library is _opened'), use_underline=True)
+            label='Automatically scan for new books when library is _opened', use_underline=True)
         auto_checkbox.set_active(prefs['scan for new books on library startup'])
         auto_checkbox.connect('toggled', self._auto_scan_toggled_cb)
         self.vbox.pack_end(auto_checkbox, False, False, 5)
@@ -192,12 +194,11 @@ class WatchListDialog(Gtk.Dialog):
         if filechooser.get_filename() is not None:
             directory = filechooser.get_filename()
         else:
-            directory = u""
+            directory = ""
         filechooser.destroy()
 
         if result == Gtk.ResponseType.ACCEPT \
-            and os.path.isdir(directory):
-
+                and os.path.isdir(directory):
             self.library.backend.watchlist.add_directory(directory)
             self._fill_model(self._treeview.get_model())
 
@@ -240,6 +241,3 @@ class WatchListDialog(Gtk.Dialog):
             self.library.scan_for_new_files()
         elif response == WatchListDialog.RESPONSE_SCANNOW:
             self.library.scan_for_new_files()
-
-
-# vim: expandtab:sw=4:ts=4

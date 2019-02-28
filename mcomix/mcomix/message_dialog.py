@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """ Simple extension of Gtk.MessageDialog for consistent formating. Also
     supports remembering the dialog result.
 """
@@ -34,7 +36,7 @@ class MessageDialog(Gtk.MessageDialog):
         #: Automatically destroy dialog after run?
         self.auto_destroy = True
 
-        self.remember_checkbox = Gtk.CheckButton(label=_('Do not ask again.'))
+        self.remember_checkbox = Gtk.CheckButton(label='Do not ask again.')
         self.remember_checkbox.set_no_show_all(True)
         self.remember_checkbox.set_can_focus(False)
         self.get_message_area().pack_end(self.remember_checkbox, True, True, 6)
@@ -46,7 +48,7 @@ class MessageDialog(Gtk.MessageDialog):
         """
         if primary:
             self.set_markup('<span weight="bold" size="larger">' +
-                primary + '</span>')
+                            primary + '</span>')
         if secondary:
             self.format_secondary_markup(secondary)
 
@@ -81,12 +83,9 @@ class MessageDialog(Gtk.MessageDialog):
             self.remember_checkbox.set_can_focus(True)
             result = super(MessageDialog, self).run()
 
-            if (self.should_remember_choice() and int(result) in self.choices):
+            if self.should_remember_choice() and int(result) in self.choices:
                 prefs['stored dialog choices'][self.dialog_id] = int(result)
 
             if self.auto_destroy:
                 self.destroy()
             return result
-
-
-# vim: expandtab:sw=4:ts=4

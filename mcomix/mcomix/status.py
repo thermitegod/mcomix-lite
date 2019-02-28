@@ -1,13 +1,14 @@
+# -*- coding: utf-8 -*-
+
 """status.py - Statusbar for main window."""
 
 from gi.repository import Gdk, Gtk
 
-from mcomix import i18n
-from mcomix import constants
+from mcomix import constants, i18n
 from mcomix.preferences import prefs
 
-class Statusbar(Gtk.EventBox):
 
+class Statusbar(Gtk.EventBox):
     SPACING = 5
 
     def __init__(self):
@@ -38,23 +39,23 @@ class Statusbar(Gtk.EventBox):
 
         actiongroup = Gtk.ActionGroup(name='mcomix-statusbar')
         actiongroup.add_toggle_actions([
-            ('pagenumber', None, _('Show page numbers'), None, None,
-                self.toggle_status_visibility),
-            ('filenumber', None, _('Show file numbers'), None, None,
-                self.toggle_status_visibility),
-            ('resolution', None, _('Show resolution'), None, None,
-                self.toggle_status_visibility),
-            ('rootpath', None, _('Show path'), None, None,
-                self.toggle_status_visibility),
-            ('filename', None, _('Show filename'), None, None,
-                self.toggle_status_visibility),
-            ('filesize', None, _('Show filesize'), None, None,
-                self.toggle_status_visibility)])
+            ('pagenumber', None, 'Show page numbers', None, None,
+            self.toggle_status_visibility),
+            ('filenumber', None, 'Show file numbers', None, None,
+            self.toggle_status_visibility),
+            ('resolution', None, 'Show resolution', None, None,
+            self.toggle_status_visibility),
+            ('rootpath', None, 'Show path', None, None,
+            self.toggle_status_visibility),
+            ('filename', None, 'Show filename', None, None,
+            self.toggle_status_visibility),
+            ('filesize', None, 'Show filesize', None, None,
+            self.toggle_status_visibility)])
         self.ui_manager.insert_action_group(actiongroup, 0)
 
         # Hook mouse release event
         self.connect('button-release-event', self._button_released)
-        self.set_events(Gdk.EventMask.BUTTON_PRESS_MASK|Gdk.EventMask.BUTTON_RELEASE_MASK)
+        self.set_events(Gdk.EventMask.BUTTON_PRESS_MASK | Gdk.EventMask.BUTTON_RELEASE_MASK)
 
         # Default status information
         self._page_info = ''
@@ -81,7 +82,7 @@ class Statusbar(Gtk.EventBox):
         for i in range(this_screen):
             page_info += '%d' % (page + i)
             if i < this_screen - 1:
-                page_info +=','
+                page_info += ','
         page_info += ' / %d' % total
         self._page_info = page_info
 
@@ -101,7 +102,7 @@ class Statusbar(Gtk.EventBox):
         """ Returns the bar's file information."""
         return self._file_info
 
-    def set_resolution(self, dimensions): # 2D only
+    def set_resolution(self, dimensions):  # 2D only
         """Update the resolution data.
 
         Takes an iterable of tuples, (x, y, scale), describing the original
@@ -213,11 +214,11 @@ class Statusbar(Gtk.EventBox):
         filesize_visible = prefs['statusbar fields'] & constants.STATUS_FILESIZE
 
         for name, visible in (('pagenumber', page_visible),
-                ('filenumber', fileno_visible),
-                ('resolution', resolution_visible),
-                ('rootpath', path_visible),
-                ('filename', filename_visible),
-                ('filesize', filesize_visible)):
+        ('filenumber', fileno_visible),
+        ('resolution', resolution_visible),
+        ('rootpath', path_visible),
+        ('filename', filename_visible),
+        ('filesize', filesize_visible)):
             action = self.ui_manager.get_action('/Statusbar/' + name)
             action.set_active(visible)
 
@@ -252,5 +253,3 @@ class TooltipStatusHelper(object):
 
     def _on_item_deselect(self, menuitem):
         self._statusbar.pop(0)
-
-# vim: expandtab:sw=4:ts=4

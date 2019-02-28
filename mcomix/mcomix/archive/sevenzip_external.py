@@ -3,7 +3,6 @@
 """ 7z archive extractor. """
 
 import os
-import sys
 import tempfile
 
 from mcomix import process
@@ -11,6 +10,7 @@ from mcomix.archive import archive_base
 
 # Filled on-demand by SevenZipArchive
 _7z_executable = -1
+
 
 class SevenZipArchive(archive_base.ExternalExecutableArchive):
     """ 7z file extractor using the 7z executable. """
@@ -23,7 +23,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
     def __init__(self, archive):
         super(SevenZipArchive, self).__init__(archive)
         self._is_solid = False
-        self._is_encrypted =  False
+        self._is_encrypted = False
         self._contents = []
 
     def _get_executable(self):
@@ -32,37 +32,29 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
     def _get_password_argument(self):
         if self._is_encrypted:
             self._get_password()
-            return u'-p' + self._password
+            return '-p' + self._password
         else:
             # Add an empty password anyway, to prevent deadlock on reading for
             # input if we did not correctly detect the archive is encrypted.
-            return u'-p'
+            return '-p'
 
     def _get_list_arguments(self):
-        args = [self._get_executable(), u'l', u'-slt']
-        if sys.platform == 'win32':
-            # This switch is only supported on Win32.
-            args.append(u'-sccUTF-8')
-        args.append(self._get_password_argument())
-        args.extend((u'--', self.archive))
+        args = [self._get_executable(), 'l', '-slt', self._get_password_argument()]
+        args.extend(('--', self.archive))
         return args
 
     def _get_extract_arguments(self, list_file=None):
-        args = [self._get_executable(), u'x', u'-so']
+        args = [self._get_executable(), 'x', '-so']
         if list_file is not None:
-            args.append(u'-i@' + list_file)
+            args.append('-i@' + list_file)
         args.append(self._get_password_argument())
-        args.extend((u'--', self.archive))
+        args.extend(('--', self.archive))
         return args
 
     def _parse_list_output_line(self, line):
         """ Start parsing after the first delimiter (bunch of - characters),
         and end when delimiters appear again. Format:
         Date <space> Time <space> Attr <space> Size <space> Compressed <space> Name"""
-
-        # Encoding is only guaranteed on win32 due to the -scc switch.
-        if sys.platform == 'win32':
-            line = line.decode('utf-8')
 
         if line.startswith('----------'):
             if self._state == self.STATE_HEADER:
@@ -76,7 +68,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
 
         if self._state == self.STATE_HEADER:
             if (line.startswith('Error:') or line.startswith('ERROR:')) and \
-               line.endswith(': Can not open encrypted archive. Wrong password?'):
+                    line.endswith(': Can not open encrypted archive. Wrong password?'):
                 self._is_encrypted = True
                 raise self.EncryptedHeader()
             if 'Solid = +' == line:
@@ -127,8 +119,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
 
     def extract(self, filename, destination_dir):
         """ Extract <filename> from the archive to <destination_dir>. """
-        assert isinstance(filename, str) and \
-                isinstance(destination_dir, str)
+        assert isinstance(filename, str) and isinstance(destination_dir, str)
 
         if not self._get_executable():
             return
@@ -145,7 +136,6 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
                              stdout=output)
 
     def iter_extract(self, entries, destination_dir):
-
         if not self._get_executable():
             return
 
@@ -153,8 +143,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
             self.list_contents()
 
         with process.popen(self._get_extract_arguments()) as proc:
-            wanted = dict([(self._original_filename(unicode_name), unicode_name)
-                           for unicode_name in entries])
+            wanted = dict([(self._original_filename(unicode_name), unicode_name) for unicode_name in entries])
 
             for filename, filesize in self._contents:
                 data = proc.stdout.read(filesize)
@@ -176,7 +165,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
         it was started successfully or None otherwise. """
         global _7z_executable
         if _7z_executable == -1:
-            _7z_executable = process.find_executable((u'7z',))
+            _7z_executable = process.find_executable(('7z',))
         return _7z_executable
 
     @staticmethod
@@ -185,7 +174,6 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
 
 
 class TarArchive(SevenZipArchive):
-
     '''Special class for handling tar archives.
 
        Needed because for XZ archives, the technical listing
@@ -195,7 +183,7 @@ class TarArchive(SevenZipArchive):
     def __init__(self, archive):
         super(TarArchive, self).__init__(archive)
         self._is_solid = True
-        self._is_encrypted =  False
+        self._is_encrypted = False
 
     def _get_extract_arguments(self, list_file=None):
         # Note: we ignore the list_file argument, which
@@ -217,5 +205,3 @@ class TarArchive(SevenZipArchive):
             assert 1 == len(self._contents)
             yield self._unicode_filename(self._path)
         self.filenames_initialized = True
-
-# vim: expandtab:sw=4:ts=4

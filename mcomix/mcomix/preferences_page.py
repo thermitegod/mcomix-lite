@@ -1,11 +1,13 @@
+# -*- coding: utf-8 -*-
+
 """preferences_page.py - MComix preference page."""
 
 from gi.repository import Gtk
 
 from mcomix import preferences_section
 
-class _PreferencePage(Gtk.VBox):
 
+class _PreferencePage(Gtk.VBox):
     """The _PreferencePage is a conveniece class for making one "page"
     in a preferences-style dialog that contains one or more
     _PreferenceSections.
@@ -41,5 +43,3 @@ class _PreferencePage(Gtk.VBox):
             left_box, right_box = self._section.new_split_vboxes()
             left_box.pack_start(left_item, True, True, 0)
             right_box.pack_start(right_item, True, True, 0)
-
-# vim: expandtab:sw=4:ts=4

@@ -1,27 +1,23 @@
+# -*- coding: utf-8 -*-
+
 """library_main_dialog.py - The library dialog window."""
 
 import os
+
 from gi.repository import Gdk, Gtk
 
+from mcomix import file_chooser_library_dialog, i18n, log, status, tools
+from mcomix.library import add_progress_dialog as library_add_progress_dialog, backend as library_backend, \
+    book_area as library_book_area, collection_area as library_collection_area, control_area as library_control_area
 from mcomix.preferences import prefs
-from mcomix import i18n
-from mcomix import tools
-from mcomix import log
-from mcomix import file_chooser_library_dialog
-from mcomix import status
-from mcomix.library import backend as library_backend
-from mcomix.library import book_area as library_book_area
-from mcomix.library import collection_area as library_collection_area
-from mcomix.library import control_area as library_control_area
-from mcomix.library import add_progress_dialog as library_add_progress_dialog
 
 _dialog = None
 # The "All books" collection is not a real collection stored in the library,
 # but is represented by this ID in the library's TreeModels.
 _COLLECTION_ALL = -1
 
-class _LibraryDialog(Gtk.Window):
 
+class _LibraryDialog(Gtk.Window):
     """The library window. Automatically creates and uses a new
     library_backend.LibraryBackend when opened.
     """
@@ -32,7 +28,7 @@ class _LibraryDialog(Gtk.Window):
         self._window = window
 
         self.resize(prefs['lib window width'], prefs['lib window height'])
-        self.set_title(_('Library'))
+        self.set_title('Library')
         self.connect('delete_event', self.close)
         self.connect('key-press-event', self._key_press_event)
 
@@ -48,11 +44,11 @@ class _LibraryDialog(Gtk.Window):
 
         table = Gtk.Table(n_rows=2, n_columns=2, homogeneous=False)
         table.attach(self.collection_area, 0, 1, 0, 1, Gtk.AttachOptions.FILL,
-            Gtk.AttachOptions.EXPAND|Gtk.AttachOptions.FILL)
-        table.attach(self.book_area, 1, 2, 0, 1, Gtk.AttachOptions.EXPAND|Gtk.AttachOptions.FILL,
-            Gtk.AttachOptions.EXPAND|Gtk.AttachOptions.FILL)
-        table.attach(self.control_area, 0, 2, 1, 2, Gtk.AttachOptions.EXPAND|Gtk.AttachOptions.FILL,
-            Gtk.AttachOptions.FILL)
+                     Gtk.AttachOptions.EXPAND | Gtk.AttachOptions.FILL)
+        table.attach(self.book_area, 1, 2, 0, 1, Gtk.AttachOptions.EXPAND | Gtk.AttachOptions.FILL,
+                     Gtk.AttachOptions.EXPAND | Gtk.AttachOptions.FILL)
+        table.attach(self.control_area, 0, 2, 1, 2, Gtk.AttachOptions.EXPAND | Gtk.AttachOptions.FILL,
+                     Gtk.AttachOptions.FILL)
 
         if prefs['show statusbar']:
             table.attach(self._statusbar, 0, 2, 2, 3, Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL)
@@ -64,7 +60,7 @@ class _LibraryDialog(Gtk.Window):
     def open_book(self, books, keep_library_open=False):
         """Open the book with ID <book>."""
 
-        paths = [ self.backend.get_book_path(book) for book in books ]
+        paths = [self.backend.get_book_path(book) for book in books]
 
         if not keep_library_open:
             self.hide()
@@ -80,7 +76,7 @@ class _LibraryDialog(Gtk.Window):
         """ Start scanning for new files from the watch list. """
 
         if len(self.backend.watchlist.get_watchlist()) > 0:
-            self.set_status_message(_("Scanning for new books..."))
+            self.set_status_message("Scanning for new books...")
             self.backend.watchlist.scan_for_new_files()
 
     def _new_files_found(self, filelist, watchentry):
@@ -95,17 +91,17 @@ class _LibraryDialog(Gtk.Window):
             self.add_books(filelist, collection_name)
 
             if len(filelist) == 1:
-                message = _("Added new book '%(bookname)s' "
-                    "from directory '%(directory)s'.")
+                message = ("Added new book '%(bookname)s' "
+                           "from directory '%(directory)s'.")
             else:
-                message = _("Added %(count)d new books "
-                    "from directory '%(directory)s'.")
+                message = ("Added %(count)d new books "
+                           "from directory '%(directory)s'.")
 
             self.set_status_message(message % {'directory': watchentry.directory,
                 'count': len(filelist), 'bookname': os.path.basename(filelist[0])})
         else:
             self.set_status_message(
-                _("No new books found in directory '%s'.") % watchentry.directory)
+                "No new books found in directory '%s'." % watchentry.directory)
 
     def get_status_bar(self):
         """ Returns the window's status bar. """
@@ -117,7 +113,7 @@ class _LibraryDialog(Gtk.Window):
         """
         self._statusbar.pop(0)
         self._statusbar.push(0,
-            ' ' * status.Statusbar.SPACING + '%s' % i18n.to_unicode(message))
+                             ' ' * status.Statusbar.SPACING + '%s' % i18n.to_unicode(message))
 
     def close(self, *args):
         """Close the library and do required cleanup tasks."""
@@ -138,7 +134,7 @@ class _LibraryDialog(Gtk.Window):
         else:
             collection = self.backend.get_collection_by_name(collection_name)
 
-            if collection is None: # Collection by that name doesn't exist.
+            if collection is None:  # Collection by that name doesn't exist.
                 self.backend.add_collection(collection_name)
                 collection = self.backend.get_collection_by_name(
                     collection_name)
@@ -163,9 +159,8 @@ def open_dialog(action, window):
     global _dialog
 
     if _dialog is None:
-
         if library_backend.dbapi2 is None:
-            text = _('! You need an sqlite wrapper to use the library.')
+            text = '! You need an sqlite wrapper to use the library.'
             window.osd.show(text)
             log.error(text)
             return False
@@ -189,5 +184,3 @@ def _close_dialog(*args):
         _dialog.destroy()
         _dialog = None
         tools.garbage_collect()
-
-# vim: expandtab:sw=4:ts=4

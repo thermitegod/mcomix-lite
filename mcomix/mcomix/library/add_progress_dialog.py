@@ -1,7 +1,8 @@
+# -*- coding: utf-8 -*-
+
 """library_add_progress_dialog.py - Progress bar for the library."""
 
-from gi.repository import Gtk
-from gi.repository import Pango
+from gi.repository import Gtk, Pango
 
 from mcomix import labels
 
@@ -10,16 +11,16 @@ _dialog = None
 # but is represented by this ID in the library's TreeModels.
 _COLLECTION_ALL = -1
 
-class _AddLibraryProgressDialog(Gtk.Dialog):
 
+class _AddLibraryProgressDialog(Gtk.Dialog):
     """Dialog with a ProgressBar that adds books to the library."""
 
     def __init__(self, library, window, paths, collection):
         """Adds the books at <paths> to the library, and also to the
         <collection>, unless it is None.
         """
-        super(_AddLibraryProgressDialog, self).__init__(_('Adding books'), library,
-            Gtk.DialogFlags.MODAL, (Gtk.STOCK_STOP, Gtk.ResponseType.CLOSE))
+        super(_AddLibraryProgressDialog, self).__init__('Adding books', library,
+                                                        Gtk.DialogFlags.MODAL, (Gtk.STOCK_STOP, Gtk.ResponseType.CLOSE))
 
         self._window = window
         self._destroy = False
@@ -39,7 +40,7 @@ class _AddLibraryProgressDialog(Gtk.Dialog):
         hbox.pack_start(left_box, False, False, 0)
         hbox.pack_start(right_box, False, False, 0)
 
-        label = labels.BoldLabel(_('Added books:'))
+        label = labels.BoldLabel('Added books:')
         label.set_alignment(1.0, 1.0)
         left_box.pack_start(label, True, True, 0)
         number_label = Gtk.Label(label='0')
@@ -62,13 +63,12 @@ class _AddLibraryProgressDialog(Gtk.Dialog):
         total_added = 0
 
         for path in paths:
-
             if library.backend.add_book(path, collection):
                 total_added += 1
 
                 number_label.set_text('%d / %d' % (total_added, total_paths_int))
 
-            added_label.set_text(_("Adding '%s'...") % path)
+            added_label.set_text("Adding '%s'..." % path)
             bar.set_fraction(total_added / total_paths_float)
 
             while Gtk.events_pending():
@@ -82,5 +82,3 @@ class _AddLibraryProgressDialog(Gtk.Dialog):
     def _response(self, *args):
         self._destroy = True
         self.destroy()
-
-# vim: expandtab:sw=4:ts=4

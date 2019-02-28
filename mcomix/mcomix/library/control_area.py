@@ -1,13 +1,13 @@
+# -*- coding: utf-8 -*-
+
 """library_control_area.py - The window in the library that contains buttons
 and displays info."""
 
 import os
-from gi.repository import Gtk
-from gi.repository import GLib
-from gi.repository import Pango
 
-from mcomix import i18n
-from mcomix import labels
+from gi.repository import GLib, Gtk, Pango
+
+from mcomix import i18n, labels
 from mcomix.library.watchlist import WatchListDialog
 
 # The "All books" collection is not a real collection stored in the library,
@@ -16,7 +16,6 @@ _COLLECTION_ALL = -1
 
 
 class _ControlArea(Gtk.HBox):
-
     """The _ControlArea is the bottom area of the library window where
     information is displayed and controls such as buttons reside.
     """
@@ -66,14 +65,13 @@ class _ControlArea(Gtk.HBox):
         hbox = Gtk.HBox(homogeneous=False)
         vbox.pack_start(hbox, True, True, 0)
 
-        label = Gtk.Label(label=_('_Search:'))
+        label = Gtk.Label(label='_Search:')
         label.set_use_underline(True)
         hbox.pack_start(label, False, False, 0)
         search_entry = Gtk.Entry()
         search_entry.connect('activate', self._filter_books)
-        search_entry.set_tooltip_text(
-            _('Display only those books that have the specified text string '
-              'in their full path. The search is not case sensitive.'))
+        search_entry.set_tooltip_text('Display only those books that have the specified text string '
+                                      'in their full path. The search is not case sensitive.')
         hbox.pack_start(search_entry, True, True, 6)
         label.set_mnemonic_widget(search_entry)
 
@@ -81,23 +79,20 @@ class _ControlArea(Gtk.HBox):
         hbox = Gtk.HBox(homogeneous=False, spacing=10)
         vbox.pack_end(hbox, True, True, 0)
 
-        watchlist_button = Gtk.Button(label=_("_Watch list"), use_underline=True)
+        watchlist_button = Gtk.Button(label="_Watch list", use_underline=True)
         watchlist_button.set_always_show_image(True)
         watchlist_button.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_FIND, Gtk.IconSize.BUTTON))
         watchlist_button.set_image_position(Gtk.PositionType.LEFT)
-        watchlist_button.connect('clicked',
-            lambda *args: WatchListDialog(self._library))
-        watchlist_button.set_tooltip_text(
-            _('Open the watchlist management dialog.'))
+        watchlist_button.connect('clicked', lambda *args: WatchListDialog(self._library))
+        watchlist_button.set_tooltip_text('Open the watchlist management dialog.')
         hbox.pack_start(watchlist_button, True, True, 0)
 
-        self._open_button = Gtk.Button(label=_("_Open list"), use_underline=True)
+        self._open_button = Gtk.Button(label="_Open list", use_underline=True)
         self._open_button.set_always_show_image(True)
         self._open_button.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_OPEN, Gtk.IconSize.BUTTON))
         self._open_button.set_image_position(Gtk.PositionType.LEFT)
-        self._open_button.connect('clicked',
-            self._library.book_area.open_selected_book)
-        self._open_button.set_tooltip_text(_('Open the selected book.'))
+        self._open_button.connect('clicked', self._library.book_area.open_selected_book)
+        self._open_button.set_tooltip_text('Open the selected book.')
         self._open_button.set_sensitive(False)
         hbox.pack_end(self._open_button, True, True, 0)
 
@@ -137,18 +132,18 @@ class _ControlArea(Gtk.HBox):
         infotext = []
 
         if last_page is not None and pages is not None and last_page != pages:
-            infotext.append('%s %d/%d' % (_('Page'), last_page, pages))
+            infotext.append('%s %d/%d' % ('Page', last_page, pages))
         elif pages is not None:
-            infotext.append(_('%d pages') % pages)
+            infotext.append('%d pages' % pages)
 
         if size is not None:
             infotext.append('%.1f MiB' % (size / 1048576.0))
 
         if (pages is not None and last_page is not None and
-            last_date is not None and last_page == pages):
-            infotext.append(_('Finished reading on %(date)s, %(time)s') % {
+                last_date is not None and last_page == pages):
+            infotext.append('Finished reading on %(date)s, %(time)s' % {
                 'date': last_date.strftime('%x'),
-                'time': last_date.strftime('%X') })
+                'time': last_date.strftime('%X')})
 
         self._filelabel.set_text(', '.join(infotext))
 
@@ -167,5 +162,3 @@ class _ControlArea(Gtk.HBox):
             self._library.filter_string = None
         collection = self._library.collection_area.get_current_collection()
         GLib.idle_add(self._library.book_area.display_covers, collection)
-
-# vim: expandtab:sw=4:ts=4

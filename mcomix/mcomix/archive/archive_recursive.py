@@ -2,11 +2,11 @@
 
 """ Class for transparently handling an archive containing sub-archives. """
 
-from mcomix.archive import archive_base
-from mcomix import archive_tools
-from mcomix import log
-
 import os
+
+from mcomix import archive_tools, log
+from mcomix.archive import archive_base
+
 
 class RecursiveArchive(archive_base.BaseArchive):
 
@@ -50,7 +50,7 @@ class RecursiveArchive(archive_base.BaseArchive):
             sub_archive_path = os.path.join(
                 self._destination_dir, 'sub-archives',
                 '%04u.%s' % (len(self._archive_list), sub_archive_ext
-            ))
+                ))
             self._create_directory(os.path.dirname(sub_archive_path))
             os.rename(os.path.join(destination_dir, f), sub_archive_path)
             # And open it and list its contents.
@@ -143,4 +143,3 @@ class RecursiveArchive(archive_base.BaseArchive):
     def close(self):
         for archive in self._archive_list:
             archive.close()
-

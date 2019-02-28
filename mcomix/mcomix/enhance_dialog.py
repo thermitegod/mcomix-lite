@@ -1,29 +1,30 @@
+# -*- coding: utf-8 -*-
+
 """enhance_dialog.py - Image enhancement dialog."""
 
 from gi.repository import Gtk
 
-from mcomix import histogram
-from mcomix import image_tools
+from mcomix import histogram, image_tools
 from mcomix.preferences import prefs
 
 _dialog = None
 
-class _EnhanceImageDialog(Gtk.Dialog):
 
+class _EnhanceImageDialog(Gtk.Dialog):
     """A Gtk.Dialog which allows modification of the values belonging to
     an ImageEnhancer.
     """
 
     def __init__(self, window):
-        super(_EnhanceImageDialog, self).__init__(_('Enhance image'), window, 0)
+        super(_EnhanceImageDialog, self).__init__('Enhance image', window, 0)
 
         self._window = window
 
         reset = Gtk.Button(stock=Gtk.STOCK_REVERT_TO_SAVED)
-        reset.set_tooltip_text(_('Reset to defaults.'))
+        reset.set_tooltip_text('Reset to defaults.')
         self.add_action_widget(reset, Gtk.ResponseType.REJECT)
         save = Gtk.Button(stock=Gtk.STOCK_SAVE)
-        save.set_tooltip_text(_('Save the selected values as default for future files.'))
+        save.set_tooltip_text('Save the selected values as default for future files.')
         self.add_action_widget(save, Gtk.ResponseType.APPLY)
         self.add_button(Gtk.STOCK_OK, Gtk.ResponseType.OK)
 
@@ -67,17 +68,17 @@ class _EnhanceImageDialog(Gtk.Dialog):
             vbox_right.pack_start(scale, True, False, 2)
             return scale
 
-        self._brightness_scale = _create_scale(_('_Brightness:'))
-        self._contrast_scale = _create_scale(_('_Contrast:'))
-        self._saturation_scale = _create_scale(_('S_aturation:'))
-        self._sharpness_scale = _create_scale(_('S_harpness:'))
+        self._brightness_scale = _create_scale('_Brightness:')
+        self._contrast_scale = _create_scale('_Contrast:')
+        self._saturation_scale = _create_scale('S_aturation:')
+        self._sharpness_scale = _create_scale('S_harpness:')
 
         vbox.pack_start(Gtk.Separator.new(Gtk.Orientation.HORIZONTAL), True, True, 0)
 
         self._autocontrast_button = \
-            Gtk.CheckButton.new_with_mnemonic(_('_Automatically adjust contrast'))
+            Gtk.CheckButton.new_with_mnemonic('_Automatically adjust contrast')
         self._autocontrast_button.set_tooltip_text(
-            _('Automatically adjust contrast (both lightness and darkness), separately for each colour band.'))
+            'Automatically adjust contrast (both lightness and darkness), separately for each colour band.')
         vbox.pack_start(self._autocontrast_button, False, False, 2)
         self._autocontrast_button.connect('toggled', self._change_values)
 
@@ -138,7 +139,6 @@ class _EnhanceImageDialog(Gtk.Dialog):
         self._enhancer.signal_update()
 
     def _response(self, dialog, response):
-
         if response in [Gtk.ResponseType.OK, Gtk.ResponseType.DELETE_EVENT]:
             _close_dialog()
 
@@ -170,6 +170,7 @@ def open_dialog(action, window):
     else:
         _dialog.present()
 
+
 def _close_dialog(*args):
     """Destroy the image enhancement dialog."""
     global _dialog
@@ -177,6 +178,3 @@ def _close_dialog(*args):
     if _dialog is not None:
         _dialog.destroy()
         _dialog = None
-
-
-# vim: expandtab:sw=4:ts=4

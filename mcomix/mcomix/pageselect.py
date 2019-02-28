@@ -1,23 +1,23 @@
+# -*- coding: utf-8 -*-
+
 """pageselect.py - The dialog window for the page selector."""
 
 from gi.repository import Gtk
 
+from mcomix import callback
 from mcomix.preferences import prefs
 from mcomix.worker_thread import WorkerThread
-from mcomix import callback
 
 
 class Pageselector(Gtk.Dialog):
-
     """The Pageselector takes care of the popup page selector
     """
 
     def __init__(self, window):
         self._window = window
-        super(Pageselector, self).__init__("Go to page...", window,
-                                     Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT)
-        self.add_buttons(_('_Go'), Gtk.ResponseType.OK,
-                         _('_Cancel'), Gtk.ResponseType.CANCEL,)
+        super(Pageselector, self).__init_("Go to page...", window,
+                                          Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT)
+        self.add_buttons('_Go', Gtk.ResponseType.OK, '_Cancel', Gtk.ResponseType.CANCEL, )
         self.set_default_response(Gtk.ResponseType.OK)
         self.connect('response', self._response)
         self.set_resizable(True)
@@ -25,18 +25,18 @@ class Pageselector(Gtk.Dialog):
         self._number_of_pages = self._window.imagehandler.get_number_of_pages()
 
         self._selector_adjustment = Gtk.Adjustment(value=self._window.imagehandler.get_current_page(),
-                              lower=1,upper=self._number_of_pages,
-                              step_incr=1, page_incr=1 )
+                                                   lower=1, upper=self._number_of_pages,
+                                                   step_incr=1, page_incr=1)
 
         self._page_selector = Gtk.VScale.new(self._selector_adjustment)
         self._page_selector.set_draw_value(False)
-        self._page_selector.set_digits( 0 )
+        self._page_selector.set_digits(0)
 
         self._page_spinner = Gtk.SpinButton.new(self._selector_adjustment, 0.0, 0)
-        self._page_spinner.connect( 'changed', self._page_text_changed )
+        self._page_spinner.connect('changed', self._page_text_changed)
         self._page_spinner.set_activates_default(True)
         self._page_spinner.set_numeric(True)
-        self._pages_label = Gtk.Label(label=_(' of %s') % self._number_of_pages)
+        self._pages_label = Gtk.Label(label=' of %s' % self._number_of_pages)
         self._pages_label.set_alignment(0, 0.5)
 
         self._image_preview = Gtk.Image()
@@ -45,7 +45,7 @@ class Pageselector(Gtk.Dialog):
 
         self.connect('configure-event', self._size_changed_cb)
         self.set_size_request(prefs['pageselector width'],
-                prefs['pageselector height'])
+                              prefs['pageselector height'])
 
         # Group preview image and page selector next to each other
         preview_box = Gtk.HBox()
@@ -120,7 +120,7 @@ class Pageselector(Gtk.Dialog):
         page, width, height = params
 
         pixbuf = self._window.imagehandler.get_thumbnail(page,
-            width=width, height=height, nowait=True)
+                                                         width=width, height=height, nowait=True)
         self._thumbnail_finished(page, pixbuf)
 
     @callback.Callback
@@ -132,5 +132,3 @@ class Pageselector(Gtk.Dialog):
     def _page_available(self, page):
         if page == int(self._selector_adjustment.props.value):
             self._update_thumbnail(page)
-
-# vim: expandtab:sw=4:ts=4

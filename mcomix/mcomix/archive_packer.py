@@ -1,13 +1,15 @@
+# -*- coding: utf-8 -*-
+
 """archive_packer.py - Archive creation class."""
 
 import os
-import zipfile
 import threading
+import zipfile
 
 from mcomix import log
 
-class Packer(object):
 
+class Packer(object):
     """Packer is a threaded class for packing files into ZIP archives.
 
     It would be straight-forward to add support for more archive types,
@@ -55,13 +57,13 @@ class Packer(object):
         try:
             zfile = zipfile.ZipFile(self._archive_path, 'w')
         except Exception:
-            log.error(_('! Could not create archive at path "%s"'),
+            log.error('! Could not create archive at path "%s"',
                       self._archive_path)
             return
 
         used_names = []
         pattern = '%%0%dd - %s%%s' % (len(str(len(self._image_files))),
-            self._base_name)
+        self._base_name)
 
         for i, path in enumerate(self._image_files):
             filename = pattern % (i + 1, os.path.splitext(path)[1])
@@ -69,10 +71,8 @@ class Packer(object):
             try:
                 zfile.write(path, filename, zipfile.ZIP_STORED)
             except Exception:
-                log.error(_('! Could not add file %(sourcefile)s '
-                            'to archive %(archivefile)s, aborting...'),
-                          { "sourcefile" : path,
-                            "archivefile" : self._archive_path})
+                log.error('! Could not add file %(sourcefile)s to archive %(archivefile)s, aborting...',
+                          {"sourcefile": path, "archivefile": self._archive_path})
 
                 zfile.close()
 
@@ -94,10 +94,8 @@ class Packer(object):
             try:
                 zfile.write(path, filename, zipfile.ZIP_DEFLATED)
             except Exception:
-                log.error(_('! Could not add file %(sourcefile)s '
-                            'to archive %(archivefile)s, aborting...'),
-                          { "sourcefile" : path,
-                            "archivefile" : self._archive_path})
+                log.error('! Could not add file %(sourcefile)s to archive %(archivefile)s, aborting...',
+                          {"sourcefile": path, "archivefile": self._archive_path})
 
                 zfile.close()
 
@@ -112,5 +110,3 @@ class Packer(object):
 
         zfile.close()
         self._packing_successful = True
-
-# vim: expandtab:sw=4:ts=4

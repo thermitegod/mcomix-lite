@@ -2,15 +2,14 @@
 
 import os
 
-from mcomix import log
-from mcomix import constants
+from mcomix import constants, log
 
 # This import is only used for legacy data that is imported
 # into the library at upgrade.
 try:
     from sqlite3 import dbapi2
 except ImportError:
-    log.warning( _('! Could neither find sqlite3.') )
+    log.warning('! Could neither find sqlite3.')
     dbapi2 = None
 
 
@@ -110,7 +109,7 @@ class LastReadPage(object):
                  JOIN recent r ON r.book = c.book
                  WHERE c.collection = ?"""
         cursor = self.backend.execute(sql,
-            (self.backend.get_recent_collection().id,))
+                                      (self.backend.get_recent_collection().id,))
         for book in cursor.fetchall():
             self.backend.remove_book(book)
         cursor.execute("""DELETE FROM recent""")
@@ -203,7 +202,7 @@ class LastReadPage(object):
             try:
                 os.unlink(constants.LASTPAGE_DATABASE_PATH)
             except IOError as e:
-                log.error(_('! Could not remove file "%s"'),
+                log.error('! Could not remove file "%s"',
                           constants.LASTPAGE_DATABASE_PATH)
 
     def _init_database(self, dbfile):
@@ -226,5 +225,3 @@ class LastReadPage(object):
         cursor.close()
 
         return db
-
-# vim: expandtab:sw=4:ts=4

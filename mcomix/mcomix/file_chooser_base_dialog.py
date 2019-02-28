@@ -1,25 +1,21 @@
+# -*- coding: utf-8 -*-
+
 """filechooser_chooser_base_dialog.py - Custom FileChooserDialog implementations."""
 
-import os
-import mimetypes
 import fnmatch
+import mimetypes
+import os
+
 from gi.repository import Gtk, Pango
 
+from mcomix import archive_tools, constants, file_provider, image_tools, labels, log, message_dialog, thumbnail_tools, \
+    tools
 from mcomix.preferences import prefs
-from mcomix import image_tools
-from mcomix import archive_tools
-from mcomix import labels
-from mcomix import constants
-from mcomix import log
-from mcomix import thumbnail_tools
-from mcomix import message_dialog
-from mcomix import file_provider
-from mcomix import tools
 
 mimetypes.init()
 
-class _BaseFileChooserDialog(Gtk.Dialog):
 
+class _BaseFileChooserDialog(Gtk.Dialog):
     """We roll our own FileChooserDialog because the one in GTK seems
     buggy with the preview widget. The <action> argument dictates what type
     of filechooser dialog we want (i.e. it is Gtk.FileChooserAction.OPEN
@@ -40,14 +36,14 @@ class _BaseFileChooserDialog(Gtk.Dialog):
         self._destroyed = False
 
         if action == Gtk.FileChooserAction.OPEN:
-            title = _('Open')
+            title = 'Open'
             buttons = (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                       Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
+            Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
 
         else:
-            title = _('Save')
+            title = 'Save'
             buttons = (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                       Gtk.STOCK_SAVE, Gtk.ResponseType.OK)
+            Gtk.STOCK_SAVE, Gtk.ResponseType.OK)
 
         super(_BaseFileChooserDialog, self).__init__(title=title)
         self.add_buttons(*buttons)
@@ -60,7 +56,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
         self.filechooser.set_border_width(6)
         self.connect('response', self._response)
         self.filechooser.connect('file_activated', self._response,
-            Gtk.ResponseType.OK)
+                                 Gtk.ResponseType.OK)
 
         preview_box = Gtk.VBox(homogeneous=False, spacing=10)
         preview_box.set_size_request(130, 0)
@@ -72,7 +68,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
         pango_scale_small = (1 / 1.2)
 
         self._namelabel = labels.FormattedLabel(weight=Pango.Weight.BOLD,
-            scale=pango_scale_small)
+                                                scale=pango_scale_small)
         self._namelabel.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
         preview_box.pack_start(self._namelabel, False, False, 0)
 
@@ -83,7 +79,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
         preview_box.show_all()
         self.filechooser.connect('update-preview', self._update_preview)
 
-        self._all_files_filter = self.add_filter( _('All files'), [], ['*'])
+        self._all_files_filter = self.add_filter('All files', [], ['*'])
 
         try:
             current_file = self._current_file()
@@ -93,7 +89,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
             if current_file and os.path.exists(current_file):
                 self.filechooser.set_current_folder(os.path.dirname(current_file))
             # If no file is open, use the last stored file
-            elif (last_file and os.path.exists(last_file)):
+            elif last_file and os.path.exists(last_file):
                 self.filechooser.set_filename(last_file)
             # If no file was stored yet, fall back to preferences
             elif os.path.isdir(prefs['path of last browsed in filechooser']):
@@ -104,7 +100,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
                     self.filechooser.set_current_folder(
                         constants.HOME_DIR)
 
-        except Exception as ex: # E.g. broken prefs values.
+        except Exception as ex:  # E.g. broken prefs values.
             log.debug(ex)
 
         self.show_all()
@@ -115,8 +111,8 @@ class _BaseFileChooserDialog(Gtk.Dialog):
         """
         ffilter = Gtk.FileFilter()
         ffilter.add_custom(
-                Gtk.FileFilterFlags.FILENAME | Gtk.FileFilterFlags.MIME_TYPE,
-                self._filter, (patterns, mimes))
+            Gtk.FileFilterFlags.FILENAME | Gtk.FileFilterFlags.MIME_TYPE,
+            self._filter, (patterns, mimes))
 
         ffilter.set_name(name)
         self.filechooser.add_filter(ffilter)
@@ -126,13 +122,13 @@ class _BaseFileChooserDialog(Gtk.Dialog):
         """Add archive filters to the filechooser.
         """
         ffilter = Gtk.FileFilter()
-        ffilter.set_name(_('All archives'))
+        ffilter.set_name('All archives')
         self.filechooser.add_filter(ffilter)
         supported_formats = archive_tools.get_supported_formats()
         for name in sorted(supported_formats):
             mime_types, extensions = supported_formats[name]
-            patterns = ['*'+ext for ext in extensions]
-            self.add_filter(_('%s archives') % name, mime_types, patterns)
+            patterns = ['*' + ext for ext in extensions]
+            self.add_filter('%s archives' % name, mime_types, patterns)
             for mime in mime_types:
                 ffilter.add_mime_type(mime)
             for pat in patterns:
@@ -142,13 +138,13 @@ class _BaseFileChooserDialog(Gtk.Dialog):
         """Add images filters to the filechooser.
         """
         ffilter = Gtk.FileFilter()
-        ffilter.set_name(_('All images'))
+        ffilter.set_name('All images')
         self.filechooser.add_filter(ffilter)
         supported_formats = image_tools.get_supported_formats()
         for name in sorted(supported_formats):
             mime_types, extensions = supported_formats[name]
-            patterns = ['*'+ext for ext in extensions]
-            self.add_filter(_('%s images') % name, mime_types, patterns)
+            patterns = ['*' + ext for ext in extensions]
+            self.add_filter('%s images' % name, mime_types, patterns)
             for mime in mime_types:
                 ffilter.add_mime_type(mime)
             for pat in patterns:
@@ -184,7 +180,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
                 filter_info.filename = full_path
                 filter_info.mime_type = mimetype
 
-                if (filter == self._all_files_filter or filter.filter(filter_info)):
+                if filter == self._all_files_filter or filter.filter(filter_info):
                     yield full_path
 
             if not recursive:
@@ -209,12 +205,11 @@ class _BaseFileChooserDialog(Gtk.Dialog):
 
             # Collect files, if necessary also from subdirectories
             filter = self.filechooser.get_filter()
-            paths = [ ]
+            paths = []
             for path in self.filechooser.get_filenames():
-
                 if os.path.isdir(path):
                     subdir_files = list(self.collect_files_from_subdir(path, filter,
-                        self.should_open_recursive()))
+                                                                       self.should_open_recursive()))
                     file_provider.FileProvider.sort_files(subdir_files)
                     paths.extend(subdir_files)
                 else:
@@ -224,15 +219,13 @@ class _BaseFileChooserDialog(Gtk.Dialog):
             # work on our custom dialog, so we use a simple alternative.
             first_path = self.filechooser.get_filenames()[0]
             if (self._action == Gtk.FileChooserAction.SAVE and
-                not os.path.isdir(first_path) and
-                os.path.exists(first_path)):
-
+                    not os.path.isdir(first_path) and
+                    os.path.exists(first_path)):
                 overwrite_dialog = message_dialog.MessageDialog(None, 0,
-                    Gtk.MessageType.QUESTION, Gtk.ButtonsType.OK_CANCEL)
+                                                                Gtk.MessageType.QUESTION, Gtk.ButtonsType.OK_CANCEL)
                 overwrite_dialog.set_text(
-                    _("A file named '%s' already exists. Do you want to replace it?") %
-                        os.path.basename(first_path),
-                    _('Replacing it will overwrite its contents.'))
+                    "A file named '%s' already exists. Do you want to replace it?" %
+                    os.path.basename(first_path), 'Replacing it will overwrite its contents.')
                 response = overwrite_dialog.run()
 
                 if response != Gtk.ResponseType.OK:
@@ -277,7 +270,6 @@ class _BaseFileChooserDialog(Gtk.Dialog):
 
         current_path = self.filechooser.get_preview_filename()
         if current_path and current_path == filepath:
-
             if pixbuf is None:
                 self._preview_image.clear()
                 self._namelabel.set_text('')
@@ -295,5 +287,3 @@ class _BaseFileChooserDialog(Gtk.Dialog):
 
         from mcomix import main
         return main.main_window().filehandler.get_path_to_base()
-
-# vim: expandtab:sw=4:ts=4

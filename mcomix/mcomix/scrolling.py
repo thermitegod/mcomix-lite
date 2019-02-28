@@ -1,9 +1,10 @@
+# -*- coding: utf-8 -*-
+
 """ Smart scrolling. """
 
-from mcomix import tools
-from mcomix import constants
-from mcomix import box
 import math
+
+from mcomix import box, constants, tools
 
 
 class Scrolling(object):
@@ -11,9 +12,8 @@ class Scrolling(object):
     def __init__(self):
         self.clear_cache()
 
-
     def scroll_smartly(self, content_box, viewport_box, orientation, max_scroll,
-        axis_map=None):
+                       axis_map=None):
         """ Returns a new viewport position when reading forwards using
         the given orientation. If there is no space left to go, the empty
         list is returned. Note that all params are lists of ints (except
@@ -42,8 +42,8 @@ class Scrolling(object):
         if axis_map is not None:
             content_size, viewport_size, viewport_position, orientation, \
                 max_scroll = Scrolling._map_remap_axes([content_size,
-                viewport_size, viewport_position, orientation, max_scroll],
-                axis_map)
+                                                           viewport_size, viewport_position, orientation, max_scroll],
+                                                       axis_map)
 
         result = list(viewport_position)
         carry = True
@@ -59,7 +59,7 @@ class Scrolling(object):
                     if viewport_position[i] <= -viewport_size[i]:
                         reset_all_axes = True
                         break
-            else: # o == -1
+            else:  # o == -1
                 if viewport_position[i] > invisible_size:
                     result[i] = invisible_size
                     carry = False
@@ -74,7 +74,7 @@ class Scrolling(object):
                 o = orientation[i]
                 if o == 1:
                     result[i] = 0
-                else: # o == -1
+                else:  # o == -1
                     result[i] = invisible_size
 
         # This code is somewhat similar to a simple ripple-carry adder.
@@ -136,13 +136,12 @@ class Scrolling(object):
         # Undo axis remapping, if any
         if axis_map is not None:
             result = Scrolling._remap_axes(result,
-                Scrolling._inverse_axis_map(axis_map))
+                                           Scrolling._inverse_axis_map(axis_map))
 
         return tools.vector_add(result, offset)
 
-
     def scroll_to_predefined(self, content_box, viewport_box, orientation,
-        destination):
+                             destination):
         """ Returns a new viewport position when scrolling towards a
         predefined destination. Note that all params are lists of integers
         where each index corresponds to one dimension.
@@ -169,7 +168,7 @@ class Scrolling(object):
             if d == 0:
                 continue
             if d < constants.SCROLL_TO_END or d > 1:
-                raise ValueError("invalid destination " + d + " at index "+ i)
+                raise ValueError("invalid destination " + d + " at index " + i)
             if d == constants.SCROLL_TO_END:
                 d = o
             if d == constants.SCROLL_TO_START:
@@ -179,10 +178,9 @@ class Scrolling(object):
             invisible_size = c - v
             result[i] = content_position[i] + (box.Box._box_to_center_offset_1d(
                 invisible_size, o) if d == constants.SCROLL_TO_CENTER
-                else invisible_size if d == 1
-                else 0) # if d == -1
+                                               else invisible_size if d == 1
+            else 0)  # if d == -1
         return result
-
 
     def _cached_bs(self, num, denom, half_up):
         """ A simple (and ugly) caching mechanism used to avoid
@@ -190,22 +188,20 @@ class Scrolling(object):
         only two entries so it's only useful for the two "fastest"
         dimensions. """
         if (self._cache0[0] != num or
-            self._cache0[1] != denom or
-            self._cache0[2] != half_up):
+                self._cache0[1] != denom or
+                self._cache0[2] != half_up):
             self._cache0, self._cache1 = self._cache1, self._cache0
         if (self._cache0[0] != num or
-            self._cache0[1] != denom or
-            self._cache0[2] != half_up):
+                self._cache0[1] != denom or
+                self._cache0[2] != half_up):
             self._cache0 = (num, denom, half_up,
-                Scrolling._bresenham_sums(num, denom, half_up))
+            Scrolling._bresenham_sums(num, denom, half_up))
         return self._cache0[3]
-
 
     def clear_cache(self):
         """ Clears all caches that are used internally. """
         self._cache0 = (0, 0, False, [])
         self._cache1 = (0, 0, False, [])
-
 
     @staticmethod
     def _bresenham_sums(num, denom, half_up):
@@ -243,21 +239,15 @@ class Scrolling(object):
             result.append(partial_sum)
         return result
 
-
     @staticmethod
     def _remap_axes(vector, order):
         return [vector[i] for i in order]
-
 
     @staticmethod
     def _map_remap_axes(vectors, order):
         return map(lambda v: Scrolling._remap_axes(v, order), vectors)
 
-
     @staticmethod
     def _inverse_axis_map(order):
         identity = range(len(order))
         return [identity[order[i]] for i in identity]
-
-
-# vim: expandtab:sw=4:ts=4

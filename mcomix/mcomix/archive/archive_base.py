@@ -3,15 +3,12 @@
 """ Base class for unified handling of various archive formats. Used for simplifying
 extraction and adding new archive formats. """
 
-import os
 import errno
+import os
 import threading
 
-from mcomix import portability
-from mcomix import i18n
-from mcomix import process
-from mcomix import callback
-from mcomix import archive
+from mcomix import archive, callback, i18n, process
+
 
 class BaseArchive(object):
     """ Base archive interface. All filenames passed from and into archives
@@ -52,8 +49,7 @@ class BaseArchive(object):
         be obtained by calling list_contents(). The file is saved to
         <destination_dir>. """
 
-        assert isinstance(filename, str) and \
-            isinstance(destination_dir, str)
+        assert isinstance(filename, str) and isinstance(destination_dir, str)
 
     def iter_extract(self, entries, destination_dir):
         """ Generator to extract <entries> from archive to <destination_dir>. """
@@ -69,31 +65,12 @@ class BaseArchive(object):
 
     def close(self):
         """ Closes the archive and releases held resources. """
-
         pass
 
     def is_solid(self):
         """ Returns True if the archive is solid and extraction should be done
         in one pass. """
         return False
-
-    def _replace_invalid_filesystem_chars(self, filename):
-        """ Replaces characters in <filename> that cannot be saved to the disk
-        with underscore and returns the cleaned-up name. """
-
-        unsafe_chars = portability.invalid_filesystem_chars()
-        translation_table = {}
-        replacement_char = u'_'
-        for char in unsafe_chars:
-            translation_table[ord(char)] = replacement_char
-
-        new_name = filename.translate(translation_table)
-
-        # Make sure the filename does not contain portions that might
-        # traverse directories, i.e. do not allow absolute paths
-        # and paths containing ../
-        normalized = os.path.normpath(new_name)
-        return normalized.lstrip('..' + os.sep).lstrip(os.sep)
 
     def _create_directory(self, directory):
         """ Recursively create a directory if it doesn't exist yet. """
@@ -140,6 +117,7 @@ class BaseArchive(object):
             self._password_required()
         self._event.wait()
 
+
 class NonUnicodeArchive(BaseArchive):
     """ Base class for archives that manage a conversion of byte member names ->
     Unicode member names internally. Required for formats that do not provide
@@ -155,9 +133,8 @@ class NonUnicodeArchive(BaseArchive):
         this function first to convert them to Unicode. """
 
         unicode_name = conversion_func(filename)
-        safe_name = self._replace_invalid_filesystem_chars(unicode_name)
-        self.unicode_mapping[safe_name] = filename
-        return safe_name
+        self.unicode_mapping[unicode_name] = filename
+        return unicode_name
 
     def _original_filename(self, filename):
         """ Map Unicode filename back to original archive name. """
@@ -165,6 +142,7 @@ class NonUnicodeArchive(BaseArchive):
             return self.unicode_mapping[filename]
         else:
             return i18n.to_utf8(filename)
+
 
 class ExternalExecutableArchive(NonUnicodeArchive):
     """ For archives that are extracted by spawning an external
@@ -219,8 +197,7 @@ class ExternalExecutableArchive(NonUnicodeArchive):
 
     def extract(self, filename, destination_dir):
         """ Extract <filename> from the archive to <destination_dir>. """
-        assert isinstance(filename, str) and \
-                isinstance(destination_dir, str)
+        assert isinstance(filename, str) and isinstance(destination_dir, str)
 
         if not self._get_executable():
             return
@@ -233,5 +210,3 @@ class ExternalExecutableArchive(NonUnicodeArchive):
                          self._get_extract_arguments() +
                          [self.archive, self._original_filename(filename)],
                          stdout=output)
-
-# vim: expandtab:sw=4:ts=4

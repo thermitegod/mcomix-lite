@@ -1,11 +1,13 @@
+# -*- coding: utf-8 -*-
+
 """preferences_section.py - Preference dialog section."""
 
 from gi.repository import Gtk
 
 from mcomix import labels
 
-class _PreferenceSection(Gtk.VBox):
 
+class _PreferenceSection(Gtk.VBox):
     """The _PreferenceSection is a convenience class for making one
     "section" of a preference-style dialog, e.g. it has a bold header
     and a number of rows which are indented with respect to that header.
@@ -45,5 +47,3 @@ class _PreferenceSection(Gtk.VBox):
         hbox.pack_start(right_box, False, False, 0)
         self.contentbox.pack_start(hbox, True, True, 0)
         return left_box, right_box
-
-# vim: expandtab:sw=4:ts=4

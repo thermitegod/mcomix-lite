@@ -1,17 +1,13 @@
+# -*- coding: utf-8 -*-
+
 """archive_tools.py - Archive tool functions."""
 
 import os
-import re
-import shutil
-import zipfile
 import tarfile
 import tempfile
-import operator
-from functools import reduce
+import zipfile
 
-from mcomix import image_tools
-from mcomix import constants
-from mcomix import log
+from mcomix import constants, image_tools, log
 from mcomix.archive import (
     lha_external,
     pdf_external,
@@ -49,7 +45,7 @@ _HANDLERS = {
     constants.RAR: (
         rar.RarArchive,
         rar_external.RarArchive,
-        # Last resort: some versions of 7z support RAR.
+            # Last resort: some versions of 7z support RAR.
         sevenzip_external.SevenZipArchive,
     ),
     # Prefer 7z over lha executable for Unicode support.
@@ -65,6 +61,7 @@ _HANDLERS = {
     ),
 }
 
+
 def _get_handler(archive_type):
     """ Return best archive class for format <archive_type> """
 
@@ -74,64 +71,72 @@ def _get_handler(archive_type):
         if handler.is_available():
             return handler
 
+
 def _is_available(archive_type):
     """ Return True if a handler supporting the <archive_type> format is available """
     return _get_handler(archive_type) is not None
 
+
 def szip_available():
     return _is_available(constants.SEVENZIP)
+
 
 def rar_available():
     return _is_available(constants.RAR)
 
+
 def lha_available():
     return _is_available(constants.LHA)
+
 
 def pdf_available():
     return _is_available(constants.PDF)
 
-SUPPORTED_ARCHIVE_EXTS=[]
-SUPPORTED_ARCHIVE_FORMATS={}
+
+SUPPORTED_ARCHIVE_EXTS = []
+SUPPORTED_ARCHIVE_FORMATS = {}
+
 
 def init_supported_formats():
     for name, formats, is_available in (
-        ('ZIP', constants.ZIP_FORMATS , True            ),
-        ('Tar', constants.TAR_FORMATS , True            ),
-        ('RAR', constants.RAR_FORMATS , rar_available() ),
-        ('7z' , constants.SZIP_FORMATS, szip_available()),
-        ('LHA', constants.LHA_FORMATS , lha_available() ),
-        ('PDF', constants.PDF_FORMATS , pdf_available() ),
+            ('ZIP', constants.ZIP_FORMATS, True),
+            ('Tar', constants.TAR_FORMATS, True),
+            ('RAR', constants.RAR_FORMATS, rar_available()),
+            ('7z', constants.SZIP_FORMATS, szip_available()),
+            ('LHA', constants.LHA_FORMATS, lha_available()),
+            ('PDF', constants.PDF_FORMATS, pdf_available()),
     ):
         if not is_available:
             continue
-        SUPPORTED_ARCHIVE_FORMATS[name]=([],[])
+        SUPPORTED_ARCHIVE_FORMATS[name] = ([], [])
         SUPPORTED_ARCHIVE_FORMATS[name][0].extend(
-            map(lambda s:s.lower(),formats[0])
+            map(lambda s: s.lower(), formats[0])
         )
         # archive extensions has no '.'
         SUPPORTED_ARCHIVE_FORMATS[name][1].extend(
-            map(lambda s:'.'+s.lower(),formats[1])
+            map(lambda s: '.' + s.lower(), formats[1])
         )
     # cache a supported extensions list
-    for mimes,exts in SUPPORTED_ARCHIVE_FORMATS.values():
+    for mimes, exts in SUPPORTED_ARCHIVE_FORMATS.values():
         SUPPORTED_ARCHIVE_EXTS.extend(exts)
+
 
 def get_supported_formats():
     if not SUPPORTED_ARCHIVE_FORMATS:
         init_supported_formats()
     return SUPPORTED_ARCHIVE_FORMATS
 
+
 def is_archive_file(path):
     if not SUPPORTED_ARCHIVE_FORMATS:
         init_supported_formats()
     return os.path.splitext(path)[1].lower() in SUPPORTED_ARCHIVE_EXTS
 
+
 def archive_mime_type(path):
     """Return the archive type of <path> or None for non-archives."""
     try:
-
         if os.path.isfile(path):
-
             if not os.access(path, os.R_OK):
                 return None
 
@@ -175,9 +180,10 @@ def archive_mime_type(path):
                 return constants.PDF
 
     except Exception:
-        log.warning(_('! Could not read %s'), path)
+        log.warning('! Could not read %s', path)
 
     return None
+
 
 def get_archive_info(path):
     """Return a tuple (mime, num_pages, size) with info about the archive
@@ -193,7 +199,8 @@ def get_archive_info(path):
         num_pages = sum([image_tools.is_image_file(f) for f in files])
         size = os.stat(path).st_size
 
-        return (mime, num_pages, size)
+        return mime, num_pages, size
+
 
 def get_archive_handler(path, type=None):
     """ Returns a fitting extractor handler for the archive passed
@@ -211,6 +218,7 @@ def get_archive_handler(path, type=None):
 
     return handler(path)
 
+
 def get_recursive_archive_handler(path, destination_dir, type=None):
     """ Same as <get_archive_handler> but the handler will transparently handle
     archives within archives.
@@ -221,5 +229,3 @@ def get_recursive_archive_handler(path, destination_dir, type=None):
     # XXX: Deferred import to avoid circular dependency
     from mcomix.archive import archive_recursive
     return archive_recursive.RecursiveArchive(archive, destination_dir)
- 
-# vim: expandtab:sw=4:ts=4

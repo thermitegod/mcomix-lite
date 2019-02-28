@@ -1,20 +1,16 @@
+# -*- coding: utf-8 -*-
+
 """image_handler.py - Image handler that takes care of cacheing and giving out images."""
 
 import os
 import traceback
 
+from mcomix import callback, constants, i18n, image_tools, log, thumbnail_tools, tools
 from mcomix.preferences import prefs
-from mcomix import i18n
-from mcomix import tools
-from mcomix import image_tools
-from mcomix import thumbnail_tools
-from mcomix import constants
-from mcomix import callback
-from mcomix import log
 from mcomix.worker_thread import WorkerThread
 
-class ImageHandler(object):
 
+class ImageHandler(object):
     """The FileHandler keeps track of images, pages, caches and reads files.
 
     When the Filehandler's methods refer to pages, they are indexed from 1,
@@ -27,7 +23,6 @@ class ImageHandler(object):
     """
 
     def __init__(self, window):
-
         #: Reference to main window
         self._window = window
 
@@ -86,7 +81,7 @@ class ImageHandler(object):
             result.append(self._get_pixbuf(self._current_image_index + i))
         return result
 
-    def get_pixbuf_auto_background(self, number_of_bufs): # XXX limited to at most 2 pages
+    def get_pixbuf_auto_background(self, number_of_bufs):  # XXX limited to at most 2 pages
         """ Returns an automatically calculated background color
         for the current page(s). """
 
@@ -127,14 +122,14 @@ class ImageHandler(object):
         self._wanted_pixbufs = wanted_pixbufs
         # Start caching available images not already in cache.
         wanted_pixbufs = [index for index in wanted_pixbufs
-                          if index in self._available_images and not index in self._raw_pixbufs]
+            if index in self._available_images and not index in self._raw_pixbufs]
         orders = [(priority, index) for priority, index in enumerate(wanted_pixbufs)]
         if len(orders) > 0:
             self._thread.extend_orders(orders)
 
     def _cache_pixbuf(self, wanted):
         priority, index = wanted
-        log.debug('Caching page %u', index + 1)
+        log.debug('Caching page %s', index + 1)
         self._get_pixbuf(index)
 
     def set_page(self, page_num):
@@ -155,13 +150,13 @@ class ImageHandler(object):
             page = self.get_current_page()
 
         if (page == 1 and
-            prefs['virtual double page for fitting images'] & constants.SHOW_DOUBLE_AS_ONE_TITLE and
-            self._window.filehandler.archive_type is not None):
+                prefs['virtual double page for fitting images'] & constants.SHOW_DOUBLE_AS_ONE_TITLE and
+                self._window.filehandler.archive_type is not None):
             return True
 
         if (not prefs['default double page'] or
-            not prefs['virtual double page for fitting images'] & constants.SHOW_DOUBLE_AS_ONE_WIDE or
-            page == self.get_number_of_pages()):
+                not prefs['virtual double page for fitting images'] & constants.SHOW_DOUBLE_AS_ONE_WIDE or
+                page == self.get_number_of_pages()):
             return False
 
         for page in (page, page + 1):
@@ -211,11 +206,11 @@ class ImageHandler(object):
             if not current_page:
                 # Current 'book' has no page.
                 return False
-            index_list = [ current_page - 1 ]
+            index_list = [current_page - 1]
             if self._window.displayed_double() and current_page < len(self._image_files):
                 index_list.append(current_page)
         else:
-            index_list = [ page - 1 ]
+            index_list = [page - 1]
 
         for index in index_list:
             if not index in self._available_images:
@@ -292,7 +287,7 @@ class ImageHandler(object):
 
         first_path = self.get_path_to_page(page)
         if first_path == None:
-            return ('','') if double else ''
+            return ('', '') if double else ''
 
         if double:
             second_path = self.get_path_to_page(page + 1)
@@ -301,7 +296,7 @@ class ImageHandler(object):
                 first = os.path.basename(first_path)
                 second = os.path.basename(second_path)
             else:
-                return ('','') if double else ''
+                return ('', '') if double else ''
 
             return first, second
 
@@ -314,14 +309,14 @@ class ImageHandler(object):
         page) and s' is the filesize of the page after.
         """
         if not self.page_is_available():
-            return ('-1','-1') if double else '-1'
+            return ('-1', '-1') if double else '-1'
 
         if page is None:
             page = self.get_current_page()
 
         first_path = self.get_path_to_page(page)
         if first_path is None:
-            return ('-1','-1') if double else '-1'
+            return ('-1', '-1') if double else '-1'
 
         if double:
             second_path = self.get_path_to_page(page + 1)
@@ -335,7 +330,7 @@ class ImageHandler(object):
                 except OSError:
                     second = ''
             else:
-                return ('-1','-1') if double else '-1'
+                return ('-1', '-1') if double else '-1'
             return first, second
 
         try:
@@ -358,7 +353,7 @@ class ImageHandler(object):
                 os.path.basename(img_file)
             )
         else:
-            name = u''
+            name = ''
 
         return i18n.to_unicode(name)
 
@@ -370,10 +365,10 @@ class ImageHandler(object):
 
         page_path = self.get_path_to_page(page)
         if page_path is None:
-            return (0, 0)
+            return 0, 0
 
         format, width, height = image_tools.get_image_info(page_path)
-        return (width, height)
+        return width, height
 
     def get_mime_name(self, page=None):
         """Return a string with the name of the mime type of <page>. If
@@ -433,7 +428,7 @@ class ImageHandler(object):
             # Asked for check only...
             return False
 
-        log.debug('Waiting for page %u', page)
+        log.debug('Waiting for page %', page)
         path = self.get_path_to_page(page)
         self._window.filehandler._wait_on_file(path)
         return True
@@ -460,9 +455,9 @@ class ImageHandler(object):
         # Current and next page first, followed by previous page.
         previous_page = page_list[0:page_width]
         del page_list[0:page_width]
-        page_list[2*page_width:2*page_width] = previous_page
+        page_list[2 * page_width:2 * page_width] = previous_page
         page_list = [index for index in page_list
-                     if index >= 0 and index < len(self._image_files)]
+            if index >= 0 and index < len(self._image_files)]
 
         log.debug('Ask for priority extraction around page %u: %s',
                   page, ' '.join([str(n + 1) for n in page_list]))
@@ -475,5 +470,3 @@ class ImageHandler(object):
             self._window.filehandler._ask_for_files(files)
 
         return page_list
-
-# vim: expandtab:sw=4:ts=4

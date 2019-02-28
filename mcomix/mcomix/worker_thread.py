@@ -1,10 +1,12 @@
+# -*- coding: utf-8 -*-
+
 """ Worker thread class. """
-from __future__ import with_statement
 
 import threading
 import traceback
 
 from mcomix import log
+
 
 class WorkerThread(object):
 
@@ -70,8 +72,8 @@ class WorkerThread(object):
             try:
                 self._process_order(order)
             except Exception as e:
-                log.error(_('! Worker thread processing %(function)r failed: %(error)s'),
-                          { 'function' : self._process_order, 'error' : e })
+                log.error('! Worker thread processing %(function)r failed: %(error)s',
+                          {'function': self._process_order, 'error': e})
                 log.debug('Traceback:\n%s', traceback.format_exc())
 
     def must_stop(self):
@@ -142,5 +144,3 @@ class WorkerThread(object):
         self._orders_queue = []
         if self._unique_orders:
             self._orders_set.clear()
-
-# vim: expandtab:sw=4:ts=4

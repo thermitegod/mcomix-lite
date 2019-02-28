@@ -1,18 +1,17 @@
+# -*- coding: utf-8 -*-
+
 """thumbbar.py - Thumbnail sidebar for main window."""
 
 import urllib
-from gi.repository import GObject, Gdk, GdkPixbuf, Gtk
-import cairo
 
+import cairo
+from gi.repository import Gdk, GdkPixbuf, Gtk
+
+from mcomix import image_tools, thumbnail_view, tools
 from mcomix.preferences import prefs
-from mcomix import image_tools
-from mcomix import tools
-from mcomix import constants
-from mcomix import thumbnail_view
 
 
 class ThumbnailSidebar(Gtk.ScrolledWindow):
-
     """A thumbnail sidebar including scrollbar for the main window."""
 
     # Thumbnail border width in pixels.
@@ -40,9 +39,9 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         # view - responsible for laying out the columns
         self._treeview = thumbnail_view.ThumbnailTreeView(
             self._thumbnail_liststore,
-            0, # UID
-            1, # pixbuf
-            2, # status
+            0,  # UID
+            1,  # pixbuf
+            2,  # status
         )
         self._treeview.set_headers_visible(False)
         self._treeview.generate_thumbnail = self._generate_thumbnail
@@ -53,11 +52,10 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         self._treeview.connect('row-activated', self._row_activated_event)
         self._treeview.connect('button_press_event', self._mouse_press_event)
 
-
         # enable drag and dropping of images from thumbnail bar to some file
         # manager
         self._treeview.enable_model_drag_source(Gdk.ModifierType.BUTTON1_MASK,
-            [('text/uri-list', 0, 0)], Gdk.DragAction.COPY)
+                                                [('text/uri-list', 0, 0)], Gdk.DragAction.COPY)
 
         # Page column
         self._thumbnail_page_treeviewcolumn = Gtk.TreeViewColumn(None)
@@ -139,7 +137,6 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         self._treeview.queue_draw()
 
     def set_thumbnail_background(self, color):
-
         rgba = Gdk.RGBA(*image_tools.color_to_floats_rgba(color))
         self._pixbuf_cellrenderer.set_property('cell-background-rgba', rgba)
         self._text_cellrenderer.set_property('background-rgba', rgba)
@@ -156,8 +153,8 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         """Load the thumbnails, if it is appropriate to do so."""
 
         if (not self._window.filehandler.file_loaded or
-            self._window.imagehandler.get_number_of_pages() == 0 or
-            self._loaded):
+                self._window.imagehandler.get_number_of_pages() == 0 or
+                self._loaded):
             return
 
         self.toggle_page_numbers_visible()
@@ -184,7 +181,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         assert isinstance(uid, int)
         page = uid
         pixbuf = self._window.imagehandler.get_thumbnail(page,
-                prefs['thumbnail size'], prefs['thumbnail size'], nowait=True)
+                                                         prefs['thumbnail size'], prefs['thumbnail size'], nowait=True)
         if pixbuf is not None:
             pixbuf = image_tools.add_border(pixbuf, self._BORDER_SIZE)
 
@@ -251,10 +248,10 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
     def _get_empty_thumbnail(self):
         """ Create an empty filler pixmap. """
         pixbuf = GdkPixbuf.Pixbuf.new(colorspace=GdkPixbuf.Colorspace.RGB,
-                                has_alpha=True,
-                                bits_per_sample=8,
-                                width=self._pixbuf_size,
-                                height=self._pixbuf_size)
+                                      has_alpha=True,
+                                      bits_per_sample=8,
+                                      width=self._pixbuf_size,
+                                      height=self._pixbuf_size)
 
         # Make the pixbuf transparent.
         pixbuf.fill(0)
@@ -271,5 +268,3 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         """ Called whenever a new page is ready for display. """
         if self.get_visible():
             self._treeview.draw_thumbnails_on_screen()
-
-# vim: expandtab:sw=4:ts=4

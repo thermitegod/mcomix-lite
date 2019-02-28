@@ -1,13 +1,13 @@
-""" pixbuf_cache.py - Caches book covers for the library display."""
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
+""" pixbuf_cache.py - Caches book covers for the library display."""
+
 import threading
 
 __all__ = ["get_pixbuf_cache"]
 
-class _PixbufCache(object):
 
+class _PixbufCache(object):
     """ Pixbuf cache for the library window. Instead of loading book covers
     from disk again after switching collection or using filtering, this class
     stores a pre-defined amount of pixbufs in memory, evicting older pixbufs
@@ -60,6 +60,7 @@ class _PixbufCache(object):
 
 _cache = None
 
+
 def get_pixbuf_cache():
     global _cache
 
@@ -70,5 +71,3 @@ def get_pixbuf_cache():
         # and about 35 MB at 250px.
         _cache = _PixbufCache(500)
         return _cache
-
-# vim: expandtab:sw=4:ts=4

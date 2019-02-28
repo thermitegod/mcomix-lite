@@ -1,13 +1,13 @@
+# -*- coding: utf-8 -*-
+
 """properties_page.py - A page to put in the properties dialog window."""
 
 from gi.repository import Gtk
 
-from mcomix import i18n
-from mcomix import image_tools
-from mcomix import labels
+from mcomix import i18n, image_tools, labels
+
 
 class _Page(Gtk.ScrolledWindow):
-
     """A page to put in the Gtk.Notebook. Contains info about a file (an
     image or an archive.)
     """
@@ -61,7 +61,8 @@ class _Page(Gtk.ScrolledWindow):
         label.set_alignment(0, 0.5)
         label.set_selectable(True)
         self._mainbox.pack_start(label, False, False, 0)
-        self._mainbox.pack_start(Gtk.VBox(homogeneous=True, spacing=0), True, True, 0) # Just to add space (better way?)
+        self._mainbox.pack_start(Gtk.VBox(homogeneous=True, spacing=0), True, True,
+                                 0)  # Just to add space (better way?)
 
     def set_main_info(self, info):
         """Set the information in the main info box (below the filename) to
@@ -89,5 +90,3 @@ class _Page(Gtk.ScrolledWindow):
             value_label.set_alignment(0, 1.0)
             value_label.set_selectable(True)
             right_box.pack_start(value_label, True, True, 0)
-
-# vim: expandtab:sw=4:ts=4

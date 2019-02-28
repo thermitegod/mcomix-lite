@@ -1,16 +1,15 @@
+# -*- coding: utf-8 -*-
+
 """edit_image_area.py - The area of the editing archive window that displays images."""
 
 import os
+
 from gi.repository import Gdk, GdkPixbuf, Gtk
 
-from mcomix import image_tools
-from mcomix import i18n
-from mcomix import thumbnail_tools
-from mcomix import thumbnail_view
-from mcomix.preferences import prefs
+from mcomix import i18n, image_tools, thumbnail_tools, thumbnail_view
+
 
 class _ImageArea(Gtk.ScrolledWindow):
-
     """The area used for displaying and handling image files."""
 
     def __init__(self, edit_dialog, window):
@@ -25,9 +24,9 @@ class _ImageArea(Gtk.ScrolledWindow):
         self._liststore = Gtk.ListStore(GdkPixbuf.Pixbuf, str, str, bool)
         self._iconview = thumbnail_view.ThumbnailIconView(
             self._liststore,
-            2, # UID
-            0, # pixbuf
-            3, # status
+            2,  # UID
+            0,  # pixbuf
+            3,  # status
         )
         self._iconview.generate_thumbnail = self._generate_thumbnail
         self._iconview.set_tooltip_column(1)
@@ -41,7 +40,7 @@ class _ImageArea(Gtk.ScrolledWindow):
         self._thumbnail_size = 128
         self._thumbnailer = thumbnail_tools.Thumbnailer(store_on_disk=False,
                                                         size=(self._thumbnail_size,
-                                                              self._thumbnail_size))
+                                                        self._thumbnail_size))
 
         self._filler = GdkPixbuf.Pixbuf.new(colorspace=GdkPixbuf.Colorspace.RGB,
                                             has_alpha=True, bits_per_sample=8,
@@ -65,8 +64,8 @@ class _ImageArea(Gtk.ScrolledWindow):
 
         actiongroup = Gtk.ActionGroup(name='mcomix-edit-archive-image-area')
         actiongroup.add_actions([
-            ('remove', Gtk.STOCK_REMOVE, _('Remove from archive'), None, None,
-                self._remove_pages)])
+            ('remove', Gtk.STOCK_REMOVE, 'Remove from archive', None, None,
+            self._remove_pages)])
         self._ui_manager.insert_action_group(actiongroup, 0)
 
     def fetch_images(self):
@@ -115,7 +114,6 @@ class _ImageArea(Gtk.ScrolledWindow):
             return
 
         if event.button == 3:
-
             if not iconview.path_is_selected(path):
                 iconview.unselect_all()
                 iconview.select_path(path)
@@ -145,5 +143,3 @@ class _ImageArea(Gtk.ScrolledWindow):
     def _on_page_available(self, page):
         """ Called whenever a new page is ready for display. """
         self._iconview.draw_thumbnails_on_screen()
-
-# vim: expandtab:sw=4:ts=4

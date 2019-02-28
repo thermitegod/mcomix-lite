@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
+
 """about_dialog.py - About dialog."""
 
-from gi.repository import Gtk
 import webbrowser
 
-from mcomix import constants
-from mcomix import strings
-from mcomix import image_tools
-from mcomix import tools
+from gi.repository import Gtk
+
+from mcomix import constants, image_tools, strings, tools
+
 
 class _AboutDialog(Gtk.AboutDialog):
 
@@ -26,26 +26,25 @@ class _AboutDialog(Gtk.AboutDialog):
         self.set_logo(pixbuf)
 
         comment = \
-            _('%s is an image viewer specifically designed to handle comic books.') % \
-            constants.APPNAME + u' ' + \
-            _('It reads ZIP, RAR and tar archives, as well as plain image files.')
+            '%s is an image viewer specifically designed to handle comic books.' % \
+            constants.APPNAME + ' ' + 'It reads ZIP, RAR and tar archives, as well as plain image files.'
         self.set_comments(comment)
 
         license = \
-            _('%s is licensed under the terms of the GNU General Public License.') % constants.APPNAME + \
+            '%s is licensed under the terms of the GNU General Public License.' % constants.APPNAME + \
             ' ' + \
-            _('A copy of this license can be obtained from %s') % \
+            'A copy of this license can be obtained from %s' % \
             'http://www.gnu.org/licenses/gpl-2.0.html'
         self.set_wrap_license(True)
         self.set_license(license)
 
-        authors = [ u'%s: %s' % (name, description) for name, description in strings.AUTHORS ]
+        authors = ['%s: %s' % (name, description) for name, description in strings.AUTHORS]
         self.set_authors(authors)
 
-        translators = [ u'%s: %s' % (name, description) for name, description in strings.TRANSLATORS ]
+        translators = ['%s: %s' % (name, description) for name, description in strings.TRANSLATORS]
         self.set_translator_credits("\n".join(translators))
 
-        artists = [ u'%s: %s' % (name, description) for name, description in strings.ARTISTS ]
+        artists = ['%s: %s' % (name, description) for name, description in strings.ARTISTS]
         self.set_artists(artists)
 
         self.connect('activate-link', self._on_activate_link)
@@ -55,5 +54,3 @@ class _AboutDialog(Gtk.AboutDialog):
     def _on_activate_link(self, about_dialog, uri):
         webbrowser.open(uri)
         return True
-
-# vim: expandtab:sw=4:ts=4

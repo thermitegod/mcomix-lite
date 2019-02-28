@@ -1,21 +1,19 @@
+# -*- coding: utf-8 -*-
+
 """bookmark_backend.py - Bookmarks handler."""
 
+import datetime
+import operator
 import os
 import pickle
-from gi.repository import Gtk
-import operator
-import datetime
 import time
 
-from mcomix import constants
-from mcomix import log
-from mcomix import bookmark_menu_item
-from mcomix import callback
-from mcomix import i18n
-from mcomix import message_dialog
+from gi.repository import Gtk
+
+from mcomix import bookmark_menu_item, callback, constants, i18n, log, message_dialog
+
 
 class __BookmarksStore(object):
-
     """The _BookmarksStore is a backend for both the bookmarks menu and dialog.
     Changes in the _BookmarksStore are mirrored in both.
     """
@@ -49,7 +47,7 @@ class __BookmarksStore(object):
     def add_bookmark_by_values(self, name, path, page, numpages, archive_type, date_added):
         """Create a bookmark and add it to the list."""
         bookmark = bookmark_menu_item._Bookmark(self._window, self._file_handler,
-            name, path, page, numpages, archive_type, date_added)
+                                                name, path, page, numpages, archive_type, date_added)
 
         self.add_bookmark(bookmark)
 
@@ -98,7 +96,7 @@ class __BookmarksStore(object):
                 return
 
         self.add_bookmark_by_values(name, path, page, numpages,
-            archive_type, date_added)
+                                    archive_type, date_added)
 
     def clear_bookmarks(self):
         """Remove all bookmarks from the list."""
@@ -144,7 +142,7 @@ class __BookmarksStore(object):
                         bookmarks.append(bookmark)
 
             except Exception:
-                log.error(_('! Could not parse bookmarks file %s'), path)
+                log.error('! Could not parse bookmarks file %s', path)
 
         return bookmarks, mtime
 
@@ -167,7 +165,7 @@ class __BookmarksStore(object):
 
     def write_bookmarks_file(self):
         """Store relevant bookmark info in the mcomix directory."""
-        
+
         # Merge changes in case file was modified from within other instances
         if self.file_was_modified():
             new_bookmarks, _ = self.load_bookmarks()
@@ -181,7 +179,6 @@ class __BookmarksStore(object):
 
         self._bookmarks_mtime = time.time()
 
-
     def show_replace_bookmark_dialog(self, old_bookmarks, new_page):
         """ Present a confirmation dialog to replace old bookmarks.
         @return RESPONSE_YES to create replace bookmarks,
@@ -189,11 +186,11 @@ class __BookmarksStore(object):
             a new bookmark. """
         dialog = message_dialog.MessageDialog(self._window, Gtk.DialogFlags.MODAL, Gtk.MessageType.INFO)
         dialog.add_buttons(Gtk.STOCK_YES, Gtk.ResponseType.YES,
-             Gtk.STOCK_NO, Gtk.ResponseType.NO,
-             Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+                           Gtk.STOCK_NO, Gtk.ResponseType.NO,
+                           Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
         dialog.set_default_response(Gtk.ResponseType.YES)
         dialog.set_should_remember_choice('replace-existing-bookmark',
-            (Gtk.ResponseType.YES, Gtk.ResponseType.NO))
+                                          (Gtk.ResponseType.YES, Gtk.ResponseType.NO))
 
         pages = map(str, sorted(map(operator.attrgetter('_page'), old_bookmarks)))
         dialog.set_text(
@@ -203,15 +200,12 @@ class __BookmarksStore(object):
                 len(list(pages))
             ) % ", ".join(pages),
 
-            _('The current book already contains marked pages. '
-              'Do you want to replace them with a new bookmark on page %d? ') % new_page +
-              '\n\n' +
-            _('Selecting "No" will create a new bookmark without affecting the other bookmarks.'))
+            ('The current book already contains marked pages. '
+             'Do you want to replace them with a new bookmark on page %d? ') % new_page +
+            '\n\n' + 'Selecting "No" will create a new bookmark without affecting the other bookmarks.')
 
         return dialog.run()
 
 
 # Singleton instance of the bookmarks store.
 BookmarksStore = __BookmarksStore()
-
-# vim: expandtab:sw=4:ts=4

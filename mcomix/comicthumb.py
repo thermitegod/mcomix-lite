@@ -17,10 +17,9 @@ require_version('GdkPixbuf', '2.0')
 require_version('Gdk', '3.0')
 require_version('Gtk', '3.0')
 
-from mcomix import thumbnail_tools
-from mcomix import portability
-
 import sys
+
+from mcomix import thumbnail_tools
 from urllib.parse import unquote
 
 if __name__ == '__main__':
@@ -47,4 +46,3 @@ if __name__ == '__main__':
     thumb.savev(out_path, 'png', [], [])
 
     sys.exit(0)
-

@@ -25,21 +25,21 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
 
         # Human name, action name, true value, shortcut 1, shortcut 2, ...
         model = [str, str, 'gboolean']
-        model.extend( [str, ] * accel_column_num)
+        model.extend([str, ] * accel_column_num)
 
         treestore = self.treestore = Gtk.TreeStore(*model)
         self.refresh_model()
 
         treeview = Gtk.TreeView(model=treestore)
 
-        tvcol1 = Gtk.TreeViewColumn(_("Name"))
+        tvcol1 = Gtk.TreeViewColumn("Name")
         treeview.append_column(tvcol1)
         cell1 = Gtk.CellRendererText()
         tvcol1.pack_start(cell1, True)
         tvcol1.set_attributes(cell1, text=0, editable=2)
 
         for idx in range(0, self.accel_column_num):
-            tvc = Gtk.TreeViewColumn(_("Key %d") % (idx +1))
+            tvc = Gtk.TreeViewColumn("Key %d" % (idx + 1))
             treeview.append_column(tvc)
             accel_cell = Gtk.CellRendererAccel()
             accel_cell.connect("accel-edited", self.get_on_accel_edited(idx))
@@ -58,25 +58,25 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
         manager. """
         self.treestore.clear()
         section_order = list(set(d['group']
-             for d in keybindings.BINDING_INFO.values()))
+                                     for d in keybindings.BINDING_INFO.values()))
         section_order.sort()
         section_parent_map = {}
         for section_name in section_order:
             row = [section_name, None, False]
-            row.extend( [None,] * self.accel_column_num)
-            section_parent_map[section_name] =  self.treestore.append(
+            row.extend([None, ] * self.accel_column_num)
+            section_parent_map[section_name] = self.treestore.append(
                 None, row
             )
 
         action_treeiter_map = self.action_treeiter_map = {}
         # Sort actions by action name
         actions = sorted(keybindings.BINDING_INFO.items(),
-                key=lambda item: item[1]['title'])
+                         key=lambda item: item[1]['title'])
         for action_name, action_data in actions:
             title = action_data['title']
             group_name = action_data['group']
             old_bindings = self.keymanager.get_bindings_for_action(action_name)
-            acc_list =  ["", ] * self.accel_column_num
+            acc_list = ["", ] * self.accel_column_num
             for idx in range(0, self.accel_column_num):
                 if len(old_bindings) > idx:
                     acc_list[idx] = Gtk.accelerator_name(*old_bindings[idx])
@@ -113,7 +113,7 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
             # updating gtk accelerator for label in menu
             if self.keymanager.get_bindings_for_action(action_name)[0] == (accel_key, accel_mods):
                 Gtk.AccelMap.change_entry('<Actions>/mcomix-main/%s' % action_name,
-                        accel_key, accel_mods, True)
+                                          accel_key, accel_mods, True)
 
         return on_accel_edited
 
@@ -130,12 +130,9 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
                 if len(self.keymanager.get_bindings_for_action(action_name)) == 0:
                     Gtk.AccelMap.change_entry('<Actions>/mcomix-main/%s' % action_name, 0, 0, True)
                 else:
-                    key, mods  = self.keymanager.get_bindings_for_action(action_name)[0]
+                    key, mods = self.keymanager.get_bindings_for_action(action_name)[0]
                     Gtk.AccelMap.change_entry('<Actions>/mcomix-main/%s' % action_name, key, mods, True)
 
             self.treestore.set_value(iter, col, "")
+
         return on_accel_cleared
-
-
-
-# vim: expandtab:sw=4:ts=4

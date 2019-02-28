@@ -1,11 +1,13 @@
+# -*- coding: utf-8 -*-
+
 """file_chooser_simple_dialog.py - Custom FileChooserDialog implementations."""
 
 from gi.repository import Gtk
 
 from mcomix import file_chooser_base_dialog
 
-class SimpleFileChooserDialog(file_chooser_base_dialog._BaseFileChooserDialog):
 
+class SimpleFileChooserDialog(file_chooser_base_dialog._BaseFileChooserDialog):
     """A simple filechooser dialog that is designed to be used with the
     Gtk.Dialog.run() method. The <action> dictates what type of filechooser
     dialog we want (i.e. save or open). If the type is an open-dialog, we
@@ -27,5 +29,3 @@ class SimpleFileChooserDialog(file_chooser_base_dialog._BaseFileChooserDialog):
 
     def files_chosen(self, paths):
         self._paths = paths
-
-# vim: expandtab:sw=4:ts=4

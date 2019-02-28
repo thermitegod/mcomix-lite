@@ -1,15 +1,14 @@
+# -*- coding: utf-8 -*-
+
 """ openwith.py - Logic and storage for Open with... commands. """
-import sys
+
 import os
 import re
-from gi.repository import Gtk
-from gi.repository import GLib, GObject
 
+from gi.repository import GLib, GObject, Gtk
+
+from mcomix import callback, message_dialog, process
 from mcomix.preferences import prefs
-from mcomix import message_dialog
-from mcomix import process
-from mcomix import callback
-
 
 DEBUGGING_CONTEXT, NO_FILE_CONTEXT, IMAGE_FILE_CONTEXT, ARCHIVE_CONTEXT = -1, 0, 1, 2
 
@@ -25,18 +24,18 @@ class OpenWithManager(object):
     @callback.Callback
     def set_commands(self, cmds):
         prefs['openwith commands'] = [(cmd.get_label(), cmd.get_command(),
-            cmd.get_cwd(), cmd.is_disabled_for_archives())
+        cmd.get_cwd(), cmd.is_disabled_for_archives())
             for cmd in cmds]
 
     def get_commands(self):
         try:
             return [OpenWithCommand(label, command, cwd, disabled_for_archives)
-                    for label, command, cwd, disabled_for_archives
-                    in prefs['openwith commands']]
+                for label, command, cwd, disabled_for_archives
+                in prefs['openwith commands']]
         except ValueError:
             # Backwards compatibility for early versions with only two parameters
-            return [OpenWithCommand(label, command, u'', False)
-                    for label, command in prefs['openwith commands']]
+            return [OpenWithCommand(label, command, '', False)
+                for label, command in prefs['openwith commands']]
 
 
 class OpenWithCommand(object):
@@ -65,8 +64,8 @@ class OpenWithCommand(object):
         """ Spawns a new process with the given executable
         and arguments. """
         if (self.is_disabled_for_archives() and
-            window.filehandler.archive_type is not None):
-            window.osd.show(_("'%s' is disabled for archives.") % self.get_label())
+                window.filehandler.archive_type is not None):
+            window.osd.show("'%s' is disabled for archives." % self.get_label())
             return
 
         current_dir = os.getcwd()
@@ -79,8 +78,8 @@ class OpenWithCommand(object):
             process.call_thread(args)
 
         except Exception as e:
-            text = _("Could not run command %(cmdlabel)s: %(exception)s") % \
-                {'cmdlabel': self.get_label(), 'exception': str(e)}
+            text = "Could not run command %(cmdlabel)s: %(exception)s" % \
+                   {'cmdlabel': self.get_label(), 'exception': str(e)}
             window.osd.show(text)
         finally:
             os.chdir(current_dir)
@@ -127,55 +126,49 @@ class OpenWithCommand(object):
         if not text:
             text = self.get_command()
         if not text.strip():
-            raise OpenWithException(_('Command line is empty.'))
+            raise OpenWithException('Command line is empty.')
 
         args = self._commandline_to_arguments(text, window,
-            self._get_context_type(window, check_restrictions))
+                                              self._get_context_type(window, check_restrictions))
         # Environment variables must be expanded after MComix variables,
-        # as win32 will eat %% and replace it with %.
-        args = [os.path.expandvars(arg) for arg in args]
-        return args
+        return [os.path.expandvars(arg) for arg in args]
 
     def _commandline_to_arguments(self, line, window, context_type):
         """ Parse a command line string into a list containing
         the parts to pass to Popen. The following two functions have
         been contributed by Ark <aaku@users.sf.net>. """
         result = []
-        buf = u""
+        buf = ""
         quote = False
         escape = False
         inarg = False
         for c in line:
             if escape:
-                if c == u'%' or c == u'"':
+                if c == '%' or c == '"':
                     buf += c
                 else:
                     buf += self._expand_variable(c, window, context_type)
                 escape = False
-            elif c == u' ' or c == u'\t':
+            elif c == ' ' or c == '\t':
                 if quote:
                     buf += c
                 elif inarg:
                     result.append(buf)
-                    buf = u""
+                    buf = ""
                     inarg = False
             else:
-                if c == u'"':
+                if c == '"':
                     quote = not quote
-                elif c == u'%':
+                elif c == '%':
                     escape = True
                 else:
                     buf += c
                 inarg = True
 
         if escape:
-            raise OpenWithException(
-                _("Incomplete escape sequence. "
-                  "For a literal '%', use '%%'."))
+            raise OpenWithException("Incomplete escape sequence. For a literal '%', use '%%'.")
         if quote:
-            raise OpenWithException(
-                _("Incomplete quote sequence. "
-                  "For a literal '\"', use '%\"'."))
+            raise OpenWithException("Incomplete quote sequence. For a literal '\"', use '%\"'.")
 
         if inarg:
             result.append(buf)
@@ -188,68 +181,66 @@ class OpenWithCommand(object):
         if context_type == DEBUGGING_CONTEXT:
             return '%' + identifier
 
-        if not (context_type & IMAGE_FILE_CONTEXT) and identifier in (u'f', u'd', u'b', u's', u'F', u'D', u'B', u'S'):
-            raise OpenWithException(
-                _("File-related variables can only be used for files."))
+        if not (context_type & IMAGE_FILE_CONTEXT) and identifier in ('f', 'd', 'b', 's', 'F', 'D', 'B', 'S'):
+            raise OpenWithException("File-related variables can only be used for files.")
 
-        if not (context_type & ARCHIVE_CONTEXT) and identifier in (u'a', u'c', u'A', u'C'):
-            raise OpenWithException(
-                _("Archive-related variables can only be used for archives."))
+        if not (context_type & ARCHIVE_CONTEXT) and identifier in ('a', 'c', 'A', 'C'):
+            raise OpenWithException("Archive-related variables can only be used for archives.")
 
-        if identifier == u'/':
+        if identifier == '/':
             return os.path.sep
-        elif identifier == u'a':
+        elif identifier == 'a':
             return window.filehandler.get_base_filename()
-        elif identifier == u'd':
+        elif identifier == 'd':
             return os.path.basename(os.path.dirname(window.imagehandler.get_path_to_page()))
-        elif identifier == u'f':
+        elif identifier == 'f':
             return window.imagehandler.get_page_filename()
-        elif identifier == u'c':
+        elif identifier == 'c':
             return os.path.basename(os.path.dirname(window.filehandler.get_path_to_base()))
-        elif identifier == u'b':
-            if (context_type & ARCHIVE_CONTEXT):
-                return window.filehandler.get_base_filename() # same as %a
+        elif identifier == 'b':
+            if context_type & ARCHIVE_CONTEXT:
+                return window.filehandler.get_base_filename()  # same as %a
             else:
-                return os.path.basename(os.path.dirname(window.imagehandler.get_path_to_page())) # same as %d
-        elif identifier == u's':
-            if (context_type & ARCHIVE_CONTEXT):
-                return os.path.basename(os.path.dirname(window.filehandler.get_path_to_base())) # same as %c
+                return os.path.basename(os.path.dirname(window.imagehandler.get_path_to_page()))  # same as %d
+        elif identifier == 's':
+            if context_type & ARCHIVE_CONTEXT:
+                return os.path.basename(os.path.dirname(window.filehandler.get_path_to_base()))  # same as %c
             else:
                 return os.path.basename(os.path.dirname(os.path.dirname(window.imagehandler.get_path_to_page())))
-        elif identifier == u'A':
+        elif identifier == 'A':
             return window.filehandler.get_path_to_base()
-        elif identifier == u'D':
+        elif identifier == 'D':
             return os.path.normpath(os.path.dirname(window.imagehandler.get_path_to_page()))
-        elif identifier == u'F':
+        elif identifier == 'F':
             return os.path.normpath(window.imagehandler.get_path_to_page())
-        elif identifier == u'C':
+        elif identifier == 'C':
             return os.path.dirname(window.filehandler.get_path_to_base())
-        elif identifier == u'B':
-            if (context_type & ARCHIVE_CONTEXT):
-                return window.filehandler.get_path_to_base() # same as %A
+        elif identifier == 'B':
+            if context_type & ARCHIVE_CONTEXT:
+                return window.filehandler.get_path_to_base()  # same as %A
             else:
-                return os.path.normpath(os.path.dirname(window.imagehandler.get_path_to_page())) # same as %D
-        elif identifier == u'S':
-            if (context_type & ARCHIVE_CONTEXT):
-                return os.path.dirname(window.filehandler.get_path_to_base()) # same as %C
+                return os.path.normpath(os.path.dirname(window.imagehandler.get_path_to_page()))  # same as %D
+        elif identifier == 'S':
+            if context_type & ARCHIVE_CONTEXT:
+                return os.path.dirname(window.filehandler.get_path_to_base())  # same as %C
             else:
                 return os.path.dirname(os.path.dirname(window.imagehandler.get_path_to_page()))
         else:
             raise OpenWithException(
-                _("Invalid escape sequence: %%%s") % identifier)
+                "Invalid escape sequence: %%%s" % identifier)
 
     def _get_context_type(self, window, check_restrictions=True):
         if not check_restrictions:
-            return DEBUGGING_CONTEXT # ignore context, reflect variable name
+            return DEBUGGING_CONTEXT  # ignore context, reflect variable name
         context = 0
         if not window.filehandler.file_loaded:
-            context = NO_FILE_CONTEXT # no file loaded
+            context = NO_FILE_CONTEXT  # no file loaded
         elif window.filehandler.archive_type is not None:
-            context = IMAGE_FILE_CONTEXT|ARCHIVE_CONTEXT # archive loaded
+            context = IMAGE_FILE_CONTEXT | ARCHIVE_CONTEXT  # archive loaded
         else:
-            context = IMAGE_FILE_CONTEXT # image loaded (no archive)
+            context = IMAGE_FILE_CONTEXT  # image loaded (no archive)
         if not window.imagehandler.get_current_page():
-            context &= ~IMAGE_FILE_CONTEXT # empty archive
+            context &= ~IMAGE_FILE_CONTEXT  # empty archive
         return context
 
 
@@ -259,7 +250,7 @@ class OpenWithEditor(Gtk.Dialog):
     the external model (i.e. preferences) only when properly closed. """
 
     def __init__(self, window, openwithmanager):
-        super(OpenWithEditor, self).__init__(title=_('Edit external commands'))
+        super(OpenWithEditor, self).__init__(title='Edit external commands')
         self.set_transient_for(window)
         self.set_destroy_with_parent(True)
         self._window = window
@@ -270,7 +261,7 @@ class OpenWithEditor(Gtk.Dialog):
         self._command_tree.get_selection().connect('changed', self._item_selected)
         self._add_button = Gtk.Button.new_from_stock(Gtk.STOCK_ADD)
         self._add_button.connect('clicked', self._add_command)
-        self._add_sep_button = Gtk.Button.new_with_mnemonic(_('Add _separator'))
+        self._add_sep_button = Gtk.Button.new_with_mnemonic('Add _separator')
         self._add_sep_button.connect('clicked', self._add_sep_command)
         self._remove_button = Gtk.Button.new_from_stock(Gtk.STOCK_REMOVE)
         self._remove_button.connect('clicked', self._remove_command)
@@ -281,7 +272,7 @@ class OpenWithEditor(Gtk.Dialog):
         self._down_button = Gtk.Button.new_from_stock(Gtk.STOCK_GO_DOWN)
         self._down_button.connect('clicked', self._down_command)
         self._down_button.set_sensitive(False)
-        self._run_button = Gtk.Button.new_with_mnemonic(_('Run _command'))
+        self._run_button = Gtk.Button.new_with_mnemonic('Run _command')
         self._run_button.connect('clicked', self._run_command)
         self._run_button.set_sensitive(False)
         self._test_field = Gtk.Entry()
@@ -328,7 +319,7 @@ class OpenWithEditor(Gtk.Dialog):
             return None
 
         model, iter = self._command_tree.get_selection().get_selected()
-        if (iter and model.iter_is_valid(iter)):
+        if iter and model.iter_is_valid(iter):
             command = OpenWithCommand(*model.get(iter, 0, 1, 2, 3))
             return command
         else:
@@ -344,7 +335,7 @@ class OpenWithEditor(Gtk.Dialog):
 
         # Test only if the selected field is a valid command
         if command.is_separator():
-            self._test_field.set_text(_('This is a separator pseudo-command.'))
+            self._test_field.set_text('This is a separator pseudo-command.')
             self._set_exec_text('')
             return
 
@@ -355,10 +346,10 @@ class OpenWithEditor(Gtk.Dialog):
 
             if not command.is_valid_workdir(self._window, allow_empty=True):
                 self._set_exec_text(
-                    _('"%s" does not have a valid working directory.') % command.get_label())
+                    '"%s" does not have a valid working directory.' % command.get_label())
             elif not command.is_executable(self._window):
                 self._set_exec_text(
-                    _('"%s" does not appear to have a valid executable.') % command.get_label())
+                    '"%s" does not appear to have a valid executable.' % command.get_label())
             else:
                 self._set_exec_text('')
         except OpenWithException as e:
@@ -367,7 +358,7 @@ class OpenWithEditor(Gtk.Dialog):
 
     def _add_command(self, button):
         """ Add a new empty label-command line to the list. """
-        row = (_('Command label'), '', '', False, True)
+        row = ('Command label', '', '', False, True)
         selection = self._command_tree.get_selection()
         if selection and selection.get_selected()[1]:
             model, iter = selection.get_selected()
@@ -390,14 +381,14 @@ class OpenWithEditor(Gtk.Dialog):
     def _remove_command(self, button):
         """ Removes the currently selected command from the list. """
         model, iter = self._command_tree.get_selection().get_selected()
-        if (iter and model.iter_is_valid(iter)):
+        if iter and model.iter_is_valid(iter):
             model.remove(iter)
             self._changed = True
 
     def _up_command(self, button):
         """ Moves the selected command up by one. """
         model, iter = self._command_tree.get_selection().get_selected()
-        if (iter and model.iter_is_valid(iter)):
+        if iter and model.iter_is_valid(iter):
             path = model.get_path(iter)[0]
 
             if path >= 1:
@@ -408,7 +399,7 @@ class OpenWithEditor(Gtk.Dialog):
     def _down_command(self, button):
         """ Moves the selected command down by one. """
         model, iter = self._command_tree.get_selection().get_selected()
-        if (iter and model.iter_is_valid(iter)):
+        if iter and model.iter_is_valid(iter):
             path = model.get_path(iter)[0]
 
             if path < len(self.get_commands()) - 1:
@@ -425,7 +416,7 @@ class OpenWithEditor(Gtk.Dialog):
     def _item_selected(self, selection):
         """ Enable or disable buttons that depend on an item being selected. """
         for button in (self._remove_button, self._up_button,
-                self._down_button):
+        self._down_button):
             button.set_sensitive(selection.count_selected_rows() > 0)
 
         if selection.count_selected_rows() > 0:
@@ -460,7 +451,7 @@ class OpenWithEditor(Gtk.Dialog):
         content.pack_start(buttonbox, False, False, 0)
 
         preview_box = Gtk.HBox()
-        preview_box.pack_start(Gtk.Label(label=_('Preview:')), False, False, 0)
+        preview_box.pack_start(Gtk.Label(label='Preview:'), False, False, 0)
         preview_box.pack_start(self._test_field, True, True, 4)
         preview_box.pack_start(self._run_button, False, False, 0)
         content.pack_start(preview_box, False, False, 0)
@@ -468,39 +459,39 @@ class OpenWithEditor(Gtk.Dialog):
         content.pack_start(self._exec_label, False, False, 0)
 
         linklabel = Gtk.Label()
-        linklabel.set_markup(_('Please refer to the <a href="%s">external command documentation</a> '
-            'for a list of usable variables and other hints.') % \
-                'https://sourceforge.net/p/mcomix/wiki/External_Commands')
+        linklabel.set_markup(('Please refer to the <a href="%s">external command documentation</a> '
+                              'for a list of usable variables and other hints.') % \
+                             'https://sourceforge.net/p/mcomix/wiki/External_Commands')
         linklabel.set_alignment(0, 0)
         content.pack_start(linklabel, False, False, 4)
 
     def _setup_table(self):
         """ Initializes the TreeView with settings and data. """
-        for i, label in enumerate((_('Label'), _('Command'), _('Working directory'))):
+        for i, label in enumerate(('Label', 'Command', 'Working directory')):
             renderer = Gtk.CellRendererText()
             renderer.connect('edited', self._text_changed, i)
             column = Gtk.TreeViewColumn(label, renderer)
             column.set_property('resizable', True)
             column.set_attributes(renderer, text=i, editable=4)
-            if (i == 1):
+            if i == 1:
                 column.set_expand(True)  # Command column should scale automatically
             self._command_tree.append_column(column)
 
         # The 'Disabled in archives' field is shown as toggle button
         renderer = Gtk.CellRendererToggle()
         renderer.connect('toggled', self._value_changed,
-                len(self._command_tree.get_columns()))
-        column = Gtk.TreeViewColumn(_('Disabled in archives'), renderer)
+                         len(self._command_tree.get_columns()))
+        column = Gtk.TreeViewColumn('Disabled in archives', renderer)
         column.set_attributes(renderer, active=len(self._command_tree.get_columns()),
-                activatable=4)
+                              activatable=4)
         self._command_tree.append_column(column)
 
         # Label, command, working dir, disabled for archives, line is editable
         model = Gtk.ListStore(GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING,
-                GObject.TYPE_BOOLEAN, GObject.TYPE_BOOLEAN)
+                              GObject.TYPE_BOOLEAN, GObject.TYPE_BOOLEAN)
         for command in self._openwith.get_commands():
             model.append((command.get_label(), command.get_command(), command.get_cwd(),
-                command.is_disabled_for_archives(), not command.is_separator()))
+            command.is_disabled_for_archives(), not command.is_separator()))
         self._command_tree.set_model(model)
 
         self._command_tree.set_headers_visible(True)
@@ -514,6 +505,7 @@ class OpenWithEditor(Gtk.Dialog):
 
         model = self._command_tree.get_model()
         iter = model.get_iter(path)
+
         # Editing the model in the cellrenderercallback stops the editing
         # operation, causing GTK warnings. Delay until callback is finished.
         def delayed_set_value():
@@ -521,12 +513,14 @@ class OpenWithEditor(Gtk.Dialog):
             model.set_value(iter, column, new_text)
             self._changed = old_value != new_text
             self.test_command()
+
         GLib.idle_add(delayed_set_value)
 
     def _value_changed(self, renderer, path, column):
         """ Called when a toggle field is changed """
         model = self._command_tree.get_model()
         iter = model.get_iter(path)
+
         # Editing the model in the cellrenderercallback stops the editing
         # operation, causing GTK warnings. Delay until callback is finished.
         def delayed_set_value():
@@ -544,11 +538,11 @@ class OpenWithEditor(Gtk.Dialog):
         else:
             if self._changed:
                 confirm_diag = message_dialog.MessageDialog(self, Gtk.DialogFlags.MODAL,
-                    Gtk.MessageType.INFO, Gtk.ButtonsType.YES_NO)
-                confirm_diag.set_text(_('Save changes to commands?'),
-                    _('You have made changes to the list of external commands that '
-                      'have not been saved yet. Press "Yes" to save all changes, '
-                      'or "No" to discard them.'))
+                                                            Gtk.MessageType.INFO, Gtk.ButtonsType.YES_NO)
+                confirm_diag.set_text('Save changes to commands?',
+                                      ('You have made changes to the list of external commands that '
+                                       'have not been saved yet. Press "Yes" to save all changes, '
+                                       'or "No" to discard them.'))
                 response = confirm_diag.run()
 
                 if response == Gtk.ResponseType.YES:
@@ -556,15 +550,12 @@ class OpenWithEditor(Gtk.Dialog):
 
     def _quote_if_necessary(self, arg):
         """ Quotes a command line argument if necessary. """
-        if arg == u"":
-            return u'""'
+        if arg == "":
+            return '""'
         # simplified version of
         # http://www.gnu.org/software/bash/manual/bashref.html#Double-Quotes
-        arg = arg.replace(u'\\', u'\\\\')
-        arg = arg.replace(u'"', u'\\"')
-        if u" " in arg:
-            return u'"' + arg + u'"'
+        arg = arg.replace('\\', '\\\\')
+        arg = arg.replace('"', '\\"')
+        if " " in arg:
+            return '"' + arg + '"'
         return arg
-
-
-# vim: expandtab:sw=4:ts=4

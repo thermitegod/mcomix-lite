@@ -1,12 +1,13 @@
+# -*- coding: utf-8 -*-
+
 """bookmark_menu.py - Bookmarks menu."""
 
 from gi.repository import Gtk
 
-from mcomix import bookmark_backend
-from mcomix import bookmark_dialog
+from mcomix import bookmark_backend, bookmark_dialog
+
 
 class BookmarksMenu(Gtk.Menu):
-
     """BookmarksMenu extends Gtk.Menu with convenience methods relating to
     bookmarks. It contains fixed items for adding bookmarks etc. as well
     as dynamic items corresponding to the current bookmarks.
@@ -21,11 +22,11 @@ class BookmarksMenu(Gtk.Menu):
 
         self._actiongroup = Gtk.ActionGroup(name='mcomix-bookmarks')
         self._actiongroup.add_actions([
-            ('add_bookmark', 'mcomix-add-bookmark', _('Add _Bookmark'),
-                '<Control>D', None, self._add_current_to_bookmarks),
-            ('edit_bookmarks', None, _('_Edit Bookmarks...'),
-                '<Control>B', None, self._edit_bookmarks)])
-        
+            ('add_bookmark', 'mcomix-add-bookmark', 'Add _Bookmark',
+            '<Control>D', None, self._add_current_to_bookmarks),
+            ('edit_bookmarks', None, '_Edit Bookmarks...',
+            '<Control>B', None, self._edit_bookmarks)])
+
         action = self._actiongroup.get_action('add_bookmark')
         action.set_accel_group(ui.get_accel_group())
         self.add_button = action.create_menu_item()
@@ -81,5 +82,3 @@ class BookmarksMenu(Gtk.Menu):
         or not.
         """
         self._actiongroup.get_action('add_bookmark').set_sensitive(loaded)
-
-# vim: expandtab:sw=4:ts=4

@@ -1,29 +1,21 @@
+# -*- coding: utf-8 -*-
+
 """thumbnail.py - Thumbnail module for MComix implementing (most of) the
 freedesktop.org "standard" at http://jens.triq.net/thumbnail-spec/
 """
 
+import mimetypes
 import os
 import re
-import shutil
 import tempfile
-import mimetypes
 import threading
-import traceback
-import PIL.Image as Image
+from hashlib import md5
 from urllib.request import pathname2url
 
-from hashlib import md5
+import PIL.Image as Image
 
+from mcomix import archive_tools, callback, constants, i18n, image_tools, log, tools
 from mcomix.preferences import prefs
-from mcomix import archive_extractor
-from mcomix import constants
-from mcomix import archive_tools
-from mcomix import tools
-from mcomix import image_tools
-from mcomix import portability
-from mcomix import i18n
-from mcomix import callback
-from mcomix import log
 
 
 class Thumbnailer(object):
@@ -110,7 +102,7 @@ class Thumbnailer(object):
             try:
                 os.remove(thumbpath)
             except IOError as error:
-                log.error(_("! Could not remove file \"%s\""), thumbpath)
+                log.error("! Could not remove file \"%s\"", thumbpath)
                 log.error(error)
 
     def _create_thumbnail_pixbuf(self, filepath):
@@ -176,20 +168,20 @@ class Thumbnailer(object):
     def _get_text_data(self, filepath):
         """ Creates a tEXt dictionary for <filepath>. """
         mime = mimetypes.guess_type(filepath)[0] or "unknown/mime"
-        uri = portability.uri_prefix() + pathname2url(i18n.to_utf8(os.path.normpath(filepath)))
+        uri = 'file://' + pathname2url(i18n.to_utf8(os.path.normpath(filepath)))
         stat = os.stat(filepath)
         # MTime could be floating point number, so convert to long first to have a fixed point number
         mtime = str(stat.st_mtime)
         size = str(stat.st_size)
         format, width, height = image_tools.get_image_info(filepath)
         return {
-            'tEXt::Thumb::URI':           uri,
-            'tEXt::Thumb::MTime':         mtime,
-            'tEXt::Thumb::Size':          size,
-            'tEXt::Thumb::Mimetype':      mime,
-            'tEXt::Thumb::Image::Width':  str(width),
+            'tEXt::Thumb::URI': uri,
+            'tEXt::Thumb::MTime': mtime,
+            'tEXt::Thumb::Size': size,
+            'tEXt::Thumb::Mimetype': mime,
+            'tEXt::Thumb::Image::Width': str(width),
             'tEXt::Thumb::Image::Height': str(height),
-            'tEXt::Software':             'MComix %s' % constants.VERSION
+            'tEXt::Software': 'MComix %s' % constants.VERSION
         }
 
     def _save_thumbnail(self, pixbuf, thumbpath, tEXt_data):
@@ -212,8 +204,8 @@ class Thumbnailer(object):
             os.chmod(thumbpath, 0o600)
 
         except Exception as ex:
-            log.warning( _('! Could not save thumbnail "%(thumbpath)s": %(error)s'),
-                { 'thumbpath' : thumbpath, 'error' : ex } )
+            log.warning('! Could not save thumbnail "%(thumbpath)s": %(error)s',
+                        {'thumbpath': thumbpath, 'error': ex})
 
     def _thumbnail_exists(self, filepath):
         """ Checks if the thumbnail for <filepath> already exists.
@@ -237,7 +229,7 @@ class Thumbnailer(object):
                 # The source file might no longer exist
                 file_mtime = os.path.isfile(filepath) and os.stat(filepath).st_mtime or stored_mtime
                 return stored_mtime == file_mtime and \
-                    max(*img.size) == max(self.width, self.height)
+                       max(*img.size) == max(self.width, self.height)
             else:
                 return False
         else:
@@ -245,7 +237,7 @@ class Thumbnailer(object):
 
     def _path_to_thumbpath(self, filepath):
         """ Converts <path> to an URI for the thumbnail in <dst_dir>. """
-        uri = portability.uri_prefix() + pathname2url(i18n.to_utf8(os.path.normpath(filepath)))
+        uri = 'file://' + pathname2url(i18n.to_utf8(os.path.normpath(filepath)))
         return self._uri_to_thumbpath(uri)
 
     def _uri_to_thumbpath(self, uri):
@@ -261,11 +253,11 @@ class Thumbnailer(object):
         """
         # Ignore MacOSX meta files.
         files = filter(lambda filename:
-                u'__MACOSX' not in os.path.normpath(filename).split(os.sep),
-                files)
+                       '__MACOSX' not in os.path.normpath(filename).split(os.sep),
+                       files)
         # Ignore credit files if possible.
         files = filter(lambda filename:
-                u'credit' not in os.path.split(filename)[1].lower(), files)
+                       'credit' not in os.path.split(filename)[1].lower(), files)
 
         images = [f for f in files if image_tools.is_image_file(f)]
 
@@ -282,5 +274,3 @@ class Thumbnailer(object):
             return images[0]
 
         return None
-
-# vim: expandtab:sw=4:ts=4

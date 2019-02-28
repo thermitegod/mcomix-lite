@@ -1,8 +1,8 @@
+# -*- coding: utf-8 -*-
+
 """ Gtk.IconView subclass for dynamically generated thumbnails. """
 
-import queue
-from gi.repository import Gtk
-from gi.repository import GLib
+from gi.repository import GLib, Gtk
 
 from mcomix.preferences import prefs
 from mcomix.worker_thread import WorkerThread
@@ -64,7 +64,7 @@ class ThumbnailViewBase(object):
         # icons are always cached only after the visible icons have been completed.
         additional = (end - start) // 2
         required = tuple(range(start, end + additional + 1)) + \
-            tuple(range(max(0, start - additional), start))
+                   tuple(range(max(0, start - additional), start))
         model = self.get_model()
         # Filter invalid paths.
         required = [path for path in required if 0 <= path < len(model)]
@@ -104,6 +104,7 @@ class ThumbnailViewBase(object):
         # Remove this idle handler.
         return 0
 
+
 class ThumbnailIconView(Gtk.IconView, ThumbnailViewBase):
     def __init__(self, model, uid_column, pixbuf_column, status_column):
         assert 0 != (model.get_flags() & Gtk.TreeModelFlags.ITERS_PERSIST)
@@ -117,6 +118,7 @@ class ThumbnailIconView(Gtk.IconView, ThumbnailViewBase):
     def get_visible_range(self):
         return Gtk.IconView.get_visible_range(self)
 
+
 class ThumbnailTreeView(Gtk.TreeView, ThumbnailViewBase):
     def __init__(self, model, uid_column, pixbuf_column, status_column):
         assert 0 != (model.get_flags() & Gtk.TreeModelFlags.ITERS_PERSIST)
@@ -128,5 +130,3 @@ class ThumbnailTreeView(Gtk.TreeView, ThumbnailViewBase):
 
     def get_visible_range(self):
         return Gtk.TreeView.get_visible_range(self)
-
-# vim: expandtab:sw=4:ts=4

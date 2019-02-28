@@ -1,16 +1,15 @@
-""" osd.py - Onscreen display showing currently opened file. """
 # -*- coding: utf-8 -*-
+
+""" osd.py - Onscreen display showing currently opened file. """
 
 import textwrap
 
-from gi.repository import Gdk, Gtk, GLib
-from gi.repository import Pango, PangoCairo
+from gi.repository import GLib, Gdk, Pango, PangoCairo
 
 from mcomix import image_tools
 
 
 class OnScreenDisplay(object):
-
     """ The OSD shows information such as currently opened file, archive and
     page in a black box drawn on the bottom end of the screen.
 
@@ -51,7 +50,7 @@ class OnScreenDisplay(object):
                     int(self._window._vadjust.get_value()), 0)
 
         rect = (pos_x - 10, pos_y - 20,
-                layout_width + 20, layout_height + 20)
+        layout_width + 20, layout_height + 20)
 
         self._draw_osd(layout, rect)
 
@@ -66,7 +65,7 @@ class OnScreenDisplay(object):
             GLib.source_remove(self._timeout_event)
         self._timeout_event = None
         self._clear_osd()
-        return 0 # To unregister timer event
+        return 0  # To unregister timer event
 
     def _wrap_text(self, text, width=70):
         """ Wraps the text to be C{width} characters at most. """
@@ -140,5 +139,3 @@ class OnScreenDisplay(object):
         PangoCairo.show_layout(cr, layout)
 
         window.end_paint()
-
-# vim: expandtab:sw=4:ts=4

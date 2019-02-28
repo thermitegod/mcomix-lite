@@ -1,15 +1,16 @@
+# -*- coding: utf-8 -*-
+
 """bookmark_menu_item.py - A signle bookmark item."""
 
 from gi.repository import Gtk
 
-class _Bookmark(Gtk.ImageMenuItem):
 
+class _Bookmark(Gtk.ImageMenuItem):
     """_Bookmark represents one bookmark. It extends the Gtk.ImageMenuItem
     and is thus put directly in the bookmarks menu.
     """
 
     def __init__(self, window, file_handler, name, path, page, numpages, archive_type, date_added):
-
         self._name = name
         self._path = path
         self._page = page
@@ -61,14 +62,14 @@ class _Bookmark(Gtk.ImageMenuItem):
         page = '%d / %d' % (self._page, self._numpages)
         date = self._date_added.strftime("%x %X")
 
-        return (pixbuf, self._name, page, self._path, date, self)
+        return pixbuf, self._name, page, self._path, date, self
 
     def pack(self):
         """Return a tuple suitable for pickling. The bookmark can be fully
         re-created using the values in the tuple.
         """
         return (self._name, self._path, self._page, self._numpages,
-            self._archive_type, self._date_added)
+        self._archive_type, self._date_added)
 
     def clone(self):
         """ Creates a copy of the provided Bookmark menu item. This is necessary
@@ -94,5 +95,3 @@ class _Bookmark(Gtk.ImageMenuItem):
     def __hash__(self):
         """ Hash for this object. """
         return hash(self._path) | hash(self._page)
-
-# vim: expandtab:sw=4:ts=4

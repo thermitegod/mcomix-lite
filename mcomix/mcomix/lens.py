@@ -1,16 +1,16 @@
+# -*- coding: utf-8 -*-
+
 """lens.py - Magnifying lens."""
 
 import math
 
 from gi.repository import Gdk, GdkPixbuf, Gtk
 
+from mcomix import constants, image_tools
 from mcomix.preferences import prefs
-from mcomix import image_tools
-from mcomix import constants
 
 
 class MagnifyingLens(object):
-
     """The MagnifyingLens creates cursors from the raw pixbufs containing
     the unscaled data for the currently displayed images. It does this by
     looking at the cursor position and calculating what image data to put
@@ -141,7 +141,7 @@ class MagnifyingLens(object):
                 continue
             cpos = cb[i].get_position()
             self._add_subpixbuf(canvas, x - cpos[0], y - cpos[1],
-                cb[i].get_size(), source_pixbufs[i])
+                                cb[i].get_size(), source_pixbufs[i])
 
         return image_tools.add_border(canvas, 1)
 
@@ -215,7 +215,7 @@ class MagnifyingLens(object):
             return
 
         subpixbuf = source_pixbuf.new_subpixbuf(int(src_x), int(src_y),
-            int(width), int(height))
+                                                int(width), int(height))
         subpixbuf = subpixbuf.scale_simple(
             int(math.ceil(source_mag * subpixbuf.get_width())),
             int(math.ceil(source_mag * subpixbuf.get_height())),
@@ -248,9 +248,7 @@ class MagnifyingLens(object):
 
         if subpixbuf.get_has_alpha() and prefs['checkered bg for transparent images']:
             subpixbuf = subpixbuf.composite_color_simple(subpixbuf.get_width(), subpixbuf.get_height(),
-                GdkPixbuf.InterpType.NEAREST, 255, 8, 0x777777, 0x999999)
+                                                         GdkPixbuf.InterpType.NEAREST, 255, 8, 0x777777, 0x999999)
 
         subpixbuf.copy_area(0, 0, subpixbuf.get_width(),
-            subpixbuf.get_height(), canvas, dest_x, dest_y)
-
-# vim: expandtab:sw=4:ts=4
+                            subpixbuf.get_height(), canvas, dest_x, dest_y)

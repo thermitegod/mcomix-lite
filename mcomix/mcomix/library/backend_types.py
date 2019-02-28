@@ -1,11 +1,12 @@
+# -*- coding: utf-8 -*-
+
 """ Data class for library books and collections. """
 
+import datetime
 import os
 import threading
-import datetime
 
-from mcomix import callback
-from mcomix import archive_tools
+from mcomix import archive_tools, callback
 
 
 class _BackendObject(object):
@@ -130,7 +131,7 @@ class _Collection(_BackendObject):
         including subcollections. """
 
         books = []
-        for collection in [ self ] + self.get_all_collections():
+        for collection in [self] + self.get_all_collections():
             sql = '''SELECT book.id, book.name, book.path, book.pages, book.format,
                             book.size, book.added
                      FROM book
@@ -147,7 +148,7 @@ class _Collection(_BackendObject):
             rows = cursor.fetchall()
             cursor.close()
 
-            books.extend([ _Book(*cols) for cols in rows ])
+            books.extend([_Book(*cols) for cols in rows])
 
         return books
 
@@ -161,14 +162,14 @@ class _Collection(_BackendObject):
         result = cursor.fetchall()
         cursor.close()
 
-        return [ _Collection(*row) for row in result ]
+        return [_Collection(*row) for row in result]
 
     def get_all_collections(self):
         """ Returns all collections that are subcollections of this instance,
         or subcollections of a subcollection of this instance. """
 
-        to_search = [ self ]
-        collections = [ ]
+        to_search = [self]
+        collections = []
         # This assumes that the library is built like a tree, so no circular references.
         while len(to_search) > 0:
             collection = to_search.pop()
@@ -192,9 +193,8 @@ class _DefaultCollection(_Collection):
     no explicit collection was specified. """
 
     def __init__(self):
-
         self.id = None
-        self.name = _("All books")
+        self.name = ("All books")
         self.supercollection = None
 
     def get_books(self, filter_string=None):
@@ -213,7 +213,7 @@ class _DefaultCollection(_Collection):
         rows = cursor.fetchall()
         cursor.close()
 
-        return [ _Book(*cols) for cols in rows ]
+        return [_Book(*cols) for cols in rows]
 
     def add_collection(self, subcollection):
         """ Removes C{subcollection} from any supercollections and moves
@@ -236,7 +236,7 @@ class _DefaultCollection(_Collection):
         result = cursor.fetchall()
         cursor.close()
 
-        return [ _Collection(*row) for row in result ]
+        return [_Collection(*row) for row in result]
 
 
 DefaultCollection = _DefaultCollection()
@@ -286,7 +286,7 @@ class _WatchList(object):
                  LEFT JOIN collection ON watchlist.collection = collection.id
                  WHERE watchlist.path = ?"""
 
-        cursor = self.backend.execute(sql, (path, ))
+        cursor = self.backend.execute(sql, (path,))
         result = cursor.fetchone()
         cursor.close()
 
@@ -306,8 +306,8 @@ class _WatchList(object):
     def _scan_for_new_files_thread(self):
         """ Executes the actual scanning operation in a new thread. """
         existing_books = [book.path for book in DefaultCollection.get_books()
-                          # Also add book if it was only found in Recent collection
-                          if book.get_collections() != [-2]]
+            # Also add book if it was only found in Recent collection
+            if book.get_collections() != [-2]]
         for entry in self.get_watchlist():
             new_files = entry.get_new_files(existing_books)
             self.new_files_found(new_files, entry)
@@ -321,7 +321,6 @@ class _WatchList(object):
             collection = DefaultCollection
 
         return _WatchListEntry(row[0], row[1], collection)
-
 
     @callback.Callback
     def new_files_found(self, paths, watchentry):
@@ -352,8 +351,8 @@ class _WatchListEntry(_BackendObject):
 
         if not self.recursive:
             available_files = frozenset([os.path.join(self.directory, filename)
-                for filename in os.listdir(self.directory)
-                if archive_tools.is_archive_file(filename)])
+                                            for filename in os.listdir(self.directory)
+                                            if archive_tools.is_archive_file(filename)])
         else:
             available_files = []
             for dirpath, dirnames, filenames in os.walk(self.directory):
@@ -376,7 +375,7 @@ class _WatchListEntry(_BackendObject):
         cursor = self.get_backend().execute(sql, (self.directory,))
         cursor.close()
 
-        self.directory = u""
+        self.directory = ""
         self.collection = None
 
     def set_collection(self, new_collection):
@@ -384,7 +383,7 @@ class _WatchListEntry(_BackendObject):
         if new_collection != self.collection:
             sql = """UPDATE watchlist SET collection = ? WHERE path = ?"""
             cursor = self.get_backend().execute(sql,
-                    (new_collection.id, self.directory))
+                                                (new_collection.id, self.directory))
             cursor.close()
             self.collection = new_collection
 
@@ -393,9 +392,6 @@ class _WatchListEntry(_BackendObject):
         if recursive != self.recursive:
             sql = """UPDATE watchlist SET recursive = ? WHERE path = ?"""
             cursor = self.get_backend().execute(sql,
-                    (recursive, self.directory))
+                                                (recursive, self.directory))
             cursor.close()
             self.recursive = recursive
-
-
-# vim: expandtab:sw=4:ts=4
