@@ -65,10 +65,10 @@ class EventHandler(object):
                          ['Page_Down', 'KP_Page_Down'],
                          self._flip_page, kwargs={'number_of_pages': 1})
         manager.register('previous_page_singlestep',
-                         ['<Ctrl>Page_Up', '<Ctrl>KP_Page_Up', '<Ctrl>BackSpace'],
+                         ['<Primary>Up', '<Primary>Page_Up', '<Primary>KP_Page_Up'],
                          self._flip_page, kwargs={'number_of_pages': -1, 'single_step': True})
         manager.register('next_page_singlestep',
-                         ['<Ctrl>Page_Down', '<Ctrl>KP_Page_Down'],
+                         ['<Primary>Down', '<Primary>Page_Down', '<Primary>KP_Page_Down'],
                          self._flip_page, kwargs={'number_of_pages': 1, 'single_step': True})
         manager.register('previous_page_dynamic',
                          ['<Mod1>Left'],
@@ -280,11 +280,11 @@ class EventHandler(object):
                          self._window.filehandler.refresh_file)
 
         manager.register('next_archive',
-                         ['<control><shift>N'],
+                         ['<Primary>Right'],
                          self._window.filehandler._open_next_archive)
 
         manager.register('previous_archive',
-                         ['<control><shift>P'],
+                         ['<Primary>Left'],
                          self._window.filehandler._open_previous_archive)
 
         manager.register('next_directory',

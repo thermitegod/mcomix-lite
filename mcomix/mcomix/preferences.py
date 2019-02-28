@@ -17,7 +17,7 @@ prefs = {
     'path to last file': '',
     'number of key presses before page turn': 3,
     'auto open next archive': True,
-    'auto open next directory': True,
+    'auto open next directory': False,
     'sort by': constants.SORT_NAME,  # Normal files obtained by directory listing
     'sort order': constants.SORT_ASCENDING,
     'sort archive by': constants.SORT_NAME,  # Files in archives
@@ -29,11 +29,11 @@ prefs = {
     'thumbnail bg uses main colour': False,
     'checkered bg for transparent images': True,
     'cache': True,
-    'stretch': False,
+    'stretch': True,
     'default double page': False,
     'default fullscreen': False,
     'zoom mode': constants.ZOOM_MODE_BEST,
-    'default manga mode': False,
+    'default manga mode': True,
     'lens magnification': 2,
     'lens size': 200,
     'virtual double page for fitting images': constants.SHOW_DOUBLE_AS_ONE_TITLE | \
@@ -49,10 +49,10 @@ prefs = {
     'slideshow can go to next archive': True,
     'number of pixels to scroll per slideshow event': 50,
     'smart scroll': True,
-    'invert smart scroll': False,
+    'invert smart scroll': True,
     'smart scroll percentage': 0.5,
     'flip with wheel': True,
-    'store recent file info': True,
+    'store recent file info': False,
     'hide all': False,
     'hide all in fullscreen': True,
     'stored hide all values': [True, True, True, True, True],
@@ -97,10 +97,10 @@ prefs = {
     'max extract threads': 1,
     'wrap mouse scroll': False,
     'scaling quality': 2,  # GdkPixbuf.InterpType.BILINEAR
-    'escape quits': False,
+    'escape quits': True,
     'fit to size mode': constants.ZOOM_MODE_HEIGHT,
     'fit to size px': 1800,
-    'scan for new books on library startup': True,
+    'scan for new books on library startup': False,
     'openwith commands': [],  # (label, command) pairs
     'animation mode': constants.ANIMATION_DISABLED,
     'temporary directory': None,
@@ -125,19 +125,6 @@ def read_preferences_file():
                 os.unlink(corrupt_name)
 
             os.rename(constants.PREFERENCE_PATH, corrupt_name)
-
-    elif os.path.isfile(constants.PREFERENCE_PICKLE_PATH):
-        try:
-            with open(constants.PREFERENCE_PICKLE_PATH, 'rb') as config_file:
-                version = pickle.load(config_file)
-                saved_prefs = pickle.load(config_file)
-
-            # Remove legacy format preferences file
-            os.unlink(constants.PREFERENCE_PICKLE_PATH)
-        except Exception:
-            # Gettext might not be installed yet at this point.
-            print('! Corrupt legacy preferences file "%s", ignoring...' %
-                  constants.PREFERENCE_PICKLE_PATH)
 
     if saved_prefs:
         for key in saved_prefs:
