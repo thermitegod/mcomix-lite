@@ -126,7 +126,8 @@ class _ImageArea(Gtk.ScrolledWindow):
         if event.keyval == Gdk.KEY_Delete:
             self._remove_pages()
 
-    def _drag_begin(self, iconview, context):
+    @staticmethod
+    def _drag_begin(iconview, context):
         """We hook up on drag_begin events so that we can set the hotspot
         for the cursor at the top left corner of the thumbnail (so that we
         might actually see where we are dropping!).

@@ -67,7 +67,8 @@ class OnScreenDisplay(object):
         self._clear_osd()
         return 0  # To unregister timer event
 
-    def _wrap_text(self, text, width=70):
+    @staticmethod
+    def _wrap_text(text, width=70):
         """ Wraps the text to be C{width} characters at most. """
         parts = text.split('\n')
         result = []
@@ -93,7 +94,8 @@ class OnScreenDisplay(object):
         window.process_updates(True)
         self._last_osd_rect = None
 
-    def _scale_font(self, font, layout, max_width, max_height):
+    @staticmethod
+    def _scale_font(font, layout, max_width, max_height):
         """ Scales the font used by C{layout} until max_width/max_height is reached. """
 
         SIZE_MIN, SIZE_MAX = 10, 60

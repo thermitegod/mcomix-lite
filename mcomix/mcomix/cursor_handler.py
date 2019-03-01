@@ -80,5 +80,6 @@ class CursorHandler(object):
             GLib.source_remove(self._timer_id)
             self._timer_id = None
 
-    def _get_hidden_cursor(self):
+    @staticmethod
+    def _get_hidden_cursor():
         return Gdk.Cursor.new(Gdk.CursorType.BLANK_CURSOR)

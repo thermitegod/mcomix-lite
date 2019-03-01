@@ -134,7 +134,8 @@ class _BookmarksDialog(Gtk.Dialog):
         self._close()
         bookmark._load()
 
-    def _sort_model(self, treemodel, iter1, iter2, user_data):
+    @staticmethod
+    def _sort_model(treemodel, iter1, iter2, user_data):
         """ Custom sort function to sort to model entries based on the
         BookmarkMenuItem's fields specified in @C{user_data}. This is a list
         of field names. """

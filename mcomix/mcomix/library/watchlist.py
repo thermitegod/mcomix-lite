@@ -220,7 +220,8 @@ class WatchListDialog(Gtk.Dialog):
         button. """
         self._remove_button.set_sensitive(selection.count_selected_rows() > 0)
 
-    def _auto_scan_toggled_cb(self, checkbox, *args):
+    @staticmethod
+    def _auto_scan_toggled_cb(checkbox, *args):
         """ Toggles automatic library book scanning. """
         prefs['scan for new books on library startup'] = checkbox.get_active()
 

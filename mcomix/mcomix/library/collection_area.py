@@ -331,7 +331,8 @@ class _CollectionArea(Gtk.ScrolledWindow):
         if event.keyval == Gdk.KEY_Delete:
             self._remove_collection()
 
-    def _expand_or_collapse_row(self, treeview, path, column):
+    @staticmethod
+    def _expand_or_collapse_row(treeview, path, column):
         """Expand or collapse the activated row."""
         if treeview.row_expanded(path):
             treeview.collapse_row(path)
@@ -455,7 +456,8 @@ class _CollectionArea(Gtk.ScrolledWindow):
         else:
             self._treeview.enable_model_drag_dest([], Gdk.DragAction.MOVE)
 
-    def _drag_begin(self, treeview, context):
+    @staticmethod
+    def _drag_begin(treeview, context):
         """Create a cursor image for drag-n-drop of collections. We use the
         default one (i.e. the row with text), but put the hotspot in the
         top left corner so that one can actually see where one is dropping,

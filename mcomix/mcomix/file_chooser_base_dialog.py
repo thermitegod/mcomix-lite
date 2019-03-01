@@ -150,7 +150,8 @@ class _BaseFileChooserDialog(Gtk.Dialog):
             for pat in patterns:
                 ffilter.add_pattern(pat)
 
-    def _filter(self, filter_info, data):
+    @staticmethod
+    def _filter(filter_info, data):
         """ Callback function used to determine if a file
         should be filtered or not. C{data} is a tuple containing
         (patterns, mimes) that should pass the test. Returns True
@@ -281,7 +282,8 @@ class _BaseFileChooserDialog(Gtk.Dialog):
                 self._namelabel.set_text(os.path.basename(filepath))
                 self._sizelabel.set_text(tools.format_byte_size(os.stat(filepath).st_size))
 
-    def _current_file(self):
+    @staticmethod
+    def _current_file():
         # XXX: This method defers the import of main to avoid cyclic imports
         # during startup.
 

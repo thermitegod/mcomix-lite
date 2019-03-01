@@ -684,7 +684,8 @@ class _BookArea(Gtk.ScrolledWindow):
 
         Gtk.drag_set_icon_pixbuf(context, pointer, -5, -5)
 
-    def _drag_data_get(self, iconview, context, selection, *args):
+    @staticmethod
+    def _drag_data_get(iconview, context, selection, *args):
         """Fill the SelectionData with (iconview) paths for the dragged books
         formatted as a string with each path separated by a comma.
         """

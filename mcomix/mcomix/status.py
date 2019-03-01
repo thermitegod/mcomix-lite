@@ -242,7 +242,8 @@ class TooltipStatusHelper(object):
             cid2 = widget.connect('deselect', self._on_item_deselect)
             setattr(widget, 'app::connect-ids', (cid, cid2))
 
-    def _on_disconnect_proxy(self, uimgr, action, widget):
+    @staticmethod
+    def _on_disconnect_proxy(uimgr, action, widget):
         """ Disconnects the widget's selection handlers. """
         cids = getattr(widget, 'app::connect-ids', ())
         for cid in cids:

@@ -140,7 +140,8 @@ class _LibraryBackend(object):
 
         return path
 
-    def get_book_thumbnail(self, path):
+    @staticmethod
+    def get_book_thumbnail(path):
         """ Returns a pixbuf with a thumbnail of the cover of the book at <path>,
         or None, if no thumbnail could be generated. """
 

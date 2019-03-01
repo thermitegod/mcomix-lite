@@ -205,7 +205,8 @@ class LastReadPage(object):
                 log.error('! Could not remove file "%s"',
                           constants.LASTPAGE_DATABASE_PATH)
 
-    def _init_database(self, dbfile):
+    @staticmethod
+    def _init_database(dbfile):
         """ Creates or opens new SQLite database at C{dbfile}, and initalizes
         the required table(s).
 

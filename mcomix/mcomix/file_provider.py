@@ -26,7 +26,6 @@ def get_file_provider(filelist):
         else:
             provider = PreDefinedFileProvider(filelist)
 
-
     elif (preferences.prefs['auto load last file']
           and os.path.isfile(preferences.prefs['path to last file'])):
         provider = OrderedFileProvider(preferences.prefs['path to last file'])
@@ -156,7 +155,8 @@ class OrderedFileProvider(FileProvider):
         else:
             return False
 
-    def __get_sibling_directories(self, dir):
+    @staticmethod
+    def __get_sibling_directories(dir):
         """ Returns a list of all sibling directories of <dir>,
             already sorted. """
 
@@ -195,7 +195,8 @@ class PreDefinedFileProvider(FileProvider):
 
         return self.__files
 
-    def __get_file_filter(self, files):
+    @staticmethod
+    def __get_file_filter(files):
         """ Determines what kind of files should be filtered in the given list
         of <files>. Returns either a filter accepting only images, or only archives,
         depending on what type of file is found first in the list. """

@@ -11,7 +11,8 @@ from mcomix import archive_tools, callback
 
 class _BackendObject(object):
 
-    def get_backend(self):
+    @staticmethod
+    def get_backend():
         # XXX: Delayed import to avoid circular import
         from mcomix.library.backend import LibraryBackend
         return LibraryBackend()
@@ -312,7 +313,8 @@ class _WatchList(object):
             new_files = entry.get_new_files(existing_books)
             self.new_files_found(new_files, entry)
 
-    def _result_row_to_watchlist_entry(self, row):
+    @staticmethod
+    def _result_row_to_watchlist_entry(row):
         """ Converts the result of a SELECT statement to a WatchListEntry. """
         collection_id = row[2]
         if collection_id:

@@ -537,7 +537,8 @@ class MainWindow(Gtk.Window):
         self.statusbar.update()
         self.update_title()
 
-    def _get_size_rotation(self, width, height):
+    @staticmethod
+    def _get_size_rotation(width, height):
         """ Determines the rotation to be applied.
         Returns the degree of rotation (0, 90, 180, 270). """
 
@@ -726,7 +727,8 @@ class MainWindow(Gtk.Window):
         self._update_page_information()
         self.draw_image()
 
-    def change_invert_scroll(self, toggleaction):
+    @staticmethod
+    def change_invert_scroll(toggleaction):
         prefs['invert smart scroll'] = toggleaction.get_active()
 
     @property
@@ -785,7 +787,8 @@ class MainWindow(Gtk.Window):
     def change_hide_all(self, toggleaction):
         self._update_toggle_preference('hide all', toggleaction)
 
-    def change_keep_transformation(self, *args):
+    @staticmethod
+    def change_keep_transformation(*args):
         prefs['keep transformation'] = not prefs['keep transformation']
 
     def manual_zoom_in(self, *args):

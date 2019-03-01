@@ -174,7 +174,8 @@ class OpenWithCommand(object):
             result.append(buf)
         return result
 
-    def _expand_variable(self, identifier, window, context_type):
+    @staticmethod
+    def _expand_variable(identifier, window, context_type):
         """ Replaces variables with their respective file
         or archive path. """
 
@@ -548,7 +549,8 @@ class OpenWithEditor(Gtk.Dialog):
                 if response == Gtk.ResponseType.YES:
                     self.save()
 
-    def _quote_if_necessary(self, arg):
+    @staticmethod
+    def _quote_if_necessary(arg):
         """ Quotes a command line argument if necessary. """
         if arg == "":
             return '""'

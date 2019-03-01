@@ -307,7 +307,8 @@ class _KeybindingManager(object):
         """ Returns a list of (keycode, modifier) for the action C{name}. """
         return self._action_to_bindings[name]
 
-    def _migrate_from_old_bindings(self):
+    @staticmethod
+    def _migrate_from_old_bindings():
         """ This method deals with upgrading from MComix 1.0 and older to
         MComix 1.01, which integrated all UI hotkeys into this class. Simply
         remove old files and start from default values. """

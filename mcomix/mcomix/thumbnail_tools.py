@@ -165,7 +165,8 @@ class Thumbnailer(object):
 
         return pixbuf
 
-    def _get_text_data(self, filepath):
+    @staticmethod
+    def _get_text_data(filepath):
         """ Creates a tEXt dictionary for <filepath>. """
         mime = mimetypes.guess_type(filepath)[0] or "unknown/mime"
         uri = 'file://' + pathname2url(i18n.to_utf8(os.path.normpath(filepath)))
@@ -184,7 +185,8 @@ class Thumbnailer(object):
             'tEXt::Software': 'MComix %s' % constants.VERSION
         }
 
-    def _save_thumbnail(self, pixbuf, thumbpath, tEXt_data):
+    @staticmethod
+    def _save_thumbnail(pixbuf, thumbpath, tEXt_data):
         """ Saves <pixbuf> as <thumbpath>, with additional metadata
         from <tEXt_data>. If <thumbpath> already exists, it is overwritten. """
 
@@ -247,7 +249,8 @@ class Thumbnailer(object):
         thumbpath = os.path.join(self.dst_dir, md5hash + '.png')
         return thumbpath
 
-    def _guess_cover(self, files):
+    @staticmethod
+    def _guess_cover(files):
         """Return the filename within <files> that is the most likely to be the
         cover of an archive using some simple heuristics.
         """

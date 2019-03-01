@@ -324,7 +324,8 @@ class _PreferencesDialog(Gtk.Dialog):
             # Other responses close the dialog, e.g. clicking the X icon on the dialog.
             _close_dialog()
 
-    def _language_changed_cb(self, combobox, *args):
+    @staticmethod
+    def _language_changed_cb(combobox, *args):
         """ Called whenever the language was changed. """
         model_index = combobox.get_active()
         if model_index > -1:
@@ -574,7 +575,8 @@ class _PreferencesDialog(Gtk.Dialog):
             if value != last_value:
                 self._window.filehandler.refresh_file()
 
-    def _create_combobox(self, options, selected_value, change_callback):
+    @staticmethod
+    def _create_combobox(options, selected_value, change_callback):
         """ Creates a new dropdown combobox and populates it with the items
         passed in C{options}.
 

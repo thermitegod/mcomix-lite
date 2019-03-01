@@ -72,7 +72,8 @@ class BaseArchive(object):
         in one pass. """
         return False
 
-    def _create_directory(self, directory):
+    @staticmethod
+    def _create_directory(directory):
         """ Recursively create a directory if it doesn't exist yet. """
         if os.path.exists(directory):
             return

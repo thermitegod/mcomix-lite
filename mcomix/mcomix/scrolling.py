@@ -140,7 +140,8 @@ class Scrolling(object):
 
         return tools.vector_add(result, offset)
 
-    def scroll_to_predefined(self, content_box, viewport_box, orientation,
+    @staticmethod
+    def scroll_to_predefined(content_box, viewport_box, orientation,
                              destination):
         """ Returns a new viewport position when scrolling towards a
         predefined destination. Note that all params are lists of integers

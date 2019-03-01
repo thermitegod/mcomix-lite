@@ -247,7 +247,8 @@ class FileHandler(object):
 
             return path
 
-    def _check_access(self, path):
+    @staticmethod
+    def _check_access(path):
         """ Checks for various error that could occur when opening C{path}.
 
         @param path: Path to file that should be opened.
@@ -308,7 +309,8 @@ class FileHandler(object):
 
         self._archive_opened(image_files)
 
-    def _sort_archive_images(self, filelist):
+    @staticmethod
+    def _sort_archive_images(filelist):
         """ Sorts the image list passed in C{filelist} based on the sorting
         preference option. """
 
@@ -607,7 +609,8 @@ class FileHandler(object):
                     extractor_files.insert(0, name)
             self._extractor.set_files(extractor_files)
 
-    def thread_delete(self, path):
+    @staticmethod
+    def thread_delete(path):
         """Start a threaded removal of the directory tree rooted at <path>.
         This is to avoid long blockings when removing large temporary dirs.
         """
@@ -627,7 +630,8 @@ class FileHandler(object):
 
                 pickle.dump(current_file_info, config, pickle.HIGHEST_PROTOCOL)
 
-    def read_fileinfo_file(self):
+    @staticmethod
+    def read_fileinfo_file():
         """Read last loaded file info from disk."""
 
         fileinfo = None
