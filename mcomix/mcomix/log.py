@@ -14,9 +14,6 @@ __all__ = ['debug', 'info', 'warning', 'error', 'setLevel',
 
 
 class PrintHandler(logging.Handler):
-    def __init__(self):
-        super(PrintHandler, self).__init__()
-
     def emit(self, record):
         print(self.format(record))
 
@@ -26,7 +23,7 @@ __logger = logging.getLogger('mcomix')
 __logger.setLevel(WARNING)
 if not __logger.handlers:
     __handler = PrintHandler()
-    __handler.setFormatter(logging.Formatter('%(asctime)s [%(threadName)s] %(levelname)s: %(message)s', '%H:%M:%S'))
+    __handler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] [%(threadName)s] %(message)s', '%H:%M:%S'))
     __logger.handlers = [__handler]
 
 # The following functions direct all input to __logger.
