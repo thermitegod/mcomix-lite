@@ -40,8 +40,7 @@ class _EditArchiveDialog(Gtk.Dialog):
                                                                Gtk.IconSize.BUTTON))
 
         self.set_border_width(4)
-        self.resize(min(Gdk.Screen.get_default().get_width() - 50, 750),
-                    min(Gdk.Screen.get_default().get_height() - 50, 600))
+        self.resize(770, 600)
 
         self.connect('response', self._response)
 
