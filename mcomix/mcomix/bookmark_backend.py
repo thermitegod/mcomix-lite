@@ -5,8 +5,8 @@
 import datetime
 import operator
 import os
-import pickle
-import time
+
+import numpy as np
 
 from gi.repository import Gtk
 
@@ -121,25 +121,17 @@ class __BookmarksStore(object):
         @return: Tuple of (bookmarks, file mtime)
         """
 
-        path = constants.BOOKMARK_PICKLE_PATH
+        path = constants.BOOKMARK_NPY_PATH
         bookmarks = []
         mtime = 0
 
         if os.path.isfile(path):
             try:
                 mtime = os.stat(path).st_mtime
-                with open(path, 'rb') as fd:
-                    version = pickle.load(fd)
-                    packs = pickle.load(fd)
 
-                    for pack in packs:
-                        # Handle old bookmarks without date_added attribute
-                        if len(pack) == 5:
-                            pack = pack + (datetime.datetime.now(),)
-
-                        bookmark = bookmark_menu_item._Bookmark(self._window,
-                                                                self._file_handler, *pack)
-                        bookmarks.append(bookmark)
+                for pack in np.load(path):
+                    bookmark = bookmark_menu_item._Bookmark(self._window, self._file_handler, *pack)
+                    bookmarks.append(bookmark)
 
             except Exception:
                 log.error('! Could not parse bookmarks file %s', path)
@@ -149,7 +141,7 @@ class __BookmarksStore(object):
     def file_was_modified(self):
         """ Checks the bookmark store's mtime to see if it has been modified
         since it was last read. """
-        path = constants.BOOKMARK_PICKLE_PATH
+        path = constants.BOOKMARK_NPY_PATH
         if os.path.isfile(path):
             try:
                 mtime = os.stat(path).st_mtime
@@ -171,13 +163,7 @@ class __BookmarksStore(object):
             new_bookmarks, _ = self.load_bookmarks()
             self._bookmarks = list(set(self._bookmarks + new_bookmarks))
 
-        with open(constants.BOOKMARK_PICKLE_PATH, 'wb') as fd:
-            pickle.dump(constants.VERSION, fd, pickle.HIGHEST_PROTOCOL)
-
-            packs = [bookmark.pack() for bookmark in self._bookmarks]
-            pickle.dump(packs, fd, pickle.HIGHEST_PROTOCOL)
-
-        self._bookmarks_mtime = time.time()
+        np.save(constants.BOOKMARK_NPY_PATH, [bookmark.pack() for bookmark in self._bookmarks])
 
     def show_replace_bookmark_dialog(self, old_bookmarks, new_page):
         """ Present a confirmation dialog to replace old bookmarks.
@@ -189,17 +175,9 @@ class __BookmarksStore(object):
                            Gtk.STOCK_NO, Gtk.ResponseType.NO,
                            Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
         dialog.set_default_response(Gtk.ResponseType.YES)
-        dialog.set_should_remember_choice('replace-existing-bookmark',
-                                          (Gtk.ResponseType.YES, Gtk.ResponseType.NO))
+        dialog.set_should_remember_choice('replace-existing-bookmark', (Gtk.ResponseType.YES, Gtk.ResponseType.NO))
 
-        pages = map(str, sorted(map(operator.attrgetter('_page'), old_bookmarks)))
         dialog.set_text(
-            i18n.get_translation().ngettext(
-                'Replace existing bookmark on page %s?',
-                'Replace existing bookmarks on pages %s?',
-                len(list(pages))
-            ) % ", ".join(pages),
-
             ('The current book already contains marked pages. '
              'Do you want to replace them with a new bookmark on page %d? ') % new_page +
             '\n\n' + 'Selecting "No" will create a new bookmark without affecting the other bookmarks.')

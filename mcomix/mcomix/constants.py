@@ -21,10 +21,8 @@ LIBRARY_COVERS_PATH = os.path.join(DATA_DIR, 'library_covers')
 PREFERENCE_PATH = os.path.join(CONFIG_DIR, 'preferences.conf')
 KEYBINDINGS_CONF_PATH = os.path.join(CONFIG_DIR, 'keybindings.conf')
 
-BOOKMARK_PICKLE_PATH = os.path.join(DATA_DIR, 'bookmarks.pickle')
+BOOKMARK_NPY_PATH = os.path.join(DATA_DIR, 'bookmarks.npy')
 FILEINFO_PICKLE_PATH = os.path.join(DATA_DIR, 'file.pickle')
-# Transitional - used if json preferences are (were) absent.
-PREFERENCE_PICKLE_PATH = os.path.join(CONFIG_DIR, 'preferences.pickle')
 
 ZOOM_MODE_BEST, ZOOM_MODE_WIDTH, ZOOM_MODE_HEIGHT, ZOOM_MODE_MANUAL, ZOOM_MODE_SIZE = range(5)
 
