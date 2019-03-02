@@ -171,7 +171,7 @@ class _KeybindingManager(object):
 
         # Load stored keybindings, or fall back to passed arguments
         keycodes = self._action_to_bindings[name]
-        if keycodes == []:
+        if not keycodes:
             keycodes = [Gtk.accelerator_parse(binding) for binding in bindings]
 
         for keycode in keycodes:

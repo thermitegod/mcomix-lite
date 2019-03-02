@@ -55,7 +55,7 @@ class BaseArchive(object):
         """ Generator to extract <entries> from archive to <destination_dir>. """
         wanted = set(entries)
         for filename in self.iter_contents():
-            if not filename in wanted:
+            if filename not in wanted:
                 continue
             self.extract(filename, destination_dir)
             yield filename

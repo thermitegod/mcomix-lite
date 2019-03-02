@@ -122,7 +122,7 @@ class ImageHandler(object):
         self._wanted_pixbufs = wanted_pixbufs
         # Start caching available images not already in cache.
         wanted_pixbufs = [index for index in wanted_pixbufs
-            if index in self._available_images and not index in self._raw_pixbufs]
+            if index in self._available_images and index not in self._raw_pixbufs]
         orders = [(priority, index) for priority, index in enumerate(wanted_pixbufs)]
         if len(orders) > 0:
             self._thread.extend_orders(orders)
@@ -146,7 +146,7 @@ class ImageHandler(object):
         be displayed has a width that exceeds its height), or if currently
         on the first page.
         """
-        if page == None:
+        if page is None:
             page = self.get_current_page()
 
         if (page == 1 and
@@ -213,7 +213,7 @@ class ImageHandler(object):
             index_list = [page - 1]
 
         for index in index_list:
-            if not index in self._available_images:
+            if index not in self._available_images:
                 return False
 
         return True
@@ -286,13 +286,13 @@ class ImageHandler(object):
             page = self.get_current_page()
 
         first_path = self.get_path_to_page(page)
-        if first_path == None:
+        if first_path is None:
             return ('', '') if double else ''
 
         if double:
             second_path = self.get_path_to_page(page + 1)
 
-            if second_path != None:
+            if second_path is not None:
                 first = os.path.basename(first_path)
                 second = os.path.basename(second_path)
             else:
@@ -320,7 +320,7 @@ class ImageHandler(object):
 
         if double:
             second_path = self.get_path_to_page(page + 1)
-            if second_path != None:
+            if second_path is not None:
                 try:
                     first = tools.format_byte_size(os.stat(first_path).st_size)
                 except OSError:
@@ -399,7 +399,7 @@ class ImageHandler(object):
             return None
         path = self.get_path_to_page(page)
 
-        if path == None:
+        if path is None:
             return None
 
         try:
@@ -457,7 +457,7 @@ class ImageHandler(object):
         del page_list[0:page_width]
         page_list[2 * page_width:2 * page_width] = previous_page
         page_list = [index for index in page_list
-            if index >= 0 and index < len(self._image_files)]
+            if 0 <= index < len(self._image_files)]
 
         log.debug('Ask for priority extraction around page %u: %s',
                   page, ' '.join([str(n + 1) for n in page_list]))

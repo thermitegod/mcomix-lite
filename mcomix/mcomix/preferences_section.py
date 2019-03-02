@@ -39,7 +39,7 @@ class _PreferenceSection(Gtk.VBox):
         left_box = Gtk.VBox(homogeneous=False, spacing=6)
         right_box = Gtk.VBox(homogeneous=False, spacing=6)
 
-        if self._right_column_width != None:
+        if self._right_column_width is not None:
             right_box.set_size_request(self._right_column_width, -1)
 
         hbox = Gtk.HBox(homogeneous=False, spacing=12)

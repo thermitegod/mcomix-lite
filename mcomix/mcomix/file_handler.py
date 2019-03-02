@@ -287,9 +287,8 @@ class FileHandler(object):
 
         files = self._extractor.get_files()
         archive_images = [image for image in files
-            if image_tools.is_image_file(image)
-               # Remove MacOS meta files from image list
-               and not '__MACOSX' in os.path.normpath(image).split(os.sep)]
+            # Remove MacOS meta files from image list
+            if image_tools.is_image_file(image) and '__MACOSX' not in os.path.normpath(image).split(os.sep)]
 
         self._sort_archive_images(archive_images)
         image_files = [os.path.join(self._tmp_dir, f)
@@ -580,7 +579,7 @@ class FileHandler(object):
         archive and has not yet been extracted. Return when the file is
         ready.
         """
-        if self.archive_type == None or path == None:
+        if self.archive_type is None or path is None:
             return
 
         try:
@@ -595,7 +594,7 @@ class FileHandler(object):
     def _ask_for_files(self, files):
         """Ask for <files> to be given priority for extraction.
         """
-        if self.archive_type == None:
+        if self.archive_type is None:
             return
 
         with self._condition:

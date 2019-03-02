@@ -247,7 +247,7 @@ class MainWindow(Gtk.Window):
         if prefs['previous quit was quit and save']:
             fileinfo = self.filehandler.read_fileinfo_file()
 
-            if fileinfo != None:
+            if fileinfo is not None:
                 open_path = fileinfo[0]
                 open_page = fileinfo[1] + 1
 

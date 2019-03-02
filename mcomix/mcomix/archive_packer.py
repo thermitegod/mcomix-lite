@@ -48,7 +48,7 @@ class Packer(object):
         """Block until the packer thread has finished. Return True if the
         packer finished its work successfully.
         """
-        if self._pack_thread != None:
+        if self._pack_thread is not None:
             self._pack_thread.join()
 
         return self._packing_successful

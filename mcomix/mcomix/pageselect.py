@@ -95,7 +95,7 @@ class Pageselector(Gtk.Dialog):
             the preview thumbnail when entering page numbers by hand. """
         if control.get_text().isdigit():
             page = int(control.get_text())
-            if page > 0 and page <= self._number_of_pages:
+            if 0 < page <= self._number_of_pages:
                 control.set_value(page)
 
     def _response(self, widget, event, *args):
