@@ -65,23 +65,23 @@ class _PreferencesDialog(Gtk.Dialog):
 
         page.new_section('Background')
 
-        fixed_bg_button, dynamic_bg_button = self._create_binary_pref_radio_buttons('Use this colour as background:',
+        fixed_bg_button, dynamic_bg_button = self._create_binary_pref_radio_buttons('Use this color as background:',
                                                                                     'color box bg',
-                                                                                    'Always use this selected colour as the background colour.',
-                                                                                    'Use dynamic background colour',
+                                                                                    'Always use this selected color as the background color.',
+                                                                                    'Use dynamic background color',
                                                                                     'smart bg',
-                                                                                    'Automatically pick a background colour that fits the viewed image.')
-        page.add_row(fixed_bg_button, self._create_color_button('bg colour'))
+                                                                                    'Automatically pick a background color that fits the viewed image.')
+        page.add_row(fixed_bg_button, self._create_color_button('bg color'))
         page.add_row(dynamic_bg_button)
 
         page.new_section('Thumbnails')
 
         thumb_fixed_bg_button, thumb_dynamic_bg_button = self._create_binary_pref_radio_buttons(
-            'Use this colour as the thumbnail background:',
-            'color box thumb bg', 'Always use this selected colour as the thumbnail background colour.',
-            'Use dynamic background colour',
-            'smart thumb bg', 'Automatically use the colour that fits the viewed image for the thumbnail background.')
-        page.add_row(thumb_fixed_bg_button, self._create_color_button('thumb bg colour'))
+            'Use this color as the thumbnail background:',
+            'color box thumb bg', 'Always use this selected color as the thumbnail background color.',
+            'Use dynamic background color',
+            'smart thumb bg', 'Automatically use the color that fits the viewed image for the thumbnail background.')
+        page.add_row(thumb_fixed_bg_button, self._create_color_button('thumb bg color'))
         page.add_row(thumb_dynamic_bg_button)
 
         page.add_row(self._create_pref_check_button('Show page numbers on thumbnails',
@@ -647,12 +647,12 @@ class _PreferencesDialog(Gtk.Dialog):
 
         if preference == 'color box bg' and button.get_active():
             if not prefs['smart bg'] or not self._window.filehandler.file_loaded:
-                self._window.set_bg_colour(prefs['bg colour'])
+                self._window.set_bg_color(prefs['bg color'])
 
         elif preference == 'smart bg' and button.get_active():
             # if the color is no longer using the smart background then return it to the chosen color
             if not prefs[preference]:
-                self._window.set_bg_colour(prefs['bg colour'])
+                self._window.set_bg_color(prefs['bg color'])
             else:
                 # draw_image() will set the main background to the smart background
                 self._window.draw_image()
@@ -660,21 +660,21 @@ class _PreferencesDialog(Gtk.Dialog):
         elif preference == 'color box thumb bg' and button.get_active():
             if prefs[preference]:
                 prefs['smart thumb bg'] = False
-                prefs['thumbnail bg uses main colour'] = False
+                prefs['thumbnail bg uses main color'] = False
 
-                self._window.thumbnailsidebar.change_thumbnail_background_color(prefs['thumb bg colour'])
+                self._window.thumbnailsidebar.change_thumbnail_background_color(prefs['thumb bg color'])
             else:
                 self._window.draw_image()
 
         elif preference == 'smart thumb bg' and button.get_active():
             if prefs[preference]:
                 prefs['color box thumb bg'] = False
-                prefs['thumbnail bg uses main colour'] = False
+                prefs['thumbnail bg uses main color'] = False
 
                 pixbuf = image_tools.static_image(image_tools.unwrap_image(
                     self._window.images[0]))  # XXX transitional(double page limitation)
                 if pixbuf:
-                    bg_color = image_tools.get_most_common_edge_colour(pixbuf)
+                    bg_color = image_tools.get_most_common_edge_color(pixbuf)
                     self._window.thumbnailsidebar.change_thumbnail_background_color(bg_color)
             else:
                 self._window.draw_image()
@@ -691,21 +691,21 @@ class _PreferencesDialog(Gtk.Dialog):
             self._window.thumbnailsidebar.toggle_page_numbers_visible()
 
     def _color_button_cb(self, colorbutton, preference):
-        """Callback for the background colour selection button."""
+        """Callback for the background color selection button."""
 
-        colour = colorbutton.get_color()
+        color = colorbutton.get_color()
 
-        if preference == 'bg colour':
-            prefs['bg colour'] = colour.red, colour.green, colour.blue
+        if preference == 'bg color':
+            prefs['bg color'] = color.red, color.green, color.blue
 
             if not prefs['smart bg'] or not self._window.filehandler.file_loaded:
-                self._window.set_bg_colour(prefs['bg colour'])
+                self._window.set_bg_color(prefs['bg color'])
 
-        elif preference == 'thumb bg colour':
-            prefs['thumb bg colour'] = colour.red, colour.green, colour.blue
+        elif preference == 'thumb bg color':
+            prefs['thumb bg color'] = color.red, color.green, color.blue
 
             if not prefs['smart thumb bg'] or not self._window.filehandler.file_loaded:
-                self._window.thumbnailsidebar.change_thumbnail_background_color(prefs['thumb bg colour'])
+                self._window.thumbnailsidebar.change_thumbnail_background_color(prefs['thumb bg color'])
 
     def _create_pref_spinner(self, prefkey, scale, lower, upper, step_incr,
                              page_incr, digits, tooltip_text):

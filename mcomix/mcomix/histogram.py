@@ -14,7 +14,7 @@ def draw_histogram(pixbuf, height=170, fill=170, text=True):
 
     The returned prixbuf will be 262x<height> px.
 
-    The value of <fill> determines the colour intensity of the filled graphs,
+    The value of <fill> determines the color intensity of the filled graphs,
     valid values are between 0 and 255.
 
     If <text> is True a label with the maximum pixel value will be added to
@@ -28,7 +28,7 @@ def draw_histogram(pixbuf, height=170, fill=170, text=True):
     g = [int(hist_data[n] * y_scale) for n in range(256, 512)]
     b = [int(hist_data[n] * y_scale) for n in range(512, 768)]
     im_data = im.getdata()
-    # Draw the filling colours
+    # Draw the filling colors
     for x in range(256):
         for y in range(1, max(r[x], g[x], b[x]) + 1):
             r_px = y <= r[x] and fill or 0

@@ -81,7 +81,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         self._treeview.set_can_focus(False)
 
         self.add(self._treeview)
-        self.change_thumbnail_background_color(prefs['thumb bg colour'])
+        self.change_thumbnail_background_color(prefs['thumb bg color'])
         self.show_all()
 
         self._window.page_changed += self._on_page_change
@@ -129,10 +129,10 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         self._thumbnail_image_treeviewcolumn.set_fixed_width(self._pixbuf_size)
         self.load_thumbnails()
 
-    def change_thumbnail_background_color(self, colour):
+    def change_thumbnail_background_color(self, color):
         """ Changes the background color of the thumbnail bar. """
 
-        self.set_thumbnail_background(colour)
+        self.set_thumbnail_background(color)
         # Force a redraw of the widget.
         self._treeview.queue_draw()
 

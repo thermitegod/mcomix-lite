@@ -143,20 +143,20 @@ def fit_in_rectangle(src, width, height, keep_ratio=True, scale_up=False, rotati
     return src
 
 
-def add_border(pixbuf, thickness, colour=0x000000FF):
+def add_border(pixbuf, thickness, color=0x000000FF):
     """Return a pixbuf from <pixbuf> with a <thickness> px border of
-    <colour> added.
+    <color> added.
     """
     canvas = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8,
                                   pixbuf.get_width() + thickness * 2,
                                   pixbuf.get_height() + thickness * 2)
-    canvas.fill(colour)
+    canvas.fill(color)
     pixbuf.copy_area(0, 0, pixbuf.get_width(), pixbuf.get_height(),
                      canvas, thickness, thickness)
     return canvas
 
 
-def get_most_common_edge_colour(pixbufs, edge=2):
+def get_most_common_edge_color(pixbufs, edge=2):
     """Return the most commonly occurring pixel value along the four edges
     of <pixbuf>. The return value is a sequence, (r, g, b), with 16 bit
     values. If <pixbuf> is a tuple, the edges will be computed from
