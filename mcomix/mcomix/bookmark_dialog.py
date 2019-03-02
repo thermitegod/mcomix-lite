@@ -97,7 +97,7 @@ class _BookmarksDialog(Gtk.Dialog):
         # FIXME Hide extra columns. Needs UI controls to enable these.
         self._path_col.set_visible(False)
 
-        self.resize(600, 450)
+        self.resize(1300, 650)
 
         self.connect('response', self._response)
         self.connect('delete_event', self._close)
