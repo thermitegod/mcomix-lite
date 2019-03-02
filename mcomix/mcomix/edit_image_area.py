@@ -78,16 +78,15 @@ class _ImageArea(Gtk.ScrolledWindow):
 
     def _generate_thumbnail(self, uid):
         assert isinstance(uid, str)
-        path = uid
         try:
-            if not self._window.filehandler.file_is_available(path):
+            if not self._window.filehandler.file_is_available(uid):
                 return None
         except KeyError:
             # Not a page from the current archive, ignore.
             pass
-        pixbuf = self._thumbnailer.thumbnail(path)
+        pixbuf = self._thumbnailer.thumbnail(uid)
         if pixbuf is None:
-            pixbuf = image_tools.MISSING_IMAGE_ICON
+            return image_tools.MISSING_IMAGE_ICON
         return pixbuf
 
     def add_extra_image(self, path):

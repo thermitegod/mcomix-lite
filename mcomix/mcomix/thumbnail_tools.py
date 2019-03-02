@@ -246,8 +246,7 @@ class Thumbnailer(object):
         """ Return the full path to the thumbnail for <uri> with <dst_dir>
         being the base thumbnail directory. """
         md5hash = md5(uri.encode()).hexdigest()
-        thumbpath = os.path.join(self.dst_dir, md5hash + '.png')
-        return thumbpath
+        return os.path.join(self.dst_dir, md5hash + '.png')
 
     @staticmethod
     def _guess_cover(files):

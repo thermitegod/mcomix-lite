@@ -138,9 +138,7 @@ def fit_in_rectangle(src, width, height, keep_ratio=True, scale_up=False, rotati
     elif width != src_width or height != src_height:
         src = src.scale_simple(width, height, scaling_quality)
 
-    src = rotate_pixbuf(src, rotation)
-
-    return src
+    return rotate_pixbuf(src, rotation)
 
 
 def add_border(pixbuf, thickness, color=0x000000FF):
@@ -459,7 +457,7 @@ def _get_png_implied_rotation(pixbuf_or_image):
     exif = _getexif(im)
     orientation = exif.get(274, None)
     if orientation is not None:
-        orientation = str(orientation)
+        return str(orientation)
     return orientation
 
 

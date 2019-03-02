@@ -400,10 +400,9 @@ class FileHandler(object):
         readable.
         """
         self._wait_on_comment(num)
-        text = None
         with open(self._comment_files[num - 1], 'r') as fd:
-            text = fd.read()
-        return text
+            return fd.read()
+        return None
 
     def get_comment_name(self, num):
         """Return the filename of comment <num>."""

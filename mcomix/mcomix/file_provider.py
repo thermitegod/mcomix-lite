@@ -20,20 +20,18 @@ def get_file_provider(filelist):
     if len(filelist) > 0:
         if len(filelist) == 1:
             if os.path.exists(filelist[0]):
-                provider = OrderedFileProvider(filelist[0])
+                return OrderedFileProvider(filelist[0])
             else:
-                provider = None
+                return None
         else:
-            provider = PreDefinedFileProvider(filelist)
+            return PreDefinedFileProvider(filelist)
 
     elif (preferences.prefs['auto load last file']
           and os.path.isfile(preferences.prefs['path to last file'])):
-        provider = OrderedFileProvider(preferences.prefs['path to last file'])
+        return OrderedFileProvider(preferences.prefs['path to last file'])
 
     else:
-        provider = None
-
-    return provider
+        return None
 
 
 class FileProvider(object):
@@ -165,8 +163,7 @@ class OrderedFileProvider(FileProvider):
             for directory in os.listdir(parent_dir)
             if os.path.isdir(os.path.join(parent_dir, directory))]
 
-        tools.alphanumeric_sort(directories)
-        return directories
+        return tools.alphanumeric_sort(directories)
 
 
 class PreDefinedFileProvider(FileProvider):

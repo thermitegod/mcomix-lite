@@ -29,14 +29,9 @@ class OpenWithManager(object):
 
     @staticmethod
     def get_commands():
-        try:
-            return [OpenWithCommand(label, command, cwd, disabled_for_archives)
-                for label, command, cwd, disabled_for_archives
-                in prefs['openwith commands']]
-        except ValueError:
-            # Backwards compatibility for early versions with only two parameters
-            return [OpenWithCommand(label, command, '', False)
-                for label, command in prefs['openwith commands']]
+        return [OpenWithCommand(label, command, cwd, disabled_for_archives)
+            for label, command, cwd, disabled_for_archives
+            in prefs['openwith commands']]
 
 
 class OpenWithCommand(object):

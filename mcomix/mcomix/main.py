@@ -542,24 +542,22 @@ class MainWindow(Gtk.Window):
         """ Determines the rotation to be applied.
         Returns the degree of rotation (0, 90, 180, 270). """
 
-        size_rotation = 0
-
         if (height > width and
                 prefs['auto rotate depending on size'] in
                 (constants.AUTOROTATE_HEIGHT_90, constants.AUTOROTATE_HEIGHT_270)):
             if prefs['auto rotate depending on size'] == constants.AUTOROTATE_HEIGHT_90:
-                size_rotation = 90
+                return 90
             else:
-                size_rotation = 270
+                return 270
         elif (width > height and
               prefs['auto rotate depending on size'] in
               (constants.AUTOROTATE_WIDTH_90, constants.AUTOROTATE_WIDTH_270)):
             if prefs['auto rotate depending on size'] == constants.AUTOROTATE_WIDTH_90:
-                size_rotation = 90
+                return 90
             else:
-                size_rotation = 270
+                return 270
 
-        return size_rotation
+        return 0
 
     def _page_available(self, page):
         """ Called whenever a new page is ready for displaying. """

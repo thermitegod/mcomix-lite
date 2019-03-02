@@ -62,8 +62,7 @@ class FiniteLayout(object):  # 2D only
                     self.scroll_to_predefined(tools.vector_opposite(o), index)
                 return index
             else:
-                index = -1 if backwards else len(self.get_content_boxes())
-                return index
+                return -1 if backwards else len(self.get_content_boxes())
         self.set_viewport_position(new_pos)
         return index
 

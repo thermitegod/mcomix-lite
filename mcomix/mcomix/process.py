@@ -25,29 +25,25 @@ def _fix_args(args):
     return fixed_args
 
 
-def _get_creationflags():
-    return 0
-
-
 def call(args, stdin=NULL, stdout=NULL, stderr=NULL, universal_newlines=False):
     return 0 == subprocess.call(_fix_args(args), stdin=stdin,
                                 stdout=stdout,
                                 universal_newlines=universal_newlines,
-                                creationflags=_get_creationflags())
+                                creationflags=0)
 
 
 def popen(args, stdin=NULL, stdout=PIPE, stderr=NULL, universal_newlines=False):
     return subprocess.Popen(_fix_args(args), stdin=stdin,
                             stdout=stdout, stderr=stderr,
                             universal_newlines=universal_newlines,
-                            creationflags=_get_creationflags())
+                            creationflags=0)
 
 
 def call_thread(args):
     # call command in thread, so drop std* and set no buffer
     params = dict(
         stdin=NULL, stdout=NULL, stderr=NULL,
-        bufsize=0, creationflags=_get_creationflags()
+        bufsize=0, creationflags=0
     )
     thread = Thread(target=subprocess.call,
                     args=(args,), kwargs=params, daemon=True)
