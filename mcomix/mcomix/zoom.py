@@ -31,9 +31,6 @@ class ZoomModel(object):
             raise ValueError("No fit mode for id %d." % fitmode)
         self._fitmode = fitmode
 
-    def get_scale_up(self):
-        return self._scale_up
-
     def set_scale_up(self, scale_up):
         self._scale_up = scale_up
 

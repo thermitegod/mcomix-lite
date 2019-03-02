@@ -324,15 +324,6 @@ class _PreferencesDialog(Gtk.Dialog):
             # Other responses close the dialog, e.g. clicking the X icon on the dialog.
             _close_dialog()
 
-    @staticmethod
-    def _language_changed_cb(combobox, *args):
-        """ Called whenever the language was changed. """
-        model_index = combobox.get_active()
-        if model_index > -1:
-            iter = combobox.get_model().iter_nth_child(None, model_index)
-            text, lang_code = combobox.get_model().get(iter, 0, 1)
-            prefs['language'] = lang_code
-
     def _create_doublepage_as_one_control(self):
         """ Creates the ComboBox control for selecting virtual double page options. """
         items = (
@@ -535,8 +526,7 @@ class _PreferencesDialog(Gtk.Dialog):
         selection = prefs['scaling quality']
 
         box = self._create_combobox(items, selection, self._scaling_quality_changed_cb)
-        box.set_tooltip_text(
-            'Changes how images are scaled. Slower algorithms result in higher quality resizing, but longer page loading times.')
+        box.set_tooltip_text('Changes how images are scaled. Slower algorithms result in higher quality resizing, but longer page loading times.')
 
         return box
 
@@ -620,8 +610,7 @@ class _PreferencesDialog(Gtk.Dialog):
         entry.set_text(', '.join(prefs['comment extensions']))
         entry.connect('activate', self._entry_cb)
         entry.connect('focus_out_event', self._entry_cb)
-        entry.set_tooltip_text(
-            'Treat all files found within archives, that have one of these file endings, as comments.')
+        entry.set_tooltip_text('Treat all files found within archives, that have one of these file endings, as comments.')
         return entry
 
     def _create_pref_check_button(self, label, prefkey, tooltip_text):
@@ -784,7 +773,7 @@ class _PreferencesDialog(Gtk.Dialog):
         self._window.filehandler.update_comment_extensions()
 
     def _create_pref_folder_chooser(self, preference, default=None):
-        ''' Select folder as preference value '''
+        """ Select folder as preference value """
         box = Gtk.Box()
 
         chooser = Gtk.Button()
@@ -798,7 +787,7 @@ class _PreferencesDialog(Gtk.Dialog):
         return box
 
     def _chooser_folder_cb(self, widget, chooser, preference, default, is_reset):
-        ''' Callback for folder chooser '''
+        """ Callback for folder chooser """
         if is_reset:
             prefs[preference] = default
             chooser.set_label(prefs[preference] or '(default)')

@@ -294,9 +294,9 @@ class MainWindow(Gtk.Window):
                           priority=GLib.PRIORITY_HIGH_IDLE)
 
     def _update_toggle_preference(self, preference, toggleaction):
-        ''' Update "toggle" widget corresponding <preference>.
+        """ Update "toggle" widget corresponding <preference>.
 
-        Note: the widget visibily itself is left unchanged. '''
+        Note: the widget visibily itself is left unchanged. """
         prefs[preference] = toggleaction.get_active()
         if 'hide all' == preference:
             self._update_toggles_sensitivity()
@@ -305,7 +305,7 @@ class MainWindow(Gtk.Window):
         self.draw_image()
 
     def _should_toggle_be_visible(self, preference):
-        ''' Return <True> if "toggle" widget for <preference> should be visible. '''
+        """ Return <True> if "toggle" widget for <preference> should be visible. """
         if self.is_fullscreen:
             visible = not prefs['hide all in fullscreen']
         else:
@@ -317,7 +317,7 @@ class MainWindow(Gtk.Window):
         return visible
 
     def _update_toggles_sensitivity(self):
-        ''' Update each "toggle" widget sensitivity. '''
+        """ Update each "toggle" widget sensitivity. """
         sensitive = True
         if prefs['hide all']:
             sensitive = False
@@ -327,7 +327,7 @@ class MainWindow(Gtk.Window):
             self.actiongroup.get_action(action).set_sensitive(sensitive)
 
     def _update_toggles_visibility(self):
-        ''' Update each "toggle" widget visibility. '''
+        """ Update each "toggle" widget visibility. """
         for preference, action, widget_list in self._toggle_list:
             should_be_visible = self._should_toggle_be_visible(preference)
             for widget in widget_list:
@@ -847,11 +847,12 @@ class MainWindow(Gtk.Window):
             bound = {'first': 'second', 'second': 'first'}[bound]
 
         if bound == 'first':
-            hadjust_upper = max(0, hadjust_upper -
-                                   self.images[1].size_request().width - 2)  # XXX transitional(double page limitation)
+            # XXX transitional(double page limitation)
+            hadjust_upper = max(0, hadjust_upper - self.images[1].size_request().width - 2)
 
         elif bound == 'second':
-            hadjust_lower = self.images[0].size_request().width + 2  # XXX transitional(double page limitation)
+            # XXX transitional(double page limitation)
+            hadjust_lower = self.images[0].size_request().width + 2
 
         new_hadjust = old_hadjust + x
         new_vadjust = old_vadjust + y
@@ -925,16 +926,6 @@ class MainWindow(Gtk.Window):
                     dimensions[axis] -= size
 
         return tuple(dimensions)
-
-    def get_layout_pointer_position(self):
-        """Return a 2-tuple with the x and y coordinates of the pointer
-        on the main layout area, relative to the layout.
-        """
-        x, y = self._main_layout.get_pointer()
-        x += self._hadjust.get_value()
-        y += self._vadjust.get_value()
-
-        return x, y
 
     def set_cursor(self, mode):
         """Set the cursor on the main layout area to <mode>. You should

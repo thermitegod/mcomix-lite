@@ -12,7 +12,7 @@ from mcomix import i18n
 class _CommentsDialog(Gtk.Dialog):
 
     def __init__(self, window):
-        super(_CommentsDialog, self).__init__(('Comments'), window, 0,
+        super(_CommentsDialog, self).__init__('Comments', window, 0,
                                               (Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE))
 
         self.set_resizable(True)

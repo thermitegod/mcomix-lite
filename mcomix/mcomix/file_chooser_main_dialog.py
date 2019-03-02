@@ -26,8 +26,7 @@ class _MainFileChooserDialog(file_chooser_base_dialog._BaseFileChooserDialog):
             # there is no solution that I know of, so we'll have to live
             # with it. It only happens the second time a dialog is created
             # though, which is very strange.
-            self.filechooser.set_filter(filters[
-                                            prefs['last filter in main filechooser']])
+            self.filechooser.set_filter(filters[prefs['last filter in main filechooser']])
         except:
             self.filechooser.set_filter(filters[0])
 

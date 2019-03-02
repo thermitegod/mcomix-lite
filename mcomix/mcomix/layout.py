@@ -98,11 +98,6 @@ class FiniteLayout(object):  # 2D only
         @return: The Boxes as they are arranged in this layout. """
         return self.content_boxes
 
-    def get_wrapper_boxes(self):
-        """ Returns the wrapper Boxes as they are arranged in this layout.
-        @return: The wrapper Boxes as they are arranged in this layout. """
-        return self.wrapper_boxes
-
     def get_union_box(self):
         """ Returns the union Box for this layout.
         @return: The union Box for this layout. """
@@ -121,11 +116,6 @@ class FiniteLayout(object):  # 2D only
         """ Returns the current viewport Box.
         @return: The current viewport Box. """
         return self.viewport_box
-
-    def get_orientation(self):
-        """ Returns the orientation for this layout.
-        @return: The orientation for this layout. """
-        return self.orientation
 
     def set_orientation(self, orientation):
         self.orientation = orientation

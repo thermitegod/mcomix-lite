@@ -538,7 +538,7 @@ class EventHandler(object):
 
         self._window.cursor_handler.set_cursor_type(constants.NORMAL_CURSOR)
 
-        if (event.button == 1):
+        if event.button == 1:
             if event.x_root == self._pressed_pointer_pos_x and \
                     event.y_root == self._pressed_pointer_pos_y and \
                     not self._window.was_out_of_focus:
@@ -562,8 +562,6 @@ class EventHandler(object):
     def mouse_move_event(self, widget, event):
         """Handle mouse pointer movement events."""
 
-        event = _get_latest_event_of_same_type(event)
-
         if 'GDK_BUTTON1_MASK' in event.get_state().value_names:
             self._window.cursor_handler.set_cursor_type(constants.GRAB_CURSOR)
             scrolled = self._window.scroll(self._last_pointer_pos_x - event.x_root,
@@ -583,9 +581,6 @@ class EventHandler(object):
                 if (new_x != event.x_root) or (new_y != event.y_root):
                     display = screen.get_display()
                     display.warp_pointer(screen, int(new_x), int(new_y))
-                    ## This might be (or might not be) necessary to avoid
-                    ## doing one warp multiple times.
-                    event = _get_latest_event_of_same_type(event)
 
                 self._last_pointer_pos_x = new_x
                 self._last_pointer_pos_y = new_y
@@ -599,7 +594,7 @@ class EventHandler(object):
         """Handle drag-n-drop events on the main layout area."""
         # The drag source is inside MComix itself, so we ignore.
 
-        if (Gtk.drag_get_source_widget(context) is not None):
+        if Gtk.drag_get_source_widget(context) is not None:
             return
 
         uris = selection.get_uris()
@@ -702,7 +697,7 @@ class EventHandler(object):
             self._flip_page(1)
             return True
 
-        elif (self._scroll_protection):
+        elif self._scroll_protection:
             self._extra_scroll_events = max(1, self._extra_scroll_events + 1)
             return False
 
@@ -726,7 +721,7 @@ class EventHandler(object):
             self._flip_page(-1)
             return True
 
-        elif (self._scroll_protection):
+        elif self._scroll_protection:
             self._extra_scroll_events = min(-1, self._extra_scroll_events - 1)
             return False
 
@@ -753,29 +748,6 @@ class EventHandler(object):
         commands = [cmd for cmd in manager.get_commands() if not cmd.is_separator()]
         if len(commands) > cmdindex:
             commands[cmdindex].execute(self._window)
-
-
-def _get_latest_event_of_same_type(event):
-    """Return the latest event in the event queue that is of the same type
-    as <event>, or <event> itself if no such events are in the queue. All
-    events of that type will be removed from the event queue.
-    """
-    return event
-    events = []
-
-    while Gdk.events_pending():
-        queued_event = Gdk.event_get()
-
-        if queued_event is not None:
-            if queued_event.type == event.type:
-                event = queued_event
-            else:
-                events.append(queued_event)
-
-    for queued_event in events:
-        queued_event.put()
-
-    return event
 
 
 def _valwarp(cur, maxval, minval=0, tolerance=3, extra=2):

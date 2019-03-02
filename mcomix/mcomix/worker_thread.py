@@ -51,7 +51,8 @@ class WorkerThread(object):
             thread.start()
             self._threads.append(thread)
 
-    def _order_uid(self, order):
+    @staticmethod
+    def _order_uid(order):
         if isinstance(order, tuple) or isinstance(order, list):
             return order[0]
         return order

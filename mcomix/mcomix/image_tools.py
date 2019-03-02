@@ -72,7 +72,7 @@ def get_fitting_size(source_size, target_size,
                 height = int(max(src_height * width / src_width, 1))
             else:
                 width = int(max(src_width * height / src_height, 1))
-    return (width, height)
+    return width, height
 
 
 def fit_pixbuf_to_rectangle(src, rect, rotation):
@@ -247,7 +247,7 @@ def get_most_common_edge_colour(pixbufs, edge=2):
         return subpix
 
     if not pixbufs:
-        return (0, 0, 0)
+        return 0, 0, 0
 
     if not isinstance(pixbufs, (tuple, list)):
         left_edge = get_edge_pixbuf(pixbufs, 'left', edge)
@@ -561,7 +561,7 @@ def get_image_info(path):
         else:
             info = info[0].get_name().upper(), info[1], info[2]
     if info is None:
-        info = (('Unknown filetype'), 0, 0)
+        info = ('Unknown filetype', 0, 0)
     return info
 
 

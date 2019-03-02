@@ -5,21 +5,11 @@
 import os
 import stat
 import time
+import pwd
 
 from gi.repository import Gtk
 
-try:
-    import pwd
-
-    _has_pwd = True
-except ImportError:
-    # Running on non-Unix machine.
-    _has_pwd = False
-
-from mcomix import i18n
-from mcomix import strings
-from mcomix import properties_page
-from mcomix import tools
+from mcomix import i18n, strings, properties_page, tools
 
 
 class _PropertiesDialog(Gtk.Dialog):
@@ -123,10 +113,9 @@ class _PropertiesDialog(Gtk.Dialog):
         except OSError as e:
             page.set_secondary_info(secondary_info)
             return
-        if _has_pwd:
-            uid = pwd.getpwuid(stats.st_uid)[0]
-        else:
-            uid = str(stats.st_uid)
+
+        uid = pwd.getpwuid(stats.st_uid)[0]
+
         secondary_info.extend((
             ('Size', tools.format_byte_size(stats.st_size)),
             ('Accessed', time.strftime('%Y-%m-%d, %H:%M:%S',

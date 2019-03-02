@@ -86,10 +86,6 @@ class Statusbar(Gtk.EventBox):
         page_info += ' / %d' % total
         self._page_info = page_info
 
-    def get_page_number(self):
-        """Returns the bar's page information."""
-        return self._page_info
-
     def set_file_number(self, fileno, total):
         """Updates the file number (i.e. number of current file/total
         files loaded)."""

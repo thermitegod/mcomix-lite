@@ -2,15 +2,7 @@
 
 import os
 
-from mcomix import constants, log
-
-# This import is only used for legacy data that is imported
-# into the library at upgrade.
-try:
-    from sqlite3 import dbapi2
-except ImportError:
-    log.warning('! Could neither find sqlite3.')
-    dbapi2 = None
+from sqlite3 import dbapi2
 
 
 class LastReadPage(object):
@@ -108,8 +100,7 @@ class LastReadPage(object):
                       ) t ON t.book = c.book
                  JOIN recent r ON r.book = c.book
                  WHERE c.collection = ?"""
-        cursor = self.backend.execute(sql,
-                                      (self.backend.get_recent_collection().id,))
+        cursor = self.backend.execute(sql, (self.backend.get_recent_collection().id,))
         for book in cursor.fetchall():
             self.backend.remove_book(book)
         cursor.execute("""DELETE FROM recent""")
@@ -156,55 +147,6 @@ class LastReadPage(object):
         else:
             return None
 
-    def migrate_database_to_library(self, recent_collection):
-        """ Moves all information saved in the legacy database
-        constants.LASTPAGE_DATABASE_PATH into the library,
-        and deleting the old database. """
-
-        if not self.backend.enabled:
-            return
-
-        database = self._init_database(constants.LASTPAGE_DATABASE_PATH)
-
-        if database:
-            cursor = database.execute('''SELECT path, page, time_set
-                                         FROM lastread''')
-            rows = cursor.fetchall()
-            cursor.close()
-            database.close()
-
-            for path, page, time_set in rows:
-                book = self.backend.get_book_by_path(path)
-
-                if not book:
-                    # The path doesn't exist in the library yet
-                    if not os.path.exists(path):
-                        # File might no longer be available
-                        continue
-
-                    self.backend.add_book(path, recent_collection)
-                    book = self.backend.get_book_by_path(path)
-
-                    if not book:
-                        # The book could not be added
-                        continue
-                else:
-                    # The book exists, move into recent collection
-                    self.backend.add_book_to_collection(book.id, recent_collection)
-
-                # Set recent info on retrieved book
-                # XXX: If the book calls get_backend during migrate_database,
-                # the library isn't constructed yet and breaks in an
-                # endless recursion.
-                book.get_backend = lambda: self.backend
-                book.set_last_read_page(page, time_set)
-
-            try:
-                os.unlink(constants.LASTPAGE_DATABASE_PATH)
-            except IOError as e:
-                log.error('! Could not remove file "%s"',
-                          constants.LASTPAGE_DATABASE_PATH)
-
     @staticmethod
     def _init_database(dbfile):
         """ Creates or opens new SQLite database at C{dbfile}, and initalizes
@@ -213,8 +155,6 @@ class LastReadPage(object):
         @param dbfile: Database file name. This file needn't exist.
         @return: Open SQLite database connection.
         """
-        if not dbapi2:
-            return None
 
         db = dbapi2.connect(dbfile, isolation_level=None)
         sql = """CREATE TABLE IF NOT EXISTS lastread (

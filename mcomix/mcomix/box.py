@@ -299,27 +299,3 @@ class Box(object):
                 if (maxes[i] is None) or (ps > maxes[i]):
                     maxes[i] = ps
         return Box(mins, tools.vector_sub(maxes, mins))
-
-    @staticmethod
-    def intersect(boxA, boxB):  # TODO test! docs!
-        aPos = boxA.get_position()
-        bPos = boxB.get_position()
-        aSize = boxA.get_size()
-        bSize = boxB.get_size()
-        resPos = [0] * len(aPos)
-        resSize = [0] * len(aSize)
-        for i in range(len(aPos)):
-            ax1 = aPos[i]
-            bx1 = bPos[i]
-            ax2 = ax1
-            ax2 += aSize[i]
-            bx2 = bx1
-            bx2 += bSize[i]
-            if ax1 < bx1:
-                ax1 = bx1
-            if ax2 > bx2:
-                ax2 = bx2
-            ax2 -= ax1
-            resPos[i] = ax1
-            resSize[i] = ax2
-        return Box(resPos, resSize)

@@ -27,7 +27,8 @@ class OpenWithManager(object):
         cmd.get_cwd(), cmd.is_disabled_for_archives())
             for cmd in cmds]
 
-    def get_commands(self):
+    @staticmethod
+    def get_commands():
         try:
             return [OpenWithCommand(label, command, cwd, disabled_for_archives)
                 for label, command, cwd, disabled_for_archives
@@ -230,7 +231,8 @@ class OpenWithCommand(object):
             raise OpenWithException(
                 "Invalid escape sequence: %%%s" % identifier)
 
-    def _get_context_type(self, window, check_restrictions=True):
+    @staticmethod
+    def _get_context_type(window, check_restrictions=True):
         if not check_restrictions:
             return DEBUGGING_CONTEXT  # ignore context, reflect variable name
         context = 0

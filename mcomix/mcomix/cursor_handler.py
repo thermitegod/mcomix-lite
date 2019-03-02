@@ -50,14 +50,6 @@ class CursorHandler(object):
         if self._current_cursor == constants.NORMAL_CURSOR:
             self._set_hide_timer()
 
-    def auto_hide_off(self):
-        """Signal that the cursor should *not* auto-hide from now on."""
-        self._auto_hide = False
-        self._kill_timer()
-
-        if self._current_cursor == constants.NORMAL_CURSOR:
-            self.set_cursor_type(constants.NORMAL_CURSOR)
-
     def refresh(self):
         """Refresh the current cursor (i.e. display it and set a new timer in
         fullscreen). Used when we move the cursor.

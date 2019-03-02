@@ -14,7 +14,7 @@ class _BookmarksDialog(Gtk.Dialog):
     _SORT_TYPE, _SORT_NAME, _SORT_PAGE, _SORT_ADDED = 100, 101, 102, 103
 
     def __init__(self, window, bookmarks_store):
-        super(_BookmarksDialog, self).__init__(title=('Edit Bookmarks'), destroy_with_parent=True)
+        super(_BookmarksDialog, self).__init__(title='Edit Bookmarks', destroy_with_parent=True)
         self.set_transient_for(window)
 
         self.add_buttons(
@@ -53,12 +53,12 @@ class _BookmarksDialog(Gtk.Dialog):
         cellrenderer_text = Gtk.CellRendererText()
         cellrenderer_pbuf = Gtk.CellRendererPixbuf()
 
-        self._icon_col = Gtk.TreeViewColumn(('Type'), cellrenderer_pbuf)
-        self._name_col = Gtk.TreeViewColumn(('Name'), cellrenderer_text)
-        self._page_col = Gtk.TreeViewColumn(('Page'), cellrenderer_text)
-        self._path_col = Gtk.TreeViewColumn(('Location'), cellrenderer_text)
+        self._icon_col = Gtk.TreeViewColumn('Type', cellrenderer_pbuf)
+        self._name_col = Gtk.TreeViewColumn('Name', cellrenderer_text)
+        self._page_col = Gtk.TreeViewColumn('Page', cellrenderer_text)
+        self._path_col = Gtk.TreeViewColumn('Location', cellrenderer_text)
         # TRANSLATORS: "Added" as in "Date Added"
-        self._date_add_col = Gtk.TreeViewColumn(('Added'), cellrenderer_text)
+        self._date_add_col = Gtk.TreeViewColumn('Added', cellrenderer_text)
 
         self._treeview.append_column(self._icon_col)
         self._treeview.append_column(self._name_col)

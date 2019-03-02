@@ -89,7 +89,8 @@ class OpenWithMenu(Gtk.Menu):
         _openwith_edit_diag.show_all()
         _openwith_edit_diag.present()
 
-    def _dialog_closed(self, *args):
+    @staticmethod
+    def _dialog_closed(*args):
         """ Watch for the dialog getting closed and unset the local instance. """
         global _openwith_edit_diag
         _openwith_edit_diag.destroy()

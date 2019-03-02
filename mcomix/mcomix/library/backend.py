@@ -5,15 +5,11 @@
 import datetime
 import os
 
-# Only for importing legacy data from last-read module
-from mcomix import archive_tools, callback, constants, last_read_page, log, thumbnail_tools
+from sqlite3 import dbapi2
+
+from mcomix import archive_tools, callback, constants, log, thumbnail_tools
 from mcomix.library import backend_types
 
-try:
-    from sqlite3 import dbapi2
-except ImportError:
-    log.warning('! Could neither find sqlite3.')
-    dbapi2 = None
 
 #: Identifies the 'Recent' collection that stores recently read books.
 COLLECTION_RECENT = -2
@@ -37,20 +33,12 @@ class _LibraryBackend(object):
                 return row[0]
             return row
 
-        if dbapi2 is not None:
-            self._con = dbapi2.connect(constants.LIBRARY_DATABASE_PATH,
-                                       check_same_thread=False, isolation_level=None)
-            self._con.row_factory = row_factory
-            self.enabled = True
+        self._con = dbapi2.connect(constants.LIBRARY_DATABASE_PATH,
+                                    check_same_thread=False, isolation_level=None)
+        self._con.row_factory = row_factory
+        self.enabled = True
 
-            self.watchlist = backend_types._WatchList(self)
-
-            version = self._library_version()
-            self._upgrade_database(version, _LibraryBackend.DB_VERSION)
-        else:
-            self._con = None
-            self.watchlist = None
-            self.enabled = False
+        self.watchlist = backend_types._WatchList(self)
 
     def get_books_in_collection(self, collection=None, filter_string=None):
         """Return a sequence with all the books in <collection>, or *ALL*
@@ -156,42 +144,6 @@ class _LibraryBackend(object):
 
         if thumb is None: log.warning('! Could not get cover for book "%s"', path)
         return thumb
-
-    def get_book_name(self, book):
-        """Return the name of <book>, or None if <book> isn't in the
-        library.
-        """
-        cur = self._con.execute('''select name from Book
-            where id = ?''', (book,))
-        name = cur.fetchone()
-        if name is not None:
-            return name
-        else:
-            return None
-
-    def get_book_pages(self, book):
-        """Return the number of pages in <book>, or None if <book> isn't
-        in the library.
-        """
-        cur = self._con.execute('''select pages from Book
-            where id = ?''', (book,))
-        return cur.fetchone()
-
-    def get_book_format(self, book):
-        """Return the archive format of <book>, or None if <book> isn't
-        in the library.
-        """
-        cur = self._con.execute('''select format from Book
-            where id = ?''', (book,))
-        return cur.fetchone()
-
-    def get_book_size(self, book):
-        """Return the size of <book> in bytes, or None if <book> isn't
-        in the library.
-        """
-        cur = self._con.execute('''select size from Book
-            where id = ?''', (book,))
-        return cur.fetchone()
 
     def get_collections_in_collection(self, collection=None):
         """Return a sequence with all the subcollections in <collection>,
@@ -539,76 +491,6 @@ class _LibraryBackend(object):
         self._create_table_info()
         self._create_table_watchlist()
         self._create_table_recent()
-
-    def _upgrade_database(self, from_version, to_version):
-        """ Performs sequential upgrades to the database, bringing
-        it from C{from_version} to C{to_version}. If C{from_version}
-        is -1, the database structure will simply be re-created at the
-        current version. """
-
-        if from_version == -1:
-            self._create_tables()
-            return
-
-        if from_version != to_version:
-            upgrades = range(from_version, to_version)
-            log.info("Upgrading library database version from %(from)d to %(to)d.",
-                     {"from": from_version, "to": to_version})
-
-            if 0 in upgrades:
-                # Upgrade from Comix database structure to DB version 1
-                # (Added table 'info')
-                self._create_table_info()
-
-            if 1 in upgrades:
-                # Upgrade to database structure version 2.
-                # (Added table 'watchlist' for storing auto-add directories)
-                self._create_table_watchlist()
-
-            if 2 in upgrades:
-                # Changed 'added' field in 'book' from date to datetime.
-                self._con.execute('''alter table book rename to book_old''')
-                self._create_table_book()
-                self._con.execute('''insert into book
-                    (id, name, path, pages, format, size, added)
-                    select id, name, path, pages, format, size, datetime(added)
-                    from book_old''')
-                self._con.execute('''drop table book_old''')
-
-            if 3 in upgrades:
-                # Added field 'recursive' to table 'watchlist'
-                self._con.execute('''alter table watchlist rename to watchlist_old''')
-                self._create_table_watchlist()
-                self._con.execute('''insert into watchlist
-                    (path, collection, recursive)
-                    select path, collection, 0 from watchlist_old''')
-                self._con.execute('''drop table watchlist_old''')
-
-            if 4 in upgrades:
-                # Added table 'recent' to store recently viewed book information and
-                # create a collection (-2, Recent)
-                self._create_table_recent()
-                lastread = last_read_page.LastReadPage(self)
-                lastread.migrate_database_to_library(COLLECTION_RECENT)
-
-            if 5 in upgrades:
-                # Changed all 'string' columns into 'text' columns
-                self._con.execute('''alter table book rename to book_old''')
-                self._create_table_book()
-                self._con.execute('''insert into book
-                    (id, name, path, pages, format, size, added)
-                    select id, name, path, pages, format, size, added from book_old''')
-                self._con.execute('''drop table book_old''')
-
-                self._con.execute('''alter table collection rename to collection_old''')
-                self._create_table_collection()
-                self._con.execute('''insert into collection
-                    (id, name, supercollection)
-                    select id, name, supercollection from collection_old''')
-                self._con.execute('''drop table collection_old''')
-
-            self._con.execute('''update info set value = ? where key = 'version' ''',
-                              (str(_LibraryBackend.DB_VERSION),))
 
     def _create_table_book(self):
         self._con.execute('''create table if not exists book (
