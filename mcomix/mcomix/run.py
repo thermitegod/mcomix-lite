@@ -7,7 +7,7 @@ import sys
 
 if __name__ == '__main__':
     print('PROGRAM TERMINATED')
-    print('Please do not run this script directly! Use mcomixstarter.py instead.')
+    print('Do not run this script directly, instead use mcomixstarter.py.')
     sys.exit(1)
 
 # These modules must not depend on GTK, PIL,
@@ -118,40 +118,49 @@ def run():
             GObject.threads_init()
 
     except AssertionError:
-        log.error("You do not have the required versions of GTK+ 3.0 and PyGObject installed.")
+        log.error('You do not have the required versions of GTK+ 3.0 and PyGObject installed.')
         sys.exit(1)
 
     except ImportError:
         log.error('No version of GObject was found on your system.')
-        log.error('This error might be caused by missing GTK+ libraries.')
         sys.exit(1)
 
     try:
+        # FIXME
         # check Pillow version carefully here.
         # from 5.1.0 to 5.4.1, PILLOW_VERSION is used,
         # but since 6.0.0, only __version__ should be used.
         # clean up these code once python 3.6 goes EOL (maybe 2021)
-        # (https://pillow.readthedocs.io/en/stable/releasenotes/5.2.0.html#support-added-for-python-3-7)
+        # (https://pillow.readthedocs.io/en/stable/releasenotes/5.2.0.html)
         import PIL.Image
         pilver = getattr(PIL.Image, '__version__', None)
         if not pilver:
             pilver = getattr(PIL.Image, 'PILLOW_VERSION')
         assert pilver >= constants.REQUIRED_PIL_VERSION
 
-    except AssertionError:
-        log.error("You don't have the required version of the Pillow installed.")
-        log.error('Installed PIL version is: %s' % pilver)
-        log.error('Required Pillow version is: %s or higher' % constants.REQUIRED_PIL_VERSION)
-        sys.exit(1)
-
-    except AttributeError:
-        log.error("You don't have the required version of the Pillow installed.")
+    except (AssertionError, AttributeError):
+        log.error('You do not have the required version of Pillow installed.')
+        log.error('Installed Pillow version is: %s' % pilver)
         log.error('Required Pillow version is: %s or higher' % constants.REQUIRED_PIL_VERSION)
         sys.exit(1)
 
     except ImportError:
-        log.error('Pillow %s or higher is required.' % constants.REQUIRED_PIL_VERSION)
-        log.error('No version of the Pillow was found on your system.')
+        log.error('Pillow version %s or higher is required.' % constants.REQUIRED_PIL_VERSION)
+        log.error('No version of Pillow was found on your system.')
+        sys.exit(1)
+
+    try:
+        import numpy
+
+    except ImportError:
+        log.error('No version of Numpy was found on your system.')
+        sys.exit(1)
+
+    try:
+        import sqlite3
+
+    except ImportError:
+        log.error('Python not build with sqlite support.')
         sys.exit(1)
 
     if not os.path.exists(constants.DATA_DIR):
