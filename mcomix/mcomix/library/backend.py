@@ -5,7 +5,7 @@
 import datetime
 import os
 
-from sqlite3 import dbapi2
+import sqlite3
 
 from mcomix import archive_tools, callback, constants, log, thumbnail_tools
 from mcomix.library import backend_types
@@ -33,7 +33,7 @@ class _LibraryBackend(object):
                 return row[0]
             return row
 
-        self._con = dbapi2.connect(constants.LIBRARY_DATABASE_PATH,
+        self._con = sqlite3.connect(constants.LIBRARY_DATABASE_PATH,
                                     check_same_thread=False, isolation_level=None)
         self._con.row_factory = row_factory
         self.enabled = True
@@ -283,7 +283,7 @@ class _LibraryBackend(object):
                 self.add_book_to_collection(book_id, collection)
 
             return True
-        except dbapi2.Error:
+        except sqlite3.Error:
             log.error('! Could not add book "%s" to the library', path)
             return False
 
@@ -321,7 +321,7 @@ class _LibraryBackend(object):
                 self._con.execute('''insert into Collection
                     (name) values (?)''', (name,))
             return True
-        except dbapi2.Error:
+        except sqlite3.Error:
             log.error('! Could not add collection "%s"', name)
         return False
 
@@ -332,9 +332,9 @@ class _LibraryBackend(object):
                 (collection, book) values (?, ?)''', (collection, book))
             self.book_added_to_collection(self.get_book_by_id(book),
                                           collection)
-        except dbapi2.DatabaseError:  # E.g. book already in collection.
+        except sqlite3.DatabaseError:  # E.g. book already in collection.
             pass
-        except dbapi2.Error:
+        except sqlite3.Error:
             log.error('! Could not add book %(book)s to collection %(collection)s',
                       {"book": book, "collection": collection})
 
@@ -359,9 +359,9 @@ class _LibraryBackend(object):
             self._con.execute('''update Collection set name = ?
                 where id = ?''', (name, collection))
             return True
-        except dbapi2.DatabaseError:  # E.g. name taken.
+        except sqlite3.DatabaseError:  # E.g. name taken.
             pass
-        except dbapi2.Error:
+        except sqlite3.Error:
             log.error('! Could not rename collection to "%s"', name)
         return False
 

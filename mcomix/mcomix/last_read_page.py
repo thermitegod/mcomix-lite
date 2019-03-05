@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-
-from sqlite3 import dbapi2
+import sqlite3
 
 
 class LastReadPage(object):
@@ -156,7 +155,7 @@ class LastReadPage(object):
         @return: Open SQLite database connection.
         """
 
-        db = dbapi2.connect(dbfile, isolation_level=None)
+        db = sqlite3.connect(dbfile, isolation_level=None)
         sql = """CREATE TABLE IF NOT EXISTS lastread (
             path TEXT PRIMARY KEY,
             page INTEGER,
