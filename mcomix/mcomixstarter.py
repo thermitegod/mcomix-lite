@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 """MComix - GTK Comic Book Viewer
 """
@@ -19,4 +19,5 @@
 # -------------------------------------------------------------------------
 
 import mcomix.run
+
 mcomix.run.run()
