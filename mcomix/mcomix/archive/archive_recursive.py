@@ -48,9 +48,8 @@ class RecursiveArchive(archive_base.BaseArchive):
             archive.extract(f, destination_dir)
             sub_archive_ext = os.path.splitext(f)[1].lower()[1:]
             sub_archive_path = os.path.join(
-                self._destination_dir, 'sub-archives',
-                '%04u.%s' % (len(self._archive_list), sub_archive_ext
-                ))
+                    self._destination_dir, 'sub-archives',
+                    '%04u.%s' % (len(self._archive_list), sub_archive_ext))
             self._create_directory(os.path.dirname(sub_archive_path))
             os.rename(os.path.join(destination_dir, f), sub_archive_path)
             # And open it and list its contents.

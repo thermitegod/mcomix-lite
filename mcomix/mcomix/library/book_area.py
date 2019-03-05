@@ -52,10 +52,10 @@ class _BookArea(Gtk.ScrolledWindow):
         self.set_sort_order()
         self._liststore.connect('row-inserted', self._icon_added)
         self._iconview = thumbnail_view.ThumbnailIconView(
-            self._liststore,
-            1,  # UID
-            0,  # pixbuf
-            5,  # status
+                self._liststore,
+                1,  # UID
+                0,  # pixbuf
+                5,  # status
         )
         self._iconview.generate_thumbnail = self._get_pixbuf
         self._iconview.connect('item_activated', self._book_activated)
@@ -68,15 +68,15 @@ class _BookArea(Gtk.ScrolledWindow):
         self._iconview.connect('popup_menu', self._popup_menu)
         self._iconview.modify_base(Gtk.StateType.NORMAL, image_tools.GTK_GDK_COLOR_BLACK)
         self._iconview.enable_model_drag_source(
-            Gdk.ModifierType.BUTTON1_MASK,
-            [Gtk.TargetEntry.new('book', Gtk.TargetFlags.SAME_APP,
-                                 constants.LIBRARY_DRAG_EXTERNAL_ID)],
-            Gdk.DragAction.MOVE)
+                Gdk.ModifierType.BUTTON1_MASK,
+                [Gtk.TargetEntry.new('book', Gtk.TargetFlags.SAME_APP,
+                                     constants.LIBRARY_DRAG_EXTERNAL_ID)],
+                Gdk.DragAction.MOVE)
         self._iconview.drag_dest_set(
-            Gtk.DestDefaults.ALL,
-            [Gtk.TargetEntry.new('text/uri-list', 0,
-                                 constants.LIBRARY_DRAG_EXTERNAL_ID)],
-            Gdk.DragAction.COPY | Gdk.DragAction.MOVE)
+                Gtk.DestDefaults.ALL,
+                [Gtk.TargetEntry.new('text/uri-list', 0,
+                                     constants.LIBRARY_DRAG_EXTERNAL_ID)],
+                Gdk.DragAction.COPY | Gdk.DragAction.MOVE)
         self._iconview.set_selection_mode(Gtk.SelectionMode.MULTIPLE)
         self.add(self._iconview)
 
@@ -132,41 +132,41 @@ class _BookArea(Gtk.ScrolledWindow):
         # General book actions
         actiongroup.add_actions([
             ('_title', None, 'Library books', None, None,
-            None),
+             None),
             ('open', Gtk.STOCK_OPEN, '_Open', None,
-            'Opens the selected books for viewing.',
-            self.open_selected_book),
+             'Opens the selected books for viewing.',
+             self.open_selected_book),
             ('open keep library', Gtk.STOCK_OPEN,
-            'Open _without closing library', None,
-            'Opens the selected books, but keeps the library window open.',
-            self.open_selected_book_noclose),
+             'Open _without closing library', None,
+             'Opens the selected books, but keeps the library window open.',
+             self.open_selected_book_noclose),
             ('add', Gtk.STOCK_ADD, '_Add...', '<Ctrl><Shift>a',
-            'Add more books to the library.',
-            lambda *args: file_chooser_library_dialog.open_library_filechooser_dialog(self._library)),
+             'Add more books to the library.',
+             lambda *args: file_chooser_library_dialog.open_library_filechooser_dialog(self._library)),
             ('remove from collection', Gtk.STOCK_REMOVE,
-            'Remove from this _collection', None,
-            'Removes the selected books from the current collection.',
-            self._remove_books_from_collection),
+             'Remove from this _collection', None,
+             'Removes the selected books from the current collection.',
+             self._remove_books_from_collection),
             ('remove from library', Gtk.STOCK_REMOVE,
-            'Remove from the _library', None,
-            'Completely removes the selected books from the library.',
-            self._remove_books_from_library),
+             'Remove from the _library', None,
+             'Completely removes the selected books from the library.',
+             self._remove_books_from_library),
             ('completely remove', Gtk.STOCK_DELETE,
-            '_Remove and delete from disk', None,
-            'Deletes the selected books from disk.',
-            self._completely_remove_book),
+             '_Remove and delete from disk', None,
+             'Deletes the selected books from disk.',
+             self._completely_remove_book),
             ('copy path clipboard', Gtk.STOCK_COPY,
-            '_Copy', None,
-            'Copies the selected book\'s path to clipboard.',
-            self._copy_selected_path),
+             '_Copy', None,
+             'Copies the selected book\'s path to clipboard.',
+             self._copy_selected_path),
             ('copy cover to clipboard', '',
-            '_Copy', None,
-            'Copies the selected book\'s cover to clipboard.',
-            self._copy_selected_cover),
+             '_Copy', None,
+             'Copies the selected book\'s cover to clipboard.',
+             self._copy_selected_cover),
             ('sort', None, '_Sort', None,
-            'Changes the sort order of the library.', None),
+             'Changes the sort order of the library.', None),
             ('cover size', None, 'Cover si_ze', None,
-            'Changes the book cover size.', None)
+             'Changes the book cover size.', None)
         ])
         # Sorting the view
         actiongroup.add_radio_actions([
@@ -174,33 +174,33 @@ class _BookArea(Gtk.ScrolledWindow):
             ('by path', None, 'Full path', None, None, constants.SORT_PATH),
             ('by size', None, 'File size', None, None, constants.SORT_SIZE),
             ('by date added', None, 'Date added', None, None, constants.SORT_LAST_MODIFIED)],
-            prefs['lib sort key'], self._sort_changed)
+                prefs['lib sort key'], self._sort_changed)
         actiongroup.add_radio_actions([
             ('ascending', Gtk.STOCK_SORT_ASCENDING, 'Ascending', None, None,
-            constants.SORT_ASCENDING),
+             constants.SORT_ASCENDING),
             ('descending', Gtk.STOCK_SORT_DESCENDING, 'Descending', None, None,
-            constants.SORT_DESCENDING)],
-            prefs['lib sort order'], self._sort_changed)
+             constants.SORT_DESCENDING)],
+                prefs['lib sort order'], self._sort_changed)
 
         # Library cover size
         actiongroup.add_radio_actions([
             ('huge', None, 'Huge' + '  (%dpx)' % constants.SIZE_HUGE,
-            None, None, constants.SIZE_HUGE),
+             None, None, constants.SIZE_HUGE),
             ('large', None, 'Large' + '  (%dpx)' % constants.SIZE_LARGE,
-            None, None, constants.SIZE_LARGE),
+             None, None, constants.SIZE_LARGE),
             ('normal', None, 'Normal' + '  (%dpx)' % constants.SIZE_NORMAL,
-            None, None, constants.SIZE_NORMAL),
+             None, None, constants.SIZE_NORMAL),
             ('small', None, 'Small' + '  (%dpx)' % constants.SIZE_SMALL,
-            None, None, constants.SIZE_SMALL),
+             None, None, constants.SIZE_SMALL),
             ('tiny', None, 'Tiny' + '  (%dpx)' % constants.SIZE_TINY,
-            None, None, constants.SIZE_TINY),
+             None, None, constants.SIZE_TINY),
             ('custom', None, 'Custom...', None, None, 0)],
-            prefs['library cover size']
-            if prefs['library cover size'] in (constants.SIZE_HUGE,
-            constants.SIZE_LARGE, constants.SIZE_NORMAL,
-            constants.SIZE_SMALL, constants.SIZE_TINY)
-            else 0,
-            self._book_size_changed)
+                prefs['library cover size']
+                if prefs['library cover size'] in (constants.SIZE_HUGE,
+                                                   constants.SIZE_LARGE, constants.SIZE_NORMAL,
+                                                   constants.SIZE_SMALL, constants.SIZE_TINY)
+                else 0,
+                self._book_size_changed)
 
         self._ui_manager.insert_action_group(actiongroup, 0)
         library.add_accel_group(self._ui_manager.get_accel_group())
@@ -248,8 +248,8 @@ class _BookArea(Gtk.ScrolledWindow):
         for book in books:
             # Fill the liststore with a filler pixbuf.
             self._liststore.append([filler, book.id,
-                                       book.path,
-                                       book.size, book.added, False])
+                                    book.path,
+                                    book.size, book.added, False])
 
         self._iconview.draw_thumbnails_on_screen()
 
@@ -405,8 +405,8 @@ class _BookArea(Gtk.ScrolledWindow):
             cover_size_scale.set_draw_value(True)
             cover_size_scale.set_value_pos(Gtk.PositionType.LEFT)
             for mark in (constants.SIZE_HUGE, constants.SIZE_LARGE,
-            constants.SIZE_NORMAL, constants.SIZE_SMALL,
-            constants.SIZE_TINY):
+                         constants.SIZE_NORMAL, constants.SIZE_SMALL,
+                         constants.SIZE_TINY):
                 cover_size_scale.add_mark(mark, Gtk.PositionType.TOP, None)
 
             dialog.get_message_area().pack_end(cover_size_scale, True, True, 0)
@@ -426,7 +426,7 @@ class _BookArea(Gtk.ScrolledWindow):
         # Don't forget the extra pixels for the border!
         # The ratio (0.67) is just above the normal aspect ratio for books.
         return (int(0.67 * prefs['library cover size']) + 2 * border_size,
-        prefs['library cover size'] + 2 * border_size)
+                prefs['library cover size'] + 2 * border_size)
 
     def _get_pixbuf(self, uid):
         """ Get or create the thumbnail for the selected book <uid>. """
@@ -512,11 +512,11 @@ class _BookArea(Gtk.ScrolledWindow):
 
         coll_name = self._library.backend.get_collection_name(collection)
         message = i18n.get_translation().ngettext(
-            "Removed %(num)d book from '%(collection)s'.",
-            "Removed %(num)d books from '%(collection)s'.",
-            len(selected))
+                "Removed %(num)d book from '%(collection)s'.",
+                "Removed %(num)d books from '%(collection)s'.",
+                len(selected))
         self._library.set_status_message(
-            message % {'num': len(selected), 'collection': coll_name})
+                message % {'num': len(selected), 'collection': coll_name})
 
     def _remove_books_from_library(self, *args):
         """Remove the currently selected books from the library, and thus
@@ -534,9 +534,9 @@ class _BookArea(Gtk.ScrolledWindow):
         self._library.backend.end_transaction()
 
         msg = i18n.get_translation().ngettext(
-            'Removed %d book from the library.',
-            'Removed %d books from the library.',
-            len(selected))
+                'Removed %d book from the library.',
+                'Removed %d books from the library.',
+                len(selected))
         self._library.set_status_message(msg % len(selected))
 
     def _completely_remove_book(self, request_response=True, *args):
@@ -551,9 +551,9 @@ class _BookArea(Gtk.ScrolledWindow):
             choice_dialog.set_should_remember_choice('library-remove-book-from-disk',
                                                      (Gtk.ResponseType.YES,))
             choice_dialog.set_text(
-                'Remove books from the library?',
-                ('The selected books will be removed from the library and '
-                 'permanently deleted. Are you sure that you want to continue?')
+                    'Remove books from the library?',
+                    ('The selected books will be removed from the library and '
+                     'permanently deleted. Are you sure that you want to continue?')
             )
             response = choice_dialog.run()
 
@@ -683,11 +683,11 @@ class _BookArea(Gtk.ScrolledWindow):
             im = Image.new('RGBA', (30, 30), 0x00000000)
             draw = ImageDraw.Draw(im)
             draw.polygon(
-                (8, 0, 20, 0, 28, 8, 28, 20, 20, 28, 8, 28, 0, 20, 0, 8),
-                fill=(0, 0, 0), outline=(0, 0, 0))
+                    (8, 0, 20, 0, 28, 8, 28, 20, 20, 28, 8, 28, 0, 20, 0, 8),
+                    fill=(0, 0, 0), outline=(0, 0, 0))
             draw.polygon(
-                (8, 1, 20, 1, 27, 8, 27, 20, 20, 27, 8, 27, 1, 20, 1, 8),
-                fill=(128, 0, 0), outline=(255, 255, 255))
+                    (8, 1, 20, 1, 27, 8, 27, 20, 20, 27, 8, 27, 1, 20, 1, 8),
+                    fill=(128, 0, 0), outline=(255, 255, 255))
             text = str(num_books)
             draw.text((15 - (6 * len(text) // 2), 9), text,
                       fill=(255, 255, 255))

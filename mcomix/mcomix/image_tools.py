@@ -28,7 +28,7 @@ MISSING_IMAGE_ICON = None
 
 _missing_icon_dialog = Gtk.Dialog()
 _missing_icon_pixbuf = _missing_icon_dialog.render_icon(
-    Gtk.STOCK_MISSING_IMAGE, Gtk.IconSize.LARGE_TOOLBAR)
+        Gtk.STOCK_MISSING_IMAGE, Gtk.IconSize.LARGE_TOOLBAR)
 MISSING_IMAGE_ICON = _missing_icon_pixbuf
 assert MISSING_IMAGE_ICON
 
@@ -279,10 +279,10 @@ def pil_to_pixbuf(im, keep_orientation=False):
     if im.mode != target_mode:
         im = im.convert(target_mode)
     pixbuf = GdkPixbuf.Pixbuf.new_from_bytes(
-        GLib.Bytes.new(im.tobytes()), GdkPixbuf.Colorspace.RGB,
-        has_alpha, 8,
-        im.size[0], im.size[1],
-        (4 if has_alpha else 3) * im.size[0]
+            GLib.Bytes.new(im.tobytes()), GdkPixbuf.Colorspace.RGB,
+            has_alpha, 8,
+            im.size[0], im.size[1],
+            (4 if has_alpha else 3) * im.size[0]
     )
     if keep_orientation:
         # Keep orientation metadata.

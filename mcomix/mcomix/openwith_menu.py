@@ -23,7 +23,7 @@ class OpenWithMenu(Gtk.Menu):
         actiongroup = Gtk.ActionGroup(name='mcomix-openwith')
         actiongroup.add_actions([
             ('edit_commands', Gtk.STOCK_EDIT, '_Edit commands',
-            None, None, self._edit_commands)])
+             None, None, self._edit_commands)])
 
         action = actiongroup.get_action('edit_commands')
         action.set_accel_group(ui.get_accel_group())

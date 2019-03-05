@@ -134,7 +134,7 @@ class RarArchive(archive_base.ExternalExecutableArchive):
 
         with process.popen(self._get_extract_arguments()) as proc:
             wanted = dict([(self._original_filename(unicode_name), unicode_name)
-                              for unicode_name in entries])
+                           for unicode_name in entries])
 
             for filename, filesize in self._contents:
                 data = proc.stdout.read(filesize)

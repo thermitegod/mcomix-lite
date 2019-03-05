@@ -48,7 +48,7 @@ class ZipArchive(archive_base.NonUnicodeArchive):
             log.warning('%(filename)s\'s extracted size is %(actual_size)d bytes, but should '
                         'be %(expected_size)d bytes. The archive might be corrupt or in an unsupported format.',
                         {'filename': filename, 'actual_size': len(content),
-                            'expected_size': zipinfo.file_size})
+                         'expected_size': zipinfo.file_size})
 
     def close(self):
         self.zip.close()

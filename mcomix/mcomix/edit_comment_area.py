@@ -20,8 +20,7 @@ class _CommentArea(Gtk.VBox):
         scrolled.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         self.pack_start(scrolled, True, True, 0)
 
-        info = Gtk.Label(
-            label='Please note that the only files that are automatically added to this list are those files in archives that MComix recognizes as comments.')
+        info = Gtk.Label(label='Please note that the only files that are automatically added to this list are those files in archives that MComix recognizes as comments.')
         info.set_alignment(0.5, 0.5)
         info.set_line_wrap(True)
         self.pack_start(info, False, False, 10)
@@ -56,7 +55,7 @@ class _CommentArea(Gtk.VBox):
         actiongroup = Gtk.ActionGroup(name='mcomix-edit-archive-comment-area')
         actiongroup.add_actions([
             ('remove', Gtk.STOCK_REMOVE, 'Remove from archive', None, None,
-            self._remove_file)])
+             self._remove_file)])
         self._ui_manager.insert_action_group(actiongroup, 0)
 
     def fetch_comments(self):

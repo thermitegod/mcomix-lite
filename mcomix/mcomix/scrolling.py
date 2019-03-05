@@ -41,9 +41,9 @@ class Scrolling(object):
         # Remap axes
         if axis_map is not None:
             content_size, viewport_size, viewport_position, orientation, \
-                max_scroll = Scrolling._map_remap_axes([content_size,
-                                                           viewport_size, viewport_position, orientation, max_scroll],
-                                                       axis_map)
+            max_scroll = Scrolling._map_remap_axes([content_size,
+                                                    viewport_size, viewport_position, orientation, max_scroll],
+                                                   axis_map)
 
         result = list(viewport_position)
         carry = True
@@ -178,7 +178,7 @@ class Scrolling(object):
             v = viewport_size[i]
             invisible_size = c - v
             result[i] = content_position[i] + (box.Box._box_to_center_offset_1d(
-                invisible_size, o) if d == constants.SCROLL_TO_CENTER
+                    invisible_size, o) if d == constants.SCROLL_TO_CENTER
                                                else invisible_size if d == 1
             else 0)  # if d == -1
         return result
@@ -196,7 +196,7 @@ class Scrolling(object):
                 self._cache0[1] != denom or
                 self._cache0[2] != half_up):
             self._cache0 = (num, denom, half_up,
-            Scrolling._bresenham_sums(num, denom, half_up))
+                            Scrolling._bresenham_sums(num, denom, half_up))
         return self._cache0[3]
 
     def clear_cache(self):

@@ -25,12 +25,12 @@ class WatchListDialog(Gtk.Dialog):
         @param library: Dialog parent window, should be library window.
         """
         super(WatchListDialog, self).__init__(
-            title="Library watch list", modal=True, destroy_with_parent=True
+                title="Library watch list", modal=True, destroy_with_parent=True
         )
 
         self.add_buttons(
-            '_Scan now', WatchListDialog.RESPONSE_SCANNOW,
-            Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE
+                '_Scan now', WatchListDialog.RESPONSE_SCANNOW,
+                Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE
         )
 
         #: Stores a reference to the library
@@ -91,7 +91,7 @@ class WatchListDialog(Gtk.Dialog):
         self.vbox.pack_start(main_box, True, True, 0)
 
         auto_checkbox = Gtk.CheckButton(
-            label='Automatically scan for new books when library is _opened', use_underline=True)
+                label='Automatically scan for new books when library is _opened', use_underline=True)
         auto_checkbox.set_active(prefs['scan for new books on library startup'])
         auto_checkbox.connect('toggled', self._auto_scan_toggled_cb)
         self.vbox.pack_end(auto_checkbox, False, False, 5)
@@ -183,12 +183,12 @@ class WatchListDialog(Gtk.Dialog):
     def _add_cb(self, button, *args):
         """ Called when a new watch list entry should be added. """
         filechooser = Gtk.FileChooserDialog(
-            action=Gtk.FileChooserAction.SELECT_FOLDER
+                action=Gtk.FileChooserAction.SELECT_FOLDER
         )
         filechooser.set_transient_for(self)
         filechooser.add_buttons(
-            Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT,
-            Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT
+                Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT,
+                Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT
         )
         result = filechooser.run()
         if filechooser.get_filename() is not None:

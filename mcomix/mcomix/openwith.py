@@ -24,14 +24,14 @@ class OpenWithManager(object):
     @callback.Callback
     def set_commands(self, cmds):
         prefs['openwith commands'] = [(cmd.get_label(), cmd.get_command(),
-        cmd.get_cwd(), cmd.is_disabled_for_archives())
-            for cmd in cmds]
+                                       cmd.get_cwd(), cmd.is_disabled_for_archives())
+                                      for cmd in cmds]
 
     @staticmethod
     def get_commands():
         return [OpenWithCommand(label, command, cwd, disabled_for_archives)
-            for label, command, cwd, disabled_for_archives
-            in prefs['openwith commands']]
+                for label, command, cwd, disabled_for_archives
+                in prefs['openwith commands']]
 
 
 class OpenWithCommand(object):
@@ -224,7 +224,7 @@ class OpenWithCommand(object):
                 return os.path.dirname(os.path.dirname(window.imagehandler.get_path_to_page()))
         else:
             raise OpenWithException(
-                "Invalid escape sequence: %%%s" % identifier)
+                    "Invalid escape sequence: %%%s" % identifier)
 
     @staticmethod
     def _get_context_type(window, check_restrictions=True):
@@ -344,10 +344,10 @@ class OpenWithEditor(Gtk.Dialog):
 
             if not command.is_valid_workdir(self._window, allow_empty=True):
                 self._set_exec_text(
-                    '"%s" does not have a valid working directory.' % command.get_label())
+                        '"%s" does not have a valid working directory.' % command.get_label())
             elif not command.is_executable(self._window):
                 self._set_exec_text(
-                    '"%s" does not appear to have a valid executable.' % command.get_label())
+                        '"%s" does not appear to have a valid executable.' % command.get_label())
             else:
                 self._set_exec_text('')
         except OpenWithException as e:
@@ -414,7 +414,7 @@ class OpenWithEditor(Gtk.Dialog):
     def _item_selected(self, selection):
         """ Enable or disable buttons that depend on an item being selected. """
         for button in (self._remove_button, self._up_button,
-        self._down_button):
+                       self._down_button):
             button.set_sensitive(selection.count_selected_rows() > 0)
 
         if selection.count_selected_rows() > 0:
@@ -489,7 +489,7 @@ class OpenWithEditor(Gtk.Dialog):
                               GObject.TYPE_BOOLEAN, GObject.TYPE_BOOLEAN)
         for command in self._openwith.get_commands():
             model.append((command.get_label(), command.get_command(), command.get_cwd(),
-            command.is_disabled_for_archives(), not command.is_separator()))
+                          command.is_disabled_for_archives(), not command.is_separator()))
         self._command_tree.set_model(model)
 
         self._command_tree.set_headers_visible(True)

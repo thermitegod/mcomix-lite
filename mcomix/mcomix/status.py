@@ -40,17 +40,17 @@ class Statusbar(Gtk.EventBox):
         actiongroup = Gtk.ActionGroup(name='mcomix-statusbar')
         actiongroup.add_toggle_actions([
             ('pagenumber', None, 'Show page numbers', None, None,
-            self.toggle_status_visibility),
+             self.toggle_status_visibility),
             ('filenumber', None, 'Show file numbers', None, None,
-            self.toggle_status_visibility),
+             self.toggle_status_visibility),
             ('resolution', None, 'Show resolution', None, None,
-            self.toggle_status_visibility),
+             self.toggle_status_visibility),
             ('rootpath', None, 'Show path', None, None,
-            self.toggle_status_visibility),
+             self.toggle_status_visibility),
             ('filename', None, 'Show filename', None, None,
-            self.toggle_status_visibility),
+             self.toggle_status_visibility),
             ('filesize', None, 'Show filesize', None, None,
-            self.toggle_status_visibility)])
+             self.toggle_status_visibility)])
         self.ui_manager.insert_action_group(actiongroup, 0)
 
         # Hook mouse release event
@@ -210,11 +210,11 @@ class Statusbar(Gtk.EventBox):
         filesize_visible = prefs['statusbar fields'] & constants.STATUS_FILESIZE
 
         for name, visible in (('pagenumber', page_visible),
-        ('filenumber', fileno_visible),
-        ('resolution', resolution_visible),
-        ('rootpath', path_visible),
-        ('filename', filename_visible),
-        ('filesize', filesize_visible)):
+                              ('filenumber', fileno_visible),
+                              ('resolution', resolution_visible),
+                              ('rootpath', path_visible),
+                              ('filename', filename_visible),
+                              ('filesize', filesize_visible)):
             action = self.ui_manager.get_action('/Statusbar/' + name)
             action.set_active(visible)
 

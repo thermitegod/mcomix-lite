@@ -23,10 +23,10 @@ class _ImageArea(Gtk.ScrolledWindow):
         # Basename is used as image tooltip.
         self._liststore = Gtk.ListStore(GdkPixbuf.Pixbuf, str, str, bool)
         self._iconview = thumbnail_view.ThumbnailIconView(
-            self._liststore,
-            2,  # UID
-            0,  # pixbuf
-            3,  # status
+                self._liststore,
+                2,  # UID
+                0,  # pixbuf
+                3,  # status
         )
         self._iconview.generate_thumbnail = self._generate_thumbnail
         self._iconview.set_tooltip_column(1)
@@ -40,7 +40,7 @@ class _ImageArea(Gtk.ScrolledWindow):
         self._thumbnail_size = 128
         self._thumbnailer = thumbnail_tools.Thumbnailer(store_on_disk=False,
                                                         size=(self._thumbnail_size,
-                                                        self._thumbnail_size))
+                                                              self._thumbnail_size))
 
         self._filler = GdkPixbuf.Pixbuf.new(colorspace=GdkPixbuf.Colorspace.RGB,
                                             has_alpha=True, bits_per_sample=8,
@@ -65,7 +65,7 @@ class _ImageArea(Gtk.ScrolledWindow):
         actiongroup = Gtk.ActionGroup(name='mcomix-edit-archive-image-area')
         actiongroup.add_actions([
             ('remove', Gtk.STOCK_REMOVE, 'Remove from archive', None, None,
-            self._remove_pages)])
+             self._remove_pages)])
         self._ui_manager.insert_action_group(actiongroup, 0)
 
     def fetch_images(self):

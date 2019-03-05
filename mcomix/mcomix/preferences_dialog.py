@@ -77,10 +77,11 @@ class _PreferencesDialog(Gtk.Dialog):
         page.new_section('Thumbnails')
 
         thumb_fixed_bg_button, thumb_dynamic_bg_button = self._create_binary_pref_radio_buttons(
-            'Use this color as the thumbnail background:',
-            'color box thumb bg', 'Always use this selected color as the thumbnail background color.',
-            'Use dynamic background color',
-            'smart thumb bg', 'Automatically use the color that fits the viewed image for the thumbnail background.')
+                'Use this color as the thumbnail background:',
+                'color box thumb bg', 'Always use this selected color as the thumbnail background color.',
+                'Use dynamic background color',
+                'smart thumb bg',
+                'Automatically use the color that fits the viewed image for the thumbnail background.')
         page.add_row(thumb_fixed_bg_button, self._create_color_button('thumb bg color'))
         page.add_row(thumb_dynamic_bg_button)
 
@@ -300,7 +301,7 @@ class _PreferencesDialog(Gtk.Dialog):
         else:
             self.reset_button.set_label('Clear _dialog choices')
             self.reset_button.set_tooltip_text(
-                'Clears all dialog choices that you have previously chosen not to be asked again.')
+                    'Clears all dialog choices that you have previously chosen not to be asked again.')
             self.reset_button.set_sensitive(len(prefs['stored dialog choices']) > 0)
 
     def _response(self, dialog, response):
@@ -337,8 +338,8 @@ class _PreferencesDialog(Gtk.Dialog):
                                     self._double_page_changed_cb)
 
         box.set_tooltip_text(
-            ("When showing the first page of an archive, or an image's width "
-             "exceeds its height, only a single page will be displayed."))
+                ("When showing the first page of an archive, or an image's width "
+                 "exceeds its height, only a single page will be displayed."))
 
         return box
 
@@ -485,7 +486,7 @@ class _PreferencesDialog(Gtk.Dialog):
 
         box = self._create_combobox(items, selection, self._store_recent_changed_cb)
         box.set_tooltip_text(
-            'Add information about all files opened from within MComix to the shared recent files list.')
+                'Add information about all files opened from within MComix to the shared recent files list.')
         return box
 
     def _store_recent_changed_cb(self, combobox, *args):
@@ -672,7 +673,7 @@ class _PreferencesDialog(Gtk.Dialog):
                 prefs['thumbnail bg uses main color'] = False
 
                 pixbuf = image_tools.static_image(image_tools.unwrap_image(
-                    self._window.images[0]))  # XXX transitional(double page limitation)
+                        self._window.images[0]))  # XXX transitional(double page limitation)
                 if pixbuf:
                     bg_color = image_tools.get_most_common_edge_color(pixbuf)
                     self._window.thumbnailsidebar.change_thumbnail_background_color(bg_color)
@@ -680,7 +681,7 @@ class _PreferencesDialog(Gtk.Dialog):
                 self._window.draw_image()
 
         elif preference in ('checkered bg for transparent images',
-        'no double page for wide images', 'auto rotate from exif'):
+                            'no double page for wide images', 'auto rotate from exif'):
             self._window.draw_image()
 
         elif (preference == 'hide all in fullscreen' and
@@ -793,14 +794,14 @@ class _PreferencesDialog(Gtk.Dialog):
             chooser.set_label(prefs[preference] or '(default)')
             return
         dialog = Gtk.FileChooserDialog(
-            title='Please choose a folder',
-            action=Gtk.FileChooserAction.SELECT_FOLDER
+                title='Please choose a folder',
+                action=Gtk.FileChooserAction.SELECT_FOLDER
         )
         dialog.set_transient_for(self)
         dialog.add_buttons(
-            Gtk.STOCK_CANCEL,
-            Gtk.ResponseType.CANCEL, 'Select',
-            Gtk.ResponseType.OK
+                Gtk.STOCK_CANCEL,
+                Gtk.ResponseType.CANCEL, 'Select',
+                Gtk.ResponseType.OK
         )
 
         response = dialog.run()

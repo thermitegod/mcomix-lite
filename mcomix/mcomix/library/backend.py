@@ -4,12 +4,10 @@
 
 import datetime
 import os
-
 import sqlite3
 
 from mcomix import archive_tools, callback, constants, log, thumbnail_tools
 from mcomix.library import backend_types
-
 
 #: Identifies the 'Recent' collection that stores recently read books.
 COLLECTION_RECENT = -2
@@ -139,7 +137,7 @@ class _LibraryBackend(object):
                                                   store_on_disk=True,
                                                   archive_support=True,
                                                   size=(constants.MAX_LIBRARY_COVER_SIZE,
-                                                  constants.MAX_LIBRARY_COVER_SIZE))
+                                                        constants.MAX_LIBRARY_COVER_SIZE))
         thumb = thumbnailer.thumbnail(path)
 
         if thumb is None: log.warning('! Could not get cover for book "%s"', path)

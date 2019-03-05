@@ -95,7 +95,7 @@ class MainWindow(Gtk.Window):
         # This is a hack to get the focus away from the toolbar so that
         # we don't activate it with space or some other key (alternative?)
         self.toolbar.set_focus_child(
-            self.uimanager.get_widget('/Tool/expander'))
+                self.uimanager.get_widget('/Tool/expander'))
         self.toolbar.set_style(Gtk.ToolbarStyle.ICONS)
         self.toolbar.set_icon_size(Gtk.IconSize.LARGE_TOOLBAR)
 
@@ -134,10 +134,10 @@ class MainWindow(Gtk.Window):
         # Determine zoom mode. If zoom_mode is passed, it overrides
         # the zoom mode preference.
         zoom_actions = {constants.ZOOM_MODE_BEST: 'best_fit_mode',
-            constants.ZOOM_MODE_WIDTH: 'fit_width_mode',
-            constants.ZOOM_MODE_HEIGHT: 'fit_height_mode',
-            constants.ZOOM_MODE_SIZE: 'fit_size_mode',
-            constants.ZOOM_MODE_MANUAL: 'fit_manual_mode'}
+                        constants.ZOOM_MODE_WIDTH: 'fit_width_mode',
+                        constants.ZOOM_MODE_HEIGHT: 'fit_height_mode',
+                        constants.ZOOM_MODE_SIZE: 'fit_size_mode',
+                        constants.ZOOM_MODE_MANUAL: 'fit_manual_mode'}
 
         if zoom_mode is not None:
             zoom_action = zoom_actions[zoom_mode]
@@ -352,7 +352,7 @@ class MainWindow(Gtk.Window):
             pixbuf_list = list(self.imagehandler.get_pixbufs(pixbuf_count))
             do_not_transform = [image_tools.is_animation(x) for x in pixbuf_list]
             size_list = [[pixbuf.get_width(), pixbuf.get_height()]
-                for pixbuf in pixbuf_list]
+                         for pixbuf in pixbuf_list]
 
             if self.is_manga_mode:
                 orientation = constants.MANGA_ORIENTATION
@@ -365,7 +365,7 @@ class MainWindow(Gtk.Window):
             # - apply manual rotation on whole page
             if prefs['auto rotate from exif']:
                 rotation_list = [image_tools.get_implied_rotation(pixbuf)
-                    for pixbuf in pixbuf_list]
+                                 for pixbuf in pixbuf_list]
             else:
                 rotation_list = [0] * len(pixbuf_list)
             virtual_size = [0, 0]
@@ -432,7 +432,7 @@ class MainWindow(Gtk.Window):
                 if do_not_transform[i]:
                     continue
                 pixbuf_list[i] = image_tools.fit_pixbuf_to_rectangle(
-                    pixbuf_list[i], scaled_sizes[i], rotation_list[i])
+                        pixbuf_list[i], scaled_sizes[i], rotation_list[i])
 
             for i in range(pixbuf_count):
                 if do_not_transform[i]:
@@ -447,7 +447,7 @@ class MainWindow(Gtk.Window):
                 image_tools.set_from_pixbuf(self.images[i], pixbuf_list[i])
 
             scales = tuple(map(lambda x, y: math.sqrt(tools.div(
-                tools.volume(x), tools.volume(y))), scaled_sizes, size_list))
+                    tools.volume(x), tools.volume(y))), scaled_sizes, size_list))
 
             resolutions = tuple(map(lambda x, y: x + [y, ], size_list, scales))
             if self.is_manga_mode:
@@ -881,7 +881,7 @@ class MainWindow(Gtk.Window):
 
     def update_layout_position(self):
         self.layout.set_viewport_position(
-            (int(round(self._hadjust.get_value())), int(round(self._vadjust.get_value()))))
+                (int(round(self._hadjust.get_value())), int(round(self._vadjust.get_value()))))
 
     def clear(self):
         """Clear the currently displayed data (i.e. "close" the file)."""
@@ -942,7 +942,7 @@ class MainWindow(Gtk.Window):
             if i < this_screen - 1:
                 title += ','
         title += ' / %d]  %s' % (self.imagehandler.get_number_of_pages(),
-        self.imagehandler.get_pretty_current_filename())
+                                 self.imagehandler.get_pretty_current_filename())
         title = i18n.to_unicode(title)
 
         if self.slideshow.is_running():
@@ -975,7 +975,7 @@ class MainWindow(Gtk.Window):
 
         save_dialog = Gtk.FileChooserDialog('Save page as', self,
                                             Gtk.FileChooserAction.SAVE, (Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT,
-            Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT))
+                                                                         Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT))
         save_dialog.set_do_overwrite_confirmation(True)
         save_dialog.set_current_name(suggested_name.encode('utf-8'))
 
@@ -1035,7 +1035,7 @@ class MainWindow(Gtk.Window):
                                               Gtk.ButtonsType.NONE)
         dialog.set_should_remember_choice('delete-opend-file', (Gtk.ResponseType.OK,))
         dialog.set_text(
-            'Delete "%s"?' % os.path.basename(current_file), 'The file will be deleted from your harddisk.')
+                'Delete "%s"?' % os.path.basename(current_file), 'The file will be deleted from your harddisk.')
         dialog.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
         dialog.add_button(Gtk.STOCK_DELETE, Gtk.ResponseType.OK)
         dialog.set_default_response(Gtk.ResponseType.OK)
@@ -1124,9 +1124,9 @@ class MainWindow(Gtk.Window):
 
     def restore_window_geometry(self):
         if self.get_window_geometry() == (prefs['window x'],
-        prefs['window y'],
-        prefs['window width'],
-        prefs['window height']):
+                                          prefs['window y'],
+                                          prefs['window width'],
+                                          prefs['window height']):
             return False
         self.resize(prefs['window width'], prefs['window height'])
         self.move(prefs['window x'], prefs['window y'])

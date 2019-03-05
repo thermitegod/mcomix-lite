@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import chardet
-
 from builtins import str
+
+import chardet
 
 
 def to_unicode(string):

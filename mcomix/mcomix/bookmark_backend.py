@@ -3,14 +3,12 @@
 """bookmark_backend.py - Bookmarks handler."""
 
 import datetime
-import operator
 import os
 
 import numpy as np
-
 from gi.repository import Gtk
 
-from mcomix import bookmark_menu_item, callback, constants, i18n, log, message_dialog
+from mcomix import bookmark_menu_item, callback, constants, log, message_dialog
 
 
 class __BookmarksStore(object):
@@ -178,9 +176,9 @@ class __BookmarksStore(object):
         dialog.set_should_remember_choice('replace-existing-bookmark', (Gtk.ResponseType.YES, Gtk.ResponseType.NO))
 
         dialog.set_text(
-            ('The current book already contains marked pages. '
-             'Do you want to replace them with a new bookmark on page %d? ') % new_page +
-            '\n\n' + 'Selecting "No" will create a new bookmark without affecting the other bookmarks.')
+                ('The current book already contains marked pages. '
+                 'Do you want to replace them with a new bookmark on page %d? ') % new_page +
+                '\n\n' + 'Selecting "No" will create a new bookmark without affecting the other bookmarks.')
 
         return dialog.run()
 

@@ -56,7 +56,7 @@ class _LibraryFileChooserDialog(file_chooser_base_dialog._BaseFileChooserDialog)
         if paths:
             try:  # For some reason this fails sometimes (GTK+ bug?)
                 filter_index = self.filechooser.list_filters().index(
-                    self.filechooser.get_filter())
+                        self.filechooser.get_filter())
                 prefs['last filter in library filechooser'] = filter_index
 
             except Exception:

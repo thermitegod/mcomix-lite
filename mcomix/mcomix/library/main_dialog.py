@@ -98,10 +98,10 @@ class _LibraryDialog(Gtk.Window):
                            "from directory '%(directory)s'.")
 
             self.set_status_message(message % {'directory': watchentry.directory,
-                'count': len(filelist), 'bookname': os.path.basename(filelist[0])})
+                                               'count': len(filelist), 'bookname': os.path.basename(filelist[0])})
         else:
             self.set_status_message(
-                "No new books found in directory '%s'." % watchentry.directory)
+                    "No new books found in directory '%s'." % watchentry.directory)
 
     def get_status_bar(self):
         """ Returns the window's status bar. """
@@ -137,7 +137,7 @@ class _LibraryDialog(Gtk.Window):
             if collection is None:  # Collection by that name doesn't exist.
                 self.backend.add_collection(collection_name)
                 collection = self.backend.get_collection_by_name(
-                    collection_name)
+                        collection_name)
 
             collection_id = collection.id
 

@@ -217,19 +217,19 @@ class MagnifyingLens(object):
         subpixbuf = source_pixbuf.new_subpixbuf(int(src_x), int(src_y),
                                                 int(width), int(height))
         subpixbuf = subpixbuf.scale_simple(
-            int(math.ceil(source_mag * subpixbuf.get_width())),
-            int(math.ceil(source_mag * subpixbuf.get_height())),
-            prefs['scaling quality'])
+                int(math.ceil(source_mag * subpixbuf.get_width())),
+                int(math.ceil(source_mag * subpixbuf.get_height())),
+                prefs['scaling quality'])
 
         if rotation == 90:
             subpixbuf = subpixbuf.rotate_simple(
-                Gdk.PIXBUF_ROTATE_CLOCKWISE)
+                    Gdk.PIXBUF_ROTATE_CLOCKWISE)
         elif rotation == 180:
             subpixbuf = subpixbuf.rotate_simple(
-                Gdk.PIXBUF_ROTATE_UPSIDEDOWN)
+                    Gdk.PIXBUF_ROTATE_UPSIDEDOWN)
         elif rotation == 270:
             subpixbuf = subpixbuf.rotate_simple(
-                Gdk.PIXBUF_ROTATE_COUNTERCLOCKWISE)
+                    Gdk.PIXBUF_ROTATE_COUNTERCLOCKWISE)
         if prefs['horizontal flip']:
             subpixbuf = subpixbuf.flip(horizontal=True)
         if prefs['vertical flip']:

@@ -3,13 +3,13 @@
 """properties_dialog.py - Properties dialog that displays information about the archive/file."""
 
 import os
+import pwd
 import stat
 import time
-import pwd
 
 from gi.repository import Gtk
 
-from mcomix import i18n, strings, properties_page, tools
+from mcomix import i18n, properties_page, strings, tools
 
 
 class _PropertiesDialog(Gtk.Dialog):

@@ -21,15 +21,15 @@ class Clipboard(object):
         if self._window.filehandler.file_loaded:
             # Get pixbuf for current page
             current_page_pixbufs = self._window.imagehandler.get_pixbufs(
-                2 if self._window.displayed_double() else 1) # XXX limited to at most 2 pages
+                    2 if self._window.displayed_double() else 1)  # XXX limited to at most 2 pages
 
             if len(current_page_pixbufs) == 1:
-                pixbuf = current_page_pixbufs[ 0 ]
+                pixbuf = current_page_pixbufs[0]
             else:
                 pixbuf = image_tools.combine_pixbufs(
-                        current_page_pixbufs[ 0 ],
-                        current_page_pixbufs[ 1 ],
-                        self._window.is_manga_mode )
+                        current_page_pixbufs[0],
+                        current_page_pixbufs[1],
+                        self._window.is_manga_mode)
 
             self._clipboard.set_image(pixbuf)
 

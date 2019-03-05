@@ -69,21 +69,21 @@ class _Bookmark(Gtk.ImageMenuItem):
         re-created using the values in the tuple.
         """
         return (self._name, self._path, self._page, self._numpages,
-        self._archive_type, self._date_added)
+                self._archive_type, self._date_added)
 
     def clone(self):
         """ Creates a copy of the provided Bookmark menu item. This is necessary
         since one bookmark item cannot be anchored in more than one menu. There are,
         however, at least two: The main menu and the popup menu. """
         return _Bookmark(
-            self._window,
-            self._file_handler,
-            self._name,
-            self._path,
-            self._page,
-            self._numpages,
-            self._archive_type,
-            self._date_added)
+                self._window,
+                self._file_handler,
+                self._name,
+                self._path,
+                self._page,
+                self._numpages,
+                self._archive_type,
+                self._date_added)
 
     def __eq__(self, other):
         """ Equality comparison for Bookmark items. """

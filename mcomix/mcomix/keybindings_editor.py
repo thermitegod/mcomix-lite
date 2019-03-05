@@ -58,14 +58,14 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
         manager. """
         self.treestore.clear()
         section_order = list(set(d['group']
-                                     for d in keybindings.BINDING_INFO.values()))
+                                 for d in keybindings.BINDING_INFO.values()))
         section_order.sort()
         section_parent_map = {}
         for section_name in section_order:
             row = [section_name, None, False]
             row.extend([None, ] * self.accel_column_num)
             section_parent_map[section_name] = self.treestore.append(
-                None, row
+                    None, row
             )
 
         action_treeiter_map = self.action_treeiter_map = {}
@@ -84,8 +84,8 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
             row = [title, action_name, True]
             row.extend(acc_list)
             treeiter = self.treestore.append(
-                section_parent_map[group_name],
-                row
+                    section_parent_map[group_name],
+                    row
             )
             action_treeiter_map[action_name] = treeiter
 

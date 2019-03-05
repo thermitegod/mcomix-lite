@@ -23,9 +23,9 @@ class MessageDialog(Gtk.MessageDialog):
             from mcomix import main
             parent = main.main_window()
         super(MessageDialog, self).__init__(
-            message_type=message_type, buttons=buttons,
-            modal=flags & Gtk.DialogFlags.MODAL,
-            destroy_with_parent=flags & Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                message_type=message_type, buttons=buttons,
+                modal=flags & Gtk.DialogFlags.MODAL,
+                destroy_with_parent=flags & Gtk.DialogFlags.DESTROY_WITH_PARENT,
         )
         self.set_transient_for(parent)
 

@@ -89,8 +89,8 @@ class _EditArchiveDialog(Gtk.Dialog):
 
         try:
             fd, tmp_path = tempfile.mkstemp(
-                suffix='.%s' % os.path.basename(archive_path),
-                prefix='tmp.', dir=os.path.dirname(archive_path))
+                    suffix='.%s' % os.path.basename(archive_path),
+                    prefix='tmp.', dir=os.path.dirname(archive_path))
             # Close open tempfile handle (writing is handled by the packer)
             os.close(fd)
             fail = False
@@ -135,13 +135,13 @@ class _EditArchiveDialog(Gtk.Dialog):
     def _response(self, dialog, response):
         if response == constants.RESPONSE_SAVE_AS:
             dialog = file_chooser_simple_dialog.SimpleFileChooserDialog(
-                self, Gtk.FileChooserAction.SAVE)
+                    self, Gtk.FileChooserAction.SAVE)
 
             src_path = self.file_handler.get_path_to_base()
 
             dialog.set_current_directory(os.path.dirname(src_path))
             dialog.set_save_name('%s.cbz' % os.path.splitext(
-                os.path.basename(src_path))[0])
+                    os.path.basename(src_path))[0])
             dialog.filechooser.set_extra_widget(Gtk.Label(label='Archives are stored as ZIP files.'))
             dialog.add_archive_filters()
             dialog.run()

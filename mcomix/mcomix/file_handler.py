@@ -287,17 +287,18 @@ class FileHandler(object):
 
         files = self._extractor.get_files()
         archive_images = [image for image in files
-            # Remove MacOS meta files from image list
-            if image_tools.is_image_file(image) and '__MACOSX' not in os.path.normpath(image).split(os.sep)]
+                          # Remove MacOS meta files from image list
+                          if
+                          image_tools.is_image_file(image) and '__MACOSX' not in os.path.normpath(image).split(os.sep)]
 
         self._sort_archive_images(archive_images)
         image_files = [os.path.join(self._tmp_dir, f)
-            for f in archive_images]
+                       for f in archive_images]
 
         comment_files = list(filter(self._comment_re.search, files))
         tools.alphanumeric_sort(comment_files)
         self._comment_files = [os.path.join(self._tmp_dir, f)
-            for f in comment_files]
+                               for f in comment_files]
 
         self._name_table = dict(zip(image_files, archive_images))
         self._name_table.update(zip(self._comment_files, comment_files))
@@ -353,11 +354,11 @@ class FileHandler(object):
         dialog.set_should_remember_choice('resume-from-last-read-page',
                                           (Gtk.ResponseType.YES, Gtk.ResponseType.NO))
         dialog.set_text(
-            ('Continue reading from page %d?' % last_read_page),
-            ('You stopped reading here on %(date)s, %(time)s. '
-             'If you choose "Yes", reading will resume on page %(page)d. Otherwise, '
-             'the first page will be loaded.') % {'date': read_date.date().strftime("%x"),
-                'time': read_date.time().strftime("%X"), 'page': last_read_page})
+                ('Continue reading from page %d?' % last_read_page),
+                ('You stopped reading here on %(date)s, %(time)s. '
+                 'If you choose "Yes", reading will resume on page %(page)d. Otherwise, '
+                 'the first page will be loaded.') % {'date': read_date.date().strftime("%x"),
+                                                      'time': read_date.time().strftime("%X"), 'page': last_read_page})
         result = dialog.run()
 
         return result == Gtk.ResponseType.YES

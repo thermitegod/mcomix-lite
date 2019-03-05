@@ -50,7 +50,7 @@ class OnScreenDisplay(object):
                     int(self._window._vadjust.get_value()), 0)
 
         rect = (pos_x - 10, pos_y - 20,
-        layout_width + 20, layout_height + 20)
+                layout_width + 20, layout_height + 20)
 
         self._draw_osd(layout, rect)
 

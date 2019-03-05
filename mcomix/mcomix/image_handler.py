@@ -122,7 +122,7 @@ class ImageHandler(object):
         self._wanted_pixbufs = wanted_pixbufs
         # Start caching available images not already in cache.
         wanted_pixbufs = [index for index in wanted_pixbufs
-            if index in self._available_images and index not in self._raw_pixbufs]
+                          if index in self._available_images and index not in self._raw_pixbufs]
         orders = [(priority, index) for priority, index in enumerate(wanted_pixbufs)]
         if len(orders) > 0:
             self._thread.extend_orders(orders)
@@ -349,8 +349,8 @@ class ImageHandler(object):
         elif self._image_files:
             img_file = os.path.abspath(self._image_files[self._current_image_index])
             name = os.path.join(
-                os.path.basename(os.path.dirname(img_file)),
-                os.path.basename(img_file)
+                    os.path.basename(os.path.dirname(img_file)),
+                    os.path.basename(img_file)
             )
         else:
             name = ''
@@ -457,7 +457,7 @@ class ImageHandler(object):
         del page_list[0:page_width]
         page_list[2 * page_width:2 * page_width] = previous_page
         page_list = [index for index in page_list
-            if 0 <= index < len(self._image_files)]
+                     if 0 <= index < len(self._image_files)]
 
         log.debug('Ask for priority extraction around page %u: %s',
                   page, ' '.join([str(n + 1) for n in page_list]))

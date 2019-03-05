@@ -90,7 +90,7 @@ class FiniteLayout(object):  # 2D only
                 index = len(self.content_boxes) - 1
             current_box = self.wrapper_boxes[index]
         self.set_viewport_position(self.scroller.scroll_to_predefined(
-            current_box, self.viewport_box, self.orientation, destination))
+                current_box, self.viewport_box, self.orientation, destination))
 
     def get_content_boxes(self):
         """ Returns the Boxes as they are arranged in this layout. 
@@ -107,7 +107,7 @@ class FiniteLayout(object):  # 2D only
         @return: The index of the Box that is said to be the current Box. """
         if self.dirty_current_index:
             self.current_index = self.viewport_box.current_box_index(
-                self.orientation, self.content_boxes)
+                    self.orientation, self.content_boxes)
             self.dirty_current_index = False
         return self.current_index
 
@@ -171,5 +171,5 @@ class FiniteLayout(object):  # 2D only
     def _wrap_union(temp_cb_list, viewport_size, orientation):
         # calculate bounding Box
         temp_wb_list = [box.Box.bounding_box(temp_cb_list).wrapper_box(
-            viewport_size, orientation)]
+                viewport_size, orientation)]
         return temp_wb_list, temp_wb_list[0]

@@ -18,8 +18,8 @@ class _BookmarksDialog(Gtk.Dialog):
         self.set_transient_for(window)
 
         self.add_buttons(
-            Gtk.STOCK_REMOVE, constants.RESPONSE_REMOVE,
-            Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE
+                Gtk.STOCK_REMOVE, constants.RESPONSE_REMOVE,
+                Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE
         )
 
         self._bookmarks_store = bookmarks_store

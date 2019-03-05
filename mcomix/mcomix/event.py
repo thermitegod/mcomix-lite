@@ -103,7 +103,7 @@ class EventHandler(object):
                          ['KP_2'],
                          self._window.scroll_to_predefined,
                          kwargs={'destination': (constants.SCROLL_TO_CENTER, 1),
-                             'index': constants.UNION_INDEX})
+                                 'index': constants.UNION_INDEX})
         manager.register('scroll_right_bottom',
                          ['KP_3'],
                          self._window.scroll_to_predefined,
@@ -113,17 +113,17 @@ class EventHandler(object):
                          ['KP_4'],
                          self._window.scroll_to_predefined,
                          kwargs={'destination': (-1, constants.SCROLL_TO_CENTER),
-                             'index': constants.UNION_INDEX})
+                                 'index': constants.UNION_INDEX})
         manager.register('scroll_middle',
                          ['KP_5'],
                          self._window.scroll_to_predefined,
                          kwargs={'destination': (constants.SCROLL_TO_CENTER,
-                         constants.SCROLL_TO_CENTER), 'index': constants.UNION_INDEX})
+                                                 constants.SCROLL_TO_CENTER), 'index': constants.UNION_INDEX})
         manager.register('scroll_right_middle',
                          ['KP_6'],
                          self._window.scroll_to_predefined,
                          kwargs={'destination': (1, constants.SCROLL_TO_CENTER),
-                             'index': constants.UNION_INDEX})
+                                 'index': constants.UNION_INDEX})
 
         manager.register('scroll_left_top',
                          ['KP_7'],
@@ -133,7 +133,7 @@ class EventHandler(object):
                          ['KP_8'],
                          self._window.scroll_to_predefined,
                          kwargs={'destination': (constants.SCROLL_TO_CENTER, -1),
-                             'index': constants.UNION_INDEX})
+                                 'index': constants.UNION_INDEX})
         manager.register('scroll_right_top',
                          ['KP_9'],
                          self._window.scroll_to_predefined,
@@ -403,7 +403,7 @@ class EventHandler(object):
 
         keymap = Gdk.Keymap.get_default()
         code = keymap.translate_keyboard_state(
-            event.hardware_keycode, event.get_state(), event.group)
+                event.hardware_keycode, event.get_state(), event.group)
 
         if code[0]:
             keyval = code[1]
@@ -432,9 +432,9 @@ class EventHandler(object):
         # or they will start fiddling with the thumbnail selector (bad).
         # ----------------------------------------------------------------
         if (event.keyval in (Gdk.KEY_Up, Gdk.KEY_Down,
-        Gdk.KEY_space, Gdk.KEY_KP_Enter, Gdk.KEY_KP_Up,
-        Gdk.KEY_KP_Down, Gdk.KEY_KP_Home, Gdk.KEY_KP_End,
-        Gdk.KEY_KP_Page_Up, Gdk.KEY_KP_Page_Down) or
+                             Gdk.KEY_space, Gdk.KEY_KP_Enter, Gdk.KEY_KP_Up,
+                             Gdk.KEY_KP_Down, Gdk.KEY_KP_Home, Gdk.KEY_KP_End,
+                             Gdk.KEY_KP_Page_Up, Gdk.KEY_KP_Page_Down) or
                 (event.keyval == Gdk.KEY_Return and not
                 'GDK_MOD1_MASK' in event.get_state().value_names)):
             self._window.stop_emission_by_name('key_press_event')
@@ -662,7 +662,7 @@ class EventHandler(object):
         distance = prefs['smart scroll percentage']
         if small_step is None:
             max_scroll = [distance * viewport_size[0],
-                distance * viewport_size[1]]  # 2D only
+                          distance * viewport_size[1]]  # 2D only
         else:
             max_scroll = [small_step] * 2  # 2D only
         swap_axes = constants.SWAPPED_AXES if prefs['invert smart scroll'] \

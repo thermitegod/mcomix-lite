@@ -23,9 +23,9 @@ class BookmarksMenu(Gtk.Menu):
         self._actiongroup = Gtk.ActionGroup(name='mcomix-bookmarks')
         self._actiongroup.add_actions([
             ('add_bookmark', 'mcomix-add-bookmark', 'Add _Bookmark',
-            '<Control>D', None, self._add_current_to_bookmarks),
+             '<Control>D', None, self._add_current_to_bookmarks),
             ('edit_bookmarks', None, '_Edit Bookmarks...',
-            '<Control>B', None, self._edit_bookmarks)])
+             '<Control>B', None, self._edit_bookmarks)])
 
         action = self._actiongroup.get_action('add_bookmark')
         action.set_accel_group(ui.get_accel_group())

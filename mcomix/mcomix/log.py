@@ -5,9 +5,7 @@ pre-configured settings. Functions in this module are redirected to
 this default logger"""
 
 import logging
-
-from logging import DEBUG, INFO, WARNING, ERROR
-
+from logging import DEBUG, ERROR, INFO, WARNING
 
 __all__ = ['debug', 'info', 'warning', 'error', 'setLevel',
            'DEBUG', 'INFO', 'WARNING', 'ERROR']

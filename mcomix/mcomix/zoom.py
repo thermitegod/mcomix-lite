@@ -82,7 +82,7 @@ class ZoomModel(object):
         preferred_scales = list(preferred_scales)
         user_scale = 2 ** (self._user_zoom_log / USER_ZOOM_LOG_SCALE1)
         res_scales = [preferred_scales[i] * (user_scale if not do_not_transform[i] else IDENTITY_ZOOM)
-            for i in range(len(preferred_scales))]
+                      for i in range(len(preferred_scales))]
         return tuple(map(lambda size, scale: tuple(_scale_image_size(size, scale)),
                          image_sizes, res_scales))
 
@@ -172,7 +172,7 @@ class ZoomModel(object):
             if do_not_transform[i]:
                 total_axis_size += this_size[axis]
                 scaling_data[i] = [IDENTITY_ZOOM, IDENTITY_ZOOM, False,
-                    IDENTITY_ZOOM, 0.0]
+                                   IDENTITY_ZOOM, 0.0]
                 continue
             # Initial guess: The current scale works for all tuples.
             ideal = tools.scale(this_size, scale)
@@ -195,7 +195,7 @@ class ZoomModel(object):
                 forced_scale = None
                 forced_vol_err = None
             scaling_data[i] = [local_scale, ideal, can_be_downscaled,
-                forced_scale, forced_vol_err]
+                               forced_scale, forced_vol_err]
         # Now we need to find at most total_axis_size - max_size occasions to
         # scale down some tuples so the whole thing would fit into max_size. If
         # we are lucky, there will be no gaps at the end (or at least fewer gaps

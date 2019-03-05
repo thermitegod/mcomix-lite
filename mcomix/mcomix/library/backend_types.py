@@ -43,9 +43,9 @@ class _Book(_BackendObject):
         """ Gets a list of collections this book is part of. If it
         belongs to no collections, [DefaultCollection] is returned. """
         cursor = self.get_backend().execute(
-            '''SELECT id, name, supercollection FROM collection
-               JOIN contain on contain.collection = collection.id
-               WHERE contain.book = ?''', (self.id,))
+                '''SELECT id, name, supercollection FROM collection
+                   JOIN contain on contain.collection = collection.id
+                   WHERE contain.book = ?''', (self.id,))
         rows = cursor.fetchall()
         if rows:
             return [_Collection(*row) for row in rows]
@@ -56,7 +56,7 @@ class _Book(_BackendObject):
         """ Gets the page of this book that was last read when the book was
         closed. Returns C{None} if no such page exists. """
         cursor = self.get_backend().execute(
-            '''SELECT page FROM recent WHERE book = ?''', (self.id,))
+                '''SELECT page FROM recent WHERE book = ?''', (self.id,))
         row = cursor.fetchone()
         cursor.close()
         return row
@@ -65,7 +65,7 @@ class _Book(_BackendObject):
         """ Gets the datetime the book was most recently read. Returns
         C{None} if no information was set, or a datetime object otherwise. """
         cursor = self.get_backend().execute(
-            """SELECT time_set FROM recent WHERE book = ?""", (self.id,))
+                """SELECT time_set FROM recent WHERE book = ?""", (self.id,))
         date = cursor.fetchone()
         cursor.close()
 
@@ -92,7 +92,7 @@ class _Book(_BackendObject):
 
         # Remove any old recent row for this book
         cursor = self.get_backend().execute(
-            '''DELETE FROM recent WHERE book = ?''', (self.id,))
+                '''DELETE FROM recent WHERE book = ?''', (self.id,))
         # If a new page was passed, set it as recently read
         if page is not None:
             if not time:
@@ -307,8 +307,8 @@ class _WatchList(object):
     def _scan_for_new_files_thread(self):
         """ Executes the actual scanning operation in a new thread. """
         existing_books = [book.path for book in DefaultCollection.get_books()
-            # Also add book if it was only found in Recent collection
-            if book.get_collections() != [-2]]
+                          # Also add book if it was only found in Recent collection
+                          if book.get_collections() != [-2]]
         for entry in self.get_watchlist():
             new_files = entry.get_new_files(existing_books)
             self.new_files_found(new_files, entry)
@@ -353,8 +353,8 @@ class _WatchListEntry(_BackendObject):
 
         if not self.recursive:
             available_files = frozenset([os.path.join(self.directory, filename)
-                                            for filename in os.listdir(self.directory)
-                                            if archive_tools.is_archive_file(filename)])
+                                         for filename in os.listdir(self.directory)
+                                         if archive_tools.is_archive_file(filename)])
         else:
             available_files = []
             for dirpath, dirnames, filenames in os.walk(self.directory):

@@ -114,11 +114,11 @@ class OrderedFileProvider(FileProvider):
 
         try:
             files = [os.path.join(self.base_dir, filename) for filename in
-                # Explicitly convert all files to Unicode, even when
-                # os.listdir returns a mixture of byte/unicode strings.
-                # (MComix bug #3424405)
-                [i18n.to_unicode(fn) for fn in os.listdir(self.base_dir)]
-                if should_accept(os.path.join(self.base_dir, filename))]
+                     # Explicitly convert all files to Unicode, even when
+                     # os.listdir returns a mixture of byte/unicode strings.
+                     # (MComix bug #3424405)
+                     [i18n.to_unicode(fn) for fn in os.listdir(self.base_dir)]
+                     if should_accept(os.path.join(self.base_dir, filename))]
 
             FileProvider.sort_files(files)
 
@@ -160,8 +160,8 @@ class OrderedFileProvider(FileProvider):
 
         parent_dir = os.path.dirname(dir)
         directories = [os.path.join(parent_dir, directory)
-            for directory in os.listdir(parent_dir)
-            if os.path.isdir(os.path.join(parent_dir, directory))]
+                       for directory in os.listdir(parent_dir)
+                       if os.path.isdir(os.path.join(parent_dir, directory))]
 
         return tools.alphanumeric_sort(directories)
 

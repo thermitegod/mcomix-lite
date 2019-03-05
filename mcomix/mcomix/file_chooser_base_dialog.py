@@ -38,12 +38,12 @@ class _BaseFileChooserDialog(Gtk.Dialog):
         if action == Gtk.FileChooserAction.OPEN:
             title = 'Open'
             buttons = (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-            Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
+                       Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
 
         else:
             title = 'Save'
             buttons = (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-            Gtk.STOCK_SAVE, Gtk.ResponseType.OK)
+                       Gtk.STOCK_SAVE, Gtk.ResponseType.OK)
 
         super(_BaseFileChooserDialog, self).__init__(title=title)
         self.add_buttons(*buttons)
@@ -95,10 +95,10 @@ class _BaseFileChooserDialog(Gtk.Dialog):
             elif os.path.isdir(prefs['path of last browsed in filechooser']):
                 if prefs['store recent file info']:
                     self.filechooser.set_current_folder(
-                        prefs['path of last browsed in filechooser'])
+                            prefs['path of last browsed in filechooser'])
                 else:
                     self.filechooser.set_current_folder(
-                        constants.HOME_DIR)
+                            constants.HOME_DIR)
 
         except Exception as ex:  # E.g. broken prefs values.
             log.debug(ex)
@@ -111,8 +111,8 @@ class _BaseFileChooserDialog(Gtk.Dialog):
         """
         ffilter = Gtk.FileFilter()
         ffilter.add_custom(
-            Gtk.FileFilterFlags.FILENAME | Gtk.FileFilterFlags.MIME_TYPE,
-            self._filter, (patterns, mimes))
+                Gtk.FileFilterFlags.FILENAME | Gtk.FileFilterFlags.MIME_TYPE,
+                self._filter, (patterns, mimes))
 
         ffilter.set_name(name)
         self.filechooser.add_filter(ffilter)
@@ -160,11 +160,11 @@ class _BaseFileChooserDialog(Gtk.Dialog):
         match_patterns, match_mimes = data
 
         matches_mime = bool(filter(
-            lambda match_mime: match_mime == filter_info.mime_type,
-            match_mimes))
+                lambda match_mime: match_mime == filter_info.mime_type,
+                match_mimes))
         matches_pattern = bool(filter(
-            lambda match_pattern: fnmatch.fnmatch(filter_info.filename, match_pattern),
-            match_patterns))
+                lambda match_pattern: fnmatch.fnmatch(filter_info.filename, match_pattern),
+                match_patterns))
 
         return matches_mime or matches_pattern
 
@@ -225,8 +225,8 @@ class _BaseFileChooserDialog(Gtk.Dialog):
                 overwrite_dialog = message_dialog.MessageDialog(None, 0,
                                                                 Gtk.MessageType.QUESTION, Gtk.ButtonsType.OK_CANCEL)
                 overwrite_dialog.set_text(
-                    "A file named '%s' already exists. Do you want to replace it?" %
-                    os.path.basename(first_path), 'Replacing it will overwrite its contents.')
+                        "A file named '%s' already exists. Do you want to replace it?" %
+                        os.path.basename(first_path), 'Replacing it will overwrite its contents.')
                 response = overwrite_dialog.run()
 
                 if response != Gtk.ResponseType.OK:

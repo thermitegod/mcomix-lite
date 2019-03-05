@@ -50,41 +50,41 @@ class RarArchive(archive_base.BaseArchive):
         """ Archive header structure. Used by DLL calls. """
         _pack_ = 1
         _fields_ = [("ArcName", ctypes.c_char_p),
-            ("ArcNameW", ctypes.c_wchar_p),
-            ("OpenMode", ctypes.c_uint),
-            ("OpenResult", ctypes.c_uint),
-            ("CmtBuf", ctypes.c_char_p),
-            ("CmtBufSize", ctypes.c_uint),
-            ("CmtSize", ctypes.c_uint),
-            ("CmtState", ctypes.c_uint),
-            ("Flags", ctypes.c_uint),
-            ("Callback", UNRARCALLBACK),
-            ("UserData", ctypes.c_long),
-            ("Reserved", ctypes.c_uint * 28)]
+                    ("ArcNameW", ctypes.c_wchar_p),
+                    ("OpenMode", ctypes.c_uint),
+                    ("OpenResult", ctypes.c_uint),
+                    ("CmtBuf", ctypes.c_char_p),
+                    ("CmtBufSize", ctypes.c_uint),
+                    ("CmtSize", ctypes.c_uint),
+                    ("CmtState", ctypes.c_uint),
+                    ("Flags", ctypes.c_uint),
+                    ("Callback", UNRARCALLBACK),
+                    ("UserData", ctypes.c_long),
+                    ("Reserved", ctypes.c_uint * 28)]
 
     class _RARHeaderDataEx(ctypes.Structure):
         """ Archive file structure. Used by DLL calls. """
         _pack_ = 1
         _fields_ = [("ArcName", ctypes.c_char * 1024),
-            ("ArcNameW", ctypes.c_wchar * 1024),
-            ("FileName", ctypes.c_char * 1024),
-            ("FileNameW", ctypes.c_wchar * 1024),
-            ("Flags", ctypes.c_uint),
-            ("PackSize", ctypes.c_uint),
-            ("PackSizeHigh", ctypes.c_uint),
-            ("UnpSize", ctypes.c_uint),
-            ("UnpSizeHigh", ctypes.c_uint),
-            ("HostOS", ctypes.c_uint),
-            ("FileCRC", ctypes.c_uint),
-            ("FileTime", ctypes.c_uint),
-            ("UnpVer", ctypes.c_uint),
-            ("Method", ctypes.c_uint),
-            ("FileAttr", ctypes.c_uint),
-            ("CmtBuf", ctypes.c_char_p),
-            ("CmtBufSize", ctypes.c_uint),
-            ("CmtSize", ctypes.c_uint),
-            ("CmtState", ctypes.c_uint),
-            ("Reserved", ctypes.c_uint * 1024)]
+                    ("ArcNameW", ctypes.c_wchar * 1024),
+                    ("FileName", ctypes.c_char * 1024),
+                    ("FileNameW", ctypes.c_wchar * 1024),
+                    ("Flags", ctypes.c_uint),
+                    ("PackSize", ctypes.c_uint),
+                    ("PackSizeHigh", ctypes.c_uint),
+                    ("UnpSize", ctypes.c_uint),
+                    ("UnpSizeHigh", ctypes.c_uint),
+                    ("HostOS", ctypes.c_uint),
+                    ("FileCRC", ctypes.c_uint),
+                    ("FileTime", ctypes.c_uint),
+                    ("UnpVer", ctypes.c_uint),
+                    ("Method", ctypes.c_uint),
+                    ("FileAttr", ctypes.c_uint),
+                    ("CmtBuf", ctypes.c_char_p),
+                    ("CmtBufSize", ctypes.c_uint),
+                    ("CmtSize", ctypes.c_uint),
+                    ("CmtState", ctypes.c_uint),
+                    ("Reserved", ctypes.c_uint * 1024)]
 
     @staticmethod
     def is_available():

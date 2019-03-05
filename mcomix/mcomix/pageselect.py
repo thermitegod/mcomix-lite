@@ -16,7 +16,7 @@ class Pageselector(Gtk.Dialog):
     def __init__(self, window):
         self._window = window
         super(Pageselector, self).__init__("Go to page...", window,
-                                          Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT)
+                                           Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT)
         self.add_buttons('_Go', Gtk.ResponseType.OK, '_Cancel', Gtk.ResponseType.CANCEL, )
         self.set_default_response(Gtk.ResponseType.OK)
         self.connect('response', self._response)
@@ -41,7 +41,7 @@ class Pageselector(Gtk.Dialog):
 
         self._image_preview = Gtk.Image()
         self._image_preview.set_size_request(
-            prefs['thumbnail size'], prefs['thumbnail size'])
+                prefs['thumbnail size'], prefs['thumbnail size'])
 
         self.connect('configure-event', self._size_changed_cb)
         self.set_size_request(prefs['pageselector width'],

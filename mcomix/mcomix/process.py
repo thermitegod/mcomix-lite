@@ -42,8 +42,8 @@ def popen(args, stdin=NULL, stdout=PIPE, stderr=NULL, universal_newlines=False):
 def call_thread(args):
     # call command in thread, so drop std* and set no buffer
     params = dict(
-        stdin=NULL, stdout=NULL, stderr=NULL,
-        bufsize=0, creationflags=0
+            stdin=NULL, stdout=NULL, stderr=NULL,
+            bufsize=0, creationflags=0
     )
     thread = Thread(target=subprocess.call,
                     args=(args,), kwargs=params, daemon=True)
