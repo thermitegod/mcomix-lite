@@ -29,7 +29,7 @@ prefs = {
     'checkered bg for transparent images': True,
     'cache': True,
     'stretch': True,
-    'default double page': False,
+    'default double page': True,
     'default fullscreen': False,
     'zoom mode': constants.ZOOM_MODE_BEST,
     'default manga mode': True,
@@ -75,7 +75,7 @@ prefs = {
     'saturation': 1.0,
     'sharpness': 1.0,
     'auto contrast': False,
-    'max pages to cache': 7,
+    'max pages to cache': 9,
     'window x': 0,
     'window y': 0,
     'window height': 600,
@@ -91,8 +91,8 @@ prefs = {
     'language': 'auto',
     'statusbar fields': constants.STATUS_PAGE | constants.STATUS_RESOLUTION | \
                         constants.STATUS_PATH | constants.STATUS_FILENAME | constants.STATUS_FILESIZE,
-    'max threads': 3,
-    'max extract threads': 1,
+    'max threads': 32,
+    'max extract threads': 16,
     'wrap mouse scroll': False,
     'scaling quality': 3,  # GdkPixbuf.InterpType.BILINEAR
     'escape quits': True,
