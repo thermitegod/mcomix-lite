@@ -25,16 +25,12 @@ class _AboutDialog(Gtk.AboutDialog):
         pixbuf = image_tools.load_pixbuf_data(icon_data)
         self.set_logo(pixbuf)
 
-        comment = \
-            '%s is an image viewer specifically designed to handle comic books.' % \
-            constants.APPNAME + ' ' + 'It reads ZIP, RAR and tar archives, as well as plain image files.'
+        comment = '%s is an image viewer specifically designed to handle comic books. ' % constants.APPNAME + \
+                  'It reads ZIP, RAR and tar archives, as well as plain image files.'
         self.set_comments(comment)
 
-        license = \
-            '%s is licensed under the terms of the GNU General Public License.' % constants.APPNAME + \
-            ' ' + \
-            'A copy of this license can be obtained from %s' % \
-            'http://www.gnu.org/licenses/gpl-2.0.html'
+        license = '%s is licensed under the terms of the GNU General Public License. ' % constants.APPNAME + \
+                  'A copy of this license can be obtained from %s' % 'http://www.gnu.org/licenses/gpl-2.0.html'
         self.set_wrap_license(True)
         self.set_license(license)
 

@@ -177,8 +177,8 @@ class __BookmarksStore(object):
 
         dialog.set_text(
                 ('The current book already contains marked pages. '
-                 'Do you want to replace them with a new bookmark on page %d? ') % new_page +
-                '\n\n' + 'Selecting "No" will create a new bookmark without affecting the other bookmarks.')
+                 'Do you want to replace them with a new bookmark on page %d? \n\n') % new_page +
+                'Selecting "No" will create a new bookmark without affecting the other bookmarks.')
 
         return dialog.run()
 
