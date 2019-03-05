@@ -61,7 +61,7 @@ class OpenWithCommand(object):
         and arguments. """
         if (self.is_disabled_for_archives() and
                 window.filehandler.archive_type is not None):
-            window.osd.show("'%s' is disabled for archives." % self.get_label())
+            window.osd.show('"%s" is disabled for archives.' % self.get_label())
             return
 
         current_dir = os.getcwd()
@@ -74,7 +74,7 @@ class OpenWithCommand(object):
             process.call_thread(args)
 
         except Exception as e:
-            text = "Could not run command %(cmdlabel)s: %(exception)s" % \
+            text = 'Could not run command %(cmdlabel)s: %(exception)s' % \
                    {'cmdlabel': self.get_label(), 'exception': str(e)}
             window.osd.show(text)
         finally:
@@ -162,9 +162,9 @@ class OpenWithCommand(object):
                 inarg = True
 
         if escape:
-            raise OpenWithException("Incomplete escape sequence. For a literal '%', use '%%'.")
+            raise OpenWithException('Incomplete escape sequence. For a literal "%", use "%%".')
         if quote:
-            raise OpenWithException("Incomplete quote sequence. For a literal '\"', use '%\"'.")
+            raise OpenWithException('Incomplete quote sequence. For a literal """, use "%"".')
 
         if inarg:
             result.append(buf)
@@ -179,10 +179,10 @@ class OpenWithCommand(object):
             return '%' + identifier
 
         if not (context_type & IMAGE_FILE_CONTEXT) and identifier in ('f', 'd', 'b', 's', 'F', 'D', 'B', 'S'):
-            raise OpenWithException("File-related variables can only be used for files.")
+            raise OpenWithException('File-related variables can only be used for files.')
 
         if not (context_type & ARCHIVE_CONTEXT) and identifier in ('a', 'c', 'A', 'C'):
-            raise OpenWithException("Archive-related variables can only be used for archives.")
+            raise OpenWithException('Archive-related variables can only be used for archives.')
 
         if identifier == '/':
             return os.path.sep
@@ -343,11 +343,9 @@ class OpenWithEditor(Gtk.Dialog):
             self._run_button.set_sensitive(True)
 
             if not command.is_valid_workdir(self._window, allow_empty=True):
-                self._set_exec_text(
-                        '"%s" does not have a valid working directory.' % command.get_label())
+                self._set_exec_text('"%s" does not have a valid working directory.' % command.get_label())
             elif not command.is_executable(self._window):
-                self._set_exec_text(
-                        '"%s" does not appear to have a valid executable.' % command.get_label())
+                self._set_exec_text('"%s" does not appear to have a valid executable.' % command.get_label())
             else:
                 self._set_exec_text('')
         except OpenWithException as e:
@@ -457,8 +455,8 @@ class OpenWithEditor(Gtk.Dialog):
         content.pack_start(self._exec_label, False, False, 0)
 
         linklabel = Gtk.Label()
-        linklabel.set_markup(('Please refer to the <a href="%s">external command documentation</a> '
-                              'for a list of usable variables and other hints.') % \
+        linklabel.set_markup(('Refer to the <a href="%s">external command documentation</a> '
+                              'for a list of usable variables and other hints.') %
                              'https://sourceforge.net/p/mcomix/wiki/External_Commands')
         linklabel.set_alignment(0, 0)
         content.pack_start(linklabel, False, False, 4)

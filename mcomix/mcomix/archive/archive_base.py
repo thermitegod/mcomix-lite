@@ -19,7 +19,7 @@ class BaseArchive(object):
     support_concurrent_extractions = False
 
     def __init__(self, archive):
-        assert isinstance(archive, str), "File should be an Unicode string."
+        assert isinstance(archive, str), 'File should be an Unicode string.'
 
         self.archive = archive
         self._password = None
@@ -100,7 +100,7 @@ class BaseArchive(object):
 
         password = archive.ask_for_password(self.archive)
         if password is None:
-            password = ""
+            password = ''
 
         self._password = password
         self._event.set()
@@ -163,17 +163,17 @@ class ExternalExecutableArchive(NonUnicodeArchive):
     def _get_executable(self):
         """ Returns the executable's name or path. Return None if no executable
         was found on the system. """
-        raise NotImplementedError("Subclasses must override _get_executable.")
+        raise NotImplementedError('Subclasses must override _get_executable.')
 
     def _get_list_arguments(self):
         """ Returns an array of arguments required for the executable
         to produce a list of archive members. """
-        raise NotImplementedError("Subclasses must override _get_list_arguments.")
+        raise NotImplementedError('Subclasses must override _get_list_arguments.')
 
     def _get_extract_arguments(self):
         """ Returns an array of arguments required for the executable
         to extract a file to STDOUT. """
-        raise NotImplementedError("Subclasses must override _get_extract_arguments.")
+        raise NotImplementedError('Subclasses must override _get_extract_arguments.')
 
     def _parse_list_output_line(self, line):
         """ Parses the output of the external executable's list command

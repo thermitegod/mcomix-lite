@@ -512,8 +512,8 @@ class _BookArea(Gtk.ScrolledWindow):
 
         coll_name = self._library.backend.get_collection_name(collection)
         message = i18n.get_translation().ngettext(
-                "Removed %(num)d book from '%(collection)s'.",
-                "Removed %(num)d books from '%(collection)s'.",
+                'Removed %(num)d book from "%(collection)s".',
+                'Removed %(num)d books from "%(collection)s".',
                 len(selected))
         self._library.set_status_message(
                 message % {'num': len(selected), 'collection': coll_name})

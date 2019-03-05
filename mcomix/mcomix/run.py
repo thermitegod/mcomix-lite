@@ -27,12 +27,12 @@ def parse_arguments():
     this function. """
 
     parser = argparse.ArgumentParser(
-            usage="%%(prog)s %s" % '[OPTION...] [PATH]',
+            usage='%%(prog)s %s' % '[OPTION...] [PATH]',
             description='View images and comic book archives.',
             add_help=False)
     parser.add_argument('--help', action='help',
                         help='Show this help and exit.')
-    parser.add_argument("path", type=str, action='store', nargs='*', default='',
+    parser.add_argument('path', type=str, action='store', nargs='*', default='',
                         help=argparse.SUPPRESS)
 
     parser.add_argument('-s', '--slideshow', dest='slideshow', action='store_true',

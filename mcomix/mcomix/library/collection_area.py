@@ -71,7 +71,7 @@ class _CollectionArea(Gtk.ScrolledWindow):
         self._ui_manager.add_ui_from_string(ui_description)
         actiongroup = Gtk.ActionGroup(name='mcomix-library-collection-area')
         actiongroup.add_actions([
-            ('_title', None, "Library collections", None, None,
+            ('_title', None, 'Library collections', None, None,
              lambda *args: False),
             ('add', Gtk.STOCK_ADD, '_Add...', None,
              'Add more books to the library.',
@@ -149,10 +149,7 @@ class _CollectionArea(Gtk.ScrolledWindow):
                                                   Gtk.ButtonsType.OK_CANCEL)
         add_dialog.set_auto_destroy(False)
         add_dialog.set_default_response(Gtk.ResponseType.OK)
-        add_dialog.set_text(
-                'Add new collection?',
-                'Please enter a name for the new collection.'
-        )
+        add_dialog.set_text('Add new collection?', 'Please enter a name for the new collection.')
 
         box = Gtk.HBox()  # To get nice line-ups with the padding.
         add_dialog.vbox.pack_start(box, True, True, 0)
@@ -170,12 +167,11 @@ class _CollectionArea(Gtk.ScrolledWindow):
                 prefs['last library collection'] = collection.id
                 self._library.collection_area.display_collections()
             else:
-                message = "Could not add a new collection called '%s'." % (
+                message = 'Could not add a new collection called "%s".' % (
                     name)
                 if (self._library.backend.get_collection_by_name(name)
                         is not None):
-                    message = '%s %s' % (message,
-                                         'A collection by that name already exists.')
+                    message = '%s %s' % (message, 'A collection by that name already exists.')
                 self._library.set_status_message(message)
 
     def clean_collection(self, collection):
@@ -264,11 +260,10 @@ class _CollectionArea(Gtk.ScrolledWindow):
             if self._library.backend.rename_collection(collection, new_name):
                 self.display_collections()
             else:
-                message = "Could not change the name to '%s'." % new_name
+                message = 'Could not change the name to "%s".' % new_name
                 if (self._library.backend.get_collection_by_name(new_name)
                         is not None):
-                    message = '%s %s' % (message,
-                                         'A collection by that name already exists.')
+                    message = '%s %s' % (message, 'A collection by that name already exists.')
                 self._library.set_status_message(message)
 
     def _duplicate_collection(self, action):
@@ -277,8 +272,7 @@ class _CollectionArea(Gtk.ScrolledWindow):
         if self._library.backend.duplicate_collection(collection):
             self.display_collections()
         else:
-            self._library.set_status_message(
-                    'Could not duplicate collection.')
+            self._library.set_status_message('Could not duplicate collection.')
 
     def _button_press(self, treeview, event):
         """Handle mouse button presses on the _CollectionArea."""
@@ -314,8 +308,7 @@ class _CollectionArea(Gtk.ScrolledWindow):
         is_collection_all = collection in (_COLLECTION_ALL, _COLLECTION_RECENT)
 
         for path in ('rename', 'duplicate', 'remove'):
-            control = self._ui_manager.get_action(
-                    '/library collections/' + path)
+            control = self._ui_manager.get_action('/library collections/' + path)
             control.set_sensitive(collection is not None and
                                   not is_collection_all)
 
@@ -415,7 +408,7 @@ class _CollectionArea(Gtk.ScrolledWindow):
             else:
                 dest_name = self._library.backend.get_collection_name(
                         dest_collection)
-            message = ("Put the collection '%(subcollection)s' in the collection '%(supercollection)s'." %
+            message = ('Put the collection "%(subcollection)s" in the collection "%(supercollection)s".' %
                        {'subcollection': src_name, 'supercollection': dest_name})
         else:  # Moving book(s).
             if drop_row is None:
@@ -436,13 +429,12 @@ class _CollectionArea(Gtk.ScrolledWindow):
             dest_name = self._library.backend.get_collection_name(
                     dest_collection)
             if src_collection == _COLLECTION_ALL:
-                message = "Add books to '%s'." % dest_name
+                message = 'Add books to "%s".' % dest_name
             else:
                 src_name = self._library.backend.get_collection_name(
                         src_collection)
-                message = ("Move books from '%(source collection)s' to '%(destination collection)s'." %
-                           {'source collection': src_name,
-                            'destination collection': dest_name})
+                message = ('Move books from "%(source collection)s" to "%(destination collection)s".' %
+                           {'source collection': src_name, 'destination collection': dest_name})
         self._set_acceptable_drop(True)
         self._library.set_status_message(message)
 

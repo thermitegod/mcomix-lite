@@ -60,7 +60,7 @@ class _Bookmark(Gtk.ImageMenuItem):
         stock = self.get_image().get_stock()
         pixbuf = self.render_icon(*stock)
         page = '%d / %d' % (self._page, self._numpages)
-        date = self._date_added.strftime("%x %X")
+        date = self._date_added.strftime('%x %X')
 
         return pixbuf, self._name, page, self._path, date, self
 

@@ -91,17 +91,14 @@ class _LibraryDialog(Gtk.Window):
             self.add_books(filelist, collection_name)
 
             if len(filelist) == 1:
-                message = ("Added new book '%(bookname)s' "
-                           "from directory '%(directory)s'.")
+                message = 'Added new book "%(bookname)s" from directory "%(directory)s".'
             else:
-                message = ("Added %(count)d new books "
-                           "from directory '%(directory)s'.")
+                message = 'Added %(count)d new books from directory "%(directory)s".'
 
             self.set_status_message(message % {'directory': watchentry.directory,
                                                'count': len(filelist), 'bookname': os.path.basename(filelist[0])})
         else:
-            self.set_status_message(
-                    "No new books found in directory '%s'." % watchentry.directory)
+            self.set_status_message('No new books found in directory "%s".' % watchentry.directory)
 
     def get_status_bar(self):
         """ Returns the window's status bar. """

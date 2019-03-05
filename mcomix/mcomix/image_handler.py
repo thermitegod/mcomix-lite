@@ -407,7 +407,7 @@ class ImageHandler(object):
                                                       size=(width, height))
             return thumbnailer.thumbnail(path)
         except Exception:
-            log.debug("Failed to create thumbnail for image `%s':\n%s",
+            log.debug('Failed to create thumbnail for image "%s":\n%s',
                       path, traceback.format_exc())
             return image_tools.MISSING_IMAGE_ICON
 

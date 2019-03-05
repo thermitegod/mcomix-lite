@@ -94,7 +94,7 @@ class OrderedFileProvider(FileProvider):
             dir = os.path.dirname(file_or_directory)
         else:
             # Passed file doesn't exist
-            raise ValueError("Invalid path: '%s'" % file_or_directory)
+            raise ValueError('Invalid path: "%s"' % file_or_directory)
 
         self.base_dir = os.path.abspath(dir)
 
@@ -124,7 +124,7 @@ class OrderedFileProvider(FileProvider):
 
             return files
         except OSError:
-            log.warning('! ' + 'Could not open %s: Permission denied.', self.base_dir)
+            log.warning('! Could not open %s: Permission denied.', self.base_dir)
             return []
 
     def next_directory(self):

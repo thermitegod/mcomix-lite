@@ -43,9 +43,9 @@ class _Book(_BackendObject):
         """ Gets a list of collections this book is part of. If it
         belongs to no collections, [DefaultCollection] is returned. """
         cursor = self.get_backend().execute(
-                '''SELECT id, name, supercollection FROM collection
+                """SELECT id, name, supercollection FROM collection
                    JOIN contain on contain.collection = collection.id
-                   WHERE contain.book = ?''', (self.id,))
+                   WHERE contain.book = ?""", (self.id,))
         rows = cursor.fetchall()
         if rows:
             return [_Collection(*row) for row in rows]
@@ -56,7 +56,7 @@ class _Book(_BackendObject):
         """ Gets the page of this book that was last read when the book was
         closed. Returns C{None} if no such page exists. """
         cursor = self.get_backend().execute(
-                '''SELECT page FROM recent WHERE book = ?''', (self.id,))
+                """SELECT page FROM recent WHERE book = ?""", (self.id,))
         row = cursor.fetchone()
         cursor.close()
         return row
@@ -92,13 +92,13 @@ class _Book(_BackendObject):
 
         # Remove any old recent row for this book
         cursor = self.get_backend().execute(
-                '''DELETE FROM recent WHERE book = ?''', (self.id,))
+                """DELETE FROM recent WHERE book = ?""", (self.id,))
         # If a new page was passed, set it as recently read
         if page is not None:
             if not time:
                 time = datetime.datetime.now()
-            cursor.execute('''INSERT INTO recent (book, page, time_set)
-                              VALUES (?, ?, ?)''',
+            cursor.execute("""INSERT INTO recent (book, page, time_set)
+                              VALUES (?, ?, ?)""",
                            (self.id, page, time))
 
         cursor.close()
@@ -133,16 +133,16 @@ class _Collection(_BackendObject):
 
         books = []
         for collection in [self] + self.get_all_collections():
-            sql = '''SELECT book.id, book.name, book.path, book.pages, book.format,
+            sql = """SELECT book.id, book.name, book.path, book.pages, book.format,
                             book.size, book.added
                      FROM book
                      JOIN contain ON contain.book = book.id
                                      AND contain.collection = ?
-                  '''
+                  """
 
             sql_args = [collection.id]
             if filter_string:
-                sql += ''' WHERE book.name LIKE '%' || ? || '%' '''
+                sql += """ WHERE book.name LIKE '%' || ? || '%' """
                 sql_args.append(filter_string)
 
             cursor = self.get_backend().execute(sql, sql_args)
@@ -156,10 +156,10 @@ class _Collection(_BackendObject):
     def get_collections(self):
         """ Returns a list of all direct subcollections of this instance. """
 
-        cursor = self.get_backend().execute('''SELECT id, name, supercollection
+        cursor = self.get_backend().execute("""SELECT id, name, supercollection
                 FROM collection
                 WHERE supercollection = ?
-                ORDER by name''', [self.id])
+                ORDER by name""", [self.id])
         result = cursor.fetchall()
         cursor.close()
 
@@ -183,9 +183,9 @@ class _Collection(_BackendObject):
     def add_collection(self, subcollection):
         """ Sets C{subcollection} as child of this collection. """
 
-        self.get_backend().execute('''UPDATE collection
+        self.get_backend().execute("""UPDATE collection
                 SET supercollection = ?
-                WHERE id = ?''', (self.id, subcollection.id))
+                WHERE id = ?""", (self.id, subcollection.id))
         subcollection.supercollection = self.id
 
 
@@ -195,19 +195,19 @@ class _DefaultCollection(_Collection):
 
     def __init__(self):
         self.id = None
-        self.name = ("All books")
+        self.name = 'All books'
         self.supercollection = None
 
     def get_books(self, filter_string=None):
         """ Returns all books in the library """
-        sql = '''SELECT book.id, book.name, book.path, book.pages, book.format,
+        sql = """SELECT book.id, book.name, book.path, book.pages, book.format,
                         book.size, book.added
                  FROM book
-              '''
+              """
 
         sql_args = []
         if filter_string:
-            sql += ''' WHERE book.name LIKE '%' || ? || '%' '''
+            sql += """ WHERE book.name LIKE '%' || ? || '%' """
             sql_args.append(filter_string)
 
         cursor = self.get_backend().execute(sql, sql_args)
@@ -220,20 +220,20 @@ class _DefaultCollection(_Collection):
         """ Removes C{subcollection} from any supercollections and moves
         it to the root level of the tree. """
 
-        assert subcollection is not DefaultCollection, "Cannot change DefaultCollection"
+        assert subcollection is not DefaultCollection, 'Cannot change DefaultCollection'
 
-        self.get_backend().execute('''UPDATE collection
+        self.get_backend().execute("""UPDATE collection
                 SET supercollection = NULL
-                WHERE id = ?''', (subcollection.id,))
+                WHERE id = ?""", (subcollection.id,))
         subcollection.supercollection = None
 
     def get_collections(self):
         """ Returns a list of all root collections. """
 
-        cursor = self.get_backend().execute('''SELECT id, name, supercollection
+        cursor = self.get_backend().execute("""SELECT id, name, supercollection
                 FROM collection
                 WHERE supercollection IS NULL
-                ORDER by name''')
+                ORDER by name""")
         result = cursor.fetchall()
         cursor.close()
 

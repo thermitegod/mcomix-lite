@@ -32,7 +32,7 @@ class ThumbnailViewBase(object):
         self._thread = WorkerThread(self._pixbuf_worker,
                                     name='thumbview',
                                     unique_orders=True,
-                                    max_threads=prefs["max threads"])
+                                    max_threads=prefs['max threads'])
 
     def generate_thumbnail(self, uid):
         """ This function must return the thumbnail for C{uid}. """

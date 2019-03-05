@@ -79,7 +79,7 @@ class OnScreenDisplay(object):
             else:
                 result.append(part)
 
-        return "\n".join(result)
+        return '\n'.join(result)
 
     def _clear_osd(self):
         """ Clear the last OSD region. """

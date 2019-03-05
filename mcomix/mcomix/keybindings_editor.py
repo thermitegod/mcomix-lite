@@ -32,21 +32,21 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
 
         treeview = Gtk.TreeView(model=treestore)
 
-        tvcol1 = Gtk.TreeViewColumn("Name")
+        tvcol1 = Gtk.TreeViewColumn('Name')
         treeview.append_column(tvcol1)
         cell1 = Gtk.CellRendererText()
         tvcol1.pack_start(cell1, True)
         tvcol1.set_attributes(cell1, text=0, editable=2)
 
         for idx in range(0, self.accel_column_num):
-            tvc = Gtk.TreeViewColumn("Key %d" % (idx + 1))
+            tvc = Gtk.TreeViewColumn('Key %d' % (idx + 1))
             treeview.append_column(tvc)
             accel_cell = Gtk.CellRendererAccel()
-            accel_cell.connect("accel-edited", self.get_on_accel_edited(idx))
-            accel_cell.connect("accel-cleared", self.get_on_accel_cleared(idx))
+            accel_cell.connect('accel-edited', self.get_on_accel_edited(idx))
+            accel_cell.connect('accel-cleared', self.get_on_accel_cleared(idx))
             tvc.pack_start(accel_cell, True)
-            tvc.add_attribute(accel_cell, "text", 3 + idx)
-            tvc.add_attribute(accel_cell, "editable", 2)
+            tvc.add_attribute(accel_cell, 'text', 3 + idx)
+            tvc.add_attribute(accel_cell, 'editable', 2)
 
         # Allow sorting on the column
         tvcol1.set_sort_column_id(0)

@@ -74,7 +74,7 @@ class Statusbar(Gtk.EventBox):
         replacing whatever was there earlier.
         """
         self.status.pop(0)
-        self.status.push(0, " " * Statusbar.SPACING + message)
+        self.status.push(0, ' ' * Statusbar.SPACING + message)
 
     def set_page_number(self, page, total, this_screen):
         """Update the page number."""
@@ -104,7 +104,7 @@ class Statusbar(Gtk.EventBox):
         Takes an iterable of tuples, (x, y, scale), describing the original
         resolution of an image as well as the currently displayed scale.
         """
-        resolution = ""
+        resolution = ''
         for i in range(len(dimensions)):
             d = dimensions[i]
             resolution += '%dx%d (%.1f%%)' % (d[0], d[1], d[2] * 100.0)
@@ -129,8 +129,8 @@ class Statusbar(Gtk.EventBox):
     def update(self):
         """Set the statusbar to display the current state."""
 
-        space = " " * Statusbar.SPACING
-        text = (space + "|" + space).join(self._get_status_text())
+        space = ' ' * Statusbar.SPACING
+        text = (space + '|' + space).join(self._get_status_text())
         self.status.pop(0)
         self.status.push(0, space + text)
 

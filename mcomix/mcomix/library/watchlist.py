@@ -24,9 +24,7 @@ class WatchListDialog(Gtk.Dialog):
         """ Dialog constructor.
         @param library: Dialog parent window, should be library window.
         """
-        super(WatchListDialog, self).__init__(
-                title="Library watch list", modal=True, destroy_with_parent=True
-        )
+        super(WatchListDialog, self).__init__(title='Library watch list', modal=True, destroy_with_parent=True)
 
         self.add_buttons(
                 '_Scan now', WatchListDialog.RESPONSE_SCANNOW,
@@ -46,7 +44,7 @@ class WatchListDialog(Gtk.Dialog):
         self._treeview.get_selection().connect('changed', self._item_selected_cb)
 
         dir_renderer = Gtk.CellRendererText()
-        dir_column = Gtk.TreeViewColumn("Directory", dir_renderer)
+        dir_column = Gtk.TreeViewColumn('Directory', dir_renderer)
         dir_column.set_attributes(dir_renderer, text=COL_DIRECTORY)
         dir_column.set_expand(True)
         self._treeview.append_column(dir_column)
@@ -66,8 +64,7 @@ class WatchListDialog(Gtk.Dialog):
         recursive_renderer = Gtk.CellRendererToggle()
         recursive_renderer.set_activatable(True)
         recursive_renderer.connect('toggled', self._recursive_changed_cb)
-        recursive_column = Gtk.TreeViewColumn("With subdirectories",
-                                              recursive_renderer)
+        recursive_column = Gtk.TreeViewColumn("With subdirectories", recursive_renderer)
         recursive_column.add_attribute(recursive_renderer, 'active', COL_RECURSIVE)
         self._treeview.append_column(recursive_column)
 
@@ -233,7 +230,7 @@ class WatchListDialog(Gtk.Dialog):
         else:
             text = backend_types.DefaultCollection.name
 
-        cell.set_property("text", text)
+        cell.set_property('text', text)
 
     def _close_cb(self, dialog, response, *args):
         """ Trigger scan for new files after watch dialog closes. """

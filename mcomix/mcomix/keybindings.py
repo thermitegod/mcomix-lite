@@ -167,7 +167,7 @@ class _KeybindingManager(object):
         @param args: List of arguments to pass to the callback
         @param kwargs: List of keyword arguments to pass to the callback.
         """
-        assert name in BINDING_INFO, "'%s' isn't a valid keyboard action." % name
+        assert name in BINDING_INFO, '"%s" is not a valid keyboard action.' % name
 
         # Load stored keybindings, or fall back to passed arguments
         keycodes = self._action_to_bindings[name]
@@ -178,7 +178,7 @@ class _KeybindingManager(object):
             if keycode in self._binding_to_action.keys():
                 if self._binding_to_action[keycode] != name:
                     log.warning('Keybinding for "%(action)s" overrides hotkey for another action.',
-                                {"action": name})
+                                {'action': name})
                     log.warning('Binding %s overrides %r', keycode, self._binding_to_action[keycode])
             else:
                 self._binding_to_action[keycode] = name
@@ -200,7 +200,7 @@ class _KeybindingManager(object):
         @return None: new_binding wasn't in any action
                 action name: where new_binding was before
         """
-        assert name in BINDING_INFO, "'%s' isn't a valid keyboard action." % name
+        assert name in BINDING_INFO, '"%s" is not a valid keyboard action.' % name
 
         nb = Gtk.accelerator_parse(new_binding)
         old_action_with_nb = self._binding_to_action.get(nb)
@@ -231,7 +231,7 @@ class _KeybindingManager(object):
 
     def clear_accel(self, name, binding):
         """ Remove binding for an action """
-        assert name in BINDING_INFO, "'%s' isn't a valid keyboard action." % name
+        assert name in BINDING_INFO, '"%s" is not a valid keyboard action.' % name
 
         ob = Gtk.accelerator_parse(binding)
         self._action_to_bindings[name].remove(ob)
@@ -277,16 +277,16 @@ class _KeybindingManager(object):
                     Gtk.accelerator_name(keyval, modifiers) for
                     (keyval, modifiers) in bindings
                 ]
-        with open(constants.KEYBINDINGS_CONF_PATH, "w") as fp:
+        with open(constants.KEYBINDINGS_CONF_PATH, 'w') as fp:
             json.dump(action_to_keys, fp, indent=2)
 
     def _initialize(self):
         """ Restore keybindings from disk. """
         try:
-            with open(constants.KEYBINDINGS_CONF_PATH, "r") as fp:
+            with open(constants.KEYBINDINGS_CONF_PATH, 'r') as fp:
                 stored_action_bindings = json.load(fp)
         except Exception as e:
-            log.error("Couldn't load keybindings: %s", e)
+            log.error('Could not load keybindings: %s', e)
             stored_action_bindings = {}
 
         for action in BINDING_INFO.keys():

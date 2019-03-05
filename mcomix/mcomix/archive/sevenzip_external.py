@@ -174,11 +174,11 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
 
 
 class TarArchive(SevenZipArchive):
-    '''Special class for handling tar archives.
+    """Special class for handling tar archives.
 
        Needed because for XZ archives, the technical listing
        does not contain the archive member name...
-    '''
+    """
 
     def __init__(self, archive):
         super(TarArchive, self).__init__(archive)

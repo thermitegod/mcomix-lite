@@ -35,8 +35,7 @@ prefs = {
     'default manga mode': True,
     'lens magnification': 2,
     'lens size': 200,
-    'virtual double page for fitting images': constants.SHOW_DOUBLE_AS_ONE_TITLE | \
-                                              constants.SHOW_DOUBLE_AS_ONE_WIDE,
+    'virtual double page for fitting images': constants.SHOW_DOUBLE_AS_ONE_TITLE | constants.SHOW_DOUBLE_AS_ONE_WIDE,
     'double step in double page mode': True,
     'show page numbers on thumbnails': True,
     'thumbnail size': 90,
@@ -117,9 +116,8 @@ def read_preferences_file():
                 saved_prefs = json.load(config_file)
         except:
             # Gettext might not be installed yet at this point.
-            corrupt_name = "%s.broken" % constants.PREFERENCE_PATH
-            print('! Corrupt preferences file, moving to "%s".' %
-                  corrupt_name)
+            corrupt_name = '%s.broken' % constants.PREFERENCE_PATH
+            print('! Corrupt preferences file, moving to "%s".' % corrupt_name)
             if os.path.isfile(corrupt_name):
                 os.unlink(corrupt_name)
 

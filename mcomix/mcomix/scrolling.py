@@ -169,7 +169,7 @@ class Scrolling(object):
             if d == 0:
                 continue
             if d < constants.SCROLL_TO_END or d > 1:
-                raise ValueError("invalid destination " + d + " at index " + i)
+                raise ValueError('invalid destination ' + d + ' at index ' + i)
             if d == constants.SCROLL_TO_END:
                 d = o
             if d == constants.SCROLL_TO_START:
@@ -211,9 +211,9 @@ class Scrolling(object):
         https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm for details.
         """
         if num < 0:
-            raise ValueError("num < 0")
+            raise ValueError('num < 0')
         if denom < 1:
-            raise ValueError("denom < 1")
+            raise ValueError('denom < 1')
         quotient = num // denom
         remainder = num % denom
         needs_up = half_up and (remainder != 0) and ((denom & 1) == 0)

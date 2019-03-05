@@ -22,8 +22,8 @@ class Box(object):
             self.position = tuple(position)
             self.size = tuple(size)
         if len(self.position) != len(self.size):
-            raise ValueError("different number of dimensions: " +
-                             str(len(self.position)) + " != " + str(len(self.size)))
+            raise ValueError('different number of dimensions: ' +
+                             str(len(self.position)) + ' != ' + str(len(self.size)))
 
     def __str__(self):
         """ Returns a string representation of this Box. """

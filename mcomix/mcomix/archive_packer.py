@@ -57,8 +57,7 @@ class Packer(object):
         try:
             zfile = zipfile.ZipFile(self._archive_path, 'w')
         except Exception:
-            log.error('! Could not create archive at path "%s"',
-                      self._archive_path)
+            log.error('! Could not create archive at path "%s"', self._archive_path)
             return
 
         used_names = []
@@ -72,7 +71,7 @@ class Packer(object):
                 zfile.write(path, filename, zipfile.ZIP_STORED)
             except Exception:
                 log.error('! Could not add file %(sourcefile)s to archive %(archivefile)s, aborting...',
-                          {"sourcefile": path, "archivefile": self._archive_path})
+                          {'sourcefile': path, 'archivefile': self._archive_path})
 
                 zfile.close()
 
@@ -95,7 +94,7 @@ class Packer(object):
                 zfile.write(path, filename, zipfile.ZIP_DEFLATED)
             except Exception:
                 log.error('! Could not add file %(sourcefile)s to archive %(archivefile)s, aborting...',
-                          {"sourcefile": path, "archivefile": self._archive_path})
+                          {'sourcefile': path, 'archivefile': self._archive_path})
 
                 zfile.close()
 

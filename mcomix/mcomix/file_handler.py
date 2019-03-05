@@ -134,7 +134,7 @@ class FileHandler(object):
         self.file_opened()
 
         if not image_files:
-            msg = "No images in '%s'" % os.path.basename(self._current_file)
+            msg = 'No images in "%s"' % os.path.basename(self._current_file)
             self._window.statusbar.set_message(msg)
             self._window.osd.show(msg)
 
@@ -357,8 +357,8 @@ class FileHandler(object):
                 ('Continue reading from page %d?' % last_read_page),
                 ('You stopped reading here on %(date)s, %(time)s. '
                  'If you choose "Yes", reading will resume on page %(page)d. Otherwise, '
-                 'the first page will be loaded.') % {'date': read_date.date().strftime("%x"),
-                                                      'time': read_date.time().strftime("%X"), 'page': last_read_page})
+                 'the first page will be loaded.') % {'date': read_date.date().strftime('%x'),
+                                                      'time': read_date.time().strftime('%X'), 'page': last_read_page})
         result = dialog.run()
 
         return result == Gtk.ResponseType.YES

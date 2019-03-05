@@ -102,7 +102,7 @@ class Thumbnailer(object):
             try:
                 os.remove(thumbpath)
             except IOError as error:
-                log.error("! Could not remove file \"%s\"", thumbpath)
+                log.error('! Could not remove file "%s"', thumbpath)
                 log.error(error)
 
     def _create_thumbnail_pixbuf(self, filepath):

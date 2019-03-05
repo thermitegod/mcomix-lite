@@ -23,7 +23,7 @@ class FormattedLabel(Gtk.Label):
         self.set_text(text)
 
     def set_text(self, text):
-        markup = '<span font_size="%u" font_weight="%u" font_style="%s">%s</span>' % (
+        markup = '<span font_size="%u" font_weight="%u"font_style="%s">%s</span>' % (
             int(self._scale * 10 * 1024),
             self._weight,
             self._STYLES[self._style],

@@ -45,10 +45,10 @@ class _LibraryBackend(object):
         """
         if collection is None:
             if filter_string is None:
-                cur = self._con.execute('''select id from Book''')
+                cur = self._con.execute("""select id from Book""")
             else:
-                cur = self._con.execute('''select id from Book
-                    where path like ?''', ("%%%s%%" % filter_string,))
+                cur = self._con.execute("""select id from Book where path like ?""",
+                                        ("%%%s%%" % filter_string,))
 
             return cur.fetchall()
         else:
@@ -56,13 +56,13 @@ class _LibraryBackend(object):
             subcollections = self.get_all_collections_in_collection(collection)
             for coll in [collection] + subcollections:
                 if filter_string is None:
-                    cur = self._con.execute('''select id from Book
+                    cur = self._con.execute("""select id from Book
                         where id in (select book from Contain where collection = ?)
-                        ''', (coll,))
+                        """, (coll,))
                 else:
-                    cur = self._con.execute('''select id from Book
+                    cur = self._con.execute("""select id from Book
                         where id in (select book from Contain where collection = ?)
-                        and path like ?''', (coll, "%%%s%%" % filter_string))
+                        and path like ?""", (coll, "%%%s%%" % filter_string))
                 books.extend(cur.fetchall())
             return books
 
@@ -73,9 +73,9 @@ class _LibraryBackend(object):
 
         path = os.path.abspath(path)
 
-        cur = self.execute('''select id, name, path, pages, format,
+        cur = self.execute("""select id, name, path, pages, format,
                                      size, added
-                              from book where path = ?''', (path,))
+                              from book where path = ?""", (path,))
         book = cur.fetchone()
         cur.close()
 
@@ -89,9 +89,9 @@ class _LibraryBackend(object):
         If the book doesn't exist, C{None} is returned. Otherwise, a
         L{backend_types._Book} instance is returned. """
 
-        cur = self.execute('''select id, name, path, pages, format,
+        cur = self.execute("""select id, name, path, pages, format,
                                      size, added
-                              from book where id = ?''', (id,))
+                              from book where id = ?""", (id,))
         book = cur.fetchone()
         cur.close()
 
@@ -105,8 +105,8 @@ class _LibraryBackend(object):
         None if the cover can not be fetched.
         """
         try:
-            path = self._con.execute('''select path from Book
-                where id = ?''', (book,)).fetchone()
+            path = self._con.execute("""select path from Book
+                where id = ?""", (book,)).fetchone()
         except Exception:
             log.error('! Non-existant book #%i', book)
             return None
@@ -118,8 +118,8 @@ class _LibraryBackend(object):
         in the library.
         """
         try:
-            path = self._con.execute('''select path from Book
-                where id = ?''', (book,)).fetchone()
+            path = self._con.execute("""select path from Book
+                where id = ?""", (book,)).fetchone()
         except Exception:
             log.error('! Non-existant book #%i', book)
             return None
@@ -148,13 +148,13 @@ class _LibraryBackend(object):
         or all top-level collections if <collection> is None.
         """
         if collection is None:
-            cur = self._con.execute('''select id from Collection
+            cur = self._con.execute("""select id from Collection
                 where supercollection isnull
-                order by name''')
+                order by name""")
         else:
-            cur = self._con.execute('''select id from Collection
+            cur = self._con.execute("""select id from Collection
                 where supercollection = ?
-                order by name''', (collection,))
+                order by name""", (collection,))
         return cur.fetchall()
 
     def get_all_collections_in_collection(self, collection):
@@ -179,16 +179,16 @@ class _LibraryBackend(object):
         """Return a sequence with all collections (flattened hierarchy).
         The sequence is sorted alphabetically by collection name.
         """
-        cur = self._con.execute('''select id from Collection
-            order by name''')
+        cur = self._con.execute("""select id from Collection
+            order by name""")
         return cur.fetchall()
 
     def get_collection_name(self, collection):
         """Return the name field of the <collection>, or None if the
         collection does not exist.
         """
-        cur = self._con.execute('''select name from Collection
-            where id = ?''', (collection,))
+        cur = self._con.execute("""select name from Collection
+            where id = ?""", (collection,))
         name = cur.fetchone()
         if name is not None:
             return name
@@ -200,9 +200,9 @@ class _LibraryBackend(object):
         collection exists. Names are unique, so at most one such collection
         can exist.
         """
-        cur = self._con.execute('''select id, name, supercollection
+        cur = self._con.execute("""select id, name, supercollection
             from collection
-            where name = ?''', (name,))
+            where name = ?""", (name,))
         result = cur.fetchone()
         cur.close()
         if result:
@@ -218,9 +218,9 @@ class _LibraryBackend(object):
         if id is None or id == -1:
             return backend_types.DefaultCollection
         else:
-            cur = self._con.execute('''select id, name, supercollection
+            cur = self._con.execute("""select id, name, supercollection
                 from collection
-                where id = ?''', (id,))
+                where id = ?""", (id,))
             result = cur.fetchone()
             cur.close()
 
@@ -236,8 +236,8 @@ class _LibraryBackend(object):
 
     def get_supercollection(self, collection):
         """Return the supercollection of <collection>."""
-        cur = self._con.execute('''select supercollection from Collection
-            where id = ?''', (collection,))
+        cur = self._con.execute("""select supercollection from Collection
+            where id = ?""", (collection,))
         return cur.fetchone()
 
     def add_book(self, path, collection=None):
@@ -255,19 +255,19 @@ class _LibraryBackend(object):
 
         # Thumbnail for the newly added book will be generated once it
         # is actually needed with get_book_thumbnail().
-        old = self._con.execute('''select id from Book
-            where path = ?''', (path,)).fetchone()
+        old = self._con.execute("""select id from Book
+            where path = ?""", (path,)).fetchone()
         try:
             cursor = self._con.cursor()
             if old is not None:
-                cursor.execute('''update Book set
+                cursor.execute("""update Book set
                     name = ?, pages = ?, format = ?, size = ?
-                    where path = ?''', (name, pages, format, size, path))
+                    where path = ?""", (name, pages, format, size, path))
                 book_id = old
             else:
-                cursor.execute('''insert into Book
+                cursor.execute("""insert into Book
                     (name, path, pages, format, size)
-                    values (?, ?, ?, ?, ?)''',
+                    values (?, ?, ?, ?, ?)""",
                                (name, path, pages, format, size))
                 book_id = cursor.lastrowid
 
@@ -282,7 +282,7 @@ class _LibraryBackend(object):
 
             return True
         except sqlite3.Error:
-            log.error('! Could not add book "%s" to the library', path)
+            log.error("! Could not add book \"%s\" to the library", path)
             return False
 
     @callback.Callback
@@ -310,14 +310,14 @@ class _LibraryBackend(object):
             # The Recent pseudo collection initializes the lowest rowid
             # with -2, meaning that instead of starting from 1,
             # auto-incremental will start from -1. Avoid this.
-            cur = self._con.execute('''select max(id) from collection''')
+            cur = self._con.execute("""select max(id) from collection""")
             maxid = cur.fetchone()
             if maxid is not None and maxid < 1:
-                self._con.execute('''insert into collection
-                    (id, name) values (?, ?)''', (1, name))
+                self._con.execute("""insert into collection
+                    (id, name) values (?, ?)""", (1, name))
             else:
-                self._con.execute('''insert into Collection
-                    (name) values (?)''', (name,))
+                self._con.execute("""insert into Collection
+                    (name) values (?)""", (name,))
             return True
         except sqlite3.Error:
             log.error('! Could not add collection "%s"', name)
@@ -326,41 +326,41 @@ class _LibraryBackend(object):
     def add_book_to_collection(self, book, collection):
         """Put <book> into <collection>."""
         try:
-            self._con.execute('''insert into Contain
-                (collection, book) values (?, ?)''', (collection, book))
+            self._con.execute("""insert into Contain
+                (collection, book) values (?, ?)""", (collection, book))
             self.book_added_to_collection(self.get_book_by_id(book),
                                           collection)
         except sqlite3.DatabaseError:  # E.g. book already in collection.
             pass
         except sqlite3.Error:
             log.error('! Could not add book %(book)s to collection %(collection)s',
-                      {"book": book, "collection": collection})
+                      {'book': book, 'collection': collection})
 
     def add_collection_to_collection(self, subcollection, supercollection):
         """Put <subcollection> into <supercollection>, or put
         <subcollection> in the root if <supercollection> is None.
         """
         if supercollection is None:
-            self._con.execute('''update Collection
+            self._con.execute("""update Collection
                 set supercollection = NULL
-                where id = ?''', (subcollection,))
+                where id = ?""", (subcollection,))
         else:
-            self._con.execute('''update Collection
+            self._con.execute("""update Collection
                 set supercollection = ?
-                where id = ?''', (supercollection, subcollection))
+                where id = ?""", (supercollection, subcollection))
 
     def rename_collection(self, collection, name):
         """Rename the <collection> to <name>. Return True if the renaming
         was successful.
         """
         try:
-            self._con.execute('''update Collection set name = ?
-                where id = ?''', (name, collection))
+            self._con.execute("""update Collection set name = ?
+                where id = ?""", (name, collection))
             return True
         except sqlite3.DatabaseError:  # E.g. name taken.
             pass
         except sqlite3.Error:
-            log.error('! Could not rename collection to "%s"', name)
+            log.error("! Could not rename collection to \"%s\"", name)
         return False
 
     def duplicate_collection(self, collection):
@@ -376,11 +376,11 @@ class _LibraryBackend(object):
             copy_name = copy_name + ' ' + '(Copy)'
         if self.add_collection(copy_name) is None:  # Could not create the new.
             return False
-        copy_collection = self._con.execute('''select id from Collection
-            where name = ?''', (copy_name,)).fetchone()
-        self._con.execute('''insert or ignore into Contain (collection, book)
+        copy_collection = self._con.execute("""select id from Collection
+            where name = ?""", (copy_name,)).fetchone()
+        self._con.execute("""insert or ignore into Contain (collection, book)
             select ?, book from Contain
-            where collection = ?''', (copy_collection, collection))
+            where collection = ?""", (copy_collection, collection))
         return True
 
     def clean_collection(self, collection=None):
@@ -407,18 +407,18 @@ class _LibraryBackend(object):
 
     def remove_collection(self, collection):
         """Remove the <collection> (sans books) from the library."""
-        self._con.execute('''update watchlist set collection = NULL
-            where collection = ?''', (collection,))
+        self._con.execute("""update watchlist set collection = NULL
+            where collection = ?""", (collection,))
         self._con.execute('delete from Collection where id = ?', (collection,))
         self._con.execute('delete from Contain where collection = ?',
                           (collection,))
-        self._con.execute('''update Collection set supercollection = NULL
-            where supercollection = ?''', (collection,))
+        self._con.execute("""update Collection set supercollection = NULL
+            where supercollection = ?""", (collection,))
 
     def remove_book_from_collection(self, book, collection):
         """Remove <book> from <collection>."""
-        self._con.execute('''delete from Contain
-            where book = ? and collection = ?''', (book, collection))
+        self._con.execute("""delete from Contain
+            where book = ? and collection = ?""", (book, collection))
 
     def execute(self, *args):
         """ Passes C{args} directly to the C{execute} method of the SQL
@@ -468,8 +468,8 @@ class _LibraryBackend(object):
 
         if self._table_exists('info'):
             cursor = self._con.cursor()
-            version = cursor.execute('''select value from info
-                where key = 'version' ''').fetchone()
+            version = cursor.execute("""select value from info
+                where key = 'version' """).fetchone()
             cursor.close()
 
             if not version:
@@ -491,48 +491,48 @@ class _LibraryBackend(object):
         self._create_table_recent()
 
     def _create_table_book(self):
-        self._con.execute('''create table if not exists book (
+        self._con.execute("""create table if not exists book (
             id integer primary key,
             name text,
             path text unique,
             pages integer,
             format integer,
             size integer,
-            added datetime default current_timestamp)''')
+            added datetime default current_timestamp)""")
 
     def _create_table_collection(self):
-        self._con.execute('''create table if not exists collection (
+        self._con.execute("""create table if not exists collection (
             id integer primary key,
             name text unique,
-            supercollection integer)''')
+            supercollection integer)""")
 
     def _create_table_contain(self):
-        self._con.execute('''create table if not exists contain (
+        self._con.execute("""create table if not exists contain (
             collection integer not null,
             book integer not null,
-            primary key (collection, book))''')
+            primary key (collection, book))""")
 
     def _create_table_info(self):
-        self._con.execute('''create table if not exists info (
+        self._con.execute("""create table if not exists info (
             key text primary key,
-            value text)''')
-        self._con.execute('''insert into info
-            (key, value) values ('version', ?)''',
+            value text)""")
+        self._con.execute("""insert into info
+            (key, value) values ('version', ?)""",
                           (str(_LibraryBackend.DB_VERSION),))
 
     def _create_table_watchlist(self):
-        self._con.execute('''create table if not exists watchlist (
+        self._con.execute("""create table if not exists watchlist (
             path text primary key,
             collection integer references collection (id) on delete set null,
-            recursive boolean not null)''')
+            recursive boolean not null)""")
 
     def _create_table_recent(self):
-        self._con.execute('''create table if not exists recent (
+        self._con.execute("""create table if not exists recent (
             book integer primary key,
             page integer,
-            time_set datetime)''')
-        self._con.execute('''insert or ignore into collection (id, name)
-            values (?, ?)''', (COLLECTION_RECENT, 'Recent'))
+            time_set datetime)""")
+        self._con.execute("""insert or ignore into collection (id, name)
+            values (?, ?)""", (COLLECTION_RECENT, 'Recent'))
 
 
 _backend = None

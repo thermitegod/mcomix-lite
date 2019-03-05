@@ -224,7 +224,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
                     os.path.exists(first_path)):
                 overwrite_dialog = message_dialog.MessageDialog(None, 0,
                                                                 Gtk.MessageType.QUESTION, Gtk.ButtonsType.OK_CANCEL)
-                overwrite_dialog.set_text('A file named \'%s\' already exists. Do you want to replace it?' % os.path.basename(first_path))
+                overwrite_dialog.set_text('A file named "%s" already exists. Do you want to replace it?' % os.path.basename(first_path))
                 response = overwrite_dialog.run()
 
                 if response != Gtk.ResponseType.OK:

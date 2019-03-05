@@ -49,42 +49,42 @@ class RarArchive(archive_base.BaseArchive):
     class _RAROpenArchiveDataEx(ctypes.Structure):
         """ Archive header structure. Used by DLL calls. """
         _pack_ = 1
-        _fields_ = [("ArcName", ctypes.c_char_p),
-                    ("ArcNameW", ctypes.c_wchar_p),
-                    ("OpenMode", ctypes.c_uint),
-                    ("OpenResult", ctypes.c_uint),
-                    ("CmtBuf", ctypes.c_char_p),
-                    ("CmtBufSize", ctypes.c_uint),
-                    ("CmtSize", ctypes.c_uint),
-                    ("CmtState", ctypes.c_uint),
-                    ("Flags", ctypes.c_uint),
-                    ("Callback", UNRARCALLBACK),
-                    ("UserData", ctypes.c_long),
-                    ("Reserved", ctypes.c_uint * 28)]
+        _fields_ = [('ArcName', ctypes.c_char_p),
+                    ('ArcNameW', ctypes.c_wchar_p),
+                    ('OpenMode', ctypes.c_uint),
+                    ('OpenResult', ctypes.c_uint),
+                    ('CmtBuf', ctypes.c_char_p),
+                    ('CmtBufSize', ctypes.c_uint),
+                    ('CmtSize', ctypes.c_uint),
+                    ('CmtState', ctypes.c_uint),
+                    ('Flags', ctypes.c_uint),
+                    ('Callback', UNRARCALLBACK),
+                    ('UserData', ctypes.c_long),
+                    ('Reserved', ctypes.c_uint * 28)]
 
     class _RARHeaderDataEx(ctypes.Structure):
         """ Archive file structure. Used by DLL calls. """
         _pack_ = 1
-        _fields_ = [("ArcName", ctypes.c_char * 1024),
-                    ("ArcNameW", ctypes.c_wchar * 1024),
-                    ("FileName", ctypes.c_char * 1024),
-                    ("FileNameW", ctypes.c_wchar * 1024),
-                    ("Flags", ctypes.c_uint),
-                    ("PackSize", ctypes.c_uint),
-                    ("PackSizeHigh", ctypes.c_uint),
-                    ("UnpSize", ctypes.c_uint),
-                    ("UnpSizeHigh", ctypes.c_uint),
-                    ("HostOS", ctypes.c_uint),
-                    ("FileCRC", ctypes.c_uint),
-                    ("FileTime", ctypes.c_uint),
-                    ("UnpVer", ctypes.c_uint),
-                    ("Method", ctypes.c_uint),
-                    ("FileAttr", ctypes.c_uint),
-                    ("CmtBuf", ctypes.c_char_p),
-                    ("CmtBufSize", ctypes.c_uint),
-                    ("CmtSize", ctypes.c_uint),
-                    ("CmtState", ctypes.c_uint),
-                    ("Reserved", ctypes.c_uint * 1024)]
+        _fields_ = [('ArcName', ctypes.c_char * 1024),
+                    ('ArcNameW', ctypes.c_wchar * 1024),
+                    ('FileName', ctypes.c_char * 1024),
+                    ('FileNameW', ctypes.c_wchar * 1024),
+                    ('Flags', ctypes.c_uint),
+                    ('PackSize', ctypes.c_uint),
+                    ('PackSizeHigh', ctypes.c_uint),
+                    ('UnpSize', ctypes.c_uint),
+                    ('UnpSizeHigh', ctypes.c_uint),
+                    ('HostOS', ctypes.c_uint),
+                    ('FileCRC', ctypes.c_uint),
+                    ('FileTime', ctypes.c_uint),
+                    ('UnpVer', ctypes.c_uint),
+                    ('Method', ctypes.c_uint),
+                    ('FileAttr', ctypes.c_uint),
+                    ('CmtBuf', ctypes.c_char_p),
+                    ('CmtBufSize', ctypes.c_uint),
+                    ('CmtSize', ctypes.c_uint),
+                    ('CmtState', ctypes.c_uint),
+                    ('Reserved', ctypes.c_uint * 1024)]
 
     @staticmethod
     def is_available():
@@ -191,7 +191,7 @@ class RarArchive(archive_base.BaseArchive):
         handle = self._unrar.RAROpenArchiveEx(ctypes.byref(archivedata))
         if not handle:
             errormessage = UnrarException.get_error_message(archivedata.OpenResult)
-            raise UnrarException("Couldn't open archive: %s" % errormessage)
+            raise UnrarException('Could not open archive: %s' % errormessage)
         self._unrar.RARSetCallback(handle, self._callback_function, 0)
         self._handle = handle
 
@@ -231,7 +231,7 @@ class RarArchive(archive_base.BaseArchive):
         errorcode = self._unrar.RARCloseArchive(self._handle)
         if errorcode != 0:
             errormessage = UnrarException.get_error_message(errorcode)
-            raise UnrarException("Couldn't close archive: %s" % errormessage)
+            raise UnrarException('Could not close archive: %s' % errormessage)
         self._handle = None
 
     def _password_callback(self, msg, userdata, buffer_address, buffer_size):
@@ -254,19 +254,19 @@ class UnrarException(Exception):
     """ Exception class for RarArchive. """
 
     _exceptions = {
-        RarArchive._ErrorCode.ERAR_END_ARCHIVE: "End of archive",
-        RarArchive._ErrorCode.ERAR_NO_MEMORY: " Not enough memory to initialize data structures",
-        RarArchive._ErrorCode.ERAR_BAD_DATA: "Bad data, CRC mismatch",
-        RarArchive._ErrorCode.ERAR_BAD_ARCHIVE: "Volume is not valid RAR archive",
-        RarArchive._ErrorCode.ERAR_UNKNOWN_FORMAT: "Unknown archive format",
-        RarArchive._ErrorCode.ERAR_EOPEN: "Volume open error",
-        RarArchive._ErrorCode.ERAR_ECREATE: "File create error",
-        RarArchive._ErrorCode.ERAR_ECLOSE: "File close error",
-        RarArchive._ErrorCode.ERAR_EREAD: "Read error",
-        RarArchive._ErrorCode.ERAR_EWRITE: "Write error",
-        RarArchive._ErrorCode.ERAR_SMALL_BUF: "Buffer too small",
-        RarArchive._ErrorCode.ERAR_UNKNOWN: "Unknown error",
-        RarArchive._ErrorCode.ERAR_MISSING_PASSWORD: "Password missing"
+        RarArchive._ErrorCode.ERAR_END_ARCHIVE: 'End of archive',
+        RarArchive._ErrorCode.ERAR_NO_MEMORY: 'Not enough memory to initialize data structures',
+        RarArchive._ErrorCode.ERAR_BAD_DATA: 'Bad data, CRC mismatch',
+        RarArchive._ErrorCode.ERAR_BAD_ARCHIVE: 'Volume is not valid RAR archive',
+        RarArchive._ErrorCode.ERAR_UNKNOWN_FORMAT: 'Unknown archive format',
+        RarArchive._ErrorCode.ERAR_EOPEN: 'Volume open error',
+        RarArchive._ErrorCode.ERAR_ECREATE: 'File create error',
+        RarArchive._ErrorCode.ERAR_ECLOSE: 'File close error',
+        RarArchive._ErrorCode.ERAR_EREAD: 'Read error',
+        RarArchive._ErrorCode.ERAR_EWRITE: 'Write error',
+        RarArchive._ErrorCode.ERAR_SMALL_BUF: 'Buffer too small',
+        RarArchive._ErrorCode.ERAR_UNKNOWN: 'Unknown error',
+        RarArchive._ErrorCode.ERAR_MISSING_PASSWORD: 'Password missing'
     }
 
     @staticmethod
@@ -274,9 +274,9 @@ class UnrarException(Exception):
         if errorcode in UnrarException._exceptions:
             return UnrarException._exceptions[errorcode]
         else:
-            return "Unkown error"
+            return 'Unkown error'
 
 
 def _get_unrar_so():
-    """load libunrar or returns None if it can not be found"""
-    return ctypes.cdll.LoadLibrary(ctypes.util.find_library("unrar"))
+    """load libunrar"""
+    return ctypes.cdll.LoadLibrary(ctypes.util.find_library('unrar'))
