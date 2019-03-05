@@ -16,14 +16,15 @@ class _EnhanceImageDialog(Gtk.Dialog):
     """
 
     def __init__(self, window):
-        super(_EnhanceImageDialog, self).__init__('Enhance image', window, 0)
+        super(_EnhanceImageDialog, self).__init__(title='Enhance image')
+        self.set_transient_for(window)
 
         self._window = window
 
-        reset = Gtk.Button(stock=Gtk.STOCK_REVERT_TO_SAVED)
+        reset = Gtk.Button.new_from_stock(Gtk.STOCK_REVERT_TO_SAVED)
         reset.set_tooltip_text('Reset to defaults.')
         self.add_action_widget(reset, Gtk.ResponseType.REJECT)
-        save = Gtk.Button(stock=Gtk.STOCK_SAVE)
+        save = Gtk.Button.new_from_stock(Gtk.STOCK_SAVE)
         save.set_tooltip_text('Save the selected values as default for future files.')
         self.add_action_widget(save, Gtk.ResponseType.APPLY)
         self.add_button(Gtk.STOCK_OK, Gtk.ResponseType.OK)

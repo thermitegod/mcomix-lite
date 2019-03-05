@@ -15,8 +15,9 @@ from mcomix import i18n, properties_page, strings, tools
 class _PropertiesDialog(Gtk.Dialog):
 
     def __init__(self, window):
-        super(_PropertiesDialog, self).__init__('Properties', window, 0,
-                                                (Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE))
+        super(_PropertiesDialog, self).__init__(title='Properties')
+        self.set_transient_for(window)
+        self.add_buttons(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
 
         self._window = window
         self.resize(500, 430)
