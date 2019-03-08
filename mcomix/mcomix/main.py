@@ -12,7 +12,7 @@ import threading
 from gi.repository import GLib, Gdk, Gtk
 
 from mcomix import bookmark_backend, callback, clipboard, constants, cursor_handler, enhance_backend, event, \
-    file_handler, i18n, icons, image_handler, image_tools, keybindings, layout, lens, log, message_dialog, osd, \
+    file_handler, icons, image_handler, image_tools, keybindings, layout, lens, log, message_dialog, osd, \
     pageselect, preferences, slideshow, status, thumbbar, tools, ui, zoom
 from mcomix.library import backend, main_dialog
 from mcomix.preferences import prefs
@@ -943,7 +943,7 @@ class MainWindow(Gtk.Window):
                 title += ','
         title += ' / %d]  %s' % (self.imagehandler.get_number_of_pages(),
                                  self.imagehandler.get_pretty_current_filename())
-        title = i18n.to_unicode(title)
+        title = title
 
         if self.slideshow.is_running():
             title = '[%s] %s' % ('SLIDESHOW', title)

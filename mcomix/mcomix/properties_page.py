@@ -4,7 +4,7 @@
 
 from gi.repository import Gtk
 
-from mcomix import i18n, image_tools, labels
+from mcomix import image_tools, labels
 
 
 class _Page(Gtk.ScrolledWindow):
@@ -57,7 +57,7 @@ class _Page(Gtk.ScrolledWindow):
         """Set the filename to be displayed to <filename>. Call this before
         set_main_info().
         """
-        label = labels.BoldLabel(i18n.to_unicode(filename))
+        label = labels.BoldLabel(filename)
         label.set_alignment(0, 0.5)
         label.set_selectable(True)
         self._mainbox.pack_start(label, False, False, 0)

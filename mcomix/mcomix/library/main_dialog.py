@@ -6,7 +6,7 @@ import os
 
 from gi.repository import Gdk, Gtk
 
-from mcomix import file_chooser_library_dialog, i18n, log, status, tools
+from mcomix import file_chooser_library_dialog, log, status, tools
 from mcomix.library import add_progress_dialog as library_add_progress_dialog, backend as library_backend, \
     book_area as library_book_area, collection_area as library_collection_area, control_area as library_control_area
 from mcomix.preferences import prefs
@@ -109,8 +109,7 @@ class _LibraryDialog(Gtk.Window):
         there earlier.
         """
         self._statusbar.pop(0)
-        self._statusbar.push(0,
-                             ' ' * status.Statusbar.SPACING + '%s' % i18n.to_unicode(message))
+        self._statusbar.push(0, ' ' * status.Statusbar.SPACING + '%s' % message)
 
     def close(self, *args):
         """Close the library and do required cleanup tasks."""

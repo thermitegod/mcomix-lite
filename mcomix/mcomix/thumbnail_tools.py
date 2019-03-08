@@ -14,7 +14,7 @@ from urllib.request import pathname2url
 
 import PIL.Image as Image
 
-from mcomix import archive_tools, callback, constants, i18n, image_tools, log, tools
+from mcomix import archive_tools, callback, constants, image_tools, log, tools
 from mcomix.preferences import prefs
 
 
@@ -169,7 +169,7 @@ class Thumbnailer(object):
     def _get_text_data(filepath):
         """ Creates a tEXt dictionary for <filepath>. """
         mime = mimetypes.guess_type(filepath)[0] or "unknown/mime"
-        uri = 'file://' + pathname2url(i18n.to_utf8(os.path.normpath(filepath)))
+        uri = 'file://' + pathname2url(os.path.normpath(filepath))
         stat = os.stat(filepath)
         # MTime could be floating point number, so convert to long first to have a fixed point number
         mtime = str(stat.st_mtime)
@@ -239,7 +239,7 @@ class Thumbnailer(object):
 
     def _path_to_thumbpath(self, filepath):
         """ Converts <path> to an URI for the thumbnail in <dst_dir>. """
-        uri = 'file://' + pathname2url(i18n.to_utf8(os.path.normpath(filepath)))
+        uri = 'file://' + pathname2url(os.path.normpath(filepath))
         return self._uri_to_thumbpath(uri)
 
     def _uri_to_thumbpath(self, uri):

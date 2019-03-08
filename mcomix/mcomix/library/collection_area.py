@@ -6,7 +6,7 @@ from xml.sax.saxutils import escape as xmlescape
 
 from gi.repository import GLib, Gdk, Gtk
 
-from mcomix import constants, file_chooser_library_dialog, i18n, message_dialog, status
+from mcomix import constants, file_chooser_library_dialog, message_dialog, status
 from mcomix.preferences import prefs
 
 _dialog = None
@@ -181,7 +181,7 @@ class _CollectionArea(Gtk.ScrolledWindow):
 
         removed = self._library.backend.clean_collection(collection)
 
-        msg = i18n.get_translation().ngettext(
+        msg = (
                 'Removed %d book from the library.',
                 'Removed %d books from the library.',
                 removed)

@@ -6,8 +6,6 @@ import os
 
 from gi.repository import Gtk
 
-from mcomix import i18n
-
 
 class _CommentsDialog(Gtk.Dialog):
 
@@ -95,12 +93,12 @@ class _CommentsDialog(Gtk.Dialog):
             text = 'Could not read %s' % name
 
         text_buffer = Gtk.TextBuffer(tag_table=self._tag_table)
-        text_buffer.set_text(i18n.to_unicode(text))
+        text_buffer.set_text(text)
         text_buffer.apply_tag(self._tag, *text_buffer.get_bounds())
         text_view = Gtk.TextView(buffer=text_buffer)
         inbox.add(text_view)
 
         bg_color = text_view.get_default_attributes().pg_bg_color
         outbox.modify_bg(Gtk.StateType.NORMAL, bg_color)
-        tab_label = Gtk.Label(label=i18n.to_unicode(name))
+        tab_label = Gtk.Label(label=name)
         self._notebook.insert_page(page, tab_label, -1)

@@ -9,7 +9,7 @@ import PIL.Image as Image
 import PIL.ImageDraw as ImageDraw
 from gi.repository import GLib, GObject, Gdk, GdkPixbuf, Gtk
 
-from mcomix import constants, file_chooser_library_dialog, i18n, image_tools, log, message_dialog, status, \
+from mcomix import constants, file_chooser_library_dialog, image_tools, log, message_dialog, status, \
     thumbnail_view, tools
 from mcomix.library.pixbuf_cache import get_pixbuf_cache
 from mcomix.preferences import prefs
@@ -511,7 +511,7 @@ class _BookArea(Gtk.ScrolledWindow):
         self._library.backend.end_transaction()
 
         coll_name = self._library.backend.get_collection_name(collection)
-        message = i18n.get_translation().ngettext(
+        message = (
                 'Removed %(num)d book from "%(collection)s".',
                 'Removed %(num)d books from "%(collection)s".',
                 len(selected))
@@ -533,7 +533,7 @@ class _BookArea(Gtk.ScrolledWindow):
 
         self._library.backend.end_transaction()
 
-        msg = i18n.get_translation().ngettext(
+        msg = (
                 'Removed %d book from the library.',
                 'Removed %d books from the library.',
                 len(selected))

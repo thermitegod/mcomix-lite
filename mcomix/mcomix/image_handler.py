@@ -5,7 +5,7 @@
 import os
 import traceback
 
-from mcomix import callback, constants, i18n, image_tools, log, thumbnail_tools, tools
+from mcomix import callback, constants, image_tools, log, thumbnail_tools, tools
 from mcomix.preferences import prefs
 from mcomix.worker_thread import WorkerThread
 
@@ -345,17 +345,13 @@ class ImageHandler(object):
         suitable for printing.
         """
         if self._window.filehandler.archive_type is not None:
-            name = os.path.basename(self._base_path)
+            return os.path.basename(self._base_path)
         elif self._image_files:
             img_file = os.path.abspath(self._image_files[self._current_image_index])
-            name = os.path.join(
-                    os.path.basename(os.path.dirname(img_file)),
-                    os.path.basename(img_file)
+            return os.path.join(os.path.basename(os.path.dirname(img_file)), os.path.basename(img_file)
             )
         else:
-            name = ''
-
-        return i18n.to_unicode(name)
+            return ''
 
     def get_size(self, page=None):
         """Return a tuple (width, height) with the size of <page>. If <page>

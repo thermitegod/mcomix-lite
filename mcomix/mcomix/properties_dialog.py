@@ -9,7 +9,7 @@ import time
 
 from gi.repository import Gtk
 
-from mcomix import i18n, properties_page, strings, tools
+from mcomix import properties_page, strings, tools
 
 
 class _PropertiesDialog(Gtk.Dialog):
@@ -106,12 +106,10 @@ class _PropertiesDialog(Gtk.Dialog):
 
     @staticmethod
     def _update_page_secondary_info(page, location):
-        secondary_info = [
-            ('Location', i18n.to_unicode(os.path.dirname(location))),
-        ]
+        secondary_info = [('Location', os.path.dirname(location)), ]
         try:
             stats = os.stat(location)
-        except OSError as e:
+        except OSError:
             page.set_secondary_info(secondary_info)
             return
 

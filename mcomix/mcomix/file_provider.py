@@ -5,7 +5,7 @@
 
 import os
 
-from mcomix import archive_tools, constants, i18n, image_tools, log, preferences, tools
+from mcomix import archive_tools, constants, image_tools, log, preferences, tools
 
 
 def get_file_provider(filelist):
@@ -117,7 +117,7 @@ class OrderedFileProvider(FileProvider):
                      # Explicitly convert all files to Unicode, even when
                      # os.listdir returns a mixture of byte/unicode strings.
                      # (MComix bug #3424405)
-                     [i18n.to_unicode(fn) for fn in os.listdir(self.base_dir)]
+                     [fn for fn in os.listdir(self.base_dir)]
                      if should_accept(os.path.join(self.base_dir, filename))]
 
             FileProvider.sort_files(files)

@@ -6,7 +6,7 @@ import os
 
 from gi.repository import Gdk, GdkPixbuf, Gtk
 
-from mcomix import i18n, image_tools, thumbnail_tools, thumbnail_view
+from mcomix import image_tools, thumbnail_tools, thumbnail_view
 
 
 class _ImageArea(Gtk.ScrolledWindow):
@@ -72,7 +72,7 @@ class _ImageArea(Gtk.ScrolledWindow):
         """Load all the images in the archive or directory."""
         for page in range(1, self._window.imagehandler.get_number_of_pages() + 1):
             path = self._window.imagehandler.get_path_to_page(page)
-            encoded_path = i18n.to_unicode(os.path.basename(path))
+            encoded_path = os.path.basename(path)
             encoded_path = encoded_path.replace('&', '&amp;')
             self._liststore.append([self._filler, encoded_path, path, False])
 

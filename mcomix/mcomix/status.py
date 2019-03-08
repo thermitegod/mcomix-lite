@@ -4,7 +4,7 @@
 
 from gi.repository import Gdk, Gtk
 
-from mcomix import constants, i18n
+from mcomix import constants
 from mcomix.preferences import prefs
 
 
@@ -114,11 +114,11 @@ class Statusbar(Gtk.EventBox):
 
     def set_root(self, root):
         """Set the name of the root (directory or archive)."""
-        self._root = i18n.to_unicode(root)
+        self._root = root
 
     def set_filename(self, filename):
         """Update the filename."""
-        self._filename = i18n.to_unicode(filename)
+        self._filename = filename
 
     def set_filesize(self, size):
         """Update the filesize."""

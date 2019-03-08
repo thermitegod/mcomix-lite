@@ -7,7 +7,7 @@ import os
 
 from gi.repository import GLib, Gtk, Pango
 
-from mcomix import i18n, labels
+from mcomix import labels
 from mcomix.library.watchlist import WatchListDialog
 
 # The "All books" collection is not a real collection stored in the library,
@@ -123,8 +123,8 @@ class _ControlArea(Gtk.HBox):
             self._open_button.set_sensitive(False)
 
         if name is not None:
-            self._namelabel.set_text(i18n.to_unicode(name))
-            self._namelabel.set_tooltip_text(i18n.to_unicode(name))
+            self._namelabel.set_text(name)
+            self._namelabel.set_tooltip_text(name)
         else:
             self._namelabel.set_text('')
             self._namelabel.set_has_tooltip(False)
@@ -148,7 +148,7 @@ class _ControlArea(Gtk.HBox):
         self._filelabel.set_text(', '.join(infotext))
 
         if dir_path is not None:
-            self._dirlabel.set_text(i18n.to_unicode(dir_path))
+            self._dirlabel.set_text(dir_path)
         else:
             self._dirlabel.set_text('')
 
