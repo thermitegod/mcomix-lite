@@ -117,7 +117,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
                     for line in proc.stdout:
                         filename = self._parse_list_output_line(line.rstrip(os.linesep))
                         if filename is not None:
-                            yield self._unicode_filename(filename)
+                            yield filename
                 except self.EncryptedHeader:
                     # The header is encrypted, try again
                     # if it was our first attempt.
@@ -138,8 +138,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
             self.list_contents()
 
         with tempfile.NamedTemporaryFile(mode='wt', prefix='mcomix.7z.') as tmplistfile:
-            desired_filename = self._original_filename(filename)
-            tmplistfile.write(desired_filename + os.linesep)
+            tmplistfile.write(filename + os.linesep)
             tmplistfile.flush()
             with self._create_file(os.path.join(destination_dir, filename)) as output:
                 process.call(self._get_extract_arguments(list_file=tmplistfile.name),
@@ -153,7 +152,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
             self.list_contents()
 
         with process.popen(self._get_extract_arguments()) as proc:
-            wanted = dict([(self._original_filename(unicode_name), unicode_name) for unicode_name in entries])
+            wanted = dict([(unicode_name, unicode_name) for unicode_name in entries])
 
             for filename, filesize in self._contents:
                 data = proc.stdout.read(filesize)
@@ -213,5 +212,5 @@ class TarArchive(SevenZipArchive):
         if self._contents:
             # The archive should not contain more than 1 member.
             assert 1 == len(self._contents)
-            yield self._unicode_filename(self._path)
+            yield self._path
         self.filenames_initialized = True

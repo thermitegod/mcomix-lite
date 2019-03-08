@@ -7,7 +7,7 @@ import errno
 import os
 import threading
 
-from mcomix import archive, callback, i18n, process
+from mcomix import archive, callback, process
 
 
 class BaseArchive(object):
@@ -119,33 +119,7 @@ class BaseArchive(object):
         self._event.wait()
 
 
-class NonUnicodeArchive(BaseArchive):
-    """ Base class for archives that manage a conversion of byte member names ->
-    Unicode member names internally. Required for formats that do not provide
-    wide character member names. """
-
-    def __init__(self, archive):
-        super(NonUnicodeArchive, self).__init__(archive)
-        # Maps Unicode names to regular names as expected by the original archive format
-        self.unicode_mapping = {}
-
-    def _unicode_filename(self, filename, conversion_func=i18n.to_unicode):
-        """ Instead of returning archive members directly, map each filename through
-        this function first to convert them to Unicode. """
-
-        unicode_name = conversion_func(filename)
-        self.unicode_mapping[unicode_name] = filename
-        return unicode_name
-
-    def _original_filename(self, filename):
-        """ Map Unicode filename back to original archive name. """
-        if filename in self.unicode_mapping:
-            return self.unicode_mapping[filename]
-        else:
-            return i18n.to_utf8(filename)
-
-
-class ExternalExecutableArchive(NonUnicodeArchive):
+class ExternalExecutableArchive(BaseArchive):
     """ For archives that are extracted by spawning an external
     application. """
 

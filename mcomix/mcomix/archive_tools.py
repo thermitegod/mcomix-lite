@@ -8,17 +8,15 @@ import tempfile
 import zipfile
 
 from mcomix import constants, image_tools, log
-from mcomix.archive import lha_external, pdf_external, rar, rar_external, sevenzip_external, tar, zip, zip_external
+from mcomix.archive import lha_external, pdf_external, rar, rar_external, sevenzip_external, tar, zip
 
 # Handlers for each archive type.
 _HANDLERS = {
     constants.ZIP: (
         zip.ZipArchive,
     ),
-    # Prefer 7z over zip executable for encryption and Unicode support.
     constants.ZIP_EXTERNAL: (
         sevenzip_external.SevenZipArchive,
-        zip_external.ZipArchive
     ),
     constants.TAR: (
         tar.TarArchive,
@@ -38,10 +36,9 @@ _HANDLERS = {
         # Last resort: some versions of 7z support RAR.
         # sevenzip_external.SevenZipArchive,
     ),
-    # Prefer 7z over lha executable for Unicode support.
     constants.LHA: (
         sevenzip_external.SevenZipArchive,
-        # lha_external.LhaArchive,
+        lha_external.LhaArchive,
     ),
     constants.SEVENZIP: (
         sevenzip_external.SevenZipArchive,

@@ -19,7 +19,7 @@ def is_py_supported_zipfile(path):
     return True
 
 
-class ZipArchive(archive_base.NonUnicodeArchive):
+class ZipArchive(archive_base.BaseArchive):
     def __init__(self, archive):
         super(ZipArchive, self).__init__(archive)
         self.zip = zipfile.ZipFile(archive, 'r')
@@ -32,14 +32,14 @@ class ZipArchive(archive_base.NonUnicodeArchive):
             self.zip.setpassword(self._password)
 
         for filename in self.zip.namelist():
-            yield self._unicode_filename(filename)
+            yield filename
 
     def extract(self, filename, destination_dir):
         with self._create_file(os.path.join(destination_dir, filename)) as new:
-            content = self.zip.read(self._original_filename(filename))
+            content = self.zip.read(filename)
             new.write(content)
 
-        zipinfo = self.zip.getinfo(self._original_filename(filename))
+        zipinfo = self.zip.getinfo(filename)
         if len(content) != zipinfo.file_size:
             log.warning('%(filename)s\'s extracted size is %(actual_size)d bytes, but should '
                         'be %(expected_size)d bytes. The archive might be corrupt or in an unsupported format.',

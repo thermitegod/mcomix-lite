@@ -8,7 +8,7 @@ import tarfile
 from mcomix.archive import archive_base
 
 
-class TarArchive(archive_base.NonUnicodeArchive):
+class TarArchive(archive_base.BaseArchive):
     def __init__(self, archive):
         super(TarArchive, self).__init__(archive)
         # Track if archive contents have been listed at least one time: this
@@ -32,7 +32,7 @@ class TarArchive(archive_base.NonUnicodeArchive):
             info = self.tar.next()
             if info is None:
                 break
-            name = self._unicode_filename(info.name)
+            name = info.name
             self._contents.append(name)
             yield name
         self._contents_listed = True
@@ -44,7 +44,7 @@ class TarArchive(archive_base.NonUnicodeArchive):
         if not self._contents_listed:
             self.list_contents()
         with self._create_file(os.path.join(destination_dir, filename)) as new, \
-                self.tar.extractfile(self._original_filename(filename)) as file_object:
+                self.tar.extractfile(filename) as file_object:
             new.write(file_object.read())
 
     def iter_extract(self, entries, destination_dir):

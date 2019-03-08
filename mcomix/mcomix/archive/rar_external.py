@@ -101,7 +101,7 @@ class RarArchive(archive_base.ExternalExecutableArchive):
                     for line in proc.stdout:
                         filename = self._parse_list_output_line(line.rstrip(os.linesep))
                         if filename is not None:
-                            yield self._unicode_filename(filename)
+                            yield filename
                 except self.EncryptedHeader:
                     # The header is encrypted, try again
                     # if it was our first attempt.
@@ -121,8 +121,7 @@ class RarArchive(archive_base.ExternalExecutableArchive):
         if not self.filenames_initialized:
             self.list_contents()
 
-        desired_filename = self._original_filename(filename)
-        cmd = self._get_extract_arguments() + [desired_filename]
+        cmd = self._get_extract_arguments() + [filename]
         with self._create_file(os.path.join(destination_dir, filename)) as output:
             process.call(cmd, stdout=output)
 
@@ -134,8 +133,7 @@ class RarArchive(archive_base.ExternalExecutableArchive):
             self.list_contents()
 
         with process.popen(self._get_extract_arguments()) as proc:
-            wanted = dict([(self._original_filename(unicode_name), unicode_name)
-                           for unicode_name in entries])
+            wanted = dict([(unicode_name, unicode_name) for unicode_name in entries])
 
             for filename, filesize in self._contents:
                 data = proc.stdout.read(filesize)
