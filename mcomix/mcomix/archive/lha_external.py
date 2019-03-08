@@ -3,8 +3,8 @@
 """ LHA archive extractor. """
 
 import re
+import shutil
 
-from mcomix import process
 from mcomix.archive import archive_base
 
 # Filled on-demand by LhaArchive
@@ -34,10 +34,11 @@ class LhaArchive(archive_base.ExternalExecutableArchive):
     def _find_lha_executable():
         """ Tries to start lha, and returns either 'lha' if
         it was started successfully or None otherwise. """
-        global _lha_executable
-        if _lha_executable == -1:
-            _lha_executable = process.find_executable(('lha',))
-        return _lha_executable
+        exe = shutil.which('lha')
+        if exe:
+            return exe
+        return None
+
 
     @staticmethod
     def is_available():

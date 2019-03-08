@@ -2,7 +2,9 @@
 
 """ ZIP archive extractor via executable."""
 
-from mcomix import i18n, process
+import shutil
+
+from mcomix import i18n
 from mcomix.archive import archive_base
 
 # Filled on-demand by ZipArchive
@@ -25,10 +27,10 @@ class ZipArchive(archive_base.ExternalExecutableArchive):
     def _find_unzip_executable():
         """ Tries to run unzip, and returns 'unzip' on success.
         Returns None on failure. """
-        global _zip_executable
-        if -1 == _zip_executable:
-            _zip_executable = process.find_executable(('unzip',))
-        return _zip_executable
+        exe = shutil.which('unzip')
+        if exe:
+            return exe
+        return None
 
     @staticmethod
     def is_available():

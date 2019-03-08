@@ -4,6 +4,7 @@
 
 import os
 import re
+import shutil
 
 from gi.repository import GLib, GObject, Gtk
 
@@ -88,14 +89,10 @@ class OpenWithCommand(object):
         if len(args) == 0:
             return False
 
-        if self.is_valid_workdir(window):
-            workdir = self.parse(window, text=self.get_cwd())[0]
-        else:
-            workdir = os.getcwd()
-
-        exe = process.find_executable((args[0],), workdir=workdir)
-
-        return exe is not None
+        exe = shutil.which(args[0])
+        if exe:
+            return exe
+        return None
 
     def is_valid_workdir(self, window, allow_empty=False):
         """ Check if the working directory is valid. """

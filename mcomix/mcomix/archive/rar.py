@@ -92,7 +92,7 @@ class RarArchive(archive_base.BaseArchive):
         return bool(_get_unrar_so())
 
     def __init__(self, archive):
-        """ Initialize Unrar.dll. """
+        """ Initialize libunrar.so.* """
         super(RarArchive, self).__init__(archive)
         self._unrar = _get_unrar_so()
         self._handle = None
@@ -279,4 +279,7 @@ class UnrarException(Exception):
 
 def _get_unrar_so():
     """load libunrar"""
-    return ctypes.cdll.LoadLibrary(ctypes.util.find_library('unrar'))
+    if not ctypes.util.find_library('unrar'):
+        return ctypes.cdll.LoadLibrary(ctypes.util.find_library('unrar'))
+    else:
+        return None

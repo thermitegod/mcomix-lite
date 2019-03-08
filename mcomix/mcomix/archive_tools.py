@@ -30,19 +30,18 @@ _HANDLERS = {
         tar.TarArchive,
     ),
     constants.XZ: (
-        # No LZMA support in Python 2 tarfile module.
         sevenzip_external.TarArchive,
     ),
     constants.RAR: (
         rar.RarArchive,
         rar_external.RarArchive,
         # Last resort: some versions of 7z support RAR.
-        sevenzip_external.SevenZipArchive,
+        # sevenzip_external.SevenZipArchive,
     ),
     # Prefer 7z over lha executable for Unicode support.
     constants.LHA: (
         sevenzip_external.SevenZipArchive,
-        lha_external.LhaArchive,
+        # lha_external.LhaArchive,
     ),
     constants.SEVENZIP: (
         sevenzip_external.SevenZipArchive,

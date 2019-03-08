@@ -3,8 +3,9 @@
 """ RAR archive extractor. """
 
 import os
+import shutil
 
-from mcomix import log, process
+from mcomix import process
 from mcomix.archive import archive_base
 
 # Filled on-demand by RarArchive
@@ -152,21 +153,11 @@ class RarArchive(archive_base.ExternalExecutableArchive):
 
     @staticmethod
     def _find_unrar_executable():
-        """ Tries to start rar/unrar, and returns either 'rar' or 'unrar' if
-        one of them was started successfully.
-        Returns None if neither could be started. """
-        global _rar_executable
-        if _rar_executable == -1:
-            def is_not_unrar_free(exe):
-                real_exe = exe
-                while os.path.islink(real_exe):
-                    real_exe = os.readlink(real_exe)
-                if real_exe.endswith(os.path.sep + 'unrar-free'):
-                    log.warning('RAR executable %s is unrar-free, ignoring', exe)
-                    return False
-                return True
-
-        return process.find_executable(('unrar-nonfree', 'unrar', 'rar'), is_valid_candidate=is_not_unrar_free)
+        """ start unrar, Return None if could not be started. """
+        exe = shutil.which('unrar')
+        if exe:
+            return exe
+        return None
 
     @staticmethod
     def is_available():

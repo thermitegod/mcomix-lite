@@ -3,6 +3,7 @@
 """ 7z archive extractor. """
 
 import os
+import shutil
 import tempfile
 
 from mcomix import process
@@ -172,11 +173,10 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
     def _find_7z_executable():
         """ Tries to start 7z, and returns either '7z' if
         it was started successfully or None otherwise. """
-
-        global _7z_executable
-        if _7z_executable == -1:
-            _7z_executable = process.find_executable(('7z',))
-        return _7z_executable
+        exe = shutil.which('7z')
+        if exe:
+            return exe
+        return None
 
     @staticmethod
     def is_available():
