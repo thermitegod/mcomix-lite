@@ -83,9 +83,6 @@ class PdfArchive(archive_base.BaseArchive):
             log.debug('mutool executable not found')
         else:
             _mutool_exec = [mutool]
-            # Find MuPDF version; assume 1.6 version since
-            # the '-v' switch is only supported from 1.7 onward...
-            version = '1.6'
             with process.popen([mutool, '-v'],
                                stdout=process.NULL,
                                stderr=process.PIPE,
@@ -94,23 +91,10 @@ class PdfArchive(archive_base.BaseArchive):
                 if output.startswith('mutool version '):
                     version = output[15:].rstrip()
             version = LooseVersion(version)
-            if version >= LooseVersion('1.8'):
-                # Mutool executable with draw support.
-                _mudraw_exec = [mutool, 'draw']
-                _mudraw_trace_args = ['-F', 'trace']
-                _pdf_possible = True
-            else:
-                # Separate mudraw executable.
-                mudraw = shutil.which('mudraw')
-                if mudraw is None:
-                    log.debug('mudraw executable not found')
-                else:
-                    _mudraw_exec = [mudraw]
-                    if version >= LooseVersion('1.7'):
-                        _mudraw_trace_args = ['-F', 'trace']
-                    else:
-                        _mudraw_trace_args = ['-x']
-                    _pdf_possible = True
+            _mudraw_exec = [mutool, 'draw']
+            _mudraw_trace_args = ['-F', 'trace']
+            _pdf_possible = True
+
         if _pdf_possible:
             log.info('Using MuPDF version: %s', version)
             log.debug('mutool: %s', ' '.join(_mutool_exec))
