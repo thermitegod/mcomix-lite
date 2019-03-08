@@ -38,7 +38,7 @@ prefs = {
     'virtual double page for fitting images': constants.SHOW_DOUBLE_AS_ONE_TITLE | constants.SHOW_DOUBLE_AS_ONE_WIDE,
     'double step in double page mode': True,
     'show page numbers on thumbnails': True,
-    'thumbnail size': 90,
+    'thumbnail size': 80,
     'create thumbnails': True,
     'archive thumbnail as icon': False,
     'number of pixels to scroll per key event': 50,
