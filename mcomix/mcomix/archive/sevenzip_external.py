@@ -23,14 +23,16 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
     def __init__(self, archive):
         super(SevenZipArchive, self).__init__(archive)
         self._is_solid = False
-        self._is_encrypted = False
         self._contents = []
+
+        self.is_encrypted = False
+        self.is_encrypted = self._has_encryption()
 
     def _get_executable(self):
         return SevenZipArchive._find_7z_executable()
 
     def _get_password_argument(self):
-        if self._is_encrypted:
+        if self.is_encrypted:
             self._get_password()
             return '-p' + self._password
         else:
@@ -69,7 +71,6 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
         if self._state == self.STATE_HEADER:
             if (line.startswith('Error:') or line.startswith('ERROR:')) and \
                     line.endswith(': Can not open encrypted archive. Wrong password?'):
-                self._is_encrypted = True
                 raise self.EncryptedHeader()
             if 'Solid = +' == line:
                 self._is_solid = True
@@ -82,10 +83,18 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
                 filesize = int(line[7:])
                 if filesize > 0:
                     self._contents.append((self._path, filesize))
-            elif 'Encrypted = +' == line:
-                self._is_encrypted = True
 
         return None
+
+    def _has_encryption(self):
+        # enc = False
+        with process.popen(self._get_list_arguments(),
+                           stderr=process.STDOUT,
+                           universal_newlines=True) as proc:
+            for line in proc.stdout:
+                if line.startswith('Encrypted = +') or 'Can not open encrypted archive. Wrong password' in line:
+                    return True
+        return False
 
     def is_solid(self):
         return self._is_solid
@@ -163,6 +172,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
     def _find_7z_executable():
         """ Tries to start 7z, and returns either '7z' if
         it was started successfully or None otherwise. """
+
         global _7z_executable
         if _7z_executable == -1:
             _7z_executable = process.find_executable(('7z',))
