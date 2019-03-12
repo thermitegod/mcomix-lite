@@ -40,6 +40,8 @@ class _PreferencesDialog(Gtk.Dialog):
         notebook.append_page(behaviour, Gtk.Label(label='Behaviour'))
         display = self._init_display_tab()
         notebook.append_page(display, Gtk.Label(label='Display'))
+        animation = self._init_animation_tab()
+        notebook.append_page(animation, Gtk.Label(label='Animation'))
         advanced = self._init_advanced_tab()
         notebook.append_page(advanced, Gtk.Label(label='Advanced'))
         shortcuts = self.shortcuts = self._init_shortcuts_tab()
@@ -249,6 +251,29 @@ class _PreferencesDialog(Gtk.Dialog):
 
         return page
 
+    def _init_animation_tab(self):
+        # ----------------------------------------------------------------
+        # The "Animation" tab.
+        # ----------------------------------------------------------------
+        page = preferences_page._PreferencePage(None)
+
+        page.new_section('Animated images')
+
+        page.add_row(Gtk.Label(label='Animation mode'),
+                     self._create_animation_mode_combobox())
+
+        page.add_row(self._create_pref_check_button(
+                'Using background from the animation',
+                'animation background',
+                'Using background from the animation or follow the setting of Appearance -> Background'))
+
+        page.add_row(self._create_pref_check_button(
+                'Enable transform on animation',
+                'animation transform',
+                'Enable scale, rotate, flip and enhance operation on animation'))
+
+        return page
+
     def _init_advanced_tab(self):
         # ----------------------------------------------------------------
         # The "Advanced" tab.
@@ -304,11 +329,6 @@ class _PreferencesDialog(Gtk.Dialog):
 
         page.add_row(Gtk.Label(label='Comment extensions:'),
                      self._create_extensions_entry())
-
-        page.new_section('Animated images')
-
-        page.add_row(Gtk.Label(label='Animation mode:'),
-                     self._create_animation_mode_combobox())
 
         return page
 
@@ -566,7 +586,10 @@ class _PreferencesDialog(Gtk.Dialog):
         """ Creates combo box for animation mode """
         items = (
             ('Never', constants.ANIMATION_DISABLED),
-            ('Normal', constants.ANIMATION_NORMAL))
+            ('Normal', constants.ANIMATION_NORMAL),
+            ('Once', constants.ANIMATION_ONCE),
+            ('Infinity', constants.ANIMATION_INF),
+        )
 
         selection = prefs['animation mode']
 
@@ -707,8 +730,11 @@ class _PreferencesDialog(Gtk.Dialog):
               self._window.is_fullscreen):
             self._window.draw_image()
 
-        elif preference == 'show page numbers on thumbnails':
+        elif preference in ('animation background', 'animation transform'):
             self._window.thumbnailsidebar.toggle_page_numbers_visible()
+
+        elif preference == 'animation background':
+            self._window.filehandler.refresh_file()
 
     def _color_button_cb(self, colorbutton, preference):
         """Callback for the background color selection button."""

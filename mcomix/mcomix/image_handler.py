@@ -27,9 +27,7 @@ class ImageHandler(object):
         self._window = window
 
         #: Caching thread
-        self._thread = WorkerThread(self._cache_pixbuf, name='image',
-                                    sort_orders=True)
-
+        self._thread = WorkerThread(self._cache_pixbuf, name='image', sort_orders=True)
         #: Archive path, if currently opened file is archive
         self._base_path = None
         #: List of image file names, either from extraction or directory
@@ -348,8 +346,7 @@ class ImageHandler(object):
             return os.path.basename(self._base_path)
         elif self._image_files:
             img_file = os.path.abspath(self._image_files[self._current_image_index])
-            return os.path.join(os.path.basename(os.path.dirname(img_file)), os.path.basename(img_file)
-            )
+            return os.path.join(os.path.basename(os.path.dirname(img_file)), os.path.basename(img_file))
         else:
             return ''
 
@@ -379,8 +376,7 @@ class ImageHandler(object):
         format, width, height = image_tools.get_image_info(page_path)
         return format
 
-    def get_thumbnail(self, page=None, width=128, height=128, create=False,
-                      nowait=False):
+    def get_thumbnail(self, page=None, width=128, height=128, create=False, nowait=False):
         """Return a thumbnail pixbuf of <page> that fit in a box with
         dimensions <width>x<height>. Return a thumbnail for the current
         page if <page> is None.

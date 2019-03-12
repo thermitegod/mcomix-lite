@@ -8,11 +8,11 @@ import os
 from collections import namedtuple
 from io import BytesIO
 
-from PIL import Image, ImageEnhance, ImageOps
+from PIL import Image, ImageEnhance, ImageOps, ImageSequence
 from PIL.JpegImagePlugin import _getexif
 from gi.repository import GLib, Gdk, GdkPixbuf, Gtk
 
-from mcomix import constants, log
+from mcomix import anime_tools, constants, log
 from mcomix.preferences import prefs
 
 # see comments in run.py (Pillow version)
@@ -75,7 +75,23 @@ def get_fitting_size(source_size, target_size,
     return width, height
 
 
+def trans_pixbuf(src,flip=False,flop=False):
+    if is_animation(src):
+        return anime_tools.frame_executor(
+            src, trans_pixbuf,
+            kwargs=dict(flip=flip, flop=flop)
+        )
+    if flip: src = src.flip(horizontal=False)
+    if flop: src = src.flip(horizontal=True)
+    return src
+
+
 def fit_pixbuf_to_rectangle(src, rect, rotation):
+    if is_animation(src):
+        return anime_tools.frame_executor(
+            src, fit_pixbuf_to_rectangle,
+            args=(rect, rotation)
+        )
     return fit_in_rectangle(src, rect[0], rect[1],
                             rotation=rotation,
                             keep_ratio=False,
@@ -313,6 +329,15 @@ def is_animation(pixbuf):
     return isinstance(pixbuf, GdkPixbuf.PixbufAnimation)
 
 
+def disable_transform(pixbuf):
+    if is_animation(pixbuf):
+        if not hasattr(pixbuf,'_framebuffer'):
+            return True
+        if not prefs['animation transform']:
+            return True
+    return False
+
+
 def static_image(pixbuf):
     """ Returns a non-animated version of the specified pixbuf. """
     if is_animation(pixbuf):
@@ -351,21 +376,45 @@ def set_from_pixbuf(image, pixbuf):
         return image.set_from_pixbuf(pixbuf)
 
 
+def load_animation(im):
+    if im.format == 'GIF' and im.mode == 'P':
+        # TODO: Pillow has bug with gif animation
+        # https://github.com/python-pillow/Pillow/labels/GIF
+        raise NotImplementedError('Pillow has bug with gif animation, '
+                                  'fallback to GdkPixbuf')
+    anime=anime_tools.AnimeFrameBuffer(im.n_frames, loop=im.info['loop'])
+    background=im.info.get('background', None)
+    if isinstance(background, tuple):
+        color = 0
+        for n, c in enumerate(background):
+            color |= c << n*8
+        background = color
+    frameiter = ImageSequence.Iterator(im)
+    for n, frame in enumerate(frameiter):
+        anime.add_frame(n, pil_to_pixbuf(frame),
+                        frame.info.get('duration', 0),
+                        background=background)
+    return anime.create_animation()
+
+
 def load_pixbuf(path):
     """ Loads a pixbuf from a given image file. """
-    disable_animation = prefs['animation mode'] == constants.ANIMATION_DISABLED
+    enable_anime = prefs['animation mode'] != constants.ANIMATION_DISABLED
     try:
         with Image.open(path) as im:
-            if 'duration' not in im.info:
-                return pil_to_pixbuf(im, keep_orientation=True)
+            # make sure n_frames loaded
+            im.load()
+            if enable_anime and getattr(im,'is_animated',False):
+                return load_animation(im)
+            return pil_to_pixbuf(im, keep_orientation=True)
     except:
         pass
-    if disable_animation:
-        return GdkPixbuf.Pixbuf.new_from_file(path)
-    pixbuf = GdkPixbuf.PixbufAnimation.new_from_file(path)
-    if pixbuf.is_static_image():
-        return pixbuf.get_static_image()
-    return pixbuf
+    if enable_anime:
+        pixbuf = GdkPixbuf.PixbufAnimation.new_from_file(path)
+        if pixbuf.is_static_image():
+            return pixbuf.get_static_image()
+        return pixbuf
+    return GdkPixbuf.Pixbuf.new_from_file(path)
 
 
 def load_pixbuf_size(path, width, height):
@@ -413,6 +462,15 @@ def enhance(pixbuf, brightness=1.0, contrast=1.0, saturation=1.0,
     but only if the image mode is supported by ImageOps.autocontrast (i.e.
     it is L or RGB.)
     """
+    if is_animation(pixbuf):
+        return anime_tools.frame_executor(
+            pixbuf, enhance,
+            kwargs=dict(
+                brightness=brightness, contrast=contrast,
+                saturation=saturation, sharpness=1.0,
+                autocontrast=False
+            )
+        )
     im = pixbuf_to_pil(pixbuf)
     if brightness != 1.0:
         im = ImageEnhance.Brightness(im).enhance(brightness)

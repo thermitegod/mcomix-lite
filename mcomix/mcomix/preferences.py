@@ -100,7 +100,9 @@ prefs = {
     'fit to size px': 1800,
     'scan for new books on library startup': False,
     'openwith commands': [],  # (label, command) pairs
-    'animation mode': constants.ANIMATION_DISABLED,
+    'animation mode': constants.ANIMATION_INF,
+    'animation background': True,
+    'animation transform': True,
     'temporary directory': None,
 }
 
