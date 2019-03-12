@@ -7,30 +7,16 @@ import tempfile
 import zipfile
 
 from mcomix import constants, image_tools, log
-from mcomix.archive import pdf_external, rar_external, sevenzip_external, zip
+from mcomix.archive import pdf, rar, sevenzip, zip
 
 # Handlers for each archive type.
 _HANDLERS = {
-    constants.ZIP: (
-        zip.ZipArchive,
-    ),
-    constants.ZIP_EXTERNAL: (
-        sevenzip_external.SevenZipArchive,
-    ),
-    constants.RAR: (
-        rar_external.RarArchive,
-        # some versions of 7z support RAR.
-        # sevenzip_external.SevenZipArchive,
-    ),
-    constants.LHA: (
-        sevenzip_external.SevenZipArchive,
-    ),
-    constants.SEVENZIP: (
-        sevenzip_external.SevenZipArchive,
-    ),
-    constants.PDF: (
-        pdf_external.PdfArchive,
-    ),
+    constants.ZIP: (zip.ZipArchive,),
+    constants.ZIP_EXTERNAL: (sevenzip.SevenZipArchive,),
+    constants.RAR: (rar.RarArchive,),
+    constants.LHA: (sevenzip.SevenZipArchive,),
+    constants.SEVENZIP: (sevenzip.SevenZipArchive,),
+    constants.PDF: (pdf.PdfArchive,),
 }
 
 
