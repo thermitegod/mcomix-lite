@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 
-""" preferences.py - Contains the preferences and the functions to read and
-write them.  """
-
 import json
 import os
 
 from mcomix import constants
 
-# All the preferences are stored here.
+# All preferences are stored here.
 prefs = {
     'comment extensions': constants.ACCEPTED_COMMENT_EXTENSIONS,
     'auto load last file': False,
@@ -23,8 +20,6 @@ prefs = {
     'sort archive order': constants.SORT_ASCENDING,
     'bg color': [5000, 5000, 5000],
     'thumb bg color': [5000, 5000, 5000],
-    'smart bg': False,
-    'smart thumb bg': False,
     'thumbnail bg uses main color': False,
     'checkered bg for transparent images': True,
     'cache': True,
@@ -88,13 +83,12 @@ prefs = {
     'lib window width': 500,
     'lib sort key': constants.SORT_PATH,
     'lib sort order': constants.SORT_ASCENDING,
-    'language': 'auto',
     'statusbar fields': constants.STATUS_PAGE | constants.STATUS_RESOLUTION | \
                         constants.STATUS_PATH | constants.STATUS_FILENAME | constants.STATUS_FILESIZE,
     'max threads': 32,
     'max extract threads': 16,
     'wrap mouse scroll': False,
-    'scaling quality': 3,  # GdkPixbuf.InterpType.BILINEAR
+    'scaling quality': 3,  # GdkPixbuf.InterpType.HYPER
     'escape quits': True,
     'fit to size mode': constants.ZOOM_MODE_HEIGHT,
     'fit to size px': 1800,
@@ -108,8 +102,6 @@ prefs = {
 
 
 def read_preferences_file():
-    """Read preferences data from disk."""
-
     saved_prefs = None
 
     if os.path.isfile(constants.PREFERENCE_PATH):
@@ -117,7 +109,6 @@ def read_preferences_file():
             with open(constants.PREFERENCE_PATH, 'r') as config_file:
                 saved_prefs = json.load(config_file)
         except:
-            # Gettext might not be installed yet at this point.
             corrupt_name = '%s.broken' % constants.PREFERENCE_PATH
             print('! Corrupt preferences file, moving to "%s".' % corrupt_name)
             if os.path.isfile(corrupt_name):
@@ -133,11 +124,5 @@ def read_preferences_file():
 
 def write_preferences_file():
     """Write preference data to disk."""
-    # TODO: it might be better to save only those options that were (ever)
-    # explicitly changed by the used, leaving everything else as default
-    # and available (if really needed) to change of defaults on upgrade.
     with open(constants.PREFERENCE_PATH, 'w') as config_file:
-        # XXX: constants.VERSION? It's *preferable* to not complicate the YAML
-        # file by adding a `{'version': constants.VERSION, 'prefs': config}`
-        # dict or a list.  Adding an extra init line sounds bad too.
         json.dump(prefs, config_file, indent=2)

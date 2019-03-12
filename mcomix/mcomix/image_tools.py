@@ -3,7 +3,6 @@
 """image_tools.py - Various image manipulations."""
 
 import binascii
-import operator
 import os
 from collections import namedtuple
 from io import BytesIO
@@ -75,11 +74,11 @@ def get_fitting_size(source_size, target_size,
     return width, height
 
 
-def trans_pixbuf(src,flip=False,flop=False):
+def trans_pixbuf(src, flip=False, flop=False):
     if is_animation(src):
         return anime_tools.frame_executor(
-            src, trans_pixbuf,
-            kwargs=dict(flip=flip, flop=flop)
+                src, trans_pixbuf,
+                kwargs=dict(flip=flip, flop=flop)
         )
     if flip: src = src.flip(horizontal=False)
     if flop: src = src.flip(horizontal=True)
@@ -89,8 +88,8 @@ def trans_pixbuf(src,flip=False,flop=False):
 def fit_pixbuf_to_rectangle(src, rect, rotation):
     if is_animation(src):
         return anime_tools.frame_executor(
-            src, fit_pixbuf_to_rectangle,
-            args=(rect, rotation)
+                src, fit_pixbuf_to_rectangle,
+                args=(rect, rotation)
         )
     return fit_in_rectangle(src, rect[0], rect[1],
                             rotation=rotation,
@@ -170,119 +169,6 @@ def add_border(pixbuf, thickness, color=0x000000FF):
     return canvas
 
 
-def get_most_common_edge_color(pixbufs, edge=2):
-    """Return the most commonly occurring pixel value along the four edges
-    of <pixbuf>. The return value is a sequence, (r, g, b), with 16 bit
-    values. If <pixbuf> is a tuple, the edges will be computed from
-    both the left and the right image.
-
-    Note: This could be done more cleanly with subpixbuf(), but that
-    doesn't work as expected together with get_pixels().
-    """
-
-    def group_colors(colors, steps=10):
-        """ This rounds a list of colors in C{colors} to the next nearest value,
-        i.e. 128, 83, 10 becomes 130, 85, 10 with C{steps}=5. This compensates for
-        dirty colors where no clear dominating color can be made out.
-
-        @return: The color that appears most often in the prominent group."""
-
-        # Start group
-        group = (0, 0, 0)
-        # List of (count, color) pairs, group contains most colors
-        colors_in_prominent_group = []
-        color_count_in_prominent_group = 0
-        # List of (count, color) pairs, current color group
-        colors_in_group = []
-        color_count_in_group = 0
-
-        for count, color in colors:
-            # Round color
-            rounded = [0] * len(color)
-            for i, color_value in enumerate(color):
-                if steps % 2 == 0:
-                    middle = steps // 2
-                else:
-                    middle = steps // 2 + 1
-
-                remainder = color_value % steps
-                if remainder >= middle:
-                    color_value = color_value + (steps - remainder)
-                else:
-                    color_value = color_value - remainder
-
-                rounded[i] = min(255, max(0, color_value))
-
-            # Change prominent group if necessary
-            if rounded == group:
-                # Color still fits in the previous color group
-                colors_in_group.append((count, color))
-                color_count_in_group += count
-            else:
-                # Color group changed, check if current group has more colors
-                # than last group
-                if color_count_in_group > color_count_in_prominent_group:
-                    colors_in_prominent_group = colors_in_group
-                    color_count_in_prominent_group = color_count_in_group
-
-                group = rounded
-                colors_in_group = [(count, color)]
-                color_count_in_group = count
-
-        # Cleanup if only one edge color group was found
-        if color_count_in_group > color_count_in_prominent_group:
-            colors_in_prominent_group = colors_in_group
-
-        colors_in_prominent_group.sort(key=operator.itemgetter(0), reverse=True)
-        # List is now sorted by color count, first color appears most often
-        return colors_in_prominent_group[0][1]
-
-    def get_edge_pixbuf(pixbuf, side, edge):
-        """ Returns a pixbuf corresponding to the side passed in <side>.
-        Valid sides are 'left', 'right', 'top', 'bottom'. """
-        pixbuf = static_image(pixbuf)
-        width = pixbuf.get_width()
-        height = pixbuf.get_height()
-        edge = min(edge, width, height)
-
-        subpix = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB,
-                                      pixbuf.get_has_alpha(), 8, edge, height)
-        if side == 'left':
-            pixbuf.copy_area(0, 0, edge, height, subpix, 0, 0)
-        elif side == 'right':
-            pixbuf.copy_area(width - edge, 0, edge, height, subpix, 0, 0)
-        elif side == 'top':
-            pixbuf.copy_area(0, 0, width, edge, subpix, 0, 0)
-        elif side == 'bottom':
-            pixbuf.copy_area(0, height - edge, width, edge, subpix, 0, 0)
-        else:
-            assert False, 'Invalid edge side'
-
-        return subpix
-
-    if not pixbufs:
-        return 0, 0, 0
-
-    if not isinstance(pixbufs, (tuple, list)):
-        left_edge = get_edge_pixbuf(pixbufs, 'left', edge)
-        right_edge = get_edge_pixbuf(pixbufs, 'right', edge)
-    else:
-        assert len(pixbufs) == 2, 'Expected two pages in list'
-        left_edge = get_edge_pixbuf(pixbufs[0], 'left', edge)
-        right_edge = get_edge_pixbuf(pixbufs[1], 'right', edge)
-
-    # Find all edge colors. Color count is separate for all four edges
-    ungrouped_colors = []
-    for edge in (left_edge, right_edge):
-        im = pixbuf_to_pil(edge)
-        ungrouped_colors.extend(im.getcolors(im.size[0] * im.size[1]))
-
-    # Sum up colors from all edges
-    ungrouped_colors.sort(key=operator.itemgetter(1))
-    most_used = group_colors(ungrouped_colors)
-    return [color * 257 for color in most_used]
-
-
 def pil_to_pixbuf(im, keep_orientation=False):
     """Return a pixbuf created from the PIL <im>."""
     if im.mode.startswith('RGB'):
@@ -331,7 +217,7 @@ def is_animation(pixbuf):
 
 def disable_transform(pixbuf):
     if is_animation(pixbuf):
-        if not hasattr(pixbuf,'_framebuffer'):
+        if not hasattr(pixbuf, '_framebuffer'):
             return True
         if not prefs['animation transform']:
             return True
@@ -382,12 +268,12 @@ def load_animation(im):
         # https://github.com/python-pillow/Pillow/labels/GIF
         raise NotImplementedError('Pillow has bug with gif animation, '
                                   'fallback to GdkPixbuf')
-    anime=anime_tools.AnimeFrameBuffer(im.n_frames, loop=im.info['loop'])
-    background=im.info.get('background', None)
+    anime = anime_tools.AnimeFrameBuffer(im.n_frames, loop=im.info['loop'])
+    background = im.info.get('background', None)
     if isinstance(background, tuple):
         color = 0
         for n, c in enumerate(background):
-            color |= c << n*8
+            color |= c << n * 8
         background = color
     frameiter = ImageSequence.Iterator(im)
     for n, frame in enumerate(frameiter):
@@ -404,7 +290,7 @@ def load_pixbuf(path):
         with Image.open(path) as im:
             # make sure n_frames loaded
             im.load()
-            if enable_anime and getattr(im,'is_animated',False):
+            if enable_anime and getattr(im, 'is_animated', False):
                 return load_animation(im)
             return pil_to_pixbuf(im, keep_orientation=True)
     except:
@@ -464,12 +350,12 @@ def enhance(pixbuf, brightness=1.0, contrast=1.0, saturation=1.0,
     """
     if is_animation(pixbuf):
         return anime_tools.frame_executor(
-            pixbuf, enhance,
-            kwargs=dict(
-                brightness=brightness, contrast=contrast,
-                saturation=saturation, sharpness=1.0,
-                autocontrast=False
-            )
+                pixbuf, enhance,
+                kwargs=dict(
+                        brightness=brightness, contrast=contrast,
+                        saturation=saturation, sharpness=1.0,
+                        autocontrast=False
+                )
         )
     im = pixbuf_to_pil(pixbuf)
     if brightness != 1.0:

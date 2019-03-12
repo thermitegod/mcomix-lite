@@ -79,25 +79,6 @@ class ImageHandler(object):
             result.append(self._get_pixbuf(self._current_image_index + i))
         return result
 
-    def get_pixbuf_auto_background(self, number_of_bufs):  # XXX limited to at most 2 pages
-        """ Returns an automatically calculated background color
-        for the current page(s). """
-
-        pixbufs = self.get_pixbufs(number_of_bufs)
-
-        if len(pixbufs) == 1:
-            auto_bg = image_tools.get_most_common_edge_color(pixbufs[0])
-        elif len(pixbufs) == 2:
-            left, right = pixbufs
-            if self._window.is_manga_mode:
-                left, right = right, left
-
-            auto_bg = image_tools.get_most_common_edge_color((left, right))
-        else:
-            assert False, 'Unexpected pixbuf count'
-
-        return auto_bg
-
     def do_cacheing(self):
         """Make sure that the correct pixbufs are stored in cache. These
         are (in the current implementation) the current image(s), and

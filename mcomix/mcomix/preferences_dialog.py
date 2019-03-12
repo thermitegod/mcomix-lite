@@ -68,27 +68,17 @@ class _PreferencesDialog(Gtk.Dialog):
 
         page.new_section('Background')
 
-        fixed_bg_button, dynamic_bg_button = self._create_binary_pref_radio_buttons(
-                'Use this color as background:',
-                'color box bg',
-                'Always use this selected color as the background color.',
-                'Use dynamic background color',
-                'smart bg',
-                'Automatically pick a background color that fits the viewed image.')
+        fixed_bg_button = self._create_binary_pref_radio_buttons(
+                'Background color',
+                'color box bg')
         page.add_row(fixed_bg_button, self._create_color_button('bg color'))
-        page.add_row(dynamic_bg_button)
 
         page.new_section('Thumbnails')
 
-        thumb_fixed_bg_button, thumb_dynamic_bg_button = self._create_binary_pref_radio_buttons(
-                'Use this color as the thumbnail background:',
-                'color box thumb bg',
-                'Always use this selected color as the thumbnail background color.',
-                'Use dynamic background color',
-                'smart thumb bg',
-                'Automatically use the color that fits the viewed image for the thumbnail background.')
+        thumb_fixed_bg_button = self._create_binary_pref_radio_buttons(
+                'Thumbnail background color',
+                'color box thumb bg')
         page.add_row(thumb_fixed_bg_button, self._create_color_button('thumb bg color'))
-        page.add_row(thumb_dynamic_bg_button)
 
         page.add_row(self._create_pref_check_button(
                 'Show page numbers on thumbnails',
@@ -428,7 +418,8 @@ class _PreferencesDialog(Gtk.Dialog):
             ('File size', constants.SORT_SIZE),
             ('Last modified', constants.SORT_LAST_MODIFIED))
 
-        sortkey_box = self._create_combobox(sortkey_items, prefs['sort by'],
+        sortkey_box = self._create_combobox(sortkey_items,
+                                            prefs['sort by'],
                                             self._sort_by_changed_cb)
 
         sortorder_items = (
@@ -474,7 +465,8 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Natural order', constants.SORT_NAME),
             ('Literal order', constants.SORT_NAME_LITERAL))
 
-        sortkey_box = self._create_combobox(sortkey_items, prefs['sort archive by'],
+        sortkey_box = self._create_combobox(sortkey_items,
+                                            prefs['sort archive by'],
                                             self._sort_archive_by_changed_cb)
 
         sortorder_items = (
@@ -664,18 +656,10 @@ class _PreferencesDialog(Gtk.Dialog):
             button.set_tooltip_text(tooltip_text)
         return button
 
-    def _create_binary_pref_radio_buttons(self, label1, prefkey1, tooltip_text1,
-                                          label2, prefkey2, tooltip_text2):
-        button1 = Gtk.RadioButton(label=label1)
-        button1.connect('toggled', self._check_button_cb, prefkey1)
-        if tooltip_text1:
-            button1.set_tooltip_text(tooltip_text1)
-        button2 = Gtk.RadioButton(group=button1, label=label2)
-        button2.connect('toggled', self._check_button_cb, prefkey2)
-        if tooltip_text2:
-            button2.set_tooltip_text(tooltip_text2)
-        button2.set_active(prefs[prefkey2])
-        return button1, button2
+    def _create_binary_pref_radio_buttons(self, label, prefkey):
+        button = Gtk.RadioButton(label=label)
+        button.connect('toggled', self._check_button_cb, prefkey)
+        return button
 
     def _create_color_button(self, prefkey):
         rgba = image_tools.color_to_floats_rgba(prefs[prefkey])
@@ -689,36 +673,14 @@ class _PreferencesDialog(Gtk.Dialog):
         prefs[preference] = button.get_active()
 
         if preference == 'color box bg' and button.get_active():
-            if not prefs['smart bg'] or not self._window.filehandler.file_loaded:
+            if not self._window.filehandler.file_loaded:
                 self._window.set_bg_color(prefs['bg color'])
-
-        elif preference == 'smart bg' and button.get_active():
-            # if the color is no longer using the smart background then return it to the chosen color
-            if not prefs[preference]:
-                self._window.set_bg_color(prefs['bg color'])
-            else:
-                # draw_image() will set the main background to the smart background
-                self._window.draw_image()
 
         elif preference == 'color box thumb bg' and button.get_active():
             if prefs[preference]:
-                prefs['smart thumb bg'] = False
                 prefs['thumbnail bg uses main color'] = False
 
                 self._window.thumbnailsidebar.change_thumbnail_background_color(prefs['thumb bg color'])
-            else:
-                self._window.draw_image()
-
-        elif preference == 'smart thumb bg' and button.get_active():
-            if prefs[preference]:
-                prefs['color box thumb bg'] = False
-                prefs['thumbnail bg uses main color'] = False
-
-                pixbuf = image_tools.static_image(image_tools.unwrap_image(
-                        self._window.images[0]))  # XXX transitional(double page limitation)
-                if pixbuf:
-                    bg_color = image_tools.get_most_common_edge_color(pixbuf)
-                    self._window.thumbnailsidebar.change_thumbnail_background_color(bg_color)
             else:
                 self._window.draw_image()
 
@@ -744,13 +706,13 @@ class _PreferencesDialog(Gtk.Dialog):
         if preference == 'bg color':
             prefs['bg color'] = color.red, color.green, color.blue
 
-            if not prefs['smart bg'] or not self._window.filehandler.file_loaded:
+            if not self._window.filehandler.file_loaded:
                 self._window.set_bg_color(prefs['bg color'])
 
         elif preference == 'thumb bg color':
             prefs['thumb bg color'] = color.red, color.green, color.blue
 
-            if not prefs['smart thumb bg'] or not self._window.filehandler.file_loaded:
+            if not self._window.filehandler.file_loaded:
                 self._window.thumbnailsidebar.change_thumbnail_background_color(prefs['thumb bg color'])
 
     def _create_pref_spinner(self, prefkey, scale, lower, upper, step_incr,
