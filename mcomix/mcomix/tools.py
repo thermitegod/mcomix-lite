@@ -11,6 +11,8 @@ import re
 import sys
 from functools import reduce
 
+from mcomix import constants
+
 NUMERIC_REGEXP = re.compile(r"\d+|\D+")  # Split into numerics and characters
 PREFIXED_BYTE_UNITS = ('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB')
 
@@ -114,7 +116,7 @@ def garbage_collect():
 
 
 def pkg_path(*args):
-    return os.path.join(sys.path[0], 'mcomix', *args)
+    return os.path.join(constants.BASE_PATH, 'mcomix', *args)
 
 
 def read_binary(*args):

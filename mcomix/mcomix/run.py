@@ -175,6 +175,20 @@ def run():
     open_path = args.path or None
     open_page = 1
 
+    if isinstance(open_path, list):
+        n = 0
+        while n < len(open_path):
+            p = os.path.join(os.getcwd(), open_path[n])
+            p = os.path.normpath(p)
+            if not os.path.exists(p):
+                log.error('Non existant file: {}'.format(p))
+                open_path.pop(n)
+                continue
+            open_path[n] = p
+            n += 1
+        if not open_path:
+            open_path = None
+
     if not open_path and preferences.prefs['auto load last file'] \
             and preferences.prefs['path to last file'] \
             and os.path.isfile(preferences.prefs['path to last file']):
