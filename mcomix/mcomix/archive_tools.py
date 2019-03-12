@@ -3,12 +3,11 @@
 """archive_tools.py - Archive tool functions."""
 
 import os
-import tarfile
 import tempfile
 import zipfile
 
 from mcomix import constants, image_tools, log
-from mcomix.archive import pdf_external, rar_external, sevenzip_external, tar, zip
+from mcomix.archive import pdf_external, rar_external, sevenzip_external, zip
 
 # Handlers for each archive type.
 _HANDLERS = {
@@ -18,18 +17,6 @@ _HANDLERS = {
     constants.ZIP_EXTERNAL: (
         sevenzip_external.SevenZipArchive,
     ),
-    constants.TAR: (
-        tar.TarArchive,
-    ),
-    constants.GZIP: (
-        tar.TarArchive,
-    ),
-    constants.BZIP2: (
-        tar.TarArchive,
-    ),
-    constants.XZ: (
-        sevenzip_external.TarArchive,
-    ),
     constants.RAR: (
         rar_external.RarArchive,
         # some versions of 7z support RAR.
@@ -37,7 +24,6 @@ _HANDLERS = {
     ),
     constants.LHA: (
         sevenzip_external.SevenZipArchive,
-        # lha_external.LhaArchive,
     ),
     constants.SEVENZIP: (
         sevenzip_external.SevenZipArchive,
@@ -86,7 +72,6 @@ SUPPORTED_ARCHIVE_FORMATS = {}
 def init_supported_formats():
     for name, formats, is_available in (
             ('ZIP', constants.ZIP_FORMATS, True),
-            ('Tar', constants.TAR_FORMATS, True),
             ('RAR', constants.RAR_FORMATS, rar_available()),
             ('7z', constants.SZIP_FORMATS, szip_available()),
             ('LHA', constants.LHA_FORMATS, lha_available()),
@@ -135,29 +120,11 @@ def archive_mime_type(path):
             with open(path, 'rb') as fd:
                 magic = fd.read(5)
 
-            try:
-                istarfile = tarfile.is_tarfile(path)
-            except IOError:
-                # Tarfile raises an error when accessing certain network shares
-                istarfile = False
-
-            if istarfile and os.path.getsize(path) > 0:
-                if magic.startswith(b'BZh'):
-                    return constants.BZIP2
-                elif magic.startswith(b'\037\213'):
-                    return constants.GZIP
-                else:
-                    return constants.TAR
-
             if magic[0:4] == b'Rar!':
                 return constants.RAR
 
             if magic[0:4] == b'7z\xBC\xAF':
                 return constants.SEVENZIP
-
-            # Headers for TAR-XZ and TAR-LZMA that aren't supported by tarfile
-            if magic[0:5] == b'\xFD7zXZ' or magic[0:5] == b']\x00\x00\x80\x00':
-                return constants.XZ
 
             if magic[2:4] == b'-l':
                 return constants.LHA

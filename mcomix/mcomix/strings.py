@@ -4,15 +4,11 @@
     This file should only be imported after gettext has been correctly initialized
     and installed in the global namespace. """
 
-from mcomix.constants import BZIP2, GZIP, LHA, PDF, RAR, SEVENZIP, TAR, XZ, ZIP, ZIP_EXTERNAL
+from mcomix.constants import LHA, PDF, RAR, SEVENZIP, ZIP, ZIP_EXTERNAL
 
 ARCHIVE_DESCRIPTIONS = {
     ZIP: 'ZIP archive',
     RAR: 'RAR archive',
-    TAR: 'Tar archive',
-    GZIP: 'Gzip compressed tar archive',
-    BZIP2: 'Bzip2 compressed tar archive',
-    XZ: 'XZ compressed tar archive',
     PDF: 'PDF document',
     SEVENZIP: '7z archive',
     LHA: 'LHA archive',

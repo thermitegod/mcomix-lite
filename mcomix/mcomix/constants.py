@@ -43,7 +43,7 @@ ANIMATION_NORMAL = 1  # loop as animation setting
 ANIMATION_ONCE = 1 << 1  # loop only once
 ANIMATION_INF = 1 << 2  # loop infinity
 
-ZIP, RAR, TAR, GZIP, BZIP2, XZ, PDF, SEVENZIP, LHA, ZIP_EXTERNAL = range(10)
+ZIP, RAR, PDF, SEVENZIP, LHA, ZIP_EXTERNAL = range(6)
 NORMAL_CURSOR, GRAB_CURSOR, WAIT_CURSOR, NO_CURSOR = range(4)
 LIBRARY_DRAG_EXTERNAL_ID, LIBRARY_DRAG_BOOK_ID, LIBRARY_DRAG_COLLECTION_ID = range(3)
 AUTOROTATE_NEVER, AUTOROTATE_WIDTH_90, AUTOROTATE_WIDTH_270, AUTOROTATE_HEIGHT_90, AUTOROTATE_HEIGHT_270 = range(5)
@@ -72,9 +72,6 @@ ZIP_FORMATS = (
 RAR_FORMATS = (
     ('application/x-rar', 'application/x-cbr'),
     ('rar', 'cbr'))
-TAR_FORMATS = (
-    ('application/x-tar', 'application/x-gzip', 'application/x-bzip2', 'application/x-cbt'),
-    ('tar', 'gz', 'bz2', 'bzip2', 'cbt'))
 SZIP_FORMATS = (
     ('application/x-7z-compressed', 'application/x-cb7'),
     ('7z', 'cb7', 'xz', 'lzma'))
