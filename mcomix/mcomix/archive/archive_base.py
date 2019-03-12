@@ -22,17 +22,10 @@ class BaseArchive(object):
         assert isinstance(archive, str), 'File should be an Unicode string.'
 
         self.archive = archive
-        self._password = None
         self._event = threading.Event()
-        if self.support_concurrent_extractions:
-            # When multiple concurrent extractions are supported,
-            # we need a lock to handle concurent calls to _get_password.
-            self._lock = threading.Lock()
-            self._waiting_for_password = False
 
     def iter_contents(self):
-        """ Generator for listing the archive contents.
-        """
+        """Generator for listing the archive contents"""
         return
         yield
 
@@ -91,33 +84,6 @@ class BaseArchive(object):
         self._create_directory(dst_dir)
         return open(dst_path, 'wb')
 
-    @callback.Callback
-    def _password_required(self):
-        """ Asks the user for a password and sets <self._password>.
-        If <self._password> is None, no password has been requested yet.
-        If an empty string is set, assume that the user did not provide
-        a password. """
-
-        password = archive.ask_for_password(self.archive)
-        if password is None:
-            password = ''
-
-        self._password = password
-        self._event.set()
-
-    def _get_password(self):
-        ask_for_password = self._password is None
-        # Don't trigger concurrent password dialogs.
-        if ask_for_password and self.support_concurrent_extractions:
-            with self._lock:
-                if self._waiting_for_password:
-                    ask_for_password = False
-                else:
-                    self._waiting_for_password = True
-        if ask_for_password:
-            self._password_required()
-        self._event.wait()
-
 
 class ExternalExecutableArchive(BaseArchive):
     """ For archives that are extracted by spawning an external
@@ -166,7 +132,7 @@ class ExternalExecutableArchive(BaseArchive):
             for line in proc.stdout:
                 filename = self._parse_list_output_line(line.rstrip(os.linesep))
                 if filename is not None:
-                    yield self._unicode_filename(filename)
+                    yield filename
 
         self.filenames_initialized = True
 
@@ -183,5 +149,5 @@ class ExternalExecutableArchive(BaseArchive):
         with self._create_file(os.path.join(destination_dir, filename)) as output:
             process.call([self._get_executable()] +
                          self._get_extract_arguments() +
-                         [self.archive, self._original_filename(filename)],
+                         [self.archive, filename],
                          stdout=output)

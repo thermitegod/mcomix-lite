@@ -9,40 +9,21 @@ import tempfile
 from mcomix import process
 from mcomix.archive import archive_base
 
-# Filled on-demand by SevenZipArchive
-_7z_executable = -1
-
 
 class SevenZipArchive(archive_base.ExternalExecutableArchive):
     """ 7z file extractor using the 7z executable. """
-
     STATE_HEADER, STATE_LISTING, STATE_FOOTER = 1, 2, 3
-
-    class EncryptedHeader(Exception):
-        pass
 
     def __init__(self, archive):
         super(SevenZipArchive, self).__init__(archive)
         self._is_solid = False
         self._contents = []
 
-        self.is_encrypted = False
-        self.is_encrypted = self._has_encryption()
-
     def _get_executable(self):
         return SevenZipArchive._find_7z_executable()
 
-    def _get_password_argument(self):
-        if self.is_encrypted:
-            self._get_password()
-            return '-p' + self._password
-        else:
-            # Add an empty password anyway, to prevent deadlock on reading for
-            # input if we did not correctly detect the archive is encrypted.
-            return '-p'
-
     def _get_list_arguments(self):
-        args = [self._get_executable(), 'l', '-slt', self._get_password_argument()]
+        args = [self._get_executable(), 'l', '-slt']
         args.extend(('--', self.archive))
         return args
 
@@ -50,7 +31,6 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
         args = [self._get_executable(), 'x', '-so']
         if list_file is not None:
             args.append('-i@' + list_file)
-        args.append(self._get_password_argument())
         args.extend(('--', self.archive))
         return args
 
@@ -70,9 +50,6 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
             return None
 
         if self._state == self.STATE_HEADER:
-            if (line.startswith('Error:') or line.startswith('ERROR:')) and \
-                    line.endswith(': Can not open encrypted archive. Wrong password?'):
-                raise self.EncryptedHeader()
             if 'Solid = +' == line:
                 self._is_solid = True
 
@@ -87,16 +64,6 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
 
         return None
 
-    def _has_encryption(self):
-        # enc = False
-        with process.popen(self._get_list_arguments(),
-                           stderr=process.STDOUT,
-                           universal_newlines=True) as proc:
-            for line in proc.stdout:
-                if line.startswith('Encrypted = +') or 'Can not open encrypted archive. Wrong password' in line:
-                    return True
-        return False
-
     def is_solid(self):
         return self._is_solid
 
@@ -104,26 +71,16 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
         if not self._get_executable():
             return
 
-        # We'll try at most 2 times:
-        # - the first time without a password
-        # - a second time with a password if the header is encrypted
         for retry_count in range(2):
             #: Indicates which part of the file listing has been read.
             self._state = self.STATE_HEADER
             #: Current path while listing contents.
             self._path = None
             with process.popen(self._get_list_arguments(), stderr=process.STDOUT, universal_newlines=True) as proc:
-                try:
-                    for line in proc.stdout:
-                        filename = self._parse_list_output_line(line.rstrip(os.linesep))
-                        if filename is not None:
-                            yield filename
-                except self.EncryptedHeader:
-                    # The header is encrypted, try again
-                    # if it was our first attempt.
-                    if 0 == retry_count:
-                        continue
-            break
+                for line in proc.stdout:
+                    filename = self._parse_list_output_line(line.rstrip(os.linesep))
+                    if filename is not None:
+                        yield filename
 
         self.filenames_initialized = True
 
@@ -192,7 +149,6 @@ class TarArchive(SevenZipArchive):
     def __init__(self, archive):
         super(TarArchive, self).__init__(archive)
         self._is_solid = True
-        self._is_encrypted = False
 
     def _get_extract_arguments(self, list_file=None):
         # Note: we ignore the list_file argument, which

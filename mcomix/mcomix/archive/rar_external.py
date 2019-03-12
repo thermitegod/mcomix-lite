@@ -8,45 +8,26 @@ import shutil
 from mcomix import process
 from mcomix.archive import archive_base
 
-# Filled on-demand by RarArchive
-_rar_executable = -1
-
 
 class RarArchive(archive_base.ExternalExecutableArchive):
     """ RAR file extractor using the unrar/rar executable. """
-
     STATE_HEADER, STATE_LISTING = 1, 2
-
-    class EncryptedHeader(Exception):
-        pass
 
     def __init__(self, archive):
         super(RarArchive, self).__init__(archive)
         self._is_solid = False
-        self._is_encrypted = False
         self._contents = []
 
     def _get_executable(self):
         return self._find_unrar_executable()
 
-    def _get_password_argument(self):
-        if not self._is_encrypted:
-            # Add a dummy password anyway, to prevent deadlock on reading for
-            # input if we did not correctly detect the archive is encrypted.
-            return '-p-'
-        self._get_password()
-        # Check for invalid empty password, see comment above.
-        if not self._password:
-            return '-p-'
-        return '-p' + self._password
-
     def _get_list_arguments(self):
-        args = [self._get_executable(), 'vt', self._get_password_argument()]
+        args = [self._get_executable(), 'vt']
         args.extend(('--', self.archive))
         return args
 
     def _get_extract_arguments(self):
-        args = [self._get_executable(), 'p', '-inul', '-@', self._get_password_argument()]
+        args = [self._get_executable(), 'p', '-inul', '-@']
         args.extend(('--', self.archive))
         return args
 
@@ -56,12 +37,6 @@ class RarArchive(archive_base.ExternalExecutableArchive):
                 flags = line[9:].split(', ')
                 if 'solid' in flags:
                     self._is_solid = True
-                if 'encrypted headers' in flags:
-                    if not self._is_encrypted:
-                        # Trigger a restart of the enclosing
-                        # iter_contents loop with a password.
-                        self._is_encrypted = True
-                        raise self.EncryptedHeader()
                 self._state = self.STATE_LISTING
                 return None
         if self._state == self.STATE_LISTING:
@@ -77,8 +52,7 @@ class RarArchive(archive_base.ExternalExecutableArchive):
                 flags = line[7:].split()
                 if 'solid' in flags:
                     self._is_solid = True
-                if 'encrypted' in flags:
-                    self._is_encrypted = True
+
         return None
 
     def is_solid(self):
@@ -88,26 +62,15 @@ class RarArchive(archive_base.ExternalExecutableArchive):
         if not self._get_executable():
             return
 
-        # We'll try at most 2 times:
-        # - the first time without a password
-        # - a second time with a password if the header is encrypted
-        for retry_count in range(2):
-            #: Indicates which part of the file listing has been read.
-            self._state = self.STATE_HEADER
-            #: Current path while listing contents.
-            self._path = None
-            with process.popen(self._get_list_arguments(), stderr=process.STDOUT, universal_newlines=True) as proc:
-                try:
-                    for line in proc.stdout:
-                        filename = self._parse_list_output_line(line.rstrip(os.linesep))
-                        if filename is not None:
-                            yield filename
-                except self.EncryptedHeader:
-                    # The header is encrypted, try again
-                    # if it was our first attempt.
-                    if 0 == retry_count:
-                        continue
-            break
+        #: Indicates which part of the file listing has been read.
+        self._state = self.STATE_HEADER
+        #: Current path while listing contents.
+        self._path = None
+        with process.popen(self._get_list_arguments(), stderr=process.STDOUT, universal_newlines=True) as proc:
+            for line in proc.stdout:
+                filename = self._parse_list_output_line(line.rstrip(os.linesep))
+                if filename is not None:
+                        yield filename
 
         self.filenames_initialized = True
 

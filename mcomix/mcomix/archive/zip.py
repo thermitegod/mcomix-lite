@@ -10,8 +10,7 @@ from mcomix.archive import archive_base
 
 
 def is_py_supported_zipfile(path):
-    """Check if a given zipfile has all internal files stored with Python supported compression
-    """
+    """Check if a given zipfile has internal files stored with Python supported compression"""
     with zipfile.ZipFile(path, mode='r') as zip_file:
         for file_info in zip_file.infolist():
             if file_info.compress_type not in (zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED):
@@ -24,13 +23,7 @@ class ZipArchive(archive_base.BaseArchive):
         super(ZipArchive, self).__init__(archive)
         self.zip = zipfile.ZipFile(archive, 'r')
 
-        self._password = None
-
     def iter_contents(self):
-        if self._has_encryption():
-            self._get_password()
-            self.zip.setpassword(self._password)
-
         for filename in self.zip.namelist():
             yield filename
 
@@ -48,12 +41,3 @@ class ZipArchive(archive_base.BaseArchive):
 
     def close(self):
         self.zip.close()
-
-    def _has_encryption(self):
-        """ Checks all files in the archive for encryption.
-        Returns True if at least one encrypted file was found. """
-        for zipinfo in self.zip.infolist():
-            if zipinfo.flag_bits & 0x1:  # File is encrypted
-                return True
-
-        return False
