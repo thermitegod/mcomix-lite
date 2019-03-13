@@ -2,10 +2,9 @@
 
 """thumbbar.py - Thumbnail sidebar for main window."""
 
-import urllib
-
 import cairo
 from gi.repository import Gdk, GdkPixbuf, Gtk
+from urllib.request import pathname2url
 
 from mcomix import image_tools, thumbnail_view, tools
 from mcomix.preferences import prefs
@@ -227,7 +226,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
 
         selected = self._get_selected_row()
         path = self._window.imagehandler.get_path_to_page(selected + 1)
-        uri = 'file://localhost' + urllib.request.pathname2url(path)
+        uri = 'file://localhost' + pathname2url(path)
         selection.set_uris([uri])
 
     @staticmethod

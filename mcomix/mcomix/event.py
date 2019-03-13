@@ -3,9 +3,8 @@
 """event.py - Event handling (keyboard, mouse, etc.) for the main window.
 """
 
-import urllib
-
 from gi.repository import Gdk, Gtk
+from urllib.request import url2pathname
 
 from mcomix import constants, keybindings, openwith, tools
 from mcomix.preferences import prefs
@@ -604,7 +603,7 @@ class EventHandler(object):
 
         # Normalize URIs
         uris = [tools.normalize_uri(uri) for uri in uris]
-        paths = [urllib.request.url2pathname(uri) for uri in uris]
+        paths = [url2pathname(uri) for uri in uris]
 
         if len(paths) > 1:
             self._window.filehandler.open_file(paths)
