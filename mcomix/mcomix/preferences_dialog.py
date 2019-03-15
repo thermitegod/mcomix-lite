@@ -662,7 +662,7 @@ class _PreferencesDialog(Gtk.Dialog):
         return button
 
     def _create_color_button(self, prefkey):
-        rgba = image_tools.color_to_floats_rgba(prefs[prefkey])
+        rgba = prefs[prefkey]
         button = Gtk.ColorButton.new_with_rgba(Gdk.RGBA(*rgba))
         button.connect('color_set', self._color_button_cb, prefkey)
         return button
@@ -701,16 +701,16 @@ class _PreferencesDialog(Gtk.Dialog):
     def _color_button_cb(self, colorbutton, preference):
         """Callback for the background color selection button."""
 
-        color = colorbutton.get_color()
+        color = colorbutton.get_rgba()
 
         if preference == 'bg color':
-            prefs['bg color'] = color.red, color.green, color.blue
+            prefs['bg color'] = color.red, color.green, color.blue, color.alpha
 
             if not self._window.filehandler.file_loaded:
                 self._window.set_bg_color(prefs['bg color'])
 
         elif preference == 'thumb bg color':
-            prefs['thumb bg color'] = color.red, color.green, color.blue
+            prefs['thumb bg color'] = color.red, color.green, color.blue, color.alpha
 
             if not self._window.filehandler.file_loaded:
                 self._window.thumbnailsidebar.change_thumbnail_background_color(prefs['thumb bg color'])

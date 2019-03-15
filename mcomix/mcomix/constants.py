@@ -74,7 +74,7 @@ RAR_FORMATS = (
     ('rar', 'cbr'))
 SZIP_FORMATS = (
     ('application/x-7z-compressed', 'application/x-cb7'),
-    ('7z', 'cb7', 'xz', 'lzma'))
+    ('7z', 'cb7'))
 LHA_FORMATS = (
     ('application/x-lzh', 'application/x-lha', 'application/x-lzh-compressed'),
     ('lha', 'lzh'))
