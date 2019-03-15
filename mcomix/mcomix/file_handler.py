@@ -612,6 +612,9 @@ class FileHandler(object):
         if self.file_loaded:
             with open(constants.FILEINFO_PICKLE_PATH, 'wb') as config:
                 path = self._window.imagehandler.get_real_path()
+                if not path:
+                    # no file is loaded
+                    return
                 page_index = self._window.imagehandler.get_current_page() - 1
                 current_file_info = [path, page_index]
 

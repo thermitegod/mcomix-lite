@@ -78,13 +78,8 @@ class Statusbar(Gtk.EventBox):
 
     def set_page_number(self, page, total, this_screen):
         """Update the page number."""
-        page_info = ""
-        for i in range(this_screen):
-            page_info += '%d' % (page + i)
-            if i < this_screen - 1:
-                page_info += ','
-        page_info += ' / %d' % total
-        self._page_info = page_info
+        p = ','.join(str(page+i) for i in range(this_screen))
+        self._page_info = '{} / {}'.format(p,total)
 
     def set_file_number(self, fileno, total):
         """Updates the file number (i.e. number of current file/total
@@ -104,13 +99,7 @@ class Statusbar(Gtk.EventBox):
         Takes an iterable of tuples, (x, y, scale), describing the original
         resolution of an image as well as the currently displayed scale.
         """
-        resolution = ''
-        for i in range(len(dimensions)):
-            d = dimensions[i]
-            resolution += '%dx%d (%.1f%%)' % (d[0], d[1], d[2] * 100.0)
-            if i < len(dimensions) - 1:
-                resolution += ', '
-        self._resolution = resolution
+        self._resolution = ', '.join('{}x{} ({:.1%})'.format(*d) for d in dimensions)
 
     def set_root(self, root):
         """Set the name of the root (directory or archive)."""
@@ -128,11 +117,10 @@ class Statusbar(Gtk.EventBox):
 
     def update(self):
         """Set the statusbar to display the current state."""
-
-        space = ' ' * Statusbar.SPACING
-        text = (space + '|' + space).join(self._get_status_text())
+        s = '{0:^{1}}'.format('|',Statusbar.SPACING*2+1)
+        text = s.join(self._get_status_text())
         self.status.pop(0)
-        self.status.push(0, space + text)
+        self.status.push(0, '{1:>{2}}{0}'.format(text, '', Statusbar.SPACING))
 
     def push(self, context_id, message):
         """ Compatibility with Gtk.Statusbar. """
@@ -146,22 +134,17 @@ class Statusbar(Gtk.EventBox):
 
     def _get_status_text(self):
         """ Returns an array of text fields that should be displayed. """
-        fields = []
+        fields = [
+            (constants.STATUS_PAGE,       self._page_info ),
+            (constants.STATUS_FILENUMBER, self._file_info ),
+            (constants.STATUS_RESOLUTION, self._resolution),
+            (constants.STATUS_PATH,       self._root      ),
+            (constants.STATUS_FILENAME,   self._filename  ),
+            (constants.STATUS_FILESIZE,   self._filesize  ),
+        ]
+        p = prefs['statusbar fields']
 
-        if prefs['statusbar fields'] & constants.STATUS_PAGE:
-            fields.append(self._page_info)
-        if prefs['statusbar fields'] & constants.STATUS_FILENUMBER:
-            fields.append(self._file_info)
-        if prefs['statusbar fields'] & constants.STATUS_RESOLUTION:
-            fields.append(self._resolution)
-        if prefs['statusbar fields'] & constants.STATUS_PATH:
-            fields.append(self._root)
-        if prefs['statusbar fields'] & constants.STATUS_FILENAME:
-            fields.append(self._filename)
-        if prefs['statusbar fields'] & constants.STATUS_FILESIZE:
-            fields.append(self._filesize)
-
-        return fields
+        return [s for c,s in filter(lambda f:f[0]&p,fields)]
 
     def toggle_status_visibility(self, action, *args):
         """ Called when status entries visibility is to be changed. """
@@ -170,19 +153,16 @@ class Statusbar(Gtk.EventBox):
         if self._loading:
             return
 
-        actionname = action.get_name()
-        if actionname == 'pagenumber':
-            bit = constants.STATUS_PAGE
-        elif actionname == 'resolution':
-            bit = constants.STATUS_RESOLUTION
-        elif actionname == 'rootpath':
-            bit = constants.STATUS_PATH
-        elif actionname == 'filename':
-            bit = constants.STATUS_FILENAME
-        elif actionname == 'filenumber':
-            bit = constants.STATUS_FILENUMBER
-        elif actionname == 'filesize':
-            bit = constants.STATUS_FILESIZE
+        names = {
+            'pagenumber': constants.STATUS_PAGE,
+            'resolution': constants.STATUS_RESOLUTION,
+            'rootpath'  : constants.STATUS_PATH,
+            'filename'  : constants.STATUS_FILENAME,
+            'filenumber': constants.STATUS_FILENUMBER,
+            'filesize'  : constants.STATUS_FILESIZE,
+        }
+
+        bit = names[action.get_name()]
 
         if action.get_active():
             prefs['statusbar fields'] |= bit
@@ -201,22 +181,19 @@ class Statusbar(Gtk.EventBox):
 
     def _update_sensitivity(self):
         """ Updates the action menu's sensitivity based on user preferences. """
+        p = prefs['statusbar fields']
+        names = {
+            'pagenumber': p & constants.STATUS_PAGE,
+            'filenumber': p & constants.STATUS_FILENUMBER,
+            'resolution': p & constants.STATUS_RESOLUTION,
+            'rootpath'  : p & constants.STATUS_PATH,
+            'filename'  : p & constants.STATUS_FILENAME,
+            'filesize'  : p & constants.STATUS_FILESIZE,
+        }
 
-        page_visible = prefs['statusbar fields'] & constants.STATUS_PAGE
-        fileno_visible = prefs['statusbar fields'] & constants.STATUS_FILENUMBER
-        resolution_visible = prefs['statusbar fields'] & constants.STATUS_RESOLUTION
-        path_visible = prefs['statusbar fields'] & constants.STATUS_PATH
-        filename_visible = prefs['statusbar fields'] & constants.STATUS_FILENAME
-        filesize_visible = prefs['statusbar fields'] & constants.STATUS_FILESIZE
-
-        for name, visible in (('pagenumber', page_visible),
-                              ('filenumber', fileno_visible),
-                              ('resolution', resolution_visible),
-                              ('rootpath', path_visible),
-                              ('filename', filename_visible),
-                              ('filesize', filesize_visible)):
-            action = self.ui_manager.get_action('/Statusbar/' + name)
-            action.set_active(visible)
+        for n, v in names.items():
+            action = self.ui_manager.get_action('/Statusbar/' + n)
+            action.set_active(v)
 
 
 class TooltipStatusHelper(object):
