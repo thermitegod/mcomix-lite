@@ -1,8 +1,5 @@
-# -*- coding: utf-8 -*-
-
 """main.py - Main window."""
 
-import errno
 import math
 import operator
 import os
@@ -133,10 +130,10 @@ class MainWindow(Gtk.Window):
 
         # Determine zoom mode. If zoom_mode is passed, it overrides
         # the zoom mode preference.
-        zoom_actions = {constants.ZOOM_MODE_BEST: 'best_fit_mode',
-                        constants.ZOOM_MODE_WIDTH: 'fit_width_mode',
+        zoom_actions = {constants.ZOOM_MODE_BEST  : 'best_fit_mode',
+                        constants.ZOOM_MODE_WIDTH : 'fit_width_mode',
                         constants.ZOOM_MODE_HEIGHT: 'fit_height_mode',
-                        constants.ZOOM_MODE_SIZE: 'fit_size_mode',
+                        constants.ZOOM_MODE_SIZE  : 'fit_size_mode',
                         constants.ZOOM_MODE_MANUAL: 'fit_manual_mode'}
 
         if zoom_mode is not None:
@@ -180,12 +177,12 @@ class MainWindow(Gtk.Window):
 
         # Each "toggle" widget "eats" part of the main layout visible area.
         self._toggle_axis = {
-            self.thumbnailsidebar: constants.WIDTH_AXIS,
+            self.thumbnailsidebar              : constants.WIDTH_AXIS,
             self._scroll[constants.HEIGHT_AXIS]: constants.WIDTH_AXIS,
-            self._scroll[constants.WIDTH_AXIS]: constants.HEIGHT_AXIS,
-            self.statusbar: constants.HEIGHT_AXIS,
-            self.toolbar: constants.HEIGHT_AXIS,
-            self.menubar: constants.HEIGHT_AXIS,
+            self._scroll[constants.WIDTH_AXIS] : constants.HEIGHT_AXIS,
+            self.statusbar                     : constants.HEIGHT_AXIS,
+            self.toolbar                       : constants.HEIGHT_AXIS,
+            self.menubar                       : constants.HEIGHT_AXIS,
         }
 
         # Start with all "toggle" widgets hidden to avoid ugly transitions.
@@ -432,10 +429,9 @@ class MainWindow(Gtk.Window):
 
             for i in range(pixbuf_count):
                 pixbuf_list[i] = image_tools.trans_pixbuf(
-                    pixbuf_list[i],
-                    flip=prefs['vertical flip'],
-                    flop=prefs['horizontal flip']
-                )
+                        pixbuf_list[i],
+                        flip=prefs['vertical flip'],
+                        flop=prefs['horizontal flip'])
                 pixbuf_list[i] = self.enhancer.enhance(pixbuf_list[i])
 
             for i in range(pixbuf_count):
@@ -528,22 +524,24 @@ class MainWindow(Gtk.Window):
         """ Determines the rotation to be applied.
         Returns the degree of rotation (0, 90, 180, 270). """
 
+        size_rotation = 0
+
         if (height > width and
                 prefs['auto rotate depending on size'] in
                 (constants.AUTOROTATE_HEIGHT_90, constants.AUTOROTATE_HEIGHT_270)):
             if prefs['auto rotate depending on size'] == constants.AUTOROTATE_HEIGHT_90:
-                return 90
+                size_rotation = 90
             else:
-                return 270
+                size_rotation = 270
         elif (width > height and
               prefs['auto rotate depending on size'] in
               (constants.AUTOROTATE_WIDTH_90, constants.AUTOROTATE_WIDTH_270)):
             if prefs['auto rotate depending on size'] == constants.AUTOROTATE_WIDTH_90:
-                return 90
+                size_rotation = 90
             else:
-                return 270
+                size_rotation = 270
 
-        return 0
+        return size_rotation
 
     def _page_available(self, page):
         """ Called whenever a new page is ready for displaying. """
@@ -607,7 +605,7 @@ class MainWindow(Gtk.Window):
     def next_book(self):
         archive_open = self.filehandler.archive_type is not None
         next_archive_opened = False
-        if (self.slideshow.is_running() and \
+        if (self.slideshow.is_running() and
             prefs['slideshow can go to next archive']) or \
                 prefs['auto open next archive']:
             next_archive_opened = self.filehandler._open_next_archive()
@@ -622,7 +620,7 @@ class MainWindow(Gtk.Window):
     def previous_book(self):
         archive_open = self.filehandler.archive_type is not None
         previous_archive_opened = False
-        if (self.slideshow.is_running() and \
+        if (self.slideshow.is_running() and
             prefs['slideshow can go to next archive']) or \
                 prefs['auto open next archive']:
             previous_archive_opened = self.filehandler._open_previous_archive()
@@ -911,6 +909,16 @@ class MainWindow(Gtk.Window):
 
         return tuple(dimensions)
 
+    def get_layout_pointer_position(self):
+        """Return a 2-tuple with the x and y coordinates of the pointer
+        on the main layout area, relative to the layout.
+        """
+        x, y = self._main_layout.get_pointer()
+        x += self._hadjust.get_value()
+        y += self._vadjust.get_value()
+
+        return x, y
+
     def set_cursor(self, mode):
         """Set the cursor on the main layout area to <mode>. You should
         probably use the cursor_handler instead of using this method
@@ -929,7 +937,6 @@ class MainWindow(Gtk.Window):
                 title += ','
         title += ' / %d]  %s' % (self.imagehandler.get_number_of_pages(),
                                  self.imagehandler.get_pretty_current_filename())
-        title = title
 
         if self.slideshow.is_running():
             title = '[%s] %s' % ('SLIDESHOW', title)
@@ -940,8 +947,7 @@ class MainWindow(Gtk.Window):
         """Set the background color to <color>. color is a sequence in the
         format (r, g, b). Values are 16-bit.
         """
-        self._event_box.modify_bg(Gtk.StateType.NORMAL, Gdk.Color(*color))
-        # self._event_box.override_background_color(Gtk.StateType.NORMAL, Gdk.RGBA(*color))
+        self._event_box.override_background_color(Gtk.StateType.NORMAL, Gdk.RGBA(*color))
         if prefs['thumbnail bg uses main color']:
             self.thumbnailsidebar.change_thumbnail_background_color(prefs['bg color'])
         self._bg_color = color
@@ -962,7 +968,6 @@ class MainWindow(Gtk.Window):
         save_dialog = Gtk.FileChooserDialog(title='Save page as', action=Gtk.FileChooserAction.SAVE)
         save_dialog.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT, Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT)
         save_dialog.set_transient_for(self)
-
         save_dialog.set_do_overwrite_confirmation(True)
         save_dialog.set_current_name(suggested_name.encode('utf-8'))
 
@@ -976,14 +981,15 @@ class MainWindow(Gtk.Window):
         """The currently opened file/archive will be moved to ./keep"""
         # TODO pref config option for relative path
         current_file = self.imagehandler.get_real_path()
-        dir_target = os.path.join(os.path.dirname(current_file), 'keep')
-        file_target = os.path.join(dir_target, os.path.basename(current_file))
+        target_dir = os.path.join(os.path.dirname(current_file), 'keep')
+        target_file = os.path.join(target_dir, os.path.basename(current_file))
 
-        if not os.path.exists(dir_target):
+        if not os.path.exists(target_dir):
             try:
-                os.makedirs(dir_target)
-            except OSError as exc:  # Guard against race condition
-                if exc.errno != errno.EEXIST:
+                os.makedirs(target_dir)
+            except OSError as e:  # Guard against race condition
+                import errno
+                if e.errno != errno.EEXIST:
                     raise
 
         if self.filehandler.archive_type is not None:
@@ -994,7 +1000,7 @@ class MainWindow(Gtk.Window):
                 self.filehandler.close_file()
 
             if os.path.isfile(current_file):
-                os.rename(current_file, file_target)
+                os.rename(current_file, target_file)
         else:
             if self.imagehandler.get_number_of_pages() > 1:
                 # Open the next/previous file
@@ -1004,14 +1010,14 @@ class MainWindow(Gtk.Window):
                     self.flip_page(+1)
                 # Move the desired file
                 if os.path.isfile(current_file):
-                    os.rename(current_file, file_target)
+                    os.rename(current_file, target_file)
 
                 # Refresh the directory
                 self.filehandler.refresh_file()
             else:
                 self.filehandler.close_file()
                 if os.path.isfile(current_file):
-                    os.rename(current_file, file_target)
+                    os.rename(current_file, target_file)
 
     def delete(self, *args):
         """ The currently opened file/archive will be deleted after showing
@@ -1134,7 +1140,6 @@ class MainWindow(Gtk.Window):
         if prefs['auto load last file'] and self.filehandler.file_loaded:
             prefs['path to last file'] = self.imagehandler.get_real_path()
             prefs['page of last file'] = self.imagehandler.get_current_page()
-
         else:
             prefs['path to last file'] = ''
             prefs['page of last file'] = 1
