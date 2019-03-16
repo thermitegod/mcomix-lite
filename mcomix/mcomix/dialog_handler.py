@@ -7,10 +7,9 @@
 
 from mcomix import about_dialog, comment_dialog, properties_dialog
 
-dialog_windows = {}
-dialog_windows['about-dialog'] = [None, about_dialog._AboutDialog]
-dialog_windows['comments-dialog'] = [None, comment_dialog._CommentsDialog]
-dialog_windows['properties-dialog'] = [None, properties_dialog._PropertiesDialog]
+dialog_windows = {'about-dialog'     : [None, about_dialog._AboutDialog],
+                  'comments-dialog'  : [None, comment_dialog._CommentsDialog],
+                  'properties-dialog': [None, properties_dialog._PropertiesDialog]}
 
 
 def open_dialog(action, data):
