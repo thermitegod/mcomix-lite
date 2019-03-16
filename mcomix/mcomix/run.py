@@ -63,26 +63,14 @@ def parse_arguments():
 
     debugopts = parser.add_argument_group('Debug options')
     debugopts.add_argument('-W', dest='loglevel', action='store',
-                           choices=('all', 'debug', 'info', 'warn', 'error'), default='warn',
-                           metavar='[ all | debug | info | warn | error ]',
+                           choices=log.levels.keys(), default='warn',
+                           metavar='[ {} ]'.format(' | '.join(log.levels.keys())),
                            help='Sets the desired output log level.')
     # This supresses an error when MComix is used with cProfile
     debugopts.add_argument('-o', dest='output', action='store',
                            default='', help=argparse.SUPPRESS)
 
     args = parser.parse_args()
-
-    # Fix up log level to use constants from log.
-    if args.loglevel == 'all':
-        args.loglevel = log.DEBUG
-    if args.loglevel == 'debug':
-        args.loglevel = log.DEBUG
-    if args.loglevel == 'info':
-        args.loglevel = log.INFO
-    elif args.loglevel == 'warn':
-        args.loglevel = log.WARNING
-    elif args.loglevel == 'error':
-        args.loglevel = log.ERROR
 
     return args
 
@@ -100,10 +88,13 @@ def run():
         print_version()
 
     # First things first: set the log level.
-    log.setLevel(args.loglevel)
+    log.setLevel(log.levels[args.loglevel])
 
     # Check for PyGTK and PIL dependencies.
     try:
+        from gi import version_info as gi_version_info
+        assert gi_version_info >= (3, 21, 0)
+
         from gi import require_version
 
         require_version('PangoCairo', '1.0')
@@ -111,14 +102,13 @@ def run():
         require_version('Gdk', '3.0')
 
         from gi.repository import Gdk, Gtk, GLib
-        from gi import version_info as gi_version_info
-
-        if gi_version_info < (3, 11, 0):
-            from gi.repository import GObject
-            GObject.threads_init()
 
     except AssertionError:
-        log.error('You do not have the required versions of GTK+ 3.0 and PyGObject installed.')
+        log.error('You do not have the required versions of PyGObject installed.')
+        sys.exit(1)
+
+    except ValueError:
+        log.error('You do not have the required versions of GTK+ 3.0 installed.')
         sys.exit(1)
 
     except ImportError:

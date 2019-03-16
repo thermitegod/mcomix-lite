@@ -35,13 +35,14 @@ class Packer(object):
         self._archive_path = archive_path
         self._base_name = base_name
         self._pack_thread = None
+        self._pack_thread = None
         self._packing_successful = False
 
     def pack(self):
         """Pack all the files in the file lists into the archive."""
         self._pack_thread = threading.Thread(target=self._thread_pack)
         self._pack_thread.name += '-pack'
-        self._pack_thread.setDaemon(False)
+        self._pack_thread.daemon = False
         self._pack_thread.start()
 
     def wait(self):

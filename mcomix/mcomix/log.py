@@ -10,6 +10,14 @@ from logging import DEBUG, ERROR, INFO, WARNING
 __all__ = ['debug', 'info', 'warning', 'error', 'setLevel',
            'DEBUG', 'INFO', 'WARNING', 'ERROR']
 
+levels = {
+    'all'  : DEBUG,
+    'debug': DEBUG,
+    'info' : INFO,
+    'warn' : WARNING,
+    'error': ERROR,
+}
+
 
 class PrintHandler(logging.Handler):
     def emit(self, record):
