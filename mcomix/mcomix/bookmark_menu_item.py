@@ -68,8 +68,7 @@ class _Bookmark(Gtk.ImageMenuItem):
         """Return a tuple suitable for pickling. The bookmark can be fully
         re-created using the values in the tuple.
         """
-        return (self._name, self._path, self._page, self._numpages,
-                self._archive_type, self._date_added)
+        return self._name, self._path, self._page, self._numpages, self._archive_type, self._date_added
 
     def clone(self):
         """ Creates a copy of the provided Bookmark menu item. This is necessary

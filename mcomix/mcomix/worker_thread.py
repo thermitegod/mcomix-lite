@@ -9,11 +9,8 @@ from mcomix import log
 
 
 class WorkerThread(object):
-
-    def __init__(self, process_order, name=None, max_threads=1,
-                 sort_orders=False, unique_orders=False):
+    def __init__(self, process_order, name=None, max_threads=1, sort_orders=False, unique_orders=False):
         """Create a new pool of worker threads.
-
         Optional <name> will be added to spawned thread names.
         <process_order> will be called to process each work order.
         At most <max_threads> will be started for processing.
@@ -79,9 +76,7 @@ class WorkerThread(object):
 
     def must_stop(self):
         """Return true if we've been asked to stop processing.
-
-        Can be used by the processing function to check if it must abort early.
-        """
+        Can be used by the processing function to check if it must abort early"""
         return self._stop
 
     def clear_orders(self):

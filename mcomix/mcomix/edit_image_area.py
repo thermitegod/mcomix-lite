@@ -63,9 +63,7 @@ class _ImageArea(Gtk.ScrolledWindow):
         self._ui_manager.add_ui_from_string(ui_description)
 
         actiongroup = Gtk.ActionGroup(name='mcomix-edit-archive-image-area')
-        actiongroup.add_actions([
-            ('remove', Gtk.STOCK_REMOVE, 'Remove from archive', None, None,
-             self._remove_pages)])
+        actiongroup.add_actions([('remove', Gtk.STOCK_REMOVE, 'Remove from archive', None, None, self._remove_pages)])
         self._ui_manager.insert_action_group(actiongroup, 0)
 
     def fetch_images(self):
@@ -117,8 +115,7 @@ class _ImageArea(Gtk.ScrolledWindow):
                 iconview.unselect_all()
                 iconview.select_path(path)
 
-            self._ui_manager.get_widget('/Popup').popup(None, None, None, None,
-                                                        event.button, event.time)
+            self._ui_manager.get_widget('/Popup').popup(None, None, None, None, event.button, event.time)
 
     def _key_press(self, iconview, event):
         """Handle key presses on the thumbnail area."""

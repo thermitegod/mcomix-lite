@@ -53,16 +53,13 @@ class _CommentArea(Gtk.VBox):
 
         self._ui_manager.add_ui_from_string(ui_description)
         actiongroup = Gtk.ActionGroup(name='mcomix-edit-archive-comment-area')
-        actiongroup.add_actions([
-            ('remove', Gtk.STOCK_REMOVE, 'Remove from archive', None, None,
-             self._remove_file)])
+        actiongroup.add_actions([('remove', Gtk.STOCK_REMOVE, 'Remove from archive', None, None, self._remove_file)])
         self._ui_manager.insert_action_group(actiongroup, 0)
 
     def fetch_comments(self):
         """Load all comments in the archive."""
 
-        for num in range(1,
-                         self._edit_dialog.file_handler.get_number_of_comments() + 1):
+        for num in range(1, self._edit_dialog.file_handler.get_number_of_comments() + 1):
             path = self._edit_dialog.file_handler.get_comment_name(num)
             size = tools.format_byte_size(os.stat(path).st_size)
             self._liststore.append([os.path.basename(path), size, path])
@@ -98,8 +95,7 @@ class _CommentArea(Gtk.VBox):
         path = path[0]
 
         if event.button == 3:
-            self._ui_manager.get_widget('/Popup').popup(None, None, None, None,
-                                                        event.button, event.time)
+            self._ui_manager.get_widget('/Popup').popup(None, None, None, None, event.button, event.time)
 
     def _key_press(self, iconview, event):
         """Handle key presses on the area."""

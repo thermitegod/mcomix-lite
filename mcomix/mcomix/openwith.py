@@ -14,7 +14,8 @@ from mcomix.preferences import prefs
 DEBUGGING_CONTEXT, NO_FILE_CONTEXT, IMAGE_FILE_CONTEXT, ARCHIVE_CONTEXT = -1, 0, 1, 2
 
 
-class OpenWithException(Exception): pass
+class OpenWithException(Exception):
+    pass
 
 
 class OpenWithManager(object):
@@ -75,8 +76,8 @@ class OpenWithCommand(object):
             process.call_thread(args)
 
         except Exception as e:
-            text = 'Could not run command %(cmdlabel)s: %(exception)s' % \
-                   {'cmdlabel': self.get_label(), 'exception': str(e)}
+            text = 'Could not run command %(cmdlabel)s: %(exception)s' \
+                   % {'cmdlabel': self.get_label(), 'exception': str(e)}
             window.osd.show(text)
         finally:
             os.chdir(current_dir)
@@ -121,8 +122,7 @@ class OpenWithCommand(object):
         if not text.strip():
             raise OpenWithException('Command line is empty.')
 
-        args = self._commandline_to_arguments(text, window,
-                                              self._get_context_type(window, check_restrictions))
+        args = self._commandline_to_arguments(text, window, self._get_context_type(window, check_restrictions))
         # Environment variables must be expanded after MComix variables,
         return [os.path.expandvars(arg) for arg in args]
 
@@ -220,8 +220,7 @@ class OpenWithCommand(object):
             else:
                 return os.path.dirname(os.path.dirname(window.imagehandler.get_path_to_page()))
         else:
-            raise OpenWithException(
-                    "Invalid escape sequence: %%%s" % identifier)
+            raise OpenWithException('Invalid escape sequence: %%%s' % identifier)
 
     @staticmethod
     def _get_context_type(window, check_restrictions=True):
@@ -336,7 +335,7 @@ class OpenWithEditor(Gtk.Dialog):
 
         try:
             args = map(self._quote_if_necessary, command.parse(self._window))
-            self._test_field.set_text(" ".join(args))
+            self._test_field.set_text(' '.join(args))
             self._run_button.set_sensitive(True)
 
             if not command.is_valid_workdir(self._window, allow_empty=True):
@@ -408,8 +407,7 @@ class OpenWithEditor(Gtk.Dialog):
 
     def _item_selected(self, selection):
         """ Enable or disable buttons that depend on an item being selected. """
-        for button in (self._remove_button, self._up_button,
-                       self._down_button):
+        for button in (self._remove_button, self._up_button, self._down_button):
             button.set_sensitive(selection.count_selected_rows() > 0)
 
         if selection.count_selected_rows() > 0:
@@ -452,8 +450,7 @@ class OpenWithEditor(Gtk.Dialog):
         content.pack_start(self._exec_label, False, False, 0)
 
         linklabel = Gtk.Label()
-        linklabel.set_markup(('Refer to the <a href="%s">external command documentation</a> '
-                              'for a list of usable variables and other hints.') %
+        linklabel.set_markup('For variables and other hints refer to <a href="%s">external command docs</a>' %
                              'https://sourceforge.net/p/mcomix/wiki/External_Commands')
         linklabel.set_alignment(0, 0)
         content.pack_start(linklabel, False, False, 4)
@@ -472,11 +469,9 @@ class OpenWithEditor(Gtk.Dialog):
 
         # The 'Disabled in archives' field is shown as toggle button
         renderer = Gtk.CellRendererToggle()
-        renderer.connect('toggled', self._value_changed,
-                         len(self._command_tree.get_columns()))
+        renderer.connect('toggled', self._value_changed, len(self._command_tree.get_columns()))
         column = Gtk.TreeViewColumn('Disabled in archives', renderer)
-        column.set_attributes(renderer, active=len(self._command_tree.get_columns()),
-                              activatable=4)
+        column.set_attributes(renderer, active=len(self._command_tree.get_columns()), activatable=4)
         self._command_tree.append_column(column)
 
         # Label, command, working dir, disabled for archives, line is editable
@@ -532,10 +527,7 @@ class OpenWithEditor(Gtk.Dialog):
             if self._changed:
                 confirm_diag = message_dialog.MessageDialog(self, Gtk.DialogFlags.MODAL,
                                                             Gtk.MessageType.INFO, Gtk.ButtonsType.YES_NO)
-                confirm_diag.set_text('Save changes to commands?',
-                                      ('You have made changes to the list of external commands that '
-                                       'have not been saved yet. Press "Yes" to save all changes, '
-                                       'or "No" to discard them.'))
+                confirm_diag.set_text('Changes not saved', 'Save changes made to external commands?')
                 response = confirm_diag.run()
 
                 if response == Gtk.ResponseType.YES:

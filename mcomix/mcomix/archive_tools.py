@@ -66,13 +66,9 @@ def init_supported_formats():
         if not is_available:
             continue
         SUPPORTED_ARCHIVE_FORMATS[name] = ([], [])
-        SUPPORTED_ARCHIVE_FORMATS[name][0].extend(
-                map(lambda s: s.lower(), formats[0])
-        )
+        SUPPORTED_ARCHIVE_FORMATS[name][0].extend(map(lambda s: s.lower(), formats[0]))
         # archive extensions has no '.'
-        SUPPORTED_ARCHIVE_FORMATS[name][1].extend(
-                map(lambda s: '.' + s.lower(), formats[1])
-        )
+        SUPPORTED_ARCHIVE_FORMATS[name][1].extend(map(lambda s: '.' + s.lower(), formats[1]))
     # cache a supported extensions list
     for mimes, exts in SUPPORTED_ARCHIVE_FORMATS.values():
         SUPPORTED_ARCHIVE_EXTS.extend(exts)

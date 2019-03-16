@@ -326,17 +326,10 @@ class EventHandler(object):
                          ['<Control>L'],
                          self._window.actiongroup.get_action('library').activate)
 
-        # Space key scrolls down a percentage of the window height or the
-        # image height at a time. When at the bottom it flips to the next
-        # page.
-        #
-        # It also has a "smart scrolling mode" in which we try to follow
-        # the flow of the comic.
-        #
-        # If Shift is pressed we should backtrack instead.
         manager.register('smart_scroll_down',
                          ['space'],
                          self._smart_scroll_down)
+
         manager.register('smart_scroll_up',
                          ['<Shift>space'],
                          self._smart_scroll_up)
@@ -384,8 +377,7 @@ class EventHandler(object):
 
         # Execute external command. Bind keys from 1 to 9 to commands 1 to 9.
         for i in range(1, 10):
-            manager.register('execute_command_%d' % i, ['%d' % i],
-                             self._execute_command, args=[i - 1])
+            manager.register('execute_command_%d' % i, ['%d' % i], self._execute_command, args=[i - 1])
 
     def key_press_event(self, widget, event, *args):
         """Handle key press events on the main window."""
@@ -395,14 +387,11 @@ class EventHandler(object):
 
         # Dispatch keyboard input handling
         manager = keybindings.keybinding_manager(self._window)
-        # Some keys can only be pressed with certain modifiers that
-        # are irrelevant to the actual hotkey. Find out and ignore them.
-        ALL_ACCELS_MASK = (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK |
-                           Gdk.ModifierType.MOD1_MASK)
+        # Some keys require modifiers that are irrelevant to the hotkey. Find out and ignore them.
+        ALL_ACCELS_MASK = (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.MOD1_MASK)
 
         keymap = Gdk.Keymap.get_default()
-        code = keymap.translate_keyboard_state(
-                event.hardware_keycode, event.get_state(), event.group)
+        code = keymap.translate_keyboard_state(event.hardware_keycode, event.get_state(), event.group)
 
         if code[0]:
             keyval = code[1]
@@ -411,8 +400,7 @@ class EventHandler(object):
             # If the resulting key is upper case (i.e. SHIFT + key),
             # convert it to lower case and remove SHIFT from the consumed flags
             # to match how keys are registered (<Shift> + lowercase)
-            if (event.get_state() & Gdk.ModifierType.SHIFT_MASK and
-                    keyval != Gdk.keyval_to_lower(keyval)):
+            if event.get_state() & Gdk.ModifierType.SHIFT_MASK and keyval != Gdk.keyval_to_lower(keyval):
                 keyval = Gdk.keyval_to_lower(keyval)
                 consumed &= ~Gdk.ModifierType.SHIFT_MASK
 
@@ -426,22 +414,19 @@ class EventHandler(object):
         if event.keyval in (Gdk.KEY_Control_L, Gdk.KEY_Control_R):
             self._window.imagehandler.force_single_step = True
 
-        # ----------------------------------------------------------------
-        # We kill the signals here for the Up, Down, Space and Enter keys,
-        # or they will start fiddling with the thumbnail selector (bad).
-        # ----------------------------------------------------------------
-        if (event.keyval in (Gdk.KEY_Up, Gdk.KEY_Down,
-                             Gdk.KEY_space, Gdk.KEY_KP_Enter, Gdk.KEY_KP_Up,
-                             Gdk.KEY_KP_Down, Gdk.KEY_KP_Home, Gdk.KEY_KP_End,
+        # ---------------------------------------------------------------
+        # kill the signals here for the Up, Down, Space and Enter keys,
+        # else they will start fiddling with the thumbnail selector (bad).
+        # ---------------------------------------------------------------
+        if (event.keyval in (Gdk.KEY_Up, Gdk.KEY_Down, Gdk.KEY_space, Gdk.KEY_KP_Enter,
+                             Gdk.KEY_KP_Up, Gdk.KEY_KP_Down, Gdk.KEY_KP_Home, Gdk.KEY_KP_End,
                              Gdk.KEY_KP_Page_Up, Gdk.KEY_KP_Page_Down) or
-                (event.keyval == Gdk.KEY_Return and not
-                'GDK_MOD1_MASK' in event.get_state().value_names)):
+                (event.keyval == Gdk.KEY_Return and 'GDK_MOD1_MASK' not in event.get_state().value_names)):
             self._window.stop_emission_by_name('key_press_event')
             return True
 
     def key_release_event(self, widget, event, *args):
         """ Handle release of keys for the main window. """
-
         # ---------------------------------------------------------------
         # Unregister CTRL for scrolling only one page in double page mode
         # ---------------------------------------------------------------
@@ -526,8 +511,7 @@ class EventHandler(object):
               not event.get_state() & Gdk.ModifierType.MOD1_MASK and
               not event.get_state() & Gdk.ModifierType.SHIFT_MASK):
             self._window.cursor_handler.set_cursor_type(constants.NORMAL_CURSOR)
-            self._window.popup.popup(None, None, None, None,
-                                     event.button, event.time)
+            self._window.popup.popup(None, None, None, None, event.button, event.time)
 
         elif event.button == 4:
             self._window.show_info_panel()
@@ -588,11 +572,9 @@ class EventHandler(object):
                 self._last_pointer_pos_y = event.y_root
             self._drag_timer = event.time
 
-    def drag_n_drop_event(self, widget, context, x, y, selection, drag_id,
-                          eventtime):
+    def drag_n_drop_event(self, widget, context, x, y, selection, drag_id, eventtime):
         """Handle drag-n-drop events on the main layout area."""
         # The drag source is inside MComix itself, so we ignore.
-
         if Gtk.drag_get_source_widget(context) is not None:
             return
 
@@ -623,8 +605,7 @@ class EventHandler(object):
             self._extra_scroll_events = 0
             return True
 
-        if y > 0 or (self._window.is_manga_mode and x < 0) or (
-                not self._window.is_manga_mode and x > 0):
+        if y > 0 or (self._window.is_manga_mode and x < 0) or (not self._window.is_manga_mode and x > 0):
             page_flipped = self._next_page_with_protection()
         else:
             page_flipped = self._previous_page_with_protection()
@@ -660,12 +641,10 @@ class EventHandler(object):
         viewport_size = self._window.get_visible_area_size()
         distance = prefs['smart scroll percentage']
         if small_step is None:
-            max_scroll = [distance * viewport_size[0],
-                          distance * viewport_size[1]]  # 2D only
+            max_scroll = [distance * viewport_size[0], distance * viewport_size[1]]  # 2D only
         else:
             max_scroll = [small_step] * 2  # 2D only
-        swap_axes = constants.SWAPPED_AXES if prefs['invert smart scroll'] \
-            else constants.NORMAL_AXES
+        swap_axes = constants.SWAPPED_AXES if prefs['invert smart scroll'] else constants.NORMAL_AXES
         self._window.update_layout_position()
 
         # Scroll to the new position
@@ -683,16 +662,14 @@ class EventHandler(object):
     def _next_page_with_protection(self):
         """ Advances to the next page. If L{_scroll_protection} is enabled,
         this method will only advance if enough scrolling attempts have been made.
-
         @return: True when the page was flipped."""
-
         if not prefs['flip with wheel']:
             self._extra_scroll_events = 0
             return False
 
-        if (not self._scroll_protection
-                or self._extra_scroll_events >= prefs['number of key presses before page turn'] - 1
-                or not self._window.is_scrollable()):
+        if not self._scroll_protection \
+                or self._extra_scroll_events >= prefs['number of key presses before page turn'] - 1 \
+                or not self._window.is_scrollable():
             self._flip_page(1)
             return True
 
@@ -702,21 +679,19 @@ class EventHandler(object):
 
         else:
             # This path should not be reached.
-            assert False, "Programmer is moron, incorrect assertion."
+            assert False, 'Programmer is moron, incorrect assertion.'
 
     def _previous_page_with_protection(self):
         """ Goes back to the previous page. If L{_scroll_protection} is enabled,
         this method will only go back if enough scrolling attempts have been made.
-
         @return: True when the page was flipped."""
-
         if not prefs['flip with wheel']:
             self._extra_scroll_events = 0
             return False
 
-        if (not self._scroll_protection
-                or self._extra_scroll_events <= -prefs['number of key presses before page turn'] + 1
-                or not self._window.is_scrollable()):
+        if not self._scroll_protection \
+                or self._extra_scroll_events <= -prefs['number of key presses before page turn'] + 1 \
+                or not self._window.is_scrollable():
             self._flip_page(-1)
             return True
 
@@ -726,7 +701,7 @@ class EventHandler(object):
 
         else:
             # This path should not be reached.
-            assert False, "Programmer is moron, incorrect assertion."
+            assert False, 'Programmer is moron, incorrect assertion.'
 
     def _flip_page(self, number_of_pages, single_step=False):
         """ Switches a number of pages forwards/backwards. If C{single_step} is True,
@@ -752,7 +727,7 @@ class EventHandler(object):
 def _valwarp(cur, maxval, minval=0, tolerance=3, extra=2):
     """ Helper function for warping the cursor around the screen when it
       comes within `tolerance` to a border (and `extra` more to avoid
-      jumping back and forth).  """
+      jumping back and forth) """
     if cur < minval + tolerance:
         overmove = minval + tolerance - cur
         return maxval - tolerance - overmove - extra

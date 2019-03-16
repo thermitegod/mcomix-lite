@@ -6,8 +6,7 @@ import signal
 import sys
 
 if __name__ == '__main__':
-    print('PROGRAM TERMINATED')
-    print('Do not run this script directly, instead use mcomixstarter.py.')
+    print('PROGRAM TERMINATED\nDo not run this script directly, use mcomixstarter.py')
     sys.exit(1)
 
 # These modules must not depend on GTK, PIL,
@@ -15,21 +14,13 @@ if __name__ == '__main__':
 from mcomix import constants, log, preferences
 
 
-def print_version():
-    """Print the version number and exit."""
-    print(constants.APPNAME + ' ' + constants.VERSION)
-    sys.exit(0)
-
-
 def parse_arguments():
     """ Parse the command line passed in <argv>. Returns a tuple containing
     (options, arguments). Errors parsing the command line are handled in
     this function. """
-
-    parser = argparse.ArgumentParser(
-            usage='%%(prog)s %s' % '[OPTION...] [PATH]',
-            description='View images and comic book archives.',
-            add_help=False)
+    parser = argparse.ArgumentParser(usage='%%(prog)s %s' % '[OPTION...] [PATH]',
+                                     description='View images and comic book archives.',
+                                     add_help=False)
     parser.add_argument('--help', action='help',
                         help='Show this help and exit.')
     parser.add_argument('path', type=str, action='store', nargs='*', default='',
@@ -85,7 +76,8 @@ def run():
     args = parse_arguments()
 
     if args.version:
-        print_version()
+        print(constants.APPNAME + ' ' + constants.VERSION)
+        sys.exit(0)
 
     # First things first: set the log level.
     log.setLevel(log.levels[args.loglevel])
@@ -104,15 +96,15 @@ def run():
         from gi.repository import Gdk, Gtk, GLib
 
     except AssertionError:
-        log.error('You do not have the required versions of PyGObject installed.')
+        log.error('Required versions of PyGObject is not installed.')
         sys.exit(1)
 
     except ValueError:
-        log.error('You do not have the required versions of GTK+ 3.0 installed.')
+        log.error('Required versions of GTK+ 3.0 is not installed.')
         sys.exit(1)
 
     except ImportError:
-        log.error('No version of GObject was found on your system.')
+        log.error('No version of GObject was found.')
         sys.exit(1)
 
     try:
@@ -129,21 +121,19 @@ def run():
         assert pilver >= constants.REQUIRED_PIL_VERSION
 
     except (AssertionError, AttributeError):
-        log.error('You do not have the required version of Pillow installed.')
-        log.error('Installed Pillow version is: %s' % pilver)
-        log.error('Required Pillow version is: %s or higher' % constants.REQUIRED_PIL_VERSION)
+        log.error('Required version of Pillow is not installed.')
+        log.error('Required version is at least %s' % constants.REQUIRED_PIL_VERSION)
         sys.exit(1)
 
     except ImportError:
-        log.error('Pillow version %s or higher is required.' % constants.REQUIRED_PIL_VERSION)
-        log.error('No version of Pillow was found on your system.')
+        log.error('No version of Pillow was found.')
         sys.exit(1)
 
     try:
         import numpy
 
     except ImportError:
-        log.error('No version of Numpy was found on your system.')
+        log.error('No version of Numpy was found.')
         sys.exit(1)
 
     try:

@@ -73,8 +73,7 @@ class _PropertiesDialog(Gtk.Dialog):
             '%d pages' % window.imagehandler.get_number_of_pages(),
             '%d comments' %
             window.filehandler.get_number_of_comments(),
-            strings.ARCHIVE_DESCRIPTIONS[window.filehandler.archive_type]
-        )
+            strings.ARCHIVE_DESCRIPTIONS[window.filehandler.archive_type])
         page.set_main_info(main_info)
         self._update_page_secondary_info(page, path)
         page.show_all()
@@ -90,10 +89,7 @@ class _PropertiesDialog(Gtk.Dialog):
         filename = os.path.basename(path)
         page.set_filename(filename)
         width, height = window.imagehandler.get_size()
-        main_info = (
-            '%dx%d px' % (width, height),
-            window.imagehandler.get_mime_name(),
-        )
+        main_info = ('%dx%d px' % (width, height), window.imagehandler.get_mime_name(),)
         page.set_main_info(main_info)
         self._update_page_secondary_info(page, path)
         page.show_all()
@@ -117,10 +113,8 @@ class _PropertiesDialog(Gtk.Dialog):
 
         secondary_info.extend((
             ('Size', tools.format_byte_size(stats.st_size)),
-            ('Accessed', time.strftime('%Y-%m-%d, %H:%M:%S',
-                                       time.localtime(stats.st_atime))),
-            ('Modified', time.strftime('%Y-%m-%d, %H:%M:%S',
-                                       time.localtime(stats.st_mtime))),
+            ('Accessed', time.strftime('%Y-%m-%d, %H:%M:%S', time.localtime(stats.st_atime))),
+            ('Modified', time.strftime('%Y-%m-%d, %H:%M:%S', time.localtime(stats.st_mtime))),
             ('Permissions', oct(stat.S_IMODE(stats.st_mode))),
             ('Owner', uid)
         ))

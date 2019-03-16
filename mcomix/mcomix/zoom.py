@@ -16,7 +16,6 @@ MAX_USER_ZOOM_LOG = 12
 
 class ZoomModel(object):
     """ Handles zoom and fit modes. """
-
     def __init__(self):
         #: User zoom level.
         self._user_zoom_log = IDENTITY_ZOOM_LOG
@@ -26,8 +25,7 @@ class ZoomModel(object):
         self._scale_up = False
 
     def set_fit_mode(self, fitmode):
-        if fitmode < constants.ZOOM_MODE_BEST or \
-                fitmode > constants.ZOOM_MODE_SIZE:
+        if fitmode < constants.ZOOM_MODE_BEST or fitmode > constants.ZOOM_MODE_SIZE:
             raise ValueError('No fit mode for id %d.' % fitmode)
         self._fitmode = fitmode
 
@@ -85,8 +83,7 @@ class ZoomModel(object):
         user_scale = 2 ** (self._user_zoom_log / USER_ZOOM_LOG_SCALE1)
         res_scales = [preferred_scales[i] * (user_scale if not do_not_transform[i] else IDENTITY_ZOOM)
                       for i in range(len(preferred_scales))]
-        return tuple(map(lambda size, scale: tuple(_scale_image_size(size, scale)),
-                         image_sizes, res_scales))
+        return tuple(map(lambda size, scale: tuple(_scale_image_size(size, scale)), image_sizes, res_scales))
 
     @staticmethod
     def _preferred_scale(image_size, limits, distribution_axis):
@@ -132,8 +129,7 @@ class ZoomModel(object):
         return result
 
     @staticmethod
-    def _scale_distributed(sizes, axis, max_size, allow_upscaling,
-                           do_not_transform):
+    def _scale_distributed(sizes, axis, max_size, allow_upscaling, do_not_transform):
         """ Calculates scales for a list of boxes that are distributed along a
         given axis (without any gaps). If the resulting scales are applied to
         their respective boxes, their new total size along axis will be as close
@@ -173,8 +169,7 @@ class ZoomModel(object):
             # Shortcut: If the size cannot be changed, accept the original size.
             if do_not_transform[i]:
                 total_axis_size += this_size[axis]
-                scaling_data[i] = [IDENTITY_ZOOM, IDENTITY_ZOOM, False,
-                                   IDENTITY_ZOOM, 0.0]
+                scaling_data[i] = [IDENTITY_ZOOM, IDENTITY_ZOOM, False, IDENTITY_ZOOM, 0.0]
                 continue
             # Initial guess: The current scale works for all tuples.
             ideal = tools.scale(this_size, scale)
@@ -196,8 +191,7 @@ class ZoomModel(object):
             else:
                 forced_scale = None
                 forced_vol_err = None
-            scaling_data[i] = [local_scale, ideal, can_be_downscaled,
-                               forced_scale, forced_vol_err]
+            scaling_data[i] = [local_scale, ideal, can_be_downscaled, forced_scale, forced_vol_err]
         # Now we need to find at most total_axis_size - max_size occasions to
         # scale down some tuples so the whole thing would fit into max_size. If
         # we are lucky, there will be no gaps at the end (or at least fewer gaps

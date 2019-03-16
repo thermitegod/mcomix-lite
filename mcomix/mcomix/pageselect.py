@@ -10,9 +10,7 @@ from mcomix.worker_thread import WorkerThread
 
 
 class Pageselector(Gtk.Dialog):
-    """The Pageselector takes care of the popup page selector
-    """
-
+    """The Pageselector takes care of the popup page selector"""
     def __init__(self, window):
         self._window = window
         super(Pageselector, self).__init__(title='Go to page...', modal=True, destroy_with_parent=True)
@@ -41,12 +39,10 @@ class Pageselector(Gtk.Dialog):
         self._pages_label.set_alignment(0, 0.5)
 
         self._image_preview = Gtk.Image()
-        self._image_preview.set_size_request(
-                prefs['thumbnail size'], prefs['thumbnail size'])
+        self._image_preview.set_size_request(prefs['thumbnail size'], prefs['thumbnail size'])
 
         self.connect('configure-event', self._size_changed_cb)
-        self.set_size_request(prefs['pageselector width'],
-                              prefs['pageselector height'])
+        self.set_size_request(prefs['pageselector width'], prefs['pageselector height'])
 
         # Group preview image and page selector next to each other
         preview_box = Gtk.HBox()
@@ -120,8 +116,7 @@ class Pageselector(Gtk.Dialog):
         A transparent image will be used if the page is not yet available. """
         page, width, height = params
 
-        pixbuf = self._window.imagehandler.get_thumbnail(page,
-                                                         width=width, height=height, nowait=True)
+        pixbuf = self._window.imagehandler.get_thumbnail(page, width=width, height=height, nowait=True)
         self._thumbnail_finished(page, pixbuf)
 
     @callback.Callback

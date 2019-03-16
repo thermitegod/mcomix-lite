@@ -8,7 +8,6 @@ from mcomix import constants
 
 
 class CursorHandler(object):
-
     def __init__(self, window):
         self._window = window
         self._timer_id = None

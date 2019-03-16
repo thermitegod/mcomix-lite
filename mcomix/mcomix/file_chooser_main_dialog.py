@@ -10,7 +10,6 @@ _main_filechooser_dialog = None
 
 class _MainFileChooserDialog(file_chooser_base_dialog._BaseFileChooserDialog):
     """The normal filechooser dialog used with the "Open" menu item."""
-
     def __init__(self, window):
         super(_MainFileChooserDialog, self).__init__()
         self._window = window
@@ -33,8 +32,7 @@ class _MainFileChooserDialog(file_chooser_base_dialog._BaseFileChooserDialog):
     def files_chosen(self, paths):
         if paths:
             try:  # For some reason this fails sometimes (GTK+ bug?)
-                filter_index = self.filechooser.list_filters().index(
-                        self.filechooser.get_filter())
+                filter_index = self.filechooser.list_filters().index(self.filechooser.get_filter())
                 prefs['last filter in main filechooser'] = filter_index
             except:
                 pass

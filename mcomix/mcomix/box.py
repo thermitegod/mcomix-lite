@@ -22,8 +22,7 @@ class Box(object):
             self.position = tuple(position)
             self.size = tuple(size)
         if len(self.position) != len(self.size):
-            raise ValueError('different number of dimensions: ' +
-                             str(len(self.position)) + ' != ' + str(len(self.size)))
+            raise ValueError('different dimensions: ' + str(len(self.position)) + ' != ' + str(len(self.size)))
 
     def __str__(self):
         """ Returns a string representation of this Box. """
@@ -33,8 +32,7 @@ class Box(object):
         """ Two Boxes are said to be equal if and only if the number of
         dimensions, the positions and the sizes of the two Boxes are equal,
         respectively. """
-        return (self.get_position() == other.get_position()) and \
-               (self.get_size() == other.get_size())
+        return (self.get_position() == other.get_position()) and (self.get_size() == other.get_size())
 
     def __len__(self):
         """ Returns the number of dimensions of this Box. """
@@ -89,8 +87,7 @@ class Box(object):
         translated position as specified by delta.
         @param delta: The distance to the position of this Box.
         @return: A new Box as specified above. """
-        return Box(tools.vector_add(self.get_position(), delta),
-                   self.get_size())
+        return Box(tools.vector_add(self.get_position(), delta), self.get_size())
 
     def translate_opposite(self, delta):
         """ Returns a new Box that has the same size as this Box and a
@@ -98,8 +95,7 @@ class Box(object):
         @param delta: The distance to the position of this Box, with opposite
         direction.
         @return: A new Box as specified above. """
-        return Box(tools.vector_sub(self.get_position(), delta),
-                   self.get_size())
+        return Box(tools.vector_sub(self.get_position(), delta), self.get_size())
 
     @staticmethod
     def closest_boxes(point, boxes, orientation=None):
@@ -133,8 +129,7 @@ class Box(object):
                     # If result is small, a simple iteration shouldn't be a
                     # performance issue.
                     for ri in range(len(result)):
-                        c = Box._compare_distance_to_origin(b,
-                                                            boxes[result[ri]], orientation)
+                        c = Box._compare_distance_to_origin(b, boxes[result[ri]], orientation)
                         if c < 0:
                             keep_append_replace = 2
                             break
@@ -188,8 +183,7 @@ class Box(object):
         bp = self.get_position()
         bs = self.get_size()
         for i in range(len(orientation)):
-            result[i] = Box._box_to_center_offset_1d(bs[i] - 1,
-                                                     orientation[i]) + bp[i]
+            result[i] = Box._box_to_center_offset_1d(bs[i] - 1, orientation[i]) + bp[i]
         return result
 
     @staticmethod
@@ -204,8 +198,7 @@ class Box(object):
         @param orientation: The orientation to use.
         @param boxes: The Boxes to examine.
         @return: The index as specified above. """
-        return Box.closest_boxes(self.get_center(orientation), boxes,
-                                 orientation)[0]
+        return Box.closest_boxes(self.get_center(orientation), boxes, orientation)[0]
 
     @staticmethod
     def align_center(boxes, axis, fix, orientation):
@@ -226,8 +219,7 @@ class Box(object):
         for b in boxes:
             s = b.get_size()
             p = list(b.get_position())
-            p[axis] = cp + Box._box_to_center_offset_1d(cs - s[axis],
-                                                        orientation)
+            p[axis] = cp + Box._box_to_center_offset_1d(cs - s[axis], orientation)
             result.append(Box(p, s))
         return result
 
@@ -242,8 +234,8 @@ class Box(object):
         if len(boxes) == 0:
             return []
         result = [None] * len(boxes)
-        initialSum = boxes[fix].get_position()[axis]
-        partial_sum = initialSum
+        initial_sum = boxes[fix].get_position()[axis]
+        partial_sum = initial_sum
         for bi in range(fix, len(boxes)):
             b = boxes[bi]
             s = b.get_size()
@@ -251,7 +243,7 @@ class Box(object):
             p[axis] = partial_sum
             result[bi] = Box(p, s)
             partial_sum += s[axis] + spacing
-        partial_sum = initialSum
+        partial_sum = initial_sum
         for bi in range(fix - 1, -1, -1):
             b = boxes[bi]
             s = b.get_size()
@@ -275,8 +267,7 @@ class Box(object):
             c = size[i]
             v = viewport_size[i]
             result_size[i] = max(c, v)
-            result_position[i] = Box._box_to_center_offset_1d(c - result_size[i],
-                                                              orientation[i]) + position[i]
+            result_position[i] = Box._box_to_center_offset_1d(c - result_size[i], orientation[i]) + position[i]
         return Box(result_position, result_size)
 
     @staticmethod

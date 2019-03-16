@@ -4,7 +4,7 @@
 
 from gi.repository import GObject, Gdk, GdkPixbuf, Gtk
 
-from mcomix import constants, image_tools, keybindings, keybindings_editor, message_dialog, preferences_page
+from mcomix import constants, keybindings, keybindings_editor, message_dialog, preferences_page
 from mcomix.preferences import prefs
 
 _dialog = None
@@ -116,7 +116,7 @@ class _PreferencesDialog(Gtk.Dialog):
         page.add_row(self._create_pref_check_button(
                 'Use smart scrolling',
                 'smart scroll',
-                'The space key and mouse wheel will scroll up, down and sideways to follow the flow of a comic book'))
+                'The space key and mouse wheel will scroll up, down, and sideways to follow the flow of a comic book'))
 
         page.add_row(self._create_pref_check_button(
                 'Flip pages when scrolling off the edges of the page',
@@ -481,7 +481,7 @@ class _PreferencesDialog(Gtk.Dialog):
         box.pack_start(sortkey_box, True, True, 0)
         box.pack_start(sortorder_box, True, True, 0)
 
-        label = 'Natural order, i.e. 1, 2, ..., 10. Literal order uses standard C sorting, i.e. 1, 2, 34, 5.'
+        label = 'Natural order, i.e. 1, 2, ..., 10.\nLiteral order, use standard C sorting, i.e. 1, 2, 34, 5.'
         sortkey_box.set_tooltip_text(label)
         sortorder_box.set_tooltip_text(label)
 
@@ -801,16 +801,9 @@ class _PreferencesDialog(Gtk.Dialog):
             prefs[preference] = default
             chooser.set_label(prefs[preference] or '(default)')
             return
-        dialog = Gtk.FileChooserDialog(
-                title='Please choose a folder',
-                action=Gtk.FileChooserAction.SELECT_FOLDER
-        )
+        dialog = Gtk.FileChooserDialog(title='Please choose a folder', action=Gtk.FileChooserAction.SELECT_FOLDER)
         dialog.set_transient_for(self)
-        dialog.add_buttons(
-                Gtk.STOCK_CANCEL,
-                Gtk.ResponseType.CANCEL, 'Select',
-                Gtk.ResponseType.OK
-        )
+        dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, 'Select', Gtk.ResponseType.OK)
 
         response = dialog.run()
         if response == Gtk.ResponseType.OK:

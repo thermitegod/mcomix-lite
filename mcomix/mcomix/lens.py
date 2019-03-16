@@ -141,8 +141,7 @@ class MagnifyingLens(object):
             if image_tools.is_animation(source_pixbufs[i]):
                 continue
             cpos = cb[i].get_position()
-            self._add_subpixbuf(canvas, x - cpos[0], y - cpos[1],
-                                cb[i].get_size(), source_pixbufs[i])
+            self._add_subpixbuf(canvas, x - cpos[0], y - cpos[1], cb[i].get_size(), source_pixbufs[i])
 
         return image_tools.add_border(canvas, 1)
 
@@ -215,22 +214,18 @@ class MagnifyingLens(object):
         if width < 1 or height < 1:
             return
 
-        subpixbuf = source_pixbuf.new_subpixbuf(int(src_x), int(src_y),
-                                                int(width), int(height))
+        subpixbuf = source_pixbuf.new_subpixbuf(int(src_x), int(src_y), int(width), int(height))
         subpixbuf = subpixbuf.scale_simple(
                 int(math.ceil(source_mag * subpixbuf.get_width())),
                 int(math.ceil(source_mag * subpixbuf.get_height())),
                 prefs['scaling quality'])
 
         if rotation == 90:
-            subpixbuf = subpixbuf.rotate_simple(
-                    Gdk.PIXBUF_ROTATE_CLOCKWISE)
+            subpixbuf = subpixbuf.rotate_simple(Gdk.PIXBUF_ROTATE_CLOCKWISE)
         elif rotation == 180:
-            subpixbuf = subpixbuf.rotate_simple(
-                    Gdk.PIXBUF_ROTATE_UPSIDEDOWN)
+            subpixbuf = subpixbuf.rotate_simple(Gdk.PIXBUF_ROTATE_UPSIDEDOWN)
         elif rotation == 270:
-            subpixbuf = subpixbuf.rotate_simple(
-                    Gdk.PIXBUF_ROTATE_COUNTERCLOCKWISE)
+            subpixbuf = subpixbuf.rotate_simple(Gdk.PIXBUF_ROTATE_COUNTERCLOCKWISE)
         if prefs['horizontal flip']:
             subpixbuf = subpixbuf.flip(horizontal=True)
         if prefs['vertical flip']:
@@ -251,5 +246,4 @@ class MagnifyingLens(object):
             subpixbuf = subpixbuf.composite_color_simple(subpixbuf.get_width(), subpixbuf.get_height(),
                                                          GdkPixbuf.InterpType.NEAREST, 255, 8, 0x777777, 0x999999)
 
-        subpixbuf.copy_area(0, 0, subpixbuf.get_width(),
-                            subpixbuf.get_height(), canvas, dest_x, dest_y)
+        subpixbuf.copy_area(0, 0, subpixbuf.get_width(), subpixbuf.get_height(), canvas, dest_x, dest_y)

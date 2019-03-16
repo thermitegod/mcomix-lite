@@ -62,8 +62,7 @@ class Packer(object):
             return
 
         used_names = []
-        pattern = '%%0%dd - %s%%s' % (len(str(len(self._image_files))),
-                                      self._base_name)
+        pattern = '%%0%dd - %s%%s' % (len(str(len(self._image_files))), self._base_name)
 
         for i, path in enumerate(self._image_files):
             filename = pattern % (i + 1, os.path.splitext(path)[1])

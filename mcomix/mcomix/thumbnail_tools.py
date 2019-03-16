@@ -92,7 +92,6 @@ class Thumbnailer(object):
         """ Called every time a thumbnail has been completed.
         <filepath> is the file that was used as source, <pixbuf> is the
         resulting thumbnail. """
-
         pass
 
     def delete(self, filepath):
@@ -115,9 +114,7 @@ class Thumbnailer(object):
             mime = None
         if mime is not None:
             with tempfile.TemporaryDirectory(prefix='mcomix_archive_thumb.') as tmpdir:
-                archive = archive_tools.get_recursive_archive_handler(filepath,
-                                                                      tmpdir,
-                                                                      type=mime)
+                archive = archive_tools.get_recursive_archive_handler(filepath, tmpdir, type=mime)
                 if archive is None:
                     return None, None
                 files = archive.list_contents()
@@ -230,8 +227,7 @@ class Thumbnailer(object):
                 stored_mtime = float(info['Thumb::MTime'])
                 # The source file might no longer exist
                 file_mtime = os.path.isfile(filepath) and os.stat(filepath).st_mtime or stored_mtime
-                return stored_mtime == file_mtime and \
-                       max(*img.size) == max(self.width, self.height)
+                return stored_mtime == file_mtime and max(*img.size) == max(self.width, self.height)
             else:
                 return False
         else:
@@ -255,8 +251,7 @@ class Thumbnailer(object):
         """
         # Ignore MacOSX meta files.
         files = filter(lambda filename:
-                       '__MACOSX' not in os.path.normpath(filename).split(os.sep),
-                       files)
+                       '__MACOSX' not in os.path.normpath(filename).split(os.sep), files)
         # Ignore credit files if possible.
         files = filter(lambda filename:
                        'credit' not in os.path.split(filename)[1].lower(), files)

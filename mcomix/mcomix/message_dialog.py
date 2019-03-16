@@ -10,7 +10,6 @@ from mcomix.preferences import prefs
 
 
 class MessageDialog(Gtk.MessageDialog):
-
     def __init__(self, parent=None, flags=0, message_type=0, buttons=0):
         """ Creates a dialog window.
         @param parent: Parent window
@@ -47,8 +46,7 @@ class MessageDialog(Gtk.MessageDialog):
         @param secondary: Descriptive text.
         """
         if primary:
-            self.set_markup('<span weight="bold" size="larger">' +
-                            primary + '</span>')
+            self.set_markup('<span weight="bold" size="larger">' + primary + '</span>')
         if secondary:
             self.format_secondary_markup(secondary)
 

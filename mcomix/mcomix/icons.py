@@ -12,11 +12,7 @@ def mcomix_icons():
     application icon. """
 
     sizes = ('16x16', '32x32', '48x48')
-    pixbufs = [
-        image_tools.load_pixbuf_data(
-                tools.read_binary('images', size, 'mcomix.png')
-        ) for size in sizes
-    ]
+    pixbufs = [image_tools.load_pixbuf_data(tools.read_binary('images', size, 'mcomix.png'))for size in sizes]
 
     return pixbufs
 

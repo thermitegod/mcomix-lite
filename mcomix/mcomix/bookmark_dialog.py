@@ -17,10 +17,7 @@ class _BookmarksDialog(Gtk.Dialog):
         super(_BookmarksDialog, self).__init__(title='Edit Bookmarks', destroy_with_parent=True)
         self.set_transient_for(window)
 
-        self.add_buttons(
-                Gtk.STOCK_REMOVE, constants.RESPONSE_REMOVE,
-                Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE
-        )
+        self.add_buttons(Gtk.STOCK_REMOVE, constants.RESPONSE_REMOVE, Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
 
         self._bookmarks_store = bookmarks_store
 
@@ -35,9 +32,8 @@ class _BookmarksDialog(Gtk.Dialog):
         scrolled.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         self.vbox.pack_start(scrolled, True, True, 0)
 
-        self._liststore = Gtk.ListStore(GdkPixbuf.Pixbuf, GObject.TYPE_STRING,
-                                        GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING,
-                                        bookmark_menu_item._Bookmark)
+        self._liststore = Gtk.ListStore(GdkPixbuf.Pixbuf, GObject.TYPE_STRING, GObject.TYPE_STRING,
+                                        GObject.TYPE_STRING, GObject.TYPE_STRING, bookmark_menu_item._Bookmark)
 
         self._treeview = Gtk.TreeView(model=self._liststore)
         self._treeview.set_rules_hint(True)
@@ -73,14 +69,10 @@ class _BookmarksDialog(Gtk.Dialog):
         self._date_add_col.set_attributes(cellrenderer_text, text=4)
         self._name_col.set_expand(True)
 
-        self._liststore.set_sort_func(_BookmarksDialog._SORT_TYPE,
-                                      self._sort_model, ('_archive_type', '_name', '_page'))
-        self._liststore.set_sort_func(_BookmarksDialog._SORT_NAME,
-                                      self._sort_model, ('_name', '_page', '_path'))
-        self._liststore.set_sort_func(_BookmarksDialog._SORT_PAGE,
-                                      self._sort_model, ('_page', '_numpages', '_name'))
-        self._liststore.set_sort_func(_BookmarksDialog._SORT_ADDED,
-                                      self._sort_model, ('_date_added',))
+        self._liststore.set_sort_func(_BookmarksDialog._SORT_TYPE, self._sort_model, ('_archive_type', '_name', '_page'))
+        self._liststore.set_sort_func(_BookmarksDialog._SORT_NAME, self._sort_model, ('_name', '_page', '_path'))
+        self._liststore.set_sort_func(_BookmarksDialog._SORT_PAGE, self._sort_model, ('_page', '_numpages', '_name'))
+        self._liststore.set_sort_func(_BookmarksDialog._SORT_ADDED, self._sort_model, ('_date_added',))
 
         self._icon_col.set_sort_column_id(_BookmarksDialog._SORT_TYPE)
         self._name_col.set_sort_column_id(_BookmarksDialog._SORT_NAME)
@@ -150,8 +142,7 @@ class _BookmarksDialog(Gtk.Dialog):
         bookmark2 = treemodel.get_value(iter2, 5)
 
         for field in user_data:
-            result = cmp(getattr(bookmark1, field),
-                         getattr(bookmark2, field))
+            result = cmp(getattr(bookmark1, field), getattr(bookmark2, field))
             if result != 0:
                 return result
 

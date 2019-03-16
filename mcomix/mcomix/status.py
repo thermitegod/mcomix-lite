@@ -39,18 +39,12 @@ class Statusbar(Gtk.EventBox):
 
         actiongroup = Gtk.ActionGroup(name='mcomix-statusbar')
         actiongroup.add_toggle_actions([
-            ('pagenumber', None, 'Show page numbers', None, None,
-             self.toggle_status_visibility),
-            ('filenumber', None, 'Show file numbers', None, None,
-             self.toggle_status_visibility),
-            ('resolution', None, 'Show resolution', None, None,
-             self.toggle_status_visibility),
-            ('rootpath', None, 'Show path', None, None,
-             self.toggle_status_visibility),
-            ('filename', None, 'Show filename', None, None,
-             self.toggle_status_visibility),
-            ('filesize', None, 'Show filesize', None, None,
-             self.toggle_status_visibility)])
+            ('pagenumber', None, 'Show page numbers', None, None, self.toggle_status_visibility),
+            ('filenumber', None, 'Show file numbers', None, None, self.toggle_status_visibility),
+            ('resolution', None, 'Show resolution', None, None, self.toggle_status_visibility),
+            ('rootpath', None, 'Show path', None, None, self.toggle_status_visibility),
+            ('filename', None, 'Show filename', None, None, self.toggle_status_visibility),
+            ('filesize', None, 'Show filesize', None, None, self.toggle_status_visibility)])
         self.ui_manager.insert_action_group(actiongroup, 0)
 
         # Hook mouse release event
@@ -79,7 +73,7 @@ class Statusbar(Gtk.EventBox):
     def set_page_number(self, page, total, this_screen):
         """Update the page number."""
         p = ','.join(str(page+i) for i in range(this_screen))
-        self._page_info = '{} / {}'.format(p,total)
+        self._page_info = '{} / {}'.format(p, total)
 
     def set_file_number(self, fileno, total):
         """Updates the file number (i.e. number of current file/total
@@ -117,7 +111,7 @@ class Statusbar(Gtk.EventBox):
 
     def update(self):
         """Set the statusbar to display the current state."""
-        s = '{0:^{1}}'.format('|',Statusbar.SPACING*2+1)
+        s = '{0:^{1}}'.format('|', Statusbar.SPACING*2+1)
         text = s.join(self._get_status_text())
         self.status.pop(0)
         self.status.push(0, '{1:>{2}}{0}'.format(text, '', Statusbar.SPACING))
@@ -144,7 +138,7 @@ class Statusbar(Gtk.EventBox):
         ]
         p = prefs['statusbar fields']
 
-        return [s for c,s in filter(lambda f:f[0]&p,fields)]
+        return [s for c, s in filter(lambda f:f[0] & p, fields)]
 
     def toggle_status_visibility(self, action, *args):
         """ Called when status entries visibility is to be changed. """
@@ -176,8 +170,7 @@ class Statusbar(Gtk.EventBox):
         """ Triggered when a mouse button is released to open the context
         menu. """
         if event.button == 3:
-            self.ui_manager.get_widget('/Statusbar').popup(None, None, None, None,
-                                                           event.button, event.time)
+            self.ui_manager.get_widget('/Statusbar').popup(None, None, None, None, event.button, event.time)
 
     def _update_sensitivity(self):
         """ Updates the action menu's sensitivity based on user preferences. """

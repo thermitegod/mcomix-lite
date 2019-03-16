@@ -76,8 +76,7 @@ class _EnhanceImageDialog(Gtk.Dialog):
 
         vbox.pack_start(Gtk.Separator.new(Gtk.Orientation.HORIZONTAL), True, True, 0)
 
-        self._autocontrast_button = \
-            Gtk.CheckButton.new_with_mnemonic('_Automatically adjust contrast')
+        self._autocontrast_button = Gtk.CheckButton.new_with_mnemonic('_Automatically adjust contrast')
         self._autocontrast_button.set_tooltip_text('Automatically adjust contrast separately for each color band.')
         vbox.pack_start(self._autocontrast_button, False, False, 2)
         self._autocontrast_button.connect('toggled', self._change_values)
@@ -89,8 +88,7 @@ class _EnhanceImageDialog(Gtk.Dialog):
         self._sharpness_scale.set_value(self._enhancer.sharpness - 1)
         self._autocontrast_button.set_active(self._enhancer.autocontrast)
         self._block = False
-        self._contrast_scale.set_sensitive(
-                not self._autocontrast_button.get_active())
+        self._contrast_scale.set_sensitive(not self._autocontrast_button.get_active())
 
         self._window.imagehandler.page_available += self._on_page_available
         self._window.filehandler.file_closed += self._on_book_close
@@ -134,8 +132,7 @@ class _EnhanceImageDialog(Gtk.Dialog):
         self._enhancer.saturation = self._saturation_scale.get_value() + 1
         self._enhancer.sharpness = self._sharpness_scale.get_value() + 1
         self._enhancer.autocontrast = self._autocontrast_button.get_active()
-        self._contrast_scale.set_sensitive(
-                not self._autocontrast_button.get_active())
+        self._contrast_scale.set_sensitive(not self._autocontrast_button.get_active())
         self._enhancer.signal_update()
 
     def _response(self, dialog, response):

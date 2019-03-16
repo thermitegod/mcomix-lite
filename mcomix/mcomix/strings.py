@@ -22,6 +22,7 @@ AUTHORS = (
     ('Ark', 'MComix developer'),
     ('Benoit Pierre', 'MComix developer'),
 )
+
 TRANSLATORS = (
     ('Emfox Zho', 'Simplified Chinese translation'),
     ('Xie Yanbo', 'Simplified Chinese translation'),
@@ -65,6 +66,7 @@ TRANSLATORS = (
     ('Isratine Citizen', 'Hebrew translation'),
     ('Zygi Mantus', 'Lithuanian translation'),
 )
+
 ARTISTS = (
     ('Victor Castillejo', 'Icon design'),
 )

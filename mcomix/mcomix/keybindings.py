@@ -157,7 +157,7 @@ class _KeybindingManager(object):
 
         self._initialize()
 
-    def register(self, name, bindings, callback, args=[], kwargs={}):
+    def register(self, name, bindings, callback, args=None, kwargs=None):
         """ Registers an action for a predefined keybinding name.
         @param name: Action name, defined in L{BINDING_INFO}.
         @param bindings: List of keybinding strings, as understood
@@ -167,6 +167,13 @@ class _KeybindingManager(object):
         @param args: List of arguments to pass to the callback
         @param kwargs: List of keyword arguments to pass to the callback.
         """
+
+        if args is None:
+            args = []
+
+        if kwargs is None:
+            kwargs = {}
+
         assert name in BINDING_INFO, '"%s" is not a valid keyboard action.' % name
 
         # Load stored keybindings, or fall back to passed arguments
@@ -177,8 +184,7 @@ class _KeybindingManager(object):
         for keycode in keycodes:
             if keycode in self._binding_to_action.keys():
                 if self._binding_to_action[keycode] != name:
-                    log.warning('Keybinding for "%(action)s" overrides hotkey for another action.',
-                                {'action': name})
+                    log.warning('Keybinding for "%(action)s" overrides hotkey for another action.', {'action': name})
                     log.warning('Binding %s overrides %r', keycode, self._binding_to_action[keycode])
             else:
                 self._binding_to_action[keycode] = name
@@ -273,10 +279,7 @@ class _KeybindingManager(object):
         action_to_keys = {}
         for action, bindings in self._action_to_bindings.items():
             if bindings is not None:
-                action_to_keys[action] = [
-                    Gtk.accelerator_name(keyval, modifiers) for
-                    (keyval, modifiers) in bindings
-                ]
+                action_to_keys[action] = [Gtk.accelerator_name(keyval, modifiers) for (keyval, modifiers) in bindings]
         with open(constants.KEYBINDINGS_CONF_PATH, 'w') as fp:
             json.dump(action_to_keys, fp, indent=2)
 
@@ -291,9 +294,7 @@ class _KeybindingManager(object):
 
         for action in BINDING_INFO.keys():
             if action in stored_action_bindings:
-                bindings = [
-                    Gtk.accelerator_parse(keyname)
-                    for keyname in stored_action_bindings[action]]
+                bindings = [Gtk.accelerator_parse(keyname) for keyname in stored_action_bindings[action]]
                 self._action_to_bindings[action] = bindings
                 for binding in bindings:
                     self._binding_to_action[binding] = action

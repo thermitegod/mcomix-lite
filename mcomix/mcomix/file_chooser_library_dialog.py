@@ -12,7 +12,6 @@ _library_filechooser_dialog = None
 
 class _LibraryFileChooserDialog(file_chooser_base_dialog._BaseFileChooserDialog):
     """The filechooser dialog used when adding books to the library."""
-
     def __init__(self, library):
         super(_LibraryFileChooserDialog, self).__init__()
         self.set_transient_for(library)
@@ -35,8 +34,7 @@ class _LibraryFileChooserDialog(file_chooser_base_dialog._BaseFileChooserDialog)
             # there is no solution that I know of, so we'll have to live
             # with it. It only happens the second time a dialog is created
             # though, which is very strange.
-            self.filechooser.set_filter(filters[
-                                            prefs['last filter in library filechooser']])
+            self.filechooser.set_filter(filters[prefs['last filter in library filechooser']])
 
         except Exception:
             self.filechooser.set_filter(filters[0])
@@ -55,8 +53,7 @@ class _LibraryFileChooserDialog(file_chooser_base_dialog._BaseFileChooserDialog)
     def files_chosen(self, paths):
         if paths:
             try:  # For some reason this fails sometimes (GTK+ bug?)
-                filter_index = self.filechooser.list_filters().index(
-                        self.filechooser.get_filter())
+                filter_index = self.filechooser.list_filters().index(self.filechooser.get_filter())
                 prefs['last filter in library filechooser'] = filter_index
 
             except Exception:

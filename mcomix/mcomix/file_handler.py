@@ -119,8 +119,7 @@ class FileHandler(object):
                 return False
             self.file_loading = True
         else:
-            image_files, current_image_index = \
-                self._open_image_files(self.filelist, self._current_file)
+            image_files, current_image_index = self._open_image_files(self.filelist, self._current_file)
             self._archive_opened(image_files)
 
         return True
@@ -149,11 +148,8 @@ class FileHandler(object):
                     current_image_index = 0
             else:
                 self._extractor.extract()
-                last_image_index = self._get_index_for_page(self._start_page,
-                                                            len(image_files),
-                                                            self._current_file)
-                if self._start_page or \
-                        prefs['stored dialog choices'].get('resume-from-last-read-page', False):
+                last_image_index = self._get_index_for_page(self._start_page, len(image_files), self._current_file)
+                if self._start_page or prefs['stored dialog choices'].get('resume-from-last-read-page', False):
                     current_image_index = last_image_index
                 else:
                     # Don't switch to last page yet; since we have not asked
@@ -229,7 +225,7 @@ class FileHandler(object):
 
         if isinstance(path, list) and len(path) == 0:
             # This is a programming error and does not need translation.
-            assert False, "Tried to open an empty list of files."
+            assert False, 'Tried to open an empty list of files.'
 
         elif isinstance(path, list) and len(path) > 0:
             # A list of files was passed - open only these files.
@@ -273,9 +269,7 @@ class FileHandler(object):
         self._tmp_dir = self._tmp_dir_ctx.name
         self._base_path = path
         try:
-            self._condition = self._extractor.setup(self._base_path,
-                                                    self._tmp_dir,
-                                                    self.archive_type)
+            self._condition = self._extractor.setup(self._base_path, self._tmp_dir, self.archive_type)
         except Exception:
             self._condition = None
             raise
@@ -288,17 +282,15 @@ class FileHandler(object):
         files = self._extractor.get_files()
         archive_images = [image for image in files
                           # Remove MacOS meta files from image list
-                          if
-                          image_tools.is_image_file(image) and '__MACOSX' not in os.path.normpath(image).split(os.sep)]
+                          if image_tools.is_image_file(image) and
+                          '__MACOSX' not in os.path.normpath(image).split(os.sep)]
 
         self._sort_archive_images(archive_images)
-        image_files = [os.path.join(self._tmp_dir, f)
-                       for f in archive_images]
+        image_files = [os.path.join(self._tmp_dir, f) for f in archive_images]
 
         comment_files = list(filter(self._comment_re.search, files))
         tools.alphanumeric_sort(comment_files)
-        self._comment_files = [os.path.join(self._tmp_dir, f)
-                               for f in comment_files]
+        self._comment_files = [os.path.join(self._tmp_dir, f) for f in comment_files]
 
         self._name_table = dict(zip(image_files, archive_images))
         self._name_table.update(zip(self._comment_files, comment_files))
@@ -351,14 +343,15 @@ class FileHandler(object):
         dialog = message_dialog.MessageDialog(self._window, Gtk.DialogFlags.MODAL, Gtk.MessageType.INFO,
                                               Gtk.ButtonsType.YES_NO)
         dialog.set_default_response(Gtk.ResponseType.YES)
-        dialog.set_should_remember_choice('resume-from-last-read-page',
-                                          (Gtk.ResponseType.YES, Gtk.ResponseType.NO))
+        dialog.set_should_remember_choice('resume-from-last-read-page', (Gtk.ResponseType.YES, Gtk.ResponseType.NO))
         dialog.set_text(
                 ('Continue reading from page %d?' % last_read_page),
                 ('You stopped reading here on %(date)s, %(time)s. '
                  'If you choose "Yes", reading will resume on page %(page)d. Otherwise, '
                  'the first page will be loaded.') % {'date': read_date.date().strftime('%x'),
-                                                      'time': read_date.time().strftime('%X'), 'page': last_read_page})
+                                                      'time': read_date.time().strftime('%X'),
+                                                      'page': last_read_page})
+
         result = dialog.run()
 
         return result == Gtk.ResponseType.YES
@@ -397,9 +390,7 @@ class FileHandler(object):
         return len(self._comment_files)
 
     def get_comment_text(self, num):
-        """Return the text in comment <num> or None if comment <num> is not
-        readable.
-        """
+        """Return the text in comment <num> or None if comment <num> is not readable"""
         self._wait_on_comment(num)
         with open(self._comment_files[num - 1], 'r') as fd:
             return fd.read()
@@ -430,16 +421,11 @@ class FileHandler(object):
             return None
 
     def get_base_filename(self):
-        """Return the filename of the current base (archive filename or
-        directory name).
-        """
+        """Return the filename of the current base (archive filename or directory name)"""
         return os.path.basename(self.get_path_to_base())
 
     def get_pretty_current_filename(self):
-        """Return a string with the name of the currently viewed file that is
-        suitable for printing.
-        """
-
+        """Return a string with the name of the currently viewed file that is suitable for printing"""
         return self._window.imagehandler.get_pretty_current_filename()
 
     def _open_next_archive(self, *args):
@@ -469,7 +455,8 @@ class FileHandler(object):
         if self.archive_type is not None:
             files = self._file_provider.list_files(file_provider.FileProvider.ARCHIVES)
             absolute_path = os.path.abspath(self._base_path)
-            if absolute_path not in files: return
+            if absolute_path not in files:
+                return
             current_index = files.index(absolute_path)
 
             for path in reversed(files[:current_index]):
@@ -592,8 +579,7 @@ class FileHandler(object):
             return
 
     def _ask_for_files(self, files):
-        """Ask for <files> to be given priority for extraction.
-        """
+        """Ask for <files> to be given priority for extraction"""
         if self.archive_type is None:
             return
 
@@ -608,7 +594,6 @@ class FileHandler(object):
 
     def write_fileinfo_file(self):
         """Write current open file information."""
-
         if self.file_loaded:
             with open(constants.FILEINFO_PICKLE_PATH, 'wb') as config:
                 path = self._window.imagehandler.get_real_path()
@@ -623,7 +608,6 @@ class FileHandler(object):
     @staticmethod
     def read_fileinfo_file():
         """Read last loaded file info from disk."""
-
         fileinfo = None
 
         if os.path.isfile(constants.FILEINFO_PICKLE_PATH):
@@ -631,8 +615,7 @@ class FileHandler(object):
                 with open(constants.FILEINFO_PICKLE_PATH, 'rb') as config:
                     fileinfo = pickle.load(config)
             except Exception as ex:
-                log.error('! Corrupt preferences file "%s", deleting...',
-                          constants.FILEINFO_PICKLE_PATH)
+                log.error('! Corrupt fileinfo file "%s", deleting...', constants.FILEINFO_PICKLE_PATH)
                 log.info('Error was: %s', ex)
                 os.remove(constants.FILEINFO_PICKLE_PATH)
 

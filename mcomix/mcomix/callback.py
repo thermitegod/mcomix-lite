@@ -84,15 +84,13 @@ class CallbackList(object):
                 try:
                     callback(*args, **kwargs)
                 except Exception as e:
-                    log.error('! Callback %(function)r failed: %(error)s',
-                              {'function': callback, 'error': e})
+                    log.error('! Callback %(function)r failed: %(error)s', {'function': callback, 'error': e})
                     log.debug('Traceback:\n%s', traceback.format_exc())
 
     def __callback_deleted(self, obj_ref):
         """ Called whenever one of the callback objects is collected by gc.
         This removes all callback functions registered by the object. """
-        self.__callbacks = filter(lambda callback: callback[0] != obj_ref,
-                                  self.__callbacks)
+        self.__callbacks = filter(lambda callback: callback[0] != obj_ref, self.__callbacks)
 
     def __get_function(self, func):
         """ If <func> is a normal function, return (None, func).

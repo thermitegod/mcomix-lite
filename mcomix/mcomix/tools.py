@@ -8,7 +8,6 @@ import math
 import operator
 import os
 import re
-import sys
 from functools import reduce
 
 from mcomix import constants
@@ -28,9 +27,7 @@ def cmp(x, y):
 def alphanumeric_sort(filenames):
     """Do an in-place alphanumeric sort of the strings in <filenames>,
     such that for an example "1.jpg", "2.jpg", "10.jpg" is a sorted
-    ordering.
-    """
-
+    ordering"""
     def _format_substring(s):
         if s.isdigit():
             return 0, int(s)

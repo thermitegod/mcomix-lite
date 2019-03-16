@@ -8,8 +8,7 @@ import tempfile
 
 from gi.repository import GLib, Gdk, Gtk
 
-from mcomix import archive_packer, constants, edit_comment_area, edit_image_area, file_chooser_simple_dialog, \
-    image_tools, message_dialog
+from mcomix import archive_packer, constants, edit_comment_area, edit_image_area, file_chooser_simple_dialog, image_tools, message_dialog
 from mcomix.preferences import prefs
 
 _dialog = None
@@ -36,8 +35,7 @@ class _EditArchiveDialog(Gtk.Dialog):
         self._save_button = self.add_button(Gtk.STOCK_SAVE_AS, constants.RESPONSE_SAVE_AS)
 
         self._import_button = self.add_button('_Import', constants.RESPONSE_IMPORT)
-        self._import_button.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_ADD,
-                                                               Gtk.IconSize.BUTTON))
+        self._import_button.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_ADD, Gtk.IconSize.BUTTON))
 
         self.set_border_width(4)
         self.resize(770, 600)
@@ -125,8 +123,7 @@ class _EditArchiveDialog(Gtk.Dialog):
 
         self._window.set_cursor(None)
         if fail:
-            dialog = message_dialog.MessageDialog(self._window, 0, Gtk.MessageType.ERROR,
-                                                  Gtk.ButtonsType.CLOSE)
+            dialog = message_dialog.MessageDialog(self._window, 0, Gtk.MessageType.ERROR, Gtk.ButtonsType.CLOSE)
             dialog.set_text('The new archive could not be saved!', 'The original files have not been removed.')
             dialog.run()
 
@@ -134,14 +131,12 @@ class _EditArchiveDialog(Gtk.Dialog):
 
     def _response(self, dialog, response):
         if response == constants.RESPONSE_SAVE_AS:
-            dialog = file_chooser_simple_dialog.SimpleFileChooserDialog(
-                    self, Gtk.FileChooserAction.SAVE)
+            dialog = file_chooser_simple_dialog.SimpleFileChooserDialog(self, Gtk.FileChooserAction.SAVE)
 
             src_path = self.file_handler.get_path_to_base()
 
             dialog.set_current_directory(os.path.dirname(src_path))
-            dialog.set_save_name('%s.cbz' % os.path.splitext(
-                    os.path.basename(src_path))[0])
+            dialog.set_save_name('%s.cbz' % os.path.splitext(os.path.basename(src_path))[0])
             dialog.filechooser.set_extra_widget(Gtk.Label(label='Archives are stored as ZIP files.'))
             dialog.add_archive_filters()
             dialog.run()

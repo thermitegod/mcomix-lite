@@ -6,7 +6,6 @@ from mcomix import box, constants, scrolling, tools
 
 
 class FiniteLayout(object):  # 2D only
-
     def __init__(self, content_sizes, viewport_size, orientation, spacing,
                  wrap_individually, distribution_axis, alignment_axis):
         """ Lays out a finite number of Boxes along the first axis.
@@ -50,8 +49,7 @@ class FiniteLayout(object):  # 2D only
             wrapper_index = 0
         else:
             wrapper_index = index
-        o = tools.vector_opposite(self.orientation) if backwards \
-            else self.orientation
+        o = tools.vector_opposite(self.orientation) if backwards else self.orientation
         new_pos = self.scroller.scroll_smartly(self.wrapper_boxes[wrapper_index],
                                                self.viewport_box, o, max_scroll, axis_map)
         if not new_pos:
@@ -106,8 +104,7 @@ class FiniteLayout(object):  # 2D only
         """ Returns the index of the Box that is said to be the current Box.
         @return: The index of the Box that is said to be the current Box. """
         if self.dirty_current_index:
-            self.current_index = self.viewport_box.current_box_index(
-                    self.orientation, self.content_boxes)
+            self.current_index = self.viewport_box.current_box_index(self.orientation, self.content_boxes)
             self.dirty_current_index = False
         return self.current_index
 
@@ -126,17 +123,13 @@ class FiniteLayout(object):  # 2D only
             content_sizes = tuple(reversed(content_sizes))
         temp_cb_list = tuple(map(box.Box, content_sizes))
         # align to center
-        temp_cb_list = box.Box.align_center(temp_cb_list, alignment_axis, 0,
-                                            orientation[alignment_axis])
+        temp_cb_list = box.Box.align_center(temp_cb_list, alignment_axis, 0, orientation[alignment_axis])
         # distribute
-        temp_cb_list = box.Box.distribute(temp_cb_list, distribution_axis, 0,
-                                          spacing)
+        temp_cb_list = box.Box.distribute(temp_cb_list, distribution_axis, 0, spacing)
         if wrap_individually:
-            temp_wb_list, temp_bb = FiniteLayout._wrap_individually(temp_cb_list,
-                                                                    viewport_size, orientation)
+            temp_wb_list, temp_bb = FiniteLayout._wrap_individually(temp_cb_list, viewport_size, orientation)
         else:
-            temp_wb_list, temp_bb = FiniteLayout._wrap_union(temp_cb_list,
-                                                             viewport_size, orientation)
+            temp_wb_list, temp_bb = FiniteLayout._wrap_union(temp_cb_list, viewport_size, orientation)
         # move to global origin
         bbp = temp_bb.get_position()
         for i in range(len(temp_cb_list)):
@@ -161,8 +154,7 @@ class FiniteLayout(object):  # 2D only
         # calculate (potentially oversized) wrapper Boxes
         temp_wb_list = [None] * len(temp_cb_list)
         for i in range(len(temp_cb_list)):
-            temp_wb_list[i] = temp_cb_list[i].wrapper_box(viewport_size,
-                                                          orientation)
+            temp_wb_list[i] = temp_cb_list[i].wrapper_box(viewport_size, orientation)
         # calculate bounding Box
         temp_bb = box.Box.bounding_box(temp_wb_list)
         return temp_wb_list, temp_bb
@@ -170,6 +162,5 @@ class FiniteLayout(object):  # 2D only
     @staticmethod
     def _wrap_union(temp_cb_list, viewport_size, orientation):
         # calculate bounding Box
-        temp_wb_list = [box.Box.bounding_box(temp_cb_list).wrapper_box(
-                viewport_size, orientation)]
+        temp_wb_list = [box.Box.bounding_box(temp_cb_list).wrapper_box(viewport_size, orientation)]
         return temp_wb_list, temp_wb_list[0]

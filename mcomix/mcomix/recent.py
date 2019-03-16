@@ -10,7 +10,6 @@ from mcomix import archive_tools, image_tools, log, preferences
 
 
 class RecentFilesMenu(Gtk.RecentChooserMenu):
-
     def __init__(self, ui, window):
         super(RecentFilesMenu, self).__init__()
         self._window = window
@@ -49,15 +48,13 @@ class RecentFilesMenu(Gtk.RecentChooserMenu):
     def add(self, path):
         if not preferences.prefs['store recent file info']:
             return
-        uri = ('file://' + pathname2url(path))
-        self._manager.add_item(uri)
+        self._manager.add_item(('file://' + pathname2url(path)))
 
     def remove(self, path):
         if not preferences.prefs['store recent file info']:
             return
-        uri = ('file://' + pathname2url(path))
         try:
-            self._manager.remove_item(uri)
+            self._manager.remove_item(('file://' + pathname2url(path)))
         except glib.GError:
             # Could not remove item
             pass

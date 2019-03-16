@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 
-"""MComix - GTK Comic Book Viewer
-"""
-
 # -------------------------------------------------------------------------
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

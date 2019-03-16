@@ -8,12 +8,10 @@ from mcomix import box, constants, tools
 
 
 class Scrolling(object):
-
     def __init__(self):
         self.clear_cache()
 
-    def scroll_smartly(self, content_box, viewport_box, orientation, max_scroll,
-                       axis_map=None):
+    def scroll_smartly(self, content_box, viewport_box, orientation, max_scroll, axis_map=None):
         """ Returns a new viewport position when reading forwards using
         the given orientation. If there is no space left to go, the empty
         list is returned. Note that all params are lists of ints (except
@@ -41,9 +39,8 @@ class Scrolling(object):
         # Remap axes
         if axis_map is not None:
             content_size, viewport_size, viewport_position, orientation, \
-            max_scroll = Scrolling._map_remap_axes([content_size,
-                                                    viewport_size, viewport_position, orientation, max_scroll],
-                                                   axis_map)
+            max_scroll = Scrolling._map_remap_axes([content_size, viewport_size, viewport_position,
+                                                    orientation, max_scroll], axis_map)
 
         result = list(viewport_position)
         carry = True
@@ -135,14 +132,12 @@ class Scrolling(object):
 
         # Undo axis remapping, if any
         if axis_map is not None:
-            result = Scrolling._remap_axes(result,
-                                           Scrolling._inverse_axis_map(axis_map))
+            result = Scrolling._remap_axes(result, Scrolling._inverse_axis_map(axis_map))
 
         return tools.vector_add(result, offset)
 
     @staticmethod
-    def scroll_to_predefined(content_box, viewport_box, orientation,
-                             destination):
+    def scroll_to_predefined(content_box, viewport_box, orientation, destination):
         """ Returns a new viewport position when scrolling towards a
         predefined destination. Note that all params are lists of integers
         where each index corresponds to one dimension.
@@ -177,10 +172,10 @@ class Scrolling(object):
             c = content_size[i]
             v = viewport_size[i]
             invisible_size = c - v
-            result[i] = content_position[i] + (box.Box._box_to_center_offset_1d(
-                    invisible_size, o) if d == constants.SCROLL_TO_CENTER
+            result[i] = content_position[i] + (box.Box._box_to_center_offset_1d(invisible_size, o)
+                                               if d == constants.SCROLL_TO_CENTER
                                                else invisible_size if d == 1
-            else 0)  # if d == -1
+                                               else 0)  # if d == -1
         return result
 
     def _cached_bs(self, num, denom, half_up):
@@ -195,8 +190,7 @@ class Scrolling(object):
         if (self._cache0[0] != num or
                 self._cache0[1] != denom or
                 self._cache0[2] != half_up):
-            self._cache0 = (num, denom, half_up,
-                            Scrolling._bresenham_sums(num, denom, half_up))
+            self._cache0 = (num, denom, half_up, Scrolling._bresenham_sums(num, denom, half_up))
         return self._cache0[3]
 
     def clear_cache(self):

@@ -19,7 +19,6 @@ class MainWindow(Gtk.Window):
     """The main window, is created at start and terminates the
     program when closed.
     """
-
     def __init__(self, fullscreen=False, is_slideshow=slideshow,
                  show_library=False, manga_mode=False, double_page=False,
                  zoom_mode=None, open_path=None, open_page=1):
@@ -91,8 +90,7 @@ class MainWindow(Gtk.Window):
 
         # This is a hack to get the focus away from the toolbar so that
         # we don't activate it with space or some other key (alternative?)
-        self.toolbar.set_focus_child(
-                self.uimanager.get_widget('/Tool/expander'))
+        self.toolbar.set_focus_child(self.uimanager.get_widget('/Tool/expander'))
         self.toolbar.set_style(Gtk.ToolbarStyle.ICONS)
         self.toolbar.set_icon_size(Gtk.IconSize.LARGE_TOOLBAR)
 
@@ -223,16 +221,11 @@ class MainWindow(Gtk.Window):
         self.connect('configure_event', self._event_handler.resize_event)
         self.connect('window-state-event', self._event_handler.window_state_event)
 
-        self._main_layout.connect('button_release_event',
-                                  self._event_handler.mouse_release_event)
-        self._main_layout.connect('scroll_event',
-                                  self._event_handler.scroll_wheel_event)
-        self._main_layout.connect('button_press_event',
-                                  self._event_handler.mouse_press_event)
-        self._main_layout.connect('motion_notify_event',
-                                  self._event_handler.mouse_move_event)
-        self._main_layout.connect('drag_data_received',
-                                  self._event_handler.drag_n_drop_event)
+        self._main_layout.connect('button_release_event', self._event_handler.mouse_release_event)
+        self._main_layout.connect('scroll_event', self._event_handler.scroll_wheel_event)
+        self._main_layout.connect('button_press_event', self._event_handler.mouse_press_event)
+        self._main_layout.connect('motion_notify_event', self._event_handler.mouse_move_event)
+        self._main_layout.connect('drag_data_received', self._event_handler.drag_n_drop_event)
 
         self.uimanager.set_sensitivities()
         self.show()
@@ -287,8 +280,7 @@ class MainWindow(Gtk.Window):
         # FIXME: what if scroll_to is different?
         if not self._waiting_for_redraw:  # Don't stack up redraws.
             self._waiting_for_redraw = True
-            GLib.idle_add(self._draw_image, scroll_to,
-                          priority=GLib.PRIORITY_HIGH_IDLE)
+            GLib.idle_add(self._draw_image, scroll_to, priority=GLib.PRIORITY_HIGH_IDLE)
 
     def _update_toggle_preference(self, preference, toggleaction):
         """ Update "toggle" widget corresponding <preference>.
@@ -348,8 +340,7 @@ class MainWindow(Gtk.Window):
             pixbuf_count = 2 if self.displayed_double() else 1  # XXX limited to at most 2 pages
             pixbuf_list = list(self.imagehandler.get_pixbufs(pixbuf_count))
             do_not_transform = [image_tools.disable_transform(x) for x in pixbuf_list]
-            size_list = [[pixbuf.get_width(), pixbuf.get_height()]
-                         for pixbuf in pixbuf_list]
+            size_list = [[pixbuf.get_width(), pixbuf.get_height()] for pixbuf in pixbuf_list]
 
             if self.is_manga_mode:
                 orientation = constants.MANGA_ORIENTATION
@@ -361,8 +352,7 @@ class MainWindow(Gtk.Window):
             # - apply automatic rotation (size based) on whole page
             # - apply manual rotation on whole page
             if prefs['auto rotate from exif']:
-                rotation_list = [image_tools.get_implied_rotation(pixbuf)
-                                 for pixbuf in pixbuf_list]
+                rotation_list = [image_tools.get_implied_rotation(pixbuf) for pixbuf in pixbuf_list]
             else:
                 rotation_list = [0] * len(pixbuf_list)
             virtual_size = [0, 0]
@@ -371,8 +361,7 @@ class MainWindow(Gtk.Window):
                     size_list[i].reverse()
                 size = size_list[i]
                 virtual_size[distribution_axis] += size[distribution_axis]
-                virtual_size[alignment_axis] = max(virtual_size[alignment_axis],
-                                                   size[alignment_axis])
+                virtual_size[alignment_axis] = max(virtual_size[alignment_axis], size[alignment_axis])
             rotation = self._get_size_rotation(*virtual_size)
             rotation = (rotation + prefs['rotation']) % 360
             if rotation in (90, 270):
@@ -401,8 +390,7 @@ class MainWindow(Gtk.Window):
                     break
                 viewport_size = new_viewport_size
                 zoom_dummy_size = list(viewport_size)
-                dasize = zoom_dummy_size[distribution_axis] - \
-                         self._spacing * (pixbuf_count - 1)
+                dasize = zoom_dummy_size[distribution_axis] - self._spacing * (pixbuf_count - 1)
                 if dasize <= 0:
                     dasize = 1
                 zoom_dummy_size[distribution_axis] = dasize
@@ -451,8 +439,7 @@ class MainWindow(Gtk.Window):
             self._main_layout.set_size(*union_scaled_size)
             content_boxes = self.layout.get_content_boxes()
             for i in range(pixbuf_count):
-                self._main_layout.move(self.images[i],
-                                       *content_boxes[i].get_position())
+                self._main_layout.move(self.images[i], *content_boxes[i].get_position())
 
             for i in range(pixbuf_count):
                 self.images[i].show()
@@ -510,9 +497,7 @@ class MainWindow(Gtk.Window):
             number_of_pages = 1
             filename = self.imagehandler.get_page_filename()
             filesize = self.imagehandler.get_page_filesize()
-        self.statusbar.set_page_number(page_number,
-                                       self.imagehandler.get_number_of_pages(),
-                                       number_of_pages)
+        self.statusbar.set_page_number(page_number, self.imagehandler.get_number_of_pages(), number_of_pages)
         self.statusbar.set_filename(filename)
         self.statusbar.set_root(self.filehandler.get_base_filename())
         self.statusbar.set_filesize(filesize)
@@ -799,8 +784,7 @@ class MainWindow(Gtk.Window):
         """ Returns True if the current images do not fit into the viewport. """
         if self.layout is None:
             return False
-        return not all(tools.smaller_or_equal(self.layout.get_union_box().get_size(),
-                                              self.get_visible_area_size()))
+        return not all(tools.smaller_or_equal(self.layout.get_union_box().get_size(), self.get_visible_area_size()))
 
     def scroll_with_flipping(self, x, y):
         """Returns true if able to scroll without flipping to
@@ -864,8 +848,8 @@ class MainWindow(Gtk.Window):
         self._scroll[1].queue_resize_no_redraw()
 
     def update_layout_position(self):
-        self.layout.set_viewport_position(
-                (int(round(self._hadjust.get_value())), int(round(self._vadjust.get_value()))))
+        self.layout.set_viewport_position((int(round(self._hadjust.get_value())),
+                                           int(round(self._vadjust.get_value()))))
 
     def clear(self):
         """Clear the currently displayed data (i.e. "close" the file)."""
@@ -972,8 +956,7 @@ class MainWindow(Gtk.Window):
         save_dialog.set_current_name(suggested_name.encode('utf-8'))
 
         if save_dialog.run() == Gtk.ResponseType.ACCEPT and save_dialog.get_filename():
-            shutil.copy(self.imagehandler.get_path_to_page(),
-                        save_dialog.get_filename())
+            shutil.copy(self.imagehandler.get_path_to_page(), save_dialog.get_filename())
 
         save_dialog.destroy()
 
@@ -1111,7 +1094,6 @@ class MainWindow(Gtk.Window):
             prefs['window y'],
             prefs['window width'],
             prefs['window height'],
-
         ) = self.get_window_geometry()
 
     def restore_window_geometry(self):

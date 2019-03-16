@@ -63,8 +63,7 @@ class ThumbnailViewBase(object):
         # Read ahead/back and start caching a few more icons. Currently invisible
         # icons are always cached only after the visible icons have been completed.
         additional = (end - start) // 2
-        required = tuple(range(start, end + additional + 1)) + \
-                   tuple(range(max(0, start - additional), start))
+        required = tuple(range(start, end + additional + 1)) + tuple(range(max(0, start - additional), start))
         model = self.get_model()
         # Filter invalid paths.
         required = [path for path in required if 0 <= path < len(model)]
@@ -73,9 +72,7 @@ class ThumbnailViewBase(object):
             self._thread.clear_orders()
             for path in required:
                 iter = model.get_iter(path)
-                uid, generated = model.get(iter,
-                                           self._uid_column,
-                                           self._status_column)
+                uid, generated = model.get(iter, self._uid_column, self._status_column)
                 # Do not queue again if thumbnail was already created.
                 if not generated:
                     pixbufs_needed.append((uid, iter))

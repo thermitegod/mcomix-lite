@@ -8,10 +8,7 @@ from mcomix import image_tools, labels
 
 
 class _Page(Gtk.ScrolledWindow):
-    """A page to put in the Gtk.Notebook. Contains info about a file (an
-    image or an archive.)
-    """
-
+    """A page to put in the Gtk.Notebook. Contains info about a file (an image or an archive.)"""
     def __init__(self):
         super(_Page, self).__init__()
         self.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
@@ -54,9 +51,7 @@ class _Page(Gtk.ScrolledWindow):
         self._thumb.set_from_pixbuf(pixbuf)
 
     def set_filename(self, filename):
-        """Set the filename to be displayed to <filename>. Call this before
-        set_main_info().
-        """
+        """Set the filename to be displayed to <filename>. Call this before set_main_info()"""
         label = labels.BoldLabel(filename)
         label.set_alignment(0, 0.5)
         label.set_selectable(True)
@@ -65,9 +60,7 @@ class _Page(Gtk.ScrolledWindow):
                                  0)  # Just to add space (better way?)
 
     def set_main_info(self, info):
-        """Set the information in the main info box (below the filename) to
-        the values in the sequence <info>.
-        """
+        """Set the information in the main info box (below the filename) to the values in the sequence <info>"""
         for text in info:
             label = Gtk.Label(label=text)
             label.set_alignment(0, 0.5)
@@ -76,8 +69,7 @@ class _Page(Gtk.ScrolledWindow):
 
     def set_secondary_info(self, info):
         """Set the information below the main info box to the values in the
-        sequence <info>. Each entry in info should be a tuple (desc, value).
-        """
+        sequence <info>. Each entry in info should be a tuple (desc, value)"""
         left_box = Gtk.VBox(homogeneous=True, spacing=8)
         right_box = Gtk.VBox(homogeneous=True, spacing=8)
         self._extrabox.pack_start(left_box, False, False, 0)

@@ -126,10 +126,7 @@ class Extractor(object):
                     fn = self._extract_all_files
                 else:
                     fn = self._extract_file
-                self._extract_thread = WorkerThread(fn,
-                                                    name='extract',
-                                                    max_threads=max_threads,
-                                                    unique_orders=True)
+                self._extract_thread = WorkerThread(fn, name='extract', max_threads=max_threads, unique_orders=True)
                 self._extract_started = True
             else:
                 self._extract_thread.clear_orders()
@@ -191,7 +188,6 @@ class Extractor(object):
         mark the file as "ready", then signal a notify() on the Condition
         returned by setup().
         """
-
         try:
             log.debug('Extracting from "%s" to "%s": "%s"', self._src, self._dst, name)
             self._archive.extract(name, self._dst)

@@ -83,8 +83,7 @@ prefs = {
     'lib window width': 500,
     'lib sort key': constants.SORT_PATH,
     'lib sort order': constants.SORT_ASCENDING,
-    'statusbar fields': constants.STATUS_PAGE | constants.STATUS_RESOLUTION | \
-                        constants.STATUS_PATH | constants.STATUS_FILENAME | constants.STATUS_FILESIZE,
+    'statusbar fields': constants.STATUS_PAGE | constants.STATUS_RESOLUTION | constants.STATUS_PATH | constants.STATUS_FILENAME | constants.STATUS_FILESIZE,
     'max threads': 32,
     'max extract threads': 16,
     'wrap mouse scroll': False,

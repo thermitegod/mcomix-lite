@@ -376,12 +376,10 @@ class ImageHandler(object):
             return None
 
         try:
-            thumbnailer = thumbnail_tools.Thumbnailer(store_on_disk=create,
-                                                      size=(width, height))
+            thumbnailer = thumbnail_tools.Thumbnailer(store_on_disk=create, size=(width, height))
             return thumbnailer.thumbnail(path)
         except Exception:
-            log.debug('Failed to create thumbnail for image "%s":\n%s',
-                      path, traceback.format_exc())
+            log.debug('Failed to create thumbnail for image "%s":\n%s', path, traceback.format_exc())
             return image_tools.MISSING_IMAGE_ICON
 
     def _wait_on_page(self, page, check_only=False):
@@ -429,11 +427,9 @@ class ImageHandler(object):
         previous_page = page_list[0:page_width]
         del page_list[0:page_width]
         page_list[2 * page_width:2 * page_width] = previous_page
-        page_list = [index for index in page_list
-                     if 0 <= index < len(self._image_files)]
+        page_list = [index for index in page_list if 0 <= index < len(self._image_files)]
 
-        log.debug('Ask for priority extraction around page %u: %s',
-                  page, ' '.join([str(n + 1) for n in page_list]))
+        log.debug('Ask for priority extraction around page %u: %s', page, ' '.join([str(n + 1) for n in page_list]))
 
         for index in page_list:
             if index not in self._available_images:

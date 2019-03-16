@@ -93,8 +93,7 @@ class __BookmarksStore(object):
             elif response not in (Gtk.ResponseType.YES, Gtk.ResponseType.NO):
                 return
 
-        self.add_bookmark_by_values(name, path, page, numpages,
-                                    archive_type, date_added)
+        self.add_bookmark_by_values(name, path, page, numpages, archive_type, date_added)
 
     def clear_bookmarks(self):
         """Remove all bookmarks from the list."""
@@ -178,7 +177,7 @@ class __BookmarksStore(object):
         dialog.set_text(
                 ('The current book already contains marked pages. '
                  'Do you want to replace them with a new bookmark on page %d? \n\n') % new_page +
-                'Selecting "No" will create a new bookmark without affecting the other bookmarks.')
+                'Selecting "No" will create a new bookmark.')
 
         return dialog.run()
 

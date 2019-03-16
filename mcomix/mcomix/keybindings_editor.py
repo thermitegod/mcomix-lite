@@ -17,10 +17,8 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
 
         self.keymanager = keymanager
 
-        accel_column_num = max([
-            len(self.keymanager.get_bindings_for_action(action))
-            for action in keybindings.BINDING_INFO.keys()
-        ])
+        accel_column_num = max([len(self.keymanager.get_bindings_for_action(action))
+                                for action in keybindings.BINDING_INFO.keys()])
         accel_column_num = self.accel_column_num = max([3, accel_column_num])
 
         # Human name, action name, true value, shortcut 1, shortcut 2, ...
@@ -57,21 +55,17 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
         """ Initializes the model from data provided by the keybinding
         manager. """
         self.treestore.clear()
-        section_order = list(set(d['group']
-                                 for d in keybindings.BINDING_INFO.values()))
+        section_order = list(set(d['group'] for d in keybindings.BINDING_INFO.values()))
         section_order.sort()
         section_parent_map = {}
         for section_name in section_order:
             row = [section_name, None, False]
             row.extend([None, ] * self.accel_column_num)
-            section_parent_map[section_name] = self.treestore.append(
-                    None, row
-            )
+            section_parent_map[section_name] = self.treestore.append(None, row)
 
         action_treeiter_map = self.action_treeiter_map = {}
         # Sort actions by action name
-        actions = sorted(keybindings.BINDING_INFO.items(),
-                         key=lambda item: item[1]['title'])
+        actions = sorted(keybindings.BINDING_INFO.items(), key=lambda item: item[1]['title'])
         for action_name, action_data in actions:
             title = action_data['title']
             group_name = action_data['group']
@@ -83,10 +77,7 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
 
             row = [title, action_name, True]
             row.extend(acc_list)
-            treeiter = self.treestore.append(
-                    section_parent_map[group_name],
-                    row
-            )
+            treeiter = self.treestore.append(section_parent_map[group_name], row)
             action_treeiter_map[action_name] = treeiter
 
     def get_on_accel_edited(self, column):
@@ -112,8 +103,7 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
 
             # updating gtk accelerator for label in menu
             if self.keymanager.get_bindings_for_action(action_name)[0] == (accel_key, accel_mods):
-                Gtk.AccelMap.change_entry('<Actions>/mcomix-main/%s' % action_name,
-                                          accel_key, accel_mods, True)
+                Gtk.AccelMap.change_entry('<Actions>/mcomix-main/%s' % action_name, accel_key, accel_mods, True)
 
         return on_accel_edited
 

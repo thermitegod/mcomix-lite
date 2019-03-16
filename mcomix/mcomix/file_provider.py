@@ -26,8 +26,7 @@ def get_file_provider(filelist):
         else:
             return PreDefinedFileProvider(filelist)
 
-    elif (preferences.prefs['auto load last file']
-          and os.path.isfile(preferences.prefs['path to last file'])):
+    elif preferences.prefs['auto load last file'] and os.path.isfile(preferences.prefs['path to last file']):
         return OrderedFileProvider(preferences.prefs['path to last file'])
 
     else:

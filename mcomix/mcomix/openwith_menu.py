@@ -21,9 +21,7 @@ class OpenWithMenu(Gtk.Menu):
         self._openwith_manager = _openwith_manager
 
         actiongroup = Gtk.ActionGroup(name='mcomix-openwith')
-        actiongroup.add_actions([
-            ('edit_commands', Gtk.STOCK_EDIT, '_Edit commands',
-             None, None, self._edit_commands)])
+        actiongroup.add_actions([('edit_commands', Gtk.STOCK_EDIT, '_Edit commands', None, None, self._edit_commands)])
 
         action = actiongroup.get_action('edit_commands')
         action.set_accel_group(ui.get_accel_group())
@@ -82,8 +80,7 @@ class OpenWithMenu(Gtk.Menu):
         sure the dialog isn't opened more than once. """
         global _openwith_edit_diag
         if not _openwith_edit_diag:
-            _openwith_edit_diag = openwith.OpenWithEditor(self._window,
-                                                          self._openwith_manager)
+            _openwith_edit_diag = openwith.OpenWithEditor(self._window, self._openwith_manager)
             _openwith_edit_diag.connect_after('response', self._dialog_closed)
 
         _openwith_edit_diag.show_all()

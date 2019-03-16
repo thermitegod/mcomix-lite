@@ -44,10 +44,8 @@ class OnScreenDisplay(object):
 
         # Calculate surrounding box
         layout_width, layout_height = layout.get_pixel_size()
-        pos_x = max(int(max_width // 2) - int(layout_width // 2) +
-                    int(self._window._hadjust.get_value()), 0)
-        pos_y = max(int(max_height) - int(layout_height * 1.1) +
-                    int(self._window._vadjust.get_value()), 0)
+        pos_x = max(int(max_width // 2) - int(layout_width // 2) + int(self._window._hadjust.get_value()), 0)
+        pos_y = max(int(max_height) - int(layout_height * 1.1) + int(self._window._vadjust.get_value()), 0)
 
         rect = (pos_x - 10, pos_y - 20,
                 layout_width + 20, layout_height + 20)
@@ -135,8 +133,7 @@ class OnScreenDisplay(object):
         cr.fill()
         extents = layout.get_extents()[0]
         cr.set_source_rgb(*image_tools.GTK_GDK_COLOR_WHITE.to_floats())
-        cr.translate(rect[0] + extents.x / Pango.SCALE,
-                     rect[1] + extents.y / Pango.SCALE)
+        cr.translate(rect[0] + extents.x / Pango.SCALE, rect[1] + extents.y / Pango.SCALE)
         PangoCairo.update_layout(cr, layout)
         PangoCairo.show_layout(cr, layout)
 
