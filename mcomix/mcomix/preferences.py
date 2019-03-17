@@ -3,7 +3,7 @@
 import json
 import os
 
-from mcomix import constants
+from mcomix import constants, log
 
 # All preferences are stored here.
 prefs = {
@@ -97,28 +97,29 @@ prefs = {
     'animation background': True,
     'animation transform': True,
     'temporary directory': None,
+    'osd max font size': 16,  # hard limited from 8 to 60
+    'osd color': [1, 1, 1, 1],
+    'osd bg color': [0, 0, 0, 1],
+    'osd timeout': 3.0,  # in seconds, hard limited from 0.5 to 30.0
 }
 
 
 def read_preferences_file():
-    saved_prefs = None
+    saved_prefs = {}
 
     if os.path.isfile(constants.PREFERENCE_PATH):
         try:
             with open(constants.PREFERENCE_PATH, 'r') as config_file:
-                saved_prefs = json.load(config_file)
+                saved_prefs.update(json.load(config_file))
         except:
-            corrupt_name = '%s.broken' % constants.PREFERENCE_PATH
-            print('! Corrupt preferences file, moving to "%s".' % corrupt_name)
+            corrupt_name = constants.PREFERENCE_PATH + '.broken'
+            log.error('! Corrupt preferences file, moving to "%s".' % corrupt_name)
             if os.path.isfile(corrupt_name):
                 os.unlink(corrupt_name)
 
             os.rename(constants.PREFERENCE_PATH, corrupt_name)
 
-    if saved_prefs:
-        for key in saved_prefs:
-            if key in prefs:
-                prefs[key] = saved_prefs[key]
+    prefs.update(filter(lambda i: i[0] in prefs, saved_prefs.items()))
 
 
 def write_preferences_file():

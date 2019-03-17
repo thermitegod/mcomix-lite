@@ -6,18 +6,15 @@ import textwrap
 
 from gi.repository import GLib, Gdk, Pango, PangoCairo
 
-from mcomix import image_tools
+from mcomix.preferences import prefs
 
 
 class OnScreenDisplay(object):
     """ The OSD shows information such as currently opened file, archive and
     page in a black box drawn on the bottom end of the screen.
 
-    The OSD will automatically be erased after TIMEOUT seconds.
+    The OSD will automatically be erased after 'osd timeout' seconds.
     """
-
-    TIMEOUT = 3
-
     def __init__(self, window):
         #: MainWindow
         self._window = window
@@ -47,15 +44,14 @@ class OnScreenDisplay(object):
         pos_x = max(int(max_width // 2) - int(layout_width // 2) + int(self._window._hadjust.get_value()), 0)
         pos_y = max(int(max_height) - int(layout_height * 1.1) + int(self._window._vadjust.get_value()), 0)
 
-        rect = (pos_x - 10, pos_y - 20,
-                layout_width + 20, layout_height + 20)
+        rect = (pos_x - 10, pos_y - 20, layout_width + 20, layout_height + 20)
 
         self._draw_osd(layout, rect)
 
         self._last_osd_rect = rect
         if self._timeout_event:
             GLib.source_remove(self._timeout_event)
-        self._timeout_event = GLib.timeout_add_seconds(OnScreenDisplay.TIMEOUT, self.clear)
+        self._timeout_event = GLib.timeout_add(prefs['osd timeout'] * 1000, self.clear)
 
     def clear(self):
         """ Removes the OSD. """
@@ -68,16 +64,7 @@ class OnScreenDisplay(object):
     @staticmethod
     def _wrap_text(text, width=70):
         """ Wraps the text to be C{width} characters at most. """
-        parts = text.split('\n')
-        result = []
-
-        for part in parts:
-            if part:
-                result.extend(textwrap.wrap(part, width))
-            else:
-                result.append(part)
-
-        return '\n'.join(result)
+        return '\n'.join(textwrap.fill(s, width=width) for s in text.splitlines())
 
     def _clear_osd(self):
         """ Clear the last OSD region. """
@@ -95,9 +82,9 @@ class OnScreenDisplay(object):
     @staticmethod
     def _scale_font(font, layout, max_width, max_height):
         """ Scales the font used by C{layout} until max_width/max_height is reached. """
-
-        SIZE_MIN, SIZE_MAX = 10, 60
-        for font_size in range(SIZE_MIN, SIZE_MAX, 5):
+        # hard limited from 8 to 60
+        SIZE_MIN, SIZE_MAX = 8, min(prefs['osd max font size'], 60)+1
+        for font_size in range(SIZE_MIN, SIZE_MAX):
             old_size = font.get_size()
             font.set_size(font_size * Pango.SCALE)
             layout.set_font_description(font)
@@ -128,11 +115,11 @@ class OnScreenDisplay(object):
         self._clear_osd()
 
         cr = window.cairo_create()
-        cr.set_source_rgb(*image_tools.GTK_GDK_COLOR_BLACK.to_floats())
+        cr.set_source_rgba(*prefs['osd bg color'])
         cr.rectangle(*rect)
         cr.fill()
         extents = layout.get_extents()[0]
-        cr.set_source_rgb(*image_tools.GTK_GDK_COLOR_WHITE.to_floats())
+        cr.set_source_rgba(*prefs['osd color'])
         cr.translate(rect[0] + extents.x / Pango.SCALE, rect[1] + extents.y / Pango.SCALE)
         PangoCairo.update_layout(cr, layout)
         PangoCairo.show_layout(cr, layout)

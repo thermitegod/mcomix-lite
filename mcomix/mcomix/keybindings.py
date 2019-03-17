@@ -8,7 +8,7 @@ doesn't seem to support multiple keybindings for one action, though, so this
 module takes care of the problem.
 
 At runtime, other modules can register a callback for a specific action name.
-This action name has to be registered in BINDING_INFO, or an Exception will be
+This action name has to be registered in keybindings_map.DEFAULT_BINDINGS, or an Exception will be
 thrown. The module can pass a list of default keybindings. If the user hasn't
 configured different bindings, the default ones will be used.
 
@@ -29,121 +29,7 @@ from collections import defaultdict
 
 from gi.repository import Gtk
 
-from mcomix import constants, log
-
-#: Bindings defined in this dictionary will appear in the configuration dialog.
-#: If 'group' is None, the binding cannot be modified from the preferences dialog.
-BINDING_INFO = {
-    # Navigation between pages, archives, directories
-    'previous_page': {'title': 'Previous page', 'group': 'Navigation'},
-    'next_page': {'title': 'Next page', 'group': 'Navigation'},
-    'previous_page_ff': {'title': 'Back ten pages', 'group': 'Navigation'},
-    'next_page_ff': {'title': 'Forward ten pages', 'group': 'Navigation'},
-    'previous_page_dynamic': {'title': 'Previous page (dynamic)', 'group': 'Navigation'},
-    'next_page_dynamic': {'title': 'Next page (dynamic)', 'group': 'Navigation'},
-    'previous_page_singlestep': {'title': 'Previous page (always one page)', 'group': 'Navigation'},
-    'next_page_singlestep': {'title': 'Next page (always one page)', 'group': 'Navigation'},
-
-    'first_page': {'title': 'First page', 'group': 'Navigation'},
-    'last_page': {'title': 'Last page', 'group': 'Navigation'},
-    'go_to': {'title': 'Go to page', 'group': 'Navigation'},
-
-    'next_archive': {'title': 'Next archive', 'group': 'Navigation'},
-    'previous_archive': {'title': 'Previous archive', 'group': 'Navigation'},
-    'next_directory': {'title': 'Next directory', 'group': 'Navigation'},
-    'previous_directory': {'title': 'Previous directory', 'group': 'Navigation'},
-
-    # Scrolling
-    'scroll_left_bottom': {'title': 'Scroll to bottom left', 'group': 'Scroll'},
-    'scroll_middle_bottom': {'title': 'Scroll to bottom center', 'group': 'Scroll'},
-    'scroll_right_bottom': {'title': 'Scroll to bottom right', 'group': 'Scroll'},
-
-    'scroll_left_middle': {'title': 'Scroll to middle left', 'group': 'Scroll'},
-    'scroll_middle': {'title': 'Scroll to center', 'group': 'Scroll'},
-    'scroll_right_middle': {'title': 'Scroll to middle right', 'group': 'Scroll'},
-
-    'scroll_left_top': {'title': 'Scroll to top left', 'group': 'Scroll'},
-    'scroll_middle_top': {'title': 'Scroll to top center', 'group': 'Scroll'},
-    'scroll_right_top': {'title': 'Scroll to top right', 'group': 'Scroll'},
-
-    'scroll_down': {'title': 'Scroll down', 'group': 'Scroll'},
-    'scroll_up': {'title': 'Scroll up', 'group': 'Scroll'},
-    'scroll_right': {'title': 'Scroll right', 'group': 'Scroll'},
-    'scroll_left': {'title': 'Scroll left', 'group': 'Scroll'},
-
-    'smart_scroll_up': {'title': 'Smart scroll up', 'group': 'Scroll'},
-    'smart_scroll_down': {'title': 'Smart scroll down', 'group': 'Scroll'},
-
-    # View
-    'zoom_in': {'title': 'Zoom in', 'group': 'Zoom'},
-    'zoom_out': {'title': 'Zoom out', 'group': 'Zoom'},
-    'zoom_original': {'title': 'Normal size', 'group': 'Zoom'},
-
-    'keep_transformation': {'title': 'Keep transformation', 'group': 'Transformation'},
-    'rotate_90': {'title': 'Rotate 90 degrees CW', 'group': 'Transformation'},
-    'rotate_180': {'title': 'Rotate 180 degrees', 'group': 'Transformation'},
-    'rotate_270': {'title': 'Rotate 90 degrees CCW', 'group': 'Transformation'},
-    'flip_horiz': {'title': 'Flip horizontally', 'group': 'Transformation'},
-    'flip_vert': {'title': 'Flip vertically', 'group': 'Transformation'},
-    'no_autorotation': {'title': 'Never autorotate', 'group': 'Transformation'},
-
-    'rotate_90_width': {'title': 'Rotate 90 degrees CW', 'group': 'Autorotate by width'},
-    'rotate_270_width': {'title': 'Rotate 90 degrees CCW', 'group': 'Autorotate by width'},
-    'rotate_90_height': {'title': 'Rotate 90 degrees CW', 'group': 'Autorotate by height'},
-    'rotate_270_height': {'title': 'Rotate 90 degrees CCW', 'group': 'Autorotate by height'},
-
-    'double_page': {'title': 'Double page mode', 'group': 'View mode'},
-    'manga_mode': {'title': 'Manga mode', 'group': 'View mode'},
-    'invert_scroll': {'title': 'Invert smart scroll', 'group': 'View mode'},
-
-    'lens': {'title': 'Magnifying lens', 'group': 'View mode'},
-    'stretch': {'title': 'Stretch small images', 'group': 'View mode'},
-
-    'best_fit_mode': {'title': 'Best fit mode', 'group': 'View mode'},
-    'fit_width_mode': {'title': 'Fit width mode', 'group': 'View mode'},
-    'fit_height_mode': {'title': 'Fit height mode', 'group': 'View mode'},
-    'fit_size_mode': {'title': 'Fit size mode', 'group': 'View mode'},
-    'fit_manual_mode': {'title': 'Manual zoom mode', 'group': 'View mode'},
-
-    # General UI
-    'exit_fullscreen': {'title': 'Exit from fullscreen', 'group': 'User interface'},
-
-    'osd_panel': {'title': 'Show OSD panel', 'group': 'User interface'},
-    'minimize': {'title': 'Minimize', 'group': 'User interface'},
-    'fullscreen': {'title': 'Fullscreen', 'group': 'User interface'},
-    'toolbar': {'title': 'Show/hide toolbar', 'group': 'User interface'},
-    'menubar': {'title': 'Show/hide menubar', 'group': 'User interface'},
-    'statusbar': {'title': 'Show/hide statusbar', 'group': 'User interface'},
-    'scrollbar': {'title': 'Show/hide scrollbars', 'group': 'User interface'},
-    'thumbnails': {'title': 'Thumbnails', 'group': 'User interface'},
-    'hide_all': {'title': 'Show/hide all', 'group': 'User interface'},
-    'slideshow': {'title': 'Start slideshow', 'group': 'User interface'},
-
-    # File operations
-    'move_file': {'title': 'Move to subdirectory', 'group': 'File'},
-    'delete': {'title': 'Delete', 'group': 'File'},
-    'refresh_archive': {'title': 'Refresh', 'group': 'File'},
-    'close': {'title': 'Close', 'group': 'File'},
-    'quit': {'title': 'Quit', 'group': 'File'},
-    'save_and_quit': {'title': 'Save and quit', 'group': 'File'},
-    'extract_page': {'title': 'Save As', 'group': 'File'},
-
-    'comments': {'title': 'Archive comments', 'group': 'File'},
-    'properties': {'title': 'Properties', 'group': 'File'},
-    'preferences': {'title': 'Preferences', 'group': 'File'},
-
-    'edit_archive': {'title': 'Edit archive', 'group': 'File'},
-    'open': {'title': 'Open', 'group': 'File'},
-    'enhance_image': {'title': 'Enhance image', 'group': 'File'},
-    'library': {'title': 'Library', 'group': 'File'},
-}
-
-# Generate 9 entries for executing command 1 to 9
-for i in range(1, 10):
-    BINDING_INFO['execute_command_%d' % i] = {
-        'title': 'Execute external command' + ' (%d)' % i,
-        'group': 'External commands'
-    }
+from mcomix import constants, log, keybindings_map
 
 
 class _KeybindingManager(object):
@@ -157,9 +43,9 @@ class _KeybindingManager(object):
 
         self._initialize()
 
-    def register(self, name, bindings, callback, args=None, kwargs=None):
+    def register(self, name, callback, args=[], kwargs={}, bindings=[]):
         """ Registers an action for a predefined keybinding name.
-        @param name: Action name, defined in L{BINDING_INFO}.
+        @param name: Action name, defined in L{keybindings_map.DEFAULT_BINDINGS}.
         @param bindings: List of keybinding strings, as understood
                          by L{Gtk.accelerator_parse}. Only used if no
                          bindings were loaded for this action.
@@ -174,7 +60,11 @@ class _KeybindingManager(object):
         if kwargs is None:
             kwargs = {}
 
-        assert name in BINDING_INFO, '"%s" is not a valid keyboard action.' % name
+        assert name in keybindings_map.DEFAULT_BINDINGS, '"%s" is not a valid keyboard action.' % name
+
+        # use default bindings if not provided
+        if not bindings:
+            bindings = keybindings_map.DEFAULT_BINDINGS.get(name, [])
 
         # Load stored keybindings, or fall back to passed arguments
         keycodes = self._action_to_bindings[name]
@@ -206,7 +96,7 @@ class _KeybindingManager(object):
         @return None: new_binding wasn't in any action
                 action name: where new_binding was before
         """
-        assert name in BINDING_INFO, '"%s" is not a valid keyboard action.' % name
+        assert name in keybindings_map.DEFAULT_BINDINGS, '"%s" is not a valid keyboard action.' % name
 
         nb = Gtk.accelerator_parse(new_binding)
         old_action_with_nb = self._binding_to_action.get(nb)
@@ -237,7 +127,7 @@ class _KeybindingManager(object):
 
     def clear_accel(self, name, binding):
         """ Remove binding for an action """
-        assert name in BINDING_INFO, '"%s" is not a valid keyboard action.' % name
+        assert name in keybindings_map.DEFAULT_BINDINGS, '"%s" is not a valid keyboard action.' % name
 
         ob = Gtk.accelerator_parse(binding)
         self._action_to_bindings[name].remove(ob)
@@ -292,7 +182,7 @@ class _KeybindingManager(object):
             log.error('Could not load keybindings: %s', e)
             stored_action_bindings = {}
 
-        for action in BINDING_INFO.keys():
+        for action in keybindings_map.DEFAULT_BINDINGS.keys():
             if action in stored_action_bindings:
                 bindings = [Gtk.accelerator_parse(keyname) for keyname in stored_action_bindings[action]]
                 self._action_to_bindings[action] = bindings

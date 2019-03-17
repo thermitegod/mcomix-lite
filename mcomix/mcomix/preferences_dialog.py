@@ -36,6 +36,8 @@ class _PreferencesDialog(Gtk.Dialog):
 
         appearance = self._init_appearance_tab()
         notebook.append_page(appearance, Gtk.Label(label='Appearance'))
+        onscrdisp = self._init_onscrdisp_tab()
+        notebook.append_page(onscrdisp, Gtk.Label(label='OSD'))
         behaviour = self._init_behaviour_tab()
         notebook.append_page(behaviour, Gtk.Label(label='Behaviour'))
         display = self._init_display_tab()
@@ -102,6 +104,34 @@ class _PreferencesDialog(Gtk.Dialog):
                 'Use a checkered background for transparent images',
                 'checkered bg for transparent images',
                 'Use a grey checkered background for transparent images. If unset, background will be plain white.'))
+
+        return page
+
+    def _init_onscrdisp_tab(self):
+        # ----------------------------------------------------------------
+        # The "OSD" tab.
+        # ----------------------------------------------------------------
+        page = preferences_page._PreferencePage(None)
+
+        page.new_section('Onscreen display')
+
+        page.add_row(Gtk.Label(label='Timeout:'),
+                     self._create_pref_spinner(
+                         'osd timeout',
+                         1.0, 0.5, 30.0, 0.5, 2.0, 1,
+                         'Erase OSD after timeout, in seconds.'))
+
+        page.add_row(Gtk.Label(label='Max font size:'),
+                     self._create_pref_spinner(
+                         'osd max font size',
+                         1, 8, 60, 1, 10, 0,
+                         'Font size in OSD, hard limited between 8 to 60.'))
+
+        page.add_row(Gtk.Label(label='Font color:'),
+                     self._create_color_button('osd color'))
+
+        page.add_row(Gtk.Label(label='Background color:'),
+                     self._create_color_button('osd bg color'))
 
         return page
 
@@ -268,7 +298,6 @@ class _PreferencesDialog(Gtk.Dialog):
         # ----------------------------------------------------------------
         # The "Advanced" tab.
         # ----------------------------------------------------------------
-
         page = preferences_page._PreferencePage(None)
 
         page.new_section('File order')
@@ -328,6 +357,7 @@ class _PreferencesDialog(Gtk.Dialog):
         # ----------------------------------------------------------------
         km = keybindings.keybinding_manager(self._window)
         page = keybindings_editor.KeybindingEditorWindow(km)
+
         return page
 
     def _tab_page_changed(self, notebook, page_ptr, page_num):
@@ -703,16 +733,13 @@ class _PreferencesDialog(Gtk.Dialog):
         """Callback for the background color selection button."""
 
         color = colorbutton.get_rgba()
+        prefs[preference] = color.red, color.green, color.blue, color.alpha
 
         if preference == 'bg color':
-            prefs['bg color'] = color.red, color.green, color.blue, color.alpha
-
             if not self._window.filehandler.file_loaded:
                 self._window.set_bg_color(prefs['bg color'])
 
         elif preference == 'thumb bg color':
-            prefs['thumb bg color'] = color.red, color.green, color.blue, color.alpha
-
             if not self._window.filehandler.file_loaded:
                 self._window.thumbnailsidebar.change_thumbnail_background_color(prefs['thumb bg color'])
 
@@ -764,7 +791,7 @@ class _PreferencesDialog(Gtk.Dialog):
             self._window.imagehandler.do_cacheing()
 
         elif preference == 'number of key presses before page turn':
-            prefs['number of key presses before page turn'] = int(value)
+            prefs[preference] = int(value)
             self._window._event_handler._extra_scroll_events = 0
 
         elif preference == 'fit to size px':
@@ -773,6 +800,12 @@ class _PreferencesDialog(Gtk.Dialog):
 
         elif preference == 'max extract threads':
             prefs[preference] = int(value)
+
+        elif preference == 'osd max font size':
+            prefs[preference] = int(value)
+
+        elif preference == 'osd timeout':
+            prefs[preference] = value
 
     def _entry_cb(self, entry, event=None):
         """Callback for entry-type preferences."""
