@@ -128,8 +128,8 @@ DEFAULT_BINDINGS = {
     'last_page': ['End', 'KP_End'],
     'go_to': ['G'],
 
-    'next_archive': ['<control><shift>N'],
-    'previous_archive': ['<control><shift>P'],
+    'next_archive': ['<Primary>Right'],
+    'previous_archive': ['<Primary>Left'],
     'next_directory': ['<control>N'],
     'previous_directory': ['<control>P'],
 
