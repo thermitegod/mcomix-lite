@@ -4,7 +4,7 @@
 
 from gi.repository import Gtk
 
-from mcomix import keybindings
+from mcomix import keybindings_map
 
 
 class KeybindingEditorWindow(Gtk.ScrolledWindow):
@@ -18,7 +18,7 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
         self.keymanager = keymanager
 
         accel_column_num = max([len(self.keymanager.get_bindings_for_action(action))
-                                for action in keybindings.keybindings_map.BINDING_INFO.keys()])
+                                for action in keybindings_map.BINDING_INFO.keys()])
         accel_column_num = self.accel_column_num = max([3, accel_column_num])
 
         # Human name, action name, true value, shortcut 1, shortcut 2, ...
@@ -55,7 +55,7 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
         """ Initializes the model from data provided by the keybinding
         manager. """
         self.treestore.clear()
-        section_order = list(set(d['group'] for d in keybindings.keybindings_map.BINDING_INFO.values()))
+        section_order = list(set(d['group'] for d in keybindings_map.BINDING_INFO.values()))
         section_order.sort()
         section_parent_map = {}
         for section_name in section_order:
@@ -65,7 +65,7 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
 
         action_treeiter_map = self.action_treeiter_map = {}
         # Sort actions by action name
-        actions = sorted(keybindings.keybindings_map.BINDING_INFO.items(), key=lambda item: item[1]['title'])
+        actions = sorted(keybindings_map.BINDING_INFO.items(), key=lambda item: item[1]['title'])
         for action_name, action_data in actions:
             title = action_data['title']
             group_name = action_data['group']
