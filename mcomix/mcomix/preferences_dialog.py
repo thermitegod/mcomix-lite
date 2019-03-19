@@ -322,7 +322,7 @@ class _PreferencesDialog(Gtk.Dialog):
                 'Use freedesktop.org specification to store thumbnails.'))
 
         page.add_row(Gtk.Label(label='Temporary directory (restart required)'),
-                     self._create_pref_folder_chooser('temporary directory', default=None))
+                     self._create_pref_path_chooser('temporary directory', folder=True, default=None))
 
         page.add_row(Gtk.Label(label='Maximum number of pages to store in the cache:'),
                      self._create_pref_spinner(
@@ -814,27 +814,24 @@ class _PreferencesDialog(Gtk.Dialog):
         prefs['comment extensions'] = [e for e in extensions if e]
         self._window.filehandler.update_comment_extensions()
 
-    def _create_pref_folder_chooser(self, preference, default=None):
-        """ Select folder as preference value """
+    def _create_pref_path_chooser(self, preference, folder=False, default=None):
+        """ Select path as preference value """
         box = Gtk.Box()
+        action = Gtk.FileChooserAction.SELECT_FOLDER if folder else Gtk.FileChooserAction.OPEN
 
         chooser = Gtk.Button()
         chooser.set_label(prefs[preference] or default or '(default)')
-        chooser.connect('clicked', self._chooser_folder_cb, chooser, preference, default, False)
+        chooser.connect('clicked', self._path_chooser_cb, chooser, action, preference, default)
         reset = Gtk.Button(label='reset')
-        reset.connect('clicked', self._chooser_folder_cb, chooser, preference, default, True)
+        reset.connect('clicked', self._path_chooser_reset_cb, chooser, preference, default)
         box.add(chooser)
         box.add(reset)
 
         return box
 
-    def _chooser_folder_cb(self, widget, chooser, preference, default, is_reset):
-        """ Callback for folder chooser """
-        if is_reset:
-            prefs[preference] = default
-            chooser.set_label(prefs[preference] or '(default)')
-            return
-        dialog = Gtk.FileChooserDialog(title='Please choose a folder', action=Gtk.FileChooserAction.SELECT_FOLDER)
+    def _path_chooser_cb(self, widget, chooser, chooser_action, preference, default):
+        """ Callback for path chooser """
+        dialog = Gtk.FileChooserDialog(title='Please choose a folder', action=chooser_action)
         dialog.set_transient_for(self)
         dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, 'Select', Gtk.ResponseType.OK)
 
@@ -844,10 +841,15 @@ class _PreferencesDialog(Gtk.Dialog):
             chooser.set_label(prefs[preference])
         dialog.destroy()
 
+    @staticmethod
+    def _path_chooser_reset_cb(widget, chooser, preference, default):
+        """ Reset path chooser """
+        prefs[preference]=default
+        chooser.set_label(prefs[preference] or '(default)')
+
 
 def open_dialog(action, window):
     """Create and display the preference dialog."""
-
     global _dialog
 
     # if the dialog window is not created then create the window
