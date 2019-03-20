@@ -165,10 +165,6 @@ class MainUI(Gtk.UIManager):
              None, None, dialog_handler.open_dialog)], (window, 'about-dialog'))
 
         self._actiongroup.add_actions([
-            ('comments', 'mcomix-comments', 'Co_mments...',
-             None, None, dialog_handler.open_dialog)], (window, 'comments-dialog'))
-
-        self._actiongroup.add_actions([
             ('properties', Gtk.STOCK_PROPERTIES, 'Proper_ties',
              None, None, dialog_handler.open_dialog)], (window, 'properties-dialog'))
 

@@ -71,3 +71,12 @@ LHA_FORMATS = (
 PDF_FORMATS = (
     ('application/pdf',),
     ('pdf',))
+
+ARCHIVE_DESCRIPTIONS = {
+    ZIP: 'ZIP archive',
+    RAR: 'RAR archive',
+    PDF: 'PDF document',
+    SEVENZIP: '7z archive',
+    LHA: 'LHA archive',
+    ZIP_EXTERNAL: 'ZIP archive',
+}

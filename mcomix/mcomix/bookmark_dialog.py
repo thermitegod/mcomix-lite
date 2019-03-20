@@ -53,7 +53,6 @@ class _BookmarksDialog(Gtk.Dialog):
         self._name_col = Gtk.TreeViewColumn('Name', cellrenderer_text)
         self._page_col = Gtk.TreeViewColumn('Page', cellrenderer_text)
         self._path_col = Gtk.TreeViewColumn('Location', cellrenderer_text)
-        # TRANSLATORS: "Added" as in "Date Added"
         self._date_add_col = Gtk.TreeViewColumn('Added', cellrenderer_text)
 
         self._treeview.append_column(self._icon_col)

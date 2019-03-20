@@ -6,7 +6,7 @@ import webbrowser
 
 from gi.repository import Gtk
 
-from mcomix import constants, image_tools, strings, tools
+from mcomix import constants, image_tools, tools
 
 
 class _AboutDialog(Gtk.AboutDialog):
@@ -17,27 +17,17 @@ class _AboutDialog(Gtk.AboutDialog):
         self.set_name(constants.APPNAME)
         self.set_program_name(constants.APPNAME)
         self.set_version(constants.VERSION)
-        self.set_website('https://sourceforge.net/p/mcomix/wiki/')
+        self.set_license_type(Gtk.License.GPL_2_0, )
+        self.set_website('https://github.com/thermitegod/mcomix3')
+        # self.set_website_label('https://github.com/thermitegod/mcomix3')
         self.set_copyright('Copyright (C) 2005-2016')
 
         icon_data = tools.read_binary('images', 'mcomix.png')
         pixbuf = image_tools.load_pixbuf_data(icon_data)
         self.set_logo(pixbuf)
 
-        self.set_comments('%s is an image viewer specifically designed to handle comic books. ' % constants.APPNAME +
-                          'It reads ZIP, RAR and tar archives, as well as plain image files.')
-
-        self.set_wrap_license(True)
-
-        self.set_license('%s is licensed under the terms of the GNU General Public License. ' % constants.APPNAME +
-                         'A copy of this license can be obtained from %s' % 'http://www.gnu.org/licenses/gpl-2.0.html')
-
-        self.set_authors(['%s: %s' % (name, description) for name, description in strings.AUTHORS])
-
-        self.set_translator_credits("\n".join(['%s: %s' % (name, description)
-                                               for name, description in strings.TRANSLATORS]))
-
-        self.set_artists(['%s: %s' % (name, description) for name, description in strings.ARTISTS])
+        self.set_comments('%s is an image viewer specifically designed to handle manga/comics. ' % constants.APPNAME +
+                          'It reads 7Z, ZIP, RAR, LHA, and plain image files.')
 
         self.connect('activate-link', self._on_activate_link)
 

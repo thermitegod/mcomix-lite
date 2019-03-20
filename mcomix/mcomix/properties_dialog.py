@@ -9,7 +9,7 @@ import time
 
 from gi.repository import Gtk
 
-from mcomix import properties_page, strings, tools
+from mcomix import properties_page, constants, tools
 
 
 class _PropertiesDialog(Gtk.Dialog):
@@ -73,7 +73,7 @@ class _PropertiesDialog(Gtk.Dialog):
             '%d pages' % window.imagehandler.get_number_of_pages(),
             '%d comments' %
             window.filehandler.get_number_of_comments(),
-            strings.ARCHIVE_DESCRIPTIONS[window.filehandler.archive_type])
+            constants.ARCHIVE_DESCRIPTIONS[window.filehandler.archive_type])
         page.set_main_info(main_info)
         self._update_page_secondary_info(page, path)
         page.show_all()
