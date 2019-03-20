@@ -19,8 +19,8 @@ class _AboutDialog(Gtk.AboutDialog):
         self.set_program_name(constants.APPNAME)
         self.set_version(constants.VERSION)
         self.set_license_type(Gtk.License.GPL_2_0, )
-        self.set_website('https://github.com/thermitegod/mcomix3')
-        # self.set_website_label('https://github.com/thermitegod/mcomix3')
+        self.set_website('https://github.com/thermitegod/mcomix-lite')
+        # self.set_website_label('https://github.com/thermitegod/mcomix-lite')
         self.set_copyright('Copyright (C) 2005-2016')
 
         icon_data = pkg_resources.resource_string(__package__, 'images/mcomix.png')

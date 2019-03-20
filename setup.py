@@ -55,7 +55,7 @@ setuptools.setup(
             'setuptools.installation': ['eggsecutable=mcomix.run:run'],
         },
         test_suite="test",
-        # requires=['pygtk (>=2.12.0)', 'PIL (>=1.15)'],
+        requires=['Gtk (>=3.21.0)', 'Pillow (>=5.1.0)'],
         install_requires=['setuptools'],
         zip_safe=False,
 
@@ -72,17 +72,16 @@ setuptools.setup(
             ('share/icons/hicolor/48x48/apps', ['mcomix/images/48x48/mcomix.png']),
             ('share/icons/hicolor/48x48/mimetypes',
              ['mime/icons/48x48/application-x-cbz.png',
+              'mime/icons/48x48/application-x-cb7.png',
               'mime/icons/48x48/application-x-cbr.png'])],
 
         # Package metadata
-        maintainer='Ark',
-        maintainer_email='https://sourceforge.net/u/aaku/profile/',
-        url='http://mcomix.sourceforge.net',
+        maintainer='thermitegod',
+        url='https://github.com/thermitegod/mcomix-lite',
         description='GTK comic book viewer',
-        long_description='MComix is a user-friendly, customizable image viewer. '
-                         'It is specifically designed to handle comic books (both Western comics and manga) '
-                         'and supports a variety of container formats (including 7Z, ZIP, RAR, CBR, CBZ, CB7, LHA, and PDF). '
-                         'Mcomix3 is a fork of MComix which is a fork of Comix.',
+        long_description='MComix-Lite is a manga/comic reader.'
+                         'Supports archive formats are 7Z, ZIP, RAR, CBR, CBZ, CB7, LHA, and PDF. '
+                         'MComix-Lite is a fork of MComix3 which is a fork of MComix which is a fork of Comix.',
         license="License :: OSI Approved :: GNU General Public License (GPL)",
         download_url="http://sourceforge.net/projects/mcomix/files",
         platforms=['Operating System :: POSIX :: Linux',

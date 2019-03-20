@@ -4,8 +4,8 @@
 
 import os
 
-APPNAME = 'MComix'
-VERSION = '1.3.0.dev0'
+APPNAME = 'MComix-Lite'
+VERSION = '3.0.0'
 
 REQUIRED_PIL_VERSION = '5.1.0'
 

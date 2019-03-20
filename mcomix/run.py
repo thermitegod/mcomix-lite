@@ -134,13 +134,6 @@ def run():
         log.error('No version of Numpy was found.')
         sys.exit(1)
 
-    try:
-        import sqlite3
-
-    except ImportError:
-        log.error('Python not build with sqlite support.')
-        sys.exit(1)
-
     if not os.path.exists(constants.DATA_DIR):
         os.makedirs(constants.DATA_DIR, 0o700)
 
