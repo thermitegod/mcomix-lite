@@ -2,9 +2,11 @@
 
 """icons.py - Load MComix specific icons."""
 
+import pkg_resources
+
 from gi.repository import Gtk
 
-from mcomix import image_tools, log, tools
+from mcomix import image_tools, log
 
 
 def mcomix_icons():
@@ -12,7 +14,14 @@ def mcomix_icons():
     application icon. """
 
     size = '48x48'
-    pixbufs = [image_tools.load_pixbuf_data(tools.read_binary('images', size, 'mcomix.png'))]
+    try:
+        # this may be shit but at least it works
+        pixbufs = [image_tools.load_pixbuf_data(
+                pkg_resources.resource_string(__package__, '../share/icons/hicolor/' + size + '/apps/mcomix.png'))]
+
+    except FileNotFoundError:
+        pixbufs = [image_tools.load_pixbuf_data(
+                pkg_resources.resource_string(__package__, 'images/' + size + '/mcomix.png'))]
 
     return pixbufs
 
@@ -46,7 +55,7 @@ def load_icons():
     factory = Gtk.IconFactory()
     for filename, stockid in _icons:
         try:
-            icon_data = tools.read_binary('images', filename)
+            icon_data = pkg_resources.resource_string(__package__, 'images/' + filename)
             pixbuf = image_tools.load_pixbuf_data(icon_data)
             iconset = Gtk.IconSet.new_from_pixbuf(pixbuf)
             factory.add(stockid, iconset)

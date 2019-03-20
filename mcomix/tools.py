@@ -91,11 +91,6 @@ def pkg_path(*args):
     return os.path.join(constants.BASE_PATH, 'mcomix', *args)
 
 
-def read_binary(*args):
-    with open(pkg_path(*args), mode='rb') as f:
-        return f.read()
-
-
 def div(a, b):
     return float(a) / float(b)
 

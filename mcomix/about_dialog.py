@@ -3,10 +3,11 @@
 """about_dialog.py - About dialog."""
 
 import webbrowser
+import pkg_resources
 
 from gi.repository import Gtk
 
-from mcomix import constants, image_tools, tools
+from mcomix import constants, image_tools
 
 
 class _AboutDialog(Gtk.AboutDialog):
@@ -22,7 +23,7 @@ class _AboutDialog(Gtk.AboutDialog):
         # self.set_website_label('https://github.com/thermitegod/mcomix3')
         self.set_copyright('Copyright (C) 2005-2016')
 
-        icon_data = tools.read_binary('images', 'mcomix.png')
+        icon_data = pkg_resources.resource_string(__package__, 'images/mcomix.png')
         pixbuf = image_tools.load_pixbuf_data(icon_data)
         self.set_logo(pixbuf)
 

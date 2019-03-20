@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-exit(print('setup.py is not working. will fix') or 1)
 
 import os
 import glob
@@ -48,16 +47,15 @@ images.extend([os.path.basename(img)
 setuptools.setup(
         name=constants.APPNAME.lower(),
         version=constants.VERSION,
-        packages=['mcomix', 'mcomix.archive', 'mcomix.library'],
+        packages=['mcomix', 'mcomix.archive', 'mcomix.images'],
         package_data={
-            'mcomix': get_data_patterns('mcomix/messages', '*.mo') + images,
-        },
+            'mcomix.images': images},
         entry_points={
             'console_scripts': ['mcomix = mcomix.run:run'],
             'setuptools.installation': ['eggsecutable=mcomix.run:run'],
         },
         test_suite="test",
-        requires=['pillow (>=5.1.0)'],
+        # requires=['pygtk (>=2.12.0)', 'PIL (>=1.15)'],
         install_requires=['setuptools'],
         zip_safe=False,
 
@@ -67,27 +65,11 @@ setuptools.setup(
         # Otherwise, these files end up in a MComix egg directory in site-packages.
         # (Thank you, setuptools!)
         data_files=[
-            ('share/man/man1', ['mcomix.1.gz']),
+            ('share/man/man1', ['man/mcomix.1']),
             ('share/applications', ['mime/mcomix.desktop']),
             ('share/appdata', ['mime/mcomix.appdata.xml']),
             ('share/mime/packages', ['mime/mcomix.xml']),
-            ('share/icons/hicolor/16x16/apps', ['mcomix/images/16x16/mcomix.png']),
-            ('share/icons/hicolor/22x22/apps', ['mcomix/images/22x22/mcomix.png']),
-            ('share/icons/hicolor/24x24/apps', ['mcomix/images/24x24/mcomix.png']),
-            ('share/icons/hicolor/32x32/apps', ['mcomix/images/32x32/mcomix.png']),
             ('share/icons/hicolor/48x48/apps', ['mcomix/images/48x48/mcomix.png']),
-            ('share/icons/hicolor/16x16/mimetypes',
-             ['mime/icons/16x16/application-x-cbz.png',
-              'mime/icons/16x16/application-x-cbr.png']),
-            ('share/icons/hicolor/22x22/mimetypes',
-             ['mime/icons/22x22/application-x-cbz.png',
-              'mime/icons/22x22/application-x-cbr.png']),
-            ('share/icons/hicolor/24x24/mimetypes',
-             ['mime/icons/24x24/application-x-cbz.png',
-              'mime/icons/24x24/application-x-cbr.png']),
-            ('share/icons/hicolor/32x32/mimetypes',
-             ['mime/icons/32x32/application-x-cbz.png',
-              'mime/icons/32x32/application-x-cbr.png']),
             ('share/icons/hicolor/48x48/mimetypes',
              ['mime/icons/48x48/application-x-cbz.png',
               'mime/icons/48x48/application-x-cbr.png'])],
@@ -99,8 +81,8 @@ setuptools.setup(
         description='GTK comic book viewer',
         long_description='MComix is a user-friendly, customizable image viewer. '
                          'It is specifically designed to handle comic books (both Western comics and manga) '
-                         'and supports a variety of container formats (including CBR, CBZ, CB7, LHA and PDF). '
-                         'MComix is a fork of Comix.',
+                         'and supports a variety of container formats (including 7Z, ZIP, RAR, CBR, CBZ, CB7, LHA, and PDF). '
+                         'Mcomix3 is a fork of MComix which is a fork of Comix.',
         license="License :: OSI Approved :: GNU General Public License (GPL)",
         download_url="http://sourceforge.net/projects/mcomix/files",
         platforms=['Operating System :: POSIX :: Linux',
