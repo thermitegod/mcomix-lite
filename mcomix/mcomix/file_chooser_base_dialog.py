@@ -20,8 +20,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
     of filechooser dialog we want (i.e. it is Gtk.FileChooserAction.OPEN
     or Gtk.FileChooserAction.SAVE).
 
-    This is a base class for the _MainFileChooserDialog, the
-    _LibraryFileChooserDialog and the SimpleFileChooserDialog.
+    This is a base class for the _MainFileChooserDialog and SimpleFileChooserDialog.
 
     Subclasses should implement a method files_chosen(paths) that will be
     called once the filechooser has done its job and selected some files.
@@ -88,10 +87,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
                 self.filechooser.set_filename(last_file)
             # If no file was stored yet, fall back to preferences
             elif os.path.isdir(prefs['path of last browsed in filechooser']):
-                if prefs['store recent file info']:
-                    self.filechooser.set_current_folder(prefs['path of last browsed in filechooser'])
-                else:
-                    self.filechooser.set_current_folder(constants.HOME_DIR)
+                self.filechooser.set_current_folder(constants.HOME_DIR)
 
         except Exception as ex:  # E.g. broken prefs values.
             log.debug(ex)
@@ -186,7 +182,8 @@ class _BaseFileChooserDialog(Gtk.Dialog):
     def set_current_directory(self, path):
         self.filechooser.set_current_folder(path)
 
-    def should_open_recursive(self):
+    @staticmethod
+    def should_open_recursive():
         return False
 
     def _response(self, widget, response):
@@ -224,12 +221,6 @@ class _BaseFileChooserDialog(Gtk.Dialog):
                 if response != Gtk.ResponseType.OK:
                     self.stop_emission_by_name('response')
                     return
-
-            # Do not store path if the user chose not to keep a file history
-            if prefs['store recent file info']:
-                prefs['path of last browsed in filechooser'] = self.filechooser.get_current_folder()
-            else:
-                prefs['path of last browsed in filechooser'] = constants.HOME_DIR
 
             self.__class__._last_activated_file = first_path
             self.files_chosen(paths)

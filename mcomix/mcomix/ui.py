@@ -6,8 +6,7 @@
 from gi.repository import Gtk
 
 from mcomix import bookmark_menu, constants, dialog_handler, edit_dialog, enhance_dialog, file_chooser_main_dialog, \
-    openwith_menu, preferences_dialog, recent, status
-from mcomix.library import main_dialog as library_main_dialog
+    openwith_menu, preferences_dialog, status
 from mcomix.preferences import prefs
 
 
@@ -68,9 +67,6 @@ class MainUI(Gtk.UIManager):
              None, 'Closes all opened files.', _action_lambda(window.filehandler.close_file)),
             ('quit', Gtk.STOCK_QUIT, '_Quit',
              None, None, window.close_program),
-            ('save_and_quit', Gtk.STOCK_QUIT, '_Save and quit',
-             None, 'Quits and restores the currently opened file next time the program starts.',
-             window.save_and_terminate_program),
             ('rotate_90', 'mcomix-rotate-90', '_Rotate 90 degrees CW',
              None, None, window.rotate_90),
             ('rotate_180', 'mcomix-rotate-180', 'Rotate 180 de_grees',
@@ -84,7 +80,6 @@ class MainUI(Gtk.UIManager):
             ('extract_page', Gtk.STOCK_SAVE_AS, 'Save _As',
              None, None, window.extract_page),
             ('menu_zoom', 'mcomix-zoom', '_Zoom'),
-            ('menu_recent', Gtk.STOCK_FILE, '_Recent'),
             ('menu_bookmarks_popup', 'comix-add-bookmark', '_Bookmarks'),
             ('menu_bookmarks', None, '_Bookmarks'),
             ('menu_toolbars', None, 'T_oolbars'),
@@ -191,10 +186,6 @@ class MainUI(Gtk.UIManager):
             ('enhance_image', 'mcomix-enhance-image', 'En_hance image...',
              None, None, enhance_dialog.open_dialog)], window)
 
-        self._actiongroup.add_actions([
-            ('library', 'mcomix-library', '_Library...',
-             None, None, library_main_dialog.open_dialog)], window)
-
         # fix some gtk magic: removing unreqired accelerators
         Gtk.AccelMap.change_entry('<Actions>/mcomix-main/%s' % 'close', 0, 0, True)
 
@@ -227,8 +218,6 @@ class MainUI(Gtk.UIManager):
             <menubar name="Menu">
                 <menu action="menu_file">
                     <menuitem action="open" />
-                    <menu action="menu_recent" />
-                    <menuitem action="library" />
                     <separator />
                     <menuitem action="extract_page" />
                     <menuitem action="refresh_archive" />
@@ -240,7 +229,6 @@ class MainUI(Gtk.UIManager):
                     <separator />
                     <menuitem action="minimize" />
                     <menuitem action="close" />
-                    <menuitem action="save_and_quit" />
                     <menuitem action="quit" />
                 </menu>
                 <menu action="menu_edit">
@@ -383,8 +371,6 @@ class MainUI(Gtk.UIManager):
                 </menu>
                 <separator />
                 <menuitem action="open" />
-                <menu action="menu_recent" />
-                <menuitem action="library" />
                 <separator />
                 <menu action="menu_open_with_popup"></menu>
                 <separator />
@@ -407,14 +393,6 @@ class MainUI(Gtk.UIManager):
         self.get_widget('/Popup/menu_bookmarks_popup').set_submenu(self.bookmarks_popup)
         self.get_widget('/Popup/menu_bookmarks_popup').show()
 
-        self.recent = recent.RecentFilesMenu(self, window)
-        self.get_widget('/Menu/menu_file/menu_recent').set_submenu(self.recent)
-        self.get_widget('/Menu/menu_file/menu_recent').show()
-
-        self.recentPopup = recent.RecentFilesMenu(self, window)
-        self.get_widget('/Popup/menu_recent').set_submenu(self.recentPopup)
-        self.get_widget('/Popup/menu_recent').show()
-
         openwith = openwith_menu.OpenWithMenu(self, window)
         self.get_widget('/Menu/menu_file/menu_open_with').set_submenu(openwith)
         self.get_widget('/Menu/menu_file/menu_open_with').show()
@@ -433,7 +411,6 @@ class MainUI(Gtk.UIManager):
         general = ('properties',
                    'edit_archive',
                    'extract_page',
-                   'save_and_quit',
                    'close',
                    'delete',
                    'copy_path',

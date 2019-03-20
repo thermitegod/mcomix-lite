@@ -3,15 +3,13 @@
 """file_handler.py - File handler that takes care of opening archives and images."""
 
 import os
-import pickle
 import re
 import tempfile
 
 from gi.repository import Gtk
 
-from mcomix import archive_extractor, archive_tools, callback, constants, file_provider, image_tools, last_read_page, \
-    log, message_dialog, tools
-from mcomix.library import backend
+from mcomix import archive_extractor, archive_tools, callback, constants, file_provider, image_tools, \
+    log, tools
 from mcomix.preferences import prefs
 
 
@@ -54,13 +52,9 @@ class FileHandler(object):
         self._condition = None
         #: Provides a list of available files/archives in the open directory.
         self._file_provider = None
-        #: Keeps track of the last read page in archives
-        self.last_read_page = last_read_page.LastReadPage(backend.LibraryBackend())
         #: Regexp used for determining which archive files are comment files.
         self._comment_re = None
         self.update_comment_extensions()
-
-        self.last_read_page.set_enabled(bool(prefs['store recent file info']))
 
     def refresh_file(self, *args, **kwargs):
         """ Closes the current file(s)/archive and reloads them. """
@@ -161,15 +155,6 @@ class FileHandler(object):
 
             self._window.set_page(current_image_index + 1)
 
-            if self.archive_type is not None:
-                if last_image_index != current_image_index and \
-                        self._ask_goto_last_read_page(self._current_file, last_image_index + 1):
-                    self._window.set_page(last_image_index + 1)
-
-            self.write_fileinfo_file()
-
-        self._window.uimanager.recent.add(self._current_file)
-
     @callback.Callback
     def file_opened(self):
         """ Called when a new set of files has successfully been opened. """
@@ -189,7 +174,6 @@ class FileHandler(object):
         if self.file_loaded or self.file_loading:
             if close_provider:
                 self._file_provider = None
-            self.update_last_read_page()
             if self.archive_type is not None:
                 self._extractor.close()
             self._window.imagehandler.cleanup()
@@ -315,7 +299,8 @@ class FileHandler(object):
         if prefs['sort archive order'] == constants.SORT_DESCENDING:
             filelist.reverse()
 
-    def _get_index_for_page(self, start_page, num_of_pages, path):
+    @staticmethod
+    def _get_index_for_page(start_page, num_of_pages, path):
         """ Returns the page that should be displayed for an archive.
         @param start_page: If -1, show last page. If 0, show either first page
                            or last read page. If > 0, show C{start_page}.
@@ -326,35 +311,10 @@ class FileHandler(object):
             current_image_index = num_of_pages - 2
         elif start_page < 0 and not prefs['default double page']:
             current_image_index = num_of_pages - 1
-        elif start_page == 0:
-            current_image_index = (self.last_read_page.get_page(path) or 1) - 1
         else:
             current_image_index = start_page - 1
 
         return min(max(0, current_image_index), num_of_pages - 1)
-
-    def _ask_goto_last_read_page(self, path, last_read_page):
-        """ If the user read an archive previously, ask to continue from
-        that time, or from page 1. This method returns a page index, that is,
-        index + 1. """
-
-        read_date = self.last_read_page.get_date(path)
-
-        dialog = message_dialog.MessageDialog(self._window, Gtk.DialogFlags.MODAL, Gtk.MessageType.INFO,
-                                              Gtk.ButtonsType.YES_NO)
-        dialog.set_default_response(Gtk.ResponseType.YES)
-        dialog.set_should_remember_choice('resume-from-last-read-page', (Gtk.ResponseType.YES, Gtk.ResponseType.NO))
-        dialog.set_text(
-                ('Continue reading from page %d?' % last_read_page),
-                ('You stopped reading here on %(date)s, %(time)s. '
-                 'If you choose "Yes", reading will resume on page %(page)d. Otherwise, '
-                 'the first page will be loaded.') % {'date': read_date.date().strftime('%x'),
-                                                      'time': read_date.time().strftime('%X'),
-                                                      'page': last_read_page})
-
-        result = dialog.run()
-
-        return result == Gtk.ResponseType.YES
 
     def _open_image_files(self, filelist, image_path):
         """ Opens all files passed in C{filelist}.
@@ -591,50 +551,3 @@ class FileHandler(object):
                     extractor_files.remove(name)
                     extractor_files.insert(0, name)
             self._extractor.set_files(extractor_files)
-
-    def write_fileinfo_file(self):
-        """Write current open file information."""
-        if self.file_loaded:
-            with open(constants.FILEINFO_PICKLE_PATH, 'wb') as config:
-                path = self._window.imagehandler.get_real_path()
-                if not path:
-                    # no file is loaded
-                    return
-                page_index = self._window.imagehandler.get_current_page() - 1
-                current_file_info = [path, page_index]
-
-                pickle.dump(current_file_info, config, pickle.HIGHEST_PROTOCOL)
-
-    @staticmethod
-    def read_fileinfo_file():
-        """Read last loaded file info from disk."""
-        fileinfo = None
-
-        if os.path.isfile(constants.FILEINFO_PICKLE_PATH):
-            try:
-                with open(constants.FILEINFO_PICKLE_PATH, 'rb') as config:
-                    fileinfo = pickle.load(config)
-            except Exception as ex:
-                log.error('! Corrupt fileinfo file "%s", deleting...', constants.FILEINFO_PICKLE_PATH)
-                log.info('Error was: %s', ex)
-                os.remove(constants.FILEINFO_PICKLE_PATH)
-
-        return fileinfo
-
-    def update_last_read_page(self):
-        """ Stores the currently viewed page. """
-        if self.archive_type is None or not self.file_loaded:
-            return
-
-        archive_path = self.get_path_to_base()
-        page = self._window.imagehandler.get_current_page()
-        # Do not store first page (first page is default
-        # behaviour and would waste space unnecessarily)
-        try:
-            if page == 1:
-                self.last_read_page.clear_page(archive_path)
-            else:
-                self.last_read_page.set_page(archive_path, page)
-        except ValueError:
-            # The book no longer exists in the library and has been deleted
-            pass

@@ -11,7 +11,6 @@ from gi.repository import GLib, Gdk, Gtk
 from mcomix import bookmark_backend, callback, clipboard, constants, cursor_handler, enhance_backend, event, \
     file_handler, icons, image_handler, image_tools, keybindings, layout, lens, log, message_dialog, osd, \
     pageselect, preferences, slideshow, status, thumbbar, tools, ui, zoom
-from mcomix.library import backend, main_dialog
 from mcomix.preferences import prefs
 
 
@@ -20,7 +19,7 @@ class MainWindow(Gtk.Window):
     program when closed.
     """
     def __init__(self, fullscreen=False, is_slideshow=slideshow,
-                 show_library=False, manga_mode=False, double_page=False,
+                 manga_mode=False, double_page=False,
                  zoom_mode=None, open_path=None, open_page=1):
         super(MainWindow, self).__init__(type=Gtk.WindowType.TOPLEVEL)
 
@@ -234,23 +233,11 @@ class MainWindow(Gtk.Window):
             toggleaction = self.actiongroup.get_action('fullscreen')
             toggleaction.set_active(True)
 
-        if prefs['previous quit was quit and save']:
-            fileinfo = self.filehandler.read_fileinfo_file()
-
-            if fileinfo is not None:
-                open_path = fileinfo[0]
-                open_page = fileinfo[1] + 1
-
-        prefs['previous quit was quit and save'] = False
-
         if open_path is not None:
             self.filehandler.open_file(open_path)
 
         if is_slideshow:
             self.actiongroup.get_action('slideshow').activate()
-
-        if show_library:
-            self.actiongroup.get_action('library').activate()
 
         self.cursor_handler.auto_hide_on()
 
@@ -269,8 +256,8 @@ class MainWindow(Gtk.Window):
     def lost_focus(self, *args):
         self.was_out_of_focus = True
 
-        # If the user presses CTRL for a keyboard shortcut, e.g. to
-        # open the library, key_release_event isn't fired and force_single_step
+        # If the user presses CTRL for a keyboard shortcut
+        # key_release_event isn't fired and force_single_step
         # isn't properly unset.
         self.imagehandler.force_single_step = False
 
@@ -1009,8 +996,6 @@ class MainWindow(Gtk.Window):
         if result == Gtk.ResponseType.OK:
             # Go to next page/archive, and delete current file
             if self.filehandler.archive_type is not None:
-                self.filehandler.last_read_page.clear_page(current_file)
-
                 next_opened = self.filehandler._open_next_archive()
                 if not next_opened:
                     next_opened = self.filehandler._open_previous_archive()
@@ -1063,17 +1048,11 @@ class MainWindow(Gtk.Window):
         self.iconify()
 
     def write_config_files(self):
-        self.filehandler.write_fileinfo_file()
         preferences.write_preferences_file()
         bookmark_backend.BookmarksStore.write_bookmarks_file()
 
         # Write keyboard accelerator map
         keybindings.keybinding_manager(self).save()
-
-    def save_and_terminate_program(self, *args):
-        prefs['previous quit was quit and save'] = True
-
-        self.terminate_program()
 
     def get_window_geometry(self):
         return self.get_position() + self.get_size()
@@ -1109,22 +1088,12 @@ class MainWindow(Gtk.Window):
         if Gtk.main_level() > 0:
             Gtk.main_quit()
 
-        if prefs['auto load last file'] and self.filehandler.file_loaded:
-            prefs['path to last file'] = self.imagehandler.get_real_path()
-            prefs['page of last file'] = self.imagehandler.get_current_page()
-        else:
-            prefs['path to last file'] = ''
-            prefs['page of last file'] = 1
-
         if prefs['hide all'] and self.hide_all_forced and self.fullscreen:
             prefs['hide all'] = False
 
         self.write_config_files()
 
         self.filehandler.close_file()
-        if main_dialog._dialog is not None:
-            main_dialog._dialog.close()
-        backend.LibraryBackend().close()
 
         # This hack is to avoid Python issue #1856.
         for thread in threading.enumerate():

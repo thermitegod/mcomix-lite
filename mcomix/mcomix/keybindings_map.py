@@ -94,7 +94,6 @@ BINDING_INFO = {
     'refresh_archive': {'title': 'Refresh', 'group': 'File'},
     'close': {'title': 'Close', 'group': 'File'},
     'quit': {'title': 'Quit', 'group': 'File'},
-    'save_and_quit': {'title': 'Save and quit', 'group': 'File'},
     'extract_page': {'title': 'Save As', 'group': 'File'},
 
     'comments': {'title': 'Archive comments', 'group': 'File'},
@@ -104,7 +103,6 @@ BINDING_INFO = {
     'edit_archive': {'title': 'Edit archive', 'group': 'File'},
     'open': {'title': 'Open', 'group': 'File'},
     'enhance_image': {'title': 'Enhance image', 'group': 'File'},
-    'library': {'title': 'Library', 'group': 'File'},
 }
 
 # Generate 9 entries for executing command 1 to 9
@@ -207,7 +205,6 @@ DEFAULT_BINDINGS = {
     'refresh_archive': ['<control><shift>R'],
     'close': ['<Control>W'],
     'quit': ['<Control>Q'],
-    'save_and_quit': ['<Control><shift>q'],
     'extract_page': ['<Control><Shift>s'],
     'move_file': ['Insert', 'grave'],
 
@@ -218,7 +215,6 @@ DEFAULT_BINDINGS = {
     'edit_archive': [],
     'open': ['<Control>O'],
     'enhance_image': ['e'],
-    'library': ['<Control>L'],
 }
 
 # Execute external command. Bind keys from 1 to 9 to commands 1 to 9.

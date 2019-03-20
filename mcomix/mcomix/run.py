@@ -28,8 +28,6 @@ def parse_arguments():
 
     parser.add_argument('-s', '--slideshow', dest='slideshow', action='store_true',
                         help='Start the application in slideshow mode.')
-    parser.add_argument('-l', '--library', dest='library', action='store_true',
-                        help='Show the library on startup.')
     parser.add_argument('-v', '--version', dest='version', action='store_true',
                         help='Show the version number and exit.')
 
@@ -169,12 +167,6 @@ def run():
         if not open_path:
             open_path = None
 
-    if not open_path and preferences.prefs['auto load last file'] \
-            and preferences.prefs['path to last file'] \
-            and os.path.isfile(preferences.prefs['path to last file']):
-        open_path = preferences.prefs['path to last file']
-        open_page = preferences.prefs['page of last file']
-
     Gdk.set_program_class(constants.APPNAME)
 
     settings = Gtk.Settings.get_default()
@@ -183,7 +175,7 @@ def run():
 
     from mcomix import main
     window = main.MainWindow(fullscreen=args.fullscreen, is_slideshow=args.slideshow,
-                             show_library=args.library, manga_mode=args.manga,
+                             manga_mode=args.manga,
                              double_page=args.doublepage, zoom_mode=args.zoommode,
                              open_path=open_path, open_page=open_page)
     main.set_main_window(window)

@@ -37,31 +37,6 @@ def alphanumeric_sort(filenames):
     filenames.sort(key=lambda s: list(map(_format_substring, NUMERIC_REGEXP.findall(s))))
 
 
-def alphanumeric_compare(s1, s2):
-    """ Compares two strings by their natural order (i.e. 1 before 10)
-    and returns a result comparable to the cmp function.
-    @return: 0 if identical, -1 if s1 < s2, +1 if s1 > s2. """
-    if s1 is None:
-        return 1
-    elif s2 is None:
-        return -1
-
-    stringparts1 = NUMERIC_REGEXP.findall(s1.lower())
-    stringparts2 = NUMERIC_REGEXP.findall(s2.lower())
-    for i, part in enumerate(stringparts1):
-        if part.isdigit():
-            stringparts1[i] = 0, int(part)
-        else:
-            stringparts1[i] = 1, part
-    for i, part in enumerate(stringparts2):
-        if part.isdigit():
-            stringparts2[i] = 0, int(part)
-        else:
-            stringparts2[i] = 1, part
-
-    return cmp(stringparts1, stringparts2)
-
-
 def bin_search(lst, value):
     """ Binary search for sorted list C{lst}, looking for C{value}.
     @return: List index on success. On failure, it returns the 1's

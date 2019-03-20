@@ -216,9 +216,6 @@ class EventHandler(object):
         manager.register('quit',
                          self._window.close_program)
 
-        manager.register('save_and_quit',
-                         self._window.save_and_terminate_program)
-
         manager.register('delete',
                          self._window.delete)
 
@@ -260,9 +257,6 @@ class EventHandler(object):
 
         manager.register('enhance_image',
                          self._window.actiongroup.get_action('enhance_image').activate)
-
-        manager.register('library',
-                         self._window.actiongroup.get_action('library').activate)
 
         manager.register('smart_scroll_down',
                          self._smart_scroll_down)

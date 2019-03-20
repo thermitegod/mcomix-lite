@@ -63,11 +63,6 @@ class MessageDialog(Gtk.MessageDialog):
         self.dialog_id = dialog_id
         self.choices = [int(choice) for choice in choices]
 
-    def set_auto_destroy(self, auto_destroy):
-        """ Determines if the dialog should automatically destroy itself
-        after run(). """
-        self.auto_destroy = auto_destroy
-
     def run(self):
         """ Makes the dialog visible and waits for a result. Also destroys
         the dialog after the result has been returned. """

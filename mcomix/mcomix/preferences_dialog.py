@@ -4,7 +4,7 @@
 
 from gi.repository import GObject, Gdk, GdkPixbuf, Gtk
 
-from mcomix import constants, keybindings, keybindings_editor, message_dialog, preferences_page
+from mcomix import constants, keybindings, keybindings_editor, preferences_page
 from mcomix.preferences import prefs
 
 _dialog = None
@@ -196,16 +196,6 @@ class _PreferencesDialog(Gtk.Dialog):
 
         page.add_row(Gtk.Label(label='Show only one page where appropriate:'),
                      self._create_doublepage_as_one_control())
-
-        page.new_section('Files')
-
-        page.add_row(self._create_pref_check_button(
-                'Open the last viewed file on startup',
-                'auto load last file',
-                None))
-
-        page.add_row(Gtk.Label(label='Store information about recently opened files:'),
-                     self._create_store_recent_combobox())
 
         return page
 
@@ -534,49 +524,6 @@ class _PreferencesDialog(Gtk.Dialog):
             prefs['sort archive order'] = value
 
             self._window.filehandler.refresh_file()
-
-    def _create_store_recent_combobox(self):
-        """ Creates the combobox for "Store recently opened files". """
-        items = (
-            ('Never', False),
-            ('Always', True))
-
-        # Map legacy 0/1/2 values:
-        if prefs['store recent file info'] == 0:
-            selection = False
-        elif prefs['store recent file info'] in (1, 2):
-            selection = True
-        else:
-            selection = prefs['store recent file info']
-
-        box = self._create_combobox(items, selection, self._store_recent_changed_cb)
-        box.set_tooltip_text('Add opened files to the recent files list.')
-        return box
-
-    def _store_recent_changed_cb(self, combobox, *args):
-        """ Called when option "Store recently opened files" was changed. """
-        iter = combobox.get_active_iter()
-        if not combobox.get_model().iter_is_valid(iter):
-            return
-
-        value = combobox.get_model().get_value(iter, 1)
-        last_value = prefs['store recent file info']
-        prefs['store recent file info'] = value
-        self._window.filehandler.last_read_page.set_enabled(value)
-
-        # If "Never" was selected, ask to purge recent files.
-        if (bool(last_value) is True and value is False
-                and (self._window.uimanager.recent.count() > 0
-                     or self._window.filehandler.last_read_page.count() > 0)):
-            dialog = message_dialog.MessageDialog(self, Gtk.DialogFlags.MODAL,
-                                                  Gtk.MessageType.INFO, Gtk.ButtonsType.YES_NO)
-            dialog.set_default_response(Gtk.ResponseType.YES)
-            dialog.set_text('Delete information about recently opened files?')
-            response = dialog.run()
-
-            if response == Gtk.ResponseType.YES:
-                self._window.uimanager.recent.remove_all()
-                self._window.filehandler.last_read_page.clear_all()
 
     def _create_scaling_quality_combobox(self):
         """ Creates combo box for image scaling quality """
