@@ -5,7 +5,7 @@
 
 from gi.repository import Gtk
 
-from mcomix import bookmark_menu, constants, dialog_handler, edit_dialog, enhance_dialog, file_chooser_main_dialog, \
+from mcomix import bookmark_menu, constants, dialog_handler, enhance_dialog, file_chooser_main_dialog, \
     openwith_menu, preferences_dialog, status
 from mcomix.preferences import prefs
 
@@ -178,9 +178,6 @@ class MainUI(Gtk.UIManager):
 
         # Some actions added separately since they need extra arguments.
         self._actiongroup.add_actions([
-            ('edit_archive', Gtk.STOCK_EDIT, '_Edit archive...',
-             None, 'Opens the archive editor.',
-             edit_dialog.open_dialog),
             ('open', Gtk.STOCK_OPEN, '_Open...',
              None, None, file_chooser_main_dialog.open_main_filechooser_dialog),
             ('enhance_image', 'mcomix-enhance-image', 'En_hance image...',
@@ -234,9 +231,6 @@ class MainUI(Gtk.UIManager):
                 <menu action="menu_edit">
                     <menuitem action="copy_path" />
                     <menuitem action="copy_image" />
-                    <separator />
-                    <menuitem action="edit_archive" />
-                    <menuitem action="comments" />
                     <separator />
                     <menuitem action="preferences" />
                 </menu>
@@ -405,51 +399,3 @@ class MainUI(Gtk.UIManager):
         # Is there no built-in way to do this?
         self.get_widget('/Tool/expander').set_expand(True)
         self.get_widget('/Tool/expander').set_sensitive(False)
-
-    def set_sensitivities(self):
-        """Sets the main UI's widget's sensitivities appropriately."""
-        general = ('properties',
-                   'edit_archive',
-                   'extract_page',
-                   'close',
-                   'delete',
-                   'copy_path',
-                   'copy_image',
-                   'slideshow',
-                   'rotate_90',
-                   'rotate_180',
-                   'rotate_270',
-                   'flip_horiz',
-                   'flip_vert',
-                   'next_page',
-                   'previous_page',
-                   'first_page',
-                   'last_page',
-                   'go_to',
-                   'refresh_archive',
-                   'next_archive',
-                   'previous_archive',
-                   'next_directory',
-                   'previous_directory',
-                   'keep_transformation',
-                   'enhance_image')
-
-        comment = ('comments',)
-
-        general_sensitive = False
-        comment_sensitive = False
-
-        if self._window.filehandler.file_loaded:
-            general_sensitive = True
-
-            if self._window.filehandler.get_number_of_comments():
-                comment_sensitive = True
-
-        for name in general:
-            self._actiongroup.get_action(name).set_sensitive(general_sensitive)
-
-        for name in comment:
-            self._actiongroup.get_action(name).set_sensitive(comment_sensitive)
-
-        self.bookmarks.set_sensitive(general_sensitive)
-        self.bookmarks_popup.set_sensitive(general_sensitive)

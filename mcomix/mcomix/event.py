@@ -240,17 +240,11 @@ class EventHandler(object):
         manager.register('previous_directory',
                          self._window.filehandler.open_previous_directory)
 
-        manager.register('comments',
-                         self._window.actiongroup.get_action('comments').activate)
-
         manager.register('properties',
                          self._window.actiongroup.get_action('properties').activate)
 
         manager.register('preferences',
                          self._window.actiongroup.get_action('preferences').activate)
-
-        manager.register('edit_archive',
-                         self._window.actiongroup.get_action('edit_archive').activate)
 
         manager.register('open',
                          self._window.actiongroup.get_action('open').activate)

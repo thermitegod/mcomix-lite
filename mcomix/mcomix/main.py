@@ -226,7 +226,6 @@ class MainWindow(Gtk.Window):
         self._main_layout.connect('motion_notify_event', self._event_handler.mouse_move_event)
         self._main_layout.connect('drag_data_received', self._event_handler.drag_n_drop_event)
 
-        self.uimanager.set_sensitivities()
         self.show()
 
         if prefs['default fullscreen'] or fullscreen:
@@ -532,7 +531,6 @@ class MainWindow(Gtk.Window):
             self.set_icon(pixbuf)
 
     def _on_file_opened(self):
-        self.uimanager.set_sensitivities()
         number, count = self.filehandler.get_file_number()
         self.statusbar.set_file_number(number, count)
         self.statusbar.update()
@@ -541,7 +539,6 @@ class MainWindow(Gtk.Window):
         self.clear()
         self.thumbnailsidebar.hide()
         self.thumbnailsidebar.clear()
-        self.uimanager.set_sensitivities()
         self.set_icon_list(icons.mcomix_icons())
 
     def new_page(self, at_bottom=False):

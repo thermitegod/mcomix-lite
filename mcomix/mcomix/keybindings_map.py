@@ -96,11 +96,9 @@ BINDING_INFO = {
     'quit': {'title': 'Quit', 'group': 'File'},
     'extract_page': {'title': 'Save As', 'group': 'File'},
 
-    'comments': {'title': 'Archive comments', 'group': 'File'},
     'properties': {'title': 'Properties', 'group': 'File'},
     'preferences': {'title': 'Preferences', 'group': 'File'},
 
-    'edit_archive': {'title': 'Edit archive', 'group': 'File'},
     'open': {'title': 'Open', 'group': 'File'},
     'enhance_image': {'title': 'Enhance image', 'group': 'File'},
 }
@@ -208,11 +206,9 @@ DEFAULT_BINDINGS = {
     'extract_page': ['<Control><Shift>s'],
     'move_file': ['Insert', 'grave'],
 
-    'comments': ['c'],
     'properties': ['<Alt>Return'],
     'preferences': ['F12'],
 
-    'edit_archive': [],
     'open': ['<Control>O'],
     'enhance_image': ['e'],
 }
