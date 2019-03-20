@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sqlite3
 
 
 class LastReadPage(object):
@@ -13,7 +12,6 @@ class LastReadPage(object):
     simplifies code in other places, as it does not have to check each time
     if the preference option to store pages automatically is enabled.
     """
-
     def __init__(self, backend):
         """ Constructor.
         @param backend: Library backend instance.
@@ -36,7 +34,6 @@ class LastReadPage(object):
         """ Number of stored book/page combinations. This method is
         not affected by setting L{enabled} to false.
         @return: The number of entries stored by this module. """
-
         if not self.backend.enabled:
             return 0
 
@@ -58,15 +55,13 @@ class LastReadPage(object):
         book = self.backend.get_book_by_path(full_path)
 
         if not book:
-            self.backend.add_book(
-                    full_path, self.backend.get_recent_collection().id)
+            self.backend.add_book(full_path, self.backend.get_recent_collection().id)
             book = self.backend.get_book_by_path(full_path)
 
             if not book:
                 raise ValueError("Book doesn't exist")
         else:
-            self.backend.add_book_to_collection(
-                    book.id, self.backend.get_recent_collection().id)
+            self.backend.add_book_to_collection(book.id, self.backend.get_recent_collection().id)
 
         book.set_last_read_page(page)
 
@@ -87,7 +82,6 @@ class LastReadPage(object):
         """ Removes all stored books from the library's 'Recent' collection,
         and removes all information from the recent table. This method is
         not affected by setting L{enabled} to false. """
-
         if not self.backend.enabled:
             return
 
@@ -109,10 +103,8 @@ class LastReadPage(object):
 
     def get_page(self, path):
         """ Gets the last read page for book at C{path}.
-
         @param path: Path to book.
-        @return: Page that was last read, or C{None} if the book
-                 wasn't opened before.
+        @return: Page that was last read, or C{None} if the book wasn't opened before.
         """
         if not self.enabled:
             return None
@@ -132,7 +124,6 @@ class LastReadPage(object):
 
     def get_date(self, path):
         """ Gets the date at which the page for path was set.
-
         @param path: Path to book.
         @return: C{datetime} object, or C{None} if no page was set.
         """
@@ -145,23 +136,3 @@ class LastReadPage(object):
             return book.get_last_read_date()
         else:
             return None
-
-    @staticmethod
-    def _init_database(dbfile):
-        """ Creates or opens new SQLite database at C{dbfile}, and initalizes
-        the required table(s).
-
-        @param dbfile: Database file name. This file needn't exist.
-        @return: Open SQLite database connection.
-        """
-
-        db = sqlite3.connect(dbfile, isolation_level=None)
-        sql = """CREATE TABLE IF NOT EXISTS lastread (
-            path TEXT PRIMARY KEY,
-            page INTEGER,
-            time_set DATETIME
-        )"""
-        cursor = db.execute(sql)
-        cursor.close()
-
-        return db

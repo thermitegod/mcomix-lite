@@ -117,7 +117,7 @@ class _BookmarksDialog(Gtk.Dialog):
             self._liststore.remove(treeiter)
             self._bookmarks_store.remove_bookmark(bookmark)
 
-    def _bookmark_activated(self, treeview, path, view_column, *args):
+    def _bookmark_activated(self, treeview, path, *args):
         """ Open the activated bookmark. """
 
         iter = treeview.get_model().get_iter(path)

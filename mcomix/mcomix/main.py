@@ -893,16 +893,6 @@ class MainWindow(Gtk.Window):
 
         return tuple(dimensions)
 
-    def get_layout_pointer_position(self):
-        """Return a 2-tuple with the x and y coordinates of the pointer
-        on the main layout area, relative to the layout.
-        """
-        x, y = self._main_layout.get_pointer()
-        x += self._hadjust.get_value()
-        y += self._vadjust.get_value()
-
-        return x, y
-
     def set_cursor(self, mode):
         """Set the cursor on the main layout area to <mode>. You should
         probably use the cursor_handler instead of using this method

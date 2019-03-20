@@ -95,12 +95,6 @@ class __BookmarksStore(object):
 
         self.add_bookmark_by_values(name, path, page, numpages, archive_type, date_added)
 
-    def clear_bookmarks(self):
-        """Remove all bookmarks from the list."""
-
-        while not self.is_empty():
-            self.remove_bookmark(self._bookmarks[-1])
-
     def get_bookmarks(self):
         """Return all the bookmarks in the list."""
         if not self.file_was_modified():
@@ -108,10 +102,6 @@ class __BookmarksStore(object):
         else:
             self._bookmarks, self._bookmarks_mtime = self.load_bookmarks()
             return self._bookmarks
-
-    def is_empty(self):
-        """Return True if the bookmark list is empty."""
-        return len(self._bookmarks) == 0
 
     def load_bookmarks(self):
         """ Loads persisted bookmarks from a local file.

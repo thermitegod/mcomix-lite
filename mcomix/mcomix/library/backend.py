@@ -18,10 +18,6 @@ class _LibraryBackend(object):
     data to and from disk.
     """
 
-    #: Current version of the library database structure.
-    # See method _upgrade_database() for changes between versions.
-    DB_VERSION = 6
-
     def __init__(self):
         def row_factory(cursor, row):
             """Return rows as sequences only when they have more than
@@ -445,94 +441,6 @@ class _LibraryBackend(object):
 
         global _backend
         _backend = None
-
-    def _table_exists(self, table):
-        """ Checks if C{table} exists in the database. """
-        cursor = self._con.cursor()
-        exists = cursor.execute('pragma table_info(%s)' % table).fetchone() is not None
-        cursor.close()
-        return exists
-
-    def _library_version(self):
-        """ Examines the library database structure to determine
-        which version of MComix created it.
-
-        @return C{version} from the table C{Info} if available,
-        C{0} otherwise. C{-1} if the database has not been created yet."""
-
-        # Check if Comix' tables exist
-        tables = ('book', 'collection', 'contain')
-        for table in tables:
-            if not self._table_exists(table):
-                return -1
-
-        if self._table_exists('info'):
-            cursor = self._con.cursor()
-            version = cursor.execute("""select value from info
-                where key = 'version' """).fetchone()
-            cursor.close()
-
-            if not version:
-                log.warning('Could not determine library database version!')
-                return -1
-            else:
-                return int(version)
-        else:
-            # Comix database format
-            return 0
-
-    def _create_tables(self):
-        """ Creates all required tables in the database. """
-        self._create_table_book()
-        self._create_table_collection()
-        self._create_table_contain()
-        self._create_table_info()
-        self._create_table_watchlist()
-        self._create_table_recent()
-
-    def _create_table_book(self):
-        self._con.execute("""create table if not exists book (
-            id integer primary key,
-            name text,
-            path text unique,
-            pages integer,
-            format integer,
-            size integer,
-            added datetime default current_timestamp)""")
-
-    def _create_table_collection(self):
-        self._con.execute("""create table if not exists collection (
-            id integer primary key,
-            name text unique,
-            supercollection integer)""")
-
-    def _create_table_contain(self):
-        self._con.execute("""create table if not exists contain (
-            collection integer not null,
-            book integer not null,
-            primary key (collection, book))""")
-
-    def _create_table_info(self):
-        self._con.execute("""create table if not exists info (
-            key text primary key,
-            value text)""")
-        self._con.execute("""insert into info
-            (key, value) values ('version', ?)""",
-                          (str(_LibraryBackend.DB_VERSION),))
-
-    def _create_table_watchlist(self):
-        self._con.execute("""create table if not exists watchlist (
-            path text primary key,
-            collection integer references collection (id) on delete set null,
-            recursive boolean not null)""")
-
-    def _create_table_recent(self):
-        self._con.execute("""create table if not exists recent (
-            book integer primary key,
-            page integer,
-            time_set datetime)""")
-        self._con.execute("""insert or ignore into collection (id, name)
-            values (?, ?)""", (COLLECTION_RECENT, 'Recent'))
 
 
 _backend = None

@@ -23,7 +23,6 @@ class RarArchive(archive_base.BaseArchive):
 
     class _OpenMode(object):
         """ Rar open mode """
-        RAR_OM_LIST = 0
         RAR_OM_EXTRACT = 1
 
     class _ProcessingMode(object):
@@ -101,7 +100,6 @@ class RarArchive(archive_base.BaseArchive):
         super(RarArchive, self).__init__(archive)
         self._unrar = _get_unrar_so()
         self._handle = None
-        self._callback_function = None
         self._is_solid = False
         # Information about the current file will be stored in this structure
         self._headerdata = RarArchive._RARHeaderDataEx()

@@ -215,30 +215,6 @@ def static_image(pixbuf):
     return pixbuf
 
 
-def unwrap_image(image):
-    """ Returns an object that contains the image data based on
-    gtk.Image.get_storage_type or None if image is None or image.get_storage_type
-    returns Gtk.ImageType.EMPTY. """
-    if image is None:
-        return None
-    t = image.get_storage_type()
-    if t == Gtk.ImageType.EMPTY:
-        return None
-    if t == Gtk.ImageType.PIXBUF:
-        return image.get_pixbuf()
-    if t == Gtk.ImageType.ANIMATION:
-        return image.get_animation()
-    if t == Gtk.ImageType.PIXMAP:
-        return image.get_pixmap()
-    if t == Gtk.ImageType.IMAGE:
-        return image.get_image()
-    if t == Gtk.ImageType.STOCK:
-        return image.get_stock()
-    if t == Gtk.ImageType.ICON_SET:
-        return image.get_icon_set()
-    raise ValueError()
-
-
 def set_from_pixbuf(image, pixbuf):
     if is_animation(pixbuf):
         return image.set_from_animation(pixbuf)

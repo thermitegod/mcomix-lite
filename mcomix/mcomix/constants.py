@@ -16,7 +16,6 @@ DATA_DIR = os.path.join(os.getenv('XDG_CONFIG_HOME', os.path.join(HOME_DIR, '.lo
 BASE_PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 THUMBNAIL_PATH = os.path.join(HOME_DIR, '.thumbnails/normal')
 LIBRARY_DATABASE_PATH = os.path.join(DATA_DIR, 'library.db')
-LASTPAGE_DATABASE_PATH = os.path.join(DATA_DIR, 'lastreadpage.db')
 LIBRARY_COVERS_PATH = os.path.join(DATA_DIR, 'library_covers')
 PREFERENCE_PATH = os.path.join(CONFIG_DIR, 'preferences.conf')
 KEYBINDINGS_CONF_PATH = os.path.join(CONFIG_DIR, 'keybindings.conf')
@@ -52,8 +51,6 @@ RESPONSE_REVERT_TO_DEFAULT = 3
 RESPONSE_REMOVE = 4
 RESPONSE_IMPORT = 5
 RESPONSE_SAVE_AS = 6
-RESPONSE_REPLACE = 7
-RESPONSE_NEW = 8
 
 # These are bit field values, so only use powers of two.
 STATUS_PAGE, STATUS_RESOLUTION, STATUS_PATH, STATUS_FILENAME, STATUS_FILENUMBER, STATUS_FILESIZE = 1, 2, 4, 8, 16, 32

@@ -102,7 +102,7 @@ class MagnifyingLens(object):
         # Don't forget 1 pixel border...
         return lens_x, lens_y, width + 2, height + 2
 
-    def _clear_lens(self, current_lens_region=None):
+    def _clear_lens(self):
         """ Invalidates the area that was damaged by the last call to draw_lens. """
 
         if not self._last_lens_rect:

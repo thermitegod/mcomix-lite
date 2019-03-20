@@ -38,7 +38,6 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
         """ Start parsing after the first delimiter (bunch of - characters),
         and end when delimiters appear again. Format:
         Date <space> Time <space> Attr <space> Size <space> Compressed <space> Name"""
-
         if line.startswith('----------'):
             if self._state == self.STATE_HEADER:
                 # First delimiter reached, start reading from next line.
@@ -71,16 +70,15 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
         if not self._get_executable():
             return
 
-        for retry_count in range(2):
-            #: Indicates which part of the file listing has been read.
-            self._state = self.STATE_HEADER
-            #: Current path while listing contents.
-            self._path = None
-            with process.popen(self._get_list_arguments(), stderr=process.STDOUT, universal_newlines=True) as proc:
-                for line in proc.stdout:
-                    filename = self._parse_list_output_line(line.rstrip(os.linesep))
-                    if filename is not None:
-                        yield filename
+        #: Indicates which part of the file listing has been read.
+        self._state = self.STATE_HEADER
+        #: Current path while listing contents.
+        self._path = None
+        with process.popen(self._get_list_arguments(), stderr=process.STDOUT, universal_newlines=True) as proc:
+            for line in proc.stdout:
+                filename = self._parse_list_output_line(line.rstrip(os.linesep))
+                if filename is not None:
+                    yield filename
 
         self.filenames_initialized = True
 
@@ -98,8 +96,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
             tmplistfile.write(filename + os.linesep)
             tmplistfile.flush()
             with self._create_file(os.path.join(destination_dir, filename)) as output:
-                process.call(self._get_extract_arguments(list_file=tmplistfile.name),
-                             stdout=output)
+                process.call(self._get_extract_arguments(list_file=tmplistfile.name), stdout=output)
 
     def iter_extract(self, entries, destination_dir):
         if not self._get_executable():
