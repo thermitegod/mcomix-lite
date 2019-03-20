@@ -29,7 +29,6 @@ def load_icons():
               ('tango-add-bookmark.png', 'mcomix-add-bookmark'),
               ('tango-archive.png', 'mcomix-archive'),
               ('tango-image.png', 'mcomix-image'),
-              ('comments.png', 'mcomix-comments'),
               ('zoom.png', 'mcomix-zoom'),
               ('lens.png', 'mcomix-lens'),
               ('double-page.png', 'mcomix-double-page'),
