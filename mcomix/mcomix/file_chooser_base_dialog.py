@@ -176,12 +176,6 @@ class _BaseFileChooserDialog(Gtk.Dialog):
             if not recursive:
                 break
 
-    def set_save_name(self, name):
-        self.filechooser.set_current_name(name)
-
-    def set_current_directory(self, path):
-        self.filechooser.set_current_folder(path)
-
     @staticmethod
     def should_open_recursive():
         return False

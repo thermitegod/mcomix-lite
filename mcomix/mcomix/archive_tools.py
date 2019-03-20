@@ -120,23 +120,6 @@ def archive_mime_type(path):
     return None
 
 
-def get_archive_info(path):
-    """Return a tuple (mime, num_pages, size) with info about the archive
-    at <path>, or None if <path> doesn't point to a supported
-    """
-    with tempfile.TemporaryDirectory(prefix='mcomix_archive_info.') as tmpdir:
-        mime = archive_mime_type(path)
-        archive = get_recursive_archive_handler(path, tmpdir, type=mime)
-        if archive is None:
-            return None
-
-        files = archive.list_contents()
-        num_pages = sum([image_tools.is_image_file(f) for f in files])
-        size = os.stat(path).st_size
-
-        return mime, num_pages, size
-
-
 def get_archive_handler(path, type=None):
     """ Returns a fitting extractor handler for the archive passed
     in <path> (with optional mime type <type>. Returns None if no matching
