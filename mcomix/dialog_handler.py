@@ -5,10 +5,9 @@
    information and then exit with no added functionality inbetween.
 """
 
-from mcomix import about_dialog, comment_dialog, properties_dialog
+from mcomix import about_dialog, properties_dialog
 
 dialog_windows = {'about-dialog'     : [None, about_dialog._AboutDialog],
-                  'comments-dialog'  : [None, comment_dialog._CommentsDialog],
                   'properties-dialog': [None, properties_dialog._PropertiesDialog]}
 
 

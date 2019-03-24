@@ -334,11 +334,6 @@ class _PreferencesDialog(Gtk.Dialog):
                              1, 1.1, 10.0, 0.1, 1.0, 1,
                              None))
 
-        page.new_section('Comments')
-
-        page.add_row(Gtk.Label(label='Comment extensions:'),
-                     self._create_extensions_entry())
-
         return page
 
     def _init_shortcuts_tab(self):
@@ -617,14 +612,6 @@ class _PreferencesDialog(Gtk.Dialog):
 
         return box
 
-    def _create_extensions_entry(self):
-        entry = Gtk.Entry()
-        entry.set_size_request(200, -1)
-        entry.set_text(', '.join(prefs['comment extensions']))
-        entry.connect('activate', self._entry_cb)
-        entry.connect('focus_out_event', self._entry_cb)
-        return entry
-
     def _create_pref_check_button(self, label, prefkey, tooltip_text):
         button = Gtk.CheckButton(label=label)
         button.set_active(prefs[prefkey])
@@ -753,13 +740,6 @@ class _PreferencesDialog(Gtk.Dialog):
 
         elif preference == 'osd timeout':
             prefs[preference] = value
-
-    def _entry_cb(self, entry, event=None):
-        """Callback for entry-type preferences."""
-        text = entry.get_text()
-        extensions = [e.strip() for e in text.split(',')]
-        prefs['comment extensions'] = [e for e in extensions if e]
-        self._window.filehandler.update_comment_extensions()
 
     def _create_pref_path_chooser(self, preference, folder=False, default=None):
         """ Select path as preference value """

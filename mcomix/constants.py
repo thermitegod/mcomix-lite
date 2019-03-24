@@ -54,8 +54,6 @@ SORT_NAME, SORT_PATH, SORT_SIZE, SORT_LAST_MODIFIED, SORT_NAME_LITERAL = 1, 2, 3
 SORT_DESCENDING, SORT_ASCENDING = 1, 2
 SIZE_HUGE, SIZE_LARGE, SIZE_NORMAL, SIZE_SMALL, SIZE_TINY = 500, 300, 250, 125, 80
 
-ACCEPTED_COMMENT_EXTENSIONS = ['txt', 'nfo', 'xml']
-
 ZIP_FORMATS = (
     ('application/x-zip', 'application/zip', 'application/x-zip-compressed', 'application/x-cbz'),
     ('zip', 'cbz'))

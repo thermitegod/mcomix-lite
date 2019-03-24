@@ -3,7 +3,6 @@
 """file_handler.py - File handler that takes care of opening archives and images."""
 
 import os
-import re
 import tempfile
 
 from gi.repository import Gtk
@@ -19,7 +18,6 @@ class FileHandler(object):
     the raw file names for archive members and image files, extracts
     archives, and lists directories for image files.
     """
-
     def __init__(self, window):
         #: Indicates if files/archives are currently loaded/loading.
         self.file_loaded = False
@@ -39,8 +37,6 @@ class FileHandler(object):
         self._tmp_dir_ctx = None
         #: If C{True}, no longer wait for files to get extracted.
         self._stop_waiting = False
-        #: List of comment files inside of the currently opened archive.
-        self._comment_files = []
         #: Mapping of absolute paths to archive path names.
         self._name_table = {}
         #: Archive extractor.
@@ -51,9 +47,6 @@ class FileHandler(object):
         self._condition = None
         #: Provides a list of available files/archives in the open directory.
         self._file_provider = None
-        #: Regexp used for determining which archive files are comment files.
-        self._comment_re = None
-        self.update_comment_extensions()
 
     def refresh_file(self, *args, **kwargs):
         """ Closes the current file(s)/archive and reloads them. """
@@ -177,7 +170,6 @@ class FileHandler(object):
             self._current_file = None
             self._base_path = None
             self._stop_waiting = True
-            self._comment_files = []
             self._name_table.clear()
             self.file_closed()
         # Catch up on UI events, so we don't leave idle callbacks.
@@ -265,14 +257,7 @@ class FileHandler(object):
         self._sort_archive_images(archive_images)
         image_files = [os.path.join(self._tmp_dir, f) for f in archive_images]
 
-        comment_files = list(filter(self._comment_re.search, files))
-        tools.alphanumeric_sort(comment_files)
-        self._comment_files = [os.path.join(self._tmp_dir, f) for f in comment_files]
-
         self._name_table = dict(zip(image_files, archive_images))
-        self._name_table.update(zip(self._comment_files, comment_files))
-
-        self._extractor.set_files(archive_images + comment_files)
 
         self._archive_opened(image_files)
 
@@ -337,28 +322,6 @@ class FileHandler(object):
         else:
             current_index = 0
         return current_index + 1, len(file_list)
-
-    def get_number_of_comments(self):
-        """Return the number of comments in the current archive."""
-        return len(self._comment_files)
-
-    def get_comment_text(self, num):
-        """Return the text in comment <num> or None if comment <num> is not readable"""
-        self._wait_on_comment(num)
-        with open(self._comment_files[num - 1], 'r') as fd:
-            return fd.read()
-        return None
-
-    def get_comment_name(self, num):
-        """Return the filename of comment <num>."""
-        return self._comment_files[num - 1]
-
-    def update_comment_extensions(self):
-        """Update the regular expression used to filter out comments in
-        archives by their filename.
-        """
-        exts = '|'.join(prefs['comment extensions'])
-        self._comment_re = re.compile(r'\.(%s)\s*$' % exts, re.I)
 
     def get_path_to_base(self):
         """Return the full path to the current base (path to archive or
@@ -474,23 +437,6 @@ class FileHandler(object):
         self.open_file(path, -1, keep_fileprovider=True)
         return True
 
-    def file_is_available(self, filepath):
-        """ Returns True if the file specified by "filepath" is available
-        for reading, i.e. extracted to harddisk. """
-
-        if self.archive_type is not None:
-            with self._condition:
-                return self._extractor.is_ready(self._name_table[filepath])
-
-        elif filepath is None:
-            return False
-
-        elif os.path.isfile(filepath):
-            return True
-
-        else:
-            return False
-
     @callback.Callback
     def file_available(self, filepaths):
         """ Called every time a new file from the Filehandler's opened
@@ -506,13 +452,6 @@ class FileHandler(object):
             return
         filepath = os.path.join(extractor.get_directory(), name)
         self.file_available([filepath])
-
-    def _wait_on_comment(self, num):
-        """Block the running (main) thread until the file corresponding to
-        comment <num> has been fully extracted.
-        """
-        path = self._comment_files[num - 1]
-        self._wait_on_file(path)
 
     def _wait_on_file(self, path):
         """Block the running (main) thread if the file <path> is from an

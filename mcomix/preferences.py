@@ -7,7 +7,6 @@ from mcomix import constants, log
 
 # All preferences are stored here.
 prefs = {
-    'comment extensions': constants.ACCEPTED_COMMENT_EXTENSIONS,
     'number of key presses before page turn': 3,
     'auto open next archive': True,
     'auto open next directory': False,

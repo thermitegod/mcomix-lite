@@ -71,8 +71,6 @@ class _PropertiesDialog(Gtk.Dialog):
         path = window.filehandler.get_path_to_base()
         main_info = (
             '%d pages' % window.imagehandler.get_number_of_pages(),
-            '%d comments' %
-            window.filehandler.get_number_of_comments(),
             constants.ARCHIVE_DESCRIPTIONS[window.filehandler.archive_type])
         page.set_main_info(main_info)
         self._update_page_secondary_info(page, path)

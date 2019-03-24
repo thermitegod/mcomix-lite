@@ -87,10 +87,6 @@ def garbage_collect():
     gc.collect(0)
 
 
-def pkg_path(*args):
-    return os.path.join(constants.BASE_PATH, 'mcomix', *args)
-
-
 def div(a, b):
     return float(a) / float(b)
 
