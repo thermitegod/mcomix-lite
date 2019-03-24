@@ -5,6 +5,7 @@ import operator
 import os
 import shutil
 import threading
+import pkg_resources
 
 from gi.repository import GLib, Gdk, Gtk
 from send2trash import send2trash
@@ -249,6 +250,48 @@ class MainWindow(Gtk.Window):
             Gtk.main_do_event(event)
 
         Gdk.event_handler_set(_on_event)
+
+        self.styleprovider = None
+        self.load_style(prefs['userstyle'])
+
+    def load_style(self, path=None):
+        if not path:
+            return self.reset_style()
+        # load userstyle from path
+        try:
+            csspath = pkg_resources.resource_string(__package__, path)
+            # csspath = tools.relpath2root(path)
+            if not csspath:
+                raise Exception('userstyle out of mount point is not allowed.')
+            provider = Gtk.CssProvider.new()
+            provider.load_from_path(csspath)
+        except Exception as e:
+            provider = None
+            text = 'Failed to load userstyle: "{}", {}'.format(path, e)
+            log.warning(text)
+            self.osd.show(text)
+        finally:
+            # always reset before setting userstyle
+            self.reset_style()
+
+        if not provider:
+            # failed to load userstyle, stop
+            return
+        self.styleprovider = provider
+        Gtk.StyleContext.add_provider_for_screen(
+                self.get_screen(),
+                self.styleprovider,
+                Gtk.STYLE_PROVIDER_PRIORITY_USER
+        )
+
+    def reset_style(self):
+        # reset to system style
+        if self.styleprovider:
+            Gtk.StyleContext.remove_provider_for_screen(
+                    self.get_screen(),
+                    self.styleprovider
+            )
+            self.styleprovider = None
 
     def gained_focus(self, *args):
         self.was_out_of_focus = False
