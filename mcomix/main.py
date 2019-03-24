@@ -7,6 +7,7 @@ import shutil
 import threading
 
 from gi.repository import GLib, Gdk, Gtk
+from send2trash import send2trash
 
 from mcomix import bookmark_backend, callback, clipboard, constants, cursor_handler, enhance_backend, event, \
     file_handler, icons, image_handler, image_tools, keybindings, layout, lens, log, message_dialog, osd, \
@@ -977,14 +978,12 @@ class MainWindow(Gtk.Window):
                     os.rename(current_file, target_file)
 
     def delete(self, *args):
-        """ The currently opened file/archive will be deleted after showing
-        a confirmation dialog. """
-        # TODO send2trash support and pref option to toggle
+        """The currently opened file/archive will be trashed after showing a confirmation dialog"""
         current_file = self.imagehandler.get_real_path()
         dialog = message_dialog.MessageDialog(self, Gtk.DialogFlags.MODAL, Gtk.MessageType.QUESTION,
                                               Gtk.ButtonsType.NONE)
         dialog.set_should_remember_choice('delete-opend-file', (Gtk.ResponseType.OK,))
-        dialog.set_text('Delete "%s"?' % os.path.basename(current_file))
+        dialog.set_text('Trash Selected File: "%s"?' % os.path.basename(current_file))
         dialog.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
         dialog.add_button(Gtk.STOCK_DELETE, Gtk.ResponseType.OK)
         dialog.set_default_response(Gtk.ResponseType.OK)
@@ -1000,7 +999,7 @@ class MainWindow(Gtk.Window):
                     self.filehandler.close_file()
 
                 if os.path.isfile(current_file):
-                    os.unlink(current_file)
+                    send2trash(current_file)
             else:
                 if self.imagehandler.get_number_of_pages() > 1:
                     # Open the next/previous file
@@ -1008,15 +1007,16 @@ class MainWindow(Gtk.Window):
                         self.flip_page(-1)
                     else:
                         self.flip_page(+1)
-                    # Unlink the desired file
+                    # trash the desired file
                     if os.path.isfile(current_file):
-                        os.unlink(current_file)
+                        send2trash(current_file)
+
                     # Refresh the directory
                     self.filehandler.refresh_file()
                 else:
                     self.filehandler.close_file()
                     if os.path.isfile(current_file):
-                        os.unlink(current_file)
+                        send2trash(current_file)
 
     def show_info_panel(self):
         """ Shows an OSD displaying information about the current page. """
