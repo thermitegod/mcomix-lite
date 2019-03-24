@@ -437,10 +437,7 @@ def text_color_for_background_color(bgcolor):
 
 
 def get_image_info(path):
-    """Return image informations:
-        (format, width, height)
-    """
-    info = None
+    """Return image informations: (format, width, height)"""
     try:
         with Image.open(path) as im:
             return (im.format,) + im.size

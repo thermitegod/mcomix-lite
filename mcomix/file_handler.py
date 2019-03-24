@@ -8,8 +8,7 @@ import tempfile
 
 from gi.repository import Gtk
 
-from mcomix import archive_extractor, archive_tools, callback, constants, file_provider, image_tools, \
-    log, tools
+from mcomix import archive_extractor, archive_tools, callback, constants, file_provider, image_tools, log, tools
 from mcomix.preferences import prefs
 
 
@@ -99,9 +98,6 @@ class FileHandler(object):
         self._current_file = os.path.abspath(path)
         self._stop_waiting = False
 
-        image_files = []
-        current_image_index = 0
-
         # Actually open the file(s)/archive passed in path.
         if self.archive_type is not None:
             try:
@@ -119,9 +115,7 @@ class FileHandler(object):
         return True
 
     def _archive_opened(self, image_files):
-        """ Called once the archive has been opened and its contents listed.
-        """
-
+        """ Called once the archive has been opened and its contents listed"""
         self._window.imagehandler._base_path = self._base_path
         self._window.imagehandler._image_files = image_files
         self.file_opened()
@@ -208,7 +202,6 @@ class FileHandler(object):
             Otherwise, C{path} is not modified."""
 
         if isinstance(path, list) and len(path) == 0:
-            # This is a programming error and does not need translation.
             assert False, 'Tried to open an empty list of files.'
 
         elif isinstance(path, list) and len(path) > 0:

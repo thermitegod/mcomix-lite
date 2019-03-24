@@ -3,10 +3,9 @@
 """archive_tools.py - Archive tool functions."""
 
 import os
-import tempfile
 import zipfile
 
-from mcomix import constants, image_tools, log
+from mcomix import constants, log
 from mcomix.archive import pdf, rar, sevenzip, zip
 
 # Handlers for each archive type.
