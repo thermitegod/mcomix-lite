@@ -938,7 +938,7 @@ class MainWindow(Gtk.Window):
         """The currently opened file/archive will be moved to ./keep"""
         # TODO pref config option for relative path
         current_file = self.imagehandler.get_real_path()
-        target_dir = os.path.join(os.path.dirname(current_file), 'keep')
+        target_dir = os.path.join(os.path.dirname(current_file), prefs['move file'])
         target_file = os.path.join(target_dir, os.path.basename(current_file))
 
         if not os.path.exists(target_dir):

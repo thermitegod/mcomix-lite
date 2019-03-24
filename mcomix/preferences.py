@@ -7,6 +7,7 @@ from mcomix import constants, log
 
 # All preferences are stored here.
 prefs = {
+    'move file': constants.MOVE_FILE,
     'number of key presses before page turn': 3,
     'auto open next archive': True,
     'auto open next directory': False,
