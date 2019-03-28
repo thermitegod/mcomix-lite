@@ -265,23 +265,25 @@ def load_pixbuf_size(path, width, height):
     inside (width, height). """
     try:
         with Image.open(path) as im:
-            im.draft(None, (width, height))
-            pixbuf = pil_to_pixbuf(im, keep_orientation=True)
+            im.thumbnail((width, height), resample=Image.BOX)
+            return pil_to_pixbuf(im, keep_orientation=True)
     except:
-        image_format, image_width, image_height = get_image_info(path)
+        info, image_width, image_height = GdkPixbuf.Pixbuf.get_file_info(path)
         # If we could not get the image info, still try to load
         # the image to let GdkPixbuf raise the appropriate exception.
-        if (0, 0) == (image_width, image_height):
+        if not info:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file(path)
-        # Work around GdkPixbuf bug: https://bugzilla.gnome.org/show_bug.cgi?id=735422
-        elif 'GIF' == image_format:
+        # Don't upscale if smaller than target dimensions!
+        if image_width <= width and image_height <= height:
+            width, height = image_width, image_height
+        # Work around GdkPixbuf bug: https://gitlab.gnome.org/GNOME/gdk-pixbuf/issues/45
+        # TODO: GIF should be always supported by Pillow. Is this workaround really needed?
+        if info.get_name() == 'gif':
             pixbuf = GdkPixbuf.Pixbuf.new_from_file(path)
         else:
-            # Don't upscale if smaller than target dimensions!
-            if image_width <= width and image_height <= height:
-                width, height = image_width, image_height
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(path, width, height)
-    return fit_in_rectangle(pixbuf, width, height, scaling_quality=GdkPixbuf.InterpType.BILINEAR)
+            # directly return pixbuf
+            return GdkPixbuf.Pixbuf.new_from_file_at_size(path, width, height)
+        return fit_in_rectangle(pixbuf, width, height, scaling_quality=GdkPixbuf.InterpType.BILINEAR)
 
 
 def load_pixbuf_data(imgdata):
