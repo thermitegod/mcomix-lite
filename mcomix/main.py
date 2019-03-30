@@ -3,10 +3,10 @@
 import os
 import shutil
 import threading
-import pkg_resources
 
 from gi.repository import GLib, Gdk, Gtk
 from send2trash import send2trash
+from pkg_resources import resource_string
 
 from mcomix import bookmark_backend, callback, clipboard, constants, cursor_handler, enhance_backend, event, \
     file_handler, icons, image_handler, image_tools, keybindings, layout, lens, log, message_dialog, osd, \
@@ -257,7 +257,7 @@ class MainWindow(Gtk.Window):
             return self.reset_style()
         # load userstyle from path
         try:
-            csspath = pkg_resources.resource_string(__package__, path)
+            csspath = resource_string(__package__, path)
             # csspath = tools.relpath2root(path)
             if not csspath:
                 raise Exception('userstyle out of mount point is not allowed.')
