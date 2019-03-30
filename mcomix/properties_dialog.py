@@ -13,14 +13,13 @@ from mcomix import properties_page, constants, tools
 
 
 class _PropertiesDialog(Gtk.Dialog):
-
     def __init__(self, window):
         super(_PropertiesDialog, self).__init__(title='Properties')
         self.set_transient_for(window)
         self.add_buttons(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
 
         self._window = window
-        self.resize(500, 430)
+        self.resize(870, 560)
         self.set_resizable(True)
         self.set_default_response(Gtk.ResponseType.CLOSE)
         notebook = Gtk.Notebook()
@@ -95,25 +94,21 @@ class _PropertiesDialog(Gtk.Dialog):
     def _update_page_image(self, page, page_number=None):
         if not self._window.imagehandler.page_is_available(page_number):
             return
-        thumb = self._window.imagehandler.get_thumbnail(page_number, width=128, height=128)
+        thumb = self._window.imagehandler.get_thumbnail(page_number, width=256, height=256)
         page.set_thumbnail(thumb)
 
     @staticmethod
     def _update_page_secondary_info(page, location):
-        secondary_info = [('Location', os.path.dirname(location)), ]
-        try:
-            stats = os.stat(location)
-        except OSError:
-            page.set_secondary_info(secondary_info)
-            return
-
+        stats = os.stat(location)
         uid = pwd.getpwuid(stats.st_uid)[0]
-
-        secondary_info.extend((
+        gid = pwd.getpwnam(uid).pw_gid
+        secondary_info = [
+            ('Location', os.path.dirname(location)),
             ('Size', tools.format_byte_size(stats.st_size)),
-            ('Accessed', time.strftime('%Y-%m-%d, %H:%M:%S', time.localtime(stats.st_atime))),
             ('Modified', time.strftime('%Y-%m-%d, %H:%M:%S', time.localtime(stats.st_mtime))),
+            ('Accessed', time.strftime('%Y-%m-%d, %H:%M:%S', time.localtime(stats.st_atime))),
             ('Permissions', oct(stat.S_IMODE(stats.st_mode))),
-            ('Owner', uid)
-        ))
+            ('Owner', uid),
+            ('Group', gid)
+        ]
         page.set_secondary_info(secondary_info)
