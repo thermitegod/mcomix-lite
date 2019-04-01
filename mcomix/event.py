@@ -413,10 +413,7 @@ class EventHandler(object):
             return
 
         if event.button == 1:
-            self._pressed_pointer_pos_x = event.x_root
-            self._pressed_pointer_pos_y = event.y_root
-            self._last_pointer_pos_x = event.x_root
-            self._last_pointer_pos_y = event.y_root
+            pass
 
         elif event.button == 2:
             self._window.actiongroup.get_action('lens').set_active(True)
