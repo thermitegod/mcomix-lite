@@ -5,6 +5,8 @@
 import os
 import re
 import shutil
+import shlex
+import sys
 
 from gi.repository import GLib, GObject, Gtk
 
@@ -12,6 +14,7 @@ from mcomix import callback, message_dialog, process
 from mcomix.preferences import prefs
 
 DEBUGGING_CONTEXT, NO_FILE_CONTEXT, IMAGE_FILE_CONTEXT, ARCHIVE_CONTEXT = -1, 0, 1, 2
+PREFNAME = 'external commands'
 
 
 class OpenWithException(Exception):
@@ -25,15 +28,19 @@ class OpenWithManager(object):
 
     @callback.Callback
     def set_commands(self, cmds):
-        prefs['openwith commands'] = [(cmd.get_label(), cmd.get_command(),
-                                       cmd.get_cwd(), cmd.is_disabled_for_archives())
-                                      for cmd in cmds]
+        prefs[PREFNAME] = [
+            (cmd.get_label(), cmd.get_command(),
+             cmd.get_cwd(), cmd.is_disabled_for_archives())
+            for cmd in cmds]
 
     @staticmethod
     def get_commands():
-        return [OpenWithCommand(label, command, cwd, disabled_for_archives)
-                for label, command, cwd, disabled_for_archives
-                in prefs['openwith commands']]
+        try:
+            return [OpenWithCommand(label, command, cwd, disabled_for_archives)
+                    for label, command, cwd, disabled_for_archives
+                    in prefs[PREFNAME]]
+        except ValueError as e:
+            OpenWithException('external commands error: {}.').format(e)
 
 
 class OpenWithCommand(object):
@@ -122,105 +129,58 @@ class OpenWithCommand(object):
         if not text.strip():
             raise OpenWithException('Command line is empty.')
 
-        args = self._commandline_to_arguments(text, window, self._get_context_type(window, check_restrictions))
-        # Environment variables must be expanded after MComix variables,
-        return [os.path.expandvars(arg) for arg in args]
+        args = self._commandline_to_arguments(
+                text, window, self._get_context_type(window, check_restrictions))
+        return args
 
     def _commandline_to_arguments(self, line, window, context_type):
-        """ Parse a command line string into a list containing
-        the parts to pass to Popen. The following two functions have
-        been contributed by Ark <aaku@users.sf.net>. """
-        result = []
-        buf = ""
-        quote = False
-        escape = False
-        inarg = False
-        for c in line:
-            if escape:
-                if c == '%' or c == '"':
-                    buf += c
-                else:
-                    buf += self._expand_variable(c, window, context_type)
-                escape = False
-            elif c == ' ' or c == '\t':
-                if quote:
-                    buf += c
-                elif inarg:
-                    result.append(buf)
-                    buf = ""
-                    inarg = False
-            else:
-                if c == '"':
-                    quote = not quote
-                elif c == '%':
-                    escape = True
-                else:
-                    buf += c
-                inarg = True
-
-        if escape:
-            raise OpenWithException('Incomplete escape sequence. For a literal "%", use "%%".')
-        if quote:
-            raise OpenWithException('Incomplete quote sequence. For a literal """, use "%"".')
-
-        if inarg:
-            result.append(buf)
+        """parser for commandline using shlex"""
+        result = shlex.split(line)
+        variables = self._create_format_dict(window, context_type)
+        for i, arg in enumerate(result):
+            result[i] = self._format_argument(arg, variables)
         return result
 
     @staticmethod
-    def _expand_variable(identifier, window, context_type):
-        """ Replaces variables with their respective file
-        or archive path. """
-
-        if context_type == DEBUGGING_CONTEXT:
-            return '%' + identifier
-
-        if not (context_type & IMAGE_FILE_CONTEXT) and identifier in ('f', 'd', 'b', 's', 'F', 'D', 'B', 'S'):
-            raise OpenWithException('File-related variables can only be used for files.')
-
-        if not (context_type & ARCHIVE_CONTEXT) and identifier in ('a', 'c', 'A', 'C'):
-            raise OpenWithException('Archive-related variables can only be used for archives.')
-
-        if identifier == '/':
-            return os.path.sep
-        elif identifier == 'a':
-            return window.filehandler.get_base_filename()
-        elif identifier == 'd':
-            return os.path.basename(os.path.dirname(window.imagehandler.get_path_to_page()))
-        elif identifier == 'f':
-            return window.imagehandler.get_page_filename()
-        elif identifier == 'c':
-            return os.path.basename(os.path.dirname(window.filehandler.get_path_to_base()))
-        elif identifier == 'b':
-            if context_type & ARCHIVE_CONTEXT:
-                return window.filehandler.get_base_filename()  # same as %a
-            else:
-                return os.path.basename(os.path.dirname(window.imagehandler.get_path_to_page()))  # same as %d
-        elif identifier == 's':
-            if context_type & ARCHIVE_CONTEXT:
-                return os.path.basename(os.path.dirname(window.filehandler.get_path_to_base()))  # same as %c
-            else:
-                return os.path.basename(os.path.dirname(os.path.dirname(window.imagehandler.get_path_to_page())))
-        elif identifier == 'A':
-            return window.filehandler.get_path_to_base()
-        elif identifier == 'D':
-            return os.path.normpath(os.path.dirname(window.imagehandler.get_path_to_page()))
-        elif identifier == 'F':
-            return os.path.normpath(window.imagehandler.get_path_to_page())
-        elif identifier == 'C':
-            return os.path.dirname(window.filehandler.get_path_to_base())
-        elif identifier == 'B':
-            if context_type & ARCHIVE_CONTEXT:
-                return window.filehandler.get_path_to_base()  # same as %A
-            else:
-                return os.path.normpath(os.path.dirname(window.imagehandler.get_path_to_page()))  # same as %D
-        elif identifier == 'S':
-            if context_type & ARCHIVE_CONTEXT:
-                return os.path.dirname(window.filehandler.get_path_to_base())  # same as %C
-            else:
-                return os.path.dirname(os.path.dirname(window.imagehandler.get_path_to_page()))
+    def _create_format_dict(window, context_type):
+        variables = {}
+        if context_type == NO_FILE_CONTEXT:
+            # dummy variables for preview if no file opened
+            variables.update((head + tail, '{{{}{}}}'.format(head, tail))
+                             for head in ('image', 'archive', 'container')
+                             for tail in ('', 'dir', 'base', 'dirbase'))
+            return variables
+        variables.update((
+            ('image', os.path.normpath(window.imagehandler.get_path_to_page())),  # %F
+            ('imagebase', window.imagehandler.get_page_filename()),  # %f
+        ))
+        variables['imagedir'] = os.path.dirname(variables['image'])  # %D
+        variables['imagedirbase'] = os.path.basename(variables['imagedir'])  # %d
+        if context_type & ARCHIVE_CONTEXT:
+            variables.update((
+                ('archive', window.filehandler.get_path_to_base()),  # %A
+                ('archivebase', window.filehandler.get_base_filename()),  # %a
+            ))
+            variables['archivedir'] = os.path.dirname(variables['archive'])  # %C
+            variables['archivedirbase'] = os.path.basename(variables['archivedir'])  # %c
+            container = 'archive'  # currently opened archive
         else:
-            raise OpenWithException('Invalid escape sequence: %%%s' % identifier)
+            container = 'imagedir'  # directory containing the currently opened image file
+        variables.update((
+            ('container', variables[container]),  # %B
+            ('containerbase', variables[container + 'base']),  # %b
+        ))
+        variables['containerdir'] = os.path.dirname(variables['container'])  # %S
+        variables['containerdirbase'] = os.path.basename(variables['containerdir'])  # %s
+        return variables
+
+    @staticmethod
+    def _format_argument(string, variables):
+        try:
+            # Also add system environment here.
+            return string.format(**variables, **os.environ)
+        except KeyError as e:
+            raise OpenWithException('Unknown variable: {}.').format(e)
 
     @staticmethod
     def _get_context_type(window, check_restrictions=True):
@@ -334,7 +294,7 @@ class OpenWithEditor(Gtk.Dialog):
             return
 
         try:
-            args = map(self._quote_if_necessary, command.parse(self._window))
+            args = map(shlex.quote, command.parse(self._window))
             self._test_field.set_text(' '.join(args))
             self._run_button.set_sensitive(True)
 
@@ -449,11 +409,34 @@ class OpenWithEditor(Gtk.Dialog):
 
         content.pack_start(self._exec_label, False, False, 0)
 
-        linklabel = Gtk.Label()
-        linklabel.set_markup('For variables and other hints refer to <a href="%s">external command docs</a>' %
-                             'https://sourceforge.net/p/mcomix/wiki/External_Commands')
-        linklabel.set_alignment(0, 0)
-        content.pack_start(linklabel, False, False, 4)
+        hints_expander = Gtk.Expander.new('External command variables')
+        content.pack_start(hints_expander, False, False, 0)
+
+        hints_grid = Gtk.Grid()
+        hints_expander.add(hints_grid)
+
+        hints_all = [(
+            ('{image}', 'Absolute path of the currently opened image file'),
+            ('{imagebase}', 'Basename of {}'.format('"{image}"')),
+            ('{imagedir}', 'Absolute path of {}'.format('"{image}"')),
+            ('{imagedirbase}', 'Basename of {}'.format('"{imagedir}"')),
+            ('{archive}', 'Absolute path of the currently opened archive'),
+            ('{archivebase}', 'Basename of {}'.format('"{archive}"')),
+            ('{archivedir}', 'Absolute path of {}'.format('"{archive}"')),
+            ('{archivedirbase}', 'Basename of {}'.format('"{archivedir}"')),
+            ('{container}', 'Absolute path of the currently opened directory or archive'),
+            ('{containerbase}', 'Basename of {}'.format('"{container}"')),
+            ('{containerdir}', 'Absolute path of {}'.format('"{container}"')),
+            ('{containerdirbase}', 'Basename of {}'.format('"{containerdir}"')),
+            ('{{', '{'),
+            ('}}', '}'),
+            ('{{{}}}'.format('<environ name>'), 'System Environment'),
+        )]
+
+        for x, hints in enumerate(hints_all):
+            for y, (key, desc) in enumerate(hints):
+                hints_grid.attach(Gtk.Label(label=key, halign=Gtk.Align.CENTER, margin=4), x*2, y, 1, 1)
+                hints_grid.attach(Gtk.Label(label=desc, halign=Gtk.Align.START, margin=4), x*2+1, y, 1, 1)
 
     def _setup_table(self):
         """ Initializes the TreeView with settings and data. """
@@ -532,16 +515,3 @@ class OpenWithEditor(Gtk.Dialog):
 
                 if response == Gtk.ResponseType.YES:
                     self.save()
-
-    @staticmethod
-    def _quote_if_necessary(arg):
-        """ Quotes a command line argument if necessary. """
-        if arg == "":
-            return '""'
-        # simplified version of
-        # http://www.gnu.org/software/bash/manual/bashref.html#Double-Quotes
-        arg = arg.replace('\\', '\\\\')
-        arg = arg.replace('"', '\\"')
-        if " " in arg:
-            return '"' + arg + '"'
-        return arg
