@@ -9,7 +9,7 @@ from gi.repository import GdkPixbuf, GObject
 
 from collections import namedtuple
 from PIL import Image, ImageDraw
-from cStringIO import StringIO
+from io import StringIO
 from difflib import unified_diff
 
 from . import MComixTest, get_testfile_path
@@ -17,23 +17,22 @@ from . import MComixTest, get_testfile_path
 from mcomix import image_tools
 from mcomix.preferences import prefs
 
-
 _IMAGE_MODES = (
     # Can be
     # saved    GDK     PIL
     # to PNG?  mode    mode
-    ( True  , 'RGB'  , '1'     ), # (1-bit pixels, black and white, stored with one pixel per byte)
-    ( True  , 'RGB'  , 'L'     ), # (8-bit pixels, black and white)
-    ( True  , 'RGBA' , 'LA'    ), # (8-bit pixels, black and white with alpha)
-    ( True  , 'RGBA' , 'P'     ), # (8-bit pixels, mapped to any other mode using a color palette)
-    ( True  , 'RGB'  , 'RGB'   ), # (3x8-bit pixels, true color)
-    ( True  , 'RGBA' , 'RGBA'  ), # (4x8-bit pixels, true color with transparency mask)
-    ( False , 'RGB'  , 'RGBX'  ), # (4x8-bit pixels, true color with padding)
-    ( False , 'RGB'  , 'CMYK'  ), # (4x8-bit pixels, color separation)
-    ( False , 'RGB'  , 'YCbCr' ), # (3x8-bit pixels, color video format)
-    ( False , 'RGB'  , 'HSV'   ), # (3x8-bit pixels, Hue, Saturation, Value color space)
-    ( False , 'RGB'  , 'I'     ), # (32-bit signed integer pixels)
-    ( False , 'RGB'  , 'F'     ), # (32-bit floating point pixels)
+    (True , 'RGB' , '1'    ),  # (1-bit pixels, black and white, stored with one pixel per byte)
+    (True , 'RGB' , 'L'    ),  # (8-bit pixels, black and white)
+    (True , 'RGBA', 'LA'   ),  # (8-bit pixels, black and white with alpha)
+    (True , 'RGBA', 'P'    ),  # (8-bit pixels, mapped to any other mode using a color palette)
+    (True , 'RGB' , 'RGB'  ),  # (3x8-bit pixels, true color)
+    (True , 'RGBA', 'RGBA' ),  # (4x8-bit pixels, true color with transparency mask)
+    (False, 'RGB' , 'RGBX' ),  # (4x8-bit pixels, true color with padding)
+    (False, 'RGB' , 'CMYK' ),  # (4x8-bit pixels, color separation)
+    (False, 'RGB' , 'YCbCr'),  # (3x8-bit pixels, color video format)
+    (False, 'RGB' , 'HSV'  ),  # (3x8-bit pixels, Hue, Saturation, Value color space)
+    (False, 'RGB' , 'I'    ),  # (32-bit signed integer pixels)
+    (False, 'RGB' , 'F'    ),  # (32-bit floating point pixels)
 )
 
 _PIL_MODE_TO_GDK_MODE = dict([(pil_mode, gdk_mode)
@@ -74,11 +73,14 @@ _TEST_IMAGE_BY_NAME = dict([(im.name, im) for im in _TEST_IMAGES])
 def pil_mode_to_gdk_mode(mode):
     return _PIL_MODE_TO_GDK_MODE[mode]
 
+
 def get_test_image(name):
     return _TEST_IMAGE_BY_NAME[name]
 
+
 def get_image_path(basename):
     return get_testfile_path('images', basename)
+
 
 def new_pixbuf(size, with_alpha, fill_colour):
     pixbuf = GdkPixbuf.Pixbuf.new(colorspace=GdkPixbuf.Colorspace.RGB,
@@ -86,6 +88,7 @@ def new_pixbuf(size, with_alpha, fill_colour):
                                   width=size[0], height=size[1])
     pixbuf.fill(fill_colour)
     return pixbuf
+
 
 # Example output:
 #
@@ -114,7 +117,7 @@ def xhexdump(data, group_size=4):
         chunk = binascii.hexlify(chunk)
         hex = []
         for s in range(0, chunk_size * 2, group_size * 2):
-            hex.append(chunk[s:s+(group_size*2)])
+            hex.append(chunk[s:s + (group_size * 2)])
         hex = ' '.join(hex)
         if hex != prev_hex:
             if addr > (prev_addr + chunk_size):
@@ -125,8 +128,10 @@ def xhexdump(data, group_size=4):
     if size != prev_addr:
         yield '%07x' % size
 
+
 def hexdump(data, group_size=4):
     return [line for line in xhexdump(data, group_size=group_size)]
+
 
 def composite_image(im1, im2):
     if isinstance(im1, GdkPixbuf.Pixbuf):
@@ -137,12 +142,11 @@ def composite_image(im1, im2):
                    (im1.size[0] + im2.size[0],
                     max(im1.size[1], im2.size[1])))
     im.paste(im1, (0, 0, im1.size[0], im1.size[1]))
-    im.paste(im2, (im1.size[0], 0, im1.size[0]+im2.size[0], im2.size[1]))
+    im.paste(im2, (im1.size[0], 0, im1.size[0] + im2.size[0], im2.size[1]))
     return im
 
 
 class ImageToolsTest(object):
-
     set_use_pil = False
     use_pil = False
 
@@ -165,8 +169,9 @@ class ImageToolsTest(object):
                 fmt = msg
             self.fail(fmt % {
                 'diff_type': diff_type,
-                'diff': diff_fmt % args,
+                'diff'     : diff_fmt % args,
             })
+
         def info(im):
             if isinstance(im, GdkPixbuf.Pixbuf):
                 width, stride = im.get_width(), im.get_rowstride()
@@ -191,6 +196,7 @@ class ImageToolsTest(object):
             if isinstance(im, Image.Image):
                 return im.mode, im.size, im.tobytes()
             raise ValueError('unsupported class %s' % type(im))
+
         mode1, size1, pixels1 = info(im1)
         mode2, size2, pixels2 = info(im2)
         if mode1 != mode2:
@@ -224,15 +230,15 @@ class ImageToolsTest(object):
             im = Image.open(image_path).convert(expected_mode)
             pixbuf = image_tools.load_pixbuf(image_path)
             msg = (
-                'load_pixbuf("%s") failed; '
-                'result %%(diff_type)s differs: %%(diff)s'
-                % (image.name,)
+                    'load_pixbuf("%s") failed; '
+                    'result %%(diff_type)s differs: %%(diff)s'
+                    % (image.name,)
             )
             self.assertImagesEqual(pixbuf, im, msg=msg)
 
     def test_load_pixbuf_modes(self):
-        tmp_file = tempfile.NamedTemporaryFile(prefix=u'image.',
-                                               suffix=u'.png', delete=False)
+        tmp_file = tempfile.NamedTemporaryFile(prefix='image.',
+                                               suffix='.png', delete=False)
         tmp_file.close()
         base_im = Image.open(get_image_path('transparent.png'))
         for supported, expected_pixbuf_mode, mode in _IMAGE_MODES:
@@ -243,9 +249,9 @@ class ImageToolsTest(object):
             pixbuf = image_tools.load_pixbuf(tmp_file.name)
             expected_im = input_im.convert(expected_pixbuf_mode)
             msg = (
-                'load_pixbuf("%s") failed; '
-                'result %%(diff_type)s differs: %%(diff)s'
-                % (mode,)
+                    'load_pixbuf("%s") failed; '
+                    'result %%(diff_type)s differs: %%(diff)s'
+                    % (mode,)
             )
             self.assertImagesEqual(pixbuf, expected_im, msg=msg)
 
@@ -263,8 +269,8 @@ class ImageToolsTest(object):
         prefs['checkered bg for transparent images'] = False
         for image in _TEST_IMAGES:
             if image.name in (
-                'transparent.png',
-                'transparent-indexed.png',
+                    'transparent.png',
+                    'transparent-indexed.png',
             ):
                 # Avoid complex transparent image, since PIL
                 # and GdkPixbuf may yield different results.
@@ -284,9 +290,9 @@ class ImageToolsTest(object):
                                                   image.size[0],
                                                   image.size[1])
             msg = (
-                'load_pixbuf("%s") failed; '
-                'result %%(diff_type)s differs: %%(diff)s'
-                % (image.name,)
+                    'load_pixbuf("%s") failed; '
+                    'result %%(diff_type)s differs: %%(diff)s'
+                    % (image.name,)
             )
             self.assertImagesEqual(result, expected, msg=msg)
 
@@ -295,8 +301,8 @@ class ImageToolsTest(object):
         # - a format with support for resizing at the decoding stage: JPEG
         # - a format that does not support resizing at the decoding stage: PNG
         for name in (
-            'pattern.jpg',
-            'pattern-opaque-rgba.png',
+                'pattern.jpg',
+                'pattern-opaque-rgba.png',
         ):
             image = get_test_image(name)
             image_path = get_image_path(image.name)
@@ -305,9 +311,9 @@ class ImageToolsTest(object):
             expected = Image.open(image_path).convert(image.mode)
             result = image_tools.load_pixbuf_size(image_path, *target_size)
             msg = (
-                'load_pixbuf_size("%s", %dx%d) failed; '
-                'result %%(diff_type)s differs: %%(diff)s'
-                % ((name,) + target_size)
+                    'load_pixbuf_size("%s", %dx%d) failed; '
+                    'result %%(diff_type)s differs: %%(diff)s'
+                    % ((name,) + target_size)
             )
             self.assertImagesEqual(result, expected, msg=msg)
             # Check image is scaled down if bigger than target dimensions,
@@ -316,9 +322,9 @@ class ImageToolsTest(object):
             result = image_tools.load_pixbuf_size(image_path,
                                                   *target_size)
             msg = (
-                'load_pixbuf_size("%s", %dx%d) failed; '
-                'result %%(diff_type)s differs: %%(diff)s'
-                % ((name,) + target_size)
+                    'load_pixbuf_size("%s", %dx%d) failed; '
+                    'result %%(diff_type)s differs: %%(diff)s'
+                    % ((name,) + target_size)
             )
             self.assertEqual((result.get_width(), result.get_height()),
                              (image.size[0] / 2, image.size[1] / 2))
@@ -335,8 +341,8 @@ class ImageToolsTest(object):
         image_size = (2063, 3131)
         target_size = (500, 500)
         expected_size = (329, 500)
-        tmp_file = tempfile.NamedTemporaryFile(prefix=u'image.',
-                                               suffix=u'.png', delete=False)
+        tmp_file = tempfile.NamedTemporaryFile(prefix='image.',
+                                               suffix='.png', delete=False)
         tmp_file.close()
         im = Image.new('RGB', image_size)
         im.save(tmp_file.name)
@@ -345,18 +351,18 @@ class ImageToolsTest(object):
 
     def test_pixbuf_to_pil(self):
         for image in (
-            'transparent.png',
-            'transparent-indexed.png',
-            'pattern-opaque-rgb.png',
-            'pattern-opaque-rgba.png',
-            'pattern-transparent-rgba.png',
+                'transparent.png',
+                'transparent-indexed.png',
+                'pattern-opaque-rgb.png',
+                'pattern-opaque-rgba.png',
+                'pattern-transparent-rgba.png',
         ):
             pixbuf = image_tools.load_pixbuf(get_image_path(image))
             im = image_tools.pixbuf_to_pil(pixbuf)
             msg = (
-                'pixbuf_to_pil("%s") failed; '
-                'result %%(diff_type)s differs: %%(diff)s'
-                % (image,)
+                    'pixbuf_to_pil("%s") failed; '
+                    'result %%(diff_type)s differs: %%(diff)s'
+                    % (image,)
             )
             self.assertImagesEqual(im, pixbuf, msg=msg)
 
@@ -367,9 +373,9 @@ class ImageToolsTest(object):
             pixbuf = image_tools.pil_to_pixbuf(input_im)
             expected_im = input_im.convert(expected_pixbuf_mode)
             msg = (
-                'pil_to_pixbuf("%s") failed; '
-                'result %%(diff_type)s differs: %%(diff)s'
-                % (mode,)
+                    'pil_to_pixbuf("%s") failed; '
+                    'result %%(diff_type)s differs: %%(diff)s'
+                    % (mode,)
             )
             self.assertImagesEqual(pixbuf, expected_im, msg=msg)
         # TODO: test keep_orientation
@@ -380,65 +386,65 @@ class ImageToolsTest(object):
             expected = (image.format,) + image.size
             result = image_tools.get_image_info(image_path)
             msg = (
-                'get_image_info("%s") failed; '
-                'result differs: %s:%dx%d instead of %s:%dx%d'
-                % ((image.name,) + result + expected)
+                    'get_image_info("%s") failed; '
+                    'result differs: %s:%dx%d instead of %s:%dx%d'
+                    % ((image.name,) + result + expected)
             )
             self.assertEqual(result, expected, msg=msg)
 
     def test_get_image_info_invalid(self):
-        expected = (u'Unknown filetype', 0, 0)
+        expected = ('Unknown filetype', 0, 0)
         result = image_tools.get_image_info(os.devnull)
         msg = (
-            'get_image_info() on invalid image failed; '
-            'result differs: %s:%dx%d instead of %s:%dx%d'
-            % (result + expected)
+                'get_image_info() on invalid image failed; '
+                'result differs: %s:%dx%d instead of %s:%dx%d'
+                % (result + expected)
         )
         self.assertEqual(result, expected, msg=msg)
 
     def test_get_implied_rotation(self):
         for name in (
-            # JPEG.
-            'landscape-exif-270-rotation.jpg',
-            'landscape-no-exif.jpg',
-            'portrait-exif-180-rotation.jpg',
-            'portrait-no-exif.jpg',
-            # PNG.
-            'landscape-exif-270-rotation.png',
-            'landscape-no-exif.png',
-            'portrait-exif-180-rotation.png',
-            'portrait-no-exif.png',
+                # JPEG.
+                'landscape-exif-270-rotation.jpg',
+                'landscape-no-exif.jpg',
+                'portrait-exif-180-rotation.jpg',
+                'portrait-no-exif.jpg',
+                # PNG.
+                'landscape-exif-270-rotation.png',
+                'landscape-no-exif.png',
+                'portrait-exif-180-rotation.png',
+                'portrait-no-exif.png',
         ):
             image = get_test_image(name)
             pixbuf = image_tools.load_pixbuf(get_image_path(name))
             rotation = image_tools.get_implied_rotation(pixbuf)
             self.assertEqual(rotation, image.rotation,
                              msg='get_implied_rotation(%s) failed: %u instead of %u'
-                             % (image, rotation, image.rotation))
+                                 % (image, rotation, image.rotation))
 
     def test_fit_in_rectangle_dimensions(self):
         # Test dimensions handling.
         for input_size, target_size, scale_up, keep_ratio, expected_size in (
-            # Exactly the same size.
-            ((200, 100), (200, 100), False, False, (200, 100)),
-            ((200, 100), (200, 100), False,  True, (200, 100)),
-            ((200, 100), (200, 100),  True, False, (200, 100)),
-            ((200, 100), (200, 100),  True,  True, (200, 100)),
-            # Smaller.
-            ((200, 100), (400, 400), False, False, (200, 100)),
-            ((200, 100), (400, 400), False,  True, (200, 100)),
-            ((200, 100), (400, 400),  True, False, (400, 400)),
-            ((200, 100), (400, 400),  True,  True, (400, 200)),
-            # Bigger.
-            ((800, 600), (200, 200), False, False, (200, 200)),
-            ((800, 600), (200, 200), False,  True, (200, 150)),
-            ((800, 600), (200, 200),  True, False, (200, 200)),
-            ((800, 600), (200, 200),  True,  True, (200, 150)),
-            # One dimension bigger, the other smaller.
-            ((200, 400), (200, 200), False, False, (200, 200)),
-            ((200, 400), (200, 200), False,  True, (100, 200)),
-            ((200, 400), (200, 200),  True, False, (200, 200)),
-            ((200, 400), (200, 200),  True,  True, (100, 200)),
+                # Exactly the same size.
+                ((200, 100), (200, 100), False, False, (200, 100)),
+                ((200, 100), (200, 100), False, True, (200, 100)),
+                ((200, 100), (200, 100), True, False, (200, 100)),
+                ((200, 100), (200, 100), True, True, (200, 100)),
+                # Smaller.
+                ((200, 100), (400, 400), False, False, (200, 100)),
+                ((200, 100), (400, 400), False, True, (200, 100)),
+                ((200, 100), (400, 400), True, False, (400, 400)),
+                ((200, 100), (400, 400), True, True, (400, 200)),
+                # Bigger.
+                ((800, 600), (200, 200), False, False, (200, 200)),
+                ((800, 600), (200, 200), False, True, (200, 150)),
+                ((800, 600), (200, 200), True, False, (200, 200)),
+                ((800, 600), (200, 200), True, True, (200, 150)),
+                # One dimension bigger, the other smaller.
+                ((200, 400), (200, 200), False, False, (200, 200)),
+                ((200, 400), (200, 200), False, True, (100, 200)),
+                ((200, 400), (200, 200), True, False, (200, 200)),
+                ((200, 400), (200, 200), True, True, (100, 200)),
         ):
             for invert_dimensions in (False, True):
                 if invert_dimensions:
@@ -453,12 +459,12 @@ class ImageToolsTest(object):
                                                       keep_ratio=keep_ratio)
                 result_size = result.get_width(), result.get_height()
                 msg = (
-                    'fit_in_rectangle(%dx%d => %dx%d, scale up=%s, keep ratio=%s) failed; '
-                    'result size differs: %dx%d instead of %dx%d' % (
-                        input_size + target_size +
-                        (scale_up, keep_ratio) +
-                        result_size + expected_size
-                    )
+                        'fit_in_rectangle(%dx%d => %dx%d, scale up=%s, keep ratio=%s) failed; '
+                        'result size differs: %dx%d instead of %dx%d' % (
+                                input_size + target_size +
+                                (scale_up, keep_ratio) +
+                                result_size + expected_size
+                        )
                 )
                 self.assertEqual(result_size, expected_size, msg=msg)
 
@@ -474,13 +480,13 @@ class ImageToolsTest(object):
         corners_colors = ('white', 'black', 'black', 'black')
         pixbuf = image_tools.pil_to_pixbuf(im)
         for rotation in (
-            0, 90, 180, 270,
-            -90, -180, -270,
-            90 * 5, -90 * 7
+                0, 90, 180, 270,
+                -90, -180, -270,
+                90 * 5, -90 * 7
         ):
             for target_size in (
-                (image_size, image_size),
-                (image_size / 2, image_size / 2),
+                    (image_size, image_size),
+                    (image_size / 2, image_size / 2),
             ):
                 result = image_tools.fit_in_rectangle(pixbuf,
                                                       target_size[0],
@@ -490,10 +496,10 @@ class ImageToolsTest(object):
                 input_size = (image_size, image_size)
                 result_size = result.get_width(), result.get_height()
                 msg = (
-                    'fit_in_rectangle(%dx%d => %dx%d, rotation=%d) failed; '
-                    'result size: %dx%d' % (
-                        input_size + target_size + (rotation,) + result_size
-                    )
+                        'fit_in_rectangle(%dx%d => %dx%d, rotation=%d) failed; '
+                        'result size: %dx%d' % (
+                                input_size + target_size + (rotation,) + result_size
+                        )
                 )
                 self.assertEqual(result_size, target_size, msg=msg)
                 # And then check corners.
@@ -518,17 +524,17 @@ class ImageToolsTest(object):
                 result_corners_colors.append(result_corners_colors.pop(-2))
                 expected_corners_colors.append(expected_corners_colors.pop(-2))
                 msg = (
-                    'fit_in_rectangle(%dx%d => %dx%d, rotation=%d) failed; '
-                    'result corners differs:\n'
-                    '%s\t%s\n'
-                    '%s\t%s\n'
-                    'instead of:\n'
-                    '%s\t%s\n'
-                    '%s\t%s\n' % (
-                        input_size + target_size + (rotation, ) +
-                        tuple(result_corners_colors) +
-                        tuple(expected_corners_colors)
-                    )
+                        'fit_in_rectangle(%dx%d => %dx%d, rotation=%d) failed; '
+                        'result corners differs:\n'
+                        '%s\t%s\n'
+                        '%s\t%s\n'
+                        'instead of:\n'
+                        '%s\t%s\n'
+                        '%s\t%s\n' % (
+                                input_size + target_size + (rotation,) +
+                                tuple(result_corners_colors) +
+                                tuple(expected_corners_colors)
+                        )
                 )
                 self.assertEqual(result_corners_colors,
                                  expected_corners_colors,
@@ -537,8 +543,8 @@ class ImageToolsTest(object):
     def test_fit_in_rectangle_opaque_no_resize(self):
         # Check opaque image is unchanged when not resizing.
         for image in (
-            'pattern-opaque-rgb.png',
-            'pattern-opaque-rgba.png',
+                'pattern-opaque-rgb.png',
+                'pattern-opaque-rgba.png',
         ):
             input = image_tools.load_pixbuf(get_image_path(image))
             width, height = input.get_width(), input.get_height()
@@ -547,9 +553,9 @@ class ImageToolsTest(object):
                 result = image_tools.fit_in_rectangle(input, width, height,
                                                       scaling_quality=scaling_quality)
                 msg = (
-                    'fit_in_rectangle("%s", scaling quality=%d) failed; '
-                    'result %%(diff_type)s differs: %%(diff)s'
-                    % (image, scaling_quality)
+                        'fit_in_rectangle("%s", scaling quality=%d) failed; '
+                        'result %%(diff_type)s differs: %%(diff)s'
+                        % (image, scaling_quality)
                 )
                 self.assertImagesEqual(result, input, msg=msg)
 
@@ -570,8 +576,8 @@ class ImageToolsTest(object):
         for use_checker_bg in (False, True):
             prefs['checkered bg for transparent images'] = use_checker_bg
             expected = Image.alpha_composite(
-                checker_bg if use_checker_bg else white_bg,
-                control
+                    checker_bg if use_checker_bg else white_bg,
+                    control
             )
             for scaling_quality in range(4):
                 prefs['scaling quality'] = scaling_quality
@@ -579,9 +585,9 @@ class ImageToolsTest(object):
                                                       width, height,
                                                       scaling_quality=scaling_quality)
                 msg = (
-                    'fit_in_rectangle("%s", scaling quality=%d, background=%s) failed; '
-                    'result %%(diff_type)s differs: %%(diff)s'
-                    % (image, scaling_quality, 'checker' if checker_bg else 'white')
+                        'fit_in_rectangle("%s", scaling quality=%d, background=%s) failed; '
+                        'result %%(diff_type)s differs: %%(diff)s'
+                        % (image, scaling_quality, 'checker' if checker_bg else 'white')
                 )
                 self.assertImagesEqual(result, expected, msg=msg)
 
@@ -591,18 +597,13 @@ class_list = []
 if hasattr(image_tools, 'USE_PIL'):
     class_list.extend((
         ('GDK', {'set_use_pil': True, 'use_pil': False}),
-        ('PIL', {'set_use_pil': True, 'use_pil': True }),
+        ('PIL', {'set_use_pil': True, 'use_pil': True}),
     ))
 else:
-    if 'win32' == sys.platform:
-        variant = 'GDK'
-        use_pil = False
-    else:
-        variant = 'PIL'
-        use_pil = True
+    variant = 'PIL'
+    use_pil = True
     class_list.append((variant, {'use_pil': use_pil}))
 
 for class_variant, class_dict in class_list:
     class_name = 'ImageTools%sTest' % class_variant
     globals()[class_name] = type(class_name, (ImageToolsTest, MComixTest), class_dict)
-

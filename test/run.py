@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/env python3
 
 __requires__ = 'pytest'
 
@@ -39,6 +39,4 @@ if __name__ == '__main__':
         args.insert(0, test_dir)
     sys.argv[1:] = args
 
-    sys.exit(
-        load_entry_point('pytest', 'console_scripts', 'py.test')()
-    )
+    sys.exit(load_entry_point('pytest', 'console_scripts', 'py.test')())
