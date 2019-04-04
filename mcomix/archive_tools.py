@@ -19,6 +19,12 @@ _HANDLERS = {
 }
 
 
+def _getext(path):
+    """Get extension of archive"""
+    b, e = os.path.splitext(path.lower())
+    return e
+
+
 def _get_handler(archive_type):
     """Return best archive class for format <archive_type>"""
     for handler in _HANDLERS[archive_type]:
@@ -49,7 +55,7 @@ def pdf_available():
     return _is_available(constants.PDF)
 
 
-SUPPORTED_ARCHIVE_EXTS = []
+SUPPORTED_ARCHIVE_EXTS = set()
 SUPPORTED_ARCHIVE_FORMATS = {}
 
 
@@ -63,13 +69,12 @@ def init_supported_formats():
     ):
         if not is_available:
             continue
-        SUPPORTED_ARCHIVE_FORMATS[name] = ([], [])
-        SUPPORTED_ARCHIVE_FORMATS[name][0].extend(map(lambda s: s.lower(), formats[0]))
-        # archive extensions has no '.'
-        SUPPORTED_ARCHIVE_FORMATS[name][1].extend(map(lambda s: '.' + s.lower(), formats[1]))
-    # cache a supported extensions list
-    for mimes, exts in SUPPORTED_ARCHIVE_FORMATS.values():
-        SUPPORTED_ARCHIVE_EXTS.extend(exts)
+        SUPPORTED_ARCHIVE_FORMATS[name] = (set(), set())
+        for ext, mime in formats:
+            SUPPORTED_ARCHIVE_FORMATS[name][0].add(mime.lower())
+            SUPPORTED_ARCHIVE_FORMATS[name][1].add(ext.lower())
+        # also add to supported extensions list
+        SUPPORTED_ARCHIVE_EXTS.update(SUPPORTED_ARCHIVE_FORMATS[name][1])
 
 
 def get_supported_formats():
@@ -81,7 +86,7 @@ def get_supported_formats():
 def is_archive_file(path):
     if not SUPPORTED_ARCHIVE_FORMATS:
         init_supported_formats()
-    return os.path.splitext(path)[1].lower() in SUPPORTED_ARCHIVE_EXTS
+    return _getext(path) in SUPPORTED_ARCHIVE_EXTS
 
 
 def archive_mime_type(path):
@@ -98,15 +103,15 @@ def archive_mime_type(path):
                     return constants.ZIP_EXTERNAL
 
             with open(path, 'rb') as fd:
-                magic = fd.read(5)
+                magic = fd.read(10)
 
-            if magic[0:4] == b'Rar!':
+            if magic.startswith(b'Rar!\x1a\x07'):
                 return constants.RAR
 
-            if magic[0:4] == b'7z\xBC\xAF':
+            if magic[0:6] == b'7z\xbc\xaf\x27\x1c':
                 return constants.SEVENZIP
 
-            if magic[2:4] == b'-l':
+            if magic[2:].startswith((b'-lh', b'-lz')):
                 return constants.LHA
 
             if magic[0:4] == b'%PDF':

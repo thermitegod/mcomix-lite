@@ -56,21 +56,34 @@ SORT_NAME, SORT_PATH, SORT_SIZE, SORT_LAST_MODIFIED, SORT_NAME_LITERAL = 1, 2, 3
 SORT_DESCENDING, SORT_ASCENDING = 1, 2
 SIZE_HUGE, SIZE_LARGE, SIZE_NORMAL, SIZE_SMALL, SIZE_TINY = 500, 300, 250, 125, 80
 
+# see https://www.freedesktop.org/wiki/Software/shared-mime-info/
+# for mimetypes not registed to IANA
+
 ZIP_FORMATS = (
-    ('application/x-zip', 'application/zip', 'application/x-zip-compressed', 'application/x-cbz'),
-    ('zip', 'cbz'))
+    ('.zip', 'application/zip'),
+    ('.cbz', 'application/vnd.comicbook+zip'),
+)
+
 RAR_FORMATS = (
-    ('application/x-rar', 'application/x-cbr'),
-    ('rar', 'cbr'))
+    ('.rar', 'application/vnd.rar'),
+    ('.cbr', 'application/vnd.comicbook-rar'),
+)
+
 SZIP_FORMATS = (
-    ('application/x-7z-compressed', 'application/x-cb7'),
-    ('7z', 'cb7'))
+    ('.7z', 'application/x-7z-compressed'),
+    ('.cb7', 'application/x-cb7'),
+)
+
 LHA_FORMATS = (
-    ('application/x-lzh', 'application/x-lha', 'application/x-lzh-compressed'),
-    ('lha', 'lzh'))
+    ('.lha', 'application/x-lha'),
+    ('.lzh', 'application/x-lha'),
+)
+
 PDF_FORMATS = (
-    ('application/pdf',),
-    ('pdf',))
+    ('.pdf', 'application/pdf'),
+)
+
+ARCHIVE_FORMATS = ZIP_FORMATS + RAR_FORMATS + SZIP_FORMATS + LHA_FORMATS + PDF_FORMATS
 
 ARCHIVE_DESCRIPTIONS = {
     ZIP: 'ZIP archive',
