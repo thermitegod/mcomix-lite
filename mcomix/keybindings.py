@@ -40,7 +40,7 @@ class _KeybindingManager(object):
 
         self._initialize()
 
-    def register(self, name, callback, args=[], kwargs={}, bindings=[]):
+    def register(self, name, callback, args=None, kwargs=None, bindings=None):
         """Registers an action for a predefined keybinding name.
         @param name: Action name, defined in L{keybindings_map.DEFAULT_BINDINGS}.
         @param bindings: List of keybinding strings, as understood
@@ -51,9 +51,10 @@ class _KeybindingManager(object):
         @param kwargs: List of keyword arguments to pass to the callback"""
         if args is None:
             args = []
-
         if kwargs is None:
             kwargs = {}
+        if bindings is None:
+            bindings = []
 
         assert name in keybindings_map.DEFAULT_BINDINGS, '"%s" is not a valid keyboard action.' % name
 
@@ -165,9 +166,9 @@ class _KeybindingManager(object):
             json.dump(action_to_keys, fp, indent=2)
 
     def _initialize(self):
-        """Restore keybindings from disk"""
+        """Load keybindings from disk"""
         try:
-            with open(constants.KEYBINDINGS_CONF_PATH, 'r') as fp:
+            with open(constants.KEYBINDINGS_CONF_PATH) as fp:
                 stored_action_bindings = json.load(fp)
         except Exception as e:
             log.error('Could not load keybindings: %s', e)
