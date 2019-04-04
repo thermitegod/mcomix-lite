@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""pageselect.py - The dialog window for the page selector."""
+"""pageselect.py - The dialog window for the page selector"""
 
 from gi.repository import Gtk
 
@@ -73,7 +73,7 @@ class Pageselector(Gtk.Dialog):
         self._window.imagehandler.page_available += self._page_available
 
     def _cb_value_changed(self, *args):
-        """ Called whenever the spinbox value changes. Updates the preview thumbnail. """
+        """Called whenever the spinbox value changes. Updates the preview thumbnail"""
         page = int(self._selector_adjustment.props.value)
         if page != self._thumbnail_page:
             self._update_thumbnail(page)
@@ -88,8 +88,8 @@ class Pageselector(Gtk.Dialog):
         self._update_thumbnail(int(self._selector_adjustment.props.value))
 
     def _page_text_changed(self, control, *args):
-        """ Called when the page selector has been changed. Used to instantly update
-            the preview thumbnail when entering page numbers by hand. """
+        """Called when the page selector has been changed. Used to instantly update
+        the preview thumbnail when entering page numbers by hand"""
         if control.get_text().isdigit():
             page = int(control.get_text())
             if 0 < page <= self._number_of_pages:
@@ -104,7 +104,7 @@ class Pageselector(Gtk.Dialog):
         self.destroy()
 
     def _update_thumbnail(self, page):
-        """ Trigger a thumbnail update. """
+        """Trigger a thumbnail update"""
         width = self._image_preview.get_allocation().width
         height = self._image_preview.get_allocation().height
         self._thumbnail_page = page
@@ -112,8 +112,8 @@ class Pageselector(Gtk.Dialog):
         self._thread.append_order((page, width, height))
 
     def _generate_thumbnail(self, params):
-        """ Generate the preview thumbnail for the page selector.
-        A transparent image will be used if the page is not yet available. """
+        """Generate the preview thumbnail for the page selector.
+        A transparent image will be used if the page is not yet available"""
         page, width, height = params
 
         pixbuf = self._window.imagehandler.get_thumbnail(page, width=width, height=height, nowait=True)

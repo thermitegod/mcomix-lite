@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""preferences_dialog.py - Preferences dialog."""
+"""preferences_dialog.py - Preferences dialog"""
 
 from gi.repository import GObject, Gdk, GdkPixbuf, Gtk
 
@@ -12,9 +12,7 @@ _dialog = None
 
 class _PreferencesDialog(Gtk.Dialog):
     """The preferences dialog where most (but not all) settings that are
-    saved between sessions are presented to the user.
-    """
-
+    saved between sessions are presented to the user"""
     def __init__(self, window):
         super(_PreferencesDialog, self).__init__(title='Preferences')
         self.set_transient_for(window)
@@ -349,8 +347,8 @@ class _PreferencesDialog(Gtk.Dialog):
         return page
 
     def _tab_page_changed(self, notebook, page_ptr, page_num):
-        """ Dynamically switches the "Reset" button's text and tooltip
-        depending on the currently selected tab page. """
+        """Dynamically switches the "Reset" button's text and tooltip
+        depending on the currently selected tab page"""
         new_page = notebook.get_nth_page(page_num)
         if new_page == self.shortcuts:
             self.reset_button.set_label('_Reset keys')
@@ -383,7 +381,7 @@ class _PreferencesDialog(Gtk.Dialog):
             _close_dialog()
 
     def _create_doublepage_as_one_control(self):
-        """ Creates the ComboBox control for selecting virtual double page options. """
+        """Creates the ComboBox control for selecting virtual double page options"""
         items = (
             ('Never', 0),
             ('Only for title pages', constants.SHOW_DOUBLE_AS_ONE_TITLE),
@@ -399,7 +397,7 @@ class _PreferencesDialog(Gtk.Dialog):
         return box
 
     def _double_page_changed_cb(self, combobox, *args):
-        """ Called when a new option was selected for the virtual double page option. """
+        """Called when a new option was selected for the virtual double page option"""
         iter = combobox.get_active_iter()
         if combobox.get_model().iter_is_valid(iter):
             value = combobox.get_model().get_value(iter, 1)
@@ -407,7 +405,7 @@ class _PreferencesDialog(Gtk.Dialog):
             self._window.draw_image()
 
     def _create_fitmode_control(self):
-        """ Combobox for fit to size mode """
+        """Combobox for fit to size mode"""
         items = (
             ('Fit to width', constants.ZOOM_MODE_WIDTH),
             ('Fit to height', constants.ZOOM_MODE_HEIGHT))
@@ -419,7 +417,7 @@ class _PreferencesDialog(Gtk.Dialog):
         return box
 
     def _fit_to_size_changed_cb(self, combobox, *args):
-        """ Change to 'Fit to size' pixels """
+        """Change to 'Fit to size' pixels"""
         iter = combobox.get_active_iter()
         if combobox.get_model().iter_is_valid(iter):
             value = combobox.get_model().get_value(iter, 1)
@@ -429,7 +427,7 @@ class _PreferencesDialog(Gtk.Dialog):
                 self._window.change_zoom_mode()
 
     def _create_sort_by_control(self):
-        """ Creates the ComboBox control for selecting file sort by options. """
+        """Creates the ComboBox control for selecting file sort by options"""
         sortkey_items = (
             ('No sorting', 0),
             ('File name', constants.SORT_NAME),
@@ -459,7 +457,7 @@ class _PreferencesDialog(Gtk.Dialog):
         return box
 
     def _sort_by_changed_cb(self, combobox, *args):
-        """ Called when a new option was selected for the virtual double page option. """
+        """Called when a new option was selected for the virtual double page option"""
         iter = combobox.get_active_iter()
         if combobox.get_model().iter_is_valid(iter):
             value = combobox.get_model().get_value(iter, 1)
@@ -468,7 +466,7 @@ class _PreferencesDialog(Gtk.Dialog):
             self._window.filehandler.refresh_file()
 
     def _sort_order_changed_cb(self, combobox, *args):
-        """ Called when sort order changes (ascending or descending) """
+        """Called when sort order changes (ascending or descending)"""
         iter = combobox.get_active_iter()
         if combobox.get_model().iter_is_valid(iter):
             value = combobox.get_model().get_value(iter, 1)
@@ -477,7 +475,7 @@ class _PreferencesDialog(Gtk.Dialog):
             self._window.filehandler.refresh_file()
 
     def _create_archive_sort_by_control(self):
-        """ Creates the ComboBox control for selecting archive sort by options. """
+        """Creates the ComboBox control for selecting archive sort by options"""
         sortkey_items = (
             ('No sorting', 0),
             ('Natural order', constants.SORT_NAME),
@@ -506,7 +504,7 @@ class _PreferencesDialog(Gtk.Dialog):
         return box
 
     def _sort_archive_by_changed_cb(self, combobox, *args):
-        """ Called when a new option was selected for the virtual double page option. """
+        """Called when a new option was selected for the virtual double page option"""
         iter = combobox.get_active_iter()
         if combobox.get_model().iter_is_valid(iter):
             value = combobox.get_model().get_value(iter, 1)
@@ -515,7 +513,7 @@ class _PreferencesDialog(Gtk.Dialog):
             self._window.filehandler.refresh_file()
 
     def _sort_archive_order_changed_cb(self, combobox, *args):
-        """ Called when sort order changes (ascending or descending) """
+        """Called when sort order changes (ascending or descending)"""
         iter = combobox.get_active_iter()
         if combobox.get_model().iter_is_valid(iter):
             value = combobox.get_model().get_value(iter, 1)
@@ -524,7 +522,7 @@ class _PreferencesDialog(Gtk.Dialog):
             self._window.filehandler.refresh_file()
 
     def _create_scaling_quality_combobox(self):
-        """ Creates combo box for image scaling quality """
+        """Creates combo box for image scaling quality"""
         items = (
             ('Nearest (very fast)', int(GdkPixbuf.InterpType.NEAREST)),
             ('Tiles (fast)', int(GdkPixbuf.InterpType.TILES)),
@@ -539,7 +537,7 @@ class _PreferencesDialog(Gtk.Dialog):
         return box
 
     def _scaling_quality_changed_cb(self, combobox, *args):
-        """ Called whan image scaling quality changes. """
+        """Called whan image scaling quality changes"""
         iter = combobox.get_active_iter()
         if combobox.get_model().iter_is_valid(iter):
             value = combobox.get_model().get_value(iter, 1)
@@ -550,7 +548,7 @@ class _PreferencesDialog(Gtk.Dialog):
                 self._window.draw_image()
 
     def _create_animation_mode_combobox(self):
-        """ Creates combo box for animation mode """
+        """Creates combo box for animation mode"""
         items = (
             ('Never', constants.ANIMATION_DISABLED),
             ('Normal', constants.ANIMATION_NORMAL),
@@ -566,7 +564,7 @@ class _PreferencesDialog(Gtk.Dialog):
         return box
 
     def _animation_mode_changed_cb(self, combobox, *args):
-        """ Called whenever animation mode has been changed. """
+        """Called whenever animation mode has been changed"""
         iter = combobox.get_active_iter()
         if combobox.get_model().iter_is_valid(iter):
             value = combobox.get_model().get_value(iter, 1)
@@ -578,16 +576,12 @@ class _PreferencesDialog(Gtk.Dialog):
 
     @staticmethod
     def _create_combobox(options, selected_value, change_callback):
-        """ Creates a new dropdown combobox and populates it with the items
-        passed in C{options}.
-
+        """Creates a new dropdown combobox and populates it with the items passed in C{options}.
         @param options: List of tuples: (Option display text, option value)
         @param selected_value: One of the values passed in C{options} that will
             be pre-selected when the control is created.
-        @param change_callback: Function that will be called when the 'changed'
-            event is triggered.
-        @returns Gtk.ComboBox
-        """
+        @param change_callback: Function that will be called when the 'changed' event is triggered.
+        @returns Gtk.ComboBox"""
         assert options and len(options[0]) == 2, "Invalid format for options."
 
         # Use the first list item to determine typing of model fields.
@@ -636,8 +630,7 @@ class _PreferencesDialog(Gtk.Dialog):
         return button
 
     def _check_button_cb(self, button, preference):
-        """Callback for all checkbutton-type preferences."""
-
+        """Callback for all checkbutton-type preferences"""
         prefs[preference] = button.get_active()
 
         if preference == 'color box bg' and button.get_active():
@@ -667,8 +660,7 @@ class _PreferencesDialog(Gtk.Dialog):
             self._window.filehandler.refresh_file()
 
     def _color_button_cb(self, colorbutton, preference):
-        """Callback for the background color selection button."""
-
+        """Callback for the background color selection button"""
         color = colorbutton.get_rgba()
         prefs[preference] = color.red, color.green, color.blue, color.alpha
 
@@ -680,8 +672,7 @@ class _PreferencesDialog(Gtk.Dialog):
             if not self._window.filehandler.file_loaded:
                 self._window.thumbnailsidebar.change_thumbnail_background_color(prefs['thumb bg color'])
 
-    def _create_pref_spinner(self, prefkey, scale, lower, upper, step_incr,
-                             page_incr, digits, tooltip_text):
+    def _create_pref_spinner(self, prefkey, scale, lower, upper, step_incr, page_incr, digits, tooltip_text):
         value = prefs[prefkey] / scale
         adjustment = Gtk.Adjustment(value=value, lower=lower, upper=upper, step_increment=step_incr,
                                     page_increment=page_incr)
@@ -693,7 +684,7 @@ class _PreferencesDialog(Gtk.Dialog):
         return spinner
 
     def _spinner_cb(self, spinbutton, preference):
-        """Callback for spinner-type preferences."""
+        """Callback for spinner-type preferences"""
         value = spinbutton.get_value()
 
         if preference == 'lens size':
@@ -745,7 +736,7 @@ class _PreferencesDialog(Gtk.Dialog):
             prefs[preference] = value
 
     def _create_pref_path_chooser(self, preference, folder=False, default=None):
-        """ Select path as preference value """
+        """Select path as preference value"""
         box = Gtk.Box()
         action = Gtk.FileChooserAction.SELECT_FOLDER if folder else Gtk.FileChooserAction.OPEN
 
@@ -760,7 +751,7 @@ class _PreferencesDialog(Gtk.Dialog):
         return box
 
     def _path_chooser_cb(self, widget, chooser, chooser_action, preference, default):
-        """ Callback for path chooser """
+        """Callback for path chooser"""
         dialog = Gtk.FileChooserDialog(title='Please choose a folder', action=chooser_action)
         dialog.set_transient_for(self)
         dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, 'Select', Gtk.ResponseType.OK)
@@ -775,7 +766,7 @@ class _PreferencesDialog(Gtk.Dialog):
 
     @staticmethod
     def _path_chooser_reset_cb(widget, chooser, preference, default):
-        """ Reset path chooser """
+        """Reset path chooser"""
         prefs[preference] = default
         chooser.set_label(prefs[preference] or '(default)')
         if preference == 'userstyle':
@@ -783,7 +774,7 @@ class _PreferencesDialog(Gtk.Dialog):
 
 
 def open_dialog(action, window):
-    """Create and display the preference dialog."""
+    """Create and display the preference dialog"""
     global _dialog
 
     # if the dialog window is not created then create the window

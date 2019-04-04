@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-""" Gtk.IconView subclass for dynamically generated thumbnails. """
+"""Gtk.IconView subclass for dynamically generated thumbnails"""
 
 from gi.repository import GLib, Gtk
 
@@ -9,17 +9,14 @@ from mcomix.worker_thread import WorkerThread
 
 
 class ThumbnailViewBase(object):
-    """ This class provides shared functionality for Gtk.TreeView and
+    """This class provides shared functionality for Gtk.TreeView and
     Gtk.IconView. Instantiating this class directly is *impossible*,
-    as it depends on methods provided by the view classes. """
-
+    as it depends on methods provided by the view classes"""
     def __init__(self, uid_column, pixbuf_column, status_column):
-        """ Constructs a new ThumbnailView.
+        """Constructs a new ThumbnailView.
         @param uid_column: index of unique identifer column.
         @param pixbuf_column: index of pixbuf column.
-        @param status_column: index of status boolean column
-                              (True if pixbuf is not temporary filler)
-        """
+        @param status_column: index of status boolean column (True if pixbuf is not temporary filler)"""
 
         #: Keep track of already generated thumbnails.
         self._uid_column = uid_column
@@ -35,23 +32,21 @@ class ThumbnailViewBase(object):
                                     max_threads=prefs['max threads'])
 
     def generate_thumbnail(self, uid):
-        """ This function must return the thumbnail for C{uid}. """
+        """This function must return the thumbnail for C{uid}"""
         raise NotImplementedError()
 
     def get_visible_range(self):
-        """ See L{Gtk.IconView.get_visible_range}. """
+        """See L{Gtk.IconView.get_visible_range}"""
         raise NotImplementedError()
 
     def stop_update(self):
-        """ Stops generation of pixbufs. """
+        """Stops generation of pixbufs"""
         self._updates_stopped = True
         self._thread.stop()
 
     def draw_thumbnails_on_screen(self, *args):
-        """ Prepares valid thumbnails for currently displayed icons.
-        This method is supposed to be called from the expose-event
-        callback function. """
-
+        """Prepares valid thumbnails for currently displayed icons.
+        This method is supposed to be called from the expose-event callback function"""
         visible = self.get_visible_range()
         if not visible:
             # No valid paths available
@@ -81,17 +76,15 @@ class ThumbnailViewBase(object):
                 self._thread.extend_orders(pixbufs_needed)
 
     def _pixbuf_worker(self, order):
-        """ Run by a worker thread to generate the thumbnail for a path."""
+        """Run by a worker thread to generate the thumbnail for a path"""
         uid, iter = order
         pixbuf = self.generate_thumbnail(uid)
         if pixbuf is not None:
             GLib.idle_add(self._pixbuf_finished, iter, pixbuf)
 
     def _pixbuf_finished(self, iter, pixbuf):
-        """ Executed when a pixbuf was created, to actually insert the pixbuf
-        into the view store. C{pixbuf_info} is a tuple containing
-        (index, pixbuf). """
-
+        """Executed when a pixbuf was created, to actually insert the pixbuf
+        into the view store. C{pixbuf_info} is a tuple containing (index, pixbuf)"""
         if self._updates_stopped:
             return 0
 

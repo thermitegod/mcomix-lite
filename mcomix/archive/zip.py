@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-""" Unicode-aware wrapper for zipfile.ZipFile. """
+"""Unicode-aware wrapper for zipfile.ZipFile"""
 
 import os
 import zipfile

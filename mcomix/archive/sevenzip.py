@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-""" 7z archive extractor. """
+"""7z archive extractor"""
 
 import os
 import shutil
@@ -11,7 +11,7 @@ from mcomix.archive import archive_base
 
 
 class SevenZipArchive(archive_base.ExternalExecutableArchive):
-    """ 7z file extractor using the 7z executable. """
+    """7z file extractor using the 7z executable"""
     STATE_HEADER, STATE_LISTING, STATE_FOOTER = 1, 2, 3
 
     def __init__(self, archive):
@@ -35,7 +35,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
         return args
 
     def _parse_list_output_line(self, line):
-        """ Start parsing after the first delimiter (bunch of - characters),
+        """Start parsing after the first delimiter (bunch of - characters),
         and end when delimiters appear again. Format:
         Date <space> Time <space> Attr <space> Size <space> Compressed <space> Name"""
         if line.startswith('----------'):
@@ -83,7 +83,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
         self.filenames_initialized = True
 
     def extract(self, filename, destination_dir):
-        """ Extract <filename> from the archive to <destination_dir>. """
+        """Extract <filename> from the archive to <destination_dir>"""
         assert isinstance(filename, str) and isinstance(destination_dir, str)
 
         if not self._get_executable():
@@ -124,8 +124,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
 
     @staticmethod
     def _find_7z_executable():
-        """ Tries to start 7z, and returns either '7z' if
-        it was started successfully or None otherwise. """
+        """Try to start 7z. returns either '7z' or None"""
         exe = shutil.which('7z')
         if exe:
             return exe

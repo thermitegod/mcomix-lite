@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """dialog_handler.py - Takes care of opening and closing and destroying of simple dialog windows.
-   Dialog windows should only be taken care of here if they are windows that need to display
-   information and then exit with no added functionality inbetween.
-"""
+Dialog windows should only be taken care of here if they are windows that need to display
+information and then exit with no added functionality inbetween"""
 
 from mcomix import about_dialog, properties_dialog
 
@@ -12,8 +11,7 @@ dialog_windows = {'about-dialog'     : [None, about_dialog._AboutDialog],
 
 
 def open_dialog(action, data):
-    """Create and display the given dialog."""
-
+    """Create and display the given dialog"""
     window, name_of_dialog = data
 
     _dialog = dialog_windows[name_of_dialog]
@@ -30,7 +28,6 @@ def open_dialog(action, data):
 
 def _close_dialog(action, exit_response, name_of_dialog):
     _dialog = dialog_windows[name_of_dialog]
-
     # if the dialog window exists then destroy it
     if _dialog[0] is not None:
         _dialog[0].destroy()

@@ -15,9 +15,8 @@ from mcomix import constants, log, preferences
 
 
 def parse_arguments():
-    """ Parse the command line passed in <argv>. Returns a tuple containing
-    (options, arguments). Errors parsing the command line are handled in
-    this function. """
+    """Parse the command line passed in <argv>. Returns a tuple containing
+    (options, arguments). Errors parsing the command line are handled in this function"""
     parser = argparse.ArgumentParser(usage='%%(prog)s %s' % '[OPTION...] [PATH]',
                                      description='View images and comic book archives.',
                                      add_help=False)
@@ -65,8 +64,7 @@ def parse_arguments():
 
 
 def run():
-    """Run the program."""
-
+    """Run the program"""
     # Load configuration and setup localisation.
     preferences.read_preferences_file()
 

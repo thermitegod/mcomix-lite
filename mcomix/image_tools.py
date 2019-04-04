@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""image_tools.py - Various image manipulations."""
+"""image_tools.py - Various image manipulations"""
 
 import binascii
 import os
@@ -45,17 +45,13 @@ def rotate_pixbuf(src, rotation):
 
 
 def get_fitting_size(source_size, target_size, keep_ratio=True, scale_up=False):
-    """ Return a scaled version of <source_size>
+    """Return a scaled version of <source_size>
     small enough to fit in <target_size>.
-
     Both <source_size> and <target_size>
     must be (width, height) tuples.
-
     If <keep_ratio> is True, aspect ratio is kept.
-
     If <scale_up> is True, <source_size> is scaled up
-    when smaller than <target_size>.
-    """
+    when smaller than <target_size>"""
     width, height = target_size
     src_width, src_height = source_size
     if not scale_up and src_width <= width and src_height <= height:
@@ -99,8 +95,7 @@ def fit_in_rectangle(src, width, height, keep_ratio=True, scale_up=False, rotati
     If <keep_ratio> is True, the image ratio is kept, and the result
     dimensions may be smaller than the target dimensions.
 
-    If <src> has an alpha channel it gets a checkboard background.
-    """
+    If <src> has an alpha channel it gets a checkboard background"""
     # "Unbounded" really means "bounded to 10000 px" - for simplicity.
     # MComix would probably choke on larger images anyway.
     if width < 0:
@@ -142,9 +137,7 @@ def fit_in_rectangle(src, width, height, keep_ratio=True, scale_up=False, rotati
 
 
 def add_border(pixbuf, thickness, color=0x000000FF):
-    """Return a pixbuf from <pixbuf> with a <thickness> px border of
-    <color> added.
-    """
+    """Return a pixbuf from <pixbuf> with a <thickness> px border of <color> added"""
     canvas = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8,
                                   pixbuf.get_width() + thickness * 2,
                                   pixbuf.get_height() + thickness * 2)
@@ -154,7 +147,7 @@ def add_border(pixbuf, thickness, color=0x000000FF):
 
 
 def pil_to_pixbuf(im, keep_orientation=False):
-    """Return a pixbuf created from the PIL <im>."""
+    """Return a pixbuf created from the PIL <im>"""
     if im.mode.startswith('RGB'):
         has_alpha = im.mode == 'RGBA'
     elif im.mode in ('LA', 'P'):
@@ -184,7 +177,7 @@ def pil_to_pixbuf(im, keep_orientation=False):
 
 
 def pixbuf_to_pil(pixbuf):
-    """Return a PIL image created from <pixbuf>."""
+    """Return a PIL image created from <pixbuf>"""
     dimensions = pixbuf.get_width(), pixbuf.get_height()
     stride = pixbuf.get_rowstride()
     pixels = pixbuf.get_pixels()
@@ -206,7 +199,7 @@ def disable_transform(pixbuf):
 
 
 def static_image(pixbuf):
-    """ Returns a non-animated version of the specified pixbuf. """
+    """Returns a non-animated version of the specified pixbuf"""
     if is_animation(pixbuf):
         return pixbuf.get_static_image()
     return pixbuf
@@ -238,7 +231,7 @@ def load_animation(im):
 
 
 def load_pixbuf(path):
-    """ Loads a pixbuf from a given image file. """
+    """Loads a pixbuf from a given image file"""
     enable_anime = prefs['animation mode'] != constants.ANIMATION_DISABLED
     try:
         with Image.open(path) as im:
@@ -258,8 +251,7 @@ def load_pixbuf(path):
 
 
 def load_pixbuf_size(path, width, height):
-    """ Loads a pixbuf from a given image file and scale it to fit
-    inside (width, height). """
+    """Loads a pixbuf from a given image file and scale it to fit inside (width, height)"""
     try:
         with Image.open(path) as im:
             im.thumbnail((width, height), resample=Image.BOX)
@@ -284,7 +276,7 @@ def load_pixbuf_size(path, width, height):
 
 
 def load_pixbuf_data(imgdata):
-    """ Loads a pixbuf from the data passed in <imgdata>. """
+    """Loads a pixbuf from the data passed in <imgdata>"""
     try:
         with Image.open(BytesIO(imgdata)) as im:
             return pil_to_pixbuf(im, keep_orientation=True)
@@ -301,8 +293,7 @@ def enhance(pixbuf, brightness=1.0, contrast=1.0, saturation=1.0, sharpness=1.0,
     corresponding to each argument has been performed. A value of 1.0 means
     no change. If <autocontrast> is True it overrides the <contrast> value,
     but only if the image mode is supported by ImageOps.autocontrast (i.e.
-    it is L or RGB.)
-    """
+    it is L or RGB.)"""
     if is_animation(pixbuf):
         return anime_tools.frame_executor(
                 pixbuf, enhance,
@@ -325,10 +316,7 @@ def enhance(pixbuf, brightness=1.0, contrast=1.0, saturation=1.0, sharpness=1.0,
 
 
 def _get_png_implied_rotation(pixbuf_or_image):
-    """Same as <get_implied_rotation> for PNG files.
-
-    Lookup for Exif data in the tEXt chunk.
-    """
+    """Same as <get_implied_rotation> for PNG files. Lookup for Exif data in the tEXt chunk"""
     if isinstance(pixbuf_or_image, GdkPixbuf.Pixbuf):
         exif = pixbuf_or_image.get_option('tEXt::Raw profile type exif')
     elif isinstance(pixbuf_or_image, Image.Image):
@@ -360,12 +348,10 @@ def _get_png_implied_rotation(pixbuf_or_image):
 
 def get_implied_rotation(pixbuf):
     """Return the implied rotation in degrees: 0, 90, 180, or 270.
-
     The implied rotation is the angle (in degrees) that the raw pixbuf should
     be rotated in order to be displayed "correctly". E.g. a photograph taken
     by a camera that is held sideways might store this fact in its Exif data,
-    and the pixbuf loader will set the orientation option correspondingly.
-    """
+    and the pixbuf loader will set the orientation option correspondingly"""
     pixbuf = static_image(pixbuf)
     orientation = getattr(pixbuf, 'orientation', None)
     if orientation is None:

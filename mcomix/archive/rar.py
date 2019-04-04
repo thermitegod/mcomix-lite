@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-""" Glue around libunrar.so to extract RAR files without having to
-resort to calling rar/unrar manually. """
+"""Glue around libunrar.so to extract RAR files without having to
+resort to calling rar/unrar manually"""
 
 import os
 import ctypes
@@ -15,23 +15,22 @@ UNRARCALLBACK = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_uint, ctypes.c_long, cty
 
 
 class RarArchive(archive_base.BaseArchive):
-    """ Wrapper class for libunrar. All string values passed to this class must be unicode objects.
-    In turn, all values returned are also unicode. """
-
+    """Wrapper class for libunrar. All string values passed to this class must be unicode objects.
+    In turn, all values returned are also unicode"""
     # Nope! Not a good idea...
     support_concurrent_extractions = False
 
     class _OpenMode(object):
-        """ Rar open mode """
+        """Rar open mode"""
         RAR_OM_EXTRACT = 1
 
     class _ProcessingMode(object):
-        """ Rar file processing mode """
+        """Rar file processing mode"""
         RAR_SKIP = 0
         RAR_EXTRACT = 2
 
     class _ErrorCode(object):
-        """ Rar error codes """
+        """Rar error codes"""
         ERAR_END_ARCHIVE = 10
         ERAR_NO_MEMORY = 11
         ERAR_BAD_DATA = 12
@@ -47,7 +46,7 @@ class RarArchive(archive_base.BaseArchive):
         ERAR_MISSING_PASSWORD = 22
 
     class _RAROpenArchiveDataEx(ctypes.Structure):
-        """ Archive header structure. Used by DLL calls. """
+        """Archive header structure. Used by DLL calls"""
         _pack_ = 1
         _fields_ = [
             ('ArcName', ctypes.c_char_p),
@@ -65,7 +64,7 @@ class RarArchive(archive_base.BaseArchive):
         ]
 
     class _RARHeaderDataEx(ctypes.Structure):
-        """ Archive file structure. Used by DLL calls. """
+        """Archive file structure. Used by DLL calls"""
         _pack_ = 1
         _fields_ = [
             ('ArcName', ctypes.c_char * 1024),
@@ -92,11 +91,11 @@ class RarArchive(archive_base.BaseArchive):
 
     @staticmethod
     def is_available():
-        """ Returns True if unrar.dll can be found, False otherwise. """
+        """Returns True if unrar.dll can be found, False otherwise"""
         return bool(_get_unrar_so())
 
     def __init__(self, archive):
-        """ Initialize Unrar.dll. """
+        """Initialize Unrar.dll"""
         super(RarArchive, self).__init__(archive)
         self._unrar = _get_unrar_so()
         self._handle = None
@@ -121,7 +120,7 @@ class RarArchive(archive_base.BaseArchive):
         return self._is_solid
 
     def iter_contents(self):
-        """ List archive contents. """
+        """List archive contents"""
         self._close()
         self._open()
         try:
@@ -144,7 +143,7 @@ class RarArchive(archive_base.BaseArchive):
             self._close()
 
     def extract(self, filename, destination_dir):
-        """ Extract <filename> from the archive to <destination_dir>. """
+        """Extract <filename> from the archive to <destination_dir>"""
         if not self._handle:
             self._open()
         looped = False
@@ -175,11 +174,11 @@ class RarArchive(archive_base.BaseArchive):
         # After all files have been extracted, close() should be called to free the handler resources.
 
     def close(self):
-        """ Close the archive handle """
+        """Close the archive handle"""
         self._close()
 
     def _open(self):
-        """ Open rar handle for extraction. """
+        """Open rar handle for extraction"""
         archivedata = RarArchive._RAROpenArchiveDataEx(ArcNameW=self.archive,
                                                        OpenMode=RarArchive._OpenMode.RAR_OM_EXTRACT,
                                                        UserData=0)
@@ -210,7 +209,7 @@ class RarArchive(archive_base.BaseArchive):
         self._current_filename = self._headerdata.FileNameW
 
     def _process(self, dest=None):
-        """ Process current entry: extract or skip it. """
+        """Process current entry: extract or skip it"""
         if dest is None:
             mode = RarArchive._ProcessingMode.RAR_SKIP
         else:
@@ -220,7 +219,7 @@ class RarArchive(archive_base.BaseArchive):
         self._check_errorcode(errorcode)
 
     def _close(self):
-        """ Close the rar handle previously obtained by open. """
+        """Close the rar handle previously obtained by open"""
         if self._handle is None:
             return
         errorcode = self._unrar.RARCloseArchive(self._handle)
@@ -231,7 +230,7 @@ class RarArchive(archive_base.BaseArchive):
 
 
 class UnrarException(Exception):
-    """ Exception class for RarArchive. """
+    """Exception class for RarArchive"""
     _exceptions = {
         RarArchive._ErrorCode.ERAR_END_ARCHIVE: 'End of archive',
         RarArchive._ErrorCode.ERAR_NO_MEMORY: 'Not enough memory to initialize data structures',
@@ -261,8 +260,8 @@ _unrar_dll = -1
 
 
 def _get_unrar_so():
-    """ Tries to load libunrar and will return a handle of it.
-    Returns None if an error occured or the library couldn't be found. """
+    """Tries to load libunrar and will return a handle of it.
+    Returns None if an error occured or the library couldn't be found"""
     global _unrar_dll
     if _unrar_dll != -1:
         return _unrar_dll

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""filechooser_chooser_base_dialog.py - Custom FileChooserDialog implementations."""
+"""filechooser_chooser_base_dialog.py - Custom FileChooserDialog implementations"""
 
 import fnmatch
 import mimetypes
@@ -24,9 +24,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
 
     Subclasses should implement a method files_chosen(paths) that will be
     called once the filechooser has done its job and selected some files.
-    If the dialog was closed or Cancel was pressed, <paths> is the empty list.
-    """
-
+    If the dialog was closed or Cancel was pressed, <paths> is the empty list"""
     _last_activated_file = None
 
     def __init__(self, action=Gtk.FileChooserAction.OPEN):
@@ -96,8 +94,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
 
     def add_filter(self, name, mimes, patterns=None):
         """Add a filter, called <name>, for each mime type in <mimes> and
-        each pattern in <patterns> to the filechooser.
-        """
+        each pattern in <patterns> to the filechooser"""
         if patterns is None:
             patterns = []
 
@@ -110,8 +107,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
         return ffilter
 
     def add_archive_filters(self):
-        """Add archive filters to the filechooser.
-        """
+        """Add archive filters to the filechooser"""
         ffilter = Gtk.FileFilter()
         ffilter.set_name('All archives')
         self.filechooser.add_filter(ffilter)
@@ -126,8 +122,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
                 ffilter.add_pattern(pat)
 
     def add_image_filters(self):
-        """Add images filters to the filechooser.
-        """
+        """Add images filters to the filechooser"""
         ffilter = Gtk.FileFilter()
         ffilter.set_name('All images')
         self.filechooser.add_filter(ffilter)
@@ -143,11 +138,10 @@ class _BaseFileChooserDialog(Gtk.Dialog):
 
     @staticmethod
     def _filter(filter_info, data):
-        """ Callback function used to determine if a file
+        """Callback function used to determine if a file
         should be filtered or not. C{data} is a tuple containing
         (patterns, mimes) that should pass the test. Returns True
-        if the file passed in C{filter_info} should be displayed. """
-
+        if the file passed in C{filter_info} should be displayed"""
         match_patterns, match_mimes = data
 
         matches_mime = bool(filter(lambda match_mime:
@@ -158,9 +152,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
         return matches_mime or matches_pattern
 
     def collect_files_from_subdir(self, path, filter, recursive=False):
-        """ Finds archives within C{path} that match the
-        L{Gtk.FileFilter} passed in C{filter}. """
-
+        """Finds archives within C{path} that match the L{Gtk.FileFilter} passed in C{filter}"""
         for root, dirs, files in os.walk(path):
             for file in files:
                 full_path = os.path.join(root, file)
@@ -182,8 +174,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
 
     def _response(self, widget, response):
         """Return a list of the paths of the chosen files, or None if the
-        event only changed the current directory.
-        """
+        event only changed the current directory"""
         if response == Gtk.ResponseType.OK:
             if not self.filechooser.get_filenames():
                 return
@@ -237,9 +228,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
             self._sizelabel.set_text('')
 
     def _preview_thumbnail_finished(self, filepath, pixbuf):
-        """ Called when the thumbnailer has finished creating
-        the thumbnail for <filepath>. """
-
+        """Called when the thumbnailer has finished creating the thumbnail for <filepath>"""
         if self._destroyed:
             return
 

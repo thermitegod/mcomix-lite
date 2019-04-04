@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""archive_tools.py - Archive tool functions."""
+"""archive_tools.py - Archive tool functions"""
 
 import os
 import zipfile
@@ -20,8 +20,7 @@ _HANDLERS = {
 
 
 def _get_handler(archive_type):
-    """ Return best archive class for format <archive_type> """
-
+    """Return best archive class for format <archive_type>"""
     for handler in _HANDLERS[archive_type]:
         if not hasattr(handler, 'is_available'):
             return handler
@@ -30,7 +29,7 @@ def _get_handler(archive_type):
 
 
 def _is_available(archive_type):
-    """ Return True if a handler supporting the <archive_type> format is available """
+    """Return True if a handler supporting the <archive_type> format is available"""
     return _get_handler(archive_type) is not None
 
 
@@ -86,7 +85,7 @@ def is_archive_file(path):
 
 
 def archive_mime_type(path):
-    """Return the archive type of <path> or None for non-archives."""
+    """Return the archive type of <path> or None for non-archives"""
     try:
         if os.path.isfile(path):
             if not os.access(path, os.R_OK):
@@ -120,10 +119,8 @@ def archive_mime_type(path):
 
 
 def get_archive_handler(path, type=None):
-    """ Returns a fitting extractor handler for the archive passed
-    in <path> (with optional mime type <type>. Returns None if no matching
-    extractor was found.
-    """
+    """Returns a fitting extractor handler for the archive passed in <path>
+    (with optional mime type <type>. Returns None if no matching extractor was found"""
     if type is None:
         type = archive_mime_type(path)
         if type is None:
@@ -137,9 +134,8 @@ def get_archive_handler(path, type=None):
 
 
 def get_recursive_archive_handler(path, destination_dir, type=None):
-    """ Same as <get_archive_handler> but the handler will transparently handle
-    archives within archives.
-    """
+    """Same as <get_archive_handler> but the handler will transparently handle
+    archives within archives"""
     archive = get_archive_handler(path, type=type)
     if archive is None:
         return None

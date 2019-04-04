@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-""" Dynamic hotkey management
+"""Dynamic hotkey management
 
-This module handles global hotkeys that were previously hardcoded in events.py.
 All menu accelerators are handled using GTK's built-in accelerator map. The map
 doesn't seem to support multiple keybindings for one action, though, so this
 module takes care of the problem.
@@ -20,9 +19,7 @@ dictionary:
 Default keybindings will be stored here at initialization:
 action-name: string => [keycodes: list]
 
-
-Each action_name can have multiple keybindings.
-"""
+Each action_name can have multiple keybindings"""
 
 import json
 from collections import defaultdict
@@ -44,16 +41,14 @@ class _KeybindingManager(object):
         self._initialize()
 
     def register(self, name, callback, args=[], kwargs={}, bindings=[]):
-        """ Registers an action for a predefined keybinding name.
+        """Registers an action for a predefined keybinding name.
         @param name: Action name, defined in L{keybindings_map.DEFAULT_BINDINGS}.
         @param bindings: List of keybinding strings, as understood
                          by L{Gtk.accelerator_parse}. Only used if no
                          bindings were loaded for this action.
         @param callback: Function callback
         @param args: List of arguments to pass to the callback
-        @param kwargs: List of keyword arguments to pass to the callback.
-        """
-
+        @param kwargs: List of keyword arguments to pass to the callback"""
         if args is None:
             args = []
 
@@ -88,14 +83,11 @@ class _KeybindingManager(object):
         self._action_to_callback[name] = (callback, args, kwargs)
 
     def edit_accel(self, name, new_binding, old_binding):
-        """ Changes binding for an action
+        """Changes binding for an action
         @param name: Action name
         @param new_binding: Binding to be assigned to action
         @param old_binding: Binding to be removed from action [ can be empty: "" ]
-
-        @return None: new_binding wasn't in any action
-                action name: where new_binding was before
-        """
+        @return None: new_binding wasn't in any action action name: where new_binding was before"""
         assert name in keybindings_map.DEFAULT_BINDINGS, '"%s" is not a valid keyboard action.' % name
 
         nb = Gtk.accelerator_parse(new_binding)
@@ -126,7 +118,7 @@ class _KeybindingManager(object):
         return old_action_with_nb
 
     def clear_accel(self, name, binding):
-        """ Remove binding for an action """
+        """Remove binding for an action"""
         assert name in keybindings_map.DEFAULT_BINDINGS, '"%s" is not a valid keyboard action.' % name
 
         ob = Gtk.accelerator_parse(binding)
@@ -136,16 +128,15 @@ class _KeybindingManager(object):
         self.save()
 
     def clear_all(self):
-        """ Removes all keybindings. The changes are only persisted if
-        save() is called afterwards. """
+        """Removes all keybindings. The changes are only persisted if save() is called afterwards"""
         self._action_to_callback = {}
         self._action_to_bindings = defaultdict(list)
         self._binding_to_action = {}
 
     def execute(self, keybinding):
-        """ Executes an action that has been registered for the
+        """Executes an action that has been registered for the
         passed keyboard event. If no action is bound to the passed key, this
-        method is a no-op. """
+        method is a no-op"""
         if keybinding in self._binding_to_action:
             action = self._binding_to_action[keybinding]
             func, args, kwargs = self._action_to_callback[action]
@@ -164,7 +155,7 @@ class _KeybindingManager(object):
                 return func(*args, **kwargs)
 
     def save(self):
-        """ Stores the keybindings that have been set to disk. """
+        """Stores the keybindings that have been set to disk"""
         # Collect keybindings for all registered actions
         action_to_keys = {}
         for action, bindings in self._action_to_bindings.items():
@@ -174,7 +165,7 @@ class _KeybindingManager(object):
             json.dump(action_to_keys, fp, indent=2)
 
     def _initialize(self):
-        """ Restore keybindings from disk. """
+        """Restore keybindings from disk"""
         try:
             with open(constants.KEYBINDINGS_CONF_PATH, 'r') as fp:
                 stored_action_bindings = json.load(fp)
@@ -192,7 +183,7 @@ class _KeybindingManager(object):
                 self._action_to_bindings[action] = []
 
     def get_bindings_for_action(self, name):
-        """ Returns a list of (keycode, modifier) for the action C{name}. """
+        """Returns a list of (keycode, modifier) for the action C{name}"""
         return self._action_to_bindings[name]
 
 
@@ -200,7 +191,7 @@ _manager = None
 
 
 def keybinding_manager(window):
-    """ Returns a singleton instance of the keybinding manager. """
+    """Returns a singleton instance of the keybinding manager"""
     global _manager
     if _manager:
         return _manager

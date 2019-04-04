@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""archive_extractor.py - Archive extraction class."""
+"""archive_extractor.py - Archive extraction class"""
 
 import os
 import threading
@@ -20,20 +20,14 @@ class Extractor(object):
     order in which they should be extracted.  The extraction can then be
     started in a new thread in which files are extracted one by one, and a
     signal is sent on a condition after each extraction, so that it is possible
-    for other threads to wait on specific files to be ready.
-
-    Note: Support for gzip/bzip2 compressed tar archives is limited, see
-    set_files() for more info.
-    """
-
+    for other threads to wait on specific files to be ready"""
     def __init__(self):
         self._setupped = False
 
     def setup(self, src, dst, type=None):
         """Setup the extractor with archive <src> and destination dir <dst>.
         Return a threading.Condition related to the is_ready() method, or
-        None if the format of <src> isn't supported.
-        """
+        None if the format of <src> isn't supported"""
         self._src = src
         self._dst = dst
         self._files = []
@@ -57,15 +51,14 @@ class Extractor(object):
         """Return a list of names of all the files the extractor is currently
         set for extracting. After a call to setup() this is by default all
         files found in the archive. The paths in the list are relative to
-        the archive root and are not absolute for the files once extracted.
-        """
+        the archive root and are not absolute for the files once extracted"""
         with self._condition:
             if not self._contents_listed:
                 return
             return self._files[:]
 
     def get_directory(self):
-        """Returns the root extraction directory of this extractor."""
+        """Returns the root extraction directory of this extractor"""
         return self._dst
 
     def set_files(self, files):
@@ -78,8 +71,7 @@ class Extractor(object):
         no good idea. These formats are supported *only* for backwards
         compability. They are fine formats for some purposes, but should
         not be used for scanned comic books. So, we cheat and ignore the
-        ordering applied with this method on such archives.
-        """
+        ordering applied with this method on such archives"""
         with self._condition:
             if not self._contents_listed:
                 return
@@ -92,15 +84,13 @@ class Extractor(object):
 
     def is_ready(self, name):
         """Return True if the file <name> in the extractor's file list
-        (as set by set_files()) is fully extracted.
-        """
+        (as set by set_files()) is fully extracted"""
         with self._condition:
             return name in self._extracted
 
     def stop(self):
         """Signal the extractor to stop extracting and kill the extracting
-        thread. Blocks until the extracting thread has terminated.
-        """
+        thread. Blocks until the extracting thread has terminated"""
         if self._setupped:
             self._list_thread.stop()
             if self._extract_started:
@@ -111,14 +101,12 @@ class Extractor(object):
     def extract(self):
         """Start extracting the files in the file list one by one using a
         new thread. Every time a new file is extracted a notify() will be
-        signalled on the Condition that was returned by setup().
-        """
+        signalled on the Condition that was returned by setup()"""
         with self._condition:
             if not self._contents_listed:
                 return
             if not self._extract_started:
-                if self._archive.support_concurrent_extractions \
-                        and not self._archive.is_solid():
+                if self._archive.support_concurrent_extractions and not self._archive.is_solid():
                     max_threads = prefs['max extract threads']
                 else:
                     max_threads = 1
@@ -138,18 +126,17 @@ class Extractor(object):
 
     @callback.Callback
     def contents_listed(self, extractor, files):
-        """ Called after the contents of the archive has been listed. """
+        """Called after the contents of the archive has been listed"""
         pass
 
     @callback.Callback
     def file_extracted(self, extractor, filename):
-        """ Called whenever a new file is extracted and ready. """
+        """Called whenever a new file is extracted and ready"""
         pass
 
     def close(self):
         """Close any open file objects, need only be called manually if the
-        extract() method isn't called.
-        """
+        extract() method isn't called"""
         self.stop()
         if self._archive:
             self._archive.close()
@@ -186,8 +173,7 @@ class Extractor(object):
     def _extract_file(self, name):
         """Extract the file named <name> to the destination directory,
         mark the file as "ready", then signal a notify() on the Condition
-        returned by setup().
-        """
+        returned by setup()"""
         try:
             log.debug('Extracting from "%s" to "%s": "%s"', self._src, self._dst, name)
             self._archive.extract(name, self._dst)
@@ -217,5 +203,5 @@ class Extractor(object):
 
 
 class ArchiveException(Exception):
-    """ Indicate error during extraction operations. """
+    """Indicate error during extraction operations"""
     pass

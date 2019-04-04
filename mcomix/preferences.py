@@ -111,6 +111,6 @@ def read_preferences_file():
 
 
 def write_preferences_file():
-    """Write preference data to disk."""
+    """Write preference data to disk"""
     with open(constants.PREFERENCE_PATH, 'w') as config_file:
         json.dump(prefs, config_file, indent=2)

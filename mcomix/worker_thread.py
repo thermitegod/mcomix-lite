@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-""" Worker thread class. """
+"""Worker thread class"""
 
 import threading
 import traceback
@@ -16,7 +16,7 @@ class WorkerThread(object):
         At most <max_threads> will be started for processing.
         If <sort_orders> is True, the orders queue will be sorted
         after each addition. If <unique_orders> is True, duplicate
-        orders will not be added to the queue. """
+        orders will not be added to the queue"""
         self._name = name
         self._process_order = process_order
         self._max_threads = max_threads
@@ -80,7 +80,7 @@ class WorkerThread(object):
         return self._stop
 
     def clear_orders(self):
-        """Clear the current orders queue."""
+        """Clear the current orders queue"""
         with self._condition:
             if self._unique_orders:
                 # We can't just clear the set, as some orders
@@ -91,7 +91,7 @@ class WorkerThread(object):
             self._orders_queue = []
 
     def append_order(self, order):
-        """Append work order to the thread orders queue."""
+        """Append work order to the thread orders queue"""
         with self._condition:
             if self._unique_orders:
                 order_uid = self._order_uid(order)
@@ -106,7 +106,7 @@ class WorkerThread(object):
             self._start()
 
     def extend_orders(self, orders_list):
-        """Append work orders to the thread orders queue."""
+        """Append work orders to the thread orders queue"""
         with self._condition:
             if self._unique_orders:
                 nb_added = 0
@@ -129,7 +129,7 @@ class WorkerThread(object):
             self._start(nb_threads=nb_added)
 
     def stop(self):
-        """Stop the worker threads and flush the orders queue."""
+        """Stop the worker threads and flush the orders queue"""
         self._stop = True
         with self._condition:
             self._condition.notifyAll()

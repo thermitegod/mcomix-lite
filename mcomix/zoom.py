@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-""" Handles zoom and fit of images in the main display area. """
+"""Handles zoom and fit of images in the main display area"""
 
 from functools import reduce
 
@@ -15,7 +15,7 @@ MAX_USER_ZOOM_LOG = 12
 
 
 class ZoomModel(object):
-    """ Handles zoom and fit modes. """
+    """Handles zoom and fit modes"""
     def __init__(self):
         #: User zoom level.
         self._user_zoom_log = IDENTITY_ZOOM_LOG
@@ -88,9 +88,9 @@ class ZoomModel(object):
 
     @staticmethod
     def _preferred_scale(image_size, limits, distribution_axis):
-        """ Returns scale that makes an image of size image_size respect the
+        """Returns scale that makes an image of size image_size respect the
         limits imposed by limits. If no proper value can be determined,
-        IDENTITY_ZOOM is returned. """
+        IDENTITY_ZOOM is returned"""
         min_scale = None
         for i in range(len(limits)):
             if i == distribution_axis:
@@ -107,9 +107,9 @@ class ZoomModel(object):
 
     @staticmethod
     def _calc_limits(union_size, screen_size, fitmode, allow_upscaling):
-        """ Returns a list or a tuple with the i-th element set to int x if
+        """Returns a list or a tuple with the i-th element set to int x if
         fitmode limits the size at the i-th axis to x, or None if fitmode has no
-        preference for this axis. """
+        preference for this axis"""
         manual = fitmode == constants.ZOOM_MODE_MANUAL
         if fitmode == constants.ZOOM_MODE_BEST or \
                 (manual and allow_upscaling and all(tools.smaller(union_size, screen_size))):
@@ -131,7 +131,7 @@ class ZoomModel(object):
 
     @staticmethod
     def _scale_distributed(sizes, axis, max_size, allow_upscaling, do_not_transform):
-        """ Calculates scales for a list of boxes that are distributed along a
+        """Calculates scales for a list of boxes that are distributed along a
         given axis (without any gaps). If the resulting scales are applied to
         their respective boxes, their new total size along axis will be as close
         as possible to max_size. The current implementation ensures that equal
@@ -146,7 +146,7 @@ class ZoomModel(object):
         size. If sizes is empty, the empty list is returned. If there are more
         boxes than max_size, an approximation is returned where all resulting
         scales will shrink their respective boxes to 1 along axis. In this case,
-        the scaled total size might be greater than max_size. """
+        the scaled total size might be greater than max_size"""
         n = len(sizes)
         # trivial cases first
         if n == 0:

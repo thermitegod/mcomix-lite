@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""icons.py - Load MComix specific icons."""
+"""icons.py - Load MComix specific icons"""
 
 from gi.repository import Gtk
 from pkg_resources import resource_string
@@ -9,9 +9,7 @@ from mcomix import image_tools, log
 
 
 def mcomix_icons():
-    """ Returns a list of differently sized pixbufs for the
-    application icon. """
-
+    """Returns a list of differently sized pixbufs for the application icon"""
     size = '48x48'
     try:
         # this may be shit but at least it works

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""slideshow.py - Slideshow handler."""
+"""slideshow.py - Slideshow handler"""
 
 from gi.repository import GLib, Gtk
 
@@ -8,8 +8,7 @@ from mcomix.preferences import prefs
 
 
 class Slideshow(object):
-    """Slideshow handler that manages starting and stopping of slideshows."""
-
+    """Slideshow handler that manages starting and stopping of slideshows"""
     def __init__(self, window):
         self._window = window
         self._running = False
@@ -36,7 +35,7 @@ class Slideshow(object):
         return True
 
     def toggle(self, action):
-        """Toggle a slideshow on or off."""
+        """Toggle a slideshow on or off"""
         if action.get_active():
             self._start()
             self._window.uimanager.get_widget('/Tool/slideshow').set_stock_id(Gtk.STOCK_MEDIA_STOP)
@@ -47,11 +46,11 @@ class Slideshow(object):
             self._window.uimanager.get_widget('/Tool/slideshow').set_tooltip_text('Start slideshow')
 
     def is_running(self):
-        """Return True if a slideshow is currently running."""
+        """Return True if a slideshow is currently running"""
         return self._running
 
     def update_delay(self):
-        """Update the delay time a started slideshow is using."""
+        """Update the delay time a started slideshow is using"""
         if self.is_running():
             self._stop()
             self._start()

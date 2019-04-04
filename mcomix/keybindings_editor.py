@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-""" Configuration tree view for the preferences dialog to edit keybindings. """
+"""Configuration tree view for the preferences dialog to edit keybindings"""
 
 from gi.repository import Gtk
 
@@ -8,9 +8,8 @@ from mcomix import keybindings_map
 
 
 class KeybindingEditorWindow(Gtk.ScrolledWindow):
-
     def __init__(self, keymanager):
-        """ @param keymanager: KeybindingManager instance. """
+        """@param keymanager: KeybindingManager instance"""
         super(KeybindingEditorWindow, self).__init__()
         self.set_border_width(5)
         self.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.ALWAYS)
@@ -52,8 +51,7 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
         self.add_with_viewport(treeview)
 
     def refresh_model(self):
-        """ Initializes the model from data provided by the keybinding
-        manager. """
+        """Initializes the model from data provided by the keybinding manager"""
         self.treestore.clear()
         section_order = list(set(d['group'] for d in keybindings_map.BINDING_INFO.values()))
         section_order.sort()

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""properties_page.py - A page to put in the properties dialog window."""
+"""properties_page.py - A page to put in the properties dialog window"""
 
 from gi.repository import Gtk
 

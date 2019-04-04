@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""process.py - Process spawning module."""
+"""process.py - Process spawning module"""
 
 import subprocess
 from threading import Thread
@@ -12,8 +12,7 @@ STDOUT = subprocess.STDOUT
 
 def call(args, stdin=NULL, stdout=NULL, stderr=NULL, universal_newlines=False):
     return 0 == subprocess.call(args, stdin=stdin, stdout=stdout,
-                                universal_newlines=universal_newlines,
-                                creationflags=0)
+                                universal_newlines=universal_newlines, creationflags=0)
 
 
 def popen(args, stdin=NULL, stdout=PIPE, stderr=NULL, universal_newlines=False):

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""ui.py - UI definitions for main window.
-"""
+"""ui.py - UI definitions for main window"""
 
 from gi.repository import Gtk
 

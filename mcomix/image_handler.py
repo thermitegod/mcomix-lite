@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""image_handler.py - Image handler that takes care of cacheing and giving out images."""
+"""image_handler.py - Image handler that takes care of cacheing and giving out images"""
 
 import os
 import traceback
@@ -12,16 +12,12 @@ from mcomix.worker_thread import WorkerThread
 
 class ImageHandler(object):
     """The FileHandler keeps track of images, pages, caches and reads files.
-
     When the Filehandler's methods refer to pages, they are indexed from 1,
     i.e. the first page is page 1 etc.
-
     Other modules should *never* read directly from the files pointed to by
     paths given by the FileHandler's methods. The files are not even
     guaranteed to exist at all times since the extraction of archives is
-    threaded.
-    """
-
+    threaded"""
     def __init__(self, window):
         #: Reference to main window
         self._window = window
@@ -47,8 +43,7 @@ class ImageHandler(object):
 
     def _get_pixbuf(self, index):
         """Return the pixbuf indexed by <index> from cache.
-        Pixbufs not found in cache are fetched from disk first.
-        """
+        Pixbufs not found in cache are fetched from disk first"""
         pixbuf = image_tools.MISSING_IMAGE_ICON
 
         if index not in self._raw_pixbufs:
@@ -72,8 +67,7 @@ class ImageHandler(object):
     def get_pixbufs(self, number_of_bufs):
         """Returns number_of_bufs pixbufs for the image(s) that should be
         currently displayed. This method might fetch images from disk, so make
-        sure that number_of_bufs is as small as possible.
-        """
+        sure that number_of_bufs is as small as possible"""
         result = []
         for i in range(number_of_bufs):
             result.append(self._get_pixbuf(self._current_image_index + i))
@@ -84,8 +78,7 @@ class ImageHandler(object):
         are (in the current implementation) the current image(s), and
         if cacheing is enabled, also the one or two pixbufs before and
         after the current page. All other pixbufs are deleted and garbage
-        collected directly in order to save memory.
-        """
+        collected directly in order to save memory"""
         if not self._window.filehandler.file_loaded:
             return
 
@@ -112,8 +105,7 @@ class ImageHandler(object):
         self._get_pixbuf(index)
 
     def set_page(self, page_num):
-        """Set up filehandler to the page <page_num>.
-        """
+        """Set up filehandler to the page <page_num>"""
         assert 0 < page_num <= self.get_number_of_pages()
         self._current_image_index = page_num - 1
         self.do_cacheing()
@@ -123,8 +115,7 @@ class ImageHandler(object):
         double page mode (i.e. if double page mode is on, the corresponding
         preference is set, and one of the two images that should normally
         be displayed has a width that exceeds its height), or if currently
-        on the first page.
-        """
+        on the first page"""
         if page is None:
             page = self.get_current_page()
 
@@ -155,16 +146,13 @@ class ImageHandler(object):
 
     def get_real_path(self):
         """Return the "real" path to the currently viewed file, i.e. the
-        full path to the archive or the full path to the currently
-        viewed image.
-        """
+        full path to the archive or the full path to the currently viewed image"""
         if self._window.filehandler.archive_type is not None:
             return self._window.filehandler.get_path_to_base()
         return self.get_path_to_page()
 
     def cleanup(self):
-        """Run clean-up tasks. Should be called prior to exit."""
-
+        """Run clean-up tasks. Should be called prior to exit"""
         self.first_wanted = 0
         self.last_wanted = 1
 
@@ -177,9 +165,8 @@ class ImageHandler(object):
         self._cache_pages = prefs['max pages to cache']
 
     def page_is_available(self, page=None):
-        """ Returns True if <page> is available and calls to get_pixbufs
-        would not block. If <page> is None, the current page(s) are assumed. """
-
+        """Returns True if <page> is available and calls to get_pixbufs
+        would not block. If <page> is None, the current page(s) are assumed"""
         if page is None:
             current_page = self.get_current_page()
             if not current_page:
@@ -199,8 +186,7 @@ class ImageHandler(object):
 
     @callback.Callback
     def page_available(self, page):
-        """ Called whenever a new page becomes available, i.e. the corresponding
-        file has been extracted. """
+        """Called whenever a new page becomes available, i.e. the corresponding file has been extracted"""
         log.debug('Page %u is available', page)
         index = page - 1
         assert index not in self._available_images
@@ -217,7 +203,7 @@ class ImageHandler(object):
             self._thread.append_order((priority, index))
 
     def _file_available(self, filepaths):
-        """ Called by the filehandler when a new file becomes available. """
+        """Called by the filehandler when a new file becomes available"""
         # Find the page that corresponds to <filepath>
         if not self._image_files:
             return
@@ -228,23 +214,21 @@ class ImageHandler(object):
                 self.page_available(i + 1)
 
     def get_number_of_pages(self):
-        """Return the number of pages in the current archive/directory."""
+        """Return the number of pages in the current archive/directory"""
         if self._image_files is not None:
             return len(self._image_files)
         else:
             return 0
 
     def get_current_page(self):
-        """Return the current page number (starting from 1), or 0 if no file is loaded."""
+        """Return the current page number (starting from 1), or 0 if no file is loaded"""
         if self._current_image_index is not None:
             return self._current_image_index + 1
         else:
             return 0
 
     def get_path_to_page(self, page=None):
-        """Return the full path to the image file for <page>, or the current
-        page if <page> is None.
-        """
+        """Return the full path to the image file for <page>, or the current page if <page> is None"""
         if page is None:
             index = self._current_image_index
         else:
@@ -259,8 +243,7 @@ class ImageHandler(object):
         """Return the filename of the <page>, or the filename of the
         currently viewed page if <page> is None. If <double> is True, return
         a tuple (p, p') where p is the filename of <page> (or the current
-        page) and p' is the filename of the page after.
-        """
+        page) and p' is the filename of the page after"""
         if not self.page_is_available():
             return ('', '') if double else ''
 
@@ -283,8 +266,7 @@ class ImageHandler(object):
         """Return the filesize of the <page>, or the filesize of the
         currently viewed page if <page> is None. If <double> is True, return
         a tuple (s, s') where s is the filesize of <page> (or the current
-        page) and s' is the filesize of the page after.
-        """
+        page) and s' is the filesize of the page after"""
         if not self.page_is_available():
             return ('-1','-1') if double else '-1'
 
@@ -308,9 +290,7 @@ class ImageHandler(object):
         return first
 
     def get_pretty_current_filename(self):
-        """Return a string with the name of the currently viewed file that is
-        suitable for printing.
-        """
+        """Return a string with the name of the currently viewed file that is suitable for printing"""
         if self._window.filehandler.archive_type is not None:
             return os.path.basename(self._base_path)
         elif self._image_files:
@@ -321,8 +301,7 @@ class ImageHandler(object):
 
     def get_size(self, page=None):
         """Return a tuple (width, height) with the size of <page>. If <page>
-        is None, return the size of the current page.
-        """
+        is None, return the size of the current page"""
         self._wait_on_page(page)
 
         page_path = self.get_path_to_page(page)
@@ -334,8 +313,7 @@ class ImageHandler(object):
 
     def get_mime_name(self, page=None):
         """Return a string with the name of the mime type of <page>. If
-        <page> is None, return the mime type name of the current page.
-        """
+        <page> is None, return the mime type name of the current page"""
         self._wait_on_page(page)
 
         page_path = self.get_path_to_page(page)
@@ -349,12 +327,9 @@ class ImageHandler(object):
         """Return a thumbnail pixbuf of <page> that fit in a box with
         dimensions <width>x<height>. Return a thumbnail for the current
         page if <page> is None.
-
         If <create> is True, and <width>x<height> <= 128x128, the
         thumbnail is also stored on disk.
-
-        If <nowait> is True, don't wait for <page> to be available.
-        """
+        If <nowait> is True, don't wait for <page> to be available"""
         if not self._wait_on_page(page, check_only=nowait):
             # Page is not available!
             return None
@@ -373,9 +348,7 @@ class ImageHandler(object):
     def _wait_on_page(self, page, check_only=False):
         """Block the running (main) thread until the file corresponding to
         image <page> has been fully extracted.
-
-        If <check_only> is True, only check (and return status), don't wait.
-        """
+        If <check_only> is True, only check (and return status), don't wait"""
         if page is None:
             index = self._current_image_index
         else:
@@ -393,8 +366,7 @@ class ImageHandler(object):
         return True
 
     def _ask_for_pages(self, page):
-        """Ask for pages around <page> to be given priority extraction.
-        """
+        """Ask for pages around <page> to be given priority extraction"""
         files = []
         if prefs['default double page']:
             page_width = 2

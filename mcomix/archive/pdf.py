@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-""" PDF handler. """
+"""PDF handler"""
 
 import math
 import os
@@ -23,7 +23,7 @@ _mudraw_trace_args = None
 
 
 class PdfArchive(archive_base.BaseArchive):
-    """ Concurrent calls to extract welcome! """
+    """Concurrent calls to extract welcome"""
     support_concurrent_extractions = True
 
     _fill_image_regex = re.compile(r'^\s*<fill_image\b.*\bmatrix="(?P<matrix>[^"]+)".*\bwidth="(?P<width>\d+)".*\bheight="(?P<height>\d+)".*/>\s*$')

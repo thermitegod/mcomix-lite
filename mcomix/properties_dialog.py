@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""properties_dialog.py - Properties dialog that displays information about the archive/file."""
+"""properties_dialog.py - Properties dialog that displays information about the archive/file"""
 
 import os
 import pwd
