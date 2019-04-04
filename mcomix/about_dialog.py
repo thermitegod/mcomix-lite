@@ -5,7 +5,7 @@
 import webbrowser
 
 from gi.repository import Gtk
-from pkg_resources import resource_string
+from importlib import resources
 
 from mcomix import constants, image_tools
 
@@ -24,7 +24,7 @@ class _AboutDialog(Gtk.AboutDialog):
         self.set_website_label('Github')
         self.set_copyright('Copyright (C) 2005-2016')
 
-        icon_data = resource_string(__package__, 'images/mcomix.png')
+        icon_data = resources.read_binary('mcomix.images', 'mcomix.png')
         pixbuf = image_tools.load_pixbuf_data(icon_data)
         self.set_logo(pixbuf)
 
