@@ -7,7 +7,7 @@ import os
 APPNAME = 'MComix-Lite'
 VERSION = '0.0.0'
 
-REQUIRED_PIL_VERSION = '5.1.0'
+REQUIRED_PIL_VERSION = '6.0.0'
 
 HOME_DIR = os.path.expanduser('~')
 CONFIG_DIR = os.path.join(os.getenv('XDG_CONFIG_HOME', os.path.join(HOME_DIR, '.config')), 'mcomix')

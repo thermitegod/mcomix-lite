@@ -14,10 +14,7 @@ from gi.repository import GLib, Gdk, GdkPixbuf, Gtk
 from mcomix import anime_tools, constants, log
 from mcomix.preferences import prefs
 
-# see comments in run.py (Pillow version)
 pilver = getattr(Image, '__version__', None)
-if not pilver:
-    pilver = getattr(Image, 'PILLOW_VERSION', None)
 
 log.info('Image loaders: Pillow [%s], GDK [%s])', pilver, GdkPixbuf.PIXBUF_VERSION)
 
