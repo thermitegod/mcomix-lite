@@ -3,16 +3,20 @@
 """Class for transparently handling an archive containing sub-archives"""
 
 import os
+import tempfile
 
 from mcomix import archive_tools, log
 from mcomix.archive import archive_base
+from mcomix.preferences import prefs
 
 
 class RecursiveArchive(archive_base.BaseArchive):
-    def __init__(self, archive, destination_dir):
+    def __init__(self, archive, prefix='mcomix.'):
         super(RecursiveArchive, self).__init__(archive.archive)
         self._main_archive = archive
-        self._destination_dir = destination_dir
+        self._tempdir = tempfile.TemporaryDirectory(prefix=prefix, dir=prefs['temporary directory'])
+        self._sub_tempdirs = []
+        self.destdir = self._tempdir.name
         self._archive_list = []
         # Map entry name to its archive+name.
         self._entry_mapping = {}
@@ -24,6 +28,8 @@ class RecursiveArchive(archive_base.BaseArchive):
         self.support_concurrent_extractions = False
 
     def _iter_contents(self, archive, root=None):
+        if not root:
+            root = os.path.join(self.destdir, 'main_archive')
         self._archive_list.append(archive)
         self._archive_root[archive] = root
         sub_archive_list = []
@@ -41,24 +47,19 @@ class RecursiveArchive(archive_base.BaseArchive):
             yield name
         for f in sub_archive_list:
             # Extract sub-archive.
-            destination_dir = self._destination_dir
+            destination_dir = self.destdir
             if root is not None:
                 destination_dir = os.path.join(destination_dir, root)
-            archive.extract(f, destination_dir)
-            sub_archive_ext = os.path.splitext(f)[1].lower()[1:]
-            sub_archive_path = os.path.join(
-                    self._destination_dir, 'sub-archives',
-                    '%04u.%s' % (len(self._archive_list), sub_archive_ext))
-            self._create_directory(os.path.dirname(sub_archive_path))
-            os.rename(os.path.join(destination_dir, f), sub_archive_path)
+            sub_archive_path = archive.extract(f, destination_dir)
             # And open it and list its contents.
             sub_archive = archive_tools.get_archive_handler(sub_archive_path)
             if sub_archive is None:
                 log.warning('Non-supported archive format: %s', os.path.basename(sub_archive_path))
                 continue
-            sub_root = f
-            if root is not None:
-                sub_root = os.path.join(root, sub_root)
+            sub_tempdir = tempfile.TemporaryDirectory(
+                prefix='sub_archive.{:04}.'.format(len(self._archive_list)), dir=self.destdir)
+            sub_root = sub_tempdir.name
+            self._sub_tempdirs.append(sub_tempdir)
             for name in self._iter_contents(sub_archive, sub_root):
                 yield name
 
@@ -89,15 +90,16 @@ class RecursiveArchive(archive_base.BaseArchive):
             return self._contents
         return [f for f in self.iter_contents()]
 
-    def extract(self, filename, destination_dir):
+    def extract(self, filename):
         if not self._contents_listed:
             self.list_contents()
         archive, name = self._entry_mapping[filename]
         root = self._archive_root[archive]
+        destination_dir = self.destdir
         if root is not None:
             destination_dir = os.path.join(destination_dir, root)
         log.debug('extracting from %s to %s: %s', archive.archive, destination_dir, filename)
-        archive.extract(name, destination_dir)
+        return archive.extract(name, destination_dir)
 
     def iter_extract(self, entries, destination_dir):
         if not self._contents_listed:
@@ -136,5 +138,15 @@ class RecursiveArchive(archive_base.BaseArchive):
         return False
 
     def close(self):
+        # close all archives before cleanup temporary directory
         for archive in self._archive_list:
             archive.close()
+        for tempdir in self._sub_tempdirs:
+            tempdir.cleanup()
+        self._tempdir.cleanup()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.close()

@@ -21,23 +21,25 @@ def is_py_supported_zipfile(path):
 class ZipArchive(archive_base.BaseArchive):
     def __init__(self, archive):
         super(ZipArchive, self).__init__(archive)
-        self.zip = zipfile.ZipFile(archive, 'r')
+        self._zip = zipfile.ZipFile(archive, 'r')
 
     def iter_contents(self):
-        for filename in self.zip.namelist():
+        for filename in self._zip.namelist():
             yield filename
 
     def extract(self, filename, destination_dir):
-        with self._create_file(os.path.join(destination_dir, filename)) as new:
-            content = self.zip.read(filename)
+        destination_path = os.path.join(destination_dir, filename)
+        with self._create_file(destination_path) as new:
+            content = self._zip.read(filename)
             new.write(content)
 
-        zipinfo = self.zip.getinfo(filename)
+        zipinfo = self._zip.getinfo(filename)
         if len(content) != zipinfo.file_size:
             log.warning('%(filename)s\'s extracted size is %(actual_size)d bytes, but should '
                         'be %(expected_size)d bytes. The archive might be corrupt or in an unsupported format.',
                         {'filename': filename, 'actual_size': len(content),
                          'expected_size': zipinfo.file_size})
+        return destination_path
 
     def close(self):
-        self.zip.close()
+        self._zip.close()

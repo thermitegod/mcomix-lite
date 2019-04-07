@@ -65,7 +65,7 @@ def parse_arguments():
 
 def run():
     """Run the program"""
-    # Load configuration and setup localisation.
+    # Load configuration.
     preferences.read_preferences_file()
 
     # Retrieve and parse command line arguments.

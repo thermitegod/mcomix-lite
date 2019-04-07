@@ -32,7 +32,6 @@ class FileHandler(object):
         self._base_path = None
         #: Temporary directory used for extracting archives.
         self._tmp_dir = None
-        self._tmp_dir_ctx = None
         #: If C{True}, no longer wait for files to get extracted.
         self._stop_waiting = False
         #: Mapping of absolute paths to archive path names.
@@ -170,7 +169,6 @@ class FileHandler(object):
             Gtk.main_iteration_do(False)
         tools.garbage_collect()
         if self._tmp_dir is not None:
-            self._tmp_dir_ctx.cleanup()
             self._tmp_dir = None
 
     def _initialize_fileprovider(self, path, keep_fileprovider):
@@ -217,14 +215,13 @@ class FileHandler(object):
         Creates an L{archive_extractor.Extractor} and extracts all images
         found within the archive.
         @return: A tuple containing C{(image_files, image_index)}"""
-        self._tmp_dir_ctx = tempfile.TemporaryDirectory(prefix='mcomix.', dir=prefs['temporary directory'])
-        self._tmp_dir = self._tmp_dir_ctx.name
         self._base_path = path
         try:
-            self._condition = self._extractor.setup(self._base_path, self._tmp_dir, self.archive_type)
+            self._condition = self._extractor.setup(self._base_path, self.archive_type)
         except Exception:
             self._condition = None
             raise
+        self._tmp_dir = self._extractor.destdir
 
     def _listed_contents(self, archive, files):
         if not self.file_loading:

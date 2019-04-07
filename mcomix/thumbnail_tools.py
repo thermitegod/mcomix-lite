@@ -106,8 +106,8 @@ class Thumbnailer(object):
         else:
             mime = None
         if mime is not None:
-            with tempfile.TemporaryDirectory(prefix='mcomix_archive_thumb.') as tmpdir:
-                archive = archive_tools.get_recursive_archive_handler(filepath, tmpdir, type=mime)
+            with archive_tools.get_recursive_archive_handler(
+                    filepath, type=mime, prefix='mcomix_archive_thumb.') as archive:
                 if archive is None:
                     return None, None
                 files = archive.list_contents()
@@ -115,9 +115,7 @@ class Thumbnailer(object):
                 if wanted is None:
                     return None, None
 
-                archive.extract(wanted, tmpdir)
-
-                image_path = os.path.join(tmpdir, wanted)
+                image_path = archive.extract(wanted)
                 if not os.path.isfile(image_path):
                     return None, None
 

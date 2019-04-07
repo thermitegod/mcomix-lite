@@ -38,11 +38,12 @@ class BaseArchive(object):
         return [f for f in self.iter_contents()]
 
     def extract(self, filename, destination_dir):
-        """Extracts the file specified by <filename>. This filename must
-        be obtained by calling list_contents(). The file is saved to
-        <destination_dir>"""
+        """Extracts the file specified by <filename> and return the path of it.
+        This filename must be obtained by calling list_contents().
+        The file is saved to <destination_dir>."""
 
         assert isinstance(filename, str) and isinstance(destination_dir, str)
+        return os.path.join(destination_dir, filename)
 
     def iter_extract(self, entries, destination_dir):
         """Generator to extract <entries> from archive to <destination_dir>"""
@@ -143,8 +144,11 @@ class ExternalExecutableArchive(BaseArchive):
         if not self.filenames_initialized:
             self.list_contents()
 
-        with self._create_file(os.path.join(destination_dir, filename)) as output:
+        destination_path = os.path.join(destination_dir, filename)
+
+        with self._create_file(destination_path) as output:
             process.call([self._get_executable()] +
                          self._get_extract_arguments() +
                          [self.archive, filename],
                          stdout=output)
+        return destination_path
