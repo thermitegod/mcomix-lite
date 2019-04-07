@@ -92,12 +92,12 @@ class RarArchive(archive_base.BaseArchive):
     @staticmethod
     def is_available():
         """Returns True if unrar.dll can be found, False otherwise"""
-        return bool(_get_unrar_so())
+        return bool(_get_unrar())
 
     def __init__(self, archive):
         """Initialize Unrar.dll"""
         super(RarArchive, self).__init__(archive)
-        self._unrar = _get_unrar_so()
+        self._unrar = _get_unrar()
         self._handle = None
         self._is_solid = False
         # Information about the current file will be stored in this structure
@@ -257,11 +257,11 @@ class UnrarException(Exception):
             return 'Unkown error'
 
 
-# Filled on-demand by _get_unrar_so
+# Filled on-demand by _get_unrar
 _unrar_dll = -1
 
 
-def _get_unrar_so():
+def _get_unrar():
     """Tries to load libunrar and will return a handle of it.
     Returns None if an error occured or the library couldn't be found"""
     global _unrar_dll
