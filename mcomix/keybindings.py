@@ -168,7 +168,7 @@ class _KeybindingManager(object):
     def _initialize(self):
         """Load keybindings from disk"""
         try:
-            with open(constants.KEYBINDINGS_CONF_PATH) as fp:
+            with open(constants.KEYBINDINGS_CONF_PATH, 'r') as fp:
                 stored_action_bindings = json.load(fp)
         except Exception as e:
             log.error('Could not load keybindings: %s', e)

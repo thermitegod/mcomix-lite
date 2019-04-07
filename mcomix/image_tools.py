@@ -182,7 +182,7 @@ def pixbuf_to_pil(pixbuf):
     stride = pixbuf.get_rowstride()
     pixels = pixbuf.get_pixels()
     mode = 'RGBA' if pixbuf.get_has_alpha() else 'RGB'
-    return Image.frombuffer(mode, dimensions, pixels, mode, stride, 1)
+    return Image.frombuffer(mode, dimensions, pixels, 'raw', mode, stride, 1)
 
 
 def is_animation(pixbuf):
