@@ -3,11 +3,13 @@
 """7z archive extractor"""
 
 import os
-import shutil
 import tempfile
 
 from mcomix import process
 from mcomix.archive import archive_base
+
+# Filled on-demand by SevenZipArchive
+_7z_executable = -1
 
 
 class SevenZipArchive(archive_base.ExternalExecutableArchive):
@@ -98,6 +100,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
             tmplistfile.flush()
             with self._create_file(destination_path) as output:
                 process.call(self._get_extract_arguments(list_file=tmplistfile.name), stdout=output)
+        return destination_path
 
     def iter_extract(self, entries, destination_dir):
         if not self._get_executable():
@@ -126,10 +129,10 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
     @staticmethod
     def _find_7z_executable():
         """Try to start 7z. returns either '7z' or None"""
-        exe = shutil.which('7z')
-        if exe:
-            return exe
-        return None
+        global _7z_executable
+        if _7z_executable == -1:
+            _7z_executable = process.find_executable('7z')
+        return _7z_executable
 
     @staticmethod
     def is_available():

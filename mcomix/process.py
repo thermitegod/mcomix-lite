@@ -2,6 +2,7 @@
 
 """process.py - Process spawning module"""
 
+import shutil
 import subprocess
 from threading import Thread
 
@@ -25,3 +26,11 @@ def call_thread(args):
     params = dict(stdin=NULL, stdout=NULL, stderr=NULL, bufsize=0, creationflags=0)
     thread = Thread(target=subprocess.call, args=(args,), kwargs=params, daemon=True)
     thread.start()
+
+
+def find_executable(executable):
+    """Find executable in path"""
+    exe = shutil.which(executable)
+    if exe:
+        return exe
+    return None
