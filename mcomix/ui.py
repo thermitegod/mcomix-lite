@@ -116,8 +116,6 @@ class MainUI(Gtk.UIManager):
             ('keep_transformation', None, '_Keep transformation',
              None, 'Keeps the currently selected transformation for the next pages.',
              window.change_keep_transformation),
-            ('slideshow', Gtk.STOCK_MEDIA_PLAY, 'Start _slideshow',
-             None, 'Start slideshow', window.slideshow.toggle),
             ('lens', 'mcomix-lens', 'Magnifying _lens',
              None, 'Magnifying lens', window.lens.toggle),
             ('stretch', None, 'Stretch small images',
@@ -187,7 +185,6 @@ class MainUI(Gtk.UIManager):
                 <toolitem action="next_archive" />
                 <separator />
                 <toolitem action="fullscreen" />
-                <toolitem action="slideshow" />
                 <toolitem action="expander" />
                 <toolitem action="best_fit_mode" />
                 <toolitem action="fit_width_mode" />
@@ -231,8 +228,6 @@ class MainUI(Gtk.UIManager):
                     <menuitem action="fit_height_mode" />
                     <menuitem action="fit_size_mode" />
                     <menuitem action="fit_manual_mode" />
-                    <separator />
-                    <menuitem action="slideshow" />
                     <separator />
                     <menuitem action="stretch" />
                     <menuitem action="invert_scroll" />
@@ -324,8 +319,6 @@ class MainUI(Gtk.UIManager):
                     <menuitem action="fit_height_mode" />
                     <menuitem action="fit_size_mode" />
                     <menuitem action="fit_manual_mode" />
-                    <separator />
-                    <menuitem action="slideshow" />
                     <separator />
                     <menuitem action="enhance_image" />
                     <separator />

@@ -9,14 +9,13 @@ from send2trash import send2trash
 
 from mcomix import bookmark_backend, callback, constants, cursor_handler, enhance_backend, event, \
     file_handler, icons, image_handler, image_tools, keybindings, layout, lens, log, message_dialog, osd, \
-    pageselect, preferences, slideshow, status, thumbbar, tools, ui, zoom
+    pageselect, preferences, status, thumbbar, tools, ui, zoom
 from mcomix.preferences import prefs
 
 
 class MainWindow(Gtk.Window):
     """The main window, is created at start and terminates the program when closed"""
-    def __init__(self, fullscreen=False, is_slideshow=slideshow,
-                 manga_mode=False, double_page=False,
+    def __init__(self, fullscreen=False, manga_mode=False, double_page=False,
                  zoom_mode=None, open_path=None, open_page=1):
         super(MainWindow, self).__init__(type=Gtk.WindowType.TOPLEVEL)
         # ----------------------------------------------------------------
@@ -58,7 +57,6 @@ class MainWindow(Gtk.Window):
         self.thumbnailsidebar = thumbbar.ThumbnailSidebar(self)
 
         self.statusbar = status.Statusbar()
-        self.slideshow = slideshow.Slideshow(self)
         self.cursor_handler = cursor_handler.CursorHandler(self)
         self.enhancer = enhance_backend.ImageEnhancer(self)
         self.lens = lens.MagnifyingLens(self)
@@ -229,9 +227,6 @@ class MainWindow(Gtk.Window):
 
         if open_path is not None:
             self.filehandler.open_file(open_path)
-
-        if is_slideshow:
-            self.actiongroup.get_action('slideshow').activate()
 
         self.cursor_handler.auto_hide_on()
 
@@ -594,13 +589,11 @@ class MainWindow(Gtk.Window):
         self.imagehandler.set_page(num)
         self.page_changed()
         self.new_page(at_bottom=at_bottom)
-        self.slideshow.update_delay()
 
     def next_book(self):
         archive_open = self.filehandler.archive_type is not None
         next_archive_opened = False
-        if (self.slideshow.is_running() and
-                prefs['slideshow can go to next archive']) or prefs['auto open next archive']:
+        if prefs['auto open next archive']:
             next_archive_opened = self.filehandler._open_next_archive()
 
         # If "Auto open next archive" is disabled, do not go to the next
@@ -613,8 +606,7 @@ class MainWindow(Gtk.Window):
     def previous_book(self):
         archive_open = self.filehandler.archive_type is not None
         previous_archive_opened = False
-        if (self.slideshow.is_running() and
-                prefs['slideshow can go to next archive']) or prefs['auto open next archive']:
+        if prefs['auto open next archive']:
             previous_archive_opened = self.filehandler._open_previous_archive()
 
         # If "Auto open next archive" is disabled, do not go to the previous
@@ -910,9 +902,6 @@ class MainWindow(Gtk.Window):
                 title += ','
         title += ' / %d]  %s' % (self.imagehandler.get_number_of_pages(),
                                  self.imagehandler.get_pretty_current_filename())
-
-        if self.slideshow.is_running():
-            title = '[%s] %s' % ('SLIDESHOW', title)
 
         self.set_title(title)
 

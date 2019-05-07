@@ -25,8 +25,6 @@ def parse_arguments():
     parser.add_argument('path', type=str, action='store', nargs='*', default='',
                         help=argparse.SUPPRESS)
 
-    parser.add_argument('-s', '--slideshow', dest='slideshow', action='store_true',
-                        help='Start the application in slideshow mode.')
     parser.add_argument('-v', '--version', dest='version', action='store_true',
                         help='Show the version number and exit.')
 
@@ -157,8 +155,7 @@ def run():
     settings.props.gtk_menu_images = True
 
     from mcomix import main
-    window = main.MainWindow(fullscreen=args.fullscreen, is_slideshow=args.slideshow,
-                             manga_mode=args.manga,
+    window = main.MainWindow(fullscreen=args.fullscreen, manga_mode=args.manga,
                              double_page=args.doublepage, zoom_mode=args.zoommode,
                              open_path=open_path, open_page=open_page)
     main.set_main_window(window)

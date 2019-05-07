@@ -229,25 +229,6 @@ class _PreferencesDialog(Gtk.Dialog):
                              1, 10, 10000, 10, 50, 0,
                              None))
 
-        page.new_section('Slideshow')
-
-        page.add_row(Gtk.Label(label='Slideshow delay (in seconds):'),
-                     self._create_pref_spinner(
-                             'slideshow delay',
-                             1000.0, 0.01, 3600.0, 0.1, 1, 2,
-                             None))
-
-        page.add_row(Gtk.Label(label='Slideshow step (in pixels):'),
-                     self._create_pref_spinner(
-                             'number of pixels to scroll per slideshow event',
-                             1, -500, 500, 1, 1, 0,
-                             'Positive values scroll forward, negative values scroll backwards, 0 goes to a new page.'))
-
-        page.add_row(self._create_pref_check_button(
-                'Slideshow can automatically open the next archive',
-                'slideshow can go to next archive',
-                'While in slideshow mode allow the next archive to automatically be opened.'))
-
         page.new_section('Rotation')
 
         page.add_row(self._create_pref_check_button(
@@ -692,13 +673,6 @@ class _PreferencesDialog(Gtk.Dialog):
 
         elif preference == 'lens magnification':
             prefs[preference] = value
-
-        elif preference == 'slideshow delay':
-            prefs[preference] = int(round(value * 1000))
-            self._window.slideshow.update_delay()
-
-        elif preference == 'number of pixels to scroll per slideshow event':
-            prefs[preference] = int(value)
 
         elif preference == 'number of pixels to scroll per key event':
             prefs[preference] = int(value)

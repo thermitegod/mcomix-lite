@@ -86,7 +86,6 @@ BINDING_INFO = {
     'scrollbar': {'title': 'Show/hide scrollbars', 'group': 'User interface'},
     'thumbnails': {'title': 'Thumbnails', 'group': 'User interface'},
     'hide_all': {'title': 'Show/hide all', 'group': 'User interface'},
-    'slideshow': {'title': 'Start slideshow', 'group': 'User interface'},
 
     # File operations
     'move_file': {'title': 'Move to subdirectory', 'group': 'File'},
@@ -196,7 +195,6 @@ DEFAULT_BINDINGS = {
     'scrollbar': [],
     'thumbnails': ['F9'],
     'hide_all': ['i'],
-    'slideshow': ['<Control>S'],
 
     # File operations
     'delete': ['Delete'],
