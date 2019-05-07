@@ -72,7 +72,7 @@ prefs = {
     'max threads': 32,
     'max extract threads': 16,
     'wrap mouse scroll': False,
-    'scaling quality': 3,  # GdkPixbuf.InterpType.HYPER
+    'scaling quality': 2,  # GdkPixbuf.InterpType.HYPER
     'escape quits': True,
     'fit to size mode': constants.ZOOM_MODE_HEIGHT,
     'fit to size px': 1800,
