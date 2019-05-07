@@ -7,7 +7,7 @@ from gi.repository import GLib, Gdk, Gtk
 from pkg_resources import resource_string
 from send2trash import send2trash
 
-from mcomix import bookmark_backend, callback, clipboard, constants, cursor_handler, enhance_backend, event, \
+from mcomix import bookmark_backend, callback, constants, cursor_handler, enhance_backend, event, \
     file_handler, icons, image_handler, image_tools, keybindings, layout, lens, log, message_dialog, osd, \
     pageselect, preferences, slideshow, status, thumbbar, tools, ui, zoom
 from mcomix.preferences import prefs
@@ -58,7 +58,6 @@ class MainWindow(Gtk.Window):
         self.thumbnailsidebar = thumbbar.ThumbnailSidebar(self)
 
         self.statusbar = status.Statusbar()
-        self.clipboard = clipboard.Clipboard(self)
         self.slideshow = slideshow.Slideshow(self)
         self.cursor_handler = cursor_handler.CursorHandler(self)
         self.enhancer = enhance_backend.ImageEnhancer(self)
