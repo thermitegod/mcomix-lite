@@ -8,7 +8,8 @@ import os
 
 from gi.repository import Gtk, Pango
 
-from mcomix import archive_tools, constants, file_provider, image_tools, labels, log, message_dialog, thumbnail_tools, tools
+from mcomix import archive_tools, constants, file_provider, image_tools, labels, log, message_dialog, thumbnail_tools, \
+    tools
 from mcomix.preferences import prefs
 
 mimetypes.init()

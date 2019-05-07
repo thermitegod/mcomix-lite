@@ -3,13 +3,12 @@
 """Glue around libunrar.so to extract RAR files without having to
 resort to calling rar/unrar manually"""
 
-import os
 import ctypes
 import ctypes.util
+import os
 
-from mcomix.archive import archive_base
 from mcomix import log
-
+from mcomix.archive import archive_base
 
 UNRARCALLBACK = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_uint, ctypes.c_long, ctypes.c_long, ctypes.c_long)
 

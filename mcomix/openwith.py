@@ -4,9 +4,8 @@
 
 import os
 import re
-import shutil
 import shlex
-import sys
+import shutil
 
 from gi.repository import GLib, GObject, Gtk
 

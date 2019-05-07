@@ -2,9 +2,10 @@
 
 """thumbbar.py - Thumbnail sidebar for main window"""
 
+from urllib.request import pathname2url
+
 import cairo
 from gi.repository import Gdk, GdkPixbuf, Gtk
-from urllib.request import pathname2url
 
 from mcomix import image_tools, thumbnail_view, tools
 from mcomix.preferences import prefs

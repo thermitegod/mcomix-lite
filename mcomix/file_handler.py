@@ -3,7 +3,6 @@
 """file_handler.py - File handler that takes care of opening archives and images"""
 
 import os
-import tempfile
 
 from gi.repository import Gtk
 

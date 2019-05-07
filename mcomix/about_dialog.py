@@ -3,9 +3,9 @@
 """about_dialog.py - About dialog"""
 
 import webbrowser
+from importlib import resources
 
 from gi.repository import Gtk
-from importlib import resources
 
 from mcomix import constants, image_tools
 

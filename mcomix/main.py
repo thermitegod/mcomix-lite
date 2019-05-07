@@ -2,11 +2,10 @@
 
 import os
 import shutil
-import threading
 
 from gi.repository import GLib, Gdk, Gtk
-from send2trash import send2trash
 from pkg_resources import resource_string
+from send2trash import send2trash
 
 from mcomix import bookmark_backend, callback, clipboard, constants, cursor_handler, enhance_backend, event, \
     file_handler, icons, image_handler, image_tools, keybindings, layout, lens, log, message_dialog, osd, \

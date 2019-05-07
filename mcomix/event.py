@@ -2,8 +2,9 @@
 
 """event.py - Event handling (keyboard, mouse, etc.) for the main window"""
 
-from gi.repository import Gdk, Gtk
 from urllib.request import url2pathname
+
+from gi.repository import Gdk, Gtk
 
 from mcomix import constants, keybindings, openwith, tools
 from mcomix.preferences import prefs

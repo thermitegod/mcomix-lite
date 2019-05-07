@@ -9,7 +9,7 @@ import time
 
 from gi.repository import Gtk
 
-from mcomix import properties_page, constants, tools
+from mcomix import constants, properties_page, tools
 
 
 class _PropertiesDialog(Gtk.Dialog):

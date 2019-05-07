@@ -2,8 +2,9 @@
 
 """icons.py - Load MComix specific icons"""
 
-from gi.repository import Gtk
 from importlib import resources
+
+from gi.repository import Gtk
 
 from mcomix import image_tools, log
 

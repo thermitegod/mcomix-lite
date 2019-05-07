@@ -26,7 +26,7 @@ from collections import defaultdict
 
 from gi.repository import Gtk
 
-from mcomix import constants, log, keybindings_map
+from mcomix import constants, keybindings_map, log
 
 
 class _KeybindingManager(object):

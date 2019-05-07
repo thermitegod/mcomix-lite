@@ -6,7 +6,6 @@ freedesktop.org "standard" at http://jens.triq.net/thumbnail-spec/"""
 import mimetypes
 import os
 import re
-import tempfile
 import threading
 from hashlib import md5
 from urllib.request import pathname2url
