@@ -14,7 +14,9 @@ class RecursiveArchive(archive_base.BaseArchive):
     def __init__(self, archive, prefix='mcomix.'):
         super(RecursiveArchive, self).__init__(archive.archive)
         self._main_archive = archive
-        self._tempdir = tempfile.TemporaryDirectory(prefix=prefix, dir=prefs['temporary directory'])
+        self.is_encrypted = self._main_archive.is_encrypted
+        self._tempdir = tempfile.TemporaryDirectory(
+                prefix=prefix, dir=prefs['temporary directory'])
         self._sub_tempdirs = []
         self.destdir = self._tempdir.name
         self._archive_list = []
@@ -27,7 +29,9 @@ class RecursiveArchive(archive_base.BaseArchive):
         # Assume concurrent extractions are not supported.
         self.support_concurrent_extractions = False
 
-    def _iter_contents(self, archive, root=None):
+    def _iter_contents(self, archive, root=None, decrypt=True):
+        if archive.is_encrypted and not decrypt:
+            return
         if not root:
             root = os.path.join(self.destdir, 'main_archive')
         self._archive_list.append(archive)
@@ -54,10 +58,12 @@ class RecursiveArchive(archive_base.BaseArchive):
             # And open it and list its contents.
             sub_archive = archive_tools.get_archive_handler(sub_archive_path)
             if sub_archive is None:
-                log.warning('Non-supported archive format: %s', os.path.basename(sub_archive_path))
+                log.warning('Non-supported archive format: %s',
+                            os.path.basename(sub_archive_path))
                 continue
             sub_tempdir = tempfile.TemporaryDirectory(
-                prefix='sub_archive.{:04}.'.format(len(self._archive_list)), dir=self.destdir)
+                    prefix='sub_archive.{:04}.'.format(len(self._archive_list)),
+                    dir=self.destdir)
             sub_root = sub_tempdir.name
             self._sub_tempdirs.append(sub_tempdir)
             for name in self._iter_contents(sub_archive, sub_root):
@@ -72,23 +78,23 @@ class RecursiveArchive(archive_base.BaseArchive):
                 break
         self.support_concurrent_extractions = supported
 
-    def iter_contents(self):
+    def iter_contents(self, decrypt=True):
         if self._contents_listed:
             for f in self._contents:
                 yield f
             return
         self._contents = []
-        for f in self._iter_contents(self._main_archive):
+        for f in self._iter_contents(self._main_archive, decrypt=decrypt):
             self._contents.append(f)
             yield f
         self._contents_listed = True
         # We can now check if concurrent extractions are really supported.
         self._check_concurrent_extraction_support()
 
-    def list_contents(self):
+    def list_contents(self, decrypt=True):
         if self._contents_listed:
             return self._contents
-        return [f for f in self.iter_contents()]
+        return [f for f in self.iter_contents(decrypt=decrypt)]
 
     def extract(self, filename):
         if not self._contents_listed:
@@ -98,7 +104,8 @@ class RecursiveArchive(archive_base.BaseArchive):
         destination_dir = self.destdir
         if root is not None:
             destination_dir = os.path.join(destination_dir, root)
-        log.debug('extracting from %s to %s: %s', archive.archive, destination_dir, filename)
+        log.debug('extracting from %s to %s: %s',
+                  archive.archive, destination_dir, filename)
         return archive.extract(name, destination_dir)
 
     def iter_extract(self, entries, destination_dir):
@@ -121,7 +128,8 @@ class RecursiveArchive(archive_base.BaseArchive):
             if root is not None:
                 archive_destination_dir = os.path.join(destination_dir, root)
             log.debug('extracting from %s to %s: %s',
-                      archive.archive, archive_destination_dir, ' '.join(archive_wanted.keys()))
+                      archive.archive, archive_destination_dir,
+                      ' '.join(archive_wanted.keys()))
             for f in archive.iter_extract(archive_wanted.keys(), archive_destination_dir):
                 yield archive_wanted[f]
             wanted -= set(archive_wanted.values())
@@ -143,7 +151,11 @@ class RecursiveArchive(archive_base.BaseArchive):
             archive.close()
         for tempdir in self._sub_tempdirs:
             tempdir.cleanup()
-        self._tempdir.cleanup()
+
+        try:
+            self._tempdir.cleanup()
+        except OSError:
+            pass
 
     def __enter__(self):
         return self

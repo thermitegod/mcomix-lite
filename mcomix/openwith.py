@@ -198,6 +198,7 @@ class OpenWithEditor(Gtk.Dialog):
     """The editor for changing and creating external commands. This window
     keeps its own internal model once initialized, and will overwrite
     the external model (i.e. preferences) only when properly closed"""
+
     def __init__(self, window, openwithmanager):
         super(OpenWithEditor, self).__init__(title='Edit external commands')
         self.set_transient_for(window)
@@ -428,8 +429,8 @@ class OpenWithEditor(Gtk.Dialog):
 
         for x, hints in enumerate(hints_all):
             for y, (key, desc) in enumerate(hints):
-                hints_grid.attach(Gtk.Label(label=key, halign=Gtk.Align.CENTER, margin=4), x*2, y, 1, 1)
-                hints_grid.attach(Gtk.Label(label=desc, halign=Gtk.Align.START, margin=4), x*2+1, y, 1, 1)
+                hints_grid.attach(Gtk.Label(label=key, halign=Gtk.Align.CENTER, margin=4), x * 2, y, 1, 1)
+                hints_grid.attach(Gtk.Label(label=desc, halign=Gtk.Align.START, margin=4), x * 2 + 1, y, 1, 1)
 
     def _setup_table(self):
         """Initializes the TreeView with settings and data"""
@@ -501,8 +502,11 @@ class OpenWithEditor(Gtk.Dialog):
             self.hide()
         else:
             if self._changed:
-                confirm_diag = message_dialog.MessageDialog(self, Gtk.DialogFlags.MODAL,
-                                                            Gtk.MessageType.INFO, Gtk.ButtonsType.YES_NO)
+                confirm_diag = message_dialog.MessageDialog(
+                        self,
+                        flags=Gtk.DialogFlags.MODAL,
+                        message_type=Gtk.MessageType.INFO,
+                        buttons=Gtk.ButtonsType.YES_NO)
                 confirm_diag.set_text('Changes not saved', 'Save changes made to external commands?')
                 response = confirm_diag.run()
 

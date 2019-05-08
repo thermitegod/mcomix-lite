@@ -215,7 +215,6 @@ class MainUI(Gtk.UIManager):
                     <menuitem action="quit" />
                 </menu>
                 <menu action="menu_edit">
-                    <separator />
                     <menuitem action="preferences" />
                 </menu>
                 <menu action="menu_view">

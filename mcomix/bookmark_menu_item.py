@@ -8,6 +8,7 @@ from gi.repository import Gtk
 class _Bookmark(Gtk.ImageMenuItem):
     """_Bookmark represents one bookmark. It extends the Gtk.ImageMenuItem
     and is thus put directly in the bookmarks menu"""
+
     def __init__(self, window, file_handler, name, path, page, numpages, archive_type, date_added):
         self._name = name
         self._path = path

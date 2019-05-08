@@ -6,7 +6,7 @@ information and then exit with no added functionality inbetween"""
 
 from mcomix import about_dialog, properties_dialog
 
-dialog_windows = {'about-dialog'     : [None, about_dialog._AboutDialog],
+dialog_windows = {'about-dialog': [None, about_dialog._AboutDialog],
                   'properties-dialog': [None, properties_dialog._PropertiesDialog]}
 
 

@@ -2,28 +2,21 @@
 
 """image_tools.py - Various image manipulations"""
 
-import binascii
 import os
-from collections import namedtuple
 from io import BytesIO
 
 from PIL import Image, ImageEnhance, ImageOps, ImageSequence
 from PIL.JpegImagePlugin import _getexif
 from gi.repository import GLib, Gdk, GdkPixbuf, Gtk
 
-from mcomix import anime_tools, constants, log
+from mcomix import anime_tools, constants
 from mcomix.preferences import prefs
-
-pilver = getattr(Image, '__version__', None)
-
-log.info('Image loaders: Pillow [%s], GDK [%s])', pilver, GdkPixbuf.PIXBUF_VERSION)
 
 # Fallback pixbuf for missing images.
 MISSING_IMAGE_ICON = None
 
 _missing_icon_dialog = Gtk.Dialog()
-_missing_icon_pixbuf = _missing_icon_dialog.render_icon(
-        Gtk.STOCK_MISSING_IMAGE, Gtk.IconSize.LARGE_TOOLBAR)
+_missing_icon_pixbuf = _missing_icon_dialog.render_icon(Gtk.STOCK_MISSING_IMAGE, Gtk.IconSize.LARGE_TOOLBAR)
 MISSING_IMAGE_ICON = _missing_icon_pixbuf
 assert MISSING_IMAGE_ICON
 
@@ -67,7 +60,10 @@ def get_fitting_size(source_size, target_size, keep_ratio=True, scale_up=False):
 
 def trans_pixbuf(src, flip=False, flop=False):
     if is_animation(src):
-        return anime_tools.frame_executor(src, trans_pixbuf, kwargs=dict(flip=flip, flop=flop))
+        return anime_tools.frame_executor(
+                src, trans_pixbuf,
+                kwargs=dict(flip=flip, flop=flop)
+        )
     if flip:
         src = src.flip(horizontal=False)
     if flop:
@@ -77,11 +73,18 @@ def trans_pixbuf(src, flip=False, flop=False):
 
 def fit_pixbuf_to_rectangle(src, rect, rotation):
     if is_animation(src):
-        return anime_tools.frame_executor(src, fit_pixbuf_to_rectangle, args=(rect, rotation))
-    return fit_in_rectangle(src, rect[0], rect[1], rotation=rotation, keep_ratio=False, scale_up=True)
+        return anime_tools.frame_executor(
+                src, fit_pixbuf_to_rectangle,
+                args=(rect, rotation)
+        )
+    return fit_in_rectangle(src, rect[0], rect[1],
+                            rotation=rotation,
+                            keep_ratio=False,
+                            scale_up=True)
 
 
-def fit_in_rectangle(src, width, height, keep_ratio=True, scale_up=False, rotation=0, scaling_quality=None):
+def fit_in_rectangle(src, width, height, keep_ratio=True, scale_up=False,
+                     rotation=0, scaling_quality=None):
     """Scale (and return) a pixbuf so that it fits in a rectangle with
     dimensions <width> x <height>. A negative <width> or <height>
     means an unbounded dimension - both cannot be negative.
@@ -117,8 +120,10 @@ def fit_in_rectangle(src, width, height, keep_ratio=True, scale_up=False, rotati
     src_width = src.get_width()
     src_height = src.get_height()
 
-    width, height = get_fitting_size((src_width, src_height), (width, height),
-                                     keep_ratio=keep_ratio, scale_up=scale_up)
+    width, height = get_fitting_size((src_width, src_height),
+                                     (width, height),
+                                     keep_ratio=keep_ratio,
+                                     scale_up=scale_up)
 
     if src.get_has_alpha():
         if prefs['checkered bg for transparent images']:
@@ -129,25 +134,31 @@ def fit_in_rectangle(src, width, height, keep_ratio=True, scale_up=False, rotati
             # Using anything other than nearest interpolation will result in a
             # modified image if no resizing takes place (even if it's opaque).
             scaling_quality = GdkPixbuf.InterpType.NEAREST
-        src = src.composite_color_simple(width, height, scaling_quality, 255, check_size, color1, color2)
+        src = src.composite_color_simple(width, height, scaling_quality,
+                                         255, check_size, color1, color2)
     elif width != src_width or height != src_height:
         src = src.scale_simple(width, height, scaling_quality)
 
-    return rotate_pixbuf(src, rotation)
+    src = rotate_pixbuf(src, rotation)
+
+    return src
 
 
 def add_border(pixbuf, thickness, color=0x000000FF):
-    """Return a pixbuf from <pixbuf> with a <thickness> px border of <color> added"""
+    """Return a pixbuf from <pixbuf> with a <thickness> px border of
+    <color> added.
+    """
     canvas = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8,
                                   pixbuf.get_width() + thickness * 2,
                                   pixbuf.get_height() + thickness * 2)
     canvas.fill(color)
-    pixbuf.copy_area(0, 0, pixbuf.get_width(), pixbuf.get_height(), canvas, thickness, thickness)
+    pixbuf.copy_area(0, 0, pixbuf.get_width(), pixbuf.get_height(),
+                     canvas, thickness, thickness)
     return canvas
 
 
 def pil_to_pixbuf(im, keep_orientation=False):
-    """Return a pixbuf created from the PIL <im>"""
+    """Return a pixbuf created from the PIL <im>."""
     if im.mode.startswith('RGB'):
         has_alpha = im.mode == 'RGBA'
     elif im.mode in ('LA', 'P'):
@@ -157,20 +168,15 @@ def pil_to_pixbuf(im, keep_orientation=False):
     target_mode = 'RGBA' if has_alpha else 'RGB'
     if im.mode != target_mode:
         im = im.convert(target_mode)
-    pixbuf = GdkPixbuf.Pixbuf.new_from_bytes(GLib.Bytes.new(im.tobytes()), GdkPixbuf.Colorspace.RGB,
-                                             has_alpha, 8,
-                                             im.size[0], im.size[1],
-                                             (4 if has_alpha else 3) * im.size[0])
+    pixbuf = GdkPixbuf.Pixbuf.new_from_bytes(
+            GLib.Bytes.new(im.tobytes()), GdkPixbuf.Colorspace.RGB,
+            has_alpha, 8,
+            im.size[0], im.size[1],
+            (4 if has_alpha else 3) * im.size[0]
+    )
     if keep_orientation:
         # Keep orientation metadata.
-        orientation = None
-        exif = im.info.get('exif')
-        if exif is not None:
-            exif = _getexif(im)
-            orientation = exif.get(274, None)
-        if orientation is None:
-            # Maybe it's a PNG? Try alternative method.
-            orientation = _get_png_implied_rotation(im)
+        orientation = _getexif(im).get(274, None)
         if orientation is not None:
             setattr(pixbuf, 'orientation', str(orientation))
     return pixbuf
@@ -182,7 +188,8 @@ def pixbuf_to_pil(pixbuf):
     stride = pixbuf.get_rowstride()
     pixels = pixbuf.get_pixels()
     mode = 'RGBA' if pixbuf.get_has_alpha() else 'RGB'
-    return Image.frombuffer(mode, dimensions, pixels, 'raw', mode, stride, 1)
+    im = Image.frombuffer(mode, dimensions, pixels, 'raw', mode, stride, 1)
+    return im
 
 
 def is_animation(pixbuf):
@@ -226,7 +233,9 @@ def load_animation(im):
         background = color
     frameiter = ImageSequence.Iterator(im)
     for n, frame in enumerate(frameiter):
-        anime.add_frame(n, pil_to_pixbuf(frame), frame.info.get('duration', 0), background=background)
+        anime.add_frame(n, pil_to_pixbuf(frame),
+                        frame.info.get('duration', 0),
+                        background=background)
     return anime.create_animation()
 
 
@@ -265,14 +274,17 @@ def load_pixbuf_size(path, width, height):
         # Don't upscale if smaller than target dimensions!
         if image_width <= width and image_height <= height:
             width, height = image_width, image_height
-        # Work around GdkPixbuf bug: https://gitlab.gnome.org/GNOME/gdk-pixbuf/issues/45
-        # TODO: GIF should be always supported by Pillow. Is this workaround really needed?
+        # Work around GdkPixbuf bug
+        # https://gitlab.gnome.org/GNOME/gdk-pixbuf/issues/45
+        # TODO: GIF should be always supported by Pillow.
+        #       Is this workaround really needed?
         if info.get_name() == 'gif':
             pixbuf = GdkPixbuf.Pixbuf.new_from_file(path)
         else:
             # directly return pixbuf
             return GdkPixbuf.Pixbuf.new_from_file_at_size(path, width, height)
-        return fit_in_rectangle(pixbuf, width, height, scaling_quality=GdkPixbuf.InterpType.BILINEAR)
+        return fit_in_rectangle(pixbuf, width, height,
+                                scaling_quality=GdkPixbuf.InterpType.BILINEAR)
 
 
 def load_pixbuf_data(imgdata):
@@ -297,10 +309,12 @@ def enhance(pixbuf, brightness=1.0, contrast=1.0, saturation=1.0, sharpness=1.0,
     if is_animation(pixbuf):
         return anime_tools.frame_executor(
                 pixbuf, enhance,
-                kwargs=dict(brightness=brightness, contrast=contrast,
-                            saturation=saturation, sharpness=1.0,
-                            autocontrast=False))
-
+                kwargs=dict(
+                        brightness=brightness, contrast=contrast,
+                        saturation=saturation, sharpness=1.0,
+                        autocontrast=False
+                )
+        )
     im = pixbuf_to_pil(pixbuf)
     if brightness != 1.0:
         im = ImageEnhance.Brightness(im).enhance(brightness)
@@ -315,38 +329,6 @@ def enhance(pixbuf, brightness=1.0, contrast=1.0, saturation=1.0, sharpness=1.0,
     return pil_to_pixbuf(im)
 
 
-def _get_png_implied_rotation(pixbuf_or_image):
-    """Same as <get_implied_rotation> for PNG files. Lookup for Exif data in the tEXt chunk"""
-    if isinstance(pixbuf_or_image, GdkPixbuf.Pixbuf):
-        exif = pixbuf_or_image.get_option('tEXt::Raw profile type exif')
-    elif isinstance(pixbuf_or_image, Image.Image):
-        exif = pixbuf_or_image.info.get('Raw profile type exif')
-    else:
-        raise ValueError()
-    if exif is None:
-        return None
-    exif = exif.split('\n')
-    if len(exif) < 4 or 'exif' != exif[1]:
-        # Not valid Exif data.
-        return None
-    size = int(exif[2])
-    try:
-        data = binascii.unhexlify(''.join(exif[3:]))
-    except TypeError:
-        # Not valid hexadecimal content.
-        return None
-    if size != len(data):
-        # Sizes should match.
-        return None
-
-    im = namedtuple('FakeImage', 'info')({'exif': data})
-    exif = _getexif(im)
-    orientation = exif.get(274, None)
-    if orientation is not None:
-        return str(orientation)
-    return orientation
-
-
 def get_implied_rotation(pixbuf):
     """Return the implied rotation in degrees: 0, 90, 180, or 270.
     The implied rotation is the angle (in degrees) that the raw pixbuf should
@@ -357,9 +339,6 @@ def get_implied_rotation(pixbuf):
     orientation = getattr(pixbuf, 'orientation', None)
     if orientation is None:
         orientation = pixbuf.get_option('orientation')
-    if orientation is None:
-        # Maybe it's a PNG? Try alternative method.
-        orientation = _get_png_implied_rotation(pixbuf)
     if orientation == '3':
         return 180
     elif orientation == '6':
@@ -367,47 +346,6 @@ def get_implied_rotation(pixbuf):
     elif orientation == '8':
         return 270
     return 0
-
-
-def combine_pixbufs(pixbuf1, pixbuf2, are_in_manga_mode):
-    if are_in_manga_mode:
-        r_source_pixbuf = pixbuf1
-        l_source_pixbuf = pixbuf2
-    else:
-        l_source_pixbuf = pixbuf1
-        r_source_pixbuf = pixbuf2
-
-    has_alpha = False
-
-    if l_source_pixbuf.get_property('has-alpha') or r_source_pixbuf.get_property('has-alpha'):
-        has_alpha = True
-
-    bits_per_sample = 8
-
-    l_source_pixbuf_width = l_source_pixbuf.get_property('width')
-    r_source_pixbuf_width = r_source_pixbuf.get_property('width')
-
-    l_source_pixbuf_height = l_source_pixbuf.get_property('height')
-    r_source_pixbuf_height = r_source_pixbuf.get_property('height')
-
-    new_width = l_source_pixbuf_width + r_source_pixbuf_width
-
-    new_height = max(l_source_pixbuf_height, r_source_pixbuf_height)
-
-    new_pix_buf = GdkPixbuf.Pixbuf.new(colorspace=GdkPixbuf.Colorspace.RGB,
-                                       has_alpha=has_alpha,
-                                       bits_per_sample=bits_per_sample,
-                                       width=new_width, height=new_height)
-
-    l_source_pixbuf.copy_area(0, 0, l_source_pixbuf_width,
-                              l_source_pixbuf_height,
-                              new_pix_buf, 0, 0)
-
-    r_source_pixbuf.copy_area(0, 0, r_source_pixbuf_width,
-                              r_source_pixbuf_height,
-                              new_pix_buf, l_source_pixbuf_width, 0)
-
-    return new_pix_buf
 
 
 def convert_rgb16list_to_rgba8int(c):

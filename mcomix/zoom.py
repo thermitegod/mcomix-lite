@@ -16,6 +16,7 @@ MAX_USER_ZOOM_LOG = 12
 
 class ZoomModel(object):
     """Handles zoom and fit modes"""
+
     def __init__(self):
         #: User zoom level.
         self._user_zoom_log = IDENTITY_ZOOM_LOG
@@ -255,9 +256,9 @@ def _fix_page_sizes(image_sizes, distribution_axis, do_not_transform):
     sizes = list(zip(*image_sizes))  # [(x1,x2,...),(y1,y2,...)]
     axis_sizes = sizes[int(not distribution_axis)]  # use axis else of distribution_axis
     max_size = max(axis_sizes)  # max size of pages
-    ratios = [(1 if do_not_transform[n] else max_size/s)
+    ratios = [(1 if do_not_transform[n] else max_size / s)
               for n, s in enumerate(axis_sizes)]  # scale ratio of every page if do transform
-    return [(int(x*ratios[n]), int(y*ratios[n]))
+    return [(int(x * ratios[n]), int(y * ratios[n]))
             for n, (x, y) in enumerate(image_sizes)]  # scale every page
 
 

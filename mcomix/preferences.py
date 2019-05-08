@@ -11,7 +11,8 @@ prefs = {
     'number of key presses before page turn': 3,
     'auto open next archive': True,
     'auto open next directory': False,
-    'sort by': constants.SORT_NAME,  # Normal files obtained by directory listing
+    'sort by': constants.SORT_NAME,
+    # Normal files obtained by directory listing
     'sort order': constants.SORT_ASCENDING,
     'sort archive by': constants.SORT_NAME,  # Files in archives
     'sort archive order': constants.SORT_ASCENDING,
@@ -61,7 +62,7 @@ prefs = {
     'saturation': 1.0,
     'sharpness': 1.0,
     'auto contrast': False,
-    'max pages to cache': 9,
+    'max pages to cache': -1,
     'window x': 0,
     'window y': 0,
     'window height': 600,
@@ -69,10 +70,10 @@ prefs = {
     'pageselector height': -1,
     'pageselector width': -1,
     'statusbar fields': constants.STATUS_PAGE | constants.STATUS_RESOLUTION | constants.STATUS_PATH | constants.STATUS_FILENAME | constants.STATUS_FILESIZE,
-    'max threads': 32,
+    'max thumbnail threads': constants.CPU_COUNT,
     'max extract threads': 16,
     'wrap mouse scroll': False,
-    'scaling quality': 2,  # GdkPixbuf.InterpType.HYPER
+    'scaling quality': 2,  # GdkPixbuf.InterpType.BILINEAR
     'escape quits': True,
     'fit to size mode': constants.ZOOM_MODE_HEIGHT,
     'fit to size px': 1800,
@@ -80,12 +81,11 @@ prefs = {
     'animation mode': constants.ANIMATION_INF,
     'animation background': True,
     'animation transform': True,
-    'temporary directory': None,
+    'temporary directory': '/tmp',
     'osd max font size': 16,  # hard limited from 8 to 60
     'osd color': [1, 1, 1, 1],
     'osd bg color': [0, 0, 0, 1],
     'osd timeout': 3.0,  # in seconds, hard limited from 0.5 to 30.0
-    'userstyle': None,  # None to disable userstyle
 }
 
 

@@ -13,6 +13,7 @@ _dialog = None
 class _PreferencesDialog(Gtk.Dialog):
     """The preferences dialog where most (but not all) settings that are
     saved between sessions are presented to the user"""
+
     def __init__(self, window):
         super(_PreferencesDialog, self).__init__(title='Preferences')
         self.set_transient_for(window)
@@ -66,9 +67,6 @@ class _PreferencesDialog(Gtk.Dialog):
                 'escape quits',
                 'ESC key closes the program, instead of exiting fullscreen mode'))
 
-        page.add_row(Gtk.Label(label='User theme'),
-                     self._create_pref_path_chooser('userstyle', default=None))
-
         page.new_section('Background')
 
         fixed_bg_button = self._create_binary_pref_radio_buttons(
@@ -99,6 +97,11 @@ class _PreferencesDialog(Gtk.Dialog):
                              1, 20, 500, 1, 10, 0,
                              None))
 
+        page.add_row(Gtk.Label(label='Maximum number of thumbnail threads:'),
+                     self._create_pref_spinner(
+                             'max thumbnail threads', 1, 0, constants.CPU_COUNT, 1, 4, 0,
+                             'Set the maximum number of thumbnail generation threads (0 will use all cores).'))
+
         page.new_section('Transparency')
 
         page.add_row(self._create_pref_check_button(
@@ -118,15 +121,15 @@ class _PreferencesDialog(Gtk.Dialog):
 
         page.add_row(Gtk.Label(label='Timeout:'),
                      self._create_pref_spinner(
-                         'osd timeout',
-                         1.0, 0.5, 30.0, 0.5, 2.0, 1,
-                         'Erase OSD after timeout, in seconds.'))
+                             'osd timeout',
+                             1.0, 0.5, 30.0, 0.5, 2.0, 1,
+                             'Erase OSD after timeout, in seconds.'))
 
         page.add_row(Gtk.Label(label='Max font size:'),
                      self._create_pref_spinner(
-                         'osd max font size',
-                         1, 8, 60, 1, 10, 0,
-                         'Font size in OSD, hard limited between 8 to 60.'))
+                             'osd max font size',
+                             1, 8, 60, 1, 10, 0,
+                             'Font size in OSD, hard limited between 8 to 60.'))
 
         page.add_row(Gtk.Label(label='Font color:'),
                      self._create_color_button('osd color'))
@@ -700,7 +703,7 @@ class _PreferencesDialog(Gtk.Dialog):
             prefs[preference] = int(value)
             self._window.change_zoom_mode()
 
-        elif preference == 'max extract threads':
+        elif preference in ('max extract threads', 'max thumbnail threads'):
             prefs[preference] = int(value)
 
         elif preference == 'osd max font size':
@@ -734,8 +737,6 @@ class _PreferencesDialog(Gtk.Dialog):
         if response == Gtk.ResponseType.OK:
             prefs[preference] = dialog.get_filename()
             chooser.set_label(prefs[preference])
-            if preference == 'userstyle':
-                self._window.load_style(path=prefs[preference])
         dialog.destroy()
 
     @staticmethod
@@ -743,8 +744,6 @@ class _PreferencesDialog(Gtk.Dialog):
         """Reset path chooser"""
         prefs[preference] = default
         chooser.set_label(prefs[preference] or '(default)')
-        if preference == 'userstyle':
-            self._window.load_style()
 
 
 def open_dialog(action, window):

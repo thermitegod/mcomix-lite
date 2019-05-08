@@ -10,6 +10,7 @@ class ImageEnhancer(object):
     """The ImageEnhancer keeps track of the "enhancement" values and performs
     these enhancements on pixbufs. Changes to the ImageEnhancer's values
     can be made using an _EnhanceImageDialog"""
+
     def __init__(self, window):
         self._window = window
         self.brightness = prefs['brightness']

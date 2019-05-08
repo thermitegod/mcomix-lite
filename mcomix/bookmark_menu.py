@@ -11,6 +11,7 @@ class BookmarksMenu(Gtk.Menu):
     """BookmarksMenu extends Gtk.Menu with convenience methods relating to
     bookmarks. It contains fixed items for adding bookmarks etc. as well
     as dynamic items corresponding to the current bookmarks"""
+
     def __init__(self, ui, window):
         super(BookmarksMenu, self).__init__()
 

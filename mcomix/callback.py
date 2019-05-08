@@ -12,6 +12,7 @@ from mcomix import log
 class CallbackList(object):
     """Helper class for implementing callbacks within the main thread.
     Add listeners to method calls with method += callback_function"""
+
     def __init__(self, obj, function):
         self.__callbacks = []
         self.__object = obj
@@ -101,6 +102,7 @@ class CallbackList(object):
 
 class Callback(object):
     """Decorator class for using the CallbackList helper"""
+
     def __init__(self, function):
         # This is the function the Callback is decorating.
         self.__function = function

@@ -6,7 +6,8 @@ import os
 
 from gi.repository import Gtk
 
-from mcomix import archive_extractor, archive_tools, callback, constants, file_provider, image_tools, log, tools
+from mcomix import archive_extractor, archive_tools, callback, constants, file_provider, image_tools, \
+    log, tools
 from mcomix.preferences import prefs
 
 
@@ -15,6 +16,7 @@ class FileHandler(object):
     While ImageHandler takes care of pages/images, this class provides
     the raw file names for archive members and image files, extracts
     archives, and lists directories for image files"""
+
     def __init__(self, window):
         #: Indicates if files/archives are currently loaded/loading.
         self.file_loaded = False
@@ -58,8 +60,9 @@ class FileHandler(object):
         """Open the file pointed to by <path>.
         If <start_page> is not set we set the current
         page to 1 (first page), if it is set we set the current page to the
-        value of <start_page>. If <start_page> is non-positive it means the last image.
-        Return True if the file is successfully loaded"""
+        value of <start_page>. If <start_page> is non-positive it means the
+        last image.
+        Return True if the file is successfully loaded."""
         self._close()
 
         try:
@@ -93,7 +96,8 @@ class FileHandler(object):
                 return False
             self.file_loading = True
         else:
-            image_files, current_image_index = self._open_image_files(self.filelist, self._current_file)
+            image_files, current_image_index = \
+                self._open_image_files(self.filelist, self._current_file)
             self._archive_opened(image_files)
 
         return True
@@ -101,7 +105,7 @@ class FileHandler(object):
     def _archive_opened(self, image_files):
         """Called once the archive has been opened and its contents listed"""
         self._window.imagehandler._base_path = self._base_path
-        self._window.imagehandler._image_files = image_files
+        self._window.imagehandler.set_image_files(image_files)
         self.file_opened()
 
         if not image_files:
@@ -120,8 +124,10 @@ class FileHandler(object):
                     current_image_index = 0
             else:
                 self._extractor.extract()
-                last_image_index = self._get_index_for_page(self._start_page, len(image_files), self._current_file)
-                if self._start_page or prefs['stored dialog choices'].get('resume-from-last-read-page', False):
+                last_image_index = self._get_index_for_page(self._start_page,
+                                                            len(image_files),
+                                                            self._current_file)
+                if self._start_page:
                     current_image_index = last_image_index
                 else:
                     # Don't switch to last page yet; since we have not asked
@@ -220,7 +226,7 @@ class FileHandler(object):
         except Exception:
             self._condition = None
             raise
-        self._tmp_dir = self._extractor.destdir
+        self._tmp_dir = self._extractor.get_directory()
 
     def _listed_contents(self, archive, files):
         if not self.file_loading:
@@ -229,15 +235,16 @@ class FileHandler(object):
 
         files = self._extractor.get_files()
         archive_images = [image for image in files
+                          if image_tools.is_image_file(image)
                           # Remove MacOS meta files from image list
-                          if image_tools.is_image_file(image) and
-                          '__MACOSX' not in os.path.normpath(image).split(os.sep)]
+                          and '__MACOSX' not in os.path.normpath(image).split(os.sep)]
 
         self._sort_archive_images(archive_images)
-        image_files = [os.path.join(self._tmp_dir, f) for f in archive_images]
+        image_files = [os.path.join(self._tmp_dir, f)
+                       for f in archive_images]
 
         self._name_table = dict(zip(image_files, archive_images))
-
+        self._extractor.set_files(archive_images)
         self._archive_opened(image_files)
 
     @staticmethod
@@ -299,12 +306,11 @@ class FileHandler(object):
         """Return the full path to the current base (path to archive or image directory.)"""
         if self.archive_type is not None:
             return self._base_path
-        elif self._window.imagehandler._image_files:
-            img_index = self._window.imagehandler._current_image_index
-            filename = self._window.imagehandler._image_files[img_index]
+
+        filename = self._window.imagehandler.get_current_path()
+        if filename:
             return os.path.dirname(filename)
-        else:
-            return None
+        return None
 
     def get_base_filename(self):
         """Return the filename of the current base (archive filename or directory name)"""
@@ -339,8 +345,7 @@ class FileHandler(object):
         if self.archive_type is not None:
             files = self._file_provider.list_files(file_provider.FileProvider.ARCHIVES)
             absolute_path = os.path.abspath(self._base_path)
-            if absolute_path not in files:
-                return
+            if absolute_path not in files: return
             current_index = files.index(absolute_path)
 
             for path in reversed(files[:current_index]):

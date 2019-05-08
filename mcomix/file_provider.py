@@ -5,7 +5,8 @@ switching to the next/previous directory"""
 
 import os
 
-from mcomix import archive_tools, constants, image_tools, log, preferences, tools
+from mcomix import archive_tools, constants, image_tools, log, tools
+from mcomix.preferences import prefs
 
 
 def get_file_provider(filelist):
@@ -52,23 +53,24 @@ class FileProvider(object):
     @staticmethod
     def sort_files(files):
         """Sorts a list of C{files} depending on the current preferences. The list is sorted in-place"""
-        if preferences.prefs['sort by'] == constants.SORT_NAME:
+        if prefs['sort by'] == constants.SORT_NAME:
             tools.alphanumeric_sort(files)
-        elif preferences.prefs['sort by'] == constants.SORT_LAST_MODIFIED:
+        elif prefs['sort by'] == constants.SORT_LAST_MODIFIED:
             # Most recently modified file first
             files.sort(key=lambda filename: os.path.getmtime(filename) * -1)
-        elif preferences.prefs['sort by'] == constants.SORT_SIZE:
+        elif prefs['sort by'] == constants.SORT_SIZE:
             # Smallest file first
             files.sort(key=lambda filename: os.stat(filename).st_size)
         # else: don't sort at all: use OS ordering.
 
         # Default is ascending.
-        if preferences.prefs['sort order'] == constants.SORT_DESCENDING:
+        if prefs['sort order'] == constants.SORT_DESCENDING:
             files.reverse()
 
 
 class OrderedFileProvider(FileProvider):
     """This provider will list all files in the same directory as the one passed to the constructor"""
+
     def __init__(self, file_or_directory):
         """Initializes the file listing. If <file_or_directory> is a file,
         directory will be used as base path. If it is a directory, that
@@ -99,20 +101,21 @@ class OrderedFileProvider(FileProvider):
         else:
             should_accept = lambda file: True
 
+        files = []
+        fname_map = {}
         try:
-            files = [os.path.join(self.base_dir, filename) for filename in
-                     # Explicitly convert all files to Unicode, even when
-                     # os.listdir returns a mixture of byte/unicode strings.
-                     # (MComix bug #3424405)
-                     [fn for fn in os.listdir(self.base_dir)]
-                     if should_accept(os.path.join(self.base_dir, filename))]
-
-            FileProvider.sort_files(files)
-
-            return files
+            # listdir() return list of bytes only if path is bytes
+            for fn in os.listdir(self.base_dir):
+                fpath = os.path.join(self.base_dir, fn)
+                if should_accept(fpath):
+                    files.append(fpath)
+                    fname_map[fpath] = os.path.join(self.base_dir, fn)
         except OSError:
             log.warning('! Could not open %s: Permission denied.', self.base_dir)
             return []
+
+        FileProvider.sort_files(files)
+        return [fname_map[fpath] for fpath in files]
 
     def next_directory(self):
         """Switches to the next sibling directory. Next call to
@@ -151,6 +154,7 @@ class OrderedFileProvider(FileProvider):
 
 class PreDefinedFileProvider(FileProvider):
     """Returns only a list of files as passed to the constructor"""
+
     def __init__(self, files):
         """<files> is a list of files that should be shown. The list is filtered
         to contain either only images, or only archives, depending on what the first

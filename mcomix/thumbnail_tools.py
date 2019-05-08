@@ -21,6 +21,7 @@ class Thumbnailer(object):
     internal thumbnail creation. Depending on its settings,
     it either stores thumbnails on disk and retrieves them later,
     or simply creates new thumbnails each time it is called"""
+
     def __init__(self, dst_dir=constants.THUMBNAIL_PATH, store_on_disk=None,
                  size=None, force_recreation=False, archive_support=False):
         """<dst_dir> set the thumbnailer's storage directory.

@@ -14,6 +14,7 @@ from mcomix import bookmark_menu_item, callback, constants, log, message_dialog
 class __BookmarksStore(object):
     """The _BookmarksStore is a backend for both the bookmarks menu and dialog.
     Changes in the _BookmarksStore are mirrored in both"""
+
     def __init__(self):
         self._initialized = False
         self._window = None
@@ -152,10 +153,15 @@ class __BookmarksStore(object):
         @return RESPONSE_YES to create replace bookmarks,
         RESPONSE_NO to create a new bookmark, RESPONSE_CANCEL to abort creating
         a new bookmark"""
-        dialog = message_dialog.MessageDialog(self._window, Gtk.DialogFlags.MODAL, Gtk.MessageType.INFO)
-        dialog.add_buttons(Gtk.STOCK_YES, Gtk.ResponseType.YES,
-                           Gtk.STOCK_NO, Gtk.ResponseType.NO,
-                           Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+        dialog = message_dialog.MessageDialog(
+                self._window,
+                flags=Gtk.DialogFlags.MODAL,
+                message_type=Gtk.MessageType.INFO,
+                buttons=Gtk.ButtonsType.NONE)
+        dialog.add_buttons(
+                Gtk.STOCK_YES, Gtk.ResponseType.YES,
+                Gtk.STOCK_NO, Gtk.ResponseType.NO,
+                Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
         dialog.set_default_response(Gtk.ResponseType.YES)
         dialog.set_should_remember_choice('replace-existing-bookmark', (Gtk.ResponseType.YES, Gtk.ResponseType.NO))
 

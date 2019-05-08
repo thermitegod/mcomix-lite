@@ -87,7 +87,7 @@ def run():
         require_version('Gtk', '3.0')
         require_version('Gdk', '3.0')
 
-        from gi.repository import Gdk, Gtk, GLib
+        from gi.repository import GLib, Gdk, GdkPixbuf, Gtk
 
     except AssertionError:
         log.error('Required versions of PyGObject is not installed.')
@@ -121,6 +121,9 @@ def run():
     except ImportError:
         log.error('No version of Numpy was found.')
         sys.exit(1)
+
+    log.info('Image loaders: Pillow [%s], GDK [%s])',
+             PIL.Image.__version__, GdkPixbuf.PIXBUF_VERSION)
 
     if not os.path.exists(constants.DATA_DIR):
         os.makedirs(constants.DATA_DIR, 0o700)

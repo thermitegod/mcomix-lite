@@ -10,6 +10,7 @@ from mcomix import preferences_section
 class _PreferencePage(Gtk.VBox):
     """The _PreferencePage is a conveniece class for making one "page"
     in a preferences-style dialog that contains one or more _PreferenceSections"""
+
     def __init__(self, right_column_width):
         """Create a new page where any possible right columns have the width request <right_column_width>"""
         super(_PreferencePage, self).__init__(homogeneous=False, spacing=12)

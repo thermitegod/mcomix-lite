@@ -9,12 +9,14 @@ VERSION = '0.0.0'
 
 REQUIRED_PIL_VERSION = '6.0.0'
 
-HOME_DIR = os.path.expanduser('~')
+CPU_COUNT = os.cpu_count()
+
+HOME_DIR = os.environ.get('HOME')
 CONFIG_DIR = os.path.join(os.getenv('XDG_CONFIG_HOME', os.path.join(HOME_DIR, '.config')), 'mcomix')
 DATA_DIR = os.path.join(os.getenv('XDG_CONFIG_HOME', os.path.join(HOME_DIR, '.local/share')), 'mcomix')
 
 BASE_PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-THUMBNAIL_PATH = os.path.join(HOME_DIR, '.thumbnails/normal')
+THUMBNAIL_PATH = os.getenv('XDG_CACHE_HOME', os.path.join(HOME_DIR, '.cache/thumbnails/normal'))
 PREFERENCE_PATH = os.path.join(CONFIG_DIR, 'preferences.conf')
 KEYBINDINGS_CONF_PATH = os.path.join(CONFIG_DIR, 'keybindings.conf')
 

@@ -2,12 +2,13 @@
 
 """Dynamic hotkey management
 
+This module handles global hotkeys that were previously hardcoded in events.py.
 All menu accelerators are handled using GTK's built-in accelerator map. The map
 doesn't seem to support multiple keybindings for one action, though, so this
 module takes care of the problem.
 
 At runtime, other modules can register a callback for a specific action name.
-This action name has to be registered in keybindings_map.DEFAULT_BINDINGS, or an Exception will be
+This action name has to be registered in keybindings_map.BINDING_INFO, or an Exception will be
 thrown. The module can pass a list of default keybindings. If the user hasn't
 configured different bindings, the default ones will be used.
 
@@ -40,23 +41,16 @@ class _KeybindingManager(object):
 
         self._initialize()
 
-    def register(self, name, callback, args=None, kwargs=None, bindings=None):
+    def register(self, name, callback, args=[], kwargs={}, bindings=[]):
         """Registers an action for a predefined keybinding name.
-        @param name: Action name, defined in L{keybindings_map.DEFAULT_BINDINGS}.
+        @param name: Action name, defined in L{keybindings_map.BINDING_INFO}.
         @param bindings: List of keybinding strings, as understood
                          by L{Gtk.accelerator_parse}. Only used if no
                          bindings were loaded for this action.
         @param callback: Function callback
         @param args: List of arguments to pass to the callback
         @param kwargs: List of keyword arguments to pass to the callback"""
-        if args is None:
-            args = []
-        if kwargs is None:
-            kwargs = {}
-        if bindings is None:
-            bindings = []
-
-        assert name in keybindings_map.DEFAULT_BINDINGS, '"%s" is not a valid keyboard action.' % name
+        assert name in keybindings_map.BINDING_INFO, '"%s" is not a valid keyboard action.' % name
 
         # use default bindings if not provided
         if not bindings:
@@ -89,7 +83,7 @@ class _KeybindingManager(object):
         @param new_binding: Binding to be assigned to action
         @param old_binding: Binding to be removed from action [ can be empty: "" ]
         @return None: new_binding wasn't in any action action name: where new_binding was before"""
-        assert name in keybindings_map.DEFAULT_BINDINGS, '"%s" is not a valid keyboard action.' % name
+        assert name in keybindings_map.BINDING_INFO, '"%s" is not a valid keyboard action.' % name
 
         nb = Gtk.accelerator_parse(new_binding)
         old_action_with_nb = self._binding_to_action.get(nb)
@@ -120,7 +114,7 @@ class _KeybindingManager(object):
 
     def clear_accel(self, name, binding):
         """Remove binding for an action"""
-        assert name in keybindings_map.DEFAULT_BINDINGS, '"%s" is not a valid keyboard action.' % name
+        assert name in keybindings_map.BINDING_INFO, '"%s" is not a valid keyboard action.' % name
 
         ob = Gtk.accelerator_parse(binding)
         self._action_to_bindings[name].remove(ob)
@@ -161,7 +155,10 @@ class _KeybindingManager(object):
         action_to_keys = {}
         for action, bindings in self._action_to_bindings.items():
             if bindings is not None:
-                action_to_keys[action] = [Gtk.accelerator_name(keyval, modifiers) for (keyval, modifiers) in bindings]
+                action_to_keys[action] = [
+                    Gtk.accelerator_name(keyval, modifiers) for
+                    (keyval, modifiers) in bindings
+                ]
         with open(constants.KEYBINDINGS_CONF_PATH, 'w') as fp:
             json.dump(action_to_keys, fp, indent=2)
 
@@ -170,13 +167,14 @@ class _KeybindingManager(object):
         try:
             with open(constants.KEYBINDINGS_CONF_PATH, 'r') as fp:
                 stored_action_bindings = json.load(fp)
-        except Exception as e:
-            log.error('Could not load keybindings: %s', e)
+        except:
             stored_action_bindings = {}
 
-        for action in keybindings_map.DEFAULT_BINDINGS.keys():
+        for action in keybindings_map.BINDING_INFO.keys():
             if action in stored_action_bindings:
-                bindings = [Gtk.accelerator_parse(keyname) for keyname in stored_action_bindings[action]]
+                bindings = [
+                    Gtk.accelerator_parse(keyname)
+                    for keyname in stored_action_bindings[action]]
                 self._action_to_bindings[action] = bindings
                 for binding in bindings:
                     self._binding_to_action[binding] = action

@@ -4,13 +4,13 @@
 
 from gi.repository import Gtk
 
-from mcomix import callback
+from mcomix import callback, mt
 from mcomix.preferences import prefs
-from mcomix.worker_thread import WorkerThread
 
 
 class Pageselector(Gtk.Dialog):
     """The Pageselector takes care of the popup page selector"""
+
     def __init__(self, window):
         self._window = window
         super(Pageselector, self).__init__(title='Go to page...', modal=True, destroy_with_parent=True)
@@ -68,7 +68,7 @@ class Pageselector(Gtk.Dialog):
 
         # Currently displayed thumbnail page.
         self._thumbnail_page = 0
-        self._thread = WorkerThread(self._generate_thumbnail, name='preview')
+        self._thread = mt.ThreadPool(name=self.__class__.__name__)
         self._update_thumbnail(int(self._selector_adjustment.props.value))
         self._window.imagehandler.page_available += self._page_available
 
@@ -100,7 +100,7 @@ class Pageselector(Gtk.Dialog):
             self._window.set_page(int(self._selector_adjustment.props.value))
 
         self._window.imagehandler.page_available -= self._page_available
-        self._thread.stop()
+        self._thread.renew()
         self.destroy()
 
     def _update_thumbnail(self, page):
@@ -108,16 +108,19 @@ class Pageselector(Gtk.Dialog):
         width = self._image_preview.get_allocation().width
         height = self._image_preview.get_allocation().height
         self._thumbnail_page = page
-        self._thread.clear_orders()
-        self._thread.append_order((page, width, height))
+        self._thread.apply_async(
+                self._generate_thumbnail, args=(page, width, height),
+                callback=self._generate_thumbnail_cb)
 
     def _generate_thumbnail(self, params):
         """Generate the preview thumbnail for the page selector.
         A transparent image will be used if the page is not yet available"""
-        page, width, height = params
+        return page, self._window.imagehandler.get_thumbnail(
+                page, width=width, height=height, nowait=True)
 
-        pixbuf = self._window.imagehandler.get_thumbnail(page, width=width, height=height, nowait=True)
-        self._thumbnail_finished(page, pixbuf)
+    def _generate_thumbnail_cb(self, params):
+        page, pixbuf = params
+        return self._thumbnail_finished(page, pixbuf)
 
     @callback.Callback
     def _thumbnail_finished(self, page, pixbuf):

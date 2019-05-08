@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 
 
-import os
 import glob
+import os
+
 import setuptools
 
 from mcomix import constants
@@ -22,7 +23,6 @@ Example usage:
 def get_data_patterns(directory, *patterns):
     """ Build a list of patterns for all subdirectories of <directory>
     to be passed into package_data. """
-
     olddir = os.getcwd()
     os.chdir(os.path.join(constants.BASE_PATH, directory))
     allfiles = []
@@ -48,14 +48,13 @@ setuptools.setup(
         name=constants.APPNAME.lower(),
         version=constants.VERSION,
         packages=['mcomix', 'mcomix.archive', 'mcomix.images'],
-        package_data={
-            'mcomix.images': images},
+        package_data={'mcomix.images': images},
         entry_points={
             'console_scripts': ['mcomix = mcomix.run:run'],
             'setuptools.installation': ['eggsecutable=mcomix.run:run'],
         },
         test_suite="test",
-        requires=['Gtk (>=3.21.0)', 'Pillow (>=5.1.0)'],
+        requires=['Gtk (>=3.21.0)', 'Pillow (>=6.0.0)'],
         install_requires=['setuptools'],
         zip_safe=False,
 

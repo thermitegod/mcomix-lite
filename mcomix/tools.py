@@ -5,6 +5,7 @@
 import bisect
 import math
 import operator
+import os
 import re
 from functools import reduce
 
@@ -25,6 +26,7 @@ def cmp(x, y):
 def alphanumeric_sort(filenames):
     """Do an in-place alphanumeric sort of the strings in <filenames>,
     such that for an example "1.jpg", "2.jpg", "10.jpg" is a sorted ordering"""
+
     def _format_substring(s):
         if s.isdigit():
             return 0, int(s)
@@ -45,18 +47,6 @@ def bin_search(lst, value):
         return index
     else:
         return ~index
-
-
-def normalize_uri(uri):
-    """Normalize URIs passed into the program by different applications, normally via drag-and-drop"""
-    if uri.startswith('file://localhost/'):
-        return uri[16:]
-    elif uri.startswith('file:///'):
-        return uri[7:]
-    elif uri.startswith('file:/'):
-        return uri[5:]
-    else:
-        return uri
 
 
 def number_of_digits(n):
@@ -80,6 +70,19 @@ def format_byte_size(n):
 def garbage_collect():
     """Runs the garbage collector"""
     gc.collect(0)
+
+
+def splitpath(path):
+    # split path to a list of every level
+    # use os.path.join(*pathlist) to convert such list into path
+    pathname = os.path.normpath(path)
+    pathlist = [pathname]
+    while True:
+        dirname, basename = os.path.split(pathlist[0])
+        if not (dirname and basename):
+            break
+        pathlist[0:1] = dirname, basename
+    return pathlist
 
 
 def div(a, b):

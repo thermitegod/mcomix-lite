@@ -18,6 +18,7 @@ class MagnifyingLens(object):
     Note: The mapping is highly dependent on the exact layout of the main
     window images, thus this module isn't really independent from the main
     module as it uses implementation details not in the interface"""
+
     def __init__(self, window):
         self._window = window
         self._area = self._window._main_layout

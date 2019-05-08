@@ -13,6 +13,7 @@ class OnScreenDisplay(object):
     """The OSD shows information such as currently opened file, archive and
     page in a black box drawn on the bottom end of the screen.
     The OSD will automatically be erased after 'osd timeout' seconds"""
+
     def __init__(self, window):
         #: MainWindow
         self._window = window
@@ -79,7 +80,7 @@ class OnScreenDisplay(object):
     def _scale_font(font, layout, max_width, max_height):
         """Scales the font used by C{layout} until max_width/max_height is reached"""
         # hard limited from 8 to 60
-        SIZE_MIN, SIZE_MAX = 8, min(prefs['osd max font size'], 60)+1
+        SIZE_MIN, SIZE_MAX = 8, min(prefs['osd max font size'], 60) + 1
         for font_size in range(SIZE_MIN, SIZE_MAX):
             old_size = font.get_size()
             font.set_size(font_size * Pango.SCALE)

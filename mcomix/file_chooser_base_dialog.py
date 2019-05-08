@@ -28,7 +28,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
     If the dialog was closed or Cancel was pressed, <paths> is the empty list"""
     _last_activated_file = None
 
-    def __init__(self, action=Gtk.FileChooserAction.OPEN):
+    def __init__(self, parent, action=Gtk.FileChooserAction.OPEN):
         self._action = action
         self._destroyed = False
 
@@ -41,6 +41,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
             buttons = (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_SAVE, Gtk.ResponseType.OK)
 
         super(_BaseFileChooserDialog, self).__init__(title=title)
+        self.set_transient_for(parent)
         self.add_buttons(*buttons)
         self.set_default_response(Gtk.ResponseType.OK)
 
@@ -154,9 +155,9 @@ class _BaseFileChooserDialog(Gtk.Dialog):
 
     def collect_files_from_subdir(self, path, filter, recursive=False):
         """Finds archives within C{path} that match the L{Gtk.FileFilter} passed in C{filter}"""
-        for root, dirs, files in os.walk(path):
+        for dirpath, subdirs, files in os.scandir(path):
             for file in files:
-                full_path = os.path.join(root, file)
+                full_path = os.path.join(dirpath, file)
                 mimetype = mimetypes.guess_type(full_path)[0] or 'application/octet-stream'
                 filter_info = Gtk.FileFilterInfo()
                 filter_info.contains = Gtk.FileFilterFlags.FILENAME | Gtk.FileFilterFlags.MIME_TYPE
@@ -197,9 +198,11 @@ class _BaseFileChooserDialog(Gtk.Dialog):
             if (self._action == Gtk.FileChooserAction.SAVE and
                     not os.path.isdir(first_path) and
                     os.path.exists(first_path)):
-                overwrite_dialog = message_dialog.MessageDialog(None, 0,
-                                                                Gtk.MessageType.QUESTION,
-                                                                Gtk.ButtonsType.OK_CANCEL)
+                overwrite_dialog = message_dialog.MessageDialog(
+                        self,
+                        flags=0,
+                        message_type=Gtk.MessageType.QUESTION,
+                        buttons=Gtk.ButtonsType.OK_CANCEL)
                 overwrite_dialog.set_text('A file named "%s" already exists. Do you want to replace it?'
                                           % os.path.basename(first_path))
                 response = overwrite_dialog.run()

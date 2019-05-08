@@ -4,17 +4,17 @@ import os
 import shutil
 
 from gi.repository import GLib, Gdk, Gtk
-from pkg_resources import resource_string
 from send2trash import send2trash
 
 from mcomix import bookmark_backend, callback, constants, cursor_handler, enhance_backend, event, \
-    file_handler, icons, image_handler, image_tools, keybindings, layout, lens, log, message_dialog, osd, \
+    file_handler, icons, image_handler, image_tools, keybindings, layout, lens, message_dialog, osd, \
     pageselect, preferences, status, thumbbar, tools, ui, zoom
 from mcomix.preferences import prefs
 
 
 class MainWindow(Gtk.Window):
     """The main window, is created at start and terminates the program when closed"""
+
     def __init__(self, fullscreen=False, manga_mode=False, double_page=False,
                  zoom_mode=None, open_path=None, open_page=1):
         super(MainWindow, self).__init__(type=Gtk.WindowType.TOPLEVEL)
@@ -120,10 +120,10 @@ class MainWindow(Gtk.Window):
 
         # Determine zoom mode. If zoom_mode is passed, it overrides
         # the zoom mode preference.
-        zoom_actions = {constants.ZOOM_MODE_BEST  : 'best_fit_mode',
-                        constants.ZOOM_MODE_WIDTH : 'fit_width_mode',
+        zoom_actions = {constants.ZOOM_MODE_BEST: 'best_fit_mode',
+                        constants.ZOOM_MODE_WIDTH: 'fit_width_mode',
                         constants.ZOOM_MODE_HEIGHT: 'fit_height_mode',
-                        constants.ZOOM_MODE_SIZE  : 'fit_size_mode',
+                        constants.ZOOM_MODE_SIZE: 'fit_size_mode',
                         constants.ZOOM_MODE_MANUAL: 'fit_manual_mode'}
 
         if zoom_mode is not None:
@@ -167,12 +167,12 @@ class MainWindow(Gtk.Window):
 
         # Each "toggle" widget "eats" part of the main layout visible area.
         self._toggle_axis = {
-            self.thumbnailsidebar              : constants.WIDTH_AXIS,
+            self.thumbnailsidebar: constants.WIDTH_AXIS,
             self._scroll[constants.HEIGHT_AXIS]: constants.WIDTH_AXIS,
-            self._scroll[constants.WIDTH_AXIS] : constants.HEIGHT_AXIS,
-            self.statusbar                     : constants.HEIGHT_AXIS,
-            self.toolbar                       : constants.HEIGHT_AXIS,
-            self.menubar                       : constants.HEIGHT_AXIS,
+            self._scroll[constants.WIDTH_AXIS]: constants.HEIGHT_AXIS,
+            self.statusbar: constants.HEIGHT_AXIS,
+            self.toolbar: constants.HEIGHT_AXIS,
+            self.menubar: constants.HEIGHT_AXIS,
         }
 
         # Start with all "toggle" widgets hidden to avoid ugly transitions.
@@ -238,48 +238,6 @@ class MainWindow(Gtk.Window):
             Gtk.main_do_event(event)
 
         Gdk.event_handler_set(_on_event)
-
-        self.styleprovider = None
-        self.load_style(prefs['userstyle'])
-
-    def load_style(self, path=None):
-        if not path:
-            return self.reset_style()
-        # load userstyle from path
-        try:
-            csspath = resource_string(__package__, path)
-            # csspath = tools.relpath2root(path)
-            if not csspath:
-                raise Exception('userstyle out of mount point is not allowed.')
-            provider = Gtk.CssProvider.new()
-            provider.load_from_path(csspath)
-        except Exception as e:
-            provider = None
-            text = 'Failed to load userstyle: "{}", {}'.format(path, e)
-            log.warning(text)
-            self.osd.show(text)
-        finally:
-            # always reset before setting userstyle
-            self.reset_style()
-
-        if not provider:
-            # failed to load userstyle, stop
-            return
-        self.styleprovider = provider
-        Gtk.StyleContext.add_provider_for_screen(
-                self.get_screen(),
-                self.styleprovider,
-                Gtk.STYLE_PROVIDER_PRIORITY_USER
-        )
-
-    def reset_style(self):
-        # reset to system style
-        if self.styleprovider:
-            Gtk.StyleContext.remove_provider_for_screen(
-                    self.get_screen(),
-                    self.styleprovider
-            )
-            self.styleprovider = None
 
     def gained_focus(self, *args):
         self.was_out_of_focus = False
@@ -414,13 +372,13 @@ class MainWindow(Gtk.Window):
                                                          distribution_axis, do_not_transform)
 
                 self.layout = layout.FiniteLayout(
-                    scaled_sizes, viewport_size, orientation, self._spacing,
-                    expand_area, distribution_axis, alignment_axis)
+                        scaled_sizes, viewport_size, orientation, self._spacing,
+                        expand_area, distribution_axis, alignment_axis)
 
                 union_scaled_size = self.layout.get_union_box().get_size()
 
                 scrollbar_requests = [(old or new) for old, new in zip(
-                    scrollbar_requests, tools.smaller(viewport_size, union_scaled_size))]
+                        scrollbar_requests, tools.smaller(viewport_size, union_scaled_size))]
 
                 if len(tuple(filter(None, scrollbar_requests))) > 1 and not expand_area:
                     expand_area = True
@@ -893,17 +851,10 @@ class MainWindow(Gtk.Window):
 
     def update_title(self):
         """Set the title acording to current state"""
-        this_screen = 2 if self.displayed_double() else 1  # XXX limited to at most 2 pages
-        # TODO introduce formatter to merge these string ops with the ops for status bar updates
-        title = '['
-        for i in range(this_screen):
-            title += '%d' % (self.imagehandler.get_current_page() + i)
-            if i < this_screen - 1:
-                title += ','
-        title += ' / %d]  %s' % (self.imagehandler.get_number_of_pages(),
-                                 self.imagehandler.get_pretty_current_filename())
+        strings = ['[{}]'.format(self.statusbar.get_page_number()),
+                   self.imagehandler.get_pretty_current_filename()]
 
-        self.set_title(title)
+        self.set_title(' '.join(strings))
 
     def set_bg_color(self, color):
         """Set the background color to <color>. color is a sequence in the
@@ -982,13 +933,19 @@ class MainWindow(Gtk.Window):
     def delete(self, *args):
         """The currently opened file/archive will be trashed after showing a confirmation dialog"""
         current_file = self.imagehandler.get_real_path()
-        dialog = message_dialog.MessageDialog(self, Gtk.DialogFlags.MODAL, Gtk.MessageType.QUESTION,
-                                              Gtk.ButtonsType.NONE)
-        dialog.set_should_remember_choice('delete-opend-file', (Gtk.ResponseType.OK,))
-        dialog.set_text('Trash Selected File: "%s"?' % os.path.basename(current_file))
-        dialog.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
-        dialog.add_button(Gtk.STOCK_DELETE, Gtk.ResponseType.OK)
+        dialog = message_dialog.MessageDialog(
+                parent=self,
+                flags=Gtk.DialogFlags.MODAL,
+                message_type=Gtk.MessageType.QUESTION,
+                buttons=Gtk.ButtonsType.NONE)
+        dialog.add_buttons(
+                Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                Gtk.STOCK_DELETE, Gtk.ResponseType.OK)
         dialog.set_default_response(Gtk.ResponseType.OK)
+        dialog.set_should_remember_choice(
+                'delete-opend-file',
+                (Gtk.ResponseType.OK,))
+        dialog.set_text('Trash Selected File: "%s"?' % os.path.basename(current_file))
         result = dialog.run()
 
         if result == Gtk.ResponseType.OK:

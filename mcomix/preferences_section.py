@@ -11,6 +11,7 @@ class _PreferenceSection(Gtk.VBox):
     """The _PreferenceSection is a convenience class for making one
     "section" of a preference-style dialog, e.g. it has a bold header
     and a number of rows which are indented with respect to that header"""
+
     def __init__(self, header, right_column_width):
         """Contruct a new section with the header set to the text in
         <header>, and the width request of the (possible) right columns

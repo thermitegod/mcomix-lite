@@ -7,7 +7,7 @@ import errno
 import os
 import threading
 
-from mcomix import process
+from mcomix import archive, callback, process
 
 
 class BaseArchive(object):
@@ -22,11 +22,18 @@ class BaseArchive(object):
         assert isinstance(archive, str), 'File should be an Unicode string.'
 
         self.archive = archive
+        self._password = None
+        self.is_encrypted = False
         self._event = threading.Event()
+        if self.support_concurrent_extractions:
+            # When multiple concurrent extractions are supported,
+            # we need a lock to handle concurent calls to _get_password.
+            self._lock = threading.Lock()
+            self._waiting_for_password = False
 
     def iter_contents(self):
         """Generator for listing the archive contents"""
-        return
+        # return
         yield
 
     def list_contents(self):
@@ -34,15 +41,14 @@ class BaseArchive(object):
         These names do not necessarily exist in the actual archive since they
         need to saveable on the local filesystems, so some characters might
         need to be replaced"""
-
-        return [f for f in self.iter_contents()]
+        return [filename for filename in self.iter_contents()]
 
     def extract(self, filename, destination_dir):
         """Extracts the file specified by <filename> and return the path of it.
         This filename must be obtained by calling list_contents().
         The file is saved to <destination_dir>."""
-
-        assert isinstance(filename, str) and isinstance(destination_dir, str)
+        assert isinstance(filename, str) and \
+               isinstance(destination_dir, str)
         return os.path.join(destination_dir, filename)
 
     def iter_extract(self, entries, destination_dir):
@@ -54,7 +60,7 @@ class BaseArchive(object):
             self.extract(filename, destination_dir)
             yield filename
             wanted.remove(filename)
-            if 0 == len(wanted):
+            if not wanted:
                 break
 
     def close(self):
@@ -79,11 +85,37 @@ class BaseArchive(object):
                 raise e
 
     def _create_file(self, dst_path):
-        """Open <dst_path> for writing, making sure base directory exists"""
+        """ Open <dst_path> for writing, making sure base directory exists. """
         dst_dir = os.path.dirname(dst_path)
         # Create directory if it doesn't exist
         self._create_directory(dst_dir)
         return open(dst_path, 'wb')
+
+    @callback.Callback
+    def _password_required(self):
+        """Asks the user for a password and sets <self._password>.
+        If <self._password> is None, no password has been requested yet.
+        If an empty string is set, assume that the user did not provide
+        a password"""
+        password = archive.ask_for_password(self.archive)
+        if password is None:
+            password = ''
+
+        self._password = password
+        self._event.set()
+
+    def _get_password(self):
+        ask_for_password = self._password is None
+        # Don't trigger concurrent password dialogs.
+        if ask_for_password and self.support_concurrent_extractions:
+            with self._lock:
+                if self._waiting_for_password:
+                    ask_for_password = False
+                else:
+                    self._waiting_for_password = True
+        if ask_for_password:
+            self._password_required()
+        self._event.wait()
 
 
 class ExternalExecutableArchive(BaseArchive):
@@ -136,7 +168,8 @@ class ExternalExecutableArchive(BaseArchive):
 
     def extract(self, filename, destination_dir):
         """Extract <filename> from the archive to <destination_dir>"""
-        assert isinstance(filename, str) and isinstance(destination_dir, str)
+        assert isinstance(filename, str) and \
+               isinstance(destination_dir, str)
 
         if not self._get_executable():
             return

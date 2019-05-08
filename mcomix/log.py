@@ -11,10 +11,10 @@ __all__ = ['debug', 'info', 'warning', 'error', 'setLevel',
            'DEBUG', 'INFO', 'WARNING', 'ERROR']
 
 levels = {
-    'all'  : DEBUG,
+    'all': DEBUG,
     'debug': DEBUG,
-    'info' : INFO,
-    'warn' : WARNING,
+    'info': INFO,
+    'warn': WARNING,
     'error': ERROR,
 }
 
