@@ -3,6 +3,8 @@
 """archive_extractor.py - Archive extraction class"""
 
 import os
+import shutil
+import sys
 import threading
 import traceback
 
@@ -135,8 +137,17 @@ class Extractor(object):
         """Close any open file objects, need only be called manually if the
         extract() method isn't called"""
         self.stop()
-        if self._archive:
-            self._archive.close()
+
+        if os.path.exists(self._dst):
+            sys.tracebacklimit = 0
+            try:
+                shutil.rmtree(self._dst)
+            except:
+                pass
+
+        #if self._archive:
+        #    print('closed')
+        #    self._archive.close()
 
     def _extraction_finished(self, name):
         if self._threadpool.closed:
