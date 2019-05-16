@@ -13,7 +13,7 @@ CPU_COUNT = os.cpu_count()
 
 HOME_DIR = os.environ.get('HOME')
 CONFIG_DIR = os.path.join(os.getenv('XDG_CONFIG_HOME', os.path.join(HOME_DIR, '.config')), 'mcomix')
-DATA_DIR = os.path.join(os.getenv('XDG_CONFIG_HOME', os.path.join(HOME_DIR, '.local/share')), 'mcomix')
+DATA_DIR = os.path.join(os.getenv('XDG_DATA_HOME', os.path.join(HOME_DIR, '.local/share')), 'mcomix')
 
 BASE_PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 THUMBNAIL_PATH = os.getenv('XDG_CACHE_HOME', os.path.join(HOME_DIR, '.cache/thumbnails/normal'))
