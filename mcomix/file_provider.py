@@ -3,6 +3,7 @@
 """file_provider.py - Handles listing files for the current directory and
 switching to the next/previous directory"""
 
+import functools
 import os
 
 from mcomix import archive_tools, constants, image_tools, log, tools
@@ -95,7 +96,7 @@ class OrderedFileProvider(FileProvider):
     def list_files(self, mode=FileProvider.IMAGES):
         """Lists all files in the current directory. Returns a list of absolute paths, already sorted"""
         if mode == FileProvider.IMAGES:
-            should_accept = image_tools.is_image_file
+            should_accept = functools.partial(image_tools.is_image_file, check_mimetype=True)
         elif mode == FileProvider.ARCHIVES:
             should_accept = archive_tools.is_archive_file
         else:

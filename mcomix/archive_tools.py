@@ -86,7 +86,7 @@ def get_supported_formats():
 def is_archive_file(path):
     if not SUPPORTED_ARCHIVE_FORMATS:
         init_supported_formats()
-    return _getext(path) in SUPPORTED_ARCHIVE_EXTS
+    return path.lower().endswith(tuple(SUPPORTED_ARCHIVE_EXTS))
 
 
 def archive_mime_type(path):

@@ -86,6 +86,7 @@ prefs = {
     'osd color': [1, 1, 1, 1],
     'osd bg color': [0, 0, 0, 1],
     'osd timeout': 3.0,  # in seconds, hard limited from 0.5 to 30.0
+    'check image mimetype': False,
 }
 
 

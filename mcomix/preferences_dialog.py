@@ -283,6 +283,13 @@ class _PreferencesDialog(Gtk.Dialog):
         page.add_row(Gtk.Label(label='Sort archives by:'),
                      self._create_archive_sort_by_control())
 
+        page.new_section(_('File detection'))
+
+        page.add_row(self._create_pref_check_button(
+                'Detect image file(s) by mimetypes',
+                'check image mimetype',
+                'Detect image file(s) by mimetypes.'))
+
         page.new_section('Extraction and cache')
 
         page.add_row(Gtk.Label(label='Maximum number of concurrent extraction threads:'),
@@ -640,7 +647,10 @@ class _PreferencesDialog(Gtk.Dialog):
         elif preference in ('animation background', 'animation transform'):
             self._window.thumbnailsidebar.toggle_page_numbers_visible()
 
-        elif preference == 'animation background':
+        elif preference in ('animation background', 'animation transform'):
+            self._window.filehandler.refresh_file()
+
+        elif preference in ('check image mimetype',):
             self._window.filehandler.refresh_file()
 
     def _color_button_cb(self, colorbutton, preference):
