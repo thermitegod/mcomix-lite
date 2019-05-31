@@ -283,7 +283,7 @@ class _PreferencesDialog(Gtk.Dialog):
         page.add_row(Gtk.Label(label='Sort archives by:'),
                      self._create_archive_sort_by_control())
 
-        page.new_section(_('File detection'))
+        page.new_section('File detection')
 
         page.add_row(self._create_pref_check_button(
                 'Detect image file(s) by mimetypes',
