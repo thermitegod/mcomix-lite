@@ -70,7 +70,7 @@ def run():
     args = parse_arguments()
 
     if args.version:
-        print(constants.APPNAME + ' ' + constants.VERSION)
+        print(constants.APPNAME, constants.VERSION)
         sys.exit(0)
 
     # First things first: set the log level.
@@ -90,11 +90,11 @@ def run():
         from gi.repository import GLib, Gdk, GdkPixbuf, Gtk
 
     except AssertionError:
-        log.error('Required versions of PyGObject is not installed.')
+        log.error('Required version of PyGObject is not installed.')
         sys.exit(1)
 
     except ValueError:
-        log.error('Required versions of GTK+ 3.0 is not installed.')
+        log.error('Required version of GTK+ 3.0 is not installed.')
         sys.exit(1)
 
     except ImportError:
