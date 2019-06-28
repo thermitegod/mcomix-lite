@@ -1,16 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-
 import glob
 import os
-
 import setuptools
 
 from mcomix import constants
 
 """ MComix installation routines.
-
 Example usage:
     Normal installation (all files are copied into a directory in python/lib/site-packages/mcomix)
     $ ./setup.py install
@@ -40,19 +37,15 @@ def get_data_patterns(directory, *patterns):
 images = get_data_patterns('mcomix/images', '*.png')
 images.remove('*.png')
 images.extend([os.path.basename(img)
-               for img in glob.glob(os.path.join(constants.BASE_PATH, 'mcomix/images', '*.png'))
-               if os.path.basename(img) not in
-               ('mcomix-large.png',)])
+               for img in glob.glob(os.path.join(constants.BASE_PATH, 'mcomix/images', '*.png'))])
 
 setuptools.setup(
         name=constants.APPNAME.lower(),
         version=constants.VERSION,
         packages=['mcomix', 'mcomix.archive', 'mcomix.images'],
         package_data={'mcomix.images': images},
-        entry_points={
-            'console_scripts': ['mcomix = mcomix.run:run'],
-            'setuptools.installation': ['eggsecutable=mcomix.run:run'],
-        },
+        entry_points={'console_scripts': ['mcomix = mcomix.run:run'],
+                      'setuptools.installation': ['eggsecutable=mcomix.run:run'], },
         test_suite="test",
         requires=['Gtk (>=3.21.0)', 'Pillow (>=6.0.0)'],
         install_requires=['setuptools'],
@@ -82,7 +75,7 @@ setuptools.setup(
                          'Supports archive formats are 7Z, ZIP, RAR, CBR, CBZ, CB7, LHA, and PDF. '
                          'MComix-Lite is a fork of MComix3 which is a fork of MComix which is a fork of Comix.',
         license="License :: OSI Approved :: GNU General Public License (GPL)",
-        download_url="http://sourceforge.net/projects/mcomix/files",
+        # download_url="http://sourceforge.net/projects/mcomix/files",
         platforms=['Operating System :: POSIX :: Linux',
                    'Operating System :: POSIX :: BSD'],
 )
