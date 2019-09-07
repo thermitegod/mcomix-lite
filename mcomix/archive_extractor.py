@@ -4,7 +4,6 @@
 
 import os
 import shutil
-import sys
 import threading
 import traceback
 
@@ -136,18 +135,18 @@ class Extractor(object):
     def close(self):
         """Close any open file objects, need only be called manually if the
         extract() method isn't called"""
+        tmp_cache = self._dst
         self.stop()
 
-        if os.path.exists(self._dst):
-            sys.tracebacklimit = 0
+        if os.path.exists(tmp_cache):
+            self._archive.close()
             try:
-                shutil.rmtree(self._dst)
-            except:
+                if os.path.exists(tmp_cache):
+                    shutil.rmtree(tmp_cache)
+                    log.error('BUG: fallback remove used')
+            except Exception:
+                log.error('BUG: fallback cleanup failed, this needs to be fixed')
                 pass
-
-        #if self._archive:
-        #    print('closed')
-        #    self._archive.close()
 
     def _extraction_finished(self, name):
         if self._threadpool.closed:
