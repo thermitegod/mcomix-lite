@@ -7,7 +7,7 @@ from io import BytesIO
 
 from PIL import Image, ImageEnhance, ImageOps, ImageSequence
 from PIL.JpegImagePlugin import _getexif
-from gi.repository import GLib, Gdk, GdkPixbuf, Gtk, Gio
+from gi.repository import GLib, Gdk, GdkPixbuf, Gio, Gtk
 
 from mcomix import anime_tools, constants, reader
 from mcomix.preferences import prefs

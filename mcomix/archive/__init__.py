@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from mcomix import main
 from gi.repository import Gtk
 
 from mcomix import main, message_dialog

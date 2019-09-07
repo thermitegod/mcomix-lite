@@ -3,13 +3,12 @@
 """tools.py - Contains various helper functions"""
 
 import bisect
+import gc
 import math
 import operator
 import os
 import re
 from functools import reduce
-
-import gc
 
 NUMERIC_REGEXP = re.compile(r"\d+|\D+")  # Split into numerics and characters
 PREFIXED_BYTE_UNITS = ('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB')
