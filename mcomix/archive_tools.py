@@ -118,7 +118,7 @@ def archive_mime_type(path):
                 return constants.PDF
 
     except Exception:
-        log.warning('! Could not read %s', path)
+        log.warning('Could not read %s', path)
 
     return None
 

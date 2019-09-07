@@ -112,7 +112,7 @@ class OrderedFileProvider(FileProvider):
                     files.append(fpath)
                     fname_map[fpath] = os.path.join(self.base_dir, fn)
         except OSError:
-            log.warning('! Could not open %s: Permission denied.', self.base_dir)
+            log.warning('Could not open %s: Permission denied.', self.base_dir)
             return []
 
         FileProvider.sort_files(files)

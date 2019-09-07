@@ -95,7 +95,7 @@ class Thumbnailer(object):
             try:
                 os.remove(thumbpath)
             except IOError as error:
-                log.error('! Could not remove file "%s"', thumbpath)
+                log.error('Could not remove file "%s"', thumbpath)
                 log.error(error)
 
     def _create_thumbnail_pixbuf(self, filepath):
@@ -192,7 +192,7 @@ class Thumbnailer(object):
             os.chmod(thumbpath, 0o600)
 
         except Exception as ex:
-            log.warning('! Could not save thumbnail "%(thumbpath)s": %(error)s',
+            log.warning('Could not save thumbnail "%(thumbpath)s": %(error)s',
                         {'thumbpath': thumbpath, 'error': ex})
 
     def _thumbnail_exists(self, filepath):

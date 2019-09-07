@@ -72,7 +72,7 @@ class BookmarksMenu(Gtk.Menu):
         try:
             self._bookmarks_store.add_current_to_bookmarks()
         except Exception:
-            log.error('! No file to add to bookmarks')
+            log.error('No file to add to bookmarks')
             pass
 
     def _edit_bookmarks(self, *args):

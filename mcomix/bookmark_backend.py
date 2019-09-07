@@ -118,7 +118,7 @@ class __BookmarksStore(object):
                     bookmarks.append(bookmark)
 
             except Exception:
-                log.error('! Could not parse bookmarks file %s', path)
+                log.error('Could not parse bookmarks file %s', path)
 
         return bookmarks, mtime
 

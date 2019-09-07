@@ -183,7 +183,7 @@ class Extractor(object):
         # archive) than to crash here and leave the main thread in a
         # possible infinite block. Damaged or missing files *should* be
         # handled gracefully by the main program anyway.
-        log.error('! Extraction error: %s', value)
+        log.error('Extraction error: %s', value)
         log.debug('Traceback:\n%s', ''.join(traceback.format_tb(tb)).strip())
 
     def _list_contents(self):
@@ -197,7 +197,7 @@ class Extractor(object):
 
     @staticmethod
     def _list_contents_errcb(name, etype, value, tb):
-        log.error('! Extraction error: %s', value)
+        log.error('Extraction error: %s', value)
         log.debug('Traceback:\n%s', ''.join(traceback.format_tb(tb)).strip())
 
 
