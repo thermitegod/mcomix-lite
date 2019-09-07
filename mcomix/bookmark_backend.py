@@ -4,8 +4,9 @@
 
 import datetime
 import os
+import pickle
+import time
 
-import numpy as np
 from gi.repository import Gtk
 
 from mcomix import bookmark_menu_item, callback, constants, log, message_dialog
@@ -105,17 +106,20 @@ class __BookmarksStore(object):
     def load_bookmarks(self):
         """Loads persisted bookmarks from a local file.
         @return: Tuple of (bookmarks, file mtime)"""
-        path = constants.BOOKMARK_NPY_PATH
+        path = constants.BOOKMARK_PATH
         bookmarks = []
         mtime = 0
 
         if os.path.isfile(path):
             try:
                 mtime = os.stat(path).st_mtime
+                with open(path, 'rb') as fd:
+                    version = pickle.load(fd)
+                    packs = pickle.load(fd)
 
-                for pack in np.load(path):
-                    bookmark = bookmark_menu_item._Bookmark(self._window, self._file_handler, *pack)
-                    bookmarks.append(bookmark)
+                    for pack in packs:
+                        bookmark = bookmark_menu_item._Bookmark(self._window, self._file_handler, *pack)
+                        bookmarks.append(bookmark)
 
             except Exception:
                 log.error('Could not parse bookmarks file %s', path)
@@ -125,7 +129,7 @@ class __BookmarksStore(object):
     def file_was_modified(self):
         """Checks the bookmark store's mtime to see if it has been modified
         since it was last read"""
-        path = constants.BOOKMARK_NPY_PATH
+        path = constants.BOOKMARK_PATH
         if os.path.isfile(path):
             try:
                 mtime = os.stat(path).st_mtime
@@ -142,11 +146,18 @@ class __BookmarksStore(object):
     def write_bookmarks_file(self):
         """Store relevant bookmark info in the mcomix directory"""
         # Merge changes in case file was modified from within other instances
+
         if self.file_was_modified():
             new_bookmarks, _ = self.load_bookmarks()
             self._bookmarks = list(set(self._bookmarks + new_bookmarks))
 
-        np.save(constants.BOOKMARK_NPY_PATH, [bookmark.pack() for bookmark in self._bookmarks])
+        with open(constants.BOOKMARK_PATH, 'wb') as fd:
+            pickle.dump(constants.VERSION, fd, pickle.HIGHEST_PROTOCOL)
+
+            packs = [bookmark.pack() for bookmark in self._bookmarks]
+            pickle.dump(packs, fd, pickle.HIGHEST_PROTOCOL)
+
+        self._bookmarks_mtime = time.time()
 
     def show_replace_bookmark_dialog(self, old_bookmarks, new_page):
         """Present a confirmation dialog to replace old bookmarks.

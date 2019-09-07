@@ -115,13 +115,6 @@ def run():
         log.error('No version of Pillow was found.')
         sys.exit(1)
 
-    try:
-        import numpy
-
-    except ImportError:
-        log.error('No version of Numpy was found.')
-        sys.exit(1)
-
     log.info('Image loaders: Pillow [%s], GDK [%s])',
              PIL.Image.__version__, GdkPixbuf.PIXBUF_VERSION)
 
