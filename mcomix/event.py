@@ -390,11 +390,11 @@ class EventHandler(object):
             if not self._window.is_manga_mode:
                 self._window.flip_page(+1)
             else:
-                self._previous_page_with_protection()
+                self._change_page('prev')
 
         elif direction == Gdk.ScrollDirection.LEFT:
             if not self._window.is_manga_mode:
-                self._previous_page_with_protection()
+                self._change_page('prev')
             else:
                 self._window.flip_page(+1)
 
@@ -513,9 +513,9 @@ class EventHandler(object):
             return True
 
         if y > 0 or (self._window.is_manga_mode and x < 0) or (not self._window.is_manga_mode and x > 0):
-            page_flipped = self._next_page_with_protection()
+            page_flipped = self._change_page('next')
         else:
-            page_flipped = self._previous_page_with_protection()
+            page_flipped = self._change_page('prev')
 
         return not page_flipped
 
@@ -559,56 +559,51 @@ class EventHandler(object):
         n = 2 if self._window.displayed_double() else 1  # XXX limited to at most 2 pages
 
         if new_index == -1:
-            self._previous_page_with_protection()
+            self._change_page('prev')
         elif new_index == n:
-            self._next_page_with_protection()
+            self._change_page('next')
         else:
             # Update actual viewport
             self._window.update_viewport_position()
 
-    def _next_page_with_protection(self):
+    def _change_page(self, direction):
         """Advances to the next page. If L{_scroll_protection} is enabled,
         this method will only advance if enough scrolling attempts have been made.
-        @return: True when the page was flipped"""
-        if not prefs['flip with wheel']:
-            self._extra_scroll_events = 0
-            return False
-
-        if not self._scroll_protection \
-                or self._extra_scroll_events >= prefs['number of key presses before page turn'] - 1 \
-                or not self._window.is_scrollable():
-            self._flip_page(1)
-            return True
-
-        elif self._scroll_protection:
-            self._extra_scroll_events = max(1, self._extra_scroll_events + 1)
-            return False
-
-        else:
-            # This path should not be reached.
-            assert False, 'Programmer is moron, incorrect assertion.'
-
-    def _previous_page_with_protection(self):
-        """Goes back to the previous page. If L{_scroll_protection} is enabled,
+        or
+        Goes back to the previous page. If L{_scroll_protection} is enabled,
         this method will only go back if enough scrolling attempts have been made.
-        @return: True when the page was flipped"""
+        @return: True when the page was flipped."""
         if not prefs['flip with wheel']:
             self._extra_scroll_events = 0
             return False
 
-        if not self._scroll_protection \
-                or self._extra_scroll_events <= -prefs['number of key presses before page turn'] + 1 \
-                or not self._window.is_scrollable():
-            self._flip_page(-1)
-            return True
+        if direction is 'next':
+            if not self._scroll_protection \
+                    or self._extra_scroll_events >= prefs['number of key presses before page turn'] - 1 \
+                    or not self._window.is_scrollable():
+                self._flip_page(1)
+                return True
 
-        elif self._scroll_protection:
-            self._extra_scroll_events = min(-1, self._extra_scroll_events - 1)
-            return False
+            elif self._scroll_protection:
+                self._extra_scroll_events = max(1, self._extra_scroll_events + 1)
+                return False
+            else:
+                # This path should not be reached.
+                assert False, 'Programmer is moron, incorrect assertion.'
 
-        else:
-            # This path should not be reached.
-            assert False, 'Programmer is moron, incorrect assertion.'
+        elif direction is 'prev':
+            if not self._scroll_protection \
+                    or self._extra_scroll_events <= -prefs['number of key presses before page turn'] + 1 \
+                    or not self._window.is_scrollable():
+                self._flip_page(-1)
+                return True
+
+            elif self._scroll_protection:
+                self._extra_scroll_events = min(-1, self._extra_scroll_events - 1)
+                return False
+            else:
+                # This path should not be reached.
+                assert False, 'Programmer is moron, incorrect assertion.'
 
     def _flip_page(self, number_of_pages, single_step=False):
         """Switches a number of pages forwards/backwards. If C{single_step} is True,
