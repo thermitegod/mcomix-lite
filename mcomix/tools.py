@@ -63,19 +63,6 @@ def garbage_collect():
     gc.collect(0)
 
 
-def splitpath(path):
-    # split path to a list of every level
-    # use os.path.join(*pathlist) to convert such list into path
-    pathname = os.path.normpath(path)
-    pathlist = [pathname]
-    while True:
-        dirname, basename = os.path.split(pathlist[0])
-        if not (dirname and basename):
-            break
-        pathlist[0:1] = dirname, basename
-    return pathlist
-
-
 def div(a, b):
     return float(a) / float(b)
 

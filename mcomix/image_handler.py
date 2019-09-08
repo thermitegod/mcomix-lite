@@ -298,12 +298,7 @@ class ImageHandler(object):
         if self._window.filehandler.archive_type is not None:
             return os.path.basename(self._base_path)
 
-        img_file = os.path.abspath(self.get_current_path())
-        if not img_file:
-            return ''
-
-        name = os.path.join(*tools.splitpath(img_file)[-2:])
-        return name
+        return os.path.abspath(self.get_current_path())
 
     def get_size(self, page=None):
         """Return a tuple (width, height) with the size of <page>. If <page>
