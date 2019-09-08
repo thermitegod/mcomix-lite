@@ -5,7 +5,6 @@
 from gi.repository import GObject, Gdk, GdkPixbuf, Gtk
 
 from mcomix import bookmark_menu_item, constants
-from mcomix.tools import cmp
 
 
 class _BookmarksDialog(Gtk.Dialog):
@@ -125,18 +124,12 @@ class _BookmarksDialog(Gtk.Dialog):
     def _sort_model(treemodel, iter1, iter2, user_data):
         """Custom sort function to sort to model entries based on the
         BookmarkMenuItem's fields specified in @C{user_data}. This is a list of field names"""
-        if iter1 == iter2:
-            return 0
-        if iter1 is None:
-            return 1
-        elif iter2 is None:
-            return -1
-
         bookmark1 = treemodel.get_value(iter1, 5)
         bookmark2 = treemodel.get_value(iter2, 5)
 
         for field in user_data:
-            result = cmp(getattr(bookmark1, field), getattr(bookmark2, field))
+            result = (lambda a, b: (a > b) - (a < b))(getattr(bookmark1, field),
+                                                      getattr(bookmark2, field))
             if result != 0:
                 return result
 

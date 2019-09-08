@@ -14,14 +14,6 @@ NUMERIC_REGEXP = re.compile(r"\d+|\D+")  # Split into numerics and characters
 PREFIXED_BYTE_UNITS = ('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB')
 
 
-def cmp(x, y):
-    if x > y:
-        return 1
-    if x < y:
-        return -1
-    return 0
-
-
 def alphanumeric_sort(filenames):
     """Do an in-place alphanumeric sort of the strings in <filenames>,
     such that for an example "1.jpg", "2.jpg", "10.jpg" is a sorted ordering"""
