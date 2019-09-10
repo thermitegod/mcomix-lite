@@ -14,7 +14,7 @@ MComix-Lite is a fork of MComix3 which is a fork of MComix which is a fork of Co
 ./setup.py build && ./setup.py install --user
 ```
 
-gentoo ebuild at
+Gentoo ebuild at
 
 https://github.com/thermitegod/overlay/tree/master/media-gfx/mcomix-lite
 
@@ -28,13 +28,18 @@ https://sourceforge.net/projects/mcomix
 
 ### Info
 
-This version is very stripped down and more or less only supports the things I want
-
 No Windows™ support
 
 
 ### Deps
 
-numpy python3 gtk3
+Python-3.7.0
 
+Gtk+-3.24
+
+Pillow-6.0.0
+
+unzip
+
+unrar
 
