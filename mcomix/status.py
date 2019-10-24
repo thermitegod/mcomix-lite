@@ -72,7 +72,7 @@ class Statusbar(Gtk.EventBox):
     def set_page_number(self, page, total, this_screen):
         """Update the page number"""
         p = ','.join(str(page + i) for i in range(this_screen))
-        self._page_info = '{} / {}'.format(p, total)
+        self._page_info = f'{p} / {total}'
 
     def get_page_number(self):
         """Returns the bar's page information"""
@@ -111,10 +111,10 @@ class Statusbar(Gtk.EventBox):
 
     def update(self):
         """Set the statusbar to display the current state"""
-        s = '{0:^{1}}'.format('|', Statusbar.SPACING * 2 + 1)
+        s = f'{"|":^{Statusbar.SPACING * 2 + 1}}'
         text = s.join(self._get_status_text())
         self.status.pop(0)
-        self.status.push(0, '{1:>{2}}{0}'.format(text, '', Statusbar.SPACING))
+        self.status.push(0, f'{"":>{Statusbar.SPACING}}{text}')
 
     def push(self, context_id, message):
         """Compatibility with Gtk.Statusbar"""

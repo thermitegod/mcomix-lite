@@ -50,7 +50,7 @@ def parse_arguments():
     debugopts = parser.add_argument_group('Debug options')
     debugopts.add_argument('-W', dest='loglevel', action='store',
                            choices=log.levels.keys(), default='warn',
-                           metavar='[ {} ]'.format(' | '.join(log.levels.keys())),
+                           metavar=f'[ {" | ".join(log.levels.keys())} ]',
                            help='Sets the desired output log level.')
     # This supresses an error when MComix is used with cProfile
     debugopts.add_argument('-o', dest='output', action='store',
@@ -136,7 +136,7 @@ def run():
             p = os.path.join(os.getcwd(), open_path[n])
             p = os.path.normpath(p)
             if not os.path.exists(p):
-                log.error('Non existant file: {}'.format(p))
+                log.error(f'Non existant file: {p}')
                 open_path.pop(n)
                 continue
             open_path[n] = p

@@ -62,7 +62,7 @@ class RecursiveArchive(archive_base.BaseArchive):
                             os.path.basename(sub_archive_path))
                 continue
             sub_tempdir = tempfile.TemporaryDirectory(
-                    prefix='sub_archive.{:04}.'.format(len(self._archive_list)),
+                    prefix=f'sub_archive.{len(self._archive_list):04}.',
                     dir=self.destdir)
             sub_root = sub_tempdir.name
             self._sub_tempdirs.append(sub_tempdir)

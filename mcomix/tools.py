@@ -54,8 +54,8 @@ def format_byte_size(n):
     try:
         e = PREFIXED_BYTE_UNITS[s]
     except IndexError:
-        e = 'C{}i'.format(s)
-    return '{:.3f} {}'.format(n, e)
+        e = f'C{s}i'
+    return f'{n:.3f} {e}'
 
 
 def garbage_collect():

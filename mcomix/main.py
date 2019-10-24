@@ -851,7 +851,7 @@ class MainWindow(Gtk.Window):
 
     def update_title(self):
         """Set the title acording to current state"""
-        strings = ['[{}]'.format(self.statusbar.get_page_number()),
+        strings = [f'[{self.statusbar.get_page_number()}]',
                    self.imagehandler.get_pretty_current_filename()]
 
         self.set_title(' '.join(strings))

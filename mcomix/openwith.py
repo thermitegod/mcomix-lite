@@ -39,7 +39,7 @@ class OpenWithManager(object):
                     for label, command, cwd, disabled_for_archives
                     in prefs[PREFNAME]]
         except ValueError as e:
-            OpenWithException('external commands error: {}.').format(e)
+            OpenWithException(f'external commands error: {e}.')
 
 
 class OpenWithCommand(object):
@@ -142,7 +142,7 @@ class OpenWithCommand(object):
         variables = {}
         if context_type == NO_FILE_CONTEXT:
             # dummy variables for preview if no file opened
-            variables.update((head + tail, '{{{}{}}}'.format(head, tail))
+            variables.update((head + tail, f'{{{head}{tail}}}')
                              for head in ('image', 'archive', 'container')
                              for tail in ('', 'dir', 'base', 'dirbase'))
             return variables
@@ -176,7 +176,7 @@ class OpenWithCommand(object):
             # Also add system environment here.
             return string.format(**variables, **os.environ)
         except KeyError as e:
-            raise OpenWithException('Unknown variable: {}.').format(e)
+            raise OpenWithException(f'Unknown variable: {e}.')
 
     @staticmethod
     def _get_context_type(window, check_restrictions=True):
@@ -411,20 +411,20 @@ class OpenWithEditor(Gtk.Dialog):
 
         hints_all = [(
             ('{image}', 'Absolute path of the currently opened image file'),
-            ('{imagebase}', 'Basename of {}'.format('"{image}"')),
-            ('{imagedir}', 'Absolute path of {}'.format('"{image}"')),
-            ('{imagedirbase}', 'Basename of {}'.format('"{imagedir}"')),
+            ('{imagebase}', 'Basename of "{image}"'),
+            ('{imagedir}', 'Absolute path of "{image}"'),
+            ('{imagedirbase}', 'Basename of "{imagedir}"'),
             ('{archive}', 'Absolute path of the currently opened archive'),
-            ('{archivebase}', 'Basename of {}'.format('"{archive}"')),
-            ('{archivedir}', 'Absolute path of {}'.format('"{archive}"')),
-            ('{archivedirbase}', 'Basename of {}'.format('"{archivedir}"')),
+            ('{archivebase}', 'Basename of "{archive}"'),
+            ('{archivedir}', 'Absolute path of "{archive}"'),
+            ('{archivedirbase}', 'Basename of "{archivedir}"'),
             ('{container}', 'Absolute path of the currently opened directory or archive'),
-            ('{containerbase}', 'Basename of {}'.format('"{container}"')),
-            ('{containerdir}', 'Absolute path of {}'.format('"{container}"')),
-            ('{containerdirbase}', 'Basename of {}'.format('"{containerdir}"')),
+            ('{containerbase}', 'Basename of "{container}"'),
+            ('{containerdir}', 'Absolute path of "{container}"'),
+            ('{containerdirbase}', 'Basename of "{containerdir}"'),
             ('{{', '{'),
             ('}}', '}'),
-            ('{{{}}}'.format('<environ name>'), 'System Environment'),
+            ('{{{<environ name>}}}', 'System Environment'),
         )]
 
         for x, hints in enumerate(hints_all):

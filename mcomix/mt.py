@@ -13,7 +13,7 @@ class Interval:
         if kwargs is None:
             kwargs = {}
         if not callable(function):
-            raise ValueError('{} is not callable'.format(function))
+            raise ValueError(f'{function} is not callable')
 
         self.delay = delay
         self.function = function
