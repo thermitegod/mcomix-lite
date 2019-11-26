@@ -157,7 +157,7 @@ class MagnifyingLens(object):
         rotation = prefs['rotation']
         if prefs['auto rotate from exif']:
             rotation += image_tools.get_implied_rotation(source_pixbuf)
-            rotation = rotation % 360
+            rotation %= 360
 
         if rotation in [90, 270]:
             scale = float(source_pixbuf.get_height()) / image_size[0]
