@@ -109,7 +109,7 @@ class FileHandler(object):
         self.file_opened()
 
         if not image_files:
-            msg = 'No images in "%s"' % os.path.basename(self._current_file)
+            msg = f'No images in "{os.path.basename(self._current_file)}"'
             self._window.statusbar.set_message(msg)
             self._window.osd.show(msg)
 
@@ -207,10 +207,10 @@ class FileHandler(object):
         @param path: Path to file that should be opened.
         @return: An appropriate error string, or C{None} if no error was found."""
         if not os.path.exists(path):
-            return 'Could not open %s: No such file.' % path
+            return f'Could not open {path}: No such file.'
 
         elif not os.access(path, os.R_OK):
-            return 'Could not open %s: Permission denied.' % path
+            return f'Could not open {path}: Permission denied.'
 
         else:
             return None
@@ -435,7 +435,7 @@ class FileHandler(object):
                 while not self._extractor.is_ready(name) and not self._stop_waiting:
                     self._condition.wait()
         except Exception as ex:
-            log.error('Waiting on extraction of "%s" failed: %s', path, ex)
+            log.error(f'Waiting on extraction of "{path}" failed: {ex}')
             return
 
     def _ask_for_files(self, files):

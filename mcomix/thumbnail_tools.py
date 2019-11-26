@@ -95,7 +95,7 @@ class Thumbnailer(object):
             try:
                 os.remove(thumbpath)
             except IOError as error:
-                log.error('Could not remove file "%s"', thumbpath)
+                log.error(f'Could not remove file "{thumbpath}"')
                 log.error(error)
 
     def _create_thumbnail_pixbuf(self, filepath):
@@ -169,7 +169,7 @@ class Thumbnailer(object):
             'tEXt::Thumb::Mimetype': mime,
             'tEXt::Thumb::Image::Width': str(width),
             'tEXt::Thumb::Image::Height': str(height),
-            'tEXt::Software': 'MComix %s' % constants.VERSION
+            'tEXt::Software': f'MComix {constants.VERSION}'
         }
 
     @staticmethod

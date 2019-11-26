@@ -286,7 +286,7 @@ class EventHandler(object):
 
         # Execute external command. Bind keys from 1 to 9 to commands 1 to 9.
         for i in range(1, 10):
-            manager.register('execute_command_%d' % i, self._execute_command, args=[i - 1])
+            manager.register(f'execute_command_{i}', self._execute_command, args=[i - 1])
 
     def key_press_event(self, widget, event, *args):
         """Handle key press events on the main window"""

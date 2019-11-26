@@ -76,7 +76,7 @@ class _Page(Gtk.ScrolledWindow):
         self._extrabox.pack_start(left_box, False, False, 0)
         self._extrabox.pack_start(right_box, False, False, 0)
         for desc, value in info:
-            desc_label = labels.BoldLabel('%s:' % desc)
+            desc_label = labels.BoldLabel(f'{desc}:')
             desc_label.set_alignment(1.0, 1.0)
             left_box.pack_start(desc_label, True, True, 0)
             value_label = Gtk.Label(label=value)

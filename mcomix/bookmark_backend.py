@@ -122,7 +122,7 @@ class __BookmarksStore(object):
                         bookmarks.append(bookmark)
 
             except Exception:
-                log.error('Could not parse bookmarks file %s', path)
+                log.error(f'Could not parse bookmarks file {path}')
 
         return bookmarks, mtime
 
@@ -177,8 +177,8 @@ class __BookmarksStore(object):
         dialog.set_should_remember_choice('replace-existing-bookmark', (Gtk.ResponseType.YES, Gtk.ResponseType.NO))
 
         dialog.set_text(
-                ('The current book already contains marked pages. '
-                 'Do you want to replace them with a new bookmark on page %d? \n\n') % new_page +
+                'The current book already contains marked pages.'
+                f'Do you want to replace them with a new bookmark on page {new_page}? \n\n '
                 'Selecting "No" will create a new bookmark.')
 
         return dialog.run()

@@ -86,7 +86,7 @@ class OrderedFileProvider(FileProvider):
             dir = os.path.dirname(file_or_directory)
         else:
             # Passed file doesn't exist
-            raise ValueError('Invalid path: "%s"' % file_or_directory)
+            raise ValueError(f'Invalid path: "{file_or_directory}"')
 
         self.base_dir = os.path.abspath(dir)
 
@@ -112,7 +112,7 @@ class OrderedFileProvider(FileProvider):
                     files.append(fpath)
                     fname_map[fpath] = os.path.join(self.base_dir, fn)
         except OSError:
-            log.warning('Could not open %s: Permission denied.', self.base_dir)
+            log.warning(f'Could not open {self.base_dir}: Permission denied.')
             return []
 
         FileProvider.sort_files(files)

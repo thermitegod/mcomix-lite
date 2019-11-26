@@ -76,7 +76,7 @@ class ImageHandler(object):
                 # We're not caching everything, remove old pixbufs.
                 for index in set(self._raw_pixbufs) - set(wanted_pixbufs):
                     del self._raw_pixbufs[index]
-            log.debug('Caching page(s) %s', ' '.join([str(index + 1) for index in wanted_pixbufs]))
+            log.debug(f'Caching page(s) {" ".join([str(index + 1) for index in wanted_pixbufs])}')
             self._wanted_pixbufs[:] = wanted_pixbufs
             # Start caching available images not already in cache.
             wanted_pixbufs = [index for index in wanted_pixbufs
@@ -98,7 +98,7 @@ class ImageHandler(object):
                 pixbuf = image_tools.load_pixbuf(self._image_files[index])
                 tools.garbage_collect()
             except Exception as e:
-                log.error('Could not load pixbuf for page %u: %r', index + 1, e)
+                log.error(f'Could not load pixbuf for page {index + 1}: {e}')
                 pixbuf = image_tools.MISSING_IMAGE_ICON
             self._raw_pixbufs[index] = pixbuf
 
@@ -343,7 +343,7 @@ class ImageHandler(object):
             thumbnailer = thumbnail_tools.Thumbnailer(store_on_disk=create, size=(width, height))
             return thumbnailer.thumbnail(path)
         except Exception:
-            log.debug('Failed to create thumbnail for image "%s":\n%s', path, traceback.format_exc())
+            log.debug(f'Failed to create thumbnail for image "{path}":\n{traceback.format_exc()}')
             return image_tools.MISSING_IMAGE_ICON
 
     def _wait_on_page(self, page, check_only=False):
@@ -391,8 +391,7 @@ class ImageHandler(object):
         page_list[:] = page_list[pos:]
         page_list.extend(reversed(head))
 
-        log.debug('Ask for priority extraction around page %u: %s',
-                  page + 1, ' '.join([str(n + 1) for n in page_list]))
+        log.debug(f'Ask for priority extraction around page {page + 1}: {" ".join([str(n + 1) for n in page_list])}')
 
         files = [self._image_files[index]
                  for index in page_list

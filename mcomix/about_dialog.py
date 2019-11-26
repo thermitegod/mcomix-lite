@@ -28,7 +28,7 @@ class _AboutDialog(Gtk.AboutDialog):
         pixbuf = image_tools.load_pixbuf_data(icon_data)
         self.set_logo(pixbuf)
 
-        self.set_comments('%s is an image viewer specifically designed to handle manga/comics. ' % constants.APPNAME +
+        self.set_comments(f'{constants.APPNAME} is an image viewer specifically designed to handle manga/comics. ' +
                           'It reads ZIP, 7Z, RAR, CBZ, CB7, CBR, PDF, LHA, and image files.')
 
         self.connect('activate-link', self._on_activate_link)

@@ -50,7 +50,7 @@ class _KeybindingManager(object):
         @param callback: Function callback
         @param args: List of arguments to pass to the callback
         @param kwargs: List of keyword arguments to pass to the callback"""
-        assert name in keybindings_map.BINDING_INFO, '"%s" is not a valid keyboard action.' % name
+        assert name in keybindings_map.BINDING_INFO, f'"{name}" is not a valid keyboard action.'
 
         # use default bindings if not provided
         if not bindings:
@@ -64,8 +64,8 @@ class _KeybindingManager(object):
         for keycode in keycodes:
             if keycode in self._binding_to_action.keys():
                 if self._binding_to_action[keycode] != name:
-                    log.warning('Keybinding for "%(action)s" overrides hotkey for another action.', {'action': name})
-                    log.warning('Binding %s overrides %r', keycode, self._binding_to_action[keycode])
+                    log.warning(f'Keybinding for "{name}" overrides hotkey for another action.', )
+                    log.warning(f'Binding {keycode} overrides {self._binding_to_action[keycode]}')
             else:
                 self._binding_to_action[keycode] = name
                 self._action_to_bindings[name].append(keycode)
@@ -73,7 +73,7 @@ class _KeybindingManager(object):
         # Add gtk accelerator for labels in menu
         if len(self._action_to_bindings[name]) > 0:
             key, mod = self._action_to_bindings[name][0]
-            Gtk.AccelMap.change_entry('<Actions>/mcomix-main/%s' % name, key, mod, True)
+            Gtk.AccelMap.change_entry(f'<Actions>/mcomix-main/{name}', key, mod, True)
 
         self._action_to_callback[name] = (callback, args, kwargs)
 
@@ -83,7 +83,7 @@ class _KeybindingManager(object):
         @param new_binding: Binding to be assigned to action
         @param old_binding: Binding to be removed from action [ can be empty: "" ]
         @return None: new_binding wasn't in any action action name: where new_binding was before"""
-        assert name in keybindings_map.BINDING_INFO, '"%s" is not a valid keyboard action.' % name
+        assert name in keybindings_map.BINDING_INFO, f'"{name}" is not a valid keyboard action.'
 
         nb = Gtk.accelerator_parse(new_binding)
         old_action_with_nb = self._binding_to_action.get(nb)
@@ -114,7 +114,7 @@ class _KeybindingManager(object):
 
     def clear_accel(self, name, binding):
         """Remove binding for an action"""
-        assert name in keybindings_map.BINDING_INFO, '"%s" is not a valid keyboard action.' % name
+        assert name in keybindings_map.BINDING_INFO, f'"{name}" is not a valid keyboard action.'
 
         ob = Gtk.accelerator_parse(binding)
         self._action_to_bindings[name].remove(ob)

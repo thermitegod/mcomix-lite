@@ -34,7 +34,7 @@ def rotate_pixbuf(src, rotation):
         return src.rotate_simple(GdkPixbuf.PixbufRotation.UPSIDEDOWN)
     if 270 == rotation:
         return src.rotate_simple(GdkPixbuf.PixbufRotation.COUNTERCLOCKWISE)
-    raise ValueError('unsupported rotation: %s' % rotation)
+    raise ValueError(f'unsupported rotation: {rotation}')
 
 
 def get_fitting_size(source_size, target_size, keep_ratio=True, scale_up=False):
@@ -110,7 +110,7 @@ def fit_in_rectangle(src, width, height, keep_ratio=True, scale_up=False,
 
     rotation %= 360
     if rotation not in (0, 90, 180, 270):
-        raise ValueError('unsupported rotation: %s' % rotation)
+        raise ValueError(f'unsupported rotation: {rotation}')
     if rotation in (90, 270):
         width, height = height, width
 

@@ -134,7 +134,7 @@ class RarArchive(archive_base.BaseArchive):
                 if filename == self._current_filename:
                     self._process()
         except UnrarException as exc:
-            log.error('Error while listing contents: %s', str(exc))
+            log.error(f'Error while listing contents: {str(exc)}')
         except EOFError:
             # End of archive reached.
             pass
@@ -187,7 +187,7 @@ class RarArchive(archive_base.BaseArchive):
         handle = self._unrar.RAROpenArchiveEx(ctypes.byref(archivedata))
         if not handle:
             errormessage = UnrarException.get_error_message(archivedata.OpenResult)
-            raise UnrarException('Could not open archive: %s' % errormessage)
+            raise UnrarException(f'Could not open archive: {errormessage}')
         self._handle = handle
 
     def _check_errorcode(self, errorcode):
@@ -226,7 +226,7 @@ class RarArchive(archive_base.BaseArchive):
         errorcode = self._unrar.RARCloseArchive(self._handle)
         if errorcode != 0:
             errormessage = UnrarException.get_error_message(errorcode)
-            raise UnrarException('Could not close archive: %s' % errormessage)
+            raise UnrarException(f'Could not close archive: {errormessage}')
         self._handle = None
 
 

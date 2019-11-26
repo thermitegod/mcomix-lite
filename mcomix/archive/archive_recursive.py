@@ -58,8 +58,7 @@ class RecursiveArchive(archive_base.BaseArchive):
             # And open it and list its contents.
             sub_archive = archive_tools.get_archive_handler(sub_archive_path)
             if sub_archive is None:
-                log.warning('Non-supported archive format: %s',
-                            os.path.basename(sub_archive_path))
+                log.warning(f'Non-supported archive format: {os.path.basename(sub_archive_path)}')
                 continue
             sub_tempdir = tempfile.TemporaryDirectory(
                     prefix=f'sub_archive.{len(self._archive_list):04}.',
@@ -104,8 +103,7 @@ class RecursiveArchive(archive_base.BaseArchive):
         destination_dir = self.destdir
         if root is not None:
             destination_dir = os.path.join(destination_dir, root)
-        log.debug('extracting from %s to %s: %s',
-                  archive.archive, destination_dir, filename)
+        log.debug(f'extracting from {archive.archive} to {destination_dir}: {filename}')
         return archive.extract(name, destination_dir)
 
     def iter_extract(self, entries, destination_dir):
@@ -127,9 +125,8 @@ class RecursiveArchive(archive_base.BaseArchive):
             archive_destination_dir = destination_dir
             if root is not None:
                 archive_destination_dir = os.path.join(destination_dir, root)
-            log.debug('extracting from %s to %s: %s',
-                      archive.archive, archive_destination_dir,
-                      ' '.join(archive_wanted.keys()))
+            log.debug('extracting from '
+                      f'{archive.archive} to {archive_destination_dir}: {" ".join(archive_wanted.keys())}')
             for f in archive.iter_extract(archive_wanted.keys(), archive_destination_dir):
                 yield archive_wanted[f]
             wanted -= set(archive_wanted.values())

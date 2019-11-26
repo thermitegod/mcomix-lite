@@ -75,7 +75,7 @@ class _PropertiesDialog(Gtk.Dialog):
         page.set_filename(filename)
         path = window.filehandler.get_path_to_base()
         main_info = (
-            '%d pages' % window.imagehandler.get_number_of_pages(),
+            f'{window.imagehandler.get_number_of_pages()} pages',
             constants.ARCHIVE_DESCRIPTIONS[window.filehandler.archive_type])
         page.set_main_info(main_info)
         self._update_page_secondary_info(page, path)
@@ -92,7 +92,7 @@ class _PropertiesDialog(Gtk.Dialog):
         filename = os.path.basename(path)
         page.set_filename(filename)
         width, height = window.imagehandler.get_size()
-        main_info = ('%dx%d px' % (width, height), window.imagehandler.get_mime_name(),)
+        main_info = (f'{width}x{height} px', window.imagehandler.get_mime_name(),)
         page.set_main_info(main_info)
         self._update_page_secondary_info(page, path)
         page.show_all()

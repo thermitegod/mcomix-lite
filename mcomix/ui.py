@@ -171,7 +171,7 @@ class MainUI(Gtk.UIManager):
              None, None, enhance_dialog.open_dialog)], window)
 
         # fix some gtk magic: removing unreqired accelerators
-        Gtk.AccelMap.change_entry('<Actions>/mcomix-main/%s' % 'close', 0, 0, True)
+        Gtk.AccelMap.change_entry(f'<Actions>/mcomix-main/{"close"}', 0, 0, True)
 
         ui_description = """
         <ui>

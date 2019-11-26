@@ -945,7 +945,7 @@ class MainWindow(Gtk.Window):
         dialog.set_should_remember_choice(
                 'delete-opend-file',
                 (Gtk.ResponseType.OK,))
-        dialog.set_text('Trash Selected File: "%s"?' % os.path.basename(current_file))
+        dialog.set_text(f'Trash Selected File: "{os.path.basename(current_file)}"?')
         result = dialog.run()
 
         if result == Gtk.ResponseType.OK:
@@ -985,15 +985,15 @@ class MainWindow(Gtk.Window):
         text = ''
         filename = self.imagehandler.get_pretty_current_filename()
         if filename:
-            text += '%s\n' % filename
+            text += f'{filename}\n'
         file_number, file_count = self.filehandler.get_file_number()
         if file_count:
-            text += '(%d / %d)\n' % (file_number, file_count)
+            text += f'({file_number} / {file_count})\n'
         else:
             text += '\n'
         page_number = self.imagehandler.get_current_page()
         if page_number:
-            text += '%s %s' % ('Page', page_number)
+            text += f'{"Page"} {page_number}'
         text = text.strip('\n')
         if text:
             self.osd.show(text)

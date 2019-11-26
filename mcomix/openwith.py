@@ -68,7 +68,7 @@ class OpenWithCommand(object):
         """Spawns a new process with the given executable and arguments"""
         if (self.is_disabled_for_archives() and
                 window.filehandler.archive_type is not None):
-            window.osd.show('"%s" is disabled for archives.' % self.get_label())
+            window.osd.show(f'"{self.get_label()}" is disabled for archives.')
             return
 
         current_dir = os.getcwd()
@@ -81,8 +81,7 @@ class OpenWithCommand(object):
             process.call_thread(args)
 
         except Exception as e:
-            text = 'Could not run command %(cmdlabel)s: %(exception)s' % \
-                   {'cmdlabel': self.get_label(), 'exception': str(e)}
+            text = f'Could not run command {self.get_label()}: {str(e)}'
             window.osd.show(text)
         finally:
             os.chdir(current_dir)
@@ -293,9 +292,9 @@ class OpenWithEditor(Gtk.Dialog):
             self._run_button.set_sensitive(True)
 
             if not command.is_valid_workdir(self._window, allow_empty=True):
-                self._set_exec_text('"%s" does not have a valid working directory.' % command.get_label())
+                self._set_exec_text(f'"{command.get_label()}" does not have a valid working directory.')
             elif not command.is_executable(self._window):
-                self._set_exec_text('"%s" does not appear to have a valid executable.' % command.get_label())
+                self._set_exec_text(f'"{command.get_label()}" does not appear to have a valid executable.')
             else:
                 self._set_exec_text('')
         except OpenWithException as e:

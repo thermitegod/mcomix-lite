@@ -108,15 +108,14 @@ def run():
 
     except (AssertionError, AttributeError):
         log.error('Required version of Pillow is not installed.')
-        log.error('Required version is at least %s' % constants.REQUIRED_PIL_VERSION)
+        log.error(f'Required version is at least {constants.REQUIRED_PIL_VERSION}')
         sys.exit(1)
 
     except ImportError:
         log.error('No version of Pillow was found.')
         sys.exit(1)
 
-    log.info('Image loaders: Pillow [%s], GDK [%s])',
-             PIL.Image.__version__, GdkPixbuf.PIXBUF_VERSION)
+    log.info(f'Image loaders: Pillow [{PIL.Image.__version__}], GDK [{GdkPixbuf.PIXBUF_VERSION}])')
 
     if not os.path.exists(constants.DATA_DIR):
         os.makedirs(constants.DATA_DIR, 0o700)

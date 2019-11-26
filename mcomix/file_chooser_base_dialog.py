@@ -117,7 +117,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
         for name in sorted(supported_formats):
             mime_types, extensions = supported_formats[name]
             patterns = ['*' + ext for ext in extensions]
-            self.add_filter('%s archives' % name, mime_types, patterns)
+            self.add_filter(f'{name} archives', mime_types, patterns)
             for mime in mime_types:
                 ffilter.add_mime_type(mime)
             for pat in patterns:
@@ -132,7 +132,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
         for name in sorted(supported_formats):
             mime_types, extensions = supported_formats[name]
             patterns = ['*' + ext for ext in extensions]
-            self.add_filter('%s images' % name, mime_types, patterns)
+            self.add_filter(f'{name} images', mime_types, patterns)
             for mime in mime_types:
                 ffilter.add_mime_type(mime)
             for pat in patterns:
@@ -203,8 +203,8 @@ class _BaseFileChooserDialog(Gtk.Dialog):
                         flags=0,
                         message_type=Gtk.MessageType.QUESTION,
                         buttons=Gtk.ButtonsType.OK_CANCEL)
-                overwrite_dialog.set_text('A file named "%s" already exists. Do you want to replace it?'
-                                          % os.path.basename(first_path))
+                overwrite_dialog.set_text(f'A file named "{os.path.basename(first_path)}" '
+                                          'already exists. Do you want to replace it?')
                 response = overwrite_dialog.run()
 
                 if response != Gtk.ResponseType.OK:

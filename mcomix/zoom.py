@@ -27,7 +27,7 @@ class ZoomModel(object):
 
     def set_fit_mode(self, fitmode):
         if fitmode < constants.ZOOM_MODE_BEST or fitmode > constants.ZOOM_MODE_SIZE:
-            raise ValueError('No fit mode for id %d.' % fitmode)
+            raise ValueError(f'No fit mode for id {fitmode}')
         self._fitmode = fitmode
 
     def set_scale_up(self, scale_up):

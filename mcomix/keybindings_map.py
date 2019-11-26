@@ -104,8 +104,8 @@ BINDING_INFO = {
 
 # Generate 9 entries for executing command 1 to 9
 for i in range(1, 10):
-    BINDING_INFO['execute_command_%d' % i] = {
-        'title': 'Execute external command' + ' (%d)' % i,
+    BINDING_INFO[f'execute_command_{i}'] = {
+        'title': 'Execute external command' + f' ({i})',
         'group': 'External commands'}
 
 DEFAULT_BINDINGS = {
@@ -213,4 +213,4 @@ DEFAULT_BINDINGS = {
 
 # Execute external command. Bind keys from 1 to 9 to commands 1 to 9.
 for i in range(1, 10):
-    DEFAULT_BINDINGS['execute_command_%d' % i] = [str(i)]
+    DEFAULT_BINDINGS[f'execute_command_{i}'] = [str(i)]

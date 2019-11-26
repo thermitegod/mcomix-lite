@@ -51,5 +51,5 @@ def load_icons():
             iconset = Gtk.IconSet.new_from_pixbuf(pixbuf)
             factory.add(stockid, iconset)
         except Exception:
-            log.warning('Could not load icon "%s"', filename)
+            log.warning(f'Could not load icon "{filename}"')
     factory.add_default()

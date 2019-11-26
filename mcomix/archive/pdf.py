@@ -43,7 +43,7 @@ class PdfArchive(archive_base.BaseArchive):
         page_num, ext = os.path.splitext(filename)
         # Try to find optimal DPI.
         cmd = _mudraw_exec + _mudraw_trace_args + ['--', self.archive, str(page_num)]
-        log.debug('finding optimal DPI for %s: %s', filename, ' '.join(cmd))
+        log.debug(f'finding optimal DPI for {filename}: {" ".join(cmd)}')
         with process.popen(cmd, universal_newlines=True) as proc:
             max_size = 0
             max_dpi = PDF_RENDER_DPI_DEF
@@ -66,7 +66,7 @@ class PdfArchive(archive_base.BaseArchive):
                     max_dpi = dpi
         # Render...
         cmd = _mudraw_exec + ['-r', str(max_dpi), '-o', destination_path, '--', self.archive, str(page_num)]
-        log.debug('rendering %s: %s', filename, ' '.join(cmd))
+        log.debug(f'rendering {filename}: {" ".join(cmd)}')
         process.call(cmd)
         return destination_path
 
@@ -111,10 +111,10 @@ class PdfArchive(archive_base.BaseArchive):
                         _mudraw_trace_args.append('-x')
                     _pdf_possible = True
         if _pdf_possible:
-            log.info('Using MuPDF version: %s', version)
-            log.debug('mutool: %s', ' '.join(_mutool_exec))
-            log.debug('mudraw: %s', ' '.join(_mudraw_exec))
-            log.debug('mudraw trace arguments: %s', ' '.join(_mudraw_trace_args))
+            log.info(f'Using MuPDF version: {version}')
+            log.debug(f'mutool: {" ".join(_mutool_exec)}')
+            log.debug(f'mudraw: {" ".join(_mudraw_exec)}')
+            log.debug(f'mudraw trace arguments: {" ".join(_mudraw_trace_args)}')
         else:
             log.info('MuPDF not available.')
         return _pdf_possible

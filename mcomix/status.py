@@ -81,7 +81,7 @@ class Statusbar(Gtk.EventBox):
     def set_file_number(self, fileno, total):
         """Updates the file number (i.e. number of current file/total files loaded)"""
         if total > 0:
-            self._file_info = '(%d / %d)' % (fileno, total)
+            self._file_info = f'({fileno} / {total})'
         else:
             self._file_info = ''
 
