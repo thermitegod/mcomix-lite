@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 
+# Do not run this script directly, use mcomixstarter.py
+
 import argparse
 import os
 import signal
 import sys
-
-if __name__ == '__main__':
-    print('PROGRAM TERMINATED\nDo not run this script directly, use mcomixstarter.py')
-    sys.exit(1)
 
 # These modules must not depend on GTK, PIL,
 # or any other optional libraries.
