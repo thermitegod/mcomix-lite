@@ -112,9 +112,9 @@ class PdfArchive(archive_base.BaseArchive):
                     _pdf_possible = True
         if _pdf_possible:
             log.info(f'Using MuPDF version: {version}')
-            log.debug(f'mutool: {" ".join(_mutool_exec)}')
-            log.debug(f'mudraw: {" ".join(_mudraw_exec)}')
-            log.debug(f'mudraw trace arguments: {" ".join(_mudraw_trace_args)}')
+            log.debug(f'mutool: {" ".join(_mutool_exec)}\n'
+                      f'mudraw: {" ".join(_mudraw_exec)}\n'
+                      f'mudraw trace arguments: {" ".join(_mudraw_trace_args)}')
         else:
             log.info('MuPDF not available.')
         return _pdf_possible

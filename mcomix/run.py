@@ -100,8 +100,8 @@ def run():
         assert pilver >= constants.REQUIRED_PIL_VERSION
 
     except (AssertionError, AttributeError):
-        log.error('Required version of Pillow is not installed.')
-        log.error(f'Required version is at least {constants.REQUIRED_PIL_VERSION}')
+        log.error('Required version of Pillow is not installed. \n'
+                  f'Required version is at least {constants.REQUIRED_PIL_VERSION}')
         sys.exit(1)
 
     except ImportError:

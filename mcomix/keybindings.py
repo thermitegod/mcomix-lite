@@ -64,8 +64,8 @@ class _KeybindingManager(object):
         for keycode in keycodes:
             if keycode in self._binding_to_action.keys():
                 if self._binding_to_action[keycode] != name:
-                    log.warning(f'Keybinding for "{name}" overrides hotkey for another action.', )
-                    log.warning(f'Binding {keycode} overrides {self._binding_to_action[keycode]}')
+                    log.warning(f'Keybinding for "{name}" overrides hotkey for another action.\n'
+                                f'Binding {keycode} overrides {self._binding_to_action[keycode]}')
             else:
                 self._binding_to_action[keycode] = name
                 self._action_to_bindings[name].append(keycode)
