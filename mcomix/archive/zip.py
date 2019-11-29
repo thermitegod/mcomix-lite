@@ -58,10 +58,7 @@ class ZipArchive(archive_base.BaseArchive):
             filelen = new.write(data)
 
         if filelen != info.file_size:
-            log.warning('%(filename)s\'s extracted size is %(actual_size)d bytes, but should '
-                        'be %(expected_size)d bytes. The archive might be corrupt or in an unsupported format.',
-                        {'filename': filename, 'actual_size': filelen,
-                         'expected_size': info.file_size})
+            log.warning(f'{filename}: extracted size is {filelen} bytes, but should be {info.file_size} bytes')
 
         return destination_path
 

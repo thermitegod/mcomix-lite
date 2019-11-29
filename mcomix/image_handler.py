@@ -93,7 +93,7 @@ class ImageHandler(object):
             with self._lock:
                 if index not in self._wanted_pixbufs:
                     return
-            log.debug('Caching page %u', index + 1)
+            log.debug(f'Caching page {index + 1}')
             try:
                 pixbuf = image_tools.load_pixbuf(self._image_files[index])
                 tools.garbage_collect()
@@ -200,7 +200,7 @@ class ImageHandler(object):
     @callback.Callback
     def page_available(self, page):
         """Called whenever a new page becomes available, i.e. the corresponding file has been extracted"""
-        log.debug('Page %u is available', page)
+        log.debug(f'Page {page} is available')
         index = page - 1
         assert index not in self._available_images
         self._cache_lock[index] = mt.Lock()
@@ -361,7 +361,7 @@ class ImageHandler(object):
             # Asked for check only...
             return False
 
-        log.debug('Waiting for page %', page)
+        log.debug(f'Waiting for page {page}')
         path = self.get_path_to_page(page)
         self._window.filehandler._wait_on_file(path)
         return True

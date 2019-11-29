@@ -21,11 +21,11 @@ class Box(object):
             self.position = tuple(position)
             self.size = tuple(size)
         if len(self.position) != len(self.size):
-            raise ValueError('different dimensions: ' + str(len(self.position)) + ' != ' + str(len(self.size)))
+            raise ValueError(f'different dimensions: {str(len(self.position))} != {str(len(self.size))}')
 
     def __str__(self):
         """Returns a string representation of this Box"""
-        return "{" + str(self.get_position()) + ":" + str(self.get_size()) + "}"
+        return f'{{{str(self.get_position())}:{str(self.get_size())}}}'
 
     def __eq__(self, other):
         """Two Boxes are said to be equal if and only if the number of

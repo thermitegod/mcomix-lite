@@ -156,7 +156,7 @@ class Thumbnailer(object):
     def _get_text_data(filepath):
         """Creates a tEXt dictionary for <filepath>"""
         mime = mimetypes.guess_type(filepath)[0] or "unknown/mime"
-        uri = 'file://' + pathname2url(os.path.normpath(filepath))
+        uri = f'file://{pathname2url(os.path.normpath(filepath))}'
         stat = os.stat(filepath)
         # MTime could be floating point number, so convert to long first to have a fixed point number
         mtime = str(stat.st_mtime)
@@ -192,8 +192,7 @@ class Thumbnailer(object):
             os.chmod(thumbpath, 0o600)
 
         except Exception as ex:
-            log.warning('Could not save thumbnail "%(thumbpath)s": %(error)s',
-                        {'thumbpath': thumbpath, 'error': ex})
+            log.warning(f'Could not save thumbnail "{thumbpath}": {ex}')
 
     def _thumbnail_exists(self, filepath):
         """Checks if the thumbnail for <filepath> already exists.
@@ -223,14 +222,14 @@ class Thumbnailer(object):
 
     def _path_to_thumbpath(self, filepath):
         """Converts <path> to an URI for the thumbnail in <dst_dir>"""
-        uri = 'file://' + pathname2url(os.path.normpath(filepath))
+        uri = f'file://{pathname2url(os.path.normpath(filepath))}'
         return self._uri_to_thumbpath(uri)
 
     def _uri_to_thumbpath(self, uri):
         """Return the full path to the thumbnail for <uri> with <dst_dir>
         being the base thumbnail directory"""
         md5hash = md5(uri.encode()).hexdigest()
-        return os.path.join(self.dst_dir, md5hash + '.png')
+        return os.path.join(self.dst_dir, f'{md5hash}.png')
 
     @staticmethod
     def _guess_cover(files):

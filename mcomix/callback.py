@@ -81,7 +81,7 @@ class CallbackList(object):
                 try:
                     callback(*args, **kwargs)
                 except Exception as e:
-                    log.error('Callback %(function)r failed: %(error)s', {'function': callback, 'error': e})
+                    log.error(f'Callback {callback} failed: {e}')
                     log.debug(f'Traceback:\n{traceback.format_exc()}')
 
     def __callback_deleted(self, obj_ref):

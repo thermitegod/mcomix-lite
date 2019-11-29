@@ -163,7 +163,7 @@ class Scrolling(object):
             if d == 0:
                 continue
             if d < constants.SCROLL_TO_END or d > 1:
-                raise ValueError('invalid destination ' + d + ' at index ' + i)
+                raise ValueError(f'invalid destination {d} at index {i}')
             if d == constants.SCROLL_TO_END:
                 d = o
             if d == constants.SCROLL_TO_START:

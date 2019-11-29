@@ -33,7 +33,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
     def _get_password_argument(self):
         if self.is_encrypted:
             self._get_password()
-            return '-p' + self._password
+            return f'-p{self._password}'
         else:
             # Add an empty password anyway, to prevent deadlock on reading for
             # input if we did not correctly detect the archive is encrypted.

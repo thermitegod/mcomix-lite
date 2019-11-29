@@ -13,8 +13,8 @@ def ask_for_password(archive):
             flags=Gtk.DialogFlags.MODAL,
             message_type=Gtk.MessageType.QUESTION,
             buttons=Gtk.ButtonsType.OK_CANCEL)
-    dialog.set_text('The archive is password-protected:',
-                    archive + '\n\n' + 'Please enter the password to continue:')
+    dialog.set_text('The archive is password-protected: '
+                    f'{archive}\n\nPlease enter the password to continue:')
     dialog.set_default_response(Gtk.ResponseType.OK)
     dialog.set_auto_destroy(False)
 

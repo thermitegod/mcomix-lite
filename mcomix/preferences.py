@@ -98,7 +98,7 @@ def read_preferences_file():
             with open(constants.PREFERENCE_PATH, 'r') as config_file:
                 saved_prefs.update(json.load(config_file))
         except:
-            corrupt_name = constants.PREFERENCE_PATH + '.broken'
+            corrupt_name = f'{constants.PREFERENCE_PATH}.broken'
             log.error(f'Corrupt preferences file, moving to "{corrupt_name}".')
             if os.path.isfile(corrupt_name):
                 os.unlink(corrupt_name)

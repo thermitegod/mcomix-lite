@@ -389,7 +389,7 @@ def init_supported_formats():
         fmt = SUPPORTED_IMAGE_FORMATS.setdefault(name, (set(), set()))
         fmt[1].add(ext.lower())
         mime = Image.MIME.get(
-                name, Gio.content_type_guess(filename='file' + ext)[0]).lower()
+                name, Gio.content_type_guess(filename=f'file{ext}')[0]).lower()
         if mime and mime != 'application/octet-stream':
             fmt[0].add(mime)
 
@@ -400,9 +400,9 @@ def init_supported_formats():
         for m in map(lambda s: s.lower(), gdkfmt.get_mime_types()):
             fmt[0].add(m)
         # get_extensions() return extensions without '.'
-        for e in map(lambda s: '.' + s.lower(), gdkfmt.get_extensions()):
+        for e in map(lambda s: f'.{s.lower()}', gdkfmt.get_extensions()):
             fmt[1].add(e)
-            m = Gio.content_type_guess(filename='file' + e)[0].lower()
+            m = Gio.content_type_guess(filename=f'file{e}')[0].lower()
             if m and m != 'application/octet-stream':
                 fmt[0].add(m)
 

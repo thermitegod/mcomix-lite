@@ -116,7 +116,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
         supported_formats = archive_tools.get_supported_formats()
         for name in sorted(supported_formats):
             mime_types, extensions = supported_formats[name]
-            patterns = ['*' + ext for ext in extensions]
+            patterns = [f'*{ext}' for ext in extensions]
             self.add_filter(f'{name} archives', mime_types, patterns)
             for mime in mime_types:
                 ffilter.add_mime_type(mime)
@@ -131,7 +131,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
         supported_formats = image_tools.get_supported_formats()
         for name in sorted(supported_formats):
             mime_types, extensions = supported_formats[name]
-            patterns = ['*' + ext for ext in extensions]
+            patterns = [f'*{ext}' for ext in extensions]
             self.add_filter(f'{name} images', mime_types, patterns)
             for mime in mime_types:
                 ffilter.add_mime_type(mime)

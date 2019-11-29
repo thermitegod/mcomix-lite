@@ -35,7 +35,7 @@ class PdfArchive(archive_base.BaseArchive):
                            universal_newlines=True) as proc:
             for line in proc.stdout:
                 if line.startswith('page '):
-                    yield line.split()[1] + '.png'
+                    yield f'{line.split()[1]}.png'
 
     def extract(self, filename, destination_dir):
         self._create_directory(destination_dir)

@@ -93,7 +93,7 @@ class Statusbar(Gtk.EventBox):
         """Update the resolution data.
         Takes an iterable of tuples, (x, y, scale), describing the original
         resolution of an image as well as the currently displayed scale"""
-        self._resolution = ', '.join('{}x{} ({:.1%})'.format(*d) for d in dimensions)
+        self._resolution = ', '.join(f'{d[0]}x{d[1]} ({d[2]:.2%})' for d in dimensions)
 
     def set_root(self, root):
         """Set the name of the root (directory or archive)"""
@@ -183,7 +183,7 @@ class Statusbar(Gtk.EventBox):
         }
 
         for n, v in names.items():
-            action = self.ui_manager.get_action('/Statusbar/' + n)
+            action = self.ui_manager.get_action(f'/Statusbar/{n}')
             action.set_active(v)
 
 

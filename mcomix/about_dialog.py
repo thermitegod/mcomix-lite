@@ -18,7 +18,7 @@ class _AboutDialog(Gtk.AboutDialog):
 
         self.set_name(constants.APPNAME)
         self.set_program_name(constants.APPNAME)
-        self.set_version('Version ' + constants.VERSION)
+        self.set_version(f'Version {constants.VERSION}')
         self.set_license_type(Gtk.License.GPL_2_0, )
         self.set_website('https://github.com/thermitegod/mcomix-lite')
         self.set_website_label('Github')

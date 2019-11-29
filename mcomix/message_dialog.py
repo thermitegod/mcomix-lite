@@ -38,7 +38,7 @@ class MessageDialog(Gtk.MessageDialog):
         @param primary: Main text.
         @param secondary: Descriptive text"""
         if primary:
-            self.set_markup('<span weight="bold" size="larger">' + primary + '</span>')
+            self.set_markup(f'<span weight="bold" size="larger">{primary}</span>')
         if secondary:
             self.format_secondary_markup(secondary)
 

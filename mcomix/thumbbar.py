@@ -219,7 +219,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         the file can be copied (e.g. to a file manager)"""
         selected = self._get_selected_row()
         path = self._window.imagehandler.get_path_to_page(selected + 1)
-        uri = 'file://localhost' + pathname2url(path)
+        uri = f'file://localhost{pathname2url(path)}'
         selection.set_uris([uri])
 
     @staticmethod
