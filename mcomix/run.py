@@ -18,10 +18,7 @@ def parse_arguments():
     """Parse the command line passed in <argv>. Returns a tuple containing
     (options, arguments). Errors parsing the command line are handled in this function"""
     parser = argparse.ArgumentParser(usage='%%(prog)s %s' % '[OPTION...] [PATH]',
-                                     description='View images and comic book archives.',
-                                     add_help=False)
-    parser.add_argument('--help', action='help',
-                        help='Show this help and exit.')
+                                     description='View images and comic book archives.')
     parser.add_argument('path', type=str, action='store', nargs='*', default='',
                         help=argparse.SUPPRESS)
 
@@ -40,10 +37,10 @@ def parse_arguments():
     fitmodes.add_argument('-b', '--zoom-best', dest='zoommode', action='store_const',
                           const=constants.ZOOM_MODE_BEST,
                           help='Start the application with zoom set to best fit mode.')
-    fitmodes.add_argument('-w', '--zoom-width', dest='zoommode', action='store_const',
+    fitmodes.add_argument('-zw', '--zoom-width', dest='zoommode', action='store_const',
                           const=constants.ZOOM_MODE_WIDTH,
                           help='Start the application with zoom set to fit width.')
-    fitmodes.add_argument('-h', '--zoom-height', dest='zoommode', action='store_const',
+    fitmodes.add_argument('-zh', '--zoom-height', dest='zoommode', action='store_const',
                           const=constants.ZOOM_MODE_HEIGHT,
                           help='Start the application with zoom set to fit height.')
 
@@ -56,9 +53,7 @@ def parse_arguments():
     debugopts.add_argument('-o', dest='output', action='store',
                            default='', help=argparse.SUPPRESS)
 
-    args = parser.parse_args()
-
-    return args
+    return parser.parse_args()
 
 
 def run():
