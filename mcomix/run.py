@@ -73,10 +73,8 @@ def run():
 
     # Check for PyGTK and PIL dependencies.
     try:
-        from gi import version_info as gi_version_info
-        assert gi_version_info >= (3, 21, 0)
-
-        from gi import require_version
+        from gi import version_info, require_version
+        assert version_info >= (3, 21, 0)
 
         require_version('PangoCairo', '1.0')
         require_version('Gtk', '3.0')
