@@ -12,9 +12,8 @@ import sys
 from mcomix import constants, log, preferences
 
 
-def parse_arguments():
-    """Parse the command line passed in <argv>. Returns a tuple containing
-    (options, arguments). Errors parsing the command line are handled in this function"""
+def run():
+    """Run the program"""
     parser = argparse.ArgumentParser(usage='%%(prog)s %s' % '[OPTION...] [PATH]',
                                      description='View images and comic book archives.')
     parser.add_argument('path', type=str, action='store', nargs='*', default='',
@@ -50,17 +49,10 @@ def parse_arguments():
     # This supresses an error when MComix is used with cProfile
     debugopts.add_argument('-o', dest='output', action='store',
                            default='', help=argparse.SUPPRESS)
+    args = parser.parse_args()
 
-    return parser.parse_args()
-
-
-def run():
-    """Run the program"""
     # Load configuration.
     preferences.read_preferences_file()
-
-    # Retrieve and parse command line arguments.
-    args = parse_arguments()
 
     if args.version:
         print(constants.APPNAME, constants.VERSION)
