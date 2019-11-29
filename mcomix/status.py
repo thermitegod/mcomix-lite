@@ -212,7 +212,7 @@ class TooltipStatusHelper(object):
             widget.disconnect(cid)
 
     def _on_item_select(self, menuitem, tooltip):
-        self._statusbar.push(0, " " * Statusbar.SPACING + tooltip)
+        self._statusbar.push(0, ' ' * Statusbar.SPACING + tooltip)
 
     def _on_item_deselect(self, menuitem):
         self._statusbar.pop(0)

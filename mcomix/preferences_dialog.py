@@ -573,7 +573,7 @@ class _PreferencesDialog(Gtk.Dialog):
             be pre-selected when the control is created.
         @param change_callback: Function that will be called when the 'changed' event is triggered.
         @returns Gtk.ComboBox"""
-        assert options and len(options[0]) == 2, "Invalid format for options."
+        assert options and len(options[0]) == 2, 'Invalid format for options.'
 
         # Use the first list item to determine typing of model fields.
         # First field is textual description, second field is value.
@@ -584,7 +584,7 @@ class _PreferencesDialog(Gtk.Dialog):
         box = Gtk.ComboBox(model=model)
         renderer = Gtk.CellRendererText()
         box.pack_start(renderer, True)
-        box.add_attribute(renderer, "text", 0)
+        box.add_attribute(renderer, 'text', 0)
 
         # Set active box option
         iter = model.get_iter_first()

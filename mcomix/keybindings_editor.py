@@ -68,7 +68,7 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
             title = action_data['title']
             group_name = action_data['group']
             old_bindings = self.keymanager.get_bindings_for_action(action_name)
-            acc_list = ["", ] * self.accel_column_num
+            acc_list = ['', ] * self.accel_column_num
             for idx in range(0, self.accel_column_num):
                 if len(old_bindings) > idx:
                     acc_list[idx] = Gtk.accelerator_name(*old_bindings[idx])
@@ -92,12 +92,12 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
             if affected_action == action_name:
                 for idx in range(0, self.accel_column_num):
                     if idx != column and self.treestore.get(iter, idx + 3)[0] == new_accel:
-                        self.treestore.set_value(iter, idx + 3, "")
+                        self.treestore.set_value(iter, idx + 3, '')
             elif affected_action is not None:
                 titer = self.action_treeiter_map[affected_action]
                 for idx in range(0, self.accel_column_num):
                     if self.treestore.get(titer, idx + 3)[0] == new_accel:
-                        self.treestore.set_value(titer, idx + 3, "")
+                        self.treestore.set_value(titer, idx + 3, '')
 
             # updating gtk accelerator for label in menu
             if self.keymanager.get_bindings_for_action(action_name)[0] == (accel_key, accel_mods):
@@ -111,7 +111,7 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
             col = column + 3
             accel = self.treestore.get(iter, col)[0]
             action_name = self.treestore.get_value(iter, 1)
-            if accel != "":
+            if accel != '':
                 self.keymanager.clear_accel(action_name, accel)
 
                 # updating gtk accelerator for label in menu

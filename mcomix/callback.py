@@ -94,7 +94,7 @@ class CallbackList(object):
         If <func> is a bound method, return (weakref(obj), func), with <obj>
         being the object <func> is bound to. This is required since
         weak references do not work on bound methods"""
-        if hasattr(func, "im_self") and getattr(func, "im_self") is not None:
+        if hasattr(func, 'im_self') and getattr(func, 'im_self') is not None:
             return weakref.ref(func.im_self, self.__callback_deleted), func.im_func
         else:
             return None, func
