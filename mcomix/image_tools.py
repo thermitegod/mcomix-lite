@@ -243,12 +243,13 @@ def load_pixbuf(path):
     """Loads a pixbuf from a given image file"""
     enable_anime = prefs['animation mode'] != constants.ANIMATION_DISABLED
     try:
-        with Image.open(reader.LockedFileIO(path)) as im:
-            # make sure n_frames loaded
-            im.load()
-            if enable_anime and getattr(im, 'is_animated', False):
-                return load_animation(im)
-            return pil_to_pixbuf(im, keep_orientation=True)
+        with reader.LockedFileIO(path) as fio:
+            with Image.open(fio) as im:
+                # make sure n_frames loaded
+                im.load()
+                if enable_anime and getattr(im, 'is_animated', False):
+                    return load_animation(im)
+                return pil_to_pixbuf(im, keep_orientation=True)
     except:
         pass
     if enable_anime:
@@ -262,9 +263,10 @@ def load_pixbuf(path):
 def load_pixbuf_size(path, width, height):
     """Loads a pixbuf from a given image file and scale it to fit inside (width, height)"""
     try:
-        with Image.open(reader.LockedFileIO(path)) as im:
-            im.thumbnail((width, height), resample=Image.BOX)
-            return pil_to_pixbuf(im, keep_orientation=True)
+        with reader.LockedFileIO(path) as fio:
+            with Image.open(fio) as im:
+                im.thumbnail((width, height), resample=Image.BOX)
+                return pil_to_pixbuf(im, keep_orientation=True)
     except:
         info, image_width, image_height = GdkPixbuf.Pixbuf.get_file_info(path)
         # If we could not get the image info, still try to load
@@ -363,8 +365,9 @@ def text_color_for_background_color(bgcolor):
 def get_image_info(path):
     """Return image informations: (format, width, height)"""
     try:
-        with Image.open(reader.LockedFileIO(path)) as im:
-            return (im.format,) + im.size
+        with reader.LockedFileIO(path) as fio:
+            with Image.open(fio) as im:
+                return (im.format,) + im.size
     except:
         info = GdkPixbuf.Pixbuf.get_file_info(path)
         if info[0] is None:
