@@ -173,8 +173,7 @@ class Scrolling(object):
             invisible_size = c - v
             result[i] = content_position[i] + (box.Box._box_to_center_offset_1d(invisible_size, o)
                                                if d == constants.SCROLL_TO_CENTER
-                                               else invisible_size if d == 1
-            else 0)  # if d == -1
+                                               else invisible_size if d == 1 else 0)  # if d == -1
         return result
 
     def _cached_bs(self, num, denom, half_up):
