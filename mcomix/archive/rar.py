@@ -10,6 +10,9 @@ import os
 from mcomix import log
 from mcomix.archive import archive_base
 
+# Filled on-demand by _get_unrar
+_unrar_dll = None
+
 UNRARCALLBACK = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_uint, ctypes.c_long, ctypes.c_long, ctypes.c_long)
 
 
@@ -253,15 +256,11 @@ class UnrarException(Exception):
             return 'Unkown error'
 
 
-# Filled on-demand by _get_unrar
-_unrar_dll = -1
-
-
 def _get_unrar():
     """Tries to load libunrar and will return a handle of it.
     Returns None if an error occured or the library couldn't be found"""
     global _unrar_dll
-    if _unrar_dll != -1:
+    if _unrar_dll is not None:
         return _unrar_dll
 
     # find_library on UNIX uses various mechanisms to determine the path

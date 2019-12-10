@@ -5,7 +5,6 @@
 import math
 import os
 import re
-from distutils.version import LooseVersion
 
 from mcomix import log, process
 from mcomix.archive import archive_base
@@ -76,41 +75,19 @@ class PdfArchive(archive_base.BaseArchive):
         if _pdf_possible is not None:
             return _pdf_possible
         _pdf_possible = False
-        version = None
+
         if (mutool := process.find_executable('mutool')) is None:
             log.debug('mutool executable not found')
-        else:
-            _mutool_exec.append(mutool)
-            # Find MuPDF version; assume 1.6 version since
-            # the '-v' switch is only supported from 1.7 onward...
-            version = '1.6'
-            with process.popen([mutool, '-v'],
-                               stdout=process.NULL,
-                               stderr=process.PIPE,
-                               universal_newlines=True) as proc:
-                output = proc.stderr.read()
-                if output.startswith('mutool version '):
-                    version = output[15:].rstrip()
-            version = LooseVersion(version)
-            if version >= LooseVersion('1.8'):
-                # Mutool executable with draw support.
-                _mudraw_exec.extend((mutool, 'draw', '-q'))
-                _mudraw_trace_args.extend(('-F', 'trace'))
-                _pdf_possible = True
-            else:
-                # Separate mudraw executable.
-                mudraw = process.find_executable('mudraw')
-                if mudraw is None:
-                    log.debug('mudraw executable not found')
-                else:
-                    _mudraw_exec.append(mudraw)
-                    if version >= LooseVersion('1.7'):
-                        _mudraw_trace_args.extend(('-F', 'trace'))
-                    else:
-                        _mudraw_trace_args.append('-x')
-                    _pdf_possible = True
+            return _pdf_possible
+
+        # Mutool executable with draw support.
+        _mutool_exec.append(mutool)
+        _mudraw_exec.extend((mutool, 'draw', '-q'))
+        _mudraw_trace_args.extend(('-F', 'trace'))
+        _pdf_possible = True
+
         if _pdf_possible:
-            log.info(f'Using MuPDF version: {version}')
+            log.info('MuPDF is available')
             log.debug(f'mutool: {" ".join(_mutool_exec)}\n'
                       f'mudraw: {" ".join(_mudraw_exec)}\n'
                       f'mudraw trace arguments: {" ".join(_mudraw_trace_args)}')

@@ -9,7 +9,7 @@ from mcomix import process
 from mcomix.archive import archive_base
 
 # Filled on-demand by SevenZipArchive
-_7z_executable = -1
+_7z_executable = None
 
 
 class SevenZipArchive(archive_base.ExternalExecutableArchive):
@@ -111,7 +111,9 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
             self._state = self.STATE_HEADER
             #: Current path while listing contents.
             self._path = None
-            with process.popen(self._get_list_arguments(), stderr=process.STDOUT, universal_newlines=True) as proc:
+            with process.popen(self._get_list_arguments(),
+                               stderr=process.STDOUT,
+                               universal_newlines=True) as proc:
                 try:
                     for line in proc.stdout:
                         filename = self._parse_list_output_line(line.rstrip(os.linesep))
@@ -128,8 +130,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
 
     def extract(self, filename, destination_dir):
         """Extract <filename> from the archive to <destination_dir>"""
-        assert isinstance(filename, str) and \
-               isinstance(destination_dir, str)
+        assert isinstance(filename, str) and isinstance(destination_dir, str)
 
         if not self._get_executable():
             return
@@ -142,8 +143,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
             tmplistfile.write(filename + os.linesep)
             tmplistfile.flush()
             with self._create_file(destination_path) as output:
-                process.call(self._get_extract_arguments(list_file=tmplistfile.name),
-                             stdout=output)
+                process.call(self._get_extract_arguments(list_file=tmplistfile.name), stdout=output)
         return destination_path
 
     def iter_extract(self, entries, destination_dir):
@@ -175,7 +175,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
         """Tries to start 7z, and returns either '7z' if
         it was started successfully or None otherwise"""
         global _7z_executable
-        if _7z_executable == -1:
+        if _7z_executable is None:
             _7z_executable = process.find_executable('7z')
         return _7z_executable
 
