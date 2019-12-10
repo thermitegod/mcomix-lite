@@ -469,16 +469,6 @@ class EventHandler(object):
                 self._last_pointer_pos_y = event.y_root
             self._drag_timer = event.time
 
-    def normalize_uri(uri):
-        """Normalize URIs passed into the program by different applications, via drag-and-drop"""
-        if uri.startswith('file://localhost/'):
-            return uri[16:]
-        elif uri.startswith('file:///'):
-            return uri[7:]
-        elif uri.startswith('file:/'):
-            return uri[5:]
-        return uri
-
     def drag_n_drop_event(self, widget, context, x, y, selection, drag_id, eventtime):
         """Handle drag-n-drop events on the main layout area"""
         # The drag source is inside MComix itself, so we ignore.
@@ -488,8 +478,18 @@ class EventHandler(object):
         if not (uris := selection.get_uris()):
             return
 
+        def normalize_uri(uri):
+            """Normalize URIs passed into the program by different applications, via drag-and-drop"""
+            if uri.startswith('file://localhost/'):
+                return uri[16:]
+            elif uri.startswith('file:///'):
+                return uri[7:]
+            elif uri.startswith('file:/'):
+                return uri[5:]
+            return uri
+
         # Normalize URIs
-        uris = [self.normalize_uri(uri) for uri in uris]
+        uris = [normalize_uri(uri) for uri in uris]
 
         if len(paths := [url2pathname(uri) for uri in uris]) > 1:
             self._window.filehandler.open_file(paths)
