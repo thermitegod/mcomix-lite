@@ -42,6 +42,7 @@ images.extend([os.path.basename(img)
 setuptools.setup(
         name=constants.APPNAME.lower(),
         version=constants.VERSION,
+        python_requires='>=3.8',
         packages=['mcomix', 'mcomix.archive', 'mcomix.images'],
         package_data={'mcomix.images': images},
         entry_points={'console_scripts': ['mcomix = mcomix.run:run'],
