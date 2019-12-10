@@ -3,7 +3,7 @@
 
 import glob
 import os
-import setuptools
+from setuptools import setup
 
 from mcomix import constants
 
@@ -39,7 +39,7 @@ images.remove('*.png')
 images.extend([os.path.basename(img)
                for img in glob.glob(os.path.join(constants.BASE_PATH, 'mcomix/images', '*.png'))])
 
-setuptools.setup(
+setup(
         name=constants.APPNAME.lower(),
         version=constants.VERSION,
         python_requires='>=3.8',
@@ -47,9 +47,9 @@ setuptools.setup(
         package_data={'mcomix.images': images},
         entry_points={'console_scripts': ['mcomix = mcomix.run:run'],
                       'setuptools.installation': ['eggsecutable=mcomix.run:run'], },
-        test_suite="test",
-        requires=['Gtk (>=3.21.0)', 'Pillow (>=6.0.0)'],
-        install_requires=['setuptools'],
+        test_suite='test',
+        requires=['Gtk (>=3.21.0)'],
+        install_requires=['setuptools', 'pillow'],
         zip_safe=False,
 
         # Various MIME files that need to be copied to certain system locations on Linux.
@@ -76,7 +76,6 @@ setuptools.setup(
                          'Supports archive formats are 7Z, ZIP, RAR, CBR, CBZ, CB7, LHA, and PDF. '
                          'MComix-Lite is a fork of MComix3 which is a fork of MComix which is a fork of Comix.',
         license="License :: OSI Approved :: GNU General Public License (GPL)",
-        # download_url="http://sourceforge.net/projects/mcomix/files",
         platforms=['Operating System :: POSIX :: Linux',
                    'Operating System :: POSIX :: BSD'],
 )
