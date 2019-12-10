@@ -71,7 +71,6 @@ class OpenWithCommand(object):
             window.osd.show(f'"{self.get_label()}" is disabled for archives.')
             return
 
-        current_dir = os.getcwd()
         try:
             if self.is_valid_workdir(window):
                 workdir = self.parse(window, text=self.get_cwd())[0]
@@ -84,7 +83,7 @@ class OpenWithCommand(object):
             text = f'Could not run command {self.get_label()}: {str(e)}'
             window.osd.show(text)
         finally:
-            os.chdir(current_dir)
+            os.chdir(os.getcwd())
 
     def is_executable(self, window):
         """Check if a name is executable. This name can be either
@@ -93,23 +92,19 @@ class OpenWithCommand(object):
         if len(args) == 0:
             return False
 
-        exe = shutil.which(args[0])
-        if exe:
+        if exe := shutil.which(args[0]):
             return exe
         return None
 
     def is_valid_workdir(self, window, allow_empty=False):
         """Check if the working directory is valid"""
-        cwd = self.get_cwd().strip()
-        if not cwd:
+        if not (cwd := self.get_cwd().strip()):
             return allow_empty
 
-        args = self.parse(window, text=cwd)
-        if len(args) > 1:
+        if len(args := self.parse(window, text=cwd)) > 1:
             return False
 
-        dir = args[0]
-        if os.path.isdir(dir) and os.access(dir, os.X_OK):
+        if os.path.isdir(dir := args[0]) and os.access(dir, os.X_OK):
             return True
 
         return False
@@ -124,9 +119,7 @@ class OpenWithCommand(object):
         if not text.strip():
             raise OpenWithException('Command line is empty.')
 
-        args = self._commandline_to_arguments(
-                text, window, self._get_context_type(window, check_restrictions))
-        return args
+        return self._commandline_to_arguments(text, window, self._get_context_type(window, check_restrictions))
 
     def _commandline_to_arguments(self, line, window, context_type):
         """parser for commandline using shlex"""
@@ -262,22 +255,19 @@ class OpenWithEditor(Gtk.Dialog):
 
     def get_command(self):
         """Retrieves the selected command object"""
-        selection = self._command_tree.get_selection()
-        if not selection:
+        if not (selection := self._command_tree.get_selection()):
             return None
 
         model, iter = self._command_tree.get_selection().get_selected()
         if iter and model.iter_is_valid(iter):
-            command = OpenWithCommand(*model.get(iter, 0, 1, 2, 3))
-            return command
+            return OpenWithCommand(*model.get(iter, 0, 1, 2, 3))
         else:
             return None
 
     def test_command(self):
         """Parses the currently selected command and displays the output in the text box next to the button"""
-        command = self.get_command()
         self._run_button.set_sensitive(False)
-        if not command:
+        if not (command := self.get_command()):
             return
 
         # Test only if the selected field is a valid command
@@ -304,8 +294,7 @@ class OpenWithEditor(Gtk.Dialog):
     def _add_command(self, button):
         """Add a new empty label-command line to the list"""
         row = ('Command label', '', '', False, True)
-        selection = self._command_tree.get_selection()
-        if selection and selection.get_selected()[1]:
+        if (selection := self._command_tree.get_selection()) and selection.get_selected()[1]:
             model, iter = selection.get_selected()
             model.insert_before(iter, row)
         else:
@@ -315,8 +304,7 @@ class OpenWithEditor(Gtk.Dialog):
     def _add_sep_command(self, button):
         """Adds a new separator line"""
         row = ('-', '', '', False, False)
-        selection = self._command_tree.get_selection()
-        if selection and selection.get_selected()[1]:
+        if (selection := self._command_tree.get_selection()) and selection.get_selected()[1]:
             model, iter = selection.get_selected()
             model.insert_before(iter, row)
         else:
@@ -354,8 +342,7 @@ class OpenWithEditor(Gtk.Dialog):
 
     def _run_command(self, button):
         """Executes the selected command in the current context"""
-        command = self.get_command()
-        if command and not command.is_separator():
+        if (command := self.get_command()) and not command.is_separator():
             command.execute(self._window)
 
     def _item_selected(self, selection):

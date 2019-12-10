@@ -97,17 +97,15 @@ class BaseArchive(object):
         If <self._password> is None, no password has been requested yet.
         If an empty string is set, assume that the user did not provide
         a password"""
-        password = archive.ask_for_password(self.archive)
-        if password is None:
+        if (password := archive.ask_for_password(self.archive)) is None:
             password = ''
 
         self._password = password
         self._event.set()
 
     def _get_password(self):
-        ask_for_password = self._password is None
         # Don't trigger concurrent password dialogs.
-        if ask_for_password and self.support_concurrent_extractions:
+        if (ask_for_password := self._password is None) and self.support_concurrent_extractions:
             with self._lock:
                 if self._waiting_for_password:
                     ask_for_password = False

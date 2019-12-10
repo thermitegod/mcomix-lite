@@ -75,10 +75,9 @@ class PdfArchive(archive_base.BaseArchive):
         global _pdf_possible
         if _pdf_possible is not None:
             return _pdf_possible
-        mutool = process.find_executable('mutool')
         _pdf_possible = False
         version = None
-        if mutool is None:
+        if (mutool := process.find_executable('mutool')) is None:
             log.debug('mutool executable not found')
         else:
             _mutool_exec.append(mutool)

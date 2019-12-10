@@ -105,9 +105,7 @@ class _BookmarksDialog(Gtk.Dialog):
 
     def _remove_selected(self):
         """Remove the currently selected bookmark from the dialog and from the store"""
-        treeiter = self._selection.get_selected()[1]
-
-        if treeiter is not None:
+        if (treeiter := self._selection.get_selected()[1]) is not None:
             bookmark = self._liststore.get_value(treeiter, 5)
             self._liststore.remove(treeiter)
             self._bookmarks_store.remove_bookmark(bookmark)
@@ -139,10 +137,8 @@ class _BookmarksDialog(Gtk.Dialog):
     def _response(self, dialog, response):
         if response == Gtk.ResponseType.CLOSE:
             self._close()
-
         elif response == constants.RESPONSE_REMOVE:
             self._remove_selected()
-
         else:
             self.destroy()
 

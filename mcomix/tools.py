@@ -17,7 +17,6 @@ PREFIXED_BYTE_UNITS = ('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'Yi
 def alphanumeric_sort(filenames):
     """Do an in-place alphanumeric sort of the strings in <filenames>,
     such that for an example "1.jpg", "2.jpg", "10.jpg" is a sorted ordering"""
-
     def _format_substring(s):
         if s.isdigit():
             return 0, int(s)
@@ -33,8 +32,7 @@ def bin_search(lst, value):
     complement of the index where C{value} would be inserted.
     This implies that the return value is non-negative if and only if
     C{value} is contained in C{lst}"""
-    index = bisect.bisect_left(lst, value)
-    if index != len(lst) and lst[index] == value:
+    if (index := bisect.bisect_left(lst, value)) != len(lst) and lst[index] == value:
         return index
     else:
         return ~index

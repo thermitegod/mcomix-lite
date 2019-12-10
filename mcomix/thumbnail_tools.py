@@ -90,8 +90,7 @@ class Thumbnailer(object):
 
     def delete(self, filepath):
         """Deletes the thumbnail for <filepath> (if it exists)"""
-        thumbpath = self._path_to_thumbpath(filepath)
-        if os.path.isfile(thumbpath):
+        if os.path.isfile(thumbpath := self._path_to_thumbpath(filepath)):
             try:
                 os.remove(thumbpath)
             except IOError as error:
@@ -177,8 +176,7 @@ class Thumbnailer(object):
         """Saves <pixbuf> as <thumbpath>, with additional metadata
         from <tEXt_data>. If <thumbpath> already exists, it is overwritten"""
         try:
-            directory = os.path.dirname(thumbpath)
-            if not os.path.isdir(directory):
+            if not os.path.isdir(directory := os.path.dirname(thumbpath)):
                 os.makedirs(directory, 0o700)
             if os.path.isfile(thumbpath):
                 os.remove(thumbpath)
@@ -201,9 +199,7 @@ class Thumbnailer(object):
         it's size is different from the one specified in the thumbnailer,
         or if <force_recreation> is True"""
         if not self.force_recreation:
-            thumbpath = self._path_to_thumbpath(filepath)
-
-            if os.path.isfile(thumbpath):
+            if os.path.isfile(thumbpath := self._path_to_thumbpath(filepath)):
                 # Check the thumbnail's stored mTime
                 try:
                     with reader.LockedFileIO(thumbpath) as fio:
@@ -228,8 +224,7 @@ class Thumbnailer(object):
     def _uri_to_thumbpath(self, uri):
         """Return the full path to the thumbnail for <uri> with <dst_dir>
         being the base thumbnail directory"""
-        md5hash = md5(uri.encode()).hexdigest()
-        return os.path.join(self.dst_dir, f'{md5hash}.png')
+        return os.path.join(self.dst_dir, f'{md5(uri.encode()).hexdigest()}.png')
 
     @staticmethod
     def _guess_cover(files):

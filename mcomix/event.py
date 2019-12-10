@@ -26,14 +26,12 @@ class EventHandler(object):
 
     def resize_event(self, widget, event):
         """Handle events from resizing and moving the main window"""
-        size = (event.width, event.height)
-        if size != self._window.previous_size:
+        if (size := (event.width, event.height)) != self._window.previous_size:
             self._window.previous_size = size
             self._window.draw_image()
 
     def window_state_event(self, widget, event):
-        is_fullscreen = self._window.is_fullscreen
-        if self._window.was_fullscreen != is_fullscreen:
+        if self._window.was_fullscreen != (is_fullscreen := self._window.is_fullscreen):
             # Fullscreen state changed.
             self._window.was_fullscreen = is_fullscreen
             # Re-enable control, now that transition is complete.
@@ -299,9 +297,8 @@ class EventHandler(object):
         ALL_ACCELS_MASK = (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.MOD1_MASK)
 
         keymap = Gdk.Keymap.get_default()
-        code = keymap.translate_keyboard_state(event.hardware_keycode, event.get_state(), event.group)
 
-        if code[0]:
+        if (code := keymap.translate_keyboard_state(event.hardware_keycode, event.get_state(), event.group))[0]:
             keyval = code[1]
             consumed = code[4]
 
@@ -488,16 +485,13 @@ class EventHandler(object):
         if Gtk.drag_get_source_widget(context) is not None:
             return
 
-        uris = selection.get_uris()
-
-        if not uris:
+        if not (uris := selection.get_uris()):
             return
 
         # Normalize URIs
         uris = [self.normalize_uri(uri) for uri in uris]
-        paths = [url2pathname(uri) for uri in uris]
 
-        if len(paths) > 1:
+        if len(paths := [url2pathname(uri) for uri in uris]) > 1:
             self._window.filehandler.open_file(paths)
         else:
             self._window.filehandler.open_file(paths[0])
@@ -555,12 +549,9 @@ class EventHandler(object):
         self._window.update_layout_position()
 
         # Scroll to the new position
-        new_index = self._window.layout.scroll_smartly(max_scroll, backwards, swap_axes)
-        n = 2 if self._window.displayed_double() else 1  # XXX limited to at most 2 pages
-
-        if new_index == -1:
+        if (new_index := self._window.layout.scroll_smartly(max_scroll, backwards, swap_axes)) == -1:
             self._change_page('prev')
-        elif new_index == n:
+        elif new_index == (2 if self._window.displayed_double() else 1):  # XXX limited to at most 2 pages
             self._change_page('next')
         else:
             # Update actual viewport
@@ -577,7 +568,7 @@ class EventHandler(object):
             self._extra_scroll_events = 0
             return False
 
-        if direction is 'next':
+        if direction == 'next':
             if not self._scroll_protection \
                     or self._extra_scroll_events >= prefs['number of key presses before page turn'] - 1 \
                     or not self._window.is_scrollable():
@@ -591,7 +582,7 @@ class EventHandler(object):
                 # This path should not be reached.
                 assert False, 'Programmer is moron, incorrect assertion.'
 
-        elif direction is 'prev':
+        elif direction == 'prev':
             if not self._scroll_protection \
                     or self._extra_scroll_events <= -prefs['number of key presses before page turn'] + 1 \
                     or not self._window.is_scrollable():

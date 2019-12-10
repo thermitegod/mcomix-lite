@@ -127,8 +127,7 @@ class RarArchive(archive_base.BaseArchive):
                 self._read_header()
                 if 0 != (0x10 & self._headerdata.Flags):
                     self._is_solid = True
-                filename = self._current_filename
-                yield filename
+                yield (filename := self._current_filename)
                 # Skip to the next entry if we're still on the same name
                 # (extract may have been called by iter_extract).
                 if filename == self._current_filename:
@@ -184,8 +183,7 @@ class RarArchive(archive_base.BaseArchive):
                                                        OpenMode=RarArchive._OpenMode.RAR_OM_EXTRACT,
                                                        UserData=0)
 
-        handle = self._unrar.RAROpenArchiveEx(ctypes.byref(archivedata))
-        if not handle:
+        if not (handle := self._unrar.RAROpenArchiveEx(ctypes.byref(archivedata))):
             errormessage = UnrarException.get_error_message(archivedata.OpenResult)
             raise UnrarException(f'Could not open archive: {errormessage}')
         self._handle = handle
@@ -223,8 +221,7 @@ class RarArchive(archive_base.BaseArchive):
         """Close the rar handle previously obtained by open"""
         if self._handle is None:
             return
-        errorcode = self._unrar.RARCloseArchive(self._handle)
-        if errorcode != 0:
+        if (errorcode := self._unrar.RARCloseArchive(self._handle)) != 0:
             errormessage = UnrarException.get_error_message(errorcode)
             raise UnrarException(f'Could not close archive: {errormessage}')
         self._handle = None
@@ -270,9 +267,7 @@ def _get_unrar():
     # find_library on UNIX uses various mechanisms to determine the path
     # of a library, so one could assume the library is not installed
     # when find_library fails
-    unrar_path = ctypes.util.find_library('unrar')
-
-    if unrar_path:
+    if unrar_path := ctypes.util.find_library('unrar'):
         try:
             _unrar_dll = ctypes.cdll.LoadLibrary(unrar_path)
             return _unrar_dll

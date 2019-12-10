@@ -148,16 +148,14 @@ class ZoomModel(object):
         boxes than max_size, an approximation is returned where all resulting
         scales will shrink their respective boxes to 1 along axis. In this case,
         the scaled total size might be greater than max_size"""
-        n = len(sizes)
         # trivial cases first
-        if n == 0:
+        if (n := len(sizes)) == 0:
             return []
         if n >= max_size:
             # In this case, only one solution or only an approximation is available.
             # if n > max_size, the result won't fit into max_size.
             return map(lambda x: tools.div(1, x[axis]), sizes)  # FIXME ignores do_not_transform
-        total_axis_size = sum(map(lambda x: x[axis], sizes))
-        if (total_axis_size <= max_size) and not allow_upscaling:
+        if ((total_axis_size := sum(map(lambda x: x[axis], sizes))) <= max_size) and not allow_upscaling:
             # identity
             return [IDENTITY_ZOOM] * n
 

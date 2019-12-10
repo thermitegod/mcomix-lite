@@ -198,8 +198,7 @@ class TooltipStatusHelper(object):
 
     def _on_connect_proxy(self, uimgr, action, widget):
         """Connects the widget's selection handlers to the status bar update"""
-        tooltip = action.get_property('tooltip')
-        if isinstance(widget, Gtk.MenuItem) and tooltip:
+        if isinstance(widget, Gtk.MenuItem) and (tooltip := action.get_property('tooltip')):
             cid = widget.connect('select', self._on_item_select, tooltip)
             cid2 = widget.connect('deselect', self._on_item_deselect)
             setattr(widget, 'app::connect-ids', (cid, cid2))
@@ -207,8 +206,7 @@ class TooltipStatusHelper(object):
     @staticmethod
     def _on_disconnect_proxy(uimgr, action, widget):
         """Disconnects the widget's selection handlers"""
-        cids = getattr(widget, 'app::connect-ids', ())
-        for cid in cids:
+        for cid in getattr(widget, 'app::connect-ids', ()):
             widget.disconnect(cid)
 
     def _on_item_select(self, menuitem, tooltip):

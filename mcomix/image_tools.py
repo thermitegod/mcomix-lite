@@ -165,8 +165,7 @@ def pil_to_pixbuf(im, keep_orientation=False):
         has_alpha = True
     else:
         has_alpha = False
-    target_mode = 'RGBA' if has_alpha else 'RGB'
-    if im.mode != target_mode:
+    if im.mode != (target_mode := 'RGBA' if has_alpha else 'RGB'):
         im = im.convert(target_mode)
     pixbuf = GdkPixbuf.Pixbuf.new_from_bytes(
             GLib.Bytes.new(im.tobytes()), GdkPixbuf.Colorspace.RGB,
@@ -176,8 +175,7 @@ def pil_to_pixbuf(im, keep_orientation=False):
     )
     if keep_orientation:
         # Keep orientation metadata.
-        orientation = _getexif(im).get(274, None)
-        if orientation is not None:
+        if (orientation := _getexif(im).get(274, None)) is not None:
             setattr(pixbuf, 'orientation', str(orientation))
     return pixbuf
 
@@ -338,9 +336,9 @@ def get_implied_rotation(pixbuf):
     by a camera that is held sideways might store this fact in its Exif data,
     and the pixbuf loader will set the orientation option correspondingly"""
     pixbuf = static_image(pixbuf)
-    orientation = getattr(pixbuf, 'orientation', None)
-    if orientation is None:
+    if (orientation := getattr(pixbuf, 'orientation', None)) is None:
         orientation = pixbuf.get_option('orientation')
+
     if orientation == '3':
         return 180
     elif orientation == '6':
@@ -369,8 +367,7 @@ def get_image_info(path):
             with Image.open(fio) as im:
                 return (im.format,) + im.size
     except:
-        info = GdkPixbuf.Pixbuf.get_file_info(path)
-        if info[0] is None:
+        if (info := GdkPixbuf.Pixbuf.get_file_info(path))[0] is None:
             info = None
         else:
             info = info[0].get_name().upper(), info[1], info[2]

@@ -72,8 +72,7 @@ class FileHandler(object):
             self._window.osd.show(str(ex))
             return False
 
-        error_message = self._check_access(path)
-        if error_message:
+        if (error_message := self._check_access(path)):
             self._window.statusbar.set_message(error_message)
             self._window.osd.show(error_message)
             self.file_opened()
@@ -96,8 +95,7 @@ class FileHandler(object):
                 return False
             self.file_loading = True
         else:
-            image_files, current_image_index = \
-                self._open_image_files(self.filelist, self._current_file)
+            image_files, current_image_index = self._open_image_files(self.filelist, self._current_file)
             self._archive_opened(image_files)
 
         return True
@@ -295,8 +293,7 @@ class FileHandler(object):
         if self.archive_type is None:
             # No file numbers for images.
             return 0, 0
-        file_list = self._file_provider.list_files(file_provider.FileProvider.ARCHIVES)
-        if self._current_file in file_list:
+        if self._current_file in (file_list := self._file_provider.list_files(file_provider.FileProvider.ARCHIVES)):
             current_index = file_list.index(self._current_file)
         else:
             current_index = 0
@@ -307,8 +304,7 @@ class FileHandler(object):
         if self.archive_type is not None:
             return self._base_path
 
-        filename = self._window.imagehandler.get_current_path()
-        if filename:
+        if filename := self._window.imagehandler.get_current_path():
             return os.path.dirname(filename)
         return None
 
@@ -325,11 +321,11 @@ class FileHandler(object):
         archive in that archive's directory listing, sorted alphabetically.
         Returns True if a new archive was opened, False otherwise"""
         if self.archive_type is not None:
-            files = self._file_provider.list_files(file_provider.FileProvider.ARCHIVES)
-            absolute_path = os.path.abspath(self._base_path)
-            if absolute_path not in files: return
-            current_index = files.index(absolute_path)
+            if (absolute_path := os.path.abspath(self._base_path)) \
+                    not in (files := self._file_provider.list_files(file_provider.FileProvider.ARCHIVES)):
+                return
 
+            current_index = files.index(absolute_path)
             for path in files[current_index + 1:]:
                 if archive_tools.archive_mime_type(path) is not None:
                     self._close()
@@ -343,11 +339,11 @@ class FileHandler(object):
         archive in that archive's directory listing, sorted alphabetically.
         Returns True if a new archive was opened, False otherwise"""
         if self.archive_type is not None:
-            files = self._file_provider.list_files(file_provider.FileProvider.ARCHIVES)
-            absolute_path = os.path.abspath(self._base_path)
-            if absolute_path not in files: return
-            current_index = files.index(absolute_path)
+            if (absolute_path := os.path.abspath(self._base_path)) \
+                    not in (files := self._file_provider.list_files(file_provider.FileProvider.ARCHIVES)):
+                return
 
+            current_index = files.index(absolute_path)
             for path in reversed(files[:current_index]):
                 if archive_tools.archive_mime_type(path) is not None:
                     self._close()
@@ -373,9 +369,8 @@ class FileHandler(object):
             self._file_provider.set_directory(current_dir)
             return False
 
-        files = self._file_provider.list_files(listmode)
         self._close()
-        if len(files) > 0:
+        if len(files := self._file_provider.list_files(listmode)) > 0:
             path = files[0]
         else:
             path = self._file_provider.get_directory()
@@ -399,9 +394,8 @@ class FileHandler(object):
             self._file_provider.set_directory(current_dir)
             return False
 
-        files = self._file_provider.list_files(listmode)
         self._close()
-        if len(files) > 0:
+        if len(files := self._file_provider.list_files(listmode)) > 0:
             path = files[-1]
         else:
             path = self._file_provider.get_directory()

@@ -282,9 +282,7 @@ class MainWindow(Gtk.Window):
     def _update_toggles_sensitivity(self):
         """Update each "toggle" widget sensitivity"""
         sensitive = True
-        if prefs['hide all']:
-            sensitive = False
-        elif prefs['hide all in fullscreen'] and self.is_fullscreen:
+        if prefs['hide all'] or (prefs['hide all in fullscreen'] and self.is_fullscreen):
             sensitive = False
         for preference, action, widget_list in self._toggle_list:
             self.actiongroup.get_action(action).set_sensitive(sensitive)
@@ -336,8 +334,7 @@ class MainWindow(Gtk.Window):
                 size = size_list[i]
                 virtual_size[distribution_axis] += size[distribution_axis]
                 virtual_size[alignment_axis] = max(virtual_size[alignment_axis], size[alignment_axis])
-            rotation = self._get_size_rotation(*virtual_size)
-            rotation = (rotation + prefs['rotation']) % 360
+            rotation = (self._get_size_rotation(*virtual_size) + prefs['rotation']) % 360
             if rotation in (90, 270):
                 distribution_axis, alignment_axis = alignment_axis, distribution_axis
                 orientation = list(orientation)
@@ -359,13 +356,11 @@ class MainWindow(Gtk.Window):
             # Visible area size is recomputed depending on scrollbar visibility
             while True:
                 self._show_scrollbars(scrollbar_requests)
-                new_viewport_size = self.get_visible_area_size()
-                if new_viewport_size == viewport_size:
+                if (new_viewport_size := self.get_visible_area_size()) == viewport_size:
                     break
                 viewport_size = new_viewport_size
                 zoom_dummy_size = list(viewport_size)
-                dasize = zoom_dummy_size[distribution_axis] - self._spacing * (pixbuf_count - 1)
-                if dasize <= 0:
+                if (dasize := zoom_dummy_size[distribution_axis] - self._spacing * (pixbuf_count - 1)) <= 0:
                     dasize = 1
                 zoom_dummy_size[distribution_axis] = dasize
                 scaled_sizes = self.zoom.get_zoomed_size(size_list, zoom_dummy_size,
@@ -452,8 +447,7 @@ class MainWindow(Gtk.Window):
     def _update_page_information(self):
         """Updates the window with information that can be gathered
         even when the page pixbuf(s) aren't ready yet"""
-        page_number = self.imagehandler.get_current_page()
-        if not page_number:
+        if not (page_number := self.imagehandler.get_current_page()):
             return
         if self.displayed_double():
             number_of_pages = 2
@@ -608,13 +602,11 @@ class MainWindow(Gtk.Window):
             self.set_page(new_page, at_bottom=(-1 == step))
 
     def first_page(self):
-        number_of_pages = self.imagehandler.get_number_of_pages()
-        if number_of_pages:
+        if self.imagehandler.get_number_of_pages():
             self.set_page(1)
 
     def last_page(self):
-        number_of_pages = self.imagehandler.get_number_of_pages()
-        if number_of_pages:
+        if number_of_pages := self.imagehandler.get_number_of_pages():
             self.set_page(number_of_pages)
 
     def page_select(self, *args):
@@ -851,10 +843,8 @@ class MainWindow(Gtk.Window):
 
     def update_title(self):
         """Set the title acording to current state"""
-        strings = [f'[{self.statusbar.get_page_number()}]',
-                   self.imagehandler.get_pretty_current_filename()]
-
-        self.set_title(' '.join(strings))
+        self.set_title(' '.join([f'[{self.statusbar.get_page_number()}]',
+                                 self.imagehandler.get_pretty_current_filename()]))
 
     def set_bg_color(self, color):
         """Set the background color to <color>. color is a sequence in the
@@ -983,19 +973,16 @@ class MainWindow(Gtk.Window):
             return
 
         text = ''
-        filename = self.imagehandler.get_pretty_current_filename()
-        if filename:
+        if filename := self.imagehandler.get_pretty_current_filename():
             text += f'{filename}\n'
         file_number, file_count = self.filehandler.get_file_number()
         if file_count:
             text += f'({file_number} / {file_count})\n'
         else:
             text += '\n'
-        page_number = self.imagehandler.get_current_page()
-        if page_number:
+        if page_number := self.imagehandler.get_current_page():
             text += f'{"Page"} {page_number}'
-        text = text.strip('\n')
-        if text:
+        if text := text.strip('\n'):
             self.osd.show(text)
 
     def minimize(self, *args):

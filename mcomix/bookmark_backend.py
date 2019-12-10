@@ -129,8 +129,7 @@ class __BookmarksStore(object):
     def file_was_modified(self):
         """Checks the bookmark store's mtime to see if it has been modified
         since it was last read"""
-        path = constants.BOOKMARK_PATH
-        if os.path.isfile(path):
+        if os.path.isfile(path := constants.BOOKMARK_PATH):
             try:
                 mtime = os.stat(path).st_mtime
             except IOError:

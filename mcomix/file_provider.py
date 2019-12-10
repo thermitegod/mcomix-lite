@@ -122,9 +122,8 @@ class OrderedFileProvider(FileProvider):
         """Switches to the next sibling directory. Next call to
         list_file() returns files in the new directory.
         Returns True if the directory was changed, otherwise False"""
-        directories = self.__get_sibling_directories(self.base_dir)
-        current_index = directories.index(self.base_dir)
-        if current_index < len(directories) - 1:
+        if len(directories := self.__get_sibling_directories(self.base_dir)) - 1 \
+                > (current_index := directories.index(self.base_dir)):
             self.base_dir = directories[current_index + 1]
             return True
         else:
@@ -135,8 +134,7 @@ class OrderedFileProvider(FileProvider):
         list_file() returns files in the new directory.
         Returns True if the directory was changed, otherwise False"""
         directories = self.__get_sibling_directories(self.base_dir)
-        current_index = directories.index(self.base_dir)
-        if current_index > 0:
+        if (current_index := directories.index(self.base_dir)) > 0:
             self.base_dir = directories[current_index - 1]
             return True
         else:

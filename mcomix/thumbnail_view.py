@@ -51,8 +51,7 @@ class ThumbnailViewBase(object):
         if not self._lock.acquire(blocking=False):
             return
         try:
-            visible = self.get_visible_range()
-            if not visible:
+            if not (visible := self.get_visible_range()):
                 # No valid paths available
                 return
 
@@ -65,8 +64,7 @@ class ThumbnailViewBase(object):
             harf = end - start + 1  # twice of current visible length
             required = set(range(mid - harf, mid + harf))
 
-            taskid = self._taskid
-            if not taskid:
+            if not (taskid := self._taskid):
                 taskid = uuid.uuid4().int
 
             model = self.get_model()

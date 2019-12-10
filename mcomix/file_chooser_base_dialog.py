@@ -76,19 +76,15 @@ class _BaseFileChooserDialog(Gtk.Dialog):
         self._all_files_filter = self.add_filter('All files', [], ['*'])
 
         try:
-            current_file = self._current_file()
-            last_file = self.__class__._last_activated_file
-
             # If a file is currently open, use its path
-            if current_file and os.path.exists(current_file):
+            if (current_file := self._current_file()) and os.path.exists(current_file):
                 self.filechooser.set_current_folder(os.path.dirname(current_file))
             # If no file is open, use the last stored file
-            elif last_file and os.path.exists(last_file):
+            elif (last_file := self.__class__._last_activated_file) and os.path.exists(last_file):
                 self.filechooser.set_filename(last_file)
             # If no file was stored yet, fall back to preferences
             elif os.path.isdir(prefs['path of last browsed in filechooser']):
                 self.filechooser.set_current_folder(constants.HOME_DIR)
-
         except Exception as ex:  # E.g. broken prefs values.
             log.debug(ex)
 
@@ -113,8 +109,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
         ffilter = Gtk.FileFilter()
         ffilter.set_name('All archives')
         self.filechooser.add_filter(ffilter)
-        supported_formats = archive_tools.get_supported_formats()
-        for name in sorted(supported_formats):
+        for name in sorted(supported_formats := archive_tools.get_supported_formats()):
             mime_types, extensions = supported_formats[name]
             patterns = [f'*{ext}' for ext in extensions]
             self.add_filter(f'{name} archives', mime_types, patterns)
@@ -128,8 +123,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
         ffilter = Gtk.FileFilter()
         ffilter.set_name('All images')
         self.filechooser.add_filter(ffilter)
-        supported_formats = image_tools.get_supported_formats()
-        for name in sorted(supported_formats):
+        for name in sorted(supported_formats := image_tools.get_supported_formats()):
             mime_types, extensions = supported_formats[name]
             patterns = [f'*{ext}' for ext in extensions]
             self.add_filter(f'{name} images', mime_types, patterns)
@@ -205,9 +199,8 @@ class _BaseFileChooserDialog(Gtk.Dialog):
                         buttons=Gtk.ButtonsType.OK_CANCEL)
                 overwrite_dialog.set_text(f'A file named "{os.path.basename(first_path)}" '
                                           'already exists. Do you want to replace it?')
-                response = overwrite_dialog.run()
 
-                if response != Gtk.ResponseType.OK:
+                if overwrite_dialog.run() != Gtk.ResponseType.OK:
                     self.stop_emission_by_name('response')
                     return
 
@@ -220,9 +213,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
         self._destroyed = True
 
     def _update_preview(self, *args):
-        path = self.filechooser.get_preview_filename()
-
-        if path and os.path.isfile(path):
+        if (path := self.filechooser.get_preview_filename()) and os.path.isfile(path):
             thumbnailer = thumbnail_tools.Thumbnailer(size=(128, 128), archive_support=True)
             thumbnailer.thumbnail_finished += self._preview_thumbnail_finished
             thumbnailer.thumbnail(path, mt=True)
@@ -236,8 +227,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
         if self._destroyed:
             return
 
-        current_path = self.filechooser.get_preview_filename()
-        if current_path and current_path == filepath:
+        if (current_path := self.filechooser.get_preview_filename()) and current_path == filepath:
             if pixbuf is None:
                 self._preview_image.clear()
                 self._namelabel.set_text('')

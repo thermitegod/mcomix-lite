@@ -155,16 +155,14 @@ class Box(object):
         -1 (towards smaller values in this dimension when reading).
         @return An integer as specified above"""
         for i in range(len(orientation)):
-            o = orientation[i]
-            if o == 0:
+            if (o := orientation[i]) == 0:
                 continue
             box1edge = box1.get_position()[i]
             box2edge = box2.get_position()[i]
             if o < 0:
                 box1edge = box1.get_size()[i] - box1edge
                 box2edge = box2.get_size()[i] - box2edge
-            d = box1edge - box2edge
-            if d != 0:
+            if (d := box1edge - box2edge) != 0:
                 return d
         return 0
 
@@ -206,8 +204,7 @@ class Box(object):
         if len(boxes) == 0:
             return []
         center_box = boxes[fix]
-        cs = center_box.get_size()[axis]
-        if cs % 2 != 0:
+        if (cs := center_box.get_size()[axis]) % 2 != 0:
             cs += 1
         cp = center_box.get_position()[axis]
         result = []

@@ -127,8 +127,7 @@ def get_archive_handler(path, type=None):
     """Returns a fitting extractor handler for the archive passed in <path>
     (with optional mime type <type>. Returns None if no matching extractor was found"""
     if type is None:
-        type = archive_mime_type(path)
-        if type is None:
+        if (type := archive_mime_type(path)) is None:
             return None
 
     handler = _get_handler(type)
@@ -141,8 +140,7 @@ def get_archive_handler(path, type=None):
 def get_recursive_archive_handler(path, type=None, **kwargs):
     """Same as <get_archive_handler> but the handler will transparently handle
     archives within archives"""
-    archive = get_archive_handler(path, type=type)
-    if archive is None:
+    if (archive := get_archive_handler(path, type=type)) is None:
         return None
     # XXX: Deferred import to avoid circular dependency
     from mcomix.archive import archive_recursive

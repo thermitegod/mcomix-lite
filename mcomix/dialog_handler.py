@@ -14,11 +14,9 @@ def open_dialog(action, data):
     """Create and display the given dialog"""
     window, name_of_dialog = data
 
-    _dialog = dialog_windows[name_of_dialog]
-
     # if the dialog window is not created then create the window
     # and connect the _close_dialog action to the dialog window
-    if _dialog[0] is None:
+    if (_dialog := dialog_windows[name_of_dialog])[0] is None:
         dialog_windows[name_of_dialog][0] = _dialog[1](window)
         dialog_windows[name_of_dialog][0].connect('response', _close_dialog, name_of_dialog)
     else:
@@ -27,8 +25,7 @@ def open_dialog(action, data):
 
 
 def _close_dialog(action, exit_response, name_of_dialog):
-    _dialog = dialog_windows[name_of_dialog]
     # if the dialog window exists then destroy it
-    if _dialog[0] is not None:
+    if (_dialog := dialog_windows[name_of_dialog])[0] is not None:
         _dialog[0].destroy()
         _dialog[0] = None

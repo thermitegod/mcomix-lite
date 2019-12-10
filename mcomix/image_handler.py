@@ -181,8 +181,7 @@ class ImageHandler(object):
         """Returns True if <page> is available and calls to get_pixbufs
         would not block. If <page> is None, the current page(s) are assumed"""
         if page is None:
-            current_page = self.get_current_page()
-            if not current_page:
+            if not (current_page := self.get_current_page()):
                 # Current 'book' has no page.
                 return False
             index_list = [current_page - 1]
@@ -305,8 +304,7 @@ class ImageHandler(object):
         is None, return the size of the current page"""
         self._wait_on_page(page)
 
-        page_path = self.get_path_to_page(page)
-        if page_path is None:
+        if (page_path := self.get_path_to_page(page)) is None:
             return 0, 0
 
         format, width, height = image_tools.get_image_info(page_path)
@@ -317,8 +315,7 @@ class ImageHandler(object):
         <page> is None, return the mime type name of the current page"""
         self._wait_on_page(page)
 
-        page_path = self.get_path_to_page(page)
-        if page_path is None:
+        if (page_path := self.get_path_to_page(page)) is None:
             return None
 
         format, width, height = image_tools.get_image_info(page_path)
@@ -334,9 +331,8 @@ class ImageHandler(object):
         if not self._wait_on_page(page, check_only=nowait):
             # Page is not available!
             return None
-        path = self.get_path_to_page(page)
 
-        if path is None:
+        if (path := self.get_path_to_page(page)) is None:
             return None
 
         try:
@@ -370,8 +366,7 @@ class ImageHandler(object):
         """Ask for pages around <page> to be given priority extraction"""
         total_pages = range(self.get_number_of_pages())
 
-        num_pages = self._cache_pages
-        if num_pages < 0:
+        if (num_pages := self._cache_pages) < 0:
             # default to 10 pages
             num_pages = min(10, len(total_pages))
 

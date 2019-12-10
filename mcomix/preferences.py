@@ -93,17 +93,16 @@ prefs = {
 def read_preferences_file():
     saved_prefs = {}
 
-    if os.path.isfile(constants.PREFERENCE_PATH):
+    if os.path.isfile(pref := constants.PREFERENCE_PATH):
         try:
-            with open(constants.PREFERENCE_PATH, 'r') as config_file:
+            with open(pref, 'r') as config_file:
                 saved_prefs.update(json.load(config_file))
         except:
-            corrupt_name = f'{constants.PREFERENCE_PATH}.broken'
-            log.error(f'Corrupt preferences file, moving to "{corrupt_name}".')
-            if os.path.isfile(corrupt_name):
+            if os.path.isfile(corrupt_name := f'{pref}.broken'):
                 os.unlink(corrupt_name)
 
-            os.rename(constants.PREFERENCE_PATH, corrupt_name)
+            log.error(f'Corrupt preferences file, moving to "{corrupt_name}".')
+            os.rename(pref, corrupt_name)
 
     prefs.update(filter(lambda i: i[0] in prefs, saved_prefs.items()))
 

@@ -50,11 +50,9 @@ class ZipArchive(archive_base.BaseArchive):
         yield from self._contents_info.keys()
 
     def extract(self, filename, destination_dir):
-        destination_path = os.path.join(destination_dir, filename)
-        info = self._contents_info[filename]
         with self._lock:
-            data = self._zip.read(info)
-        with self._create_file(destination_path) as new:
+            data = self._zip.read(info := self._contents_info[filename])
+        with self._create_file(destination_path := os.path.join(destination_dir, filename)) as new:
             filelen = new.write(data)
 
         if filelen != info.file_size:
