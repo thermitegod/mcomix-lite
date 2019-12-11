@@ -732,7 +732,9 @@ class MainWindow(Gtk.Window):
         """Returns True if the current images do not fit into the viewport"""
         if self.layout is None:
             return False
-        return not all(tools.smaller_or_equal(self.layout.get_union_box().get_size(), self.get_visible_area_size()))
+        else:
+            return not all(tools.smaller_or_equal(self.layout.get_union_box().get_size(),
+                                                  self.get_visible_area_size()))
 
     def scroll_with_flipping(self, x, y):
         """Returns true if able to scroll without flipping to

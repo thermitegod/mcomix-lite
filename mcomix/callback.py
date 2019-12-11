@@ -58,7 +58,7 @@ class CallbackList(object):
         """Helper function to execute code in the main thread.
         This will be called by GLib.idle_add, with <params> being a tuple
         of (args, kwargs)"""
-        result = self(*params[0], **params[1])
+        self(*params[0], **params[1])
         # Removes this function from the idle queue
         return 0
 

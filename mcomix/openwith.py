@@ -94,7 +94,8 @@ class OpenWithCommand(object):
 
         if exe := shutil.which(args[0]):
             return exe
-        return None
+        else:
+            return None
 
     def is_valid_workdir(self, window, allow_empty=False):
         """Check if the working directory is valid"""
@@ -106,8 +107,8 @@ class OpenWithCommand(object):
 
         if os.path.isdir(dir := args[0]) and os.access(dir, os.X_OK):
             return True
-
-        return False
+        else:
+            return False
 
     def parse(self, window, text='', check_restrictions=True):
         """Parses the command string and replaces special characters

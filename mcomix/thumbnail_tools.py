@@ -250,5 +250,5 @@ class Thumbnailer(object):
 
         if images:
             return images[0]
-
-        return None
+        else:
+            return None

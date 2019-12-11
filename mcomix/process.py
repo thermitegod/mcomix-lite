@@ -32,4 +32,5 @@ def find_executable(executable):
     """Find executable in path"""
     if exe := shutil.which(executable):
         return exe
-    return None
+    else:
+        return None

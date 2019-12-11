@@ -289,15 +289,15 @@ class ImageHandler(object):
         if double:
             second = get_fsize(page + 1)
             return (second, first) if manga else (first, second)
-
-        return first
+        else:
+            return first
 
     def get_pretty_current_filename(self):
         """Return a string with the name of the currently viewed file that is suitable for printing"""
         if self._window.filehandler.archive_type is not None:
             return os.path.basename(self._base_path)
-
-        return os.path.abspath(self.get_current_path())
+        else:
+            return os.path.abspath(self.get_current_path())
 
     def get_size(self, page=None):
         """Return a tuple (width, height) with the size of <page>. If <page>

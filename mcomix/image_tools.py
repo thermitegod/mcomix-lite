@@ -186,8 +186,7 @@ def pixbuf_to_pil(pixbuf):
     stride = pixbuf.get_rowstride()
     pixels = pixbuf.get_pixels()
     mode = 'RGBA' if pixbuf.get_has_alpha() else 'RGB'
-    im = Image.frombuffer(mode, dimensions, pixels, 'raw', mode, stride, 1)
-    return im
+    return Image.frombuffer(mode, dimensions, pixels, 'raw', mode, stride, 1)
 
 
 def is_animation(pixbuf):
@@ -200,7 +199,8 @@ def disable_transform(pixbuf):
             return True
         if not prefs['animation transform']:
             return True
-    return False
+    else:
+        return False
 
 
 def static_image(pixbuf):
@@ -345,7 +345,8 @@ def get_implied_rotation(pixbuf):
         return 90
     elif orientation == '8':
         return 270
-    return 0
+    else:
+        return 0
 
 
 def convert_rgb16list_to_rgba8int(c):

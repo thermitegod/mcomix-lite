@@ -306,7 +306,8 @@ class FileHandler(object):
 
         if filename := self._window.imagehandler.get_current_path():
             return os.path.dirname(filename)
-        return None
+        else:
+            return None
 
     def get_base_filename(self):
         """Return the filename of the current base (archive filename or directory name)"""
@@ -331,8 +332,8 @@ class FileHandler(object):
                     self._close()
                     self.open_file(path, keep_fileprovider=True)
                     return True
-
-        return False
+        else:
+            return False
 
     def _open_previous_archive(self, *args):
         """Open the archive that comes directly before the currently loaded
@@ -349,8 +350,8 @@ class FileHandler(object):
                     self._close()
                     self.open_file(path, -1, keep_fileprovider=True)
                     return True
-
-        return False
+        else:
+            return False
 
     def open_next_directory(self, *args):
         """Opens the next sibling directory of the current file, as specified by

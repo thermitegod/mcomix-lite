@@ -41,7 +41,8 @@ def bin_search(lst, value):
 def number_of_digits(n):
     if 0 == n:
         return 1
-    return int(math.log10(abs(n))) + 1
+    else:
+        return int(math.log10(abs(n))) + 1
 
 
 def format_byte_size(n):

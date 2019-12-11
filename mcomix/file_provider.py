@@ -26,7 +26,6 @@ def get_file_provider(filelist):
                 return None
         else:
             return PreDefinedFileProvider(filelist)
-
     else:
         return None
 

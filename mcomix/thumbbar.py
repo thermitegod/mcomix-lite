@@ -210,7 +210,8 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
             # more than likely have many pages open and are simply trying
             # to give mcomix focus again
             return True
-        return False
+        else:
+            return False
 
     def _drag_data_get(self, treeview, context, selection, *args):
         """Put the URI of the selected file into the SelectionData, so that

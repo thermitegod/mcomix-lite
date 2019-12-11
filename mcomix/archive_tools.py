@@ -107,14 +107,11 @@ def archive_mime_type(path):
 
             if magic.startswith(b'Rar!\x1a\x07'):
                 return constants.RAR
-
-            if magic[0:6] == b'7z\xbc\xaf\x27\x1c':
+            elif magic[0:6] == b'7z\xbc\xaf\x27\x1c':
                 return constants.SEVENZIP
-
-            if magic[2:].startswith((b'-lh', b'-lz')):
+            elif magic[2:].startswith((b'-lh', b'-lz')):
                 return constants.LHA
-
-            if magic[0:4] == b'%PDF':
+            elif magic[0:4] == b'%PDF':
                 return constants.PDF
 
     except Exception:
