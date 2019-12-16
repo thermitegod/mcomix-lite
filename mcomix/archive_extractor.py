@@ -135,18 +135,20 @@ class Extractor(object):
     def close(self):
         """Close any open file objects, need only be called manually if the
         extract() method isn't called"""
+        def cleanup_background(path):
+            event.wait(5)
+            if os.path.exists(path):
+                shutil.rmtree(path)
+                log.error(f'fallback remove used on: {path}')
+
         tmp_cache = self._dst
         self.stop()
 
         if os.path.exists(tmp_cache):
             self._archive.close()
-            try:
-                if os.path.exists(tmp_cache):
-                    shutil.rmtree(tmp_cache)
-                    log.error('BUG: fallback remove used')
-            except Exception:
-                log.error('BUG: fallback cleanup failed, this needs to be fixed')
-                pass
+            event = threading.Event()
+            cleanup_thread = threading.Thread(target=cleanup_background, args=[tmp_cache])
+            cleanup_thread.start()
 
     def _extraction_finished(self, name):
         if self._threadpool.closed:
