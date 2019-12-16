@@ -9,7 +9,7 @@ from mcomix.preferences import prefs
 
 
 class Statusbar(Gtk.EventBox):
-    SPACING = 5
+    SPACING = prefs['statusbar spacing']
 
     def __init__(self):
         super(Statusbar, self).__init__()

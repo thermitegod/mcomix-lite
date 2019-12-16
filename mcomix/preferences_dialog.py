@@ -244,6 +244,14 @@ class _PreferencesDialog(Gtk.Dialog):
         page.add_row(Gtk.Label(label='Scaling mode'),
                      self._create_scaling_quality_combobox())
 
+        page.new_section('Statusbar')
+
+        page.add_row(Gtk.Label(label='Statusbar spacing:'),
+                     self._create_pref_spinner(
+                             'statusbar spacing',
+                             1, 1, 20, 1, 10, 0,
+                             None))
+
         return page
 
     def _init_animation_tab(self):
@@ -700,6 +708,9 @@ class _PreferencesDialog(Gtk.Dialog):
             prefs[preference] = int(value)
             self._window.thumbnailsidebar.resize()
             self._window.draw_image()
+
+        elif preference == 'statusbar spacing':
+            prefs[preference] = int(value)
 
         elif preference == 'max pages to cache':
             prefs[preference] = int(value)
