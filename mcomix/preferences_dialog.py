@@ -298,6 +298,11 @@ class _PreferencesDialog(Gtk.Dialog):
                 'check image mimetype',
                 'Detect image file(s) by mimetypes.'))
 
+        page.new_section('Moving files')
+
+        page.add_row(Gtk.Label(label='Move file location (must be relative)'),
+                     self._create_pref_path_chooser('move file', folder=True))
+
         page.new_section('Extraction and cache')
 
         page.add_row(Gtk.Label(label='Maximum number of concurrent extraction threads:'),
@@ -312,7 +317,7 @@ class _PreferencesDialog(Gtk.Dialog):
                 'Use freedesktop.org specification to store thumbnails.'))
 
         page.add_row(Gtk.Label(label='Temporary directory (restart required)'),
-                     self._create_pref_path_chooser('temporary directory', folder=True, default=None))
+                     self._create_pref_path_chooser('temporary directory', folder=True))
 
         page.add_row(Gtk.Label(label='Maximum number of pages to store in the cache:'),
                      self._create_pref_spinner(

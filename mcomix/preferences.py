@@ -7,7 +7,6 @@ from mcomix import constants, log
 
 # All preferences are stored here.
 prefs = {
-    'move file': constants.MOVE_FILE,
     'number of key presses before page turn': 3,
     'auto open next archive': True,
     'auto open next directory': False,
@@ -82,6 +81,7 @@ prefs = {
     'animation background': True,
     'animation transform': True,
     'temporary directory': '/tmp',
+    'move file': 'keep',
     'osd max font size': 16,  # hard limited from 8 to 60
     'osd color': [1, 1, 1, 1],
     'osd bg color': [0, 0, 0, 1],
