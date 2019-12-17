@@ -301,7 +301,7 @@ class _PreferencesDialog(Gtk.Dialog):
         page.new_section('Moving files')
 
         page.add_row(Gtk.Label(label='Move file location (must be relative)'),
-                     self._create_pref_path_chooser('move file', folder=True))
+                     self._create_pref_path_chooser('move file', folder=True, default='keep'))
 
         page.new_section('Extraction and cache')
 
@@ -317,7 +317,7 @@ class _PreferencesDialog(Gtk.Dialog):
                 'Use freedesktop.org specification to store thumbnails.'))
 
         page.add_row(Gtk.Label(label='Temporary directory (restart required)'),
-                     self._create_pref_path_chooser('temporary directory', folder=True))
+                     self._create_pref_path_chooser('temporary directory', folder=True, default='/tmp'))
 
         page.add_row(Gtk.Label(label='Maximum number of pages to store in the cache:'),
                      self._create_pref_spinner(
