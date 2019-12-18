@@ -83,7 +83,7 @@ class __BookmarksStore(object):
         # If the same file was already bookmarked, ask to replace
         # the existing bookmarks before deleting them.
         if len(same_file_bookmarks) > 0:
-            response = self.show_replace_bookmark_dialog(same_file_bookmarks, page)
+            response = self.show_replace_bookmark_dialog(page)
 
             # Delete old bookmarks
             if response == Gtk.ResponseType.YES:
@@ -158,7 +158,7 @@ class __BookmarksStore(object):
 
         self._bookmarks_mtime = time.time()
 
-    def show_replace_bookmark_dialog(self, old_bookmarks, new_page):
+    def show_replace_bookmark_dialog(self, new_page):
         """Present a confirmation dialog to replace old bookmarks.
         @return RESPONSE_YES to create replace bookmarks,
         RESPONSE_NO to create a new bookmark, RESPONSE_CANCEL to abort creating
