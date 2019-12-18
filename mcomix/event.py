@@ -19,11 +19,6 @@ class EventHandler(object):
         self._pressed_pointer_pos_x = 0
         self._pressed_pointer_pos_y = 0
 
-        #: For scrolling "off the page".
-        self._extra_scroll_events = 0
-        #: If True, increment _extra_scroll_events before switchting pages
-        self._scroll_protection = False
-
     def resize_event(self, widget, event):
         """Handle events from resizing and moving the main window"""
         if (size := (event.width, event.height)) != self._window.previous_size:
@@ -288,9 +283,6 @@ class EventHandler(object):
 
     def key_press_event(self, widget, event, *args):
         """Handle key press events on the main window"""
-        # This is set on demand by callback functions
-        self._scroll_protection = False
-
         # Dispatch keyboard input handling
         manager = keybindings.keybinding_manager(self._window)
         # Some keys require modifiers that are irrelevant to the hotkey. Find out and ignore them.
@@ -348,6 +340,9 @@ class EventHandler(object):
     def scroll_wheel_event(self, widget, event, *args):
         """Handle scroll wheel events on the main layout area. The scroll
         wheel flips pages in best fit mode and scrolls the scrollbars otherwise"""
+        if not prefs['flip with wheel']:
+            return
+
         if event.get_state() & Gdk.ModifierType.BUTTON2_MASK:
             return
 
@@ -364,8 +359,6 @@ class EventHandler(object):
                     direction = Gdk.ScrollDirection.LEFT
                 elif delta_x > 0:
                     direction = Gdk.ScrollDirection.RIGHT
-
-        self._scroll_protection = True
 
         if direction == Gdk.ScrollDirection.UP:
             if event.get_state() & Gdk.ModifierType.CONTROL_MASK:
@@ -384,16 +377,16 @@ class EventHandler(object):
                 self._scroll_with_flipping(0, prefs['number of pixels to scroll per mouse wheel event'])
 
         elif direction == Gdk.ScrollDirection.RIGHT:
-            if not self._window.is_manga_mode:
-                self._window.flip_page(+1)
+            if self._window.is_manga_mode:
+                self._flip_page(-1)
             else:
-                self._change_page('prev')
+                self._flip_page(1)
 
         elif direction == Gdk.ScrollDirection.LEFT:
-            if not self._window.is_manga_mode:
-                self._change_page('prev')
+            if self._window.is_manga_mode:
+                self._flip_page(1)
             else:
-                self._window.flip_page(+1)
+                self._flip_page(-1)
 
     def mouse_press_event(self, widget, event):
         """Handle mouse click events on the main layout area"""
@@ -433,7 +426,9 @@ class EventHandler(object):
 
                 # over flip with shift pressed
                 if event.get_state() & Gdk.ModifierType.SHIFT_MASK:
-                    distance *= 10
+                    distance = 10
+                else:
+                    distance = 1
 
                 self._flip_page(distance * direction)
 
@@ -453,29 +448,10 @@ class EventHandler(object):
         """Handle mouse pointer movement events"""
         if 'GDK_BUTTON1_MASK' in event.get_state().value_names:
             self._window.cursor_handler.set_cursor_type(constants.GRAB_CURSOR)
-            scrolled = self._window.scroll(self._last_pointer_pos_x - event.x_root,
-                                           self._last_pointer_pos_y - event.y_root)
-
-            # Cursor wrapping stuff. See:
-            # https://sourceforge.net/tracker/?func=detail&aid=2988441&group_id=146377&atid=764987
-            if prefs['wrap mouse scroll'] and scrolled:
-                # FIXME: Problems with multi-screen setups
-                screen = self._window.get_screen()
-                warp_x0 = warp_y0 = 0
-                warp_x1 = screen.get_width()
-                warp_y1 = screen.get_height()
-
-                new_x = _valwarp(event.x_root, warp_x1, minval=warp_x0)
-                new_y = _valwarp(event.y_root, warp_y1, minval=warp_y0)
-                if (new_x != event.x_root) or (new_y != event.y_root):
-                    display = screen.get_display()
-                    display.warp_pointer(screen, int(new_x), int(new_y))
-
-                self._last_pointer_pos_x = new_x
-                self._last_pointer_pos_y = new_y
-            else:
-                self._last_pointer_pos_x = event.x_root
-                self._last_pointer_pos_y = event.y_root
+            self._window.scroll(self._last_pointer_pos_x - event.x_root,
+                                self._last_pointer_pos_y - event.y_root)
+            self._last_pointer_pos_x = event.x_root
+            self._last_pointer_pos_y = event.y_root
             self._drag_timer = event.time
 
     def drag_n_drop_event(self, widget, context, x, y, selection, drag_id, eventtime):
@@ -509,18 +485,13 @@ class EventHandler(object):
         """Handle scrolling with the scroll wheel or the arrow keys, for which
         the pages might be flipped depending on the preferences.  Returns True
         if able to scroll without flipping and False if a new page was flipped to"""
-        self._scroll_protection = True
-
         if self._window.scroll(x, y):
-            self._extra_scroll_events = 0
             return True
 
         if y > 0 or (self._window.is_manga_mode and x < 0) or (not self._window.is_manga_mode and x > 0):
-            page_flipped = self._change_page('next')
+            self._flip_page(1)
         else:
-            page_flipped = self._change_page('prev')
-
-        return not page_flipped
+            self._flip_page(-1)
 
     def _scroll_down(self):
         """Scrolls down"""
@@ -559,56 +530,16 @@ class EventHandler(object):
 
         # Scroll to the new position
         if (new_index := self._window.layout.scroll_smartly(max_scroll, backwards, swap_axes)) == -1:
-            self._change_page('prev')
+            self._flip_page(-1)
         elif new_index == (2 if self._window.displayed_double() else 1):  # XXX limited to at most 2 pages
-            self._change_page('next')
+            self._flip_page(1)
         else:
             # Update actual viewport
             self._window.update_viewport_position()
 
-    def _change_page(self, direction):
-        """Advances to the next page. If L{_scroll_protection} is enabled,
-        this method will only advance if enough scrolling attempts have been made.
-        or
-        Goes back to the previous page. If L{_scroll_protection} is enabled,
-        this method will only go back if enough scrolling attempts have been made.
-        @return: True when the page was flipped."""
-        if not prefs['flip with wheel']:
-            self._extra_scroll_events = 0
-            return False
-
-        if direction == 'next':
-            if not self._scroll_protection \
-                    or self._extra_scroll_events >= prefs['number of key presses before page turn'] - 1 \
-                    or not self._window.is_scrollable():
-                self._flip_page(1)
-                return True
-
-            elif self._scroll_protection:
-                self._extra_scroll_events = max(1, self._extra_scroll_events + 1)
-                return False
-            else:
-                # This path should not be reached.
-                assert False, 'Programmer is moron, incorrect assertion.'
-
-        elif direction == 'prev':
-            if not self._scroll_protection \
-                    or self._extra_scroll_events <= -prefs['number of key presses before page turn'] + 1 \
-                    or not self._window.is_scrollable():
-                self._flip_page(-1)
-                return True
-
-            elif self._scroll_protection:
-                self._extra_scroll_events = min(-1, self._extra_scroll_events - 1)
-                return False
-            else:
-                # This path should not be reached.
-                assert False, 'Programmer is moron, incorrect assertion.'
-
     def _flip_page(self, number_of_pages, single_step=False):
         """Switches a number of pages forwards/backwards. If C{single_step} is True,
         the page count will be advanced by only one page even in double page mode"""
-        self._extra_scroll_events = 0
         self._window.flip_page(number_of_pages, single_step=single_step)
 
     def _left_right_page_progress(self, number_of_pages=1):
@@ -624,16 +555,3 @@ class EventHandler(object):
         commands = [cmd for cmd in manager.get_commands() if not cmd.is_separator()]
         if len(commands) > cmdindex:
             commands[cmdindex].execute(self._window)
-
-
-def _valwarp(cur, maxval, minval=0, tolerance=3, extra=2):
-    """Helper function for warping the cursor around the screen when it
-      comes within `tolerance` to a border (and `extra` more to avoid
-      jumping back and forth)"""
-    if cur < minval + tolerance:
-        overmove = minval + tolerance - cur
-        return maxval - tolerance - overmove - extra
-    if (maxval - cur) < tolerance:
-        overmove = tolerance - (maxval - cur)
-        return minval + tolerance + overmove + extra
-    return cur

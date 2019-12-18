@@ -153,9 +153,9 @@ class _PreferencesDialog(Gtk.Dialog):
                 'The space key and mouse wheel will scroll up, down, and sideways to follow the flow of a comic book'))
 
         page.add_row(self._create_pref_check_button(
-                'Flip pages when scrolling off the edges of the page',
+                'Flip pages with mouse wheel',
                 'flip with wheel',
-                'It will takes n consecutive "steps" for the page to be flipped.'))
+                None))
 
         page.add_row(self._create_pref_check_button(
                 'Automatically open the next archive',
@@ -723,7 +723,6 @@ class _PreferencesDialog(Gtk.Dialog):
 
         elif preference == 'number of key presses before page turn':
             prefs[preference] = int(value)
-            self._window._event_handler._extra_scroll_events = 0
 
         elif preference == 'fit to size px':
             prefs[preference] = int(value)

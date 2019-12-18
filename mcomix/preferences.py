@@ -71,7 +71,6 @@ prefs = {
     'statusbar fields': constants.STATUS_PAGE | constants.STATUS_RESOLUTION | constants.STATUS_PATH | constants.STATUS_FILENAME | constants.STATUS_FILESIZE,
     'max thumbnail threads': constants.CPU_COUNT,
     'max extract threads': 16,
-    'wrap mouse scroll': False,
     'scaling quality': 2,  # GdkPixbuf.InterpType.BILINEAR
     'escape quits': True,
     'fit to size mode': constants.ZOOM_MODE_HEIGHT,
