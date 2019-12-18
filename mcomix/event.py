@@ -520,8 +520,8 @@ class EventHandler(object):
     def _smart_scrolling(self, small_step, backwards):
         # Collect data from the environment
         viewport_size = self._window.get_visible_area_size()
-        distance = prefs['smart scroll percentage']
         if small_step is None:
+            distance = prefs['smart scroll percentage']
             max_scroll = [distance * viewport_size[0], distance * viewport_size[1]]  # 2D only
         else:
             max_scroll = [small_step] * 2  # 2D only
