@@ -207,7 +207,7 @@ class MainWindow(Gtk.Window):
 
         self.connect('focus-in-event', self.gained_focus)
         self.connect('focus-out-event', self.lost_focus)
-        self.connect('delete_event', self.close_program)
+        self.connect('delete_event', self.terminate_program)
         self.connect('key_press_event', self._event_handler.key_press_event)
         self.connect('key_release_event', self._event_handler.key_release_event)
         self.connect('configure_event', self._event_handler.resize_event)
@@ -1015,13 +1015,11 @@ class MainWindow(Gtk.Window):
         self.move(prefs['window x'], prefs['window y'])
         return True
 
-    def close_program(self, *args):
+    def terminate_program(self, *args):
+        """Run clean-up tasks and exit the program"""
         if not self.is_fullscreen:
             self.save_window_geometry()
-        self.terminate_program()
 
-    def terminate_program(self):
-        """Run clean-up tasks and exit the program"""
         self.hide()
 
         if Gtk.main_level() > 0:

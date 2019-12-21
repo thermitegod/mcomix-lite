@@ -205,7 +205,7 @@ class EventHandler(object):
                          self._window.filehandler.close_file)
 
         manager.register('quit',
-                         self._window.close_program)
+                         self._window.terminate_program)
 
         manager.register('delete',
                          self._window.delete)
@@ -333,7 +333,7 @@ class EventHandler(object):
     def escape_event(self):
         """Determines the behavior of the ESC key"""
         if prefs['escape quits']:
-            self._window.close_program()
+            self._window.terminate_program()
         else:
             self._window.actiongroup.get_action('fullscreen').set_active(False)
 

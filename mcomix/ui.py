@@ -59,7 +59,7 @@ class MainUI(Gtk.UIManager):
             ('close', Gtk.STOCK_CLOSE, '_Close',
              None, 'Closes all opened files.', _action_lambda(window.filehandler.close_file)),
             ('quit', Gtk.STOCK_QUIT, '_Quit',
-             None, None, window.close_program),
+             None, None, window.terminate_program),
             ('rotate_90', 'mcomix-rotate-90', '_Rotate 90 degrees CW',
              None, None, window.rotate_90),
             ('rotate_180', 'mcomix-rotate-180', 'Rotate 180 de_grees',
