@@ -341,13 +341,11 @@ class MainWindow(Gtk.Window):
                 orientation.reverse()
                 for i in range(pixbuf_count):
                     size_list[i].reverse()
-            if rotation in (180, 270):
+            elif rotation in (180, 270):
                 orientation = tools.vector_opposite(orientation)
             for i in range(pixbuf_count):
                 rotation_list[i] = (rotation_list[i] + rotation) % 360
-            if prefs['vertical flip'] and rotation in (90, 270):
-                orientation = tools.vector_opposite(orientation)
-            if prefs['horizontal flip'] and rotation in (0, 180):
+            if prefs['vertical flip'] or prefs['horizontal flip']:
                 orientation = tools.vector_opposite(orientation)
 
             viewport_size = ()  # dummy
@@ -420,13 +418,13 @@ class MainWindow(Gtk.Window):
                 self.layout.set_orientation(constants.WESTERN_ORIENTATION)
 
             if scroll_to is not None:
-                destination = (scroll_to,) * 2
                 if constants.SCROLL_TO_START == scroll_to:
                     index = constants.FIRST_INDEX
                 elif constants.SCROLL_TO_END == scroll_to:
                     index = constants.LAST_INDEX
                 else:
                     index = None
+                destination = (scroll_to,) * 2
                 self.scroll_to_predefined(destination, index)
 
             self._main_layout.get_bin_window().thaw_updates()
@@ -807,8 +805,8 @@ class MainWindow(Gtk.Window):
     def _clear_main_area(self):
         for i in self.images:
             i.hide()
-        for i in self.images:
             i.clear()
+
         self._show_scrollbars([False] * len(self._scroll))
         self.layout = _dummy_layout()
         self._main_layout.set_size(*self.layout.get_union_box().get_size())

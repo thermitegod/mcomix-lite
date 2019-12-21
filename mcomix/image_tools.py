@@ -207,7 +207,8 @@ def static_image(pixbuf):
     """Returns a non-animated version of the specified pixbuf"""
     if is_animation(pixbuf):
         return pixbuf.get_static_image()
-    return pixbuf
+    else:
+        return pixbuf
 
 
 def set_from_pixbuf(image, pixbuf):
@@ -255,7 +256,8 @@ def load_pixbuf(path):
         if pixbuf.is_static_image():
             return pixbuf.get_static_image()
         return pixbuf
-    return GdkPixbuf.Pixbuf.new_from_file(path)
+    else:
+        return GdkPixbuf.Pixbuf.new_from_file(path)
 
 
 def load_pixbuf_size(path, width, height):

@@ -131,13 +131,11 @@ class __BookmarksStore(object):
         since it was last read"""
         if os.path.isfile(path := constants.BOOKMARK_PATH):
             try:
-                mtime = os.stat(path).st_mtime
+                if os.stat(path).st_mtime > self._bookmarks_mtime:
+                    return True
+                else:
+                    return False
             except IOError:
-                mtime = 0
-
-            if mtime > self._bookmarks_mtime:
-                return True
-            else:
                 return False
         else:
             return True
