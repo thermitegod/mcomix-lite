@@ -30,7 +30,9 @@ def call_thread(args):
 
 def find_executable(executable):
     """Find executable in path"""
-    if exe := shutil.which(executable):
-        return exe
-    else:
-        return None
+    exe = None
+    try:
+        exe = shutil.which(executable)
+    except NameError:
+        pass
+    return exe
