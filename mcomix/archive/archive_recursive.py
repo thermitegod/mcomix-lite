@@ -5,7 +5,9 @@
 import os
 import tempfile
 
-from mcomix import archive_tools, log
+from loguru import logger
+
+from mcomix import archive_tools
 from mcomix.archive import archive_base
 from mcomix.preferences import prefs
 
@@ -58,7 +60,7 @@ class RecursiveArchive(archive_base.BaseArchive):
             # And open it and list its contents.
             sub_archive = archive_tools.get_archive_handler(sub_archive_path)
             if sub_archive is None:
-                log.warning(f'Non-supported archive format: {os.path.basename(sub_archive_path)}')
+                logger.warning(f'Non-supported archive format: {os.path.basename(sub_archive_path)}')
                 continue
             sub_tempdir = tempfile.TemporaryDirectory(
                     prefix=f'sub_archive.{len(self._archive_list):04}.',
@@ -103,7 +105,7 @@ class RecursiveArchive(archive_base.BaseArchive):
         destination_dir = self.destdir
         if root is not None:
             destination_dir = os.path.join(destination_dir, root)
-        log.debug(f'extracting from {archive.archive} to {destination_dir}: {filename}')
+        logger.debug(f'extracting from {archive.archive} to {destination_dir}: {filename}')
         return archive.extract(name, destination_dir)
 
     def iter_extract(self, entries, destination_dir):
@@ -125,7 +127,7 @@ class RecursiveArchive(archive_base.BaseArchive):
             archive_destination_dir = destination_dir
             if root is not None:
                 archive_destination_dir = os.path.join(destination_dir, root)
-            log.debug('extracting from '
+            logger.debug('extracting from '
                       f'{archive.archive} to {archive_destination_dir}: {" ".join(archive_wanted.keys())}')
             for f in archive.iter_extract(archive_wanted.keys(), archive_destination_dir):
                 yield archive_wanted[f]

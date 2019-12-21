@@ -29,7 +29,7 @@ class Interval:
         self._calling = True
         try:
             self.function(*self.args, **self.kwargs)
-        except Exception as e:
+        except Exception:
             pass
         self._calling = False
         self.reset()
@@ -138,13 +138,13 @@ class ThreadPool:
         with lock:
             try:
                 return func(*args, **kwargs)
-            except:
+            except Exception:
                 pass
 
     def _caller(self, func, args, kwargs, callback, error_callback, exc_raise):
         try:
             result = func(*args, **kwargs)
-        except:
+        except Exception:
             etype, value, tb = sys.exc_info()
             self._trycall(error_callback, args=(self.name, etype, value, tb),
                           lock=self._errcblock)

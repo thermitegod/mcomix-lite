@@ -7,21 +7,19 @@ import os
 import signal
 import sys
 
-# These modules must not depend on GTK, PIL,
-# or any other optional libraries.
-from mcomix import constants, log, preferences
+from loguru import logger
+
+from mcomix import constants, preferences
 
 
 def run():
     """Run the program"""
     parser = argparse.ArgumentParser(usage='%%(prog)s %s' % '[OPTION...] [PATH]',
-                                     description='View images and comic book archives.')
+                                     description='View images and manga archives.')
     parser.add_argument('path', type=str, action='store', nargs='*', default='',
                         help=argparse.SUPPRESS)
-
     parser.add_argument('-v', '--version', dest='version', action='store_true',
                         help='Show the version number and exit.')
-
     viewmodes = parser.add_argument_group('View modes')
     viewmodes.add_argument('-f', '--fullscreen', dest='fullscreen', action='store_true',
                            help='Start the application in fullscreen mode.')
@@ -29,7 +27,6 @@ def run():
                            help='Start the application in manga mode.')
     viewmodes.add_argument('-d', '--double-page', dest='doublepage', action='store_true',
                            help='Start the application in double page mode.')
-
     fitmodes = parser.add_argument_group('Zoom modes')
     fitmodes.add_argument('-b', '--zoom-best', dest='zoommode', action='store_const',
                           const=constants.ZOOM_MODE_BEST,
@@ -40,31 +37,27 @@ def run():
     fitmodes.add_argument('-zh', '--zoom-height', dest='zoommode', action='store_const',
                           const=constants.ZOOM_MODE_HEIGHT,
                           help='Start the application with zoom set to fit height.')
-
     debugopts = parser.add_argument_group('Debug options')
-    debugopts.add_argument('-W', dest='loglevel', action='store',
-                           choices=log.levels.keys(), default='warn',
-                           metavar=f'[ {" | ".join(log.levels.keys())} ]',
-                           help='Sets the desired output log level.')
+    debugopts.add_argument('-L', '--loglevel', default='WARNING', metavar='LEVEL', type=str.upper,
+                           choices=['NONE', 'CRITICAL', 'ERROR', 'WARNING', 'INFO', 'VERBOSE', 'DEBUG', 'TRACE'],
+                           help='Levels: %(choices)s')
     # This supresses an error when MComix is used with cProfile
     debugopts.add_argument('-o', dest='output', action='store',
                            default='', help=argparse.SUPPRESS)
     args = parser.parse_args()
 
-    # Load configuration.
-    preferences.read_preferences_file()
-
     if args.version:
-        print(constants.APPNAME, constants.VERSION)
+        print(f'{constants.APPNAME} {constants.VERSION}')
         sys.exit(0)
 
-    # First things first: set the log level.
-    log.setLevel(log.levels[args.loglevel])
+    # start logger
+    logger.remove()
+    logger.add(sys.stdout, level=args.loglevel, colorize=True)
 
     # Check for PyGTK and PIL dependencies.
     try:
         from gi import version_info, require_version
-        assert version_info >= (3, 21, 0)
+        assert version_info >= (3, 24, 0)
 
         require_version('PangoCairo', '1.0')
         require_version('Gtk', '3.0')
@@ -72,16 +65,8 @@ def run():
 
         from gi.repository import GLib, Gdk, GdkPixbuf, Gtk
 
-    except AssertionError:
-        log.error('Required version of PyGObject is not installed.')
-        sys.exit(1)
-
-    except ValueError:
-        log.error('Required version of GTK+ 3.0 is not installed.')
-        sys.exit(1)
-
-    except ImportError:
-        log.error('No version of GObject was found.')
+    except (ValueError, AssertionError, ImportError):
+        logger.exception('GTK+ 3.0 import error.')
         sys.exit(1)
 
     try:
@@ -89,22 +74,21 @@ def run():
         pilver = getattr(PIL.Image, '__version__', None)
         assert pilver >= constants.REQUIRED_PIL_VERSION
 
-    except (AssertionError, AttributeError):
-        log.error('Required version of Pillow is not installed. \n'
-                  f'Required version is at least {constants.REQUIRED_PIL_VERSION}')
+    except (AssertionError, AttributeError, ImportError):
+        logger.error('Required version of Pillow is not installed. \n'
+                     f'Required version is at least {constants.REQUIRED_PIL_VERSION}')
         sys.exit(1)
 
-    except ImportError:
-        log.error('No version of Pillow was found.')
-        sys.exit(1)
-
-    log.info(f'Image loaders: Pillow [{PIL.Image.__version__}], GDK [{GdkPixbuf.PIXBUF_VERSION}])')
+    logger.info(f'Image loaders: Pillow [{PIL.Image.__version__}], GDK [{GdkPixbuf.PIXBUF_VERSION}])')
 
     if not os.path.exists(constants.DATA_DIR):
         os.makedirs(constants.DATA_DIR, 0o700)
 
     if not os.path.exists(constants.CONFIG_DIR):
         os.makedirs(constants.CONFIG_DIR, 0o700)
+
+    # Load configuration.
+    preferences.read_preferences_file()
 
     from mcomix import icons
     icons.load_icons()
@@ -118,7 +102,7 @@ def run():
             p = os.path.join(os.getcwd(), open_path[n])
             p = os.path.normpath(p)
             if not os.path.exists(p):
-                log.error(f'Non existant file: {p}')
+                logger.error(f'Non existant file: \'{p}\'')
                 open_path.pop(n)
                 continue
             open_path[n] = p

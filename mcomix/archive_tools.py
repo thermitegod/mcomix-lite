@@ -5,7 +5,9 @@
 import os
 import zipfile
 
-from mcomix import constants, log
+from loguru import logger
+
+from mcomix import constants
 from mcomix.archive import pdf, rar, sevenzip, zip
 
 # Handlers for each archive type.
@@ -115,7 +117,7 @@ def archive_mime_type(path):
                 return constants.PDF
 
     except Exception:
-        log.warning(f'Could not read {path}')
+        logger.warning(f'Could not read: \'{path}\'')
 
     return None
 

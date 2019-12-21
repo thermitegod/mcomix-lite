@@ -5,9 +5,9 @@
 import os
 
 from gi.repository import Gtk
+from loguru import logger
 
-from mcomix import archive_extractor, archive_tools, callback, constants, file_provider, image_tools, \
-    log, tools
+from mcomix import archive_extractor, archive_tools, callback, constants, file_provider, image_tools, tools
 from mcomix.preferences import prefs
 
 
@@ -429,8 +429,8 @@ class FileHandler(object):
             with self._condition:
                 while not self._extractor.is_ready(name) and not self._stop_waiting:
                     self._condition.wait()
-        except Exception as ex:
-            log.error(f'Waiting on extraction of "{path}" failed: {ex}')
+        except Exception:
+            logger.exception(f'Waiting on extraction failed: \'{path}\'')
             return
 
     def _ask_for_files(self, files):

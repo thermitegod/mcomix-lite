@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+# must not depend on GTK, PIL, or any other optional libraries.
+
 """constants.py - Miscellaneous constants"""
 
 import os

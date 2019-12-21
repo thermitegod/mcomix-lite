@@ -6,7 +6,9 @@ import math
 import os
 import re
 
-from mcomix import log, process
+from loguru import logger
+
+from mcomix import process
 from mcomix.archive import archive_base
 
 # Default DPI for rendering.
@@ -42,7 +44,7 @@ class PdfArchive(archive_base.BaseArchive):
         page_num, ext = os.path.splitext(filename)
         # Try to find optimal DPI.
         cmd = _mudraw_exec + _mudraw_trace_args + ['--', self.archive, str(page_num)]
-        log.debug(f'finding optimal DPI for {filename}: {" ".join(cmd)}')
+        logger.debug(f'finding optimal DPI for {filename}: {" ".join(cmd)}')
         with process.popen(cmd, universal_newlines=True) as proc:
             max_size = 0
             max_dpi = PDF_RENDER_DPI_DEF
@@ -65,7 +67,7 @@ class PdfArchive(archive_base.BaseArchive):
                     max_dpi = dpi
         # Render...
         cmd = _mudraw_exec + ['-r', str(max_dpi), '-o', destination_path, '--', self.archive, str(page_num)]
-        log.debug(f'rendering {filename}: {" ".join(cmd)}')
+        logger.debug(f'rendering {filename}: {" ".join(cmd)}')
         process.call(cmd)
         return destination_path
 
@@ -77,7 +79,7 @@ class PdfArchive(archive_base.BaseArchive):
         _pdf_possible = False
 
         if (mutool := process.find_executable('mutool')) is None:
-            log.debug('mutool executable not found')
+            logger.debug('mutool executable not found')
             return _pdf_possible
 
         # Mutool executable with draw support.
@@ -87,10 +89,10 @@ class PdfArchive(archive_base.BaseArchive):
         _pdf_possible = True
 
         if _pdf_possible:
-            log.info('MuPDF is available')
-            log.debug(f'mutool: {" ".join(_mutool_exec)}\n'
+            logger.info('MuPDF is available')
+            logger.debug(f'mutool: {" ".join(_mutool_exec)}\n'
                       f'mudraw: {" ".join(_mudraw_exec)}\n'
                       f'mudraw trace arguments: {" ".join(_mudraw_trace_args)}')
         else:
-            log.info('MuPDF not available.')
+            logger.info('MuPDF not available.')
         return _pdf_possible

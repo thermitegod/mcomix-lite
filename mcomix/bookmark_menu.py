@@ -3,8 +3,9 @@
 """bookmark_menu.py - Bookmarks menu"""
 
 from gi.repository import Gtk
+from loguru import logger
 
-from mcomix import bookmark_backend, bookmark_dialog, log
+from mcomix import bookmark_backend, bookmark_dialog
 
 
 class BookmarksMenu(Gtk.Menu):
@@ -69,8 +70,8 @@ class BookmarksMenu(Gtk.Menu):
         """Add the current page to the bookmarks list"""
         try:
             self._bookmarks_store.add_current_to_bookmarks()
-        except Exception:
-            log.error('No file to add to bookmarks')
+        except TypeError:
+            logger.warning('No file to add to bookmarks')
             pass
 
     def _edit_bookmarks(self, *args):

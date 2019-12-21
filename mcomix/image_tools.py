@@ -249,7 +249,7 @@ def load_pixbuf(path):
                 if enable_anime and getattr(im, 'is_animated', False):
                     return load_animation(im)
                 return pil_to_pixbuf(im, keep_orientation=True)
-    except:
+    except Exception:
         pass
     if enable_anime:
         pixbuf = GdkPixbuf.PixbufAnimation.new_from_file(path)
@@ -267,7 +267,7 @@ def load_pixbuf_size(path, width, height):
             with Image.open(fio) as im:
                 im.thumbnail((width, height), resample=Image.BOX)
                 return pil_to_pixbuf(im, keep_orientation=True)
-    except:
+    except Exception:
         info, image_width, image_height = GdkPixbuf.Pixbuf.get_file_info(path)
         # If we could not get the image info, still try to load
         # the image to let GdkPixbuf raise the appropriate exception.
@@ -294,7 +294,7 @@ def load_pixbuf_data(imgdata):
     try:
         with Image.open(BytesIO(imgdata)) as im:
             return pil_to_pixbuf(im, keep_orientation=True)
-    except:
+    except Exception:
         pass
     loader = GdkPixbuf.PixbufLoader()
     loader.write(imgdata)
@@ -369,7 +369,7 @@ def get_image_info(path):
         with reader.LockedFileIO(path) as fio:
             with Image.open(fio) as im:
                 return (im.format,) + im.size
-    except:
+    except Exception:
         if (info := GdkPixbuf.Pixbuf.get_file_info(path))[0] is None:
             info = None
         else:

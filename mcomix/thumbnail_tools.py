@@ -11,8 +11,9 @@ from hashlib import md5
 from urllib.request import pathname2url
 
 import PIL.Image as Image
+from loguru import logger
 
-from mcomix import archive_tools, callback, constants, image_tools, log, tools
+from mcomix import archive_tools, callback, constants, image_tools, tools
 from mcomix.preferences import prefs
 
 
@@ -93,9 +94,8 @@ class Thumbnailer(object):
         if os.path.isfile(thumbpath := self._path_to_thumbpath(filepath)):
             try:
                 os.remove(thumbpath)
-            except IOError as error:
-                log.error(f'Could not remove file "{thumbpath}"')
-                log.error(error)
+            except IOError:
+                logger.exception(f'Could not remove file: \'{thumbpath}\'')
 
     def _create_thumbnail_pixbuf(self, filepath):
         """Creates a thumbnail pixbuf from <filepath>, and returns it as a
@@ -189,8 +189,8 @@ class Thumbnailer(object):
             pixbuf.savev(thumbpath, 'png', option_keys, option_values)
             os.chmod(thumbpath, 0o600)
 
-        except Exception as ex:
-            log.warning(f'Could not save thumbnail "{thumbpath}": {ex}')
+        except Exception:
+            logger.exception(f'Could not save thumbnail: \'{thumbpath}\'')
 
     def _thumbnail_exists(self, filepath):
         """Checks if the thumbnail for <filepath> already exists.

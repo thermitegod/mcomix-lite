@@ -26,7 +26,7 @@ class _MainFileChooserDialog(file_chooser_base_dialog._BaseFileChooserDialog):
             # with it. It only happens the second time a dialog is created
             # though, which is very strange.
             self.filechooser.set_filter(filters[prefs['last filter in main filechooser']])
-        except:
+        except Exception:
             self.filechooser.set_filter(filters[0])
 
     def files_chosen(self, paths):
@@ -34,7 +34,7 @@ class _MainFileChooserDialog(file_chooser_base_dialog._BaseFileChooserDialog):
             try:  # For some reason this fails sometimes (GTK+ bug?)
                 filter_index = self.filechooser.list_filters().index(self.filechooser.get_filter())
                 prefs['last filter in main filechooser'] = filter_index
-            except:
+            except Exception:
                 pass
             _close_main_filechooser_dialog()
 

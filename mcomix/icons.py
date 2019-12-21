@@ -5,8 +5,9 @@
 from importlib import resources
 
 from gi.repository import Gtk
+from loguru import logger
 
-from mcomix import image_tools, log
+from mcomix import image_tools
 
 
 def mcomix_icons():
@@ -51,5 +52,5 @@ def load_icons():
             iconset = Gtk.IconSet.new_from_pixbuf(pixbuf)
             factory.add(stockid, iconset)
         except Exception:
-            log.warning(f'Could not load icon "{filename}"')
+            logger.warning(f'Could not load icon: \'{filename}\'')
     factory.add_default()

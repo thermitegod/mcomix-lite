@@ -7,7 +7,8 @@ import ctypes
 import ctypes.util
 import os
 
-from mcomix import log
+from loguru import logger
+
 from mcomix.archive import archive_base
 
 # Filled on-demand by _get_unrar
@@ -136,7 +137,7 @@ class RarArchive(archive_base.BaseArchive):
                 if filename == self._current_filename:
                     self._process()
         except UnrarException as exc:
-            log.error(f'Error while listing contents: {str(exc)}')
+            logger.error(f'Error while listing contents: {str(exc)}')
         except EOFError:
             # End of archive reached.
             pass

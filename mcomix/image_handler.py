@@ -5,7 +5,9 @@
 import os
 import traceback
 
-from mcomix import callback, constants, image_tools, log, mt, thumbnail_tools, tools
+from loguru import logger
+
+from mcomix import callback, constants, image_tools, mt, thumbnail_tools, tools
 from mcomix.preferences import prefs
 
 
@@ -76,7 +78,7 @@ class ImageHandler(object):
                 # We're not caching everything, remove old pixbufs.
                 for index in set(self._raw_pixbufs) - set(wanted_pixbufs):
                     del self._raw_pixbufs[index]
-            log.debug(f'Caching page(s) {" ".join([str(index + 1) for index in wanted_pixbufs])}')
+            logger.debug(f'Caching page(s): \'{" ".join([str(index + 1) for index in wanted_pixbufs])}\'')
             self._wanted_pixbufs[:] = wanted_pixbufs
             # Start caching available images not already in cache.
             wanted_pixbufs = [index for index in wanted_pixbufs
@@ -93,12 +95,12 @@ class ImageHandler(object):
             with self._lock:
                 if index not in self._wanted_pixbufs:
                     return
-            log.debug(f'Caching page {index + 1}')
+            logger.debug(f'Caching page: \'{index + 1}\'')
             try:
                 pixbuf = image_tools.load_pixbuf(self._image_files[index])
                 tools.garbage_collect()
-            except Exception as e:
-                log.error(f'Could not load pixbuf for page {index + 1}: {e}')
+            except Exception:
+                logger.exception(f'Could not load pixbuf for page: \'{index + 1}\'')
                 pixbuf = image_tools.MISSING_IMAGE_ICON
             self._raw_pixbufs[index] = pixbuf
 
@@ -199,7 +201,7 @@ class ImageHandler(object):
     @callback.Callback
     def page_available(self, page):
         """Called whenever a new page becomes available, i.e. the corresponding file has been extracted"""
-        log.debug(f'Page {page} is available')
+        logger.debug(f'Page is available: \'{page}\'')
         index = page - 1
         assert index not in self._available_images
         self._cache_lock[index] = mt.Lock()
@@ -339,7 +341,7 @@ class ImageHandler(object):
             thumbnailer = thumbnail_tools.Thumbnailer(store_on_disk=create, size=(width, height))
             return thumbnailer.thumbnail(path)
         except Exception:
-            log.debug(f'Failed to create thumbnail for image "{path}":\n{traceback.format_exc()}')
+            logger.exception(f'Failed to create thumbnail for image: \'{path}\'')
             return image_tools.MISSING_IMAGE_ICON
 
     def _wait_on_page(self, page, check_only=False):
@@ -357,7 +359,7 @@ class ImageHandler(object):
             # Asked for check only...
             return False
 
-        log.debug(f'Waiting for page {page}')
+        logger.debug(f'Waiting for page: \'{page}\'')
         path = self.get_path_to_page(page)
         self._window.filehandler._wait_on_file(path)
         return True
@@ -386,7 +388,8 @@ class ImageHandler(object):
         page_list[:] = page_list[pos:]
         page_list.extend(reversed(head))
 
-        log.debug(f'Ask for priority extraction around page {page + 1}: {" ".join([str(n + 1) for n in page_list])}')
+        logger.debug(f'Ask for priority extraction around page: \'{page + 1}\': '
+                     f'\'{" ".join([str(n + 1) for n in page_list])}\'')
 
         files = [self._image_files[index]
                  for index in page_list

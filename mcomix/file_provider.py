@@ -6,7 +6,9 @@ switching to the next/previous directory"""
 import functools
 import os
 
-from mcomix import archive_tools, constants, image_tools, log, tools
+from loguru import logger
+
+from mcomix import archive_tools, constants, image_tools, tools
 from mcomix.preferences import prefs
 
 
@@ -111,7 +113,7 @@ class OrderedFileProvider(FileProvider):
                     files.append(fpath)
                     fname_map[fpath] = os.path.join(self.base_dir, fn)
         except OSError:
-            log.warning(f'Could not open {self.base_dir}: Permission denied.')
+            logger.warning(f'Permission denied, Could not open: \'{self.base_dir}\'')
             return []
 
         FileProvider.sort_files(files)

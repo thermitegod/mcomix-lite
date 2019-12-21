@@ -5,8 +5,7 @@ import traceback
 import weakref
 
 from gi.repository import GLib
-
-from mcomix import log
+from loguru import logger
 
 
 class CallbackList(object):
@@ -80,9 +79,8 @@ class CallbackList(object):
             if callback:
                 try:
                     callback(*args, **kwargs)
-                except Exception as e:
-                    log.error(f'Callback {callback} failed: {e}')
-                    log.debug(f'Traceback:\n{traceback.format_exc()}')
+                except Exception:
+                    logger.exception(f'Callback failed: {callback}')
 
     def __callback_deleted(self, obj_ref):
         """Called whenever one of the callback objects is collected by gc.

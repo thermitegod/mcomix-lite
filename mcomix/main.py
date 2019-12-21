@@ -888,10 +888,8 @@ class MainWindow(Gtk.Window):
         if not os.path.exists(target_dir):
             try:
                 os.makedirs(target_dir)
-            except OSError as e:  # Guard against race condition
-                import errno
-                if e.errno != errno.EEXIST:
-                    raise
+            except OSError:
+                return None
 
         if self.filehandler.archive_type is not None:
             next_opened = self.filehandler._open_next_archive()

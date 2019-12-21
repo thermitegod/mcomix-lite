@@ -7,7 +7,9 @@ import shutil
 import threading
 import traceback
 
-from mcomix import archive_tools, callback, log, mt
+from loguru import logger
+
+from mcomix import archive_tools, callback, mt
 from mcomix.preferences import prefs
 
 
@@ -36,8 +38,7 @@ class Extractor(object):
         self._extracted = set()
         self._archive = archive_tools.get_recursive_archive_handler(src, type=type, prefix='mcomix.')
         if self._archive is None:
-            msg = f'Non-supported archive format: {os.path.basename(src)}'
-            log.warning(msg)
+            logger.warning(msg := f'Non-supported archive format: \'{os.path.basename(src)}\'')
             raise ArchiveException(msg)
 
         self._dst = self._archive.destdir
@@ -139,7 +140,7 @@ class Extractor(object):
             event.wait(5)
             if os.path.exists(path):
                 shutil.rmtree(path)
-                log.error(f'fallback remove used on: {path}')
+                logger.error(f'fallback remove used on: \'{path}\'')
 
         tmp_cache = self._dst
         self.stop()
@@ -165,7 +166,7 @@ class Extractor(object):
         with self._condition:
             files = list(set(self._files) - self._extracted)
 
-        log.debug(f'Extracting from "{self._src}" to "{self._dst}": "{", ".join(files)}"')
+        logger.debug(f'Extracting from \'{self._src}\' to \'{self._dst}\': \'{", ".join(files)}\'')
         for name in self._archive.iter_extract(files, self._dst):
             self._extraction_finished(name)
 
@@ -173,7 +174,7 @@ class Extractor(object):
         """Extract the file named <name> to the destination directory,
         mark the file as "ready", then signal a notify() on the Condition
         returned by setup()"""
-        log.debug(f'Extracting from "{self._src}" to "{self._dst}": "{name}"')
+        logger.debug(f'Extracting from \'{self._src}\' to \'{self._dst}\': \'{name}\'')
         self._archive.extract(name)
         return name
 
@@ -183,8 +184,8 @@ class Extractor(object):
         # archive) than to crash here and leave the main thread in a
         # possible infinite block. Damaged or missing files *should* be
         # handled gracefully by the main program anyway.
-        log.error(f'Extraction error: {value}')
-        log.debug(f'Traceback:\n{"".join(traceback.format_tb(tb)).strip()}')
+        logger.error(f'Extraction error: {value}')
+        logger.debug(f'Traceback:\n{"".join(traceback.format_tb(tb)).strip()}')
 
     def _list_contents(self):
         return [filename for filename in self._archive.iter_contents()]
@@ -197,8 +198,8 @@ class Extractor(object):
 
     @staticmethod
     def _list_contents_errcb(name, etype, value, tb):
-        log.error(f'Extraction error: {value}')
-        log.debug(f'Traceback:\n{"".join(traceback.format_tb(tb)).strip()}')
+        logger.error(f'Extraction error: {value}')
+        logger.debug(f'Traceback:\n{"".join(traceback.format_tb(tb)).strip()}')
 
 
 class ArchiveException(Exception):

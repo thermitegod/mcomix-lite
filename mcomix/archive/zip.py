@@ -7,7 +7,8 @@ import os
 import threading
 import zipfile
 
-from mcomix import log
+from loguru import logger
+
 from mcomix.archive import archive_base
 
 
@@ -17,7 +18,7 @@ def is_py_supported_zipfile(path):
         for file_info in zip_file.infolist():
             try:
                 zipfile._get_decompressor(file_info.compress_type)
-            except:
+            except Exception:
                 return False
     return True
 
@@ -56,7 +57,7 @@ class ZipArchive(archive_base.BaseArchive):
             filelen = new.write(data)
 
         if filelen != info.file_size:
-            log.warning(f'{filename}: extracted size is {filelen} bytes, but should be {info.file_size} bytes')
+            logger.warning(f'{filename}: extracted size is {filelen} bytes, but should be {info.file_size} bytes')
 
         return destination_path
 

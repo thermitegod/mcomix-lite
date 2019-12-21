@@ -7,9 +7,9 @@ import mimetypes
 import os
 
 from gi.repository import Gtk, Pango
+from loguru import logger
 
-from mcomix import archive_tools, constants, file_provider, image_tools, labels, log, message_dialog, thumbnail_tools, \
-    tools
+from mcomix import archive_tools, constants, file_provider, image_tools, labels, message_dialog, thumbnail_tools, tools
 from mcomix.preferences import prefs
 
 mimetypes.init()
@@ -85,8 +85,8 @@ class _BaseFileChooserDialog(Gtk.Dialog):
             # If no file was stored yet, fall back to preferences
             elif os.path.isdir(prefs['path of last browsed in filechooser']):
                 self.filechooser.set_current_folder(constants.HOME_DIR)
-        except Exception as ex:  # E.g. broken prefs values.
-            log.debug(ex)
+        except Exception:
+            logger.exception('probably broken prefs values')
 
         self.show_all()
 

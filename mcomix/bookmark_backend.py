@@ -8,8 +8,9 @@ import pickle
 import time
 
 from gi.repository import Gtk
+from loguru import logger
 
-from mcomix import bookmark_menu_item, callback, constants, log, message_dialog
+from mcomix import bookmark_menu_item, callback, constants, message_dialog
 
 
 class __BookmarksStore(object):
@@ -122,7 +123,7 @@ class __BookmarksStore(object):
                         bookmarks.append(bookmark)
 
             except Exception:
-                log.error(f'Could not parse bookmarks file {path}')
+                logger.error(f'Could not parse bookmarks file: \'{path}\'')
 
         return bookmarks, mtime
 

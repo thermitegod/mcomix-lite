@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 
+# must not depend on GTK, PIL, or any other optional libraries.
+
 import json
 import os
 
-from mcomix import constants, log
+from loguru import logger
+
+from mcomix import constants
 
 # All preferences are stored here.
 prefs = {
@@ -97,11 +101,11 @@ def read_preferences_file():
         try:
             with open(pref, 'r') as config_file:
                 saved_prefs.update(json.load(config_file))
-        except:
+        except Exception:
             if os.path.isfile(corrupt_name := f'{pref}.broken'):
                 os.unlink(corrupt_name)
 
-            log.error(f'Corrupt preferences file, moving to "{corrupt_name}".')
+            logger.error(f'Corrupt preferences file, moving to: \'{corrupt_name}\'')
             os.rename(pref, corrupt_name)
 
     prefs.update(filter(lambda i: i[0] in prefs, saved_prefs.items()))

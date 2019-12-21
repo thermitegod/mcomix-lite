@@ -26,8 +26,9 @@ import json
 from collections import defaultdict
 
 from gi.repository import Gtk
+from loguru import logger
 
-from mcomix import constants, keybindings_map, log
+from mcomix import constants, keybindings_map
 
 
 class _KeybindingManager(object):
@@ -63,8 +64,8 @@ class _KeybindingManager(object):
         for keycode in keycodes:
             if keycode in self._binding_to_action.keys():
                 if self._binding_to_action[keycode] != name:
-                    log.warning(f'Keybinding for "{name}" overrides hotkey for another action.\n'
-                                f'Binding {keycode} overrides {self._binding_to_action[keycode]}')
+                    logger.warning(f'Keybinding for \'{name}\' overrides hotkey for another action.\n'
+                                   f'Binding \'{keycode}\' overrides \'{self._binding_to_action[keycode]}\'')
             else:
                 self._binding_to_action[keycode] = name
                 self._action_to_bindings[name].append(keycode)
@@ -165,7 +166,7 @@ class _KeybindingManager(object):
         try:
             with open(constants.KEYBINDINGS_CONF_PATH, 'r') as fp:
                 stored_action_bindings = json.load(fp)
-        except:
+        except Exception:
             stored_action_bindings = {}
 
         for action in keybindings_map.BINDING_INFO.keys():
