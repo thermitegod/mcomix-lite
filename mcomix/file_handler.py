@@ -72,7 +72,7 @@ class FileHandler(object):
             self._window.osd.show(str(ex))
             return False
 
-        if (error_message := self._check_access(path)):
+        if error_message := self._check_access(path):
             self._window.statusbar.set_message(error_message)
             self._window.osd.show(error_message)
             self.file_opened()
