@@ -719,7 +719,7 @@ class MainWindow(Gtk.Window):
             else:
                 self._scroll[i].hide()
 
-    def scroll(self, x, y, bound=None):
+    def scroll(self, x, y):
         """Scroll <x> px horizontally and <y> px vertically. If <bound> is
         'first' or 'second', we will not scroll out of the first or second
         page respectively (dependent on manga mode). The <bound> argument
@@ -733,17 +733,6 @@ class MainWindow(Gtk.Window):
         hadjust_upper = max(0, self._hadjust.get_upper() - visible_width)
         vadjust_upper = max(0, self._vadjust.get_upper() - visible_height)
         hadjust_lower = 0
-
-        if bound is not None and self.is_manga_mode:
-            bound = {'first': 'second', 'second': 'first'}[bound]
-
-        if bound == 'first':
-            # XXX transitional(double page limitation)
-            hadjust_upper = max(0, hadjust_upper - self.images[1].size_request().width - 2)
-
-        elif bound == 'second':
-            # XXX transitional(double page limitation)
-            hadjust_lower = self.images[0].size_request().width + 2
 
         new_hadjust = old_hadjust + x
         new_vadjust = old_vadjust + y
@@ -763,9 +752,6 @@ class MainWindow(Gtk.Window):
 
     def scroll_to_predefined(self, destination, index=None):
         self.layout.scroll_to_predefined(destination, index)
-        self.update_viewport_position()
-
-    def update_viewport_position(self):
         viewport_position = self.layout.get_viewport_box().get_position()
         self._hadjust.set_value(viewport_position[0])  # 2D only
         self._vadjust.set_value(viewport_position[1])  # 2D only
