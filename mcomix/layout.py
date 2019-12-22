@@ -30,40 +30,6 @@ class FiniteLayout(object):  # 2D only
         self.viewport_box = self.viewport_box.set_position(viewport_position)
         self.dirty_current_index = True
 
-    def scroll_smartly(self, max_scroll, backwards, axis_map, index=None):
-        """Applies a "smart scrolling" step to the current viewport position.
-        If there are not enough Boxes to scroll to, the viewport is not moved
-        and an appropriate value is returned.
-        @param max_scroll: The maximum numbers of pixels to scroll in one step.
-        @param backwards: True for backwards scrolling, False otherwise.
-        @param axis_map: The index of the dimension to modify.
-        @param index: The index of the Box the scrolling step is related to,
-        or None to use the index of the current Box.
-        @return: The index of the current Box after scrolling, or -1 if there
-        were not enough Boxes to scroll backwards, or the number of Boxes if
-        there were not enough Boxes to scroll forwards"""
-        # TODO reconsider interface
-        if (index is None) or (not self.wrap_individually):
-            index = self.get_current_index()
-        if not self.wrap_individually:
-            wrapper_index = 0
-        else:
-            wrapper_index = index
-        o = tools.vector_opposite(self.orientation) if backwards else self.orientation
-        new_pos = self.scroller.scroll_smartly(self.wrapper_boxes[wrapper_index],
-                                               self.viewport_box, o, max_scroll, axis_map)
-        if not new_pos:
-            if self.wrap_individually:
-                index += -1 if backwards else 1
-                n = len(self.get_content_boxes())
-                if (index < n) and (index >= 0):
-                    self.scroll_to_predefined(tools.vector_opposite(o), index)
-                return index
-            else:
-                return -1 if backwards else len(self.get_content_boxes())
-        self.set_viewport_position(new_pos)
-        return index
-
     def scroll_to_predefined(self, destination, index=None):
         """Scrolls the viewport to a predefined destination.
         @param destination: An integer representing a predefined destination.

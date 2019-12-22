@@ -40,9 +40,6 @@ BINDING_INFO = {
     'scroll_right': {'title': 'Scroll right', 'group': 'Scroll'},
     'scroll_left': {'title': 'Scroll left', 'group': 'Scroll'},
 
-    'smart_scroll_up': {'title': 'Smart scroll up', 'group': 'Scroll'},
-    'smart_scroll_down': {'title': 'Smart scroll down', 'group': 'Scroll'},
-
     # View
     'zoom_in': {'title': 'Zoom in', 'group': 'Zoom'},
     'zoom_out': {'title': 'Zoom out', 'group': 'Zoom'},
@@ -63,7 +60,6 @@ BINDING_INFO = {
 
     'double_page': {'title': 'Double page mode', 'group': 'View mode'},
     'manga_mode': {'title': 'Manga mode', 'group': 'View mode'},
-    'invert_scroll': {'title': 'Invert smart scroll', 'group': 'View mode'},
 
     'lens': {'title': 'Magnifying lens', 'group': 'View mode'},
     'stretch': {'title': 'Stretch small images', 'group': 'View mode'},
@@ -172,7 +168,6 @@ DEFAULT_BINDINGS = {
 
     'double_page': ['d'],
     'manga_mode': ['m'],
-    'invert_scroll': ['x'],
 
     'lens': ['l'],
     'stretch': ['y'],

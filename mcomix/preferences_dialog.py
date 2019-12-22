@@ -141,11 +141,6 @@ class _PreferencesDialog(Gtk.Dialog):
         page.new_section('Scroll')
 
         page.add_row(self._create_pref_check_button(
-                'Use smart scrolling',
-                'smart scroll',
-                'The space key and mouse wheel will scroll up, down, and sideways to follow the flow of a comic book'))
-
-        page.add_row(self._create_pref_check_button(
                 'Flip pages with mouse wheel',
                 'flip with wheel'))
 
@@ -166,12 +161,6 @@ class _PreferencesDialog(Gtk.Dialog):
                      self._create_pref_spinner(
                              'number of pixels to scroll per mouse wheel event',
                              1, 1, 500, 1, 3, 0))
-
-        page.add_row(Gtk.Label(label='Percent of page to scroll per space key press (percentage):'),
-                     self._create_pref_spinner(
-                             'smart scroll percentage',
-                             0.01, 1, 100, 1, 5, 0,
-                             None))
 
         page.add_row(Gtk.Label(label='Number of "steps" to take before flipping the page (smaller = faster):'),
                      self._create_pref_spinner(
@@ -710,8 +699,6 @@ class _PreferencesDialog(Gtk.Dialog):
 
         if preference == ('lens magnification' or 'osd timeout'):
             prefs[preference] = value
-        elif preference == 'smart scroll percentage':
-            prefs[preference] = value / 100.0
         else:
             prefs[preference] = int(value)
 

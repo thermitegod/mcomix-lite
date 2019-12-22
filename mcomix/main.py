@@ -144,9 +144,6 @@ class MainWindow(Gtk.Window):
         if prefs['stretch']:
             self.actiongroup.get_action('stretch').activate()
 
-        if prefs['invert smart scroll']:
-            self.actiongroup.get_action('invert_scroll').activate()
-
         if prefs['keep transformation']:
             prefs['keep transformation'] = False
             self.actiongroup.get_action('keep_transformation').activate()
@@ -641,10 +638,6 @@ class MainWindow(Gtk.Window):
         self._update_page_information()
         self.draw_image()
 
-    @staticmethod
-    def change_invert_scroll(toggleaction):
-        prefs['invert smart scroll'] = toggleaction.get_active()
-
     @property
     def is_fullscreen(self):
         window_state = self.get_window().get_state()
@@ -791,10 +784,6 @@ class MainWindow(Gtk.Window):
         self._vadjust.set_value(viewport_position[1])  # 2D only
         self._scroll[0].queue_resize_no_redraw()
         self._scroll[1].queue_resize_no_redraw()
-
-    def update_layout_position(self):
-        self.layout.set_viewport_position((int(round(self._hadjust.get_value())),
-                                           int(round(self._vadjust.get_value()))))
 
     def clear(self):
         """Clear the currently displayed data (i.e. "close" the file)"""

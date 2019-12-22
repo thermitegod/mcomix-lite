@@ -111,8 +111,6 @@ class MainUI(Gtk.UIManager):
              None, None, window.change_hide_all),
             ('manga_mode', 'mcomix-manga', '_Manga mode',
              None, 'Manga mode', window.change_manga_mode),
-            ('invert_scroll', Gtk.STOCK_UNDO, 'Invert smart scroll',
-             None, 'Invert smart scrolling direction.', window.change_invert_scroll),
             ('keep_transformation', None, '_Keep transformation',
              None, 'Keeps the currently selected transformation for the next pages.',
              window.change_keep_transformation),
@@ -229,7 +227,6 @@ class MainUI(Gtk.UIManager):
                     <menuitem action="fit_manual_mode" />
                     <separator />
                     <menuitem action="stretch" />
-                    <menuitem action="invert_scroll" />
                     <menuitem action="lens" />
                     <menu action="menu_zoom">
                         <menuitem action="zoom_in" />
@@ -322,7 +319,6 @@ class MainUI(Gtk.UIManager):
                     <menuitem action="enhance_image" />
                     <separator />
                     <menuitem action="stretch" />
-                    <menuitem action="invert_scroll" />
                     <menuitem action="lens" />
                     <menu action="menu_zoom">
                         <menuitem action="zoom_in" />

@@ -135,9 +135,6 @@ class EventHandler(object):
         manager.register('manga_mode',
                          self._window.actiongroup.get_action('manga_mode').activate)
 
-        manager.register('invert_scroll',
-                         self._window.actiongroup.get_action('invert_scroll').activate)
-
         manager.register('keep_transformation',
                          self._window.actiongroup.get_action('keep_transformation').activate)
 
@@ -242,12 +239,6 @@ class EventHandler(object):
 
         manager.register('enhance_image',
                          self._window.actiongroup.get_action('enhance_image').activate)
-
-        manager.register('smart_scroll_down',
-                         self._smart_scroll_down)
-
-        manager.register('smart_scroll_up',
-                         self._smart_scroll_up)
 
         # User interface
         manager.register('osd_panel',
@@ -363,16 +354,12 @@ class EventHandler(object):
         if direction == Gdk.ScrollDirection.UP:
             if event.get_state() & Gdk.ModifierType.CONTROL_MASK:
                 self._window.manual_zoom_in()
-            elif prefs['smart scroll']:
-                self._smart_scroll_up(prefs['number of pixels to scroll per mouse wheel event'])
             else:
                 self._scroll_with_flipping(0, -prefs['number of pixels to scroll per mouse wheel event'])
 
         elif direction == Gdk.ScrollDirection.DOWN:
             if event.get_state() & Gdk.ModifierType.CONTROL_MASK:
                 self._window.manual_zoom_out()
-            elif prefs['smart scroll']:
-                self._smart_scroll_down(prefs['number of pixels to scroll per mouse wheel event'])
             else:
                 self._scroll_with_flipping(0, prefs['number of pixels to scroll per mouse wheel event'])
 
@@ -508,34 +495,6 @@ class EventHandler(object):
     def _scroll_left(self):
         """Scrolls left"""
         self._scroll_with_flipping(-prefs['number of pixels to scroll per key event'], 0)
-
-    def _smart_scroll_down(self, small_step=None):
-        """Smart scrolling"""
-        self._smart_scrolling(small_step, False)
-
-    def _smart_scroll_up(self, small_step=None):
-        """Reversed smart scrolling"""
-        self._smart_scrolling(small_step, True)
-
-    def _smart_scrolling(self, small_step, backwards):
-        # Collect data from the environment
-        viewport_size = self._window.get_visible_area_size()
-        if small_step is None:
-            distance = prefs['smart scroll percentage']
-            max_scroll = [distance * viewport_size[0], distance * viewport_size[1]]  # 2D only
-        else:
-            max_scroll = [small_step] * 2  # 2D only
-        swap_axes = constants.SWAPPED_AXES if prefs['invert smart scroll'] else constants.NORMAL_AXES
-        self._window.update_layout_position()
-
-        # Scroll to the new position
-        if (new_index := self._window.layout.scroll_smartly(max_scroll, backwards, swap_axes)) == -1:
-            self._flip_page(-1)
-        elif new_index == (2 if self._window.displayed_double() else 1):  # XXX limited to at most 2 pages
-            self._flip_page(1)
-        else:
-            # Update actual viewport
-            self._window.update_viewport_position()
 
     def _flip_page(self, number_of_pages, single_step=False):
         """Switches a number of pages forwards/backwards. If C{single_step} is True,
