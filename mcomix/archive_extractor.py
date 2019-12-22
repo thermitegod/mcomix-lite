@@ -140,7 +140,7 @@ class Extractor(object):
             event.wait(5)
             if os.path.exists(path):
                 shutil.rmtree(path)
-                logger.error(f'fallback remove used on: \'{path}\'')
+                logger.debug(f'fallback remove used on: \'{path}\'')
 
         tmp_cache = self._dst
         self.stop()
