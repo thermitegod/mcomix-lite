@@ -428,11 +428,8 @@ class MainWindow(Gtk.Window):
         else:
             # Save scroll destination for when the page becomes available.
             self._last_scroll_destination = scroll_to
-            # If the pixbuf for the current page(s) isn't available,
-            # hide all images to clear any old pixbufs.
-            # XXX How about calling self._clear_main_area?
-            for i in range(len(self.images)):
-                self.images[i].hide()
+            # If the pixbuf for the current page(s) isn't available clear old pixbufs.
+            self._clear_main_area()
             self._show_scrollbars([False] * len(self._scroll))
 
         self._waiting_for_redraw = False
