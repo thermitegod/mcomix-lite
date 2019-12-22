@@ -765,72 +765,21 @@ class _PreferencesDialog(Gtk.Dialog):
         """Callback for spinner-type preferences"""
         value = spinbutton.get_value()
 
-        if preference == 'lens size':
-            prefs[preference] = int(value)
-
-        elif preference == 'lens magnification':
+        if preference == ('lens magnification' or 'osd timeout'):
             prefs[preference] = value
-
-        elif preference == 'number of pixels to scroll per key event':
-            prefs[preference] = int(value)
-
-        elif preference == 'number of pixels to scroll per mouse wheel event':
-            prefs[preference] = int(value)
-
         elif preference == 'smart scroll percentage':
             prefs[preference] = value / 100.0
-
-        elif preference == 'thumbnail size':
+        else:
             prefs[preference] = int(value)
+
+        #  now apply new pref
+        if preference == 'thumbnail size':
             self._window.thumbnailsidebar.resize()
             self._window.draw_image()
-
-        elif preference == 'statusbar spacing':
-            prefs[preference] = int(value)
-
-        elif preference == 'bookmark width':
-            prefs[preference] = int(value)
-
-        elif preference == 'bookmark height':
-            prefs[preference] = int(value)
-
-        elif preference == 'openwith width':
-            prefs[preference] = int(value)
-
-        elif preference == 'openwith height':
-            prefs[preference] = int(value)
-
-        elif preference == 'properties width':
-            prefs[preference] = int(value)
-
-        elif preference == 'properties height':
-            prefs[preference] = int(value)
-
-        elif preference == 'window width':
-            prefs[preference] = int(value)
-
-        elif preference == 'window height':
-            prefs[preference] = int(value)
-
         elif preference == 'max pages to cache':
-            prefs[preference] = int(value)
             self._window.imagehandler.do_cacheing()
-
-        elif preference == 'number of key presses before page turn':
-            prefs[preference] = int(value)
-
         elif preference == 'fit to size px':
-            prefs[preference] = int(value)
             self._window.change_zoom_mode()
-
-        elif preference in ('max extract threads', 'max thumbnail threads'):
-            prefs[preference] = int(value)
-
-        elif preference == 'osd max font size':
-            prefs[preference] = int(value)
-
-        elif preference == 'osd timeout':
-            prefs[preference] = value
 
     def _create_pref_path_chooser(self, preference, folder=False, default=None):
         """Select path as preference value"""
