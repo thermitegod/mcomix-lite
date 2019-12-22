@@ -998,12 +998,13 @@ class MainWindow(Gtk.Window):
         return self.get_position() + self.get_size()
 
     def save_window_geometry(self):
-        (
-            prefs['window x'],
-            prefs['window y'],
-            prefs['window width'],
-            prefs['window height'],
-        ) = self.get_window_geometry()
+        if prefs['window save']:
+            (
+                prefs['window x'],
+                prefs['window y'],
+                prefs['window width'],
+                prefs['window height'],
+            ) = self.get_window_geometry()
 
     def restore_window_geometry(self):
         if self.get_window_geometry() == (prefs['window x'],

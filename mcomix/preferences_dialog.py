@@ -304,6 +304,25 @@ class _PreferencesDialog(Gtk.Dialog):
                              1, 320, 10000, 10, 10, 0,
                              None))
 
+        page.new_section('Main window')
+
+        page.add_row(self._create_pref_check_button(
+                'Save window size',
+                'window save',
+                None))
+
+        page.add_row(Gtk.Label(label='window size (width):'),
+                     self._create_pref_spinner(
+                             'window width',
+                             1, 480, 10000, 10, 10, 0,
+                             None))
+
+        page.add_row(Gtk.Label(label='window size (height):'),
+                     self._create_pref_spinner(
+                             'window height',
+                             1, 320, 10000, 10, 10, 0,
+                             None))
+
         return page
 
     def _init_animation_tab(self):
@@ -785,6 +804,12 @@ class _PreferencesDialog(Gtk.Dialog):
             prefs[preference] = int(value)
 
         elif preference == 'properties height':
+            prefs[preference] = int(value)
+
+        elif preference == 'window width':
+            prefs[preference] = int(value)
+
+        elif preference == 'window height':
             prefs[preference] = int(value)
 
         elif preference == 'max pages to cache':
