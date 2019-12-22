@@ -21,12 +21,6 @@ _HANDLERS = {
 }
 
 
-def _getext(path):
-    """Get extension of archive"""
-    b, e = os.path.splitext(path.lower())
-    return e
-
-
 def _get_handler(archive_type):
     """Return best archive class for format <archive_type>"""
     for handler in _HANDLERS[archive_type]:

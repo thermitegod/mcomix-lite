@@ -719,19 +719,6 @@ class MainWindow(Gtk.Window):
             else:
                 self._scroll[i].hide()
 
-    def is_scrollable(self):
-        """Returns True if the current images do not fit into the viewport"""
-        if self.layout is None:
-            return False
-        else:
-            return not all(tools.smaller_or_equal(self.layout.get_union_box().get_size(),
-                                                  self.get_visible_area_size()))
-
-    def scroll_with_flipping(self, x, y):
-        """Returns true if able to scroll without flipping to
-        a new page and False otherwise"""
-        return self._event_handler._scroll_with_flipping(x, y)
-
     def scroll(self, x, y, bound=None):
         """Scroll <x> px horizontally and <y> px vertically. If <bound> is
         'first' or 'second', we will not scroll out of the first or second

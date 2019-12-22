@@ -188,36 +188,6 @@ class ThreadPool:
         return self.cbmap(func, self._uiter(iterable), chunksize,
                           callback, error_callback, block)
 
-    def umap(self, func, iterable, chunksize=None):
-        # unique version of ThreadPool.map
-        return self.map(func, self._uiter(iterable), chunksize=chunksize)
-
-    def umap_async(self, func, iterable, chunksize=None,
-                   callback=None, error_callback=None):
-        # unique version of ThreadPool.map_async
-        return self.map_async(
-                func, self._uiter(iterable), chunksize,
-                callback, error_callback)
-
-    def uimap(self, func, iterable, chunksize=None):
-        # unique version of ThreadPool.imap
-        return self.imap(func, self._uiter(iterable), chunksize)
-
-    def uimap_unordered(self, func, iterable, chunksize=None):
-        # unique version of ThreadPool.imap_unordered
-        return self.imap_unordered(func, self._uiter(iterable), chunksize)
-
-    def ustarmap(self, func, iterable, chunksize=None):
-        # unique version of ThreadPool.starmap
-        return self.starmap(func, self._uiter(iterable), chunksize)
-
-    def ustarmap_async(self, func, iterable, chunksize=None,
-                       callback=None, error_callback=None):
-        # unique version of ThreadPool.starmap_async
-        return self.starmap_async(
-                func, self._uiter(iterable), chunksize,
-                callback, error_callback)
-
     def close(self):
         # same as Pool.close
         self._closed = True
