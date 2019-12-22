@@ -49,7 +49,7 @@ class _BookmarksDialog(Gtk.Dialog):
 
         self._icon_col = Gtk.TreeViewColumn('Type', cellrenderer_pbuf)
         self._name_col = Gtk.TreeViewColumn('Name', cellrenderer_text)
-        self._page_col = Gtk.TreeViewColumn('Page', cellrenderer_text)
+        self._page_col = Gtk.TreeViewColumn('Pages', cellrenderer_text)
         self._path_col = Gtk.TreeViewColumn('Location', cellrenderer_text)
         self._date_add_col = Gtk.TreeViewColumn('Added', cellrenderer_text)
 
@@ -68,7 +68,7 @@ class _BookmarksDialog(Gtk.Dialog):
 
         self._liststore.set_sort_func(_BookmarksDialog._SORT_TYPE, self._sort_model, ('_archive_type', '_name', '_page'))
         self._liststore.set_sort_func(_BookmarksDialog._SORT_NAME, self._sort_model, ('_name', '_page', '_path'))
-        self._liststore.set_sort_func(_BookmarksDialog._SORT_PAGE, self._sort_model, ('_page', '_numpages', '_name'))
+        self._liststore.set_sort_func(_BookmarksDialog._SORT_PAGE, self._sort_model, ('_numpages', '_page', '_name'))
         self._liststore.set_sort_func(_BookmarksDialog._SORT_ADDED, self._sort_model, ('_date_added',))
 
         self._icon_col.set_sort_column_id(_BookmarksDialog._SORT_TYPE)
