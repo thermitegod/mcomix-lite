@@ -41,6 +41,8 @@ class _PreferencesDialog(Gtk.Dialog):
         notebook.append_page(behaviour, Gtk.Label(label='Behaviour'))
         display = self._init_display_tab()
         notebook.append_page(display, Gtk.Label(label='Display'))
+        display = self._init_dialog_tab()
+        notebook.append_page(display, Gtk.Label(label='Dialog'))
         animation = self._init_animation_tab()
         notebook.append_page(animation, Gtk.Label(label='Animation'))
         advanced = self._init_advanced_tab()
@@ -250,6 +252,56 @@ class _PreferencesDialog(Gtk.Dialog):
                      self._create_pref_spinner(
                              'statusbar spacing',
                              1, 1, 20, 1, 10, 0,
+                             None))
+
+        return page
+
+    def _init_dialog_tab(self):
+        # ----------------------------------------------------------------
+        # The "Display" tab.
+        # ----------------------------------------------------------------
+        page = preferences_page._PreferencePage(None)
+
+        page.new_section('Bookmark')
+
+        page.add_row(Gtk.Label(label='Bookmark dialog size (width):'),
+                     self._create_pref_spinner(
+                             'bookmark width',
+                             1, 480, 10000, 10, 10, 0,
+                             None))
+
+        page.add_row(Gtk.Label(label='Bookmark dialog size (height):'),
+                     self._create_pref_spinner(
+                             'bookmark height',
+                             1, 320, 10000, 10, 10, 0,
+                             None))
+
+        page.new_section('Openwith')
+
+        page.add_row(Gtk.Label(label='Openwith dialog size (width):'),
+                     self._create_pref_spinner(
+                             'openwith width',
+                             1, 480, 10000, 10, 10, 0,
+                             None))
+
+        page.add_row(Gtk.Label(label='Openwith dialog size (height):'),
+                     self._create_pref_spinner(
+                             'openwith height',
+                             1, 320, 10000, 10, 10, 0,
+                             None))
+
+        page.new_section('Properties')
+
+        page.add_row(Gtk.Label(label='Properties dialog size (width):'),
+                     self._create_pref_spinner(
+                             'properties width',
+                             1, 480, 10000, 10, 10, 0,
+                             None))
+
+        page.add_row(Gtk.Label(label='Properties dialog size (height):'),
+                     self._create_pref_spinner(
+                             'properties height',
+                             1, 320, 10000, 10, 10, 0,
                              None))
 
         return page
@@ -715,6 +767,24 @@ class _PreferencesDialog(Gtk.Dialog):
             self._window.draw_image()
 
         elif preference == 'statusbar spacing':
+            prefs[preference] = int(value)
+
+        elif preference == 'bookmark width':
+            prefs[preference] = int(value)
+
+        elif preference == 'bookmark height':
+            prefs[preference] = int(value)
+
+        elif preference == 'openwith width':
+            prefs[preference] = int(value)
+
+        elif preference == 'openwith height':
+            prefs[preference] = int(value)
+
+        elif preference == 'properties width':
+            prefs[preference] = int(value)
+
+        elif preference == 'properties height':
             prefs[preference] = int(value)
 
         elif preference == 'max pages to cache':

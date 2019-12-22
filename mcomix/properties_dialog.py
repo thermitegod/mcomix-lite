@@ -10,6 +10,7 @@ import time
 from gi.repository import Gtk
 
 from mcomix import constants, properties_page, tools
+from mcomix.preferences import prefs
 
 
 class _PropertiesDialog(Gtk.Dialog):
@@ -19,7 +20,7 @@ class _PropertiesDialog(Gtk.Dialog):
         self.add_buttons(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
 
         self._window = window
-        self.resize(870, 560)
+        self.resize(prefs['properties width'], prefs['properties height'])
         self.set_resizable(True)
         self.set_default_response(Gtk.ResponseType.CLOSE)
         self.set_border_width(4)

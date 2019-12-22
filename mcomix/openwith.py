@@ -234,7 +234,7 @@ class OpenWithEditor(Gtk.Dialog):
         self._window.filehandler.file_opened += self.test_command
         self._window.filehandler.file_closed += self.test_command
 
-        self.resize(600, 400)
+        self.resize(prefs['openwith width'], prefs['openwith height'])
 
     def save(self):
         """Serializes the tree model into a list of OpenWithCommands

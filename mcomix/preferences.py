@@ -91,6 +91,12 @@ prefs = {
     'osd timeout': 3.0,  # in seconds, hard limited from 0.5 to 30.0
     'check image mimetype': False,
     'statusbar spacing': 5,
+    'bookmark width': 1300,
+    'bookmark height': 650,
+    'openwith width': 600,
+    'openwith height': 400,
+    'properties width': 870,
+    'properties height': 560,
 }
 
 
