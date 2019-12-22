@@ -83,6 +83,7 @@ prefs = {
     'osd bg color': [0, 0, 0, 1],
     'osd timeout': 3.0,  # in seconds, hard limited from 0.5 to 30.0
     'check image mimetype': False,
+    'hide cursor': False,
     'statusbar spacing': 5,
     'window save': True,
     'window x': 0,

@@ -222,6 +222,12 @@ class _PreferencesDialog(Gtk.Dialog):
                              'statusbar spacing',
                              1, 1, 20, 1, 10, 0))
 
+        page.new_section('Cursor')
+
+        page.add_row(self._create_pref_check_button(
+                'Hide cursor after delay',
+                'hide cursor'))
+
         return page
 
     def _init_dialog_tab(self):
