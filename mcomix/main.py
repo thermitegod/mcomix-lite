@@ -342,7 +342,9 @@ class MainWindow(Gtk.Window):
                 orientation = tools.vector_opposite(orientation)
             for i in range(pixbuf_count):
                 rotation_list[i] = (rotation_list[i] + rotation) % 360
-            if prefs['vertical flip'] or prefs['horizontal flip']:
+            if prefs['vertical flip']:
+                orientation = tools.vector_opposite(orientation)
+            if prefs['horizontal flip']:
                 orientation = tools.vector_opposite(orientation)
 
             viewport_size = ()  # dummy
