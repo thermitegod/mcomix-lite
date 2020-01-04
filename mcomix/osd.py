@@ -35,7 +35,7 @@ class OnScreenDisplay:
 
         # Scale font to fit within the screen size
         max_width, max_height = self._window.get_visible_area_size()
-        self._scale_font(font, layout, max_width, max_height)
+        self._scale_font(font, layout, max_width)
 
         # Calculate surrounding box
         layout_width, layout_height = layout.get_pixel_size()
@@ -77,7 +77,7 @@ class OnScreenDisplay:
         self._last_osd_rect = None
 
     @staticmethod
-    def _scale_font(font, layout, max_width, max_height):
+    def _scale_font(font, layout, max_width):
         """Scales the font used by C{layout} until max_width/max_height is reached"""
         # hard limited from 8 to 60
         SIZE_MIN, SIZE_MAX = 8, min(prefs['osd max font size'], 60) + 1
