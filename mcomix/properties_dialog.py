@@ -23,8 +23,10 @@ class _PropertiesDialog(Gtk.Dialog):
         self.resize(prefs['properties width'], prefs['properties height'])
         self.set_resizable(True)
         self.set_default_response(Gtk.ResponseType.CLOSE)
-        self.set_border_width(4)
+
         self._notebook = Gtk.Notebook()
+        self.vbox.pack_start(self._notebook, True, True, 0)
+        self.set_border_width(4)
         self._notebook.set_border_width(6)
 
         self._archive_page = properties_page._Page()
@@ -39,7 +41,6 @@ class _PropertiesDialog(Gtk.Dialog):
         self._window.filehandler.file_closed += self._on_book_change
         self._window.imagehandler.page_available += self._on_page_available
 
-        self.vbox.pack_start(self._notebook, True, True, 0)
         self.show_all()
 
     def _on_page_change(self):
@@ -56,7 +57,6 @@ class _PropertiesDialog(Gtk.Dialog):
             self._update_image_page()
 
     def _update_archive_page(self):
-        self._update_image_page()
         page = self._archive_page
         page.reset()
         window = self._window
@@ -72,8 +72,7 @@ class _PropertiesDialog(Gtk.Dialog):
         if path is not None:
             window.filehandler._ask_for_files([path])
         self._update_page_image(page, 1)
-        filename = window.filehandler.get_pretty_current_filename()
-        page.set_filename(filename)
+        page.set_filename(window.filehandler.get_pretty_current_filename())
         path = window.filehandler.get_path_to_base()
         main_info = (
             f'{window.imagehandler.get_number_of_pages()} pages',
@@ -81,6 +80,7 @@ class _PropertiesDialog(Gtk.Dialog):
         page.set_main_info(main_info)
         self._update_page_secondary_info(page, path)
         page.show_all()
+        self._update_image_page()
 
     def _update_image_page(self):
         page = self._image_page
@@ -90,8 +90,7 @@ class _PropertiesDialog(Gtk.Dialog):
             return
         self._update_page_image(page)
         path = window.imagehandler.get_path_to_page()
-        filename = os.path.basename(path)
-        page.set_filename(filename)
+        page.set_filename(os.path.basename(path))
         width, height = window.imagehandler.get_size()
         main_info = (f'{width}x{height} px', window.imagehandler.get_mime_name(),)
         page.set_main_info(main_info)
@@ -106,12 +105,12 @@ class _PropertiesDialog(Gtk.Dialog):
         page.set_thumbnail(thumb)
 
     @staticmethod
-    def _update_page_secondary_info(page, location):
-        stats = os.stat(location)
+    def _update_page_secondary_info(page, path):
+        stats = os.stat(path)
         uid = pwd.getpwuid(stats.st_uid).pw_name
         gid = pwd.getpwnam(uid).pw_gid
         secondary_info = [
-            ('Location', os.path.dirname(location)),
+            ('Location', os.path.dirname(path)),
             ('Size', tools.format_byte_size(stats.st_size)),
             ('Modified', time.strftime('%Y-%m-%d, %H:%M:%S', time.localtime(stats.st_mtime))),
             ('Accessed', time.strftime('%Y-%m-%d, %H:%M:%S', time.localtime(stats.st_atime))),
