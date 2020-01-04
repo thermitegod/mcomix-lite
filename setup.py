@@ -48,8 +48,8 @@ setup(
         entry_points={'console_scripts': ['mcomix = mcomix.run:run'],
                       'setuptools.installation': ['eggsecutable=mcomix.run:run'], },
         test_suite='test',
-        requires=['Gtk (>=3.21.0)'],
-        install_requires=['setuptools', 'pillow', 'loguru'],
+        requires=['Gtk (>=3.24.0)'],
+        install_requires=['setuptools', 'pillow', 'loguru', 'send2trash'],
         zip_safe=False,
 
         # Various MIME files that need to be copied to certain system locations on Linux.
