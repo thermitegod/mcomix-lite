@@ -5,7 +5,6 @@
 from gi.repository import GLib, Gdk
 
 from mcomix import constants
-from mcomix.preferences import prefs
 
 
 class CursorHandler(object):
@@ -42,17 +41,15 @@ class CursorHandler(object):
 
     def auto_hide_on(self):
         """Signal that the cursor should auto-hide from now on (e.g. that we are entering fullscreen)"""
-        if prefs['hide cursor']:
-            self._auto_hide = True
-            if self._current_cursor == constants.NORMAL_CURSOR:
-                self._set_hide_timer()
+        self._auto_hide = True
+        if self._current_cursor == constants.NORMAL_CURSOR:
+            self._set_hide_timer()
 
     def refresh(self):
         """Refresh the current cursor (i.e. display it and set a new timer in
         fullscreen). Used when we move the cursor"""
-        if prefs['hide cursor']:
-            if self._auto_hide:
-                self.set_cursor_type(self._current_cursor)
+        if self._auto_hide:
+            self.set_cursor_type(self._current_cursor)
 
     def _on_timeout(self):
         mode = self._get_hidden_cursor()

@@ -199,16 +199,17 @@ class MainWindow(Gtk.Window):
         if open_path is not None:
             self.filehandler.open_file(open_path)
 
-        self.cursor_handler.auto_hide_on()
+        if prefs['hide cursor']:
+            self.cursor_handler.auto_hide_on()
 
-        # Make sure we receive *all* mouse motion events,
-        # even if a modal dialog is being shown.
-        def _on_event(event):
-            if Gdk.EventType.MOTION_NOTIFY == event.type:
-                self.cursor_handler.refresh()
-            Gtk.main_do_event(event)
+            # Make sure we receive *all* mouse motion events,
+            # even if a modal dialog is being shown.
+            def _on_event(event):
+                if Gdk.EventType.MOTION_NOTIFY == event.type:
+                    self.cursor_handler.refresh()
+                Gtk.main_do_event(event)
 
-        Gdk.event_handler_set(_on_event)
+            Gdk.event_handler_set(_on_event)
 
     def gained_focus(self, *args):
         self.was_out_of_focus = False
