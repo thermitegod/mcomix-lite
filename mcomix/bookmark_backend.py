@@ -10,7 +10,7 @@ import time
 from gi.repository import Gtk
 from loguru import logger
 
-from mcomix import bookmark_menu_item, callback, constants, message_dialog
+from mcomix import bookmark_menu_item, callback, constants, message_dialog, state
 
 
 class __BookmarksStore(object):
@@ -55,12 +55,14 @@ class __BookmarksStore(object):
         """Add the <bookmark> to the list"""
         self._bookmarks.append(bookmark)
         self.write_bookmarks_file()
+        state.state_changed['bookmarks'] = state.DIRTY
 
     @callback.Callback
     def remove_bookmark(self, bookmark):
         """Remove the <bookmark> from the list"""
         self._bookmarks.remove(bookmark)
         self.write_bookmarks_file()
+        state.state_changed['bookmarks'] = state.DIRTY
 
     def add_current_to_bookmarks(self):
         """Add the currently viewed page to the list"""

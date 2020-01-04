@@ -9,7 +9,8 @@ import sys
 
 from loguru import logger
 
-from mcomix import constants, preferences
+from mcomix import constants, preferences, state
+
 
 
 def run():
@@ -89,6 +90,7 @@ def run():
 
     # Load configuration.
     preferences.read_preferences_file()
+    state.state_changed['prefrences'] = preferences.prefs.copy()
 
     from mcomix import icons
     icons.load_icons()

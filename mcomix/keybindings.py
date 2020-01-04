@@ -28,8 +28,7 @@ from collections import defaultdict
 from gi.repository import Gtk
 from loguru import logger
 
-from mcomix import constants, keybindings_map
-
+from mcomix import constants, keybindings_map, state
 
 class _KeybindingManager(object):
     def __init__(self, window):
@@ -83,6 +82,7 @@ class _KeybindingManager(object):
         @param new_binding: Binding to be assigned to action
         @param old_binding: Binding to be removed from action [ can be empty: "" ]
         @return None: new_binding wasn't in any action action name: where new_binding was before"""
+        state.state_changed['keybindings'] = state.DIRTY
         assert name in keybindings_map.BINDING_INFO, f'"{name}" is not a valid keyboard action.'
 
         nb = Gtk.accelerator_parse(new_binding)
@@ -108,21 +108,20 @@ class _KeybindingManager(object):
             self._binding_to_action[nb] = name
             self._action_to_bindings[name].append(nb)
 
-        self.save()
         return old_action_with_nb
 
     def clear_accel(self, name, binding):
         """Remove binding for an action"""
+        state.state_changed['keybindings'] = state.DIRTY
         assert name in keybindings_map.BINDING_INFO, f'"{name}" is not a valid keyboard action.'
 
         ob = Gtk.accelerator_parse(binding)
         self._action_to_bindings[name].remove(ob)
         self._binding_to_action.pop(ob)
 
-        self.save()
-
     def clear_all(self):
         """Removes all keybindings. The changes are only persisted if save() is called afterwards"""
+        state.state_changed['keybindings'] = state.DIRTY
         self._action_to_callback = {}
         self._action_to_bindings = defaultdict(list)
         self._binding_to_action = {}

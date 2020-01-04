@@ -6,9 +6,9 @@ import shutil
 from gi.repository import GLib, Gdk, Gtk
 from send2trash import send2trash
 
-from mcomix import bookmark_backend, callback, constants, cursor_handler, enhance_backend, event, \
-    file_handler, icons, image_handler, image_tools, keybindings, layout, lens, message_dialog, osd, \
-    pageselect, preferences, status, thumbbar, tools, ui, zoom
+from mcomix import bookmark_backend, callback, constants, cursor_handler, enhance_backend, event, file_handler, icons, \
+    image_handler, image_tools, keybindings, layout, lens, message_dialog, osd, pageselect, preferences, state, status, \
+    thumbbar, tools, ui, zoom
 from mcomix.preferences import prefs
 
 
@@ -949,11 +949,12 @@ class MainWindow(Gtk.Window):
         self.iconify()
 
     def write_config_files(self):
-        preferences.write_preferences_file()
-        bookmark_backend.BookmarksStore.write_bookmarks_file()
-
-        # Write keyboard accelerator map
-        keybindings.keybinding_manager(self).save()
+        if state.state_changed['prefrences'] != prefs:
+            preferences.write_preferences_file()
+        if state.state_changed['bookmarks']:
+            bookmark_backend.BookmarksStore.write_bookmarks_file()
+        if state.state_changed['keybindings']:
+            keybindings.keybinding_manager(self).save()
 
     def get_window_geometry(self):
         return self.get_position() + self.get_size()
