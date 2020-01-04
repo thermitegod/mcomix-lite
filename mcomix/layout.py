@@ -24,6 +24,9 @@ class FiniteLayout(object):  # 2D only
         self._reset(content_sizes, viewport_size, orientation, spacing,
                     wrap_individually, distribution_axis, alignment_axis)
 
+        self.dirty_current_index = None
+        self.orientation = None
+
     def set_viewport_position(self, viewport_position):
         """Moves the viewport to the specified position.
         @param viewport_position: The new viewport position"""

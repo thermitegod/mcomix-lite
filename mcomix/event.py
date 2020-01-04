@@ -19,6 +19,8 @@ class EventHandler(object):
         self._pressed_pointer_pos_x = 0
         self._pressed_pointer_pos_y = 0
 
+        self._drag_timer = None
+
     def resize_event(self, widget, event):
         """Handle events from resizing and moving the main window"""
         if (size := (event.width, event.height)) != self._window.previous_size:

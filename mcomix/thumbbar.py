@@ -86,6 +86,8 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         self._window.page_changed += self._on_page_change
         self._window.imagehandler.page_available += self._on_page_available
 
+        self._currently_selected_page = 0
+
     def toggle_page_numbers_visible(self):
         """Enables or disables page numbers on the thumbnail bar"""
         if visible := prefs['show page numbers on thumbnails']:

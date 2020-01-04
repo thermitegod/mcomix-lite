@@ -27,6 +27,9 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
         self.is_encrypted = False
         self.is_encrypted = self._has_encryption()
 
+        self._state = None
+        self._path = None
+
     def _get_executable(self):
         return SevenZipArchive._find_7z_executable()
 

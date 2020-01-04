@@ -44,6 +44,9 @@ class ImageHandler(object):
 
         self._window.filehandler.file_available += self._file_available
 
+        self.first_wanted = None
+        self.last_wanted = None
+
     def _get_pixbuf(self, index):
         """Return the pixbuf indexed by <index> from cache.
         Pixbufs not found in cache are fetched from disk first"""

@@ -46,6 +46,9 @@ class FileHandler(object):
         #: Provides a list of available files/archives in the open directory.
         self._file_provider = None
 
+        self.filelist = None
+        self._start_page = 0
+
     def refresh_file(self, *args, **kwargs):
         """Closes the current file(s)/archive and reloads them"""
         if self.file_loaded:

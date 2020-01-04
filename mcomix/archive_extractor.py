@@ -29,6 +29,16 @@ class Extractor(object):
                 name=self.__class__.__name__,
                 processes=prefs['max extract threads'] or None)
 
+        self._src = None
+        self._files = None
+        self._extracted = None
+        self._archive = None
+
+        self._dst = None
+        self._contents_listed = False
+        self._extract_started = False
+        self._condition = None
+
     def setup(self, src, type=None):
         """Setup the extractor with archive <src> and destination dir <dst>.
         Return a threading.Condition related to the is_ready() method, or
@@ -42,8 +52,6 @@ class Extractor(object):
             raise ArchiveException(msg)
 
         self._dst = self._archive.destdir
-        self._contents_listed = False
-        self._extract_started = False
         self._condition = threading.Condition()
         self._threadpool.apply_async(
                 self._list_contents, callback=self._list_contents_cb,
@@ -101,7 +109,7 @@ class Extractor(object):
             if self._extract_started:
                 self._extract_thread.stop()
                 self._extract_started = False
-            self.setupped = False
+            self._setupped = False
 
     def extract(self):
         """Start extracting the files in the file list one by one using a
