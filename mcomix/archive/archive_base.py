@@ -97,7 +97,7 @@ class BaseArchive(object):
         If <self._password> is None, no password has been requested yet.
         If an empty string is set, assume that the user did not provide
         a password"""
-        if (password := archive.ask_for_password(self.archive)) is None:
+        if (password := ask_for_password(self.archive)) is None:
             password = ''
 
         self._password = password
