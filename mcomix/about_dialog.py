@@ -22,7 +22,7 @@ class _AboutDialog(Gtk.AboutDialog):
         self.set_license_type(Gtk.License.GPL_2_0)
         self.set_website('https://github.com/thermitegod/mcomix-lite')
         self.set_website_label('Github')
-        self.set_copyright('Copyright (C) 2005-2016')
+        self.set_copyright('Copyright (C) 2005-2020')
 
         icon_data = resources.read_binary('mcomix.images', 'mcomix.png')
         pixbuf = image_tools.load_pixbuf_data(icon_data)
