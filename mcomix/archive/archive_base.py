@@ -48,8 +48,7 @@ class BaseArchive(object):
         """Extracts the file specified by <filename> and return the path of it.
         This filename must be obtained by calling list_contents().
         The file is saved to <destination_dir>."""
-        assert isinstance(filename, str) and \
-               isinstance(destination_dir, str)
+        assert isinstance(filename, str) and isinstance(destination_dir, str)
         return os.path.join(destination_dir, filename)
 
     def iter_extract(self, entries, destination_dir):
@@ -167,8 +166,7 @@ class ExternalExecutableArchive(BaseArchive):
 
     def extract(self, filename, destination_dir):
         """Extract <filename> from the archive to <destination_dir>"""
-        assert isinstance(filename, str) and \
-               isinstance(destination_dir, str)
+        assert isinstance(filename, str) and isinstance(destination_dir, str)
 
         if not self._get_executable():
             return

@@ -940,7 +940,7 @@ class MainWindow(Gtk.Window):
         else:
             text += '\n'
         if page_number := self.imagehandler.get_current_page():
-            text += f'{"Page"} {page_number}'
+            text += f'Page {page_number}'
         if text := text.strip('\n'):
             self.osd.show(text)
 

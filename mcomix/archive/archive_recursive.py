@@ -128,7 +128,7 @@ class RecursiveArchive(archive_base.BaseArchive):
             if root is not None:
                 archive_destination_dir = os.path.join(destination_dir, root)
             logger.debug('extracting from '
-                      f'{archive.archive} to {archive_destination_dir}: {" ".join(archive_wanted.keys())}')
+                         f'{archive.archive} to {archive_destination_dir}: {" ".join(archive_wanted.keys())}')
             for f in archive.iter_extract(archive_wanted.keys(), archive_destination_dir):
                 yield archive_wanted[f]
             wanted -= set(archive_wanted.values())
