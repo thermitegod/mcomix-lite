@@ -272,6 +272,11 @@ class _PreferencesDialog(Gtk.Dialog):
                              'properties height',
                              1, 320, 10000, 10, 10, 0))
 
+        page.add_row(Gtk.Label(label='Properties thumb size:'),
+                     self._create_pref_spinner(
+                             'properties thumb size',
+                             1, 32, 1024, 1, 10, 0))
+
         page.new_section('Main window')
 
         page.add_row(self._create_pref_check_button(

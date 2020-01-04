@@ -96,6 +96,7 @@ prefs = {
     'openwith height': 400,
     'properties width': 870,
     'properties height': 560,
+    'properties thumb size': 256,
 }
 
 
