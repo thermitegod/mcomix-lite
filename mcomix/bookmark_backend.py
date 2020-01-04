@@ -64,7 +64,7 @@ class __BookmarksStore(object):
 
     def add_current_to_bookmarks(self):
         """Add the currently viewed page to the list"""
-        name = self._image_handler.get_pretty_current_filename()
+        name = self._image_handler.get_current_filename()
         path = self._image_handler.get_real_path()
         page = self._image_handler.get_current_page()
         numpages = self._image_handler.get_number_of_pages()

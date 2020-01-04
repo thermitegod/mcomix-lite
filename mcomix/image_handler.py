@@ -294,7 +294,7 @@ class ImageHandler(object):
         else:
             return first
 
-    def get_pretty_current_filename(self):
+    def get_current_filename(self):
         """Return a string with the name of the currently viewed file that is suitable for printing"""
         if self._window.filehandler.archive_type is not None:
             return os.path.basename(self._base_path)

@@ -805,7 +805,7 @@ class MainWindow(Gtk.Window):
     def update_title(self):
         """Set the title acording to current state"""
         self.set_title(' '.join([f'[{self.statusbar.get_page_number()}]',
-                                 self.imagehandler.get_pretty_current_filename()]))
+                                 self.imagehandler.get_current_filename()]))
 
     def set_bg_color(self, color):
         """Set the background color to <color>. color is a sequence in the
@@ -822,7 +822,7 @@ class MainWindow(Gtk.Window):
         """Derive some sensible filename (archive name + _ + filename should do) and offer
         the user the choice to save the current page with the selected name"""
         if self.filehandler.archive_type is not None:
-            archive_name = self.filehandler.get_pretty_current_filename()
+            archive_name = self.filehandler.get_current_filename()
             file_name = self.imagehandler.get_path_to_page()
             suggested_name = f'{os.path.splitext(archive_name)[0]}_{os.path.split(file_name)[-1]}'
         else:
@@ -932,7 +932,7 @@ class MainWindow(Gtk.Window):
             return
 
         text = ''
-        if filename := self.imagehandler.get_pretty_current_filename():
+        if filename := self.imagehandler.get_current_filename():
             text += f'{filename}\n'
         file_number, file_count = self.filehandler.get_file_number()
         if file_count:

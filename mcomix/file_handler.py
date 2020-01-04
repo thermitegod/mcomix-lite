@@ -313,9 +313,9 @@ class FileHandler(object):
         """Return the filename of the current base (archive filename or directory name)"""
         return os.path.basename(self.get_path_to_base())
 
-    def get_pretty_current_filename(self):
+    def get_current_filename(self):
         """Return a string with the name of the currently viewed file that is suitable for printing"""
-        return self._window.imagehandler.get_pretty_current_filename()
+        return self._window.imagehandler.get_current_filename()
 
     def _open_next_archive(self, *args):
         """Open the archive that comes directly after the currently loaded

@@ -72,7 +72,7 @@ class _PropertiesDialog(Gtk.Dialog):
         if path is not None:
             window.filehandler._ask_for_files([path])
         self._update_page_image(page, 1)
-        page.set_filename(window.filehandler.get_pretty_current_filename())
+        page.set_filename(window.filehandler.get_current_filename())
         path = window.filehandler.get_path_to_base()
         main_info = (
             f'{window.imagehandler.get_number_of_pages()} pages',
