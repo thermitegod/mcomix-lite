@@ -4,6 +4,7 @@ import os
 import shutil
 
 from gi.repository import GLib, Gdk, Gtk
+from loguru import logger
 from send2trash import send2trash
 
 from mcomix import bookmark_backend, callback, constants, cursor_handler, enhance_backend, event, file_handler, icons, \
@@ -950,10 +951,13 @@ class MainWindow(Gtk.Window):
 
     def write_config_files(self):
         if state.state_changed['prefrences'] != prefs:
+            logger.info('Writing changes to prefrences')
             preferences.write_preferences_file()
         if state.state_changed['bookmarks']:
+            logger.info('Writing changes to bookmarks')
             bookmark_backend.BookmarksStore.write_bookmarks_file()
         if state.state_changed['keybindings']:
+            logger.info('Writing changes to keybindings')
             keybindings.keybinding_manager(self).save()
 
     def get_window_geometry(self):

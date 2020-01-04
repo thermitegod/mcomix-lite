@@ -78,7 +78,7 @@ class __BookmarksStore(object):
         for bookmark in self._bookmarks:
             if bookmark.same_path(path):
                 if bookmark.same_page(page):
-                    # Do not create identical bookmarks
+                    logger.info(f'Bookmark already exists for \'{name}\' on page \'{page}\'')
                     return
                 else:
                     same_file_bookmarks.append(bookmark)
