@@ -12,8 +12,8 @@ STDOUT = subprocess.STDOUT
 
 
 def call(args, stdin=NULL, stdout=NULL, stderr=NULL, universal_newlines=False):
-    return 0 == subprocess.call(args, stdin=stdin, stdout=stdout,
-                                universal_newlines=universal_newlines, creationflags=0)
+    return subprocess.call(args, stdin=stdin, stdout=stdout,
+                           universal_newlines=universal_newlines, creationflags=0) == 0
 
 
 def popen(args, stdin=NULL, stdout=PIPE, stderr=NULL, universal_newlines=False):

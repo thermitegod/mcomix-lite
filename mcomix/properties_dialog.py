@@ -50,7 +50,7 @@ class _PropertiesDialog(Gtk.Dialog):
         self._update_archive_page()
 
     def _on_page_available(self, page_number):
-        if 1 == page_number:
+        if page_number == 1:
             self._update_page_image(self._archive_page, 1)
         current_page_number = self._window.imagehandler.get_current_page()
         if current_page_number == page_number:

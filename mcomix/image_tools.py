@@ -26,13 +26,13 @@ GTK_GDK_COLOR_WHITE = Gdk.color_parse('white')
 
 def rotate_pixbuf(src, rotation):
     rotation %= 360
-    if 0 == rotation:
+    if rotation == 0:
         return src
-    if 90 == rotation:
+    if rotation == 90:
         return src.rotate_simple(GdkPixbuf.PixbufRotation.CLOCKWISE)
-    if 180 == rotation:
+    if rotation == 180:
         return src.rotate_simple(GdkPixbuf.PixbufRotation.UPSIDEDOWN)
-    if 270 == rotation:
+    if rotation == 270:
         return src.rotate_simple(GdkPixbuf.PixbufRotation.COUNTERCLOCKWISE)
     raise ValueError(f'unsupported rotation: {rotation}')
 

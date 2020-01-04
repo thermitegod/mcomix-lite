@@ -233,7 +233,7 @@ class MainWindow(Gtk.Window):
         """Update "toggle" widget corresponding <preference>.
         Note: the widget visibily itself is left unchanged"""
         prefs[preference] = toggleaction.get_active()
-        if 'hide all' == preference:
+        if preference == 'hide all':
             self._update_toggles_sensitivity()
         # Since the size of the drawing area is dependent
         # on the visible "toggles", redraw the page.
@@ -246,7 +246,7 @@ class MainWindow(Gtk.Window):
         else:
             visible = not prefs['hide all']
         visible &= prefs[preference]
-        if 'show thumbnails' == preference:
+        if preference == 'show thumbnails':
             visible &= self.filehandler.file_loaded
             visible &= self.imagehandler.get_number_of_pages() > 0
         return visible
@@ -545,7 +545,7 @@ class MainWindow(Gtk.Window):
         number_of_pages = self.imagehandler.get_number_of_pages()
 
         new_page = current_page + step
-        if (1 == abs(step) and
+        if (abs(step) == 1 and
                 not single_step and
                 prefs['default double page'] and
                 prefs['double step in double page mode']):
@@ -563,7 +563,7 @@ class MainWindow(Gtk.Window):
             # Handle empty archive case.
             new_page = min(1, number_of_pages)
         elif new_page > number_of_pages:
-            if 1 == step:
+            if step == 1:
                 return self.next_book()
             new_page = number_of_pages
 
@@ -615,7 +615,7 @@ class MainWindow(Gtk.Window):
     @property
     def is_fullscreen(self):
         window_state = self.get_window().get_state()
-        return 0 != (window_state & Gdk.WindowState.FULLSCREEN)
+        return (window_state & Gdk.WindowState.FULLSCREEN) != 0
 
     def change_fullscreen(self, toggleaction):
         # Disable action until transition if complete.
