@@ -205,13 +205,13 @@ class EventHandler(object):
                          self._window.terminate_program)
 
         manager.register('delete',
-                         self._window.delete)
+                         self._window.move_file, kwargs={'action': 'delete'})
+
+        manager.register('move_file',
+                         self._window.move_file, kwargs={'action': 'move_file'})
 
         manager.register('extract_page',
                          self._window.extract_page)
-
-        manager.register('move_file',
-                         self._window.move_file)
 
         manager.register('refresh_archive',
                          self._window.filehandler.refresh_file)

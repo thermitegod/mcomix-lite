@@ -24,7 +24,7 @@ class MainUI(Gtk.UIManager):
         self._actiongroup = Gtk.ActionGroup(name='mcomix-main')
         self._actiongroup.add_actions([
             ('delete', Gtk.STOCK_DELETE, '_Delete',
-             None, None, window.delete),
+             None, None, _action_lambda(window.move_file, 'delete')),
             ('next_page', Gtk.STOCK_GO_FORWARD, '_Next page',
              None, None, _action_lambda(window.flip_page, +1)),
             ('previous_page', Gtk.STOCK_GO_BACK, '_Previous page',

@@ -813,17 +813,46 @@ class MainWindow(Gtk.Window):
 
         save_dialog.destroy()
 
-    def move_file(self, *args):
-        """The currently opened file/archive will be moved to ./keep"""
-        # TODO pref config option for relative path
-        current_file = self.imagehandler.get_real_path()
-        target_dir = os.path.join(os.path.dirname(current_file), prefs['move file'])
-        target_file = os.path.join(target_dir, os.path.basename(current_file))
+    def move_file(self, action=None, *args):
+        """default action is delete for ui compat
+        The currently opened file/archive will be moved to prefs['move file']
+        or
+        The currently opened file/archive will be trashed after showing a confirmation dialog"""
+        if action is None:
+            return None
 
-        if not os.path.exists(target_dir):
-            try:
-                os.makedirs(target_dir)
-            except OSError:
+        current_file = self.imagehandler.get_real_path()
+
+        def file_action():
+            if action == 'move_file':
+                os.rename(current_file, target_file)
+            elif action == 'delete':
+                send2trash(current_file)
+
+        if action == 'move_file':
+            target_dir = os.path.join(os.path.dirname(current_file), prefs['move file'])
+            target_file = os.path.join(target_dir, os.path.basename(current_file))
+            if not os.path.exists(target_dir):
+                try:
+                    os.makedirs(target_dir)
+                except OSError:
+                    return None
+        elif action == 'delete':
+            dialog = message_dialog.MessageDialog(
+                    parent=self,
+                    flags=Gtk.DialogFlags.MODAL,
+                    message_type=Gtk.MessageType.QUESTION,
+                    buttons=Gtk.ButtonsType.NONE)
+            dialog.add_buttons(
+                    Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                    Gtk.STOCK_DELETE, Gtk.ResponseType.OK)
+            dialog.set_default_response(Gtk.ResponseType.OK)
+            dialog.set_should_remember_choice(
+                    'delete-opend-file',
+                    (Gtk.ResponseType.OK,))
+            dialog.set_text(f'Trash Selected File: "{os.path.basename(current_file)}"?')
+            result = dialog.run()
+            if result != Gtk.ResponseType.OK:
                 return None
 
         if self.filehandler.archive_type is not None:
@@ -834,7 +863,7 @@ class MainWindow(Gtk.Window):
                 self.filehandler.close_file()
 
             if os.path.isfile(current_file):
-                os.rename(current_file, target_file)
+                file_action()
         else:
             if self.imagehandler.get_number_of_pages() > 1:
                 # Open the next/previous file
@@ -844,61 +873,14 @@ class MainWindow(Gtk.Window):
                     self.flip_page(+1)
                 # Move the desired file
                 if os.path.isfile(current_file):
-                    os.rename(current_file, target_file)
+                    file_action()
 
                 # Refresh the directory
                 self.filehandler.refresh_file()
             else:
                 self.filehandler.close_file()
                 if os.path.isfile(current_file):
-                    os.rename(current_file, target_file)
-
-    def delete(self, *args):
-        """The currently opened file/archive will be trashed after showing a confirmation dialog"""
-        current_file = self.imagehandler.get_real_path()
-        dialog = message_dialog.MessageDialog(
-                parent=self,
-                flags=Gtk.DialogFlags.MODAL,
-                message_type=Gtk.MessageType.QUESTION,
-                buttons=Gtk.ButtonsType.NONE)
-        dialog.add_buttons(
-                Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                Gtk.STOCK_DELETE, Gtk.ResponseType.OK)
-        dialog.set_default_response(Gtk.ResponseType.OK)
-        dialog.set_should_remember_choice(
-                'delete-opend-file',
-                (Gtk.ResponseType.OK,))
-        dialog.set_text(f'Trash Selected File: "{os.path.basename(current_file)}"?')
-        result = dialog.run()
-
-        if result == Gtk.ResponseType.OK:
-            # Go to next page/archive, and delete current file
-            if self.filehandler.archive_type is not None:
-                next_opened = self.filehandler._open_next_archive()
-                if not next_opened:
-                    next_opened = self.filehandler._open_previous_archive()
-                if not next_opened:
-                    self.filehandler.close_file()
-
-                if os.path.isfile(current_file):
-                    send2trash(current_file)
-            else:
-                if self.imagehandler.get_number_of_pages() > 1:
-                    # Open the next/previous file
-                    if self.imagehandler.get_current_page() >= self.imagehandler.get_number_of_pages():
-                        self.flip_page(-1)
-                    else:
-                        self.flip_page(+1)
-                    # trash the desired file
-                    if os.path.isfile(current_file):
-                        send2trash(current_file)
-
-                    # Refresh the directory
-                    self.filehandler.refresh_file()
-                else:
-                    self.filehandler.close_file()
-                    if os.path.isfile(current_file):
-                        send2trash(current_file)
+                    file_action()
 
     def show_info_panel(self):
         """Shows an OSD displaying information about the current page"""
