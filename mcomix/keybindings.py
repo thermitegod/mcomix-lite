@@ -158,13 +158,13 @@ class _KeybindingManager(object):
                     Gtk.accelerator_name(keyval, modifiers) for
                     (keyval, modifiers) in bindings
                 ]
-        with open(constants.KEYBINDINGS_CONF_PATH, 'w') as fp:
+        with open(constants.KEYBINDINGS_PATH, 'w') as fp:
             json.dump(action_to_keys, fp, indent=2)
 
     def _initialize(self):
         """Load keybindings from disk"""
         try:
-            with open(constants.KEYBINDINGS_CONF_PATH, 'r') as fp:
+            with open(constants.KEYBINDINGS_PATH, 'r') as fp:
                 stored_action_bindings = json.load(fp)
         except Exception:
             stored_action_bindings = {}
