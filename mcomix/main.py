@@ -75,17 +75,10 @@ class MainWindow(Gtk.Window):
         # Setup
         # ----------------------------------------------------------------
         self.set_title(constants.APPNAME)
-        self.set_size_request(300, 300)  # Avoid making the window *too* small
         self.restore_window_geometry()
 
         # Hook up keyboard shortcuts
         self._event_handler.register_key_events()
-
-        # This is a hack to get the focus away from the toolbar so that
-        # we don't activate it with space or some other key (alternative?)
-        self.toolbar.set_focus_child(self.uimanager.get_widget('/Tool/expander'))
-        self.toolbar.set_style(Gtk.ToolbarStyle.ICONS)
-        self.toolbar.set_icon_size(Gtk.IconSize.LARGE_TOOLBAR)
 
         for img in self.images:
             self._main_layout.put(img, 0, 0)
@@ -132,14 +125,6 @@ class MainWindow(Gtk.Window):
         else:
             zoom_action = zoom_actions[prefs['zoom mode']]
 
-        if zoom_action == 'fit_manual_mode':
-            # This little ugly hack is to get the activate call on
-            # 'fit_manual_mode' to actually create an event (and callback).
-            # Since manual mode is the default selected radio button action
-            # it won't send an event if we activate it when it is already
-            # the selected one.
-            self.actiongroup.get_action('best_fit_mode').activate()
-
         self.actiongroup.get_action(zoom_action).activate()
 
         if prefs['stretch']:
@@ -172,18 +157,6 @@ class MainWindow(Gtk.Window):
             self.toolbar: constants.HEIGHT_AXIS,
             self.menubar: constants.HEIGHT_AXIS,
         }
-
-        # Start with all "toggle" widgets hidden to avoid ugly transitions.
-        for preference, action, widget_list in self._toggle_list:
-            for widget in widget_list:
-                widget.hide()
-
-        toggleaction = self.actiongroup.get_action('hide_all')
-        toggleaction.set_active(prefs['hide all'])
-
-        # Sync each "toggle" widget active state with its preference.
-        for preference, action, widget_list in self._toggle_list:
-            self.actiongroup.get_action(action).set_active(prefs[preference])
 
         self.actiongroup.get_action('menu_autorotate_width').set_sensitive(False)
         self.actiongroup.get_action('menu_autorotate_height').set_sensitive(False)
