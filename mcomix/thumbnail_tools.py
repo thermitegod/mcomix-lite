@@ -17,7 +17,7 @@ from mcomix import archive_tools, callback, constants, image_tools, tools
 from mcomix.preferences import prefs
 
 
-class Thumbnailer(object):
+class Thumbnailer:
     """The Thumbnailer class is responsible for managing MComix
     internal thumbnail creation. Depending on its settings,
     it either stores thumbnails on disk and retrieves them later,

@@ -10,7 +10,7 @@ from mcomix import constants, keybindings, openwith
 from mcomix.preferences import prefs
 
 
-class EventHandler(object):
+class EventHandler:
     def __init__(self, window):
         self._window = window
 

@@ -20,7 +20,7 @@ class OpenWithException(Exception):
     pass
 
 
-class OpenWithManager(object):
+class OpenWithManager:
     def __init__(self):
         """Constructor"""
         pass
@@ -42,7 +42,7 @@ class OpenWithManager(object):
             OpenWithException(f'external commands error: {e}.')
 
 
-class OpenWithCommand(object):
+class OpenWithCommand:
     def __init__(self, label, command, cwd, disabled_for_archives):
         self.label = label
         self.command = command.strip()

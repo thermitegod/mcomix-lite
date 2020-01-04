@@ -5,7 +5,7 @@
 from mcomix import tools
 
 
-class Box(object):
+class Box:
     def __init__(self, position, size=None):
         """A Box is immutable and always axis-aligned.
         Each component of size should be positive (i.e. non-zero).

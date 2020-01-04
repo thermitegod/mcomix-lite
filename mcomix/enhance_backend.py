@@ -6,7 +6,7 @@ from mcomix import image_tools
 from mcomix.preferences import prefs
 
 
-class ImageEnhancer(object):
+class ImageEnhancer:
     """The ImageEnhancer keeps track of the "enhancement" values and performs
     these enhancements on pixbufs. Changes to the ImageEnhancer's values
     can be made using an _EnhanceImageDialog"""

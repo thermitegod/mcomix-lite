@@ -14,7 +14,7 @@ MIN_USER_ZOOM_LOG = -20
 MAX_USER_ZOOM_LOG = 12
 
 
-class ZoomModel(object):
+class ZoomModel:
     """Handles zoom and fit modes"""
 
     def __init__(self):

@@ -7,7 +7,7 @@ from gi.repository import GLib, Gdk
 from mcomix import constants
 
 
-class CursorHandler(object):
+class CursorHandler:
     def __init__(self, window):
         self._window = window
         self._timer_id = None

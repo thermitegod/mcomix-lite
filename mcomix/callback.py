@@ -7,7 +7,7 @@ from gi.repository import GLib
 from loguru import logger
 
 
-class CallbackList(object):
+class CallbackList:
     """Helper class for implementing callbacks within the main thread.
     Add listeners to method calls with method += callback_function"""
 
@@ -97,7 +97,7 @@ class CallbackList(object):
             return None, func
 
 
-class Callback(object):
+class Callback:
     """Decorator class for using the CallbackList helper"""
 
     def __init__(self, function):

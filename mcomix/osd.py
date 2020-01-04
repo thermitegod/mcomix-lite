@@ -9,7 +9,7 @@ from gi.repository import GLib, Gdk, Pango, PangoCairo
 from mcomix.preferences import prefs
 
 
-class OnScreenDisplay(object):
+class OnScreenDisplay:
     """The OSD shows information such as currently opened file, archive and
     page in a black box drawn on the bottom end of the screen.
     The OSD will automatically be erased after 'osd timeout' seconds"""

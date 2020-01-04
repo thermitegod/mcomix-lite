@@ -11,7 +11,7 @@ from mcomix import mt
 from mcomix.preferences import prefs
 
 
-class ThumbnailViewBase(object):
+class ThumbnailViewBase:
     """This class provides shared functionality for Gtk.TreeView and
     Gtk.IconView. Instantiating this class directly is *impossible*,
     as it depends on methods provided by the view classes"""

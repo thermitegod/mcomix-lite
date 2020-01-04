@@ -31,7 +31,7 @@ from loguru import logger
 from mcomix import constants, keybindings_map, state
 
 
-class _KeybindingManager(object):
+class _KeybindingManager:
     def __init__(self, window):
         #: Main window instance
         self._window = window

@@ -13,7 +13,7 @@ from mcomix import archive_tools, callback, mt
 from mcomix.preferences import prefs
 
 
-class Extractor(object):
+class Extractor:
     """Extractor is a threaded class for extracting different archive formats.
     The Extractor can be loaded with paths to archives and a path to a
     destination directory. Once an archive has been set and its contents

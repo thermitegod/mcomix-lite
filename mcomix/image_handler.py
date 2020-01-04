@@ -10,7 +10,7 @@ from mcomix import callback, constants, image_tools, mt, thumbnail_tools, tools
 from mcomix.preferences import prefs
 
 
-class ImageHandler(object):
+class ImageHandler:
     """The FileHandler keeps track of images, pages, caches and reads files.
     When the Filehandler's methods refer to pages, they are indexed from 1,
     i.e. the first page is page 1 etc.

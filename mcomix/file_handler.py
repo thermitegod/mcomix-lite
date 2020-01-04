@@ -11,7 +11,7 @@ from mcomix import archive_extractor, archive_tools, callback, constants, file_p
 from mcomix.preferences import prefs
 
 
-class FileHandler(object):
+class FileHandler:
     """The FileHandler keeps track of the actual files/archives opened.
     While ImageHandler takes care of pages/images, this class provides
     the raw file names for archive members and image files, extracts

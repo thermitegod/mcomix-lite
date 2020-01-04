@@ -11,7 +11,7 @@ from mcomix import archive, callback, process
 from mcomix.archive import password
 
 
-class BaseArchive(object):
+class BaseArchive:
     """Base archive interface. All filenames passed from and into archives
     are expected to be Unicode objects. Archive files are converted to
     Unicode with some guess-work"""

@@ -13,7 +13,7 @@ from loguru import logger
 from mcomix import bookmark_menu_item, callback, constants, message_dialog, state
 
 
-class __BookmarksStore(object):
+class __BookmarksStore:
     """The _BookmarksStore is a backend for both the bookmarks menu and dialog.
     Changes in the _BookmarksStore are mirrored in both"""
 

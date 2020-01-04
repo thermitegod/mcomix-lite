@@ -10,7 +10,7 @@ from mcomix import constants, image_tools
 from mcomix.preferences import prefs
 
 
-class MagnifyingLens(object):
+class MagnifyingLens:
     """The MagnifyingLens creates cursors from the raw pixbufs containing
     the unscaled data for the currently displayed images. It does this by
     looking at the cursor position and calculating what image data to put

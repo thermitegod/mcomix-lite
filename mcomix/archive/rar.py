@@ -23,16 +23,16 @@ class RarArchive(archive_base.BaseArchive):
     # Nope! Not a good idea...
     support_concurrent_extractions = False
 
-    class _OpenMode(object):
+    class _OpenMode:
         """Rar open mode"""
         RAR_OM_EXTRACT = 1
 
-    class _ProcessingMode(object):
+    class _ProcessingMode:
         """Rar file processing mode"""
         RAR_SKIP = 0
         RAR_EXTRACT = 2
 
-    class _ErrorCode(object):
+    class _ErrorCode:
         """Rar error codes"""
         ERAR_END_ARCHIVE = 10
         ERAR_NO_MEMORY = 11

@@ -5,7 +5,7 @@
 from mcomix import box, constants
 
 
-class FiniteLayout(object):  # 2D only
+class FiniteLayout:  # 2D only
     def __init__(self, content_sizes, viewport_size, orientation, spacing,
                  wrap_individually, distribution_axis, alignment_axis):
         """Lays out a finite number of Boxes along the first axis.

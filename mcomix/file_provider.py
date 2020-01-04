@@ -32,7 +32,7 @@ def get_file_provider(filelist):
         return None
 
 
-class FileProvider(object):
+class FileProvider:
     """Base class for various file listing strategies"""
     # Constants for determining which files to list.
     IMAGES, ARCHIVES = 1, 2
