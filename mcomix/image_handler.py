@@ -3,7 +3,6 @@
 """image_handler.py - Image handler that takes care of cacheing and giving out images"""
 
 import os
-import traceback
 
 from loguru import logger
 

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import threading
-import traceback
 import weakref
 
 from gi.repository import GLib

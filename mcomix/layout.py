@@ -2,7 +2,7 @@
 
 """Layout"""
 
-from mcomix import box, constants, scrolling, tools
+from mcomix import box, constants, scrolling
 
 
 class FiniteLayout(object):  # 2D only

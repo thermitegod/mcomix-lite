@@ -5,7 +5,7 @@
 from gi.repository import Gtk
 
 from mcomix import bookmark_menu, constants, dialog_handler, enhance_dialog, file_chooser_main_dialog, \
-    openwith_menu, preferences_dialog, status
+    openwith_menu, preferences_dialog
 from mcomix.preferences import prefs
 
 

@@ -12,7 +12,6 @@ from loguru import logger
 from mcomix import constants, preferences, state
 
 
-
 def run():
     """Run the program"""
     parser = argparse.ArgumentParser(usage='%%(prog)s %s' % '[OPTION...] [PATH]',
