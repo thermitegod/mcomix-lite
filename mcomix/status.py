@@ -22,7 +22,6 @@ class Statusbar(Gtk.EventBox):
 
         # Create popup menu for enabling/disabling status boxes.
         self.ui_manager = Gtk.UIManager()
-        self.tooltipstatus = TooltipStatusHelper(self.ui_manager, self.status)
         ui_description = """
         <ui>
             <popup name="Statusbar">
@@ -185,32 +184,3 @@ class Statusbar(Gtk.EventBox):
         for n, v in names.items():
             action = self.ui_manager.get_action(f'/Statusbar/{n}')
             action.set_active(v)
-
-
-class TooltipStatusHelper(object):
-    """Attaches to a L{Gtk.UIManager} to provide statusbar tooltips when selecting menu items"""
-
-    def __init__(self, uimanager, statusbar):
-        self._statusbar = statusbar
-
-        uimanager.connect('connect-proxy', self._on_connect_proxy)
-        uimanager.connect('disconnect-proxy', self._on_disconnect_proxy)
-
-    def _on_connect_proxy(self, uimgr, action, widget):
-        """Connects the widget's selection handlers to the status bar update"""
-        if isinstance(widget, Gtk.MenuItem) and (tooltip := action.get_property('tooltip')):
-            cid = widget.connect('select', self._on_item_select, tooltip)
-            cid2 = widget.connect('deselect', self._on_item_deselect)
-            setattr(widget, 'app::connect-ids', (cid, cid2))
-
-    @staticmethod
-    def _on_disconnect_proxy(uimgr, action, widget):
-        """Disconnects the widget's selection handlers"""
-        for cid in getattr(widget, 'app::connect-ids', ()):
-            widget.disconnect(cid)
-
-    def _on_item_select(self, menuitem, tooltip):
-        self._statusbar.push(0, ' ' * Statusbar.SPACING + tooltip)
-
-    def _on_item_deselect(self, menuitem):
-        self._statusbar.pop(0)

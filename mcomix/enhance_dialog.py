@@ -20,10 +20,8 @@ class _EnhanceImageDialog(Gtk.Dialog):
         self._window = window
 
         reset = Gtk.Button.new_from_stock(Gtk.STOCK_REVERT_TO_SAVED)
-        reset.set_tooltip_text('Reset to defaults.')
         self.add_action_widget(reset, Gtk.ResponseType.REJECT)
         save = Gtk.Button.new_from_stock(Gtk.STOCK_SAVE)
-        save.set_tooltip_text('Save the selected values as default for future files.')
         self.add_action_widget(save, Gtk.ResponseType.APPLY)
         self.add_button(Gtk.STOCK_OK, Gtk.ResponseType.OK)
 
@@ -75,7 +73,6 @@ class _EnhanceImageDialog(Gtk.Dialog):
         vbox.pack_start(Gtk.Separator.new(Gtk.Orientation.HORIZONTAL), True, True, 0)
 
         self._autocontrast_button = Gtk.CheckButton.new_with_mnemonic('_Automatically adjust contrast')
-        self._autocontrast_button.set_tooltip_text('Automatically adjust contrast separately for each color band.')
         vbox.pack_start(self._autocontrast_button, False, False, 2)
         self._autocontrast_button.connect('toggled', self._change_values)
 
