@@ -42,7 +42,7 @@ class _KeybindingManager:
 
         self._initialize()
 
-    def register(self, name, callback, args=[], kwargs={}, bindings=[]):
+    def register(self, name, callback, args=None, kwargs=None, bindings=None):
         """Registers an action for a predefined keybinding name.
         @param name: Action name, defined in L{keybindings_map.BINDING_INFO}.
         @param bindings: List of keybinding strings, as understood
@@ -51,6 +51,13 @@ class _KeybindingManager:
         @param callback: Function callback
         @param args: List of arguments to pass to the callback
         @param kwargs: List of keyword arguments to pass to the callback"""
+        if args is None:
+            args = []
+        if kwargs is None:
+            kwargs = {}
+        if bindings is None:
+            bindings = []
+
         assert name in keybindings_map.BINDING_INFO, f'"{name}" is not a valid keyboard action.'
 
         # use default bindings if not provided

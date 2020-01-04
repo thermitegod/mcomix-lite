@@ -82,7 +82,9 @@ class AnimeFrameBuffer:
         return anime
 
 
-def frame_executor(animation, function, args=(), kwargs={}):
+def frame_executor(animation, function, args=(), kwargs=None):
+    if kwargs is None:
+        kwargs = {}
     if not prefs['animation transform']:
         # transform disabled, do nothing
         return animation
