@@ -1,4 +1,4 @@
-.TH MComix 1 "April 2019"
+.TH MComix 1 "January 2020"
 
 .SH NAME
 .B MComix
@@ -16,39 +16,41 @@ ZIP, 7Z, RAR, LHA and PDF).
 
 .SH OPTIONS
 .TP
-.BR \-h , " \-\-help"
+.BR -h , " --help"
 Display the help text and exit.
 .TP
-.BR \-s , " \-\-slideshow"
-Start the application in slideshow mode.
-.TP
-.BR \-v , " \-\-version"
+.BR -v , " --version"
 Show the version number and exit.
 .PP
 .B Viewing modes
 .TP
-.BR \-f , " \-\-fullscreen"
+.BR -f , " --fullscreen"
 Start the application in fullscreen mode.
 .TP
-.BR \-m , " \-\-manga"
+.BR -m , " --manga"
 Start the application in manga mode.
 .TP
-.BR \-d , " \-\-double\-page"
+.BR -d , " --double-page"
 Start the application in double page mode.
 .PP
 .B Zoom modes
 .TP
-.BR \-b , " \-\-zoom\-best"
+.BR -b , " --zoom-best"
 Start the application with zoom set to best fit mode.
 .TP
-.BR \-w , " \-\-zoom\-width"
+.BR -zw , " --zoom-width"
 Start the application with zoom set to fit width.
 .TP
-.BR \-h , " \-\-zoom\-height"
+.BR -zh , " --zoom-height"
 Start the application with zoom set to fit height.
 .PP
 The zoom modes are mutually exclusive, and if more than one is specified,
 the first will be used.
+.B Debug
+.TP
+.BR -L , " --loglevel"
+Levels: 'NONE', 'CRITICAL', 'ERROR', 'WARNING', 'INFO', 'VERBOSE', 'DEBUG', 'TRACE'
+.TP
 
 .SH ARGUMENTS
 .TP
@@ -58,34 +60,24 @@ The path to one or more files or directories to be opened.
 .SH DEPENDENCIES
 .SS Required:
 .B Python
-3.3 or later
+3.8 or later
 .PP
 .B PyGObject
-3.24 or later, with
-.B GTK+ 3
-3.22 or later.
+3.24 or later.
+.PP
+.B GTK+3
+3.24 or later.
 .PP
 .B Pillow
 Pillow 6.0.0 or later.
-.PP
-.BR Distribute " or " Setuptools .
-Distribute supersedes Setuptools on most distributions.
 .SS Recommended:
 .BR unrar
 to extract RAR archives.
 .PP
 .B p7zip
 to extract 7Z archives. Note that p7zip might be able to extract RAR archives
-as well, but this might require additional software (for example,
-.B p7zip-rar
-on Debian-like systems), and it might fail to open certain RAR archives,
+as well, and it might fail to open certain RAR archives,
 especially newer ones.
 .PP
 .B mupdf
 for PDF support.
-
-.SH BUGS
-.PD 0
-Please report any bugs to the MComix bug tracker at
-.PP
-.I https://github.com/thermitegod/mcomix-lite
