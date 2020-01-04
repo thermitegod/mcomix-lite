@@ -363,20 +363,30 @@ def text_color_for_background_color(bgcolor):
     return GTK_GDK_COLOR_BLACK if rgb_to_y_601(bgcolor) >= 65535.0 / 2.0 else GTK_GDK_COLOR_WHITE
 
 
-def get_image_info(path):
+def get_image_size(path):
     """Return image informations: (format, width, height)"""
     try:
         with reader.LockedFileIO(path) as fio:
             with Image.open(fio) as im:
-                return (im.format,) + im.size
+                return im.size
     except Exception:
         if (info := GdkPixbuf.Pixbuf.get_file_info(path))[0] is None:
-            info = None
+            return 0, 0
         else:
-            info = info[0].get_name().upper(), info[1], info[2]
-    if info is None:
-        info = ('Unknown filetype', 0, 0)
-    return info
+            return info[1], info[2]
+
+
+def get_image_mime(path):
+    """Return image informations: (format, width, height)"""
+    try:
+        with reader.LockedFileIO(path) as fio:
+            with Image.open(fio) as im:
+                return im.format
+    except Exception:
+        if (info := GdkPixbuf.Pixbuf.get_file_info(path))[0] is None:
+            return 'Unknown filetype'
+        else:
+            return info[0].get_name().upper()
 
 
 SUPPORTED_IMAGE_EXTS = set()

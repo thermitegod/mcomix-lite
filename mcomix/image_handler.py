@@ -311,8 +311,7 @@ class ImageHandler:
         if (page_path := self.get_path_to_page(page)) is None:
             return 0, 0
 
-        format, width, height = image_tools.get_image_info(page_path)
-        return width, height
+        return image_tools.get_image_size(page_path)
 
     def get_mime_name(self, page=None):
         """Return a string with the name of the mime type of <page>. If
@@ -322,8 +321,7 @@ class ImageHandler:
         if (page_path := self.get_path_to_page(page)) is None:
             return None
 
-        format, width, height = image_tools.get_image_info(page_path)
-        return format
+        return image_tools.get_image_mime(page_path)
 
     def get_thumbnail(self, page=None, width=128, height=128, create=False, nowait=False):
         """Return a thumbnail pixbuf of <page> that fit in a box with
