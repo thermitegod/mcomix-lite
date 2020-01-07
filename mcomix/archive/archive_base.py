@@ -8,7 +8,6 @@ import os
 import threading
 
 from mcomix import archive, callback, process
-from mcomix.archive import password
 
 
 class BaseArchive:
@@ -23,14 +22,6 @@ class BaseArchive:
         assert isinstance(archive, str), 'File should be an Unicode string.'
 
         self.archive = archive
-        self.__password = None
-        self.is_encrypted = False
-        self.__event = threading.Event()
-        if self.support_concurrent_extractions:
-            # When multiple concurrent extractions are supported,
-            # we need a lock to handle concurent calls to _get_password.
-            self.__lock = threading.Lock()
-            self.__waiting_for_password = False
 
     def iter_contents(self):
         """Generator for listing the archive contents"""
@@ -90,30 +81,6 @@ class BaseArchive:
         # Create directory if it doesn't exist
         self._create_directory(dst_dir)
         return open(dst_path, 'wb')
-
-    @callback.Callback
-    def _password_required(self):
-        """Asks the user for a password and sets <self._password>.
-        If <self._password> is None, no password has been requested yet.
-        If an empty string is set, assume that the user did not provide
-        a password"""
-        if (password := ask_for_password(self.archive)) is None:
-            password = ''
-
-        self.__password = password
-        self.__event.set()
-
-    def _get_password(self):
-        # Don't trigger concurrent password dialogs.
-        if (ask_for_password := self.__password is None) and self.support_concurrent_extractions:
-            with self.__lock:
-                if self.__waiting_for_password:
-                    ask_for_password = False
-                else:
-                    self.__waiting_for_password = True
-        if ask_for_password:
-            self._password_required()
-        self.__event.wait()
 
 
 class ExternalExecutableArchive(BaseArchive):

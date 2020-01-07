@@ -16,7 +16,6 @@ class RecursiveArchive(archive_base.BaseArchive):
     def __init__(self, archive, prefix='mcomix.'):
         super(RecursiveArchive, self).__init__(archive.archive)
         self.__main_archive = archive
-        self.is_encrypted = self.__main_archive.is_encrypted
         self.__tempdir = tempfile.TemporaryDirectory(
                 prefix=prefix, dir=prefs['temporary directory'])
         self.__sub_tempdirs = []
@@ -34,9 +33,7 @@ class RecursiveArchive(archive_base.BaseArchive):
     def get_destdir(self):
         return self.__destdir
 
-    def _iter_contents(self, archive, root=None, decrypt=True):
-        if archive.is_encrypted and not decrypt:
-            return
+    def _iter_contents(self, archive, root=None):
         if not root:
             root = os.path.join(self.__destdir, 'main_archive')
         self.__archive_list.append(archive)
@@ -82,23 +79,23 @@ class RecursiveArchive(archive_base.BaseArchive):
                 break
         self.support_concurrent_extractions = supported
 
-    def iter_contents(self, decrypt=True):
+    def iter_contents(self):
         if self.__contents_listed:
             for f in self.__contents:
                 yield f
             return
         self.__contents = []
-        for f in self._iter_contents(self.__main_archive, decrypt=decrypt):
+        for f in self._iter_contents(self.__main_archive):
             self.__contents.append(f)
             yield f
         self.__contents_listed = True
         # We can now check if concurrent extractions are really supported.
         self._check_concurrent_extraction_support()
 
-    def list_contents(self, decrypt=True):
+    def list_contents(self):
         if self.__contents_listed:
             return self.__contents
-        return [f for f in self.iter_contents(decrypt=decrypt)]
+        return [f for f in self.iter_contents()]
 
     def extract(self, filename):
         if not self.__contents_listed:

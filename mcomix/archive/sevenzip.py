@@ -16,16 +16,10 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
     """7z file extractor using the 7z executable"""
     STATE_HEADER, STATE_LISTING, STATE_FOOTER = 1, 2, 3
 
-    class EncryptedHeader(Exception):
-        pass
-
     def __init__(self, archive):
         super(SevenZipArchive, self).__init__(archive)
         self.__is_solid = False
         self.__contents = []
-
-        self.__is_encrypted = False
-        self.__is_encrypted = self._has_encryption()
 
         self.__state = None
         self.__path = None
@@ -35,17 +29,8 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
     def _get_executable(self):
         return SevenZipArchive._find_7z_executable()
 
-    def _get_password_argument(self):
-        if self.__is_encrypted:
-            self._get_password()
-            return f'-p{self.__password}'
-        else:
-            # Add an empty password anyway, to prevent deadlock on reading for
-            # input if we did not correctly detect the archive is encrypted.
-            return '-p'
-
     def _get_list_arguments(self):
-        args = [self._get_executable(), 'l', '-slt', self._get_password_argument()]
+        args = [self._get_executable(), 'l', '-slt']
         args.extend(('--', self.archive))
         return args
 
@@ -53,7 +38,6 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
         args = [self._get_executable(), 'x', '-so']
         if list_file is not None:
             args.append('-i@' + list_file)
-        args.append(self._get_password_argument())
         args.extend(('--', self.archive))
         return args
 
@@ -73,9 +57,6 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
             return None
 
         if self.__state == self.STATE_HEADER:
-            if (line.startswith('Error:') or line.startswith('ERROR:')) and \
-                    line.endswith(': Can not open encrypted archive. Wrong password?'):
-                raise self.EncryptedHeader()
             if 'Solid = +' == line:
                 self.__is_solid = True
 
@@ -90,17 +71,6 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
 
         return None
 
-    def _has_encryption(self):
-        with process.popen(self._get_list_arguments(),
-                           stderr=process.STDOUT,
-                           universal_newlines=True) as proc:
-            for line in proc.stdout:
-                if line.startswith('Encrypted = +'):
-                    return True
-                if 'Can not open encrypted archive. Wrong password' in line:
-                    return True
-        return False
-
     def is_solid(self):
         return self.__is_solid
 
@@ -108,28 +78,17 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
         if not self._get_executable():
             return
 
-        # We'll try at most 2 times:
-        # - the first time without a password
-        # - a second time with a password if the header is encrypted
-        for retry_count in range(2):
-            #: Indicates which part of the file listing has been read.
-            self.__state = self.STATE_HEADER
-            #: Current path while listing contents.
-            self.__path = None
-            with process.popen(self._get_list_arguments(),
-                               stderr=process.STDOUT,
-                               universal_newlines=True) as proc:
-                try:
-                    for line in proc.stdout:
-                        filename = self._parse_list_output_line(line.rstrip(os.linesep))
-                        if filename is not None:
-                            yield filename
-                except self.EncryptedHeader:
-                    # The header is encrypted, try again
-                    # if it was our first attempt.
-                    if 0 == retry_count:
-                        continue
-            break
+        #: Indicates which part of the file listing has been read.
+        self.__state = self.STATE_HEADER
+        #: Current path while listing contents.
+        self.__path = None
+        with process.popen(self._get_list_arguments(),
+                           stderr=process.STDOUT,
+                           universal_newlines=True) as proc:
+            for line in proc.stdout:
+                filename = self._parse_list_output_line(line.rstrip(os.linesep))
+                if filename is not None:
+                    yield filename
 
         self.__filenames_initialized = True
 
