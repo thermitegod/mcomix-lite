@@ -112,7 +112,7 @@ class Pageselector(Gtk.Dialog):
                 self._generate_thumbnail, args=(page, width, height),
                 callback=self._generate_thumbnail_cb)
 
-    def _generate_thumbnail(self, params):
+    def _generate_thumbnail(self, page, width, height):
         """Generate the preview thumbnail for the page selector.
         A transparent image will be used if the page is not yet available"""
         return page, self._window.imagehandler.get_thumbnail(
