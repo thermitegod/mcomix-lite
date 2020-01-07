@@ -12,17 +12,6 @@ from loguru import logger
 from mcomix.archive import archive_base
 
 
-def is_py_supported_zipfile(path):
-    """Check if a given zipfile has internal files stored with Python supported compression"""
-    with zipfile.ZipFile(path, mode='r') as zip_file:
-        for file_info in zip_file.infolist():
-            try:
-                zipfile._get_decompressor(file_info.compress_type)
-            except Exception:
-                return False
-    return True
-
-
 class ZipArchive(archive_base.BaseArchive):
     def __init__(self, archive):
         super(ZipArchive, self).__init__(archive)

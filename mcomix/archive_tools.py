@@ -13,7 +13,6 @@ from mcomix.archive import pdf, rar, sevenzip, zip
 # Handlers for each archive type.
 _HANDLERS = {
     constants.ZIP: (zip.ZipArchive,),
-    constants.ZIP_EXTERNAL: (sevenzip.SevenZipArchive,),
     constants.RAR: (rar.RarArchive,),
     constants.LHA: (sevenzip.SevenZipArchive,),
     constants.SEVENZIP: (sevenzip.SevenZipArchive,),
@@ -93,10 +92,7 @@ def archive_mime_type(path):
                 return None
 
             if zipfile.is_zipfile(path):
-                if zip.is_py_supported_zipfile(path):
-                    return constants.ZIP
-                else:
-                    return constants.ZIP_EXTERNAL
+                return constants.ZIP
 
             with open(path, 'rb') as fd:
                 magic = fd.read(10)
