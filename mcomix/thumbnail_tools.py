@@ -206,7 +206,7 @@ class Thumbnailer:
                             info = img.info
                             stored_mtime = float(info['Thumb::MTime'])
                             # The source file might no longer exist
-                            file_mtime = os.path.isfile(filepath) and os.stat(filepath).st_mtime or stored_mtime
+                            file_mtime = os.stat(filepath).st_mtime if os.path.isfile(filepath) else stored_mtime
                             return stored_mtime == file_mtime and max(*img.size) == max(self.__width, self.__height)
                 except IOError:
                     pass

@@ -26,9 +26,9 @@ def draw_histogram(pixbuf, height=170, fill=170, text=True):
     # Draw the filling colors
     for x in range(256):
         for y in range(1, max(r[x], g[x], b[x]) + 1):
-            r_px = y <= r[x] and fill or 0
-            g_px = y <= g[x] and fill or 0
-            b_px = y <= b[x] and fill or 0
+            r_px = fill if y <= r[x] else 0
+            g_px = fill if y <= g[x] else 0
+            b_px = fill if y <= b[x] else 0
             im_data.putpixel((x + 1, height - 5 - y), (r_px, g_px, b_px))
     # Draw the outlines
     for x in range(1, 256):
