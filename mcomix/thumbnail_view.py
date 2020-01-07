@@ -122,3 +122,6 @@ class ThumbnailTreeView(Gtk.TreeView, ThumbnailViewBase):
 
         # Connect events
         self.connect('draw', self.draw_thumbnails_on_screen)
+
+    def get_visible_range(self):
+        return Gtk.TreeView.get_visible_range(self)
