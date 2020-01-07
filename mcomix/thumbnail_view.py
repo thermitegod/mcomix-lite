@@ -103,17 +103,6 @@ class ThumbnailViewBase:
             model.set(iter, self._status_column, True, self._pixbuf_column, pixbuf)
 
 
-class ThumbnailIconView(Gtk.IconView, ThumbnailViewBase):
-    def __init__(self, model, uid_column, pixbuf_column, status_column):
-        assert (model.get_flags() & Gtk.TreeModelFlags.ITERS_PERSIST) != 0
-        super(ThumbnailIconView, self).__init__(model=model)
-        ThumbnailViewBase.__init__(self, uid_column, pixbuf_column, status_column)
-        self.set_pixbuf_column(pixbuf_column)
-
-        # Connect events
-        self.connect('draw', self.draw_thumbnails_on_screen)
-
-
 class ThumbnailTreeView(Gtk.TreeView, ThumbnailViewBase):
     def __init__(self, model, uid_column, pixbuf_column, status_column):
         assert (model.get_flags() & Gtk.TreeModelFlags.ITERS_PERSIST) != 0
