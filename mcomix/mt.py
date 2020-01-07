@@ -4,72 +4,7 @@ import sys
 
 from multiprocessing.dummy import Pool
 from multiprocessing.pool import ThreadPool as mpThreadPool
-from threading import Lock, Timer
-
-
-class Interval:
-    # Call function every delay milliseconds with optional args and kwargs.
-    def __init__(self, delay, function, args=(), kwargs=None):
-        if kwargs is None:
-            kwargs = {}
-        if not callable(function):
-            raise ValueError(f'{function} is not callable')
-
-        self.__delay = delay
-        self.__function = function
-        self.__args = args
-        self.__kwargs = kwargs
-        self.__timer = None
-
-        self.__lock = Lock()
-        self.__calling = False
-
-    def _caller(self):
-        # Call function with optional args and kwargs, then set a new Timer
-        self.__calling = True
-        try:
-            self.__function(*self.__args, **self.__kwargs)
-        except Exception:
-            pass
-        self.__calling = False
-        self.reset()
-
-    def _settimer(self):
-        # Set and start Timer
-        # this function should be always called in lock
-        if self.is_running():
-            return
-        self.__timer = Timer(self.__delay / 1000, self._caller)
-        self.__timer.start()
-
-    def start(self):
-        # Start or restart intervaller.
-        with self.__lock:
-            if self.is_running():
-                return
-            self._settimer()
-
-    def stop(self):
-        # Stop intervaller.
-        with self.__lock:
-            if not self.is_running():
-                return
-            self.__timer.cancel()
-            self.__timer = None
-
-    def reset(self):
-        # Reset Timer
-        with self.__lock:
-            if not self.is_running():
-                return
-            if self.__calling:
-                return
-            self.__timer.cancel()
-            self.__timer = None
-            self._settimer()
-
-    def is_running(self):
-        return self.__timer is not None
+from threading import Lock
 
 
 class NamedPool(mpThreadPool):
@@ -215,7 +150,3 @@ class ThreadPool:
 
     def __exit__(self, etype, value, tb):
         self.terminate()
-
-
-if __name__ == '__main__':
-    exit(0)

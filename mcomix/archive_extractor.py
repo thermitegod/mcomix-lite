@@ -24,7 +24,6 @@ class Extractor:
     for other threads to wait on specific files to be ready"""
 
     def __init__(self):
-        self.__setupped = False
         self.__threadpool = mt.ThreadPool(
                 name=self.__class__.__name__,
                 processes=prefs['max extract threads'] or None)
@@ -56,7 +55,6 @@ class Extractor:
         self.__threadpool.apply_async(
                 self._list_contents, callback=self._list_contents_cb,
                 error_callback=self._list_contents_errcb)
-        self.__setupped = True
 
         return self.__condition
 
@@ -134,6 +132,7 @@ class Extractor:
     def close(self):
         """Close any open file objects, need only be called manually if the
         extract() method isn't called"""
+
         def _bg_cleanup(path):
             event.wait(5)
             if os.path.exists(path):

@@ -44,9 +44,6 @@ class ImageHandler:
 
         self.__window.filehandler.file_available += self._file_available
 
-        self.__first_wanted = None
-        self.__last_wanted = None
-
     def _get_pixbuf(self, index):
         """Return the pixbuf indexed by <index> from cache.
         Pixbufs not found in cache are fetched from disk first"""
@@ -169,9 +166,6 @@ class ImageHandler:
 
     def cleanup(self):
         """Run clean-up tasks. Should be called prior to exit"""
-        self.__first_wanted = 0
-        self.__last_wanted = 1
-
         self.__thread.renew()
         self.__wanted_pixbufs.clear()
         while self.__cache_lock:

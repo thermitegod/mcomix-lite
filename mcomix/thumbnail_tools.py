@@ -88,14 +88,6 @@ class Thumbnailer:
         resulting thumbnail"""
         pass
 
-    def delete(self, filepath):
-        """Deletes the thumbnail for <filepath> (if it exists)"""
-        if os.path.isfile(thumbpath := self._path_to_thumbpath(filepath)):
-            try:
-                os.remove(thumbpath)
-            except IOError:
-                logger.error(f'Could not remove file: \'{thumbpath}\'')
-
     def _create_thumbnail_pixbuf(self, filepath):
         """Creates a thumbnail pixbuf from <filepath>, and returns it as a
         tuple along with a file metadata dictionary: (pixbuf, tEXt_data)"""

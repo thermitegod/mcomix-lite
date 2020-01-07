@@ -26,8 +26,6 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         self.__currently_selected_row = 0
 
         self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
-        self.get_vadjustment().step_increment = 15
-        self.get_vadjustment().page_increment = 1
         # Disable stupid overlay scrollbars...
         if hasattr(self.props, 'overlay_scrolling'):
             self.props.overlay_scrolling = False
@@ -86,8 +84,6 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         self.__window.page_changed += self._on_page_change
         self.__window.imagehandler.page_available += self._on_page_available
 
-        self.__currently_selected_page = 0
-
     def toggle_page_numbers_visible(self):
         """Enables or disables page numbers on the thumbnail bar"""
         if visible := prefs['show page numbers on thumbnails']:
@@ -117,7 +113,6 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         self.__loaded = False
         self.__treeview.stop_update()
         self.__thumbnail_liststore.clear()
-        self.__currently_selected_page = 0
 
     def resize(self):
         """Reload the thumbnails with the size specified by in the preferences"""

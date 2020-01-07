@@ -5,9 +5,8 @@ extraction and adding new archive formats"""
 
 import errno
 import os
-import threading
 
-from mcomix import archive, callback, process
+from mcomix import process
 
 
 class BaseArchive:

@@ -26,6 +26,7 @@ class BaseFileChooserDialog(Gtk.Dialog):
     Subclasses should implement a method files_chosen(paths) that will be
     called once the filechooser has done its job and selected some files.
     If the dialog was closed or Cancel was pressed, <paths> is the empty list"""
+
     def __init__(self, parent, action=Gtk.FileChooserAction.OPEN):
         self.__action = action
         self.__destroyed = False

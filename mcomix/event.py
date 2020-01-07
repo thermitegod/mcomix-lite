@@ -19,8 +19,6 @@ class EventHandler:
         self.__pressed_pointer_pos_x = 0
         self.__pressed_pointer_pos_y = 0
 
-        self.__drag_timer = None
-
     def resize_event(self, widget, event):
         """Handle events from resizing and moving the main window"""
         if (size := (event.width, event.height)) != self.__window.previous_size:
@@ -441,7 +439,6 @@ class EventHandler:
                                  self.__last_pointer_pos_y - event.y_root)
             self.__last_pointer_pos_x = event.x_root
             self.__last_pointer_pos_y = event.y_root
-            self.__drag_timer = event.time
 
     def drag_n_drop_event(self, widget, context, x, y, selection, drag_id, eventtime):
         """Handle drag-n-drop events on the main layout area"""

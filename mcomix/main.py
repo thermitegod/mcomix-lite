@@ -83,11 +83,6 @@ class MainWindow(Gtk.Window):
             self.__main_layout.put(img, 0, 0)
         self.set_bg_color(prefs['bg color'])
 
-        self.__vadjust.step_increment = 15
-        self.__vadjust.page_increment = 1
-        self.__hadjust.step_increment = 15
-        self.__hadjust.page_increment = 1
-
         table = Gtk.Table(n_rows=2, n_columns=2, homogeneous=False)
         table.attach(self.thumbnailsidebar, 0, 1, 2, 5, Gtk.AttachOptions.FILL,
                      Gtk.AttachOptions.FILL | Gtk.AttachOptions.EXPAND, 0, 0)
@@ -973,21 +968,6 @@ class MainWindow(Gtk.Window):
         self.write_config_files()
 
         self.filehandler.close_file()
-
-
-#: Main window instance
-_main_window = None
-
-
-def main_window():
-    """Returns the global main window instance"""
-    return _main_window
-
-
-def set_main_window(window):
-    global _main_window
-    _main_window = window
-
 
 def _dummy_layout():
     return layout.FiniteLayout(((1, 1),), (1, 1), (1, 1), 0, False, 0, 0)

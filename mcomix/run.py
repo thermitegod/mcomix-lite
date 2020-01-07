@@ -121,7 +121,6 @@ def run():
     window = main.MainWindow(fullscreen=args.fullscreen, manga_mode=args.manga,
                              double_page=args.doublepage, zoom_mode=args.zoommode,
                              open_path=open_path, open_page=open_page)
-    main.set_main_window(window)
 
     for sig in (signal.SIGINT, signal.SIGTERM):
         signal.signal(sig, lambda signum, stack: GLib.idle_add(window.terminate_program))
