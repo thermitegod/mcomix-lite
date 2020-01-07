@@ -101,16 +101,6 @@ class Extractor:
         with self._condition:
             return name in self._extracted
 
-    def stop(self):
-        """Signal the extractor to stop extracting and kill the extracting
-        thread. Blocks until the extracting thread has terminated"""
-        self._threadpool.renew()
-        if self._setupped:
-            if self._extract_started:
-                self._extract_thread.stop()
-                self._extract_started = False
-            self._setupped = False
-
     def extract(self):
         """Start extracting the files in the file list one by one using a
         new thread. Every time a new file is extracted a notify() will be
@@ -151,7 +141,6 @@ class Extractor:
                 logger.debug(f'fallback remove used on: \'{path}\'')
 
         tmp_cache = self._dst
-        self.stop()
 
         if os.path.exists(tmp_cache):
             self._archive.close()
