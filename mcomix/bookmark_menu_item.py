@@ -5,7 +5,7 @@
 from gi.repository import Gtk
 
 
-class _Bookmark(Gtk.ImageMenuItem):
+class Bookmark(Gtk.ImageMenuItem):
     """_Bookmark represents one bookmark. It extends the Gtk.ImageMenuItem
     and is thus put directly in the bookmarks menu"""
 
@@ -19,7 +19,7 @@ class _Bookmark(Gtk.ImageMenuItem):
         self._file_handler = file_handler
         self._date_added = date_added
 
-        super(_Bookmark, self).__init__(label=str(self), use_underline=False)
+        super(Bookmark, self).__init__(label=str(self), use_underline=False)
 
         if self._archive_type is not None:
             im = Gtk.Image.new_from_stock('mcomix-archive', Gtk.IconSize.MENU)
@@ -27,12 +27,12 @@ class _Bookmark(Gtk.ImageMenuItem):
             im = Gtk.Image.new_from_stock('mcomix-image', Gtk.IconSize.MENU)
 
         self.set_image(im)
-        self.connect('activate', self._load)
+        self.connect('activate', self.load)
 
     def __str__(self):
         return f'{self._name}, ({self._page} / {self._numpages})'
 
-    def _load(self, *args):
+    def load(self, *args):
         """Open the file and page the bookmark represents"""
         if self._file_handler._base_path != self._path:
             self._file_handler.open_file(self._path, self._page)
@@ -68,7 +68,7 @@ class _Bookmark(Gtk.ImageMenuItem):
         """Creates a copy of the provided Bookmark menu item. This is necessary
         since one bookmark item cannot be anchored in more than one menu. There are,
         however, at least two: The main menu and the popup menu"""
-        return _Bookmark(
+        return Bookmark(
                 self._window,
                 self._file_handler,
                 self._name,
@@ -80,7 +80,7 @@ class _Bookmark(Gtk.ImageMenuItem):
 
     def __eq__(self, other):
         """Equality comparison for Bookmark items"""
-        if isinstance(other, _Bookmark):
+        if isinstance(other, Bookmark):
             return self._path == other._path and self._page == other._page
         else:
             return False

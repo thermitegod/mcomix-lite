@@ -10,9 +10,9 @@ from gi.repository import Gtk
 from mcomix import constants, image_tools
 
 
-class _AboutDialog(Gtk.AboutDialog):
+class AboutDialog(Gtk.AboutDialog):
     def __init__(self, window):
-        super(_AboutDialog, self).__init__()
+        super(AboutDialog, self).__init__()
         self.set_transient_for(window)
         # self.add_buttons(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
 

@@ -178,11 +178,11 @@ class Box:
         bp = self.get_position()
         bs = self.get_size()
         for i in range(len(orientation)):
-            result[i] = Box._box_to_center_offset_1d(bs[i] - 1, orientation[i]) + bp[i]
+            result[i] = Box.box_to_center_offset_1d(bs[i] - 1, orientation[i]) + bp[i]
         return result
 
     @staticmethod
-    def _box_to_center_offset_1d(box_size_delta, orientation):
+    def box_to_center_offset_1d(box_size_delta, orientation):
         if orientation == -1:
             box_size_delta += 1
         return box_size_delta >> 1
@@ -211,7 +211,7 @@ class Box:
         for b in boxes:
             s = b.get_size()
             p = list(b.get_position())
-            p[axis] = cp + Box._box_to_center_offset_1d(cs - s[axis], orientation)
+            p[axis] = cp + Box.box_to_center_offset_1d(cs - s[axis], orientation)
             result.append(Box(p, s))
         return result
 
@@ -259,7 +259,7 @@ class Box:
             c = size[i]
             v = viewport_size[i]
             result_size[i] = max(c, v)
-            result_position[i] = Box._box_to_center_offset_1d(c - result_size[i], orientation[i]) + position[i]
+            result_position[i] = Box.box_to_center_offset_1d(c - result_size[i], orientation[i]) + position[i]
         return Box(result_position, result_size)
 
     @staticmethod

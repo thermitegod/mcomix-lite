@@ -45,8 +45,8 @@ class __BookmarksStore:
 
     def add_bookmark_by_values(self, name, path, page, numpages, archive_type, date_added):
         """Create a bookmark and add it to the list"""
-        bookmark = bookmark_menu_item._Bookmark(self._window, self._file_handler,
-                                                name, path, page, numpages, archive_type, date_added)
+        bookmark = bookmark_menu_item.Bookmark(self._window, self._file_handler,
+                                               name, path, page, numpages, archive_type, date_added)
 
         self.add_bookmark(bookmark)
 
@@ -121,7 +121,7 @@ class __BookmarksStore:
                     packs = pickle.load(fd)
 
                     for pack in packs:
-                        bookmark = bookmark_menu_item._Bookmark(self._window, self._file_handler, *pack)
+                        bookmark = bookmark_menu_item.Bookmark(self._window, self._file_handler, *pack)
                         bookmarks.append(bookmark)
 
             except Exception:

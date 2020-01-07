@@ -15,7 +15,7 @@ from mcomix.preferences import prefs
 mimetypes.init()
 
 
-class _BaseFileChooserDialog(Gtk.Dialog):
+class BaseFileChooserDialog(Gtk.Dialog):
     """We roll our own FileChooserDialog because the one in GTK seems
     buggy with the preview widget. The <action> argument dictates what type
     of filechooser dialog we want (i.e. it is Gtk.FileChooserAction.OPEN
@@ -40,7 +40,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
             title = 'Save'
             buttons = (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_SAVE, Gtk.ResponseType.OK)
 
-        super(_BaseFileChooserDialog, self).__init__(title=title)
+        super(BaseFileChooserDialog, self).__init__(title=title)
         self.set_transient_for(parent)
         self.add_buttons(*buttons)
         self.set_default_response(Gtk.ResponseType.OK)

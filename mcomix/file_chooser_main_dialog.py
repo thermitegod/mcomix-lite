@@ -8,7 +8,7 @@ from mcomix.preferences import prefs
 _main_filechooser_dialog = None
 
 
-class _MainFileChooserDialog(file_chooser_base_dialog._BaseFileChooserDialog):
+class _MainFileChooserDialog(file_chooser_base_dialog.BaseFileChooserDialog):
     """The normal filechooser dialog used with the "Open" menu item"""
 
     def __init__(self, window):

@@ -195,7 +195,7 @@ def is_animation(pixbuf):
 
 def disable_transform(pixbuf):
     if is_animation(pixbuf):
-        if not hasattr(pixbuf, '_framebuffer'):
+        if not hasattr(pixbuf, 'framebuffer'):
             return True
         if not prefs['animation transform']:
             return True

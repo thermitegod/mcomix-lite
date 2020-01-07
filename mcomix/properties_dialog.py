@@ -13,9 +13,9 @@ from mcomix import constants, properties_page, tools
 from mcomix.preferences import prefs
 
 
-class _PropertiesDialog(Gtk.Dialog):
+class PropertiesDialog(Gtk.Dialog):
     def __init__(self, window):
-        super(_PropertiesDialog, self).__init__(title='Properties')
+        super(PropertiesDialog, self).__init__(title='Properties')
         self.set_transient_for(window)
         self.add_buttons(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
 
@@ -70,7 +70,7 @@ class _PropertiesDialog(Gtk.Dialog):
         # in front of the queue.
         path = window.imagehandler.get_path_to_page(1)
         if path is not None:
-            window.filehandler._ask_for_files([path])
+            window.filehandler.ask_for_files([path])
         self._update_page_image(page, 1)
         page.set_filename(window.filehandler.get_current_filename())
         path = window.filehandler.get_path_to_base()

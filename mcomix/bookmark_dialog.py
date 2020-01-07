@@ -8,12 +8,12 @@ from mcomix import bookmark_menu_item, constants
 from mcomix.preferences import prefs
 
 
-class _BookmarksDialog(Gtk.Dialog):
-    """_BookmarksDialog lets the user remove or rearrange bookmarks"""
+class BookmarksDialog(Gtk.Dialog):
+    """BookmarksDialog lets the user remove or rearrange bookmarks"""
     _SORT_TYPE, _SORT_NAME, _SORT_PAGE, _SORT_ADDED = 100, 101, 102, 103
 
     def __init__(self, window, bookmarks_store):
-        super(_BookmarksDialog, self).__init__(title='Edit Bookmarks', destroy_with_parent=True)
+        super(BookmarksDialog, self).__init__(title='Edit Bookmarks', destroy_with_parent=True)
         self.set_transient_for(window)
 
         self.add_buttons(Gtk.STOCK_REMOVE, constants.RESPONSE_REMOVE, Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
@@ -32,7 +32,7 @@ class _BookmarksDialog(Gtk.Dialog):
         self.vbox.pack_start(scrolled, True, True, 0)
 
         self._liststore = Gtk.ListStore(GdkPixbuf.Pixbuf, GObject.TYPE_STRING, GObject.TYPE_STRING,
-                                        GObject.TYPE_STRING, GObject.TYPE_STRING, bookmark_menu_item._Bookmark)
+                                        GObject.TYPE_STRING, GObject.TYPE_STRING, bookmark_menu_item.Bookmark)
 
         self._treeview = Gtk.TreeView(model=self._liststore)
         self._treeview.set_rules_hint(True)
@@ -67,16 +67,16 @@ class _BookmarksDialog(Gtk.Dialog):
         self._date_add_col.set_attributes(cellrenderer_text, text=4)
         self._name_col.set_expand(True)
 
-        self._liststore.set_sort_func(_BookmarksDialog._SORT_TYPE, self._sort_model, ('_archive_type', '_name', '_page'))
-        self._liststore.set_sort_func(_BookmarksDialog._SORT_NAME, self._sort_model, ('_name', '_page', '_path'))
-        self._liststore.set_sort_func(_BookmarksDialog._SORT_PAGE, self._sort_model, ('_numpages', '_page', '_name'))
-        self._liststore.set_sort_func(_BookmarksDialog._SORT_ADDED, self._sort_model, ('_date_added',))
+        self._liststore.set_sort_func(BookmarksDialog._SORT_TYPE, self._sort_model, ('_archive_type', '_name', '_page'))
+        self._liststore.set_sort_func(BookmarksDialog._SORT_NAME, self._sort_model, ('_name', '_page', '_path'))
+        self._liststore.set_sort_func(BookmarksDialog._SORT_PAGE, self._sort_model, ('_numpages', '_page', '_name'))
+        self._liststore.set_sort_func(BookmarksDialog._SORT_ADDED, self._sort_model, ('_date_added',))
 
-        self._icon_col.set_sort_column_id(_BookmarksDialog._SORT_TYPE)
-        self._name_col.set_sort_column_id(_BookmarksDialog._SORT_NAME)
-        self._page_col.set_sort_column_id(_BookmarksDialog._SORT_PAGE)
+        self._icon_col.set_sort_column_id(BookmarksDialog._SORT_TYPE)
+        self._name_col.set_sort_column_id(BookmarksDialog._SORT_NAME)
+        self._page_col.set_sort_column_id(BookmarksDialog._SORT_PAGE)
         self._path_col.set_sort_column_id(3)
-        self._date_add_col.set_sort_column_id(_BookmarksDialog._SORT_ADDED)
+        self._date_add_col.set_sort_column_id(BookmarksDialog._SORT_ADDED)
 
         self._icon_col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         self._name_col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
@@ -117,7 +117,7 @@ class _BookmarksDialog(Gtk.Dialog):
         bookmark = treeview.get_model().get_value(iter, 5)
 
         self._close()
-        bookmark._load()
+        bookmark.load()
 
     @staticmethod
     def _sort_model(treemodel, iter1, iter2, user_data):

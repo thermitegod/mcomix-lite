@@ -234,7 +234,7 @@ class MainWindow(Gtk.Window):
         Note: the widget visibily itself is left unchanged"""
         prefs[preference] = toggleaction.get_active()
         if preference == 'hide all':
-            self._update_toggles_sensitivity()
+            self.update_toggles_sensitivity()
         # Since the size of the drawing area is dependent
         # on the visible "toggles", redraw the page.
         self.draw_image()
@@ -251,7 +251,7 @@ class MainWindow(Gtk.Window):
             visible &= self.imagehandler.get_number_of_pages() > 0
         return visible
 
-    def _update_toggles_sensitivity(self):
+    def update_toggles_sensitivity(self):
         """Update each "toggle" widget sensitivity"""
         sensitive = True
         if prefs['hide all'] or (prefs['hide all in fullscreen'] and self.is_fullscreen):
@@ -515,7 +515,7 @@ class MainWindow(Gtk.Window):
         archive_open = self.filehandler.archive_type is not None
         next_archive_opened = False
         if prefs['auto open next archive']:
-            next_archive_opened = self.filehandler._open_next_archive()
+            next_archive_opened = self.filehandler.open_next_archive()
 
         # If "Auto open next archive" is disabled, do not go to the next
         # directory if current file was an archive.
@@ -528,7 +528,7 @@ class MainWindow(Gtk.Window):
         archive_open = self.filehandler.archive_type is not None
         previous_archive_opened = False
         if prefs['auto open next archive']:
-            previous_archive_opened = self.filehandler._open_previous_archive()
+            previous_archive_opened = self.filehandler.open_previous_archive()
 
         # If "Auto open next archive" is disabled, do not go to the previous
         # directory if current file was an archive.
@@ -857,9 +857,9 @@ class MainWindow(Gtk.Window):
                 return None
 
         if self.filehandler.archive_type is not None:
-            next_opened = self.filehandler._open_next_archive()
+            next_opened = self.filehandler.open_next_archive()
             if not next_opened:
-                next_opened = self.filehandler._open_previous_archive()
+                next_opened = self.filehandler.open_previous_archive()
             if not next_opened:
                 self.filehandler.close_file()
 

@@ -76,7 +76,7 @@ class BookmarksMenu(Gtk.Menu):
 
     def _edit_bookmarks(self, *args):
         """Open the bookmarks dialog"""
-        bookmark_dialog._BookmarksDialog(self._window, self._bookmarks_store)
+        bookmark_dialog.BookmarksDialog(self._window, self._bookmarks_store)
 
     def set_sensitive(self, loaded):
         """Set the sensitivities of menu items as appropriate if <loaded>

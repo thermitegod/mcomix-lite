@@ -134,7 +134,7 @@ class Extractor:
     def close(self):
         """Close any open file objects, need only be called manually if the
         extract() method isn't called"""
-        def cleanup_background(path):
+        def _bg_cleanup(path):
             event.wait(5)
             if os.path.exists(path):
                 shutil.rmtree(path)
@@ -145,7 +145,7 @@ class Extractor:
         if os.path.exists(tmp_cache):
             self._archive.close()
             event = threading.Event()
-            cleanup_thread = threading.Thread(target=cleanup_background, args=[tmp_cache])
+            cleanup_thread = threading.Thread(target=_bg_cleanup, args=[tmp_cache])
             cleanup_thread.start()
 
     def _extraction_finished(self, name):

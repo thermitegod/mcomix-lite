@@ -39,7 +39,7 @@ class EventHandler:
             else:
                 # Only redraw if we don't need to restore geometry.
                 redraw = not self._window.restore_window_geometry()
-            self._window._update_toggles_sensitivity()
+            self._window.update_toggles_sensitivity()
             if redraw:
                 self._window.previous_size = self._window.get_size()
                 self._window.draw_image()
@@ -219,10 +219,10 @@ class EventHandler:
                          self._window.filehandler.refresh_file)
 
         manager.register('next_archive',
-                         self._window.filehandler._open_next_archive)
+                         self._window.filehandler.open_next_archive)
 
         manager.register('previous_archive',
-                         self._window.filehandler._open_previous_archive)
+                         self._window.filehandler.open_previous_archive)
 
         manager.register('next_directory',
                          self._window.filehandler.open_next_directory)
@@ -452,7 +452,7 @@ class EventHandler:
         if not (uris := selection.get_uris()):
             return
 
-        def normalize_uri(uri):
+        def _normalize_uri(uri):
             """Normalize URIs passed into the program by different applications, via drag-and-drop"""
             if uri.startswith('file://localhost/'):
                 return uri[16:]
@@ -463,7 +463,7 @@ class EventHandler:
             return uri
 
         # Normalize URIs
-        uris = [normalize_uri(uri) for uri in uris]
+        uris = [_normalize_uri(uri) for uri in uris]
 
         if len(paths := [url2pathname(uri) for uri in uris]) > 1:
             self._window.filehandler.open_file(paths)

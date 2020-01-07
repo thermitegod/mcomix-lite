@@ -6,8 +6,8 @@ information and then exit with no added functionality inbetween"""
 
 from mcomix import about_dialog, properties_dialog
 
-dialog_windows = {'about-dialog': [None, about_dialog._AboutDialog],
-                  'properties-dialog': [None, properties_dialog._PropertiesDialog]}
+dialog_windows = {'about-dialog': [None, about_dialog.AboutDialog],
+                  'properties-dialog': [None, properties_dialog.PropertiesDialog]}
 
 
 def open_dialog(action, data):

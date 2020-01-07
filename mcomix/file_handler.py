@@ -323,7 +323,7 @@ class FileHandler:
         """Return a string with the name of the currently viewed file that is suitable for printing"""
         return self._window.imagehandler.get_current_filename()
 
-    def _open_next_archive(self, *args):
+    def open_next_archive(self, *args):
         """Open the archive that comes directly after the currently loaded
         archive in that archive's directory listing, sorted alphabetically.
         Returns True if a new archive was opened, False otherwise"""
@@ -341,7 +341,7 @@ class FileHandler:
         else:
             return False
 
-    def _open_previous_archive(self, *args):
+    def open_previous_archive(self, *args):
         """Open the archive that comes directly before the currently loaded
         archive in that archive's directory listing, sorted alphabetically.
         Returns True if a new archive was opened, False otherwise"""
@@ -424,7 +424,7 @@ class FileHandler:
         filepath = os.path.join(extractor.get_directory(), name)
         self.file_available([filepath])
 
-    def _wait_on_file(self, path):
+    def wait_on_file(self, path):
         """Block the running (main) thread if the file <path> is from an
         archive and has not yet been extracted. Return when the file is ready"""
         if self.archive_type is None or path is None:
@@ -439,7 +439,7 @@ class FileHandler:
             logger.error(f'Waiting on extraction failed: \'{path}\'')
             return
 
-    def _ask_for_files(self, files):
+    def ask_for_files(self, files):
         """Ask for <files> to be given priority for extraction"""
         if self.archive_type is None:
             return

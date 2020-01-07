@@ -77,7 +77,7 @@ class AnimeFrameBuffer:
                 for c in range(loop):
                     anime.add_frame(pixbuf)
 
-        anime._framebuffer = self
+        anime.framebuffer = self
 
         return anime
 
@@ -91,7 +91,7 @@ def frame_executor(animation, function, args=(), kwargs=None):
     if not callable(function):
         # function is not a function, do nothing
         return animation
-    framebuffer = getattr(animation, '_framebuffer', None)
+    framebuffer = getattr(animation, 'framebuffer', None)
     if not framebuffer:
         # animation does not have AnimeFrameBuffer, do nothing
         return animation
