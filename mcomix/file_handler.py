@@ -292,11 +292,14 @@ class FileHandler:
 
         return filelist, current_image_index
 
+    def _get_file_list(self):
+        return self._file_provider.list_files(file_provider.FileProvider.ARCHIVES)
+
     def get_file_number(self):
         if self.archive_type is None:
             # No file numbers for images.
             return 0, 0
-        if self._current_file in (file_list := self._file_provider.list_files(file_provider.FileProvider.ARCHIVES)):
+        if self._current_file in (file_list := self._get_file_list()):
             current_index = file_list.index(self._current_file)
         else:
             current_index = 0
@@ -326,7 +329,7 @@ class FileHandler:
         Returns True if a new archive was opened, False otherwise"""
         if self.archive_type is not None:
             if (absolute_path := os.path.abspath(self._base_path)) \
-                    not in (files := self._file_provider.list_files(file_provider.FileProvider.ARCHIVES)):
+                    not in (files := self._get_file_list()):
                 return
 
             current_index = files.index(absolute_path)
@@ -344,7 +347,7 @@ class FileHandler:
         Returns True if a new archive was opened, False otherwise"""
         if self.archive_type is not None:
             if (absolute_path := os.path.abspath(self._base_path)) \
-                    not in (files := self._file_provider.list_files(file_provider.FileProvider.ARCHIVES)):
+                    not in (files := self._get_file_list()):
                 return
 
             current_index = files.index(absolute_path)
