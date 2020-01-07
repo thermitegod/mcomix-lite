@@ -253,8 +253,8 @@ class UnrarException(Exception):
     def get_error_message(errorcode):
         if errorcode in UnrarException._exceptions:
             return UnrarException._exceptions[errorcode]
-        else:
-            return 'Unkown error'
+
+        return 'Unkown error'
 
 
 def _get_unrar():

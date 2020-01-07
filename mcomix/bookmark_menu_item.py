@@ -84,8 +84,8 @@ class Bookmark(Gtk.ImageMenuItem):
         """Equality comparison for Bookmark items"""
         if isinstance(other, Bookmark):
             return self._path == other._path and self._page == other._page
-        else:
-            return False
+
+        return False
 
     def __hash__(self):
         """Hash for this object"""

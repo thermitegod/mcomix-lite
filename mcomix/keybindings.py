@@ -200,6 +200,6 @@ def keybinding_manager(window):
     global _manager
     if _manager:
         return _manager
-    else:
-        _manager = _KeybindingManager(window)
-        return _manager
+
+    _manager = _KeybindingManager(window)
+    return _manager

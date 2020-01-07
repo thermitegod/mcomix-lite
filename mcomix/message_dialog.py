@@ -60,15 +60,15 @@ class MessageDialog(Gtk.MessageDialog):
         if self.__dialog_id in prefs['stored dialog choices']:
             self.destroy()
             return prefs['stored dialog choices'][self.__dialog_id]
-        else:
-            self.show_all()
-            # Prevent checkbox from grabbing focus by only enabling it after show
-            self.__remember_checkbox.set_can_focus(True)
-            result = super(MessageDialog, self).run()
 
-            if self.should_remember_choice() and int(result) in self.__choices:
-                prefs['stored dialog choices'][self.__dialog_id] = int(result)
+        self.show_all()
+        # Prevent checkbox from grabbing focus by only enabling it after show
+        self.__remember_checkbox.set_can_focus(True)
+        result = super(MessageDialog, self).run()
 
-            if self.__auto_destroy:
-                self.destroy()
-            return result
+        if self.should_remember_choice() and int(result) in self.__choices:
+            prefs['stored dialog choices'][self.__dialog_id] = int(result)
+
+        if self.__auto_destroy:
+            self.destroy()
+        return result

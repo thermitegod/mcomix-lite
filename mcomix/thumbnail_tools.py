@@ -72,15 +72,14 @@ class Thumbnailer:
             self.thumbnail_finished(filepath, pixbuf)
             return pixbuf
 
-        else:
-            if mt:
-                thread = threading.Thread(target=self._create_thumbnail, args=(filepath,))
-                thread.name += '-thumbnailer'
-                thread.daemon = True
-                thread.start()
-                return None
-            else:
-                return self._create_thumbnail(filepath)
+        if mt:
+            thread = threading.Thread(target=self._create_thumbnail, args=(filepath,))
+            thread.name += '-thumbnailer'
+            thread.daemon = True
+            thread.start()
+            return None
+
+        return self._create_thumbnail(filepath)
 
     @callback.Callback
     def thumbnail_finished(self, filepath, pixbuf):
@@ -136,8 +135,8 @@ class Thumbnailer:
                 tEXt_data = None
 
             return pixbuf, tEXt_data
-        else:
-            return None, None
+
+        return None, None
 
     def _create_thumbnail(self, filepath):
         """Creates the thumbnail pixbuf for <filepath>, and saves the pixbuf
@@ -210,11 +209,9 @@ class Thumbnailer:
                             file_mtime = os.path.isfile(filepath) and os.stat(filepath).st_mtime or stored_mtime
                             return stored_mtime == file_mtime and max(*img.size) == max(self.__width, self.__height)
                 except IOError:
-                    return False
-            else:
-                return False
-        else:
-            return False
+                    pass
+
+        return False
 
     def _path_to_thumbpath(self, filepath):
         """Converts <path> to an URI for the thumbnail in <dst_dir>"""
@@ -250,5 +247,5 @@ class Thumbnailer:
 
         if images:
             return images[0]
-        else:
-            return None
+
+        return None

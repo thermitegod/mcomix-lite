@@ -106,10 +106,11 @@ def archive_mime_type(path):
             elif magic[0:4] == b'%PDF':
                 return constants.PDF
 
+            return None
+
     except Exception:
         logger.warning(f'Could not read: \'{path}\'')
-
-    return None
+        return None
 
 
 def get_archive_handler(path, type=None):

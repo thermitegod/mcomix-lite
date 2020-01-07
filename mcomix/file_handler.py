@@ -209,12 +209,10 @@ class FileHandler:
         @return: An appropriate error string, or C{None} if no error was found."""
         if not os.path.exists(path):
             return f'Could not open {path}: No such file.'
-
         elif not os.access(path, os.R_OK):
             return f'Could not open {path}: Permission denied.'
 
-        else:
-            return None
+        return None
 
     def _open_archive(self, path):
         """Opens the archive passed in C{path}.
@@ -321,8 +319,8 @@ class FileHandler:
 
         if filename := self.__window.imagehandler.get_current_path():
             return os.path.dirname(filename)
-        else:
-            return None
+
+        return None
 
     def get_base_filename(self):
         """Return the filename of the current base (archive filename or directory name)"""
@@ -347,8 +345,8 @@ class FileHandler:
                     self._close()
                     self.open_file(path, keep_fileprovider=True)
                     return True
-        else:
-            return False
+
+        return False
 
     def open_previous_archive(self, *args):
         """Open the archive that comes directly before the currently loaded
@@ -365,8 +363,8 @@ class FileHandler:
                     self._close()
                     self.open_file(path, -1, keep_fileprovider=True)
                     return True
-        else:
-            return False
+
+        return False
 
     def open_next_directory(self, *args):
         """Opens the next sibling directory of the current file, as specified by

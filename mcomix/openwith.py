@@ -94,8 +94,8 @@ class OpenWithCommand:
 
         if exe := shutil.which(args[0]):
             return exe
-        else:
-            return None
+
+        return None
 
     def is_valid_workdir(self, window, allow_empty=False):
         """Check if the working directory is valid"""
@@ -107,8 +107,8 @@ class OpenWithCommand:
 
         if os.path.isdir(dir := args[0]) and os.access(dir, os.X_OK):
             return True
-        else:
-            return False
+
+        return False
 
     def parse(self, window, text='', check_restrictions=True):
         """Parses the command string and replaces special characters
@@ -262,8 +262,8 @@ class OpenWithEditor(Gtk.Dialog):
         model, iter = self.__command_tree.get_selection().get_selected()
         if iter and model.iter_is_valid(iter):
             return OpenWithCommand(*model.get(iter, 0, 1, 2, 3))
-        else:
-            return None
+
+        return None
 
     def test_command(self):
         """Parses the currently selected command and displays the output in the text box next to the button"""

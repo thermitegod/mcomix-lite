@@ -33,15 +33,15 @@ def bin_search(lst, value):
     C{value} is contained in C{lst}"""
     if (index := bisect.bisect_left(lst, value)) != len(lst) and lst[index] == value:
         return index
-    else:
-        return ~index
+
+    return ~index
 
 
 def number_of_digits(n):
     if n == 0:
         return 1
-    else:
-        return int(math.log10(abs(n))) + 1
+
+    return int(math.log10(abs(n))) + 1
 
 
 def format_byte_size(n):

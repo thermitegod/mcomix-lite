@@ -199,23 +199,23 @@ def disable_transform(pixbuf):
             return True
         if not prefs['animation transform']:
             return True
-    else:
-        return False
+
+    return False
 
 
 def static_image(pixbuf):
     """Returns a non-animated version of the specified pixbuf"""
     if is_animation(pixbuf):
         return pixbuf.get_static_image()
-    else:
-        return pixbuf
+
+    return pixbuf
 
 
 def set_from_pixbuf(image, pixbuf):
     if is_animation(pixbuf):
         return image.set_from_animation(pixbuf)
-    else:
-        return image.set_from_pixbuf(pixbuf)
+
+    return image.set_from_pixbuf(pixbuf)
 
 
 def load_animation(im):
@@ -256,8 +256,8 @@ def load_pixbuf(path):
         if pixbuf.is_static_image():
             return pixbuf.get_static_image()
         return pixbuf
-    else:
-        return GdkPixbuf.Pixbuf.new_from_file(path)
+
+    return GdkPixbuf.Pixbuf.new_from_file(path)
 
 
 def load_pixbuf_size(path, width, height):
@@ -347,8 +347,8 @@ def get_implied_rotation(pixbuf):
         return 90
     elif orientation == '8':
         return 270
-    else:
-        return 0
+
+    return 0
 
 
 def convert_rgb16list_to_rgba8int(c):
@@ -372,8 +372,8 @@ def get_image_size(path):
     except Exception:
         if (info := GdkPixbuf.Pixbuf.get_file_info(path))[0] is None:
             return 0, 0
-        else:
-            return info[1], info[2]
+
+        return info[1], info[2]
 
 
 def get_image_mime(path):
@@ -385,8 +385,8 @@ def get_image_mime(path):
     except Exception:
         if (info := GdkPixbuf.Pixbuf.get_file_info(path))[0] is None:
             return 'Unknown filetype'
-        else:
-            return info[0].get_name().upper()
+
+        return info[0].get_name().upper()
 
 
 SUPPORTED_IMAGE_EXTS = set()

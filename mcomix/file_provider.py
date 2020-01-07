@@ -24,12 +24,12 @@ def get_file_provider(filelist):
         if len(filelist) == 1:
             if os.path.exists(filelist[0]):
                 return OrderedFileProvider(filelist[0])
-            else:
-                return None
-        else:
-            return PreDefinedFileProvider(filelist)
-    else:
-        return None
+
+            return None
+
+        return PreDefinedFileProvider(filelist)
+
+    return None
 
 
 class FileProvider:
@@ -129,8 +129,8 @@ class OrderedFileProvider(FileProvider):
                 > (current_index := directories.index(self.__base_dir)):
             self.__base_dir = directories[current_index + 1]
             return True
-        else:
-            return False
+
+        return False
 
     def previous_directory(self):
         """Switches to the previous sibling directory. Next call to
@@ -140,8 +140,8 @@ class OrderedFileProvider(FileProvider):
         if (current_index := directories.index(self.__base_dir)) > 0:
             self.__base_dir = directories[current_index - 1]
             return True
-        else:
-            return False
+
+        return False
 
     @staticmethod
     def __get_sibling_directories(dir):

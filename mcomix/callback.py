@@ -30,9 +30,9 @@ class CallbackList:
 
             self.__run_callbacks(*args, **kwargs)
             return result
-        else:
-            # Call this method again in the main thread.
-            GLib.idle_add(self.__mainthread_call, (args, kwargs))
+
+        # Call this method again in the main thread.
+        GLib.idle_add(self.__mainthread_call, (args, kwargs))
 
     def __iadd__(self, function):
         """Support for 'method += callback_function' syntax"""
@@ -93,8 +93,8 @@ class CallbackList:
         weak references do not work on bound methods"""
         if hasattr(func, 'im_self') and getattr(func, 'im_self') is not None:
             return weakref.ref(func.im_self, self.__callback_deleted), func.im_func
-        else:
-            return None, func
+
+        return None, func
 
 
 class Callback:

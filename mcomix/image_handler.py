@@ -234,8 +234,8 @@ class ImageHandler:
         """Return the current page number (starting from 1), or 0 if no file is loaded"""
         if self.__current_image_index is not None:
             return self.__current_image_index + 1
-        else:
-            return 0
+
+        return 0
 
     def get_path_to_page(self, page=None):
         """Return the full path to the image file for <page>, or the current page if <page> is None"""
@@ -246,8 +246,8 @@ class ImageHandler:
 
         if isinstance(index, int) and 0 <= index < len(self.__image_files):
             return self.__image_files[index]
-        else:
-            return None
+
+        return None
 
     def get_page_filename(self, page=None, double=False, manga=False):
         """Return the filename of the <page>, or the filename of the
@@ -296,15 +296,15 @@ class ImageHandler:
         if double:
             second = get_fsize(page + 1)
             return (second, first) if manga else (first, second)
-        else:
-            return first
+
+        return first
 
     def get_current_filename(self):
         """Return a string with the name of the currently viewed file that is suitable for printing"""
         if self.__window.filehandler.get_archive_type() is not None:
             return os.path.basename(self.__base_path)
-        else:
-            return os.path.abspath(self.get_current_path())
+
+        return os.path.abspath(self.get_current_path())
 
     def get_size(self, page=None):
         """Return a tuple (width, height) with the size of <page>. If <page>

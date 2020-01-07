@@ -80,8 +80,8 @@ class _BookmarksStore:
                 if bookmark.same_page(page):
                     logger.info(f'Bookmark already exists for \'{name}\' on page \'{page}\'')
                     return
-                else:
-                    same_file_bookmarks.append(bookmark)
+
+                same_file_bookmarks.append(bookmark)
 
         # If the same file was already bookmarked, ask to replace
         # the existing bookmarks before deleting them.
@@ -102,9 +102,9 @@ class _BookmarksStore:
         """Return all the bookmarks in the list"""
         if not self.file_was_modified():
             return self.__bookmarks
-        else:
-            self.__bookmarks, self.__bookmarks_mtime = self.load_bookmarks()
-            return self.__bookmarks
+
+        self.__bookmarks, self.__bookmarks_mtime = self.load_bookmarks()
+        return self.__bookmarks
 
     def load_bookmarks(self):
         """Loads persisted bookmarks from a local file.
@@ -136,8 +136,7 @@ class _BookmarksStore:
             try:
                 if os.stat(path).st_mtime > self.__bookmarks_mtime:
                     return True
-                else:
-                    return False
+                return False
             except IOError:
                 return False
         else:
