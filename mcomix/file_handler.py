@@ -436,7 +436,7 @@ class FileHandler:
                 while not self._extractor.is_ready(name) and not self._stop_waiting:
                     self._condition.wait()
         except Exception:
-            logger.exception(f'Waiting on extraction failed: \'{path}\'')
+            logger.error(f'Waiting on extraction failed: \'{path}\'')
             return
 
     def _ask_for_files(self, files):

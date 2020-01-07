@@ -66,7 +66,7 @@ def run():
         from gi.repository import GLib, Gdk, GdkPixbuf, Gtk
 
     except (ValueError, AssertionError, ImportError):
-        logger.exception('GTK+ 3.0 import error.')
+        logger.error('GTK+ 3.0 import error.')
         sys.exit(1)
 
     try:

@@ -95,7 +95,7 @@ class Thumbnailer:
             try:
                 os.remove(thumbpath)
             except IOError:
-                logger.exception(f'Could not remove file: \'{thumbpath}\'')
+                logger.error(f'Could not remove file: \'{thumbpath}\'')
 
     def _create_thumbnail_pixbuf(self, filepath):
         """Creates a thumbnail pixbuf from <filepath>, and returns it as a
@@ -190,7 +190,7 @@ class Thumbnailer:
             os.chmod(thumbpath, 0o600)
 
         except Exception:
-            logger.exception(f'Could not save thumbnail: \'{thumbpath}\'')
+            logger.error(f'Could not save thumbnail: \'{thumbpath}\'')
 
     def _thumbnail_exists(self, filepath):
         """Checks if the thumbnail for <filepath> already exists.

@@ -86,7 +86,7 @@ class _BaseFileChooserDialog(Gtk.Dialog):
             elif os.path.isdir(prefs['path of last browsed in filechooser']):
                 self.filechooser.set_current_folder(constants.HOME_DIR)
         except Exception:
-            logger.exception('probably broken prefs values')
+            logger.error('probably broken prefs values')
 
         self.show_all()
 

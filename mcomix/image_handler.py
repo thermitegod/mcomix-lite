@@ -102,7 +102,7 @@ class ImageHandler:
                 pixbuf = image_tools.load_pixbuf(self._image_files[index])
                 tools.garbage_collect()
             except Exception:
-                logger.exception(f'Could not load pixbuf for page: \'{index + 1}\'')
+                logger.error(f'Could not load pixbuf for page: \'{index + 1}\'')
                 pixbuf = image_tools.MISSING_IMAGE_ICON
             self._raw_pixbufs[index] = pixbuf
 
@@ -341,7 +341,7 @@ class ImageHandler:
             thumbnailer = thumbnail_tools.Thumbnailer(store_on_disk=create, size=(width, height))
             return thumbnailer.thumbnail(path)
         except Exception:
-            logger.exception(f'Failed to create thumbnail for image: \'{path}\'')
+            logger.error(f'Failed to create thumbnail for image: \'{path}\'')
             return image_tools.MISSING_IMAGE_ICON
 
     def _wait_on_page(self, page, check_only=False):
