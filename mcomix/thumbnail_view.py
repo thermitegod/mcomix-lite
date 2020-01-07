@@ -100,3 +100,6 @@ class ThumbnailTreeView(Gtk.TreeView, ThumbnailViewBase):
 
     def get_visible_range(self):
         return Gtk.TreeView.get_visible_range(self)
+
+    def generate_thumbnail(self, uid):
+        pass
