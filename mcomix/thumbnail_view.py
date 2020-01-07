@@ -51,26 +51,12 @@ class ThumbnailViewBase:
         if not self.__lock.acquire(blocking=False):
             return
         try:
-            if not (visible := self.get_visible_range()):
-                # No valid paths available
-                return
-
-            start = visible[0][0]
-            end = visible[1][0]
-
-            # Currently invisible icons are always cached
-            # only after the visible icons completed.
-            mid = (start + end) // 2 + 1
-            harf = end - start + 1  # twice of current visible length
-            required = set(range(mid - harf, mid + harf))
-
             if not (taskid := self.__taskid):
                 taskid = uuid.uuid4().int
 
             model = self.get_model()
-            required &= set(range(len(model)))  # filter invalid paths.
-            for path in required:
-                iter = model.get_iter(path)
+            for idx, item in set(enumerate(model)):
+                iter = model.get_iter(idx)
                 uid, generated = model.get(iter, self.__uid_column, self.__status_column)
                 # Do not queue again if thumbnail was already created.
                 if generated:

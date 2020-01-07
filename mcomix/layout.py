@@ -80,9 +80,9 @@ class FiniteLayout:  # 2D only
         content_size = content_box.get_size()
         viewport_size = viewport_box.get_size()
         result = list(viewport_box.get_position())
-        for i in range(len(content_size)):
-            o = orientation[i]
-            d = destination[i]
+        for idx, item in enumerate(content_size):
+            o = orientation[idx]
+            d = destination[idx]
             if d == 0:
                 continue
             if d < constants.SCROLL_TO_END or d > 1:
@@ -91,12 +91,12 @@ class FiniteLayout:  # 2D only
                 d = o
             if d == constants.SCROLL_TO_START:
                 d = -o
-            c = content_size[i]
-            v = viewport_size[i]
+            c = content_size[idx]
+            v = viewport_size[idx]
             invisible_size = c - v
-            result[i] = content_position[i] + (box.Box.box_to_center_offset_1d(invisible_size, o)
-                                               if d == constants.SCROLL_TO_CENTER
-                                               else invisible_size if d == 1 else 0)  # if d == -1
+            result[idx] = content_position[idx] + (box.Box.box_to_center_offset_1d(invisible_size, o)
+                                                   if d == constants.SCROLL_TO_CENTER
+                                                   else invisible_size if d == 1 else 0)  # if d == -1
         return result
 
     def get_content_boxes(self):
@@ -141,10 +141,10 @@ class FiniteLayout:  # 2D only
             temp_wb_list, temp_bb = FiniteLayout._wrap_union(temp_cb_list, viewport_size, orientation)
         # move to global origin
         bbp = temp_bb.get_position()
-        for i in range(len(temp_cb_list)):
-            temp_cb_list[i] = temp_cb_list[i].translate_opposite(bbp)
-        for i in range(len(temp_wb_list)):
-            temp_wb_list[i] = temp_wb_list[i].translate_opposite(bbp)
+        for idx, item in enumerate(temp_cb_list):
+            temp_cb_list[idx] = temp_cb_list[idx].translate_opposite(bbp)
+        for idx, item in enumerate(temp_wb_list):
+            temp_wb_list[idx] = temp_wb_list[idx].translate_opposite(bbp)
         temp_bb = temp_bb.translate_opposite(bbp)
         # reverse order again, if necessary
         if orientation[distribution_axis] == -1:
@@ -162,8 +162,8 @@ class FiniteLayout:  # 2D only
     def _wrap_individually(temp_cb_list, viewport_size, orientation):
         # calculate (potentially oversized) wrapper Boxes
         temp_wb_list = [None] * len(temp_cb_list)
-        for i in range(len(temp_cb_list)):
-            temp_wb_list[i] = temp_cb_list[i].wrapper_box(viewport_size, orientation)
+        for idx, item in enumerate(temp_cb_list):
+            temp_wb_list[idx] = temp_cb_list[idx].wrapper_box(viewport_size, orientation)
         # calculate bounding Box
         temp_bb = box.Box.bounding_box(temp_wb_list)
         return temp_wb_list, temp_bb

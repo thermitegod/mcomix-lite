@@ -58,10 +58,10 @@ class ZoomModel:
         prescaled_union_size = _union_size(prescaled, distribution_axis)
 
         def _other_preferences(limits, distribution_axis):
-            for i in range(len(limits)):
-                if i == distribution_axis:
+            for idx, item in enumerate(limits):
+                if idx == distribution_axis:
                     continue
-                if limits[i] is not None:
+                if limits[idx] is not None:
                     return True
             return False
 
@@ -82,8 +82,8 @@ class ZoomModel:
             preferred_scales = map(lambda x: min(x, IDENTITY_ZOOM), preferred_scales)
         preferred_scales = list(preferred_scales)
         user_scale = 2 ** (self.__user_zoom_log / USER_ZOOM_LOG_SCALE1)
-        res_scales = [preferred_scales[i] * (user_scale if not do_not_transform[i] else IDENTITY_ZOOM)
-                      for i in range(len(preferred_scales))]
+        res_scales = [preferred_scales[idx] * (user_scale if not do_not_transform[idx] else IDENTITY_ZOOM)
+                      for idx, item in enumerate(preferred_scales)]
         return [tuple(_scale_image_size(size, scale))
                 for size, scale in zip(fitted_image_sizes, res_scales)]
 
@@ -93,13 +93,13 @@ class ZoomModel:
         limits imposed by limits. If no proper value can be determined,
         IDENTITY_ZOOM is returned"""
         min_scale = None
-        for i in range(len(limits)):
-            if i == distribution_axis:
+        for idx, item in enumerate(limits):
+            if idx == distribution_axis:
                 continue
-            l = limits[i]
+            l = limits[idx]
             if l is None:
                 continue
-            s = tools.div(l, image_size[i])
+            s = tools.div(l, image_size[idx])
             if min_scale is None or s < min_scale:
                 min_scale = s
         if min_scale is None:
@@ -241,9 +241,9 @@ def _scale_image_size(size, scale):
 
 def _round_nonempty(t):
     result = [0] * len(t)
-    for i in range(len(t)):
-        x = int(round(t[i]))
-        result[i] = x if x > 0 else 1
+    for idx, item in enumerate(t):
+        x = int(round(t[idx]))
+        result[idx] = x if x > 0 else 1
     return result
 
 

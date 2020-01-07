@@ -66,10 +66,10 @@ class Box:
         @param point: The point of interest.
         @return The distance between the point and the Box as specified above"""
         result = 0
-        for i in range(len(point)):
-            p = point[i]
-            bs = self.__position[i]
-            be = self.__size[i] + bs
+        for idx, item in enumerate(point):
+            p = point[idx]
+            bs = self.__position[idx]
+            be = self.__size[idx] + bs
             if p < bs:
                 r = bs - p
             elif p >= be:
@@ -111,12 +111,12 @@ class Box:
         @return The indices of the closest Boxes as specified above"""
         result = []
         mindist = -1
-        for i in range(len(boxes)):
+        for idx, item in enumerate(boxes):
             # 0 --> keep
             # 1 --> append
             # 2 --> replace
             keep_append_replace = 0
-            b = boxes[i]
+            b = boxes[idx]
             dist = b.distance_point_squared(point)
             if (result == []) or (dist < mindist):
                 keep_append_replace = 2
@@ -125,8 +125,8 @@ class Box:
                     # Take orientation into account.
                     # If result is small, a simple iteration shouldn't be a
                     # performance issue.
-                    for ri in range(len(result)):
-                        c = Box._compare_distance_to_origin(b, boxes[result[ri]], orientation)
+                    for ridx, ritem in enumerate(result):
+                        c = Box._compare_distance_to_origin(b, boxes[result[ridx]], orientation)
                         if c < 0:
                             keep_append_replace = 2
                             break
@@ -136,10 +136,10 @@ class Box:
                     keep_append_replace = 1
 
             if keep_append_replace == 1:
-                result.append(i)
+                result.append(idx)
             if keep_append_replace == 2:
                 mindist = dist
-                result = [i]
+                result = [idx]
         return result
 
     @staticmethod
@@ -154,14 +154,14 @@ class Box:
         to. Either 1 (towards larger values in this dimension when reading) or
         -1 (towards smaller values in this dimension when reading).
         @return An integer as specified above"""
-        for i in range(len(orientation)):
-            if (o := orientation[i]) == 0:
+        for idx, item in enumerate(orientation):
+            if (o := orientation[idx]) == 0:
                 continue
-            box1edge = box1.get_position()[i]
-            box2edge = box2.get_position()[i]
+            box1edge = box1.get_position()[idx]
+            box2edge = box2.get_position()[idx]
             if o < 0:
-                box1edge = box1.get_size()[i] - box1edge
-                box2edge = box2.get_size()[i] - box2edge
+                box1edge = box1.get_size()[idx] - box1edge
+                box2edge = box2.get_size()[idx] - box2edge
             if (d := box1edge - box2edge) != 0:
                 return d
         return 0
@@ -177,8 +177,8 @@ class Box:
         result = [0] * len(orientation)
         bp = self.get_position()
         bs = self.get_size()
-        for i in range(len(orientation)):
-            result[i] = Box.box_to_center_offset_1d(bs[i] - 1, orientation[i]) + bp[i]
+        for idx, item in enumerate(orientation):
+            result[idx] = Box.box_to_center_offset_1d(bs[idx] - 1, orientation[idx]) + bp[idx]
         return result
 
     @staticmethod
@@ -255,11 +255,11 @@ class Box:
         position = self.get_position()
         result_size = [0] * len(size)
         result_position = [0] * len(size)
-        for i in range(len(size)):
-            c = size[i]
-            v = viewport_size[i]
-            result_size[i] = max(c, v)
-            result_position[i] = Box.box_to_center_offset_1d(c - result_size[i], orientation[i]) + position[i]
+        for idx, item in enumerate(size):
+            c = size[idx]
+            v = viewport_size[idx]
+            result_size[idx] = max(c, v)
+            result_position[idx] = Box.box_to_center_offset_1d(c - result_size[idx], orientation[idx]) + position[idx]
         return Box(result_position, result_size)
 
     @staticmethod
@@ -275,10 +275,10 @@ class Box:
         for b in boxes:
             s = b.get_size()
             p = b.get_position()
-            for i in range(len(mins)):
-                if (mins[i] is None) or (p[i] < mins[i]):
-                    mins[i] = p[i]
-                ps = p[i] + s[i]
-                if (maxes[i] is None) or (ps > maxes[i]):
-                    maxes[i] = ps
+            for idx, item in enumerate(mins):
+                if (mins[idx] is None) or (p[idx] < mins[idx]):
+                    mins[idx] = p[idx]
+                ps = p[idx] + s[idx]
+                if (maxes[idx] is None) or (ps > maxes[idx]):
+                    maxes[idx] = ps
         return Box(mins, tools.vector_sub(maxes, mins))

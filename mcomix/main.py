@@ -706,11 +706,11 @@ class MainWindow(Gtk.Window):
     def _show_scrollbars(self, request):
         """Enables scroll bars depending on requests and preferences"""
         limit = self._should_toggle_be_visible('show scrollbar')
-        for i in range(len(self.__scroll)):
-            if limit and request[i]:
-                self.__scroll[i].show()
+        for idx, item in enumerate(self.__scroll):
+            if limit and request[idx]:
+                self.__scroll[idx].show()
             else:
-                self.__scroll[i].hide()
+                self.__scroll[idx].hide()
 
     def scroll(self, x, y):
         """Scroll <x> px horizontally and <y> px vertically. If <bound> is

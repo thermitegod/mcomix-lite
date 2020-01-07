@@ -131,11 +131,11 @@ class MagnifyingLens:
         canvas.fill(image_tools.convert_rgb16list_to_rgba8int([r, g, b]))
         cb = self.__window.get_layout().get_content_boxes()
         source_pixbufs = self.__window.imagehandler.get_pixbufs(len(cb))
-        for i in range(len(cb)):
-            if image_tools.is_animation(source_pixbufs[i]):
+        for idx, item in enumerate(cb):
+            if image_tools.is_animation(source_pixbufs[idx]):
                 continue
-            cpos = cb[i].get_position()
-            self._add_subpixbuf(canvas, x - cpos[0], y - cpos[1], cb[i].get_size(), source_pixbufs[i])
+            cpos = cb[idx].get_position()
+            self._add_subpixbuf(canvas, x - cpos[0], y - cpos[1], cb[idx].get_size(), source_pixbufs[idx])
 
         return image_tools.add_border(canvas, 1)
 
