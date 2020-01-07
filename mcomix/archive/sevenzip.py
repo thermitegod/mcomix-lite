@@ -57,7 +57,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
             return None
 
         if self.__state == self.STATE_HEADER:
-            if 'Solid = +' == line:
+            if line == 'Solid = +':
                 self.__is_solid = True
 
         if self.__state == self.STATE_LISTING:
@@ -131,7 +131,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
                     new.write(data)
                 yield unicode_name
                 del wanted[filename]
-                if 0 == len(wanted):
+                if len(wanted) == 0:
                     break
 
     @staticmethod

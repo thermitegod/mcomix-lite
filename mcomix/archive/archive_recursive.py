@@ -121,7 +121,7 @@ class RecursiveArchive(archive_base.BaseArchive):
                 name_archive, name_archive_name = self.__entry_mapping[name]
                 if name_archive == archive:
                     archive_wanted[name_archive_name] = name
-            if 0 == len(archive_wanted):
+            if len(archive_wanted) == 0:
                 continue
             root = self.__archive_root[archive]
             archive_destination_dir = destination_dir
@@ -132,7 +132,7 @@ class RecursiveArchive(archive_base.BaseArchive):
             for f in archive.iter_extract(archive_wanted.keys(), archive_destination_dir):
                 yield archive_wanted[f]
             wanted -= set(archive_wanted.values())
-            if 0 == len(wanted):
+            if len(wanted) == 0:
                 break
 
     def is_solid(self):
