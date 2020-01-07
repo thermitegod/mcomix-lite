@@ -51,7 +51,7 @@ class Extractor:
             logger.warning(msg := f'Non-supported archive format: \'{os.path.basename(src)}\'')
             raise ArchiveException(msg)
 
-        self.__dst = self.__archive.destdir
+        self.__dst = self.__archive.get_destdir()
         self.__condition = threading.Condition()
         self.__threadpool.apply_async(
                 self._list_contents, callback=self._list_contents_cb,

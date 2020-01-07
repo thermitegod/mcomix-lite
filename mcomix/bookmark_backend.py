@@ -70,7 +70,7 @@ class _BookmarksStore:
         path = self.__image_handler.get_real_path()
         page = self.__image_handler.get_current_page()
         numpages = self.__image_handler.get_number_of_pages()
-        archive_type = self.__file_handler.archive_type
+        archive_type = self.__file_handler.get_archive_type()
         date_added = datetime.datetime.now()
 
         same_file_bookmarks = []

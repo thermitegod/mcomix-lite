@@ -36,7 +36,7 @@ class Bookmark(Gtk.ImageMenuItem):
 
     def load(self, *args):
         """Open the file and page the bookmark represents"""
-        if self._file_handler._base_path != self._path:
+        if self._file_handler.get_base_path() != self._path:
             self._file_handler.open_file(self._path, self._page)
         else:
             self.__window.set_page(self._page)

@@ -21,7 +21,7 @@ class MagnifyingLens:
 
     def __init__(self, window):
         self.__window = window
-        self.__area = self._window._main_layout
+        self.__area = self.__window.get_main_layout()
         self.__area.connect('motion-notify-event', self._motion_event)
 
         #: Stores lens state
@@ -68,7 +68,7 @@ class MagnifyingLens:
             last_region.x, last_region.y, last_region.width, last_region.height = self.__last_lens_rect
             draw_region = Gdk.rectangle_union(draw_region, last_region)
 
-        window = self.__window._main_layout.get_bin_window()
+        window = self.__window.get_main_layout().get_bin_window()
         window.begin_paint_rect(draw_region)
 
         self._clear_lens()
@@ -90,8 +90,8 @@ class MagnifyingLens:
         lens_y = max(y - height // 2, 0)
 
         max_width, max_height = self.__window.get_visible_area_size()
-        max_width += int(self.__window._hadjust.get_value())
-        max_height += int(self.__window._vadjust.get_value())
+        max_width += int(self.__window.get_hadjust().get_value())
+        max_height += int(self.__window.get_vadjust().get_value())
         lens_x = min(lens_x, max_width - width)
         lens_y = min(lens_y, max_height - height)
 
@@ -103,7 +103,7 @@ class MagnifyingLens:
         if not self.__last_lens_rect:
             return
 
-        window = self.__window._main_layout.get_bin_window()
+        window = self.__window.get_main_layout().get_bin_window()
         crect = Gdk.Rectangle()
         crect.x, crect.y, crect.width, crect.height = self.__last_lens_rect
         window.invalidate_rect(crect, True)
@@ -129,7 +129,7 @@ class MagnifyingLens:
                                       height=prefs['lens size'])
         r, g, b, a = [int(p * 255) for p in self.__window.get_bg_color()]
         canvas.fill(image_tools.convert_rgb16list_to_rgba8int([r, g, b]))
-        cb = self.__window.layout.get_content_boxes()
+        cb = self.__window.get_layout().get_content_boxes()
         source_pixbufs = self.__window.imagehandler.get_pixbufs(len(cb))
         for i in range(len(cb)):
             if image_tools.is_animation(source_pixbufs[i]):

@@ -71,7 +71,7 @@ class ImageHandler:
         if not self.__lock.acquire(blocking=False):
             return
         try:
-            if not self.__window.filehandler.file_loaded:
+            if not self.__window.filehandler.get_file_loaded():
                 return
 
             # Get list of wanted pixbufs.
@@ -116,6 +116,9 @@ class ImageHandler:
         # Set list of image file names
         self.__image_files[:] = files
 
+    def set_base_path(self, path):
+        self.__base_path = path
+
     def get_current_path(self):
         # Get current image path
         try:
@@ -134,7 +137,7 @@ class ImageHandler:
 
         if (page == 1 and
                 prefs['virtual double page for fitting images'] & constants.SHOW_DOUBLE_AS_ONE_TITLE and
-                self.__window.filehandler.archive_type is not None):
+                self.__window.filehandler.get_archive_type() is not None):
             return True
 
         if (not prefs['default double page'] or
@@ -160,7 +163,7 @@ class ImageHandler:
     def get_real_path(self):
         """Return the "real" path to the currently viewed file, i.e. the
         full path to the archive or the full path to the currently viewed image"""
-        if self.__window.filehandler.archive_type is not None:
+        if self.__window.filehandler.get_archive_type() is not None:
             return self.__window.filehandler.get_path_to_base()
         return self.get_path_to_page()
 
@@ -298,7 +301,7 @@ class ImageHandler:
 
     def get_current_filename(self):
         """Return a string with the name of the currently viewed file that is suitable for printing"""
-        if self.__window.filehandler.archive_type is not None:
+        if self.__window.filehandler.get_archive_type() is not None:
             return os.path.basename(self.__base_path)
         else:
             return os.path.abspath(self.get_current_path())

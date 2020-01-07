@@ -36,7 +36,6 @@ class MainWindow(Gtk.Window):
         self.__spacing = 2
         self.__waiting_for_redraw = False
 
-        self.__image_box = Gtk.HBox(homogeneous=False, spacing=2)  # XXX transitional(kept for osd.py)
         self.__main_layout = Gtk.Layout()
         # Wrap main layout into an event box so
         # we  can change its background color.
@@ -211,6 +210,26 @@ class MainWindow(Gtk.Window):
 
             Gdk.event_handler_set(_on_event)
 
+    def get_layout(self):
+        return self.__layout
+
+    def get_main_layout(self):
+        return self.__main_layout
+
+    def get_hadjust(self):
+        return self.__hadjust
+
+    def get_vadjust(self):
+        return self.__vadjust
+
+    @staticmethod
+    def get_image_box():
+        # XXX transitional(kept for osd.py)
+        return Gtk.HBox(homogeneous=False, spacing=2)
+
+    def get_event_handler(self):
+        return self.__event_handler
+
     def gained_focus(self, *args):
         self.was_out_of_focus = False
 
@@ -247,7 +266,7 @@ class MainWindow(Gtk.Window):
             visible = not prefs['hide all']
         visible &= prefs[preference]
         if preference == 'show thumbnails':
-            visible &= self.filehandler.file_loaded
+            visible &= self.filehandler.get_file_loaded()
             visible &= self.imagehandler.get_number_of_pages() > 0
         return visible
 
@@ -273,7 +292,7 @@ class MainWindow(Gtk.Window):
 
         self.osd.clear()
 
-        if not self.filehandler.file_loaded:
+        if not self.filehandler.get_file_loaded():
             self._clear_main_area()
             self.__waiting_for_redraw = False
             return False
@@ -468,7 +487,7 @@ class MainWindow(Gtk.Window):
 
         # Use first page as application icon when opening archives.
         if (page == 1
-                and self.filehandler.archive_type is not None
+                and self.filehandler.get_archive_type() is not None
                 and prefs['archive thumbnail as icon']):
             pixbuf = self.imagehandler.get_thumbnail(page, 48, 48)
             self.set_icon(pixbuf)
@@ -512,7 +531,7 @@ class MainWindow(Gtk.Window):
         self.new_page(at_bottom=at_bottom)
 
     def next_book(self):
-        archive_open = self.filehandler.archive_type is not None
+        archive_open = self.filehandler.get_archive_type() is not None
         next_archive_opened = False
         if prefs['auto open next archive']:
             next_archive_opened = self.filehandler.open_next_archive()
@@ -525,7 +544,7 @@ class MainWindow(Gtk.Window):
             self.filehandler.open_next_directory()
 
     def previous_book(self):
-        archive_open = self.filehandler.archive_type is not None
+        archive_open = self.filehandler.get_archive_type() is not None
         previous_archive_opened = False
         if prefs['auto open next archive']:
             previous_archive_opened = self.filehandler.open_previous_archive()
@@ -538,7 +557,7 @@ class MainWindow(Gtk.Window):
             self.filehandler.open_previous_directory()
 
     def flip_page(self, step, single_step=False):
-        if not self.filehandler.file_loaded:
+        if not self.filehandler.get_file_loaded():
             return
 
         current_page = self.imagehandler.get_current_page()
@@ -796,7 +815,7 @@ class MainWindow(Gtk.Window):
     def extract_page(self, *args):
         """Derive some sensible filename (archive name + _ + filename should do) and offer
         the user the choice to save the current page with the selected name"""
-        if self.filehandler.archive_type is not None:
+        if self.filehandler.get_archive_type() is not None:
             archive_name = self.filehandler.get_current_filename()
             file_name = self.imagehandler.get_path_to_page()
             suggested_name = f'{os.path.splitext(archive_name)[0]}_{os.path.split(file_name)[-1]}'
@@ -856,7 +875,7 @@ class MainWindow(Gtk.Window):
             if result != Gtk.ResponseType.OK:
                 return None
 
-        if self.filehandler.archive_type is not None:
+        if self.filehandler.get_archive_type() is not None:
             next_opened = self.filehandler.open_next_archive()
             if not next_opened:
                 next_opened = self.filehandler.open_previous_archive()
@@ -885,7 +904,7 @@ class MainWindow(Gtk.Window):
 
     def show_info_panel(self):
         """Shows an OSD displaying information about the current page"""
-        if not self.filehandler.file_loaded:
+        if not self.filehandler.get_file_loaded():
             return
 
         text = ''

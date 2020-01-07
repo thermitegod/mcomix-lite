@@ -67,7 +67,7 @@ class OpenWithCommand:
     def execute(self, window):
         """Spawns a new process with the given executable and arguments"""
         if (self.is_disabled_for_archives() and
-                window.filehandler.archive_type is not None):
+                window.filehandler.get_archive_type() is not None):
             window.osd.show(f'"{self.get_label()}" is disabled for archives.')
             return
 
@@ -176,9 +176,9 @@ class OpenWithCommand:
         if not check_restrictions:
             return DEBUGGING_CONTEXT  # ignore context, reflect variable name
         context = 0
-        if not window.filehandler.file_loaded:
+        if not window.filehandler.get_file_loaded():
             context = NO_FILE_CONTEXT  # no file loaded
-        elif window.filehandler.archive_type is not None:
+        elif window.filehandler.get_archive_type() is not None:
             context = IMAGE_FILE_CONTEXT | ARCHIVE_CONTEXT  # archive loaded
         else:
             context = IMAGE_FILE_CONTEXT  # image loaded (no archive)

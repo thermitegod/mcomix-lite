@@ -26,7 +26,7 @@ class OnScreenDisplay:
         """Shows the OSD on the lower portion of the image window"""
         # Determine text to draw
         text = self._wrap_text(text)
-        layout = self.__window._image_box.create_pango_layout(text)
+        layout = self.__window.get_image_box().create_pango_layout(text)
 
         # Set up font information
         font = layout.get_context().get_font_description()
@@ -39,8 +39,9 @@ class OnScreenDisplay:
 
         # Calculate surrounding box
         layout_width, layout_height = layout.get_pixel_size()
-        pos_x = max(int(max_width // 2) - int(layout_width // 2) + int(self.__window._hadjust.get_value()), 0)
-        pos_y = max(int(max_height) - int(layout_height * 1.1) + int(self.__window._vadjust.get_value()), 0)
+        pos_x = max(int(max_width // 2) - int(layout_width // 2) + int(self.__window.get_hadjust().get_value()), 0)
+        pos_y = max(int(max_height) - int(layout_height * 1.1) + int(self.__window.get_vadjust().get_value()), 0)
+
         rect = (pos_x - 10, pos_y - 20, layout_width + 20, layout_height + 20)
 
         self._draw_osd(layout, rect)
@@ -68,7 +69,7 @@ class OnScreenDisplay:
         if not self.__last_osd_rect:
             return
 
-        window = self.__window._main_layout.get_bin_window()
+        window = self.__window.get_main_layout().get_bin_window()
         gdk_rect = Gdk.Rectangle()
         gdk_rect.x, gdk_rect.y, gdk_rect.width, gdk_rect.height = self.__last_osd_rect
         window.invalidate_rect(gdk_rect, True)
@@ -104,7 +105,7 @@ class OnScreenDisplay:
         gdk_rect.y = draw_region.y
         gdk_rect.width = draw_region.width
         gdk_rect.height = draw_region.height
-        window = self.__window._main_layout.get_bin_window()
+        window = self.__window.get_main_layout().get_bin_window()
         window.begin_paint_rect(gdk_rect)
 
         self._clear_osd()

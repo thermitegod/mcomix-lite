@@ -60,7 +60,7 @@ class PropertiesDialog(Gtk.Dialog):
         page = self.__archive_page
         page.reset()
         window = self.__window
-        if window.filehandler.archive_type is None:
+        if window.filehandler.get_archive_type() is None:
             if self.__notebook.get_n_pages() == 2:
                 self.__notebook.detach_tab(page)
             return
@@ -76,7 +76,7 @@ class PropertiesDialog(Gtk.Dialog):
         path = window.filehandler.get_path_to_base()
         main_info = (
             f'{window.imagehandler.get_number_of_pages()} pages',
-            constants.ARCHIVE_DESCRIPTIONS[window.filehandler.archive_type])
+            constants.ARCHIVE_DESCRIPTIONS[window.filehandler.get_archive_type()])
         page.set_main_info(main_info)
         self._update_page_secondary_info(page, path)
         page.show_all()

@@ -65,7 +65,7 @@ class OpenWithMenu(Gtk.Menu):
 
     def _set_sensitivity(self):
         """Enables or disables menu items depending on files being loaded"""
-        sensitive = self.__window.filehandler.file_loaded
+        sensitive = self.__window.filehandler.get_file_loaded()
         for item in self.get_children():
             if item != self.__edit_button:
                 item.set_sensitive(sensitive)

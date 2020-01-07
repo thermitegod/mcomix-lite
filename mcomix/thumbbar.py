@@ -146,7 +146,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
 
     def load_thumbnails(self):
         """Load the thumbnails, if it is appropriate to do so"""
-        if (not self.__window.filehandler.file_loaded or
+        if (not self.__window.filehandler.get_file_loaded() or
                 self.__window.imagehandler.get_number_of_pages() == 0 or
                 self.__loaded):
             return

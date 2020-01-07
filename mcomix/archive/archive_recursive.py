@@ -20,7 +20,7 @@ class RecursiveArchive(archive_base.BaseArchive):
         self.__tempdir = tempfile.TemporaryDirectory(
                 prefix=prefix, dir=prefs['temporary directory'])
         self.__sub_tempdirs = []
-        self.destdir = self.__tempdir.name
+        self.__destdir = self.__tempdir.name
         self.__archive_list = []
         # Map entry name to its archive+name.
         self.__entry_mapping = {}
@@ -31,11 +31,14 @@ class RecursiveArchive(archive_base.BaseArchive):
         # Assume concurrent extractions are not supported.
         self.support_concurrent_extractions = False
 
+    def get_destdir(self):
+        return self.__destdir
+
     def _iter_contents(self, archive, root=None, decrypt=True):
         if archive.is_encrypted and not decrypt:
             return
         if not root:
-            root = os.path.join(self.destdir, 'main_archive')
+            root = os.path.join(self.__destdir, 'main_archive')
         self.__archive_list.append(archive)
         self.__archive_root[archive] = root
         sub_archive_list = []
@@ -53,7 +56,7 @@ class RecursiveArchive(archive_base.BaseArchive):
             yield name
         for f in sub_archive_list:
             # Extract sub-archive.
-            destination_dir = self.destdir
+            destination_dir = self.__destdir
             if root is not None:
                 destination_dir = os.path.join(destination_dir, root)
             sub_archive_path = archive.extract(f, destination_dir)
@@ -64,7 +67,7 @@ class RecursiveArchive(archive_base.BaseArchive):
                 continue
             sub_tempdir = tempfile.TemporaryDirectory(
                     prefix=f'sub_archive.{len(self.__archive_list):04}.',
-                    dir=self.destdir)
+                    dir=self.__destdir)
             sub_root = sub_tempdir.name
             self.__sub_tempdirs.append(sub_tempdir)
             for name in self._iter_contents(sub_archive, sub_root):
@@ -102,7 +105,7 @@ class RecursiveArchive(archive_base.BaseArchive):
             self.list_contents()
         archive, name = self.__entry_mapping[filename]
         root = self.__archive_root[archive]
-        destination_dir = self.destdir
+        destination_dir = self.__destdir
         if root is not None:
             destination_dir = os.path.join(destination_dir, root)
         logger.debug(f'extracting from {archive.archive} to {destination_dir}: {filename}')

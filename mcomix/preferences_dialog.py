@@ -402,7 +402,7 @@ class _PreferencesDialog(Gtk.Dialog):
                 # "Shortcuts" page is active, reset all keys to their default value
                 km = keybindings.keybinding_manager(self.__window)
                 km.clear_all()
-                self.__window._event_handler.register_key_events()
+                self.__window.get_event_handler().register_key_events()
                 km.save()
                 self.shortcuts.refresh_model()
             else:
@@ -654,7 +654,7 @@ class _PreferencesDialog(Gtk.Dialog):
         prefs[preference] = button.get_active()
 
         if preference == 'color box bg' and button.get_active():
-            if not self.__window.filehandler.file_loaded:
+            if not self.__window.filehandler.get_file_loaded():
                 self.__window.set_bg_color(prefs['bg color'])
 
         elif preference == 'color box thumb bg' and button.get_active():
@@ -688,11 +688,11 @@ class _PreferencesDialog(Gtk.Dialog):
         prefs[preference] = color.red, color.green, color.blue, color.alpha
 
         if preference == 'bg color':
-            if not self.__window.filehandler.file_loaded:
+            if not self.__window.filehandler.get_file_loaded():
                 self.__window.set_bg_color(prefs['bg color'])
 
         elif preference == 'thumb bg color':
-            if not self.__window.filehandler.file_loaded:
+            if not self.__window.filehandler.get_file_loaded():
                 self.__window.thumbnailsidebar.change_thumbnail_background_color(prefs['thumb bg color'])
 
     def _create_pref_spinner(self, prefkey, scale, lower, upper, step_incr, page_incr, digits):
@@ -788,12 +788,12 @@ class _PreferenceSection(Gtk.VBox):
         set to that of <right_column_width>"""
         super(_PreferenceSection, self).__init__(homogeneous=False, spacing=0)
         self.__right_column_width = right_column_width
-        self.contentbox = Gtk.VBox(homogeneous=False, spacing=6)
+        self.__contentbox = Gtk.VBox(homogeneous=False, spacing=6)
         label = labels.BoldLabel(header)
         label.set_alignment(0, 0.5)
         hbox = Gtk.HBox(homogeneous=False, spacing=0)
         hbox.pack_start(Gtk.HBox(homogeneous=True, spacing=0), False, False, 6)
-        hbox.pack_start(self.contentbox, True, True, 0)
+        hbox.pack_start(self.__contentbox, True, True, 0)
         self.pack_start(label, False, False, 0)
         self.pack_start(hbox, False, False, 6)
 
@@ -812,8 +812,11 @@ class _PreferenceSection(Gtk.VBox):
         hbox = Gtk.HBox(homogeneous=False, spacing=12)
         hbox.pack_start(left_box, True, True, 0)
         hbox.pack_start(right_box, False, False, 0)
-        self.contentbox.pack_start(hbox, True, True, 0)
+        self.__contentbox.pack_start(hbox, True, True, 0)
         return left_box, right_box
+
+    def get_contentbox(self):
+        return self.__contentbox
 
 
 class _PreferencePage(Gtk.VBox):
@@ -840,7 +843,7 @@ class _PreferencePage(Gtk.VBox):
             left_item.set_alignment(0, 0.5)
 
         if right_item is None:
-            self.__section.contentbox.pack_start(left_item, True, True, 0)
+            self.__section.get_contentbox().pack_start(left_item, True, True, 0)
         else:
             left_box, right_box = self.__section.new_split_vboxes()
             left_box.pack_start(left_item, True, True, 0)
