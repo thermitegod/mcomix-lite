@@ -13,7 +13,7 @@ from urllib.request import pathname2url
 import PIL.Image as Image
 from loguru import logger
 
-from mcomix import archive_tools, callback, constants, image_tools, tools
+from mcomix import archive_tools, callback, constants, image_tools, reader, tools
 from mcomix.preferences import prefs
 
 
