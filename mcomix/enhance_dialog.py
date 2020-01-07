@@ -17,7 +17,7 @@ class _EnhanceImageDialog(Gtk.Dialog):
         super(_EnhanceImageDialog, self).__init__(title='Enhance image')
         self.set_transient_for(window)
 
-        self._window = window
+        self.__window = window
 
         reset = Gtk.Button.new_from_stock(Gtk.STOCK_REVERT_TO_SAVED)
         self.add_action_widget(reset, Gtk.ResponseType.REJECT)
@@ -29,17 +29,17 @@ class _EnhanceImageDialog(Gtk.Dialog):
         self.connect('response', self._response)
         self.set_default_response(Gtk.ResponseType.OK)
 
-        self._enhancer = window.enhancer
-        self._block = False
+        self.__enhancer = window.enhancer
+        self.__block = False
 
         vbox = Gtk.VBox(homogeneous=False, spacing=10)
         self.set_border_width(4)
         vbox.set_border_width(6)
         self.vbox.add(vbox)
 
-        self._hist_image = Gtk.Image()
-        self._hist_image.set_size_request(262, 170)
-        vbox.pack_start(self._hist_image, True, True, 0)
+        self.__hist_image = Gtk.Image()
+        self.__hist_image.set_size_request(262, 170)
+        vbox.pack_start(self.__hist_image, True, True, 0)
         vbox.pack_start(Gtk.Separator.new(Gtk.Orientation.HORIZONTAL), True, True, 0)
 
         hbox = Gtk.HBox(homogeneous=False, spacing=4)
@@ -65,29 +65,29 @@ class _EnhanceImageDialog(Gtk.Dialog):
             vbox_right.pack_start(scale, True, False, 2)
             return scale
 
-        self._brightness_scale = _create_scale('_Brightness:')
-        self._contrast_scale = _create_scale('_Contrast:')
-        self._saturation_scale = _create_scale('S_aturation:')
-        self._sharpness_scale = _create_scale('S_harpness:')
+        self.__brightness_scale = _create_scale('_Brightness:')
+        self.__contrast_scale = _create_scale('_Contrast:')
+        self.__saturation_scale = _create_scale('S_aturation:')
+        self.__sharpness_scale = _create_scale('S_harpness:')
 
         vbox.pack_start(Gtk.Separator.new(Gtk.Orientation.HORIZONTAL), True, True, 0)
 
-        self._autocontrast_button = Gtk.CheckButton.new_with_mnemonic('_Automatically adjust contrast')
-        vbox.pack_start(self._autocontrast_button, False, False, 2)
-        self._autocontrast_button.connect('toggled', self._change_values)
+        self.__autocontrast_button = Gtk.CheckButton.new_with_mnemonic('_Automatically adjust contrast')
+        vbox.pack_start(self.__autocontrast_button, False, False, 2)
+        self.__autocontrast_button.connect('toggled', self._change_values)
 
-        self._block = True
-        self._brightness_scale.set_value(self._enhancer.brightness - 1)
-        self._contrast_scale.set_value(self._enhancer.contrast - 1)
-        self._saturation_scale.set_value(self._enhancer.saturation - 1)
-        self._sharpness_scale.set_value(self._enhancer.sharpness - 1)
-        self._autocontrast_button.set_active(self._enhancer.autocontrast)
-        self._block = False
-        self._contrast_scale.set_sensitive(not self._autocontrast_button.get_active())
+        self.__block = True
+        self.__brightness_scale.set_value(self.__enhancer.brightness - 1)
+        self.__contrast_scale.set_value(self.__enhancer.contrast - 1)
+        self.__saturation_scale.set_value(self.__enhancer.saturation - 1)
+        self.__sharpness_scale.set_value(self.__enhancer.sharpness - 1)
+        self.__autocontrast_button.set_active(self.__enhancer.autocontrast)
+        self.__block = False
+        self.__contrast_scale.set_sensitive(not self.__autocontrast_button.get_active())
 
-        self._window.imagehandler.page_available += self._on_page_available
-        self._window.filehandler.file_closed += self._on_book_close
-        self._window.page_changed += self._on_page_change
+        self.__window.imagehandler.page_available += self._on_page_available
+        self.__window.filehandler.file_closed += self._on_book_close
+        self.__window.page_changed += self._on_page_change
         self._on_page_change()
 
         self.show_all()
@@ -96,15 +96,15 @@ class _EnhanceImageDialog(Gtk.Dialog):
         self.clear_histogram()
 
     def _on_page_change(self):
-        if not self._window.imagehandler.page_is_available():
+        if not self.__window.imagehandler.page_is_available():
             self.clear_histogram()
             return
         # XXX transitional(double page limitation)
-        pixbuf = self._window.imagehandler.get_pixbufs(1)[0]
+        pixbuf = self.__window.imagehandler.get_pixbufs(1)[0]
         self.draw_histogram(pixbuf)
 
     def _on_page_available(self, page_number):
-        current_page_number = self._window.imagehandler.get_current_page()
+        current_page_number = self.__window.imagehandler.get_current_page()
         if current_page_number == page_number:
             self._on_page_change()
 
@@ -112,23 +112,23 @@ class _EnhanceImageDialog(Gtk.Dialog):
         """Draw a histogram representing <pixbuf> in the dialog"""
         pixbuf = image_tools.static_image(pixbuf)
         histogram_pixbuf = histogram.draw_histogram(pixbuf, text=False)
-        self._hist_image.set_from_pixbuf(histogram_pixbuf)
+        self.__hist_image.set_from_pixbuf(histogram_pixbuf)
 
     def clear_histogram(self):
         """Clear the histogram in the dialog"""
-        self._hist_image.clear()
+        self.__hist_image.clear()
 
     def _change_values(self, *args):
-        if self._block:
+        if self.__block:
             return
 
-        self._enhancer.brightness = self._brightness_scale.get_value() + 1
-        self._enhancer.contrast = self._contrast_scale.get_value() + 1
-        self._enhancer.saturation = self._saturation_scale.get_value() + 1
-        self._enhancer.sharpness = self._sharpness_scale.get_value() + 1
-        self._enhancer.autocontrast = self._autocontrast_button.get_active()
-        self._contrast_scale.set_sensitive(not self._autocontrast_button.get_active())
-        self._enhancer.signal_update()
+        self.__enhancer.brightness = self.__brightness_scale.get_value() + 1
+        self.__enhancer.contrast = self.__contrast_scale.get_value() + 1
+        self.__enhancer.saturation = self.__saturation_scale.get_value() + 1
+        self.__enhancer.sharpness = self.__sharpness_scale.get_value() + 1
+        self.__enhancer.autocontrast = self.__autocontrast_button.get_active()
+        self.__contrast_scale.set_sensitive(not self.__autocontrast_button.get_active())
+        self.__enhancer.signal_update()
 
     def _response(self, dialog, response):
         if response in [Gtk.ResponseType.OK, Gtk.ResponseType.DELETE_EVENT]:
@@ -136,20 +136,20 @@ class _EnhanceImageDialog(Gtk.Dialog):
 
         elif response == Gtk.ResponseType.APPLY:
             self._change_values(self)
-            prefs['brightness'] = self._enhancer.brightness
-            prefs['contrast'] = self._enhancer.contrast
-            prefs['saturation'] = self._enhancer.saturation
-            prefs['sharpness'] = self._enhancer.sharpness
-            prefs['auto contrast'] = self._enhancer.autocontrast
+            prefs['brightness'] = self.__enhancer.brightness
+            prefs['contrast'] = self.__enhancer.contrast
+            prefs['saturation'] = self.__enhancer.saturation
+            prefs['sharpness'] = self.__enhancer.sharpness
+            prefs['auto contrast'] = self.__enhancer.autocontrast
 
         elif response == Gtk.ResponseType.REJECT:
-            self._block = True
-            self._brightness_scale.set_value(prefs['brightness'] - 1.0)
-            self._contrast_scale.set_value(prefs['contrast'] - 1.0)
-            self._saturation_scale.set_value(prefs['saturation'] - 1.0)
-            self._sharpness_scale.set_value(prefs['sharpness'] - 1.0)
-            self._autocontrast_button.set_active(prefs['auto contrast'])
-            self._block = False
+            self.__block = True
+            self.__brightness_scale.set_value(prefs['brightness'] - 1.0)
+            self.__contrast_scale.set_value(prefs['contrast'] - 1.0)
+            self.__saturation_scale.set_value(prefs['saturation'] - 1.0)
+            self.__sharpness_scale.set_value(prefs['sharpness'] - 1.0)
+            self.__autocontrast_button.set_active(prefs['auto contrast'])
+            self.__block = False
             self._change_values(self)
 
 

@@ -13,7 +13,7 @@ class _MainFileChooserDialog(file_chooser_base_dialog.BaseFileChooserDialog):
 
     def __init__(self, window):
         super(_MainFileChooserDialog, self).__init__(window)
-        self._window = window
+        self.__window = window
         self.filechooser.set_select_multiple(True)
         self.add_archive_filters()
         self.add_image_filters()
@@ -45,7 +45,7 @@ class _MainFileChooserDialog(file_chooser_base_dialog.BaseFileChooserDialog):
             else:
                 files = paths[0]
 
-            self._window.filehandler.open_file(files)
+            self.__window.filehandler.open_file(files)
         else:
             _close_main_filechooser_dialog()
 

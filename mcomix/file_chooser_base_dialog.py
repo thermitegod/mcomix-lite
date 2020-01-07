@@ -26,11 +26,10 @@ class BaseFileChooserDialog(Gtk.Dialog):
     Subclasses should implement a method files_chosen(paths) that will be
     called once the filechooser has done its job and selected some files.
     If the dialog was closed or Cancel was pressed, <paths> is the empty list"""
-    _last_activated_file = None
-
     def __init__(self, parent, action=Gtk.FileChooserAction.OPEN):
-        self._action = action
-        self._destroyed = False
+        self.__action = action
+        self.__destroyed = False
+        self.__last_activated_file = None
 
         if action == Gtk.FileChooserAction.OPEN:
             title = 'Open'
@@ -55,32 +54,32 @@ class BaseFileChooserDialog(Gtk.Dialog):
 
         preview_box = Gtk.VBox(homogeneous=False, spacing=10)
         preview_box.set_size_request(130, 0)
-        self._preview_image = Gtk.Image()
-        self._preview_image.set_size_request(130, 130)
-        preview_box.pack_start(self._preview_image, False, False, 0)
+        self.__preview_image = Gtk.Image()
+        self.__preview_image.set_size_request(130, 130)
+        preview_box.pack_start(self.__preview_image, False, False, 0)
         self.filechooser.set_preview_widget(preview_box)
 
         pango_scale_small = (1 / 1.2)
 
-        self._namelabel = labels.FormattedLabel(weight=Pango.Weight.BOLD, scale=pango_scale_small)
-        self._namelabel.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
-        preview_box.pack_start(self._namelabel, False, False, 0)
+        self.__namelabel = labels.FormattedLabel(weight=Pango.Weight.BOLD, scale=pango_scale_small)
+        self.__namelabel.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
+        preview_box.pack_start(self.__namelabel, False, False, 0)
 
-        self._sizelabel = labels.FormattedLabel(scale=pango_scale_small)
-        self._sizelabel.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
-        preview_box.pack_start(self._sizelabel, False, False, 0)
+        self.__sizelabel = labels.FormattedLabel(scale=pango_scale_small)
+        self.__sizelabel.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
+        preview_box.pack_start(self.__sizelabel, False, False, 0)
         self.filechooser.set_use_preview_label(False)
         preview_box.show_all()
         self.filechooser.connect('update-preview', self._update_preview)
 
-        self._all_files_filter = self.add_filter('All files', [], ['*'])
+        self.__all_files_filter = self.add_filter('All files', [], ['*'])
 
         try:
             # If a file is currently open, use its path
             if (current_file := self._current_file()) and os.path.exists(current_file):
                 self.filechooser.set_current_folder(os.path.dirname(current_file))
             # If no file is open, use the last stored file
-            elif (last_file := self.__class__._last_activated_file) and os.path.exists(last_file):
+            elif (last_file := self.__last_activated_file) and os.path.exists(last_file):
                 self.filechooser.set_filename(last_file)
             # If no file was stored yet, fall back to preferences
             elif os.path.isdir(prefs['path of last browsed in filechooser']):
@@ -158,7 +157,7 @@ class BaseFileChooserDialog(Gtk.Dialog):
                 filter_info.filename = full_path
                 filter_info.mime_type = mimetype
 
-                if filter == self._all_files_filter or filter.filter(filter_info):
+                if filter == self.__all_files_filter or filter.filter(filter_info):
                     yield full_path
 
             if not recursive:
@@ -189,7 +188,7 @@ class BaseFileChooserDialog(Gtk.Dialog):
             # FileChooser.set_do_overwrite_confirmation() doesn't seem to
             # work on our custom dialog, so we use a simple alternative.
             first_path = self.filechooser.get_filenames()[0]
-            if (self._action == Gtk.FileChooserAction.SAVE and
+            if (self.__action == Gtk.FileChooserAction.SAVE and
                     not os.path.isdir(first_path) and
                     os.path.exists(first_path)):
                 overwrite_dialog = message_dialog.MessageDialog(
@@ -204,13 +203,13 @@ class BaseFileChooserDialog(Gtk.Dialog):
                     self.stop_emission_by_name('response')
                     return
 
-            self.__class__._last_activated_file = first_path
+            self.__last_activated_file = first_path
             self.files_chosen(paths)
 
         else:
             self.files_chosen([])
 
-        self._destroyed = True
+        self.__destroyed = True
 
     def _update_preview(self, *args):
         if (path := self.filechooser.get_preview_filename()) and os.path.isfile(path):
@@ -218,26 +217,26 @@ class BaseFileChooserDialog(Gtk.Dialog):
             thumbnailer.thumbnail_finished += self._preview_thumbnail_finished
             thumbnailer.thumbnail(path, mt=True)
         else:
-            self._preview_image.clear()
-            self._namelabel.set_text('')
-            self._sizelabel.set_text('')
+            self.__preview_image.clear()
+            self.__namelabel.set_text('')
+            self.__sizelabel.set_text('')
 
     def _preview_thumbnail_finished(self, filepath, pixbuf):
         """Called when the thumbnailer has finished creating the thumbnail for <filepath>"""
-        if self._destroyed:
+        if self.__destroyed:
             return
 
         if (current_path := self.filechooser.get_preview_filename()) and current_path == filepath:
             if pixbuf is None:
-                self._preview_image.clear()
-                self._namelabel.set_text('')
-                self._sizelabel.set_text('')
+                self.__preview_image.clear()
+                self.__namelabel.set_text('')
+                self.__sizelabel.set_text('')
 
             else:
                 pixbuf = image_tools.add_border(pixbuf, 1)
-                self._preview_image.set_from_pixbuf(pixbuf)
-                self._namelabel.set_text(os.path.basename(filepath))
-                self._sizelabel.set_text(tools.format_byte_size(os.stat(filepath).st_size))
+                self.__preview_image.set_from_pixbuf(pixbuf)
+                self.__namelabel.set_text(os.path.basename(filepath))
+                self.__sizelabel.set_text(tools.format_byte_size(os.stat(filepath).st_size))
 
     @staticmethod
     def _current_file():

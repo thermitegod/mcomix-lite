@@ -16,42 +16,42 @@ class BookmarksMenu(Gtk.Menu):
     def __init__(self, ui, window):
         super(BookmarksMenu, self).__init__()
 
-        self._window = window
-        self._bookmarks_store = bookmark_backend.BookmarksStore
-        self._bookmarks_store.initialize(window)
+        self.__window = window
+        self.__bookmarks_store = bookmark_backend.BookmarksStore
+        self.__bookmarks_store.initialize(window)
 
-        self._actiongroup = Gtk.ActionGroup(name='mcomix-bookmarks')
-        self._actiongroup.add_actions([
+        self.__actiongroup = Gtk.ActionGroup(name='mcomix-bookmarks')
+        self.__actiongroup.add_actions([
             ('add_bookmark', 'mcomix-add-bookmark', 'Add _Bookmark',
              '<Control>D', None, self._add_current_to_bookmarks),
             ('edit_bookmarks', None, '_Edit Bookmarks...',
              '<Control>B', None, self._edit_bookmarks)])
 
-        action = self._actiongroup.get_action('add_bookmark')
+        action = self.__actiongroup.get_action('add_bookmark')
         action.set_accel_group(ui.get_accel_group())
-        self.add_button = action.create_menu_item()
-        self.append(self.add_button)
+        self.__add_button = action.create_menu_item()
+        self.append(self.__add_button)
 
-        action = self._actiongroup.get_action('edit_bookmarks')
+        action = self.__actiongroup.get_action('edit_bookmarks')
         action.set_accel_group(ui.get_accel_group())
-        self.edit_button = action.create_menu_item()
-        self.append(self.edit_button)
+        self.__edit_button = action.create_menu_item()
+        self.append(self.__edit_button)
 
         # Re-create the bookmarks menu if one was added/removed
         self._create_bookmark_menuitems()
-        self._bookmarks_store.add_bookmark += lambda bookmark: self._create_bookmark_menuitems()
-        self._bookmarks_store.remove_bookmark += lambda bookmark: self._create_bookmark_menuitems()
+        self.__bookmarks_store.add_bookmark += lambda bookmark: self._create_bookmark_menuitems()
+        self.__bookmarks_store.remove_bookmark += lambda bookmark: self._create_bookmark_menuitems()
 
         self.show_all()
 
     def _create_bookmark_menuitems(self):
         # Delete all old menu entries
         for item in self.get_children():
-            if item not in (self.add_button, self.edit_button):
+            if item not in (self.__add_button, self.__edit_button):
                 self.remove(item)
 
         # Add separator
-        if bookmarks := self._bookmarks_store.get_bookmarks():
+        if bookmarks := self.__bookmarks_store.get_bookmarks():
             separator = Gtk.SeparatorMenuItem()
             separator.show()
             self.append(separator)
@@ -69,16 +69,16 @@ class BookmarksMenu(Gtk.Menu):
     def _add_current_to_bookmarks(self, *args):
         """Add the current page to the bookmarks list"""
         try:
-            self._bookmarks_store.add_current_to_bookmarks()
+            self.__bookmarks_store.add_current_to_bookmarks()
         except TypeError:
             logger.warning('No file to add to bookmarks')
             pass
 
     def _edit_bookmarks(self, *args):
         """Open the bookmarks dialog"""
-        bookmark_dialog.BookmarksDialog(self._window, self._bookmarks_store)
+        bookmark_dialog.BookmarksDialog(self.__window, self.__bookmarks_store)
 
     def set_sensitive(self, loaded):
         """Set the sensitivities of menu items as appropriate if <loaded>
         represents whether a file is currently loaded in the main program or not"""
-        self._actiongroup.get_action('add_bookmark').set_sensitive(loaded)
+        self.__actiongroup.get_action('add_bookmark').set_sensitive(loaded)

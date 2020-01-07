@@ -18,19 +18,20 @@ class FiniteLayout:  # 2D only
         content boxes.
         @param distribution_axis: the axis along which the Boxes are distributed.
         @param alignment_axis: the axis to center"""
-        self.current_index = -1
-        self.wrap_individually = wrap_individually
+        self.__current_index = -1
+        self.__wrap_individually = wrap_individually
         self._reset(content_sizes, viewport_size, orientation, spacing,
                     wrap_individually, distribution_axis, alignment_axis)
 
-        self.dirty_current_index = None
-        self.orientation = None
+        self.__dirty_current_index = None
+        self.__orientation = None
+        self.__viewport_box = self.__viewport_box
 
     def set_viewport_position(self, viewport_position):
         """Moves the viewport to the specified position.
         @param viewport_position: The new viewport position"""
-        self.viewport_box = self.viewport_box.set_position(viewport_position)
-        self.dirty_current_index = True
+        self.__viewport_box = self.__viewport_box.set_position(viewport_position)
+        self.__dirty_current_index = True
 
     def scroll_to_predefined(self, destination, index=None):
         """Scrolls the viewport to a predefined destination.
@@ -47,16 +48,16 @@ class FiniteLayout:  # 2D only
         if self.wrap_individually is False"""
         if index is None:
             index = self.get_current_index()
-        if not self.wrap_individually:
+        if not self.__wrap_individually:
             index = constants.UNION_INDEX
         if index == constants.UNION_INDEX:
-            current_box = self.union_box
+            current_box = self.__union_box
         else:
             if index == constants.LAST_INDEX:
-                index = len(self.content_boxes) - 1
-            current_box = self.wrapper_boxes[index]
+                index = len(self.__content_boxes) - 1
+            current_box = self.__wrapper_boxes[index]
         self.set_viewport_position(self._scroll_to_predefined(
-                current_box, self.viewport_box, self.orientation, destination))
+                current_box, self.__viewport_box, self.__orientation, destination))
 
     @staticmethod
     def _scroll_to_predefined(content_box, viewport_box, orientation, destination):
@@ -101,28 +102,28 @@ class FiniteLayout:  # 2D only
     def get_content_boxes(self):
         """Returns the Boxes as they are arranged in this layout.
         @return: The Boxes as they are arranged in this layout"""
-        return self.content_boxes
+        return self.__content_boxes
 
     def get_union_box(self):
         """Returns the union Box for this layout.
         @return: The union Box for this layout"""
-        return self.union_box
+        return self.__union_box
 
     def get_current_index(self):
         """Returns the index of the Box that is said to be the current Box.
         @return: The index of the Box that is said to be the current Box"""
-        if self.dirty_current_index:
-            self.current_index = self.viewport_box.current_box_index(self.orientation, self.content_boxes)
-            self.dirty_current_index = False
-        return self.current_index
+        if self.__dirty_current_index:
+            self.__current_index = self.__viewport_box.current_box_index(self.__orientation, self.__content_boxes)
+            self.__dirty_current_index = False
+        return self.__current_index
 
     def get_viewport_box(self):
         """Returns the current viewport Box.
         @return: The current viewport Box"""
-        return self.viewport_box
+        return self.__viewport_box
 
     def set_orientation(self, orientation):
-        self.orientation = orientation
+        self.__orientation = orientation
 
     def _reset(self, content_sizes, viewport_size, orientation, spacing,
                wrap_individually, distribution_axis, alignment_axis):
@@ -150,12 +151,12 @@ class FiniteLayout:  # 2D only
             temp_cb_list = tuple(reversed(temp_cb_list))
             temp_wb_list = tuple(reversed(temp_wb_list))
         # done
-        self.content_boxes = temp_cb_list
-        self.wrapper_boxes = temp_wb_list
-        self.union_box = temp_bb
-        self.viewport_box = box.Box(viewport_size)
-        self.orientation = orientation
-        self.dirty_current_index = True
+        self.__content_boxes = temp_cb_list
+        self.__wrapper_boxes = temp_wb_list
+        self.__union_box = temp_bb
+        self.__viewport_box = box.Box(viewport_size)
+        self.__orientation = orientation
+        self.__dirty_current_index = True
 
     @staticmethod
     def _wrap_individually(temp_cb_list, viewport_size, orientation):

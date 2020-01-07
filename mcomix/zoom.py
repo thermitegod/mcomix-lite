@@ -19,37 +19,37 @@ class ZoomModel:
 
     def __init__(self):
         #: User zoom level.
-        self._user_zoom_log = IDENTITY_ZOOM_LOG
+        self.__user_zoom_log = IDENTITY_ZOOM_LOG
         #: Image fit mode. Determines the base zoom level for an image by
         #: calculating its maximum size.
-        self._fitmode = constants.ZOOM_MODE_MANUAL
-        self._scale_up = False
+        self.__fitmode = constants.ZOOM_MODE_MANUAL
+        self.__scale_up = False
 
     def set_fit_mode(self, fitmode):
         if fitmode < constants.ZOOM_MODE_BEST or fitmode > constants.ZOOM_MODE_SIZE:
             raise ValueError(f'No fit mode for id {fitmode}')
-        self._fitmode = fitmode
+        self.__fitmode = fitmode
 
     def set_scale_up(self, scale_up):
-        self._scale_up = scale_up
+        self.__scale_up = scale_up
 
     def _set_user_zoom_log(self, zoom_log):
-        self._user_zoom_log = min(max(zoom_log, MIN_USER_ZOOM_LOG), MAX_USER_ZOOM_LOG)
+        self.__user_zoom_log = min(max(zoom_log, MIN_USER_ZOOM_LOG), MAX_USER_ZOOM_LOG)
 
     def zoom_in(self):
-        self._set_user_zoom_log(self._user_zoom_log + 1)
+        self._set_user_zoom_log(self.__user_zoom_log + 1)
 
     def zoom_out(self):
-        self._set_user_zoom_log(self._user_zoom_log - 1)
+        self._set_user_zoom_log(self.__user_zoom_log - 1)
 
     def reset_user_zoom(self):
         self._set_user_zoom_log(IDENTITY_ZOOM_LOG)
 
     def get_zoomed_size(self, image_sizes, screen_size, distribution_axis, do_not_transform):
-        scale_up = self._scale_up
+        scale_up = self.__scale_up
         fitted_image_sizes = _fix_page_sizes(image_sizes, distribution_axis, do_not_transform)
         union_size = _union_size(fitted_image_sizes, distribution_axis)
-        limits = ZoomModel._calc_limits(union_size, screen_size, self._fitmode, scale_up)
+        limits = ZoomModel._calc_limits(union_size, screen_size, self.__fitmode, scale_up)
 
         prefscale = ZoomModel._preferred_scale(union_size, limits, distribution_axis)
         preferred_scales = [(IDENTITY_ZOOM if dnt else prefscale) for dnt in do_not_transform]
@@ -81,7 +81,7 @@ class ZoomModel:
         if not scale_up:
             preferred_scales = map(lambda x: min(x, IDENTITY_ZOOM), preferred_scales)
         preferred_scales = list(preferred_scales)
-        user_scale = 2 ** (self._user_zoom_log / USER_ZOOM_LOG_SCALE1)
+        user_scale = 2 ** (self.__user_zoom_log / USER_ZOOM_LOG_SCALE1)
         res_scales = [preferred_scales[i] * (user_scale if not do_not_transform[i] else IDENTITY_ZOOM)
                       for i in range(len(preferred_scales))]
         return [tuple(_scale_image_size(size, scale))

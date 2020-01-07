@@ -19,10 +19,10 @@ class _PreferencesDialog(Gtk.Dialog):
         self.set_transient_for(window)
 
         # Button text is set later depending on active tab
-        self.reset_button = self.add_button('', constants.RESPONSE_REVERT_TO_DEFAULT)
+        self.__reset_button = self.add_button('', constants.RESPONSE_REVERT_TO_DEFAULT)
         self.add_button(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
 
-        self._window = window
+        self.__window = window
         self.set_resizable(True)
         self.set_default_response(Gtk.ResponseType.CLOSE)
 
@@ -378,7 +378,7 @@ class _PreferencesDialog(Gtk.Dialog):
         # ----------------------------------------------------------------
         # The "Shortcuts" tab.
         # ----------------------------------------------------------------
-        km = keybindings.keybinding_manager(self._window)
+        km = keybindings.keybinding_manager(self.__window)
         page = keybindings_editor.KeybindingEditorWindow(km)
 
         return page
@@ -387,11 +387,11 @@ class _PreferencesDialog(Gtk.Dialog):
         """Dynamically switches the "Reset" button's text
         depending on the currently selected tab page"""
         if notebook.get_nth_page(page_num) == self.shortcuts:
-            self.reset_button.set_label('_Reset keys')
-            self.reset_button.set_sensitive(True)
+            self.__reset_button.set_label('_Reset keys')
+            self.__reset_button.set_sensitive(True)
         else:
-            self.reset_button.set_label('Clear _dialog choices')
-            self.reset_button.set_sensitive(len(prefs['stored dialog choices']) > 0)
+            self.__reset_button.set_label('Clear _dialog choices')
+            self.__reset_button.set_sensitive(len(prefs['stored dialog choices']) > 0)
 
     def _response(self, dialog, response):
         if response == Gtk.ResponseType.CLOSE:
@@ -400,15 +400,15 @@ class _PreferencesDialog(Gtk.Dialog):
         elif response == constants.RESPONSE_REVERT_TO_DEFAULT:
             if self.notebook.get_nth_page(self.notebook.get_current_page()) == self.shortcuts:
                 # "Shortcuts" page is active, reset all keys to their default value
-                km = keybindings.keybinding_manager(self._window)
+                km = keybindings.keybinding_manager(self.__window)
                 km.clear_all()
-                self._window._event_handler.register_key_events()
+                self.__window._event_handler.register_key_events()
                 km.save()
                 self.shortcuts.refresh_model()
             else:
                 # Reset stored choices
                 prefs['stored dialog choices'] = {}
-                self.reset_button.set_sensitive(False)
+                self.__reset_button.set_sensitive(False)
 
         else:
             # Other responses close the dialog, e.g. clicking the X icon on the dialog.
@@ -434,7 +434,7 @@ class _PreferencesDialog(Gtk.Dialog):
         if combobox.get_model().iter_is_valid(iter):
             value = combobox.get_model().get_value(iter, 1)
             prefs['virtual double page for fitting images'] = value
-            self._window.draw_image()
+            self.__window.draw_image()
 
     def _create_fitmode_control(self):
         """Combobox for fit to size mode"""
@@ -456,7 +456,7 @@ class _PreferencesDialog(Gtk.Dialog):
 
             if prefs['fit to size mode'] != value:
                 prefs['fit to size mode'] = value
-                self._window.change_zoom_mode()
+                self.__window.change_zoom_mode()
 
     def _create_sort_by_control(self):
         """Creates the ComboBox control for selecting file sort by options"""
@@ -491,7 +491,7 @@ class _PreferencesDialog(Gtk.Dialog):
             value = combobox.get_model().get_value(iter, 1)
             prefs['sort by'] = value
 
-            self._window.filehandler.refresh_file()
+            self.__window.filehandler.refresh_file()
 
     def _sort_order_changed_cb(self, combobox, *args):
         """Called when sort order changes (ascending or descending)"""
@@ -500,7 +500,7 @@ class _PreferencesDialog(Gtk.Dialog):
             value = combobox.get_model().get_value(iter, 1)
             prefs['sort order'] = value
 
-            self._window.filehandler.refresh_file()
+            self.__window.filehandler.refresh_file()
 
     def _create_archive_sort_by_control(self):
         """Creates the ComboBox control for selecting archive sort by options"""
@@ -534,7 +534,7 @@ class _PreferencesDialog(Gtk.Dialog):
             value = combobox.get_model().get_value(iter, 1)
             prefs['sort archive by'] = value
 
-            self._window.filehandler.refresh_file()
+            self.__window.filehandler.refresh_file()
 
     def _sort_archive_order_changed_cb(self, combobox, *args):
         """Called when sort order changes (ascending or descending)"""
@@ -543,7 +543,7 @@ class _PreferencesDialog(Gtk.Dialog):
             value = combobox.get_model().get_value(iter, 1)
             prefs['sort archive order'] = value
 
-            self._window.filehandler.refresh_file()
+            self.__window.filehandler.refresh_file()
 
     def _create_scaling_quality_combobox(self):
         """Creates combo box for image scaling quality"""
@@ -568,7 +568,7 @@ class _PreferencesDialog(Gtk.Dialog):
             prefs['scaling quality'] = value
 
             if value != last_value:
-                self._window.draw_image()
+                self.__window.draw_image()
 
     def _create_animation_mode_combobox(self):
         """Creates combo box for animation mode"""
@@ -594,7 +594,7 @@ class _PreferencesDialog(Gtk.Dialog):
             prefs['animation mode'] = value
 
             if value != last_value:
-                self._window.filehandler.refresh_file()
+                self.__window.filehandler.refresh_file()
 
     @staticmethod
     def _create_combobox(options, selected_value, change_callback):
@@ -654,33 +654,33 @@ class _PreferencesDialog(Gtk.Dialog):
         prefs[preference] = button.get_active()
 
         if preference == 'color box bg' and button.get_active():
-            if not self._window.filehandler.file_loaded:
-                self._window.set_bg_color(prefs['bg color'])
+            if not self.__window.filehandler.file_loaded:
+                self.__window.set_bg_color(prefs['bg color'])
 
         elif preference == 'color box thumb bg' and button.get_active():
             if prefs[preference]:
                 prefs['thumbnail bg uses main color'] = False
 
-                self._window.thumbnailsidebar.change_thumbnail_background_color(prefs['thumb bg color'])
+                self.__window.thumbnailsidebar.change_thumbnail_background_color(prefs['thumb bg color'])
             else:
-                self._window.draw_image()
+                self.__window.draw_image()
 
         elif preference in ('checkered bg for transparent images',
                             'no double page for wide images', 'auto rotate from exif'):
-            self._window.draw_image()
+            self.__window.draw_image()
 
         elif (preference == 'hide all in fullscreen' and
-              self._window.is_fullscreen):
-            self._window.draw_image()
+              self.__window.is_fullscreen):
+            self.__window.draw_image()
 
         elif preference in ('animation background', 'animation transform'):
-            self._window.thumbnailsidebar.toggle_page_numbers_visible()
+            self.__window.thumbnailsidebar.toggle_page_numbers_visible()
 
         elif preference in ('animation background', 'animation transform'):
-            self._window.filehandler.refresh_file()
+            self.__window.filehandler.refresh_file()
 
         elif preference in ('check image mimetype',):
-            self._window.filehandler.refresh_file()
+            self.__window.filehandler.refresh_file()
 
     def _color_button_cb(self, colorbutton, preference):
         """Callback for the background color selection button"""
@@ -688,12 +688,12 @@ class _PreferencesDialog(Gtk.Dialog):
         prefs[preference] = color.red, color.green, color.blue, color.alpha
 
         if preference == 'bg color':
-            if not self._window.filehandler.file_loaded:
-                self._window.set_bg_color(prefs['bg color'])
+            if not self.__window.filehandler.file_loaded:
+                self.__window.set_bg_color(prefs['bg color'])
 
         elif preference == 'thumb bg color':
-            if not self._window.filehandler.file_loaded:
-                self._window.thumbnailsidebar.change_thumbnail_background_color(prefs['thumb bg color'])
+            if not self.__window.filehandler.file_loaded:
+                self.__window.thumbnailsidebar.change_thumbnail_background_color(prefs['thumb bg color'])
 
     def _create_pref_spinner(self, prefkey, scale, lower, upper, step_incr, page_incr, digits):
         value = prefs[prefkey] / scale
@@ -715,12 +715,12 @@ class _PreferencesDialog(Gtk.Dialog):
 
         #  now apply new pref
         if preference == 'thumbnail size':
-            self._window.thumbnailsidebar.resize()
-            self._window.draw_image()
+            self.__window.thumbnailsidebar.resize()
+            self.__window.draw_image()
         elif preference == 'max pages to cache':
-            self._window.imagehandler.do_cacheing()
+            self.__window.imagehandler.do_cacheing()
         elif preference == 'fit to size px':
-            self._window.change_zoom_mode()
+            self.__window.change_zoom_mode()
 
     def _create_pref_path_chooser(self, preference, folder=False, default=None):
         """Select path as preference value"""
@@ -787,7 +787,7 @@ class _PreferenceSection(Gtk.VBox):
         <header>, and the width request of the (possible) right columns
         set to that of <right_column_width>"""
         super(_PreferenceSection, self).__init__(homogeneous=False, spacing=0)
-        self._right_column_width = right_column_width
+        self.__right_column_width = right_column_width
         self.contentbox = Gtk.VBox(homogeneous=False, spacing=6)
         label = labels.BoldLabel(header)
         label.set_alignment(0, 0.5)
@@ -806,8 +806,8 @@ class _PreferenceSection(Gtk.VBox):
         left_box = Gtk.VBox(homogeneous=False, spacing=6)
         right_box = Gtk.VBox(homogeneous=False, spacing=6)
 
-        if self._right_column_width is not None:
-            right_box.set_size_request(self._right_column_width, -1)
+        if self.__right_column_width is not None:
+            right_box.set_size_request(self.__right_column_width, -1)
 
         hbox = Gtk.HBox(homogeneous=False, spacing=12)
         hbox.pack_start(left_box, True, True, 0)
@@ -824,13 +824,13 @@ class _PreferencePage(Gtk.VBox):
         """Create a new page where any possible right columns have the width request <right_column_width>"""
         super(_PreferencePage, self).__init__(homogeneous=False, spacing=12)
         self.set_border_width(12)
-        self._right_column_width = right_column_width
-        self._section = None
+        self.__right_column_width = right_column_width
+        self.__section = None
 
     def new_section(self, header):
         """Start a new section in the page, with the header text from <header>"""
-        self._section = _PreferenceSection(header, self._right_column_width)
-        self.pack_start(self._section, False, False, 0)
+        self.__section = _PreferenceSection(header, self.__right_column_width)
+        self.pack_start(self.__section, False, False, 0)
 
     def add_row(self, left_item, right_item=None):
         """Add a row to the page (in the latest section), containing one
@@ -840,8 +840,8 @@ class _PreferencePage(Gtk.VBox):
             left_item.set_alignment(0, 0.5)
 
         if right_item is None:
-            self._section.contentbox.pack_start(left_item, True, True, 0)
+            self.__section.contentbox.pack_start(left_item, True, True, 0)
         else:
-            left_box, right_box = self._section.new_split_vboxes()
+            left_box, right_box = self.__section.new_split_vboxes()
             left_box.pack_start(left_item, True, True, 0)
             right_box.pack_start(right_item, True, True, 0)

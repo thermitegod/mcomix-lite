@@ -20,41 +20,41 @@ class FileHandler:
     def __init__(self, window):
         #: Indicates if files/archives are currently loaded/loading.
         self.file_loaded = False
-        self.file_loading = False
+        self.__file_loading = False
         #: None if current file is not an archive, or unrecognized format.
         self.archive_type = None
 
         #: Either path to the current archive, or first file in image list.
         #: This is B{not} the path to the currently open page.
-        self._current_file = None
+        self.__current_file = None
         #: Reference to L{MainWindow}.
-        self._window = window
+        self.__window = window
         #: Path to opened archive file, or directory containing current images.
-        self._base_path = None
+        self.__base_path = None
         #: Temporary directory used for extracting archives.
-        self._tmp_dir = None
+        self.__tmp_dir = None
         #: If C{True}, no longer wait for files to get extracted.
-        self._stop_waiting = False
+        self.__stop_waiting = False
         #: Mapping of absolute paths to archive path names.
-        self._name_table = {}
+        self.__name_table = {}
         #: Archive extractor.
-        self._extractor = archive_extractor.Extractor()
-        self._extractor.file_extracted += self._extracted_file
-        self._extractor.contents_listed += self._listed_contents
+        self.__extractor = archive_extractor.Extractor()
+        self.__extractor.file_extracted += self._extracted_file
+        self.__extractor.contents_listed += self._listed_contents
         #: Condition to wait on when extracting archives and waiting on files.
-        self._condition = None
+        self.__condition = None
         #: Provides a list of available files/archives in the open directory.
-        self._file_provider = None
+        self.__file_provider = None
 
-        self.filelist = None
-        self._start_page = 0
+        self.__filelist = None
+        self.__start_page = 0
 
     def refresh_file(self, *args, **kwargs):
         """Closes the current file(s)/archive and reloads them"""
         if self.file_loaded:
-            current_file = os.path.abspath(self._window.imagehandler.get_real_path())
+            current_file = os.path.abspath(self.__window.imagehandler.get_real_path())
             if self.archive_type is not None:
-                start_page = self._window.imagehandler.get_current_page()
+                start_page = self.__window.imagehandler.get_current_page()
             else:
                 start_page = 0
             self.open_file(current_file, start_page, keep_fileprovider=True)
@@ -71,64 +71,65 @@ class FileHandler:
         try:
             path = self._initialize_fileprovider(path, keep_fileprovider)
         except ValueError as ex:
-            self._window.statusbar.set_message(str(ex))
-            self._window.osd.show(str(ex))
+            self.__window.statusbar.set_message(str(ex))
+            self.__window.osd.show(str(ex))
             return False
 
         if error_message := self._check_access(path):
-            self._window.statusbar.set_message(error_message)
-            self._window.osd.show(error_message)
+            self.__window.statusbar.set_message(error_message)
+            self.__window.osd.show(error_message)
             self.file_opened()
             return False
 
-        self.filelist = self._file_provider.list_files()
+        self.__filelist = self.__file_provider.list_files()
         self.archive_type = archive_tools.archive_mime_type(path)
-        self._start_page = start_page
-        self._current_file = os.path.abspath(path)
-        self._stop_waiting = False
+        self.__start_page = start_page
+        self.__current_file = os.path.abspath(path)
+        self.__stop_waiting = False
 
         # Actually open the file(s)/archive passed in path.
         if self.archive_type is not None:
             try:
-                self._open_archive(self._current_file)
+                self._open_archive(self.__current_file)
             except Exception as ex:
-                self._window.statusbar.set_message(str(ex))
-                self._window.osd.show(str(ex))
+                self.__window.statusbar.set_message(str(ex))
+                self.__window.osd.show(str(ex))
                 self.file_opened()
                 return False
-            self.file_loading = True
+            self.__file_loading = True
         else:
-            image_files, current_image_index = self._open_image_files(self.filelist, self._current_file)
+            image_files, current_image_index = self._open_image_files(self.__filelist, self.__current_file)
             self._archive_opened(image_files)
 
         return True
 
     def _archive_opened(self, image_files):
         """Called once the archive has been opened and its contents listed"""
-        self._window.imagehandler._base_path = self._base_path
-        self._window.imagehandler.set_image_files(image_files)
+        self.__window.imagehandler._base_path = self._base_path
+        self.__window.imagehandler.set_image_files(image_files)
+
         self.file_opened()
 
         if not image_files:
-            msg = f'No images in "{os.path.basename(self._current_file)}"'
-            self._window.statusbar.set_message(msg)
-            self._window.osd.show(msg)
+            msg = f'No images in "{os.path.basename(self.__current_file)}"'
+            self.__window.statusbar.set_message(msg)
+            self.__window.osd.show(msg)
 
         else:
             if self.archive_type is None:
                 # If no extraction is required, mark all files as available.
-                self.file_available(self.filelist)
+                self.file_available(self.__filelist)
                 # Set current page to current file.
-                if self._current_file in self.filelist:
-                    current_image_index = self.filelist.index(self._current_file)
+                if self.__current_file in self.__filelist:
+                    current_image_index = self.__filelist.index(self.__current_file)
                 else:
                     current_image_index = 0
             else:
-                self._extractor.extract()
-                last_image_index = self._get_index_for_page(self._start_page,
+                self.__extractor.extract()
+                last_image_index = self._get_index_for_page(self.__start_page,
                                                             len(image_files),
-                                                            self._current_file)
-                if self._start_page:
+                                                            self.__current_file)
+                if self.__start_page:
                     current_image_index = last_image_index
                 else:
                     # Don't switch to last page yet; since we have not asked
@@ -136,9 +137,9 @@ class FileHandler:
                     current_image_index = 0
                 if last_image_index != current_image_index:
                     # Bump last page closer to the front of the extractor queue.
-                    self._window.set_page(last_image_index + 1)
+                    self.__window.set_page(last_image_index + 1)
 
-            self._window.set_page(current_image_index + 1)
+            self.__window.set_page(current_image_index + 1)
 
     @callback.Callback
     def file_opened(self):
@@ -156,26 +157,26 @@ class FileHandler:
 
     def _close(self, close_provider=False):
         """Run tasks for "closing" the currently opened file(s)"""
-        if self.file_loaded or self.file_loading:
+        if self.file_loaded or self.__file_loading:
             if close_provider:
-                self._file_provider = None
+                self.__file_provider = None
             if self.archive_type is not None:
-                self._extractor.close()
-            self._window.imagehandler.cleanup()
+                self.__extractor.close()
+            self.__window.imagehandler.cleanup()
             self.file_loaded = False
-            self.file_loading = False
+            self.__file_loading = False
             self.archive_type = None
-            self._current_file = None
-            self._base_path = None
-            self._stop_waiting = True
-            self._name_table.clear()
+            self.__current_file = None
+            self.__base_path = None
+            self.__stop_waiting = True
+            self.__name_table.clear()
             self.file_closed()
         # Catch up on UI events, so we don't leave idle callbacks.
         while Gtk.events_pending():
             Gtk.main_iteration_do(False)
         tools.garbage_collect()
-        if self._tmp_dir is not None:
-            self._tmp_dir = None
+        if self.__tmp_dir is not None:
+            self.__tmp_dir = None
 
     def _initialize_fileprovider(self, path, keep_fileprovider):
         """Creates the L{file_provider.FileProvider} for C{path}.
@@ -190,15 +191,15 @@ class FileHandler:
 
         elif isinstance(path, list) and len(path) > 0:
             # A list of files was passed - open only these files.
-            if self._file_provider is None or not keep_fileprovider:
-                self._file_provider = file_provider.get_file_provider(path)
+            if self.__file_provider is None or not keep_fileprovider:
+                self.__file_provider = file_provider.get_file_provider(path)
 
             return path[0]
         else:
             # A single file was passed - use Comix' classic open mode
             # and open all files in its directory.
-            if self._file_provider is None or not keep_fileprovider:
-                self._file_provider = file_provider.get_file_provider([path])
+            if self.__file_provider is None or not keep_fileprovider:
+                self.__file_provider = file_provider.get_file_provider([path])
 
             return path
 
@@ -221,31 +222,31 @@ class FileHandler:
         Creates an L{archive_extractor.Extractor} and extracts all images
         found within the archive.
         @return: A tuple containing C{(image_files, image_index)}"""
-        self._base_path = path
+        self.__base_path = path
         try:
-            self._condition = self._extractor.setup(self._base_path, self.archive_type)
+            self.__condition = self.__extractor.setup(self.__base_path, self.archive_type)
         except Exception:
-            self._condition = None
+            self.__condition = None
             raise
-        self._tmp_dir = self._extractor.get_directory()
+        self.__tmp_dir = self.__extractor.get_directory()
 
     def _listed_contents(self, archive, files):
-        if not self.file_loading:
+        if not self.__file_loading:
             return
-        self.file_loading = False
+        self.__file_loading = False
 
-        files = self._extractor.get_files()
+        files = self.__extractor.get_files()
         archive_images = [image for image in files
                           if image_tools.is_image_file(image)
                           # Remove MacOS meta files from image list
                           and '__MACOSX' not in os.path.normpath(image).split(os.sep)]
 
         self._sort_archive_images(archive_images)
-        image_files = [os.path.join(self._tmp_dir, f)
+        image_files = [os.path.join(self.__tmp_dir, f)
                        for f in archive_images]
 
-        self._name_table = dict(zip(image_files, archive_images))
-        self._extractor.set_files(archive_images)
+        self.__name_table = dict(zip(image_files, archive_images))
+        self.__extractor.set_files(archive_images)
         self._archive_opened(image_files)
 
     @staticmethod
@@ -283,7 +284,7 @@ class FileHandler:
         If C{image_path} is found in C{filelist}, the current page will be set
         to its index within C{filelist}.
         @return: Tuple of C{(image_files, image_index)}"""
-        self._base_path = self._file_provider.get_directory()
+        self.__base_path = self.__file_provider.get_directory()
 
         if image_path in filelist:
             current_image_index = filelist.index(image_path)
@@ -293,14 +294,14 @@ class FileHandler:
         return filelist, current_image_index
 
     def _get_file_list(self):
-        return self._file_provider.list_files(file_provider.FileProvider.ARCHIVES)
+        return self.__file_provider.list_files(file_provider.FileProvider.ARCHIVES)
 
     def get_file_number(self):
         if self.archive_type is None:
             # No file numbers for images.
             return 0, 0
-        if self._current_file in (file_list := self._get_file_list()):
-            current_index = file_list.index(self._current_file)
+        if self.__current_file in (file_list := self._get_file_list()):
+            current_index = file_list.index(self.__current_file)
         else:
             current_index = 0
         return current_index + 1, len(file_list)
@@ -308,9 +309,9 @@ class FileHandler:
     def get_path_to_base(self):
         """Return the full path to the current base (path to archive or image directory.)"""
         if self.archive_type is not None:
-            return self._base_path
+            return self.__base_path
 
-        if filename := self._window.imagehandler.get_current_path():
+        if filename := self.__window.imagehandler.get_current_path():
             return os.path.dirname(filename)
         else:
             return None
@@ -321,14 +322,14 @@ class FileHandler:
 
     def get_current_filename(self):
         """Return a string with the name of the currently viewed file that is suitable for printing"""
-        return self._window.imagehandler.get_current_filename()
+        return self.__window.imagehandler.get_current_filename()
 
     def open_next_archive(self, *args):
         """Open the archive that comes directly after the currently loaded
         archive in that archive's directory listing, sorted alphabetically.
         Returns True if a new archive was opened, False otherwise"""
         if self.archive_type is not None:
-            if (absolute_path := os.path.abspath(self._base_path)) \
+            if (absolute_path := os.path.abspath(self.__base_path)) \
                     not in (files := self._get_file_list()):
                 return
 
@@ -346,7 +347,7 @@ class FileHandler:
         archive in that archive's directory listing, sorted alphabetically.
         Returns True if a new archive was opened, False otherwise"""
         if self.archive_type is not None:
-            if (absolute_path := os.path.abspath(self._base_path)) \
+            if (absolute_path := os.path.abspath(self.__base_path)) \
                     not in (files := self._get_file_list()):
                 return
 
@@ -362,7 +363,7 @@ class FileHandler:
     def open_next_directory(self, *args):
         """Opens the next sibling directory of the current file, as specified by
         file provider. Returns True if a new directory was opened and files found"""
-        if self._file_provider is None:
+        if self.__file_provider is None:
             return
 
         if self.archive_type is not None:
@@ -370,24 +371,24 @@ class FileHandler:
         else:
             listmode = file_provider.FileProvider.IMAGES
 
-        current_dir = self._file_provider.get_directory()
-        if not self._file_provider.next_directory():
+        current_dir = self.__file_provider.get_directory()
+        if not self.__file_provider.next_directory():
             # Restore current directory if no files were found
-            self._file_provider.set_directory(current_dir)
+            self.__file_provider.set_directory(current_dir)
             return False
 
         self._close()
-        if len(files := self._file_provider.list_files(listmode)) > 0:
+        if len(files := self.__file_provider.list_files(listmode)) > 0:
             path = files[0]
         else:
-            path = self._file_provider.get_directory()
+            path = self.__file_provider.get_directory()
         self.open_file(path, keep_fileprovider=True)
         return True
 
     def open_previous_directory(self, *args):
         """Opens the previous sibling directory of the current file, as specified by
         file provider. Returns True if a new directory was opened and files found"""
-        if self._file_provider is None:
+        if self.__file_provider is None:
             return
 
         if self.archive_type is not None:
@@ -395,17 +396,17 @@ class FileHandler:
         else:
             listmode = file_provider.FileProvider.IMAGES
 
-        current_dir = self._file_provider.get_directory()
-        if not self._file_provider.previous_directory():
+        current_dir = self.__file_provider.get_directory()
+        if not self.__file_provider.previous_directory():
             # Restore current directory if no files were found
-            self._file_provider.set_directory(current_dir)
+            self.__file_provider.set_directory(current_dir)
             return False
 
         self._close()
-        if len(files := self._file_provider.list_files(listmode)) > 0:
+        if len(files := self.__file_provider.list_files(listmode)) > 0:
             path = files[-1]
         else:
-            path = self._file_provider.get_directory()
+            path = self.__file_provider.get_directory()
         self.open_file(path, -1, keep_fileprovider=True)
         return True
 
@@ -431,10 +432,10 @@ class FileHandler:
             return
 
         try:
-            name = self._name_table[path]
-            with self._condition:
-                while not self._extractor.is_ready(name) and not self._stop_waiting:
-                    self._condition.wait()
+            name = self.__name_table[path]
+            with self.__condition:
+                while not self.__extractor.is_ready(name) and not self.__stop_waiting:
+                    self.__condition.wait()
         except Exception:
             logger.error(f'Waiting on extraction failed: \'{path}\'')
             return
@@ -444,11 +445,11 @@ class FileHandler:
         if self.archive_type is None:
             return
 
-        with self._condition:
-            extractor_files = self._extractor.get_files()
+        with self.__condition:
+            extractor_files = self.__extractor.get_files()
             for path in reversed(files):
-                name = self._name_table[path]
-                if not self._extractor.is_ready(name):
+                name = self.__name_table[path]
+                if not self.__extractor.is_ready(name):
                     extractor_files.remove(name)
                     extractor_files.insert(0, name)
-            self._extractor.set_files(extractor_files)
+            self.__extractor.set_files(extractor_files)

@@ -21,22 +21,24 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
 
     def __init__(self, archive):
         super(SevenZipArchive, self).__init__(archive)
-        self._is_solid = False
-        self._contents = []
+        self.__is_solid = False
+        self.__contents = []
 
-        self.is_encrypted = False
-        self.is_encrypted = self._has_encryption()
+        self.__is_encrypted = False
+        self.__is_encrypted = self._has_encryption()
 
-        self._state = None
-        self._path = None
+        self.__state = None
+        self.__path = None
+
+        self.__filenames_initialized = False
 
     def _get_executable(self):
         return SevenZipArchive._find_7z_executable()
 
     def _get_password_argument(self):
-        if self.is_encrypted:
+        if self.__is_encrypted:
             self._get_password()
-            return f'-p{self._password}'
+            return f'-p{self.__password}'
         else:
             # Add an empty password anyway, to prevent deadlock on reading for
             # input if we did not correctly detect the archive is encrypted.
@@ -61,30 +63,30 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
         Date <space> Time <space> Attr <space> Size <space> Compressed <space> Name"""
 
         if line.startswith('----------'):
-            if self._state == self.STATE_HEADER:
+            if self.__state == self.STATE_HEADER:
                 # First delimiter reached, start reading from next line.
-                self._state = self.STATE_LISTING
-            elif self._state == self.STATE_LISTING:
+                self.__state = self.STATE_LISTING
+            elif self.__state == self.STATE_LISTING:
                 # Last delimiter read, stop reading from now on.
-                self._state = self.STATE_FOOTER
+                self.__state = self.STATE_FOOTER
 
             return None
 
-        if self._state == self.STATE_HEADER:
+        if self.__state == self.STATE_HEADER:
             if (line.startswith('Error:') or line.startswith('ERROR:')) and \
                     line.endswith(': Can not open encrypted archive. Wrong password?'):
                 raise self.EncryptedHeader()
             if 'Solid = +' == line:
-                self._is_solid = True
+                self.__is_solid = True
 
-        if self._state == self.STATE_LISTING:
+        if self.__state == self.STATE_LISTING:
             if line.startswith('Path = '):
-                self._path = line[7:]
-                return self._path
+                self.__path = line[7:]
+                return self.__path
             if line.startswith('Size = '):
                 filesize = int(line[7:])
                 if filesize > 0:
-                    self._contents.append((self._path, filesize))
+                    self.__contents.append((self.__path, filesize))
 
         return None
 
@@ -100,7 +102,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
         return False
 
     def is_solid(self):
-        return self._is_solid
+        return self.__is_solid
 
     def iter_contents(self):
         if not self._get_executable():
@@ -111,9 +113,9 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
         # - a second time with a password if the header is encrypted
         for retry_count in range(2):
             #: Indicates which part of the file listing has been read.
-            self._state = self.STATE_HEADER
+            self.__state = self.STATE_HEADER
             #: Current path while listing contents.
-            self._path = None
+            self.__path = None
             with process.popen(self._get_list_arguments(),
                                stderr=process.STDOUT,
                                universal_newlines=True) as proc:
@@ -129,7 +131,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
                         continue
             break
 
-        self.filenames_initialized = True
+        self.__filenames_initialized = True
 
     def extract(self, filename, destination_dir):
         """Extract <filename> from the archive to <destination_dir>"""
@@ -138,7 +140,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
         if not self._get_executable():
             return
 
-        if not self.filenames_initialized:
+        if not self.__filenames_initialized:
             self.list_contents()
 
         destination_path = os.path.join(destination_dir, filename)
@@ -153,13 +155,13 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
         if not self._get_executable():
             return
 
-        if not self.filenames_initialized:
+        if not self.__filenames_initialized:
             self.list_contents()
 
         with process.popen(self._get_extract_arguments()) as proc:
             wanted = dict([(unicode_name, unicode_name) for unicode_name in entries])
 
-            for filename, filesize in self._contents:
+            for filename, filesize in self.__contents:
                 data = proc.stdout.read(filesize)
                 if filename not in wanted:
                     continue

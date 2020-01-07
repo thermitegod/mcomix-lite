@@ -19,27 +19,27 @@ class PropertiesDialog(Gtk.Dialog):
         self.set_transient_for(window)
         self.add_buttons(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
 
-        self._window = window
+        self.__window = window
         self.resize(prefs['properties width'], prefs['properties height'])
         self.set_resizable(True)
         self.set_default_response(Gtk.ResponseType.CLOSE)
 
-        self._notebook = Gtk.Notebook()
-        self.vbox.pack_start(self._notebook, True, True, 0)
+        self.__notebook = Gtk.Notebook()
+        self.vbox.pack_start(self.__notebook, True, True, 0)
         self.set_border_width(4)
-        self._notebook.set_border_width(6)
+        self.__notebook.set_border_width(6)
 
-        self._archive_page = properties_page._Page()
-        self._image_page = properties_page._Page()
+        self.__archive_page = properties_page._Page()
+        self.__image_page = properties_page._Page()
 
-        self._notebook.append_page(self._archive_page, Gtk.Label(label='Archive'))
-        self._notebook.append_page(self._image_page, Gtk.Label(label='Image'))
+        self.__notebook.append_page(self.__archive_page, Gtk.Label(label='Archive'))
+        self.__notebook.append_page(self.__image_page, Gtk.Label(label='Image'))
 
         self._update_archive_page()
-        self._window.page_changed += self._on_page_change
-        self._window.filehandler.file_opened += self._on_book_change
-        self._window.filehandler.file_closed += self._on_book_change
-        self._window.imagehandler.page_available += self._on_page_available
+        self.__window.page_changed += self._on_page_change
+        self.__window.filehandler.file_opened += self._on_book_change
+        self.__window.filehandler.file_closed += self._on_book_change
+        self.__window.imagehandler.page_available += self._on_page_available
 
         self.show_all()
 
@@ -51,21 +51,21 @@ class PropertiesDialog(Gtk.Dialog):
 
     def _on_page_available(self, page_number):
         if page_number == 1:
-            self._update_page_image(self._archive_page, 1)
-        current_page_number = self._window.imagehandler.get_current_page()
+            self._update_page_image(self.__archive_page, 1)
+        current_page_number = self.__window.imagehandler.get_current_page()
         if current_page_number == page_number:
             self._update_image_page()
 
     def _update_archive_page(self):
-        page = self._archive_page
+        page = self.__archive_page
         page.reset()
-        window = self._window
+        window = self.__window
         if window.filehandler.archive_type is None:
-            if self._notebook.get_n_pages() == 2:
-                self._notebook.detach_tab(page)
+            if self.__notebook.get_n_pages() == 2:
+                self.__notebook.detach_tab(page)
             return
-        if self._notebook.get_n_pages() == 1:
-            self._notebook.insert_page(page, Gtk.Label(label='Archive'), 0)
+        if self.__notebook.get_n_pages() == 1:
+            self.__notebook.insert_page(page, Gtk.Label(label='Archive'), 0)
         # In case it's not ready yet, bump the cover extraction
         # in front of the queue.
         path = window.imagehandler.get_path_to_page(1)
@@ -83,9 +83,9 @@ class PropertiesDialog(Gtk.Dialog):
         self._update_image_page()
 
     def _update_image_page(self):
-        page = self._image_page
+        page = self.__image_page
         page.reset()
-        window = self._window
+        window = self.__window
         if not window.imagehandler.page_is_available():
             return
         self._update_page_image(page)
@@ -98,10 +98,10 @@ class PropertiesDialog(Gtk.Dialog):
         page.show_all()
 
     def _update_page_image(self, page, page_number=None):
-        if not self._window.imagehandler.page_is_available(page_number):
+        if not self.__window.imagehandler.page_is_available(page_number):
             return
         size = prefs['properties thumb size']
-        thumb = self._window.imagehandler.get_thumbnail(page_number, width=size, height=size)
+        thumb = self.__window.imagehandler.get_thumbnail(page_number, width=size, height=size)
         page.set_thumbnail(thumb)
 
     @staticmethod

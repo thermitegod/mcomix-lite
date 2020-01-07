@@ -24,55 +24,55 @@ class Extractor:
     for other threads to wait on specific files to be ready"""
 
     def __init__(self):
-        self._setupped = False
-        self._threadpool = mt.ThreadPool(
+        self.__setupped = False
+        self.__threadpool = mt.ThreadPool(
                 name=self.__class__.__name__,
                 processes=prefs['max extract threads'] or None)
 
-        self._src = None
-        self._files = None
-        self._extracted = None
-        self._archive = None
+        self.__src = None
+        self.__files = None
+        self.__extracted = None
+        self.__archive = None
 
-        self._dst = None
-        self._contents_listed = False
-        self._extract_started = False
-        self._condition = None
+        self.__dst = None
+        self.__contents_listed = False
+        self.__extract_started = False
+        self.__condition = None
 
     def setup(self, src, type=None):
         """Setup the extractor with archive <src> and destination dir <dst>.
         Return a threading.Condition related to the is_ready() method, or
         None if the format of <src> isn't supported"""
-        self._src = src
-        self._files = []
-        self._extracted = set()
-        self._archive = archive_tools.get_recursive_archive_handler(src, type=type, prefix='mcomix.')
-        if self._archive is None:
+        self.__src = src
+        self.__files = []
+        self.__extracted = set()
+        self.__archive = archive_tools.get_recursive_archive_handler(src, type=type, prefix='mcomix.')
+        if self.__archive is None:
             logger.warning(msg := f'Non-supported archive format: \'{os.path.basename(src)}\'')
             raise ArchiveException(msg)
 
-        self._dst = self._archive.destdir
-        self._condition = threading.Condition()
-        self._threadpool.apply_async(
+        self.__dst = self.__archive.destdir
+        self.__condition = threading.Condition()
+        self.__threadpool.apply_async(
                 self._list_contents, callback=self._list_contents_cb,
                 error_callback=self._list_contents_errcb)
-        self._setupped = True
+        self.__setupped = True
 
-        return self._condition
+        return self.__condition
 
     def get_files(self):
         """Return a list of names of all the files the extractor is currently
         set for extracting. After a call to setup() this is by default all
         files found in the archive. The paths in the list are relative to
         the archive root and are not absolute for the files once extracted"""
-        with self._condition:
-            if not self._contents_listed:
+        with self.__condition:
+            if not self.__contents_listed:
                 return
-            return self._files[:]
+            return self.__files[:]
 
     def get_directory(self):
         """Returns the root extraction directory of this extractor"""
-        return self._dst
+        return self.__dst
 
     def set_files(self, files):
         """Set the files that the extractor should extract from the archive in
@@ -85,39 +85,39 @@ class Extractor:
         compability. They are fine formats for some purposes, but should
         not be used for scanned comic books. So, we cheat and ignore the
         ordering applied with this method on such archives"""
-        with self._condition:
-            if not self._contents_listed:
+        with self.__condition:
+            if not self.__contents_listed:
                 return
-            self._files[:] = [f for f in files if f not in self._extracted]
-            if not self._files:
+            self.__files[:] = [f for f in files if f not in self.__extracted]
+            if not self.__files:
                 # Nothing to do!
                 return
-            if self._extract_started:
+            if self.__extract_started:
                 self.extract()
 
     def is_ready(self, name):
         """Return True if the file <name> in the extractor's file list
         (as set by set_files()) is fully extracted"""
-        with self._condition:
-            return name in self._extracted
+        with self.__condition:
+            return name in self.__extracted
 
     def extract(self):
         """Start extracting the files in the file list one by one using a
         new thread. Every time a new file is extracted a notify() will be
         signalled on the Condition that was returned by setup()"""
-        with self._condition:
-            if not self._contents_listed:
+        with self.__condition:
+            if not self.__contents_listed:
                 return
-            if not self._extract_started:
-                mt = self._archive.support_concurrent_extractions \
-                     and not self._archive.is_solid()
+            if not self.__extract_started:
+                mt = self.__archive.support_concurrent_extractions \
+                     and not self.__archive.is_solid()
                 if mt:
-                    self._threadpool.ucbmap(
-                            self._extract_file, self._files,
+                    self.__threadpool.ucbmap(
+                            self._extract_file, self.__files,
                             callback=self._extraction_finished,
                             error_callback=self._extract_files_errcb)
                 else:
-                    self._threadpool.apply_async(
+                    self.__threadpool.apply_async(
                             self._extract_all_files,
                             error_callback=self._extract_files_errcb)
 
@@ -140,39 +140,39 @@ class Extractor:
                 shutil.rmtree(path)
                 logger.debug(f'fallback remove used on: \'{path}\'')
 
-        tmp_cache = self._dst
+        tmp_cache = self.__dst
 
         if os.path.exists(tmp_cache):
-            self._archive.close()
+            self.__archive.close()
             event = threading.Event()
             cleanup_thread = threading.Thread(target=_bg_cleanup, args=[tmp_cache])
             cleanup_thread.start()
 
     def _extraction_finished(self, name):
-        if self._threadpool.closed:
+        if self.__threadpool.closed:
             return
-        with self._condition:
-            self._files.remove(name)
-            self._extracted.add(name)
-            self._condition.notifyAll()
+        with self.__condition:
+            self.__files.remove(name)
+            self.__extracted.add(name)
+            self.__condition.notifyAll()
         self.file_extracted(self, name)
 
     def _extract_all_files(self):
         # With multiple extractions for each pass, some of the files might have
         # already been extracted.
-        with self._condition:
-            files = list(set(self._files) - self._extracted)
+        with self.__condition:
+            files = list(set(self.__files) - self.__extracted)
 
-        logger.debug(f'Extracting from \'{self._src}\' to \'{self._dst}\': \'{", ".join(files)}\'')
-        for name in self._archive.iter_extract(files, self._dst):
+        logger.debug(f'Extracting from \'{self.__src}\' to \'{self.__dst}\': \'{", ".join(files)}\'')
+        for name in self.__archive.iter_extract(files, self.__dst):
             self._extraction_finished(name)
 
     def _extract_file(self, name):
         """Extract the file named <name> to the destination directory,
         mark the file as "ready", then signal a notify() on the Condition
         returned by setup()"""
-        logger.debug(f'Extracting from \'{self._src}\' to \'{self._dst}\': \'{name}\'')
-        self._archive.extract(name)
+        logger.debug(f'Extracting from \'{self.__src}\' to \'{self.__dst}\': \'{name}\'')
+        self.__archive.extract(name)
         return name
 
     @staticmethod
@@ -185,12 +185,12 @@ class Extractor:
         logger.debug(f'Traceback:\n{"".join(traceback.format_tb(tb)).strip()}')
 
     def _list_contents(self):
-        return [filename for filename in self._archive.iter_contents()]
+        return [filename for filename in self.__archive.iter_contents()]
 
     def _list_contents_cb(self, files):
-        with self._condition:
-            self._files[:] = files
-            self._contents_listed = True
+        with self.__condition:
+            self.__files[:] = files
+            self.__contents_listed = True
         self.contents_listed(self, files)
 
     @staticmethod

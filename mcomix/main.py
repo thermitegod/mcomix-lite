@@ -28,26 +28,26 @@ class MainWindow(Gtk.Window):
         self.previous_size = (None, None)
         self.was_out_of_focus = False
         #: Used to remember if changing to fullscreen enabled 'Hide all'
-        self.hide_all_forced = False
+        self.__hide_all_forced = False
         # Remember last scroll destination.
-        self._last_scroll_destination = constants.SCROLL_TO_START
+        self.__last_scroll_destination = constants.SCROLL_TO_START
 
-        self.layout = _dummy_layout()
-        self._spacing = 2
-        self._waiting_for_redraw = False
+        self.__layout = _dummy_layout()
+        self.__spacing = 2
+        self.__waiting_for_redraw = False
 
-        self._image_box = Gtk.HBox(homogeneous=False, spacing=2)  # XXX transitional(kept for osd.py)
-        self._main_layout = Gtk.Layout()
+        self.__image_box = Gtk.HBox(homogeneous=False, spacing=2)  # XXX transitional(kept for osd.py)
+        self.__main_layout = Gtk.Layout()
         # Wrap main layout into an event box so
         # we  can change its background color.
-        self._event_box = Gtk.EventBox()
-        self._event_box.add(self._main_layout)
-        self._event_handler = event.EventHandler(self)
-        self._vadjust = self._main_layout.get_vadjustment()
-        self._hadjust = self._main_layout.get_hadjustment()
-        self._scroll = (
-            Gtk.Scrollbar.new(Gtk.Orientation.HORIZONTAL, self._hadjust),
-            Gtk.Scrollbar.new(Gtk.Orientation.VERTICAL, self._vadjust),
+        self.__event_box = Gtk.EventBox()
+        self.__event_box.add(self.__main_layout)
+        self.__event_handler = event.EventHandler(self)
+        self.__vadjust = self.__main_layout.get_vadjustment()
+        self.__hadjust = self.__main_layout.get_hadjustment()
+        self.__scroll = (
+            Gtk.Scrollbar.new(Gtk.Orientation.HORIZONTAL, self.__hadjust),
+            Gtk.Scrollbar.new(Gtk.Orientation.VERTICAL, self.__vadjust),
         )
 
         self.filehandler = file_handler.FileHandler(self)
@@ -78,26 +78,26 @@ class MainWindow(Gtk.Window):
         self.restore_window_geometry()
 
         # Hook up keyboard shortcuts
-        self._event_handler.register_key_events()
+        self.__event_handler.register_key_events()
 
         for img in self.images:
-            self._main_layout.put(img, 0, 0)
+            self.__main_layout.put(img, 0, 0)
         self.set_bg_color(prefs['bg color'])
 
-        self._vadjust.step_increment = 15
-        self._vadjust.page_increment = 1
-        self._hadjust.step_increment = 15
-        self._hadjust.page_increment = 1
+        self.__vadjust.step_increment = 15
+        self.__vadjust.page_increment = 1
+        self.__hadjust.step_increment = 15
+        self.__hadjust.page_increment = 1
 
         table = Gtk.Table(n_rows=2, n_columns=2, homogeneous=False)
         table.attach(self.thumbnailsidebar, 0, 1, 2, 5, Gtk.AttachOptions.FILL,
                      Gtk.AttachOptions.FILL | Gtk.AttachOptions.EXPAND, 0, 0)
 
-        table.attach(self._event_box, 1, 2, 2, 3, Gtk.AttachOptions.FILL | Gtk.AttachOptions.EXPAND,
+        table.attach(self.__event_box, 1, 2, 2, 3, Gtk.AttachOptions.FILL | Gtk.AttachOptions.EXPAND,
                      Gtk.AttachOptions.FILL | Gtk.AttachOptions.EXPAND, 0, 0)
-        table.attach(self._scroll[constants.HEIGHT_AXIS], 2, 3, 2, 3, Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
+        table.attach(self.__scroll[constants.HEIGHT_AXIS], 2, 3, 2, 3, Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
                      Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK, 0, 0)
-        table.attach(self._scroll[constants.WIDTH_AXIS], 1, 2, 4, 5, Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
+        table.attach(self.__scroll[constants.WIDTH_AXIS], 1, 2, 4, 5, Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
                      Gtk.AttachOptions.FILL, 0, 0)
         table.attach(self.menubar, 0, 3, 0, 1, Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
                      Gtk.AttachOptions.FILL, 0, 0)
@@ -139,20 +139,20 @@ class MainWindow(Gtk.Window):
             prefs['horizontal flip'] = False
 
         # List of "toggles" than can be shown/hidden by the user.
-        self._toggle_list = (
+        self.__toggle_list = (
             # Preference        Action        Widget(s)
             ('show menubar', 'menubar', (self.menubar,)),
-            ('show scrollbar', 'scrollbar', self._scroll),
+            ('show scrollbar', 'scrollbar', self.__scroll),
             ('show statusbar', 'statusbar', (self.statusbar,)),
             ('show thumbnails', 'thumbnails', (self.thumbnailsidebar,)),
             ('show toolbar', 'toolbar', (self.toolbar,)),
         )
 
         # Each "toggle" widget "eats" part of the main layout visible area.
-        self._toggle_axis = {
+        self.__toggle_axis = {
             self.thumbnailsidebar: constants.WIDTH_AXIS,
-            self._scroll[constants.HEIGHT_AXIS]: constants.WIDTH_AXIS,
-            self._scroll[constants.WIDTH_AXIS]: constants.HEIGHT_AXIS,
+            self.__scroll[constants.HEIGHT_AXIS]: constants.WIDTH_AXIS,
+            self.__scroll[constants.WIDTH_AXIS]: constants.HEIGHT_AXIS,
             self.statusbar: constants.HEIGHT_AXIS,
             self.toolbar: constants.HEIGHT_AXIS,
             self.menubar: constants.HEIGHT_AXIS,
@@ -163,32 +163,32 @@ class MainWindow(Gtk.Window):
 
         self.add(table)
         table.show()
-        self._event_box.show_all()
+        self.__event_box.show_all()
 
-        self._main_layout.set_events(Gdk.EventMask.BUTTON1_MOTION_MASK |
-                                     Gdk.EventMask.BUTTON2_MOTION_MASK |
-                                     Gdk.EventMask.BUTTON_PRESS_MASK |
-                                     Gdk.EventMask.BUTTON_RELEASE_MASK |
-                                     Gdk.EventMask.POINTER_MOTION_MASK)
+        self.__main_layout.set_events(Gdk.EventMask.BUTTON1_MOTION_MASK |
+                                      Gdk.EventMask.BUTTON2_MOTION_MASK |
+                                      Gdk.EventMask.BUTTON_PRESS_MASK |
+                                      Gdk.EventMask.BUTTON_RELEASE_MASK |
+                                      Gdk.EventMask.POINTER_MOTION_MASK)
 
-        self._main_layout.drag_dest_set(Gtk.DestDefaults.ALL,
-                                        [Gtk.TargetEntry.new('text/uri-list', 0, 0)],
-                                        Gdk.DragAction.COPY |
-                                        Gdk.DragAction.MOVE)
+        self.__main_layout.drag_dest_set(Gtk.DestDefaults.ALL,
+                                         [Gtk.TargetEntry.new('text/uri-list', 0, 0)],
+                                         Gdk.DragAction.COPY |
+                                         Gdk.DragAction.MOVE)
 
         self.connect('focus-in-event', self.gained_focus)
         self.connect('focus-out-event', self.lost_focus)
         self.connect('delete_event', self.terminate_program)
-        self.connect('key_press_event', self._event_handler.key_press_event)
-        self.connect('key_release_event', self._event_handler.key_release_event)
-        self.connect('configure_event', self._event_handler.resize_event)
-        self.connect('window-state-event', self._event_handler.window_state_event)
+        self.connect('key_press_event', self.__event_handler.key_press_event)
+        self.connect('key_release_event', self.__event_handler.key_release_event)
+        self.connect('configure_event', self.__event_handler.resize_event)
+        self.connect('window-state-event', self.__event_handler.window_state_event)
 
-        self._main_layout.connect('button_release_event', self._event_handler.mouse_release_event)
-        self._main_layout.connect('scroll_event', self._event_handler.scroll_wheel_event)
-        self._main_layout.connect('button_press_event', self._event_handler.mouse_press_event)
-        self._main_layout.connect('motion_notify_event', self._event_handler.mouse_move_event)
-        self._main_layout.connect('drag_data_received', self._event_handler.drag_n_drop_event)
+        self.__main_layout.connect('button_release_event', self.__event_handler.mouse_release_event)
+        self.__main_layout.connect('scroll_event', self.__event_handler.scroll_wheel_event)
+        self.__main_layout.connect('button_press_event', self.__event_handler.mouse_press_event)
+        self.__main_layout.connect('motion_notify_event', self.__event_handler.mouse_move_event)
+        self.__main_layout.connect('drag_data_received', self.__event_handler.drag_n_drop_event)
 
         self.show()
 
@@ -225,8 +225,8 @@ class MainWindow(Gtk.Window):
     def draw_image(self, scroll_to=None):
         """Draw the current pages and update the titlebar and statusbar"""
         # FIXME: what if scroll_to is different?
-        if not self._waiting_for_redraw:  # Don't stack up redraws.
-            self._waiting_for_redraw = True
+        if not self.__waiting_for_redraw:  # Don't stack up redraws.
+            self.__waiting_for_redraw = True
             GLib.idle_add(self._draw_image, scroll_to, priority=GLib.PRIORITY_HIGH_IDLE)
 
     def _update_toggle_preference(self, preference, toggleaction):
@@ -256,12 +256,12 @@ class MainWindow(Gtk.Window):
         sensitive = True
         if prefs['hide all'] or (prefs['hide all in fullscreen'] and self.is_fullscreen):
             sensitive = False
-        for preference, action, widget_list in self._toggle_list:
+        for preference, action, widget_list in self.__toggle_list:
             self.actiongroup.get_action(action).set_sensitive(sensitive)
 
     def _update_toggles_visibility(self):
         """Update each "toggle" widget visibility"""
-        for preference, action, widget_list in self._toggle_list:
+        for preference, action, widget_list in self.__toggle_list:
             should_be_visible = self._should_toggle_be_visible(preference)
             for widget in widget_list:
                 # No change in visibility?
@@ -275,7 +275,7 @@ class MainWindow(Gtk.Window):
 
         if not self.filehandler.file_loaded:
             self._clear_main_area()
-            self._waiting_for_redraw = False
+            self.__waiting_for_redraw = False
             return False
 
         if self.imagehandler.page_is_available():
@@ -324,7 +324,7 @@ class MainWindow(Gtk.Window):
 
             viewport_size = ()  # dummy
             expand_area = False
-            scrollbar_requests = [False] * len(self._scroll)
+            scrollbar_requests = [False] * len(self.__scroll)
             # Visible area size is recomputed depending on scrollbar visibility
             while True:
                 self._show_scrollbars(scrollbar_requests)
@@ -332,17 +332,17 @@ class MainWindow(Gtk.Window):
                     break
                 viewport_size = new_viewport_size
                 zoom_dummy_size = list(viewport_size)
-                if (dasize := zoom_dummy_size[distribution_axis] - self._spacing * (pixbuf_count - 1)) <= 0:
+                if (dasize := zoom_dummy_size[distribution_axis] - self.__spacing * (pixbuf_count - 1)) <= 0:
                     dasize = 1
                 zoom_dummy_size[distribution_axis] = dasize
                 scaled_sizes = self.zoom.get_zoomed_size(size_list, zoom_dummy_size,
                                                          distribution_axis, do_not_transform)
 
-                self.layout = layout.FiniteLayout(
-                        scaled_sizes, viewport_size, orientation, self._spacing,
+                self.__layout = layout.FiniteLayout(
+                        scaled_sizes, viewport_size, orientation, self.__spacing,
                         expand_area, distribution_axis, alignment_axis)
 
-                union_scaled_size = self.layout.get_union_box().get_size()
+                union_scaled_size = self.__layout.get_union_box().get_size()
 
                 scrollbar_requests = [(old or new) for old, new in zip(
                         scrollbar_requests, tools.smaller(viewport_size, union_scaled_size))]
@@ -373,12 +373,12 @@ class MainWindow(Gtk.Window):
             self.statusbar.set_resolution(resolutions)
             self.statusbar.update()
 
-            self._main_layout.get_bin_window().freeze_updates()
+            self.__main_layout.get_bin_window().freeze_updates()
 
-            self._main_layout.set_size(*union_scaled_size)
-            content_boxes = self.layout.get_content_boxes()
+            self.__main_layout.set_size(*union_scaled_size)
+            content_boxes = self.__layout.get_content_boxes()
             for i in range(pixbuf_count):
-                self._main_layout.move(self.images[i], *content_boxes[i].get_position())
+                self.__main_layout.move(self.images[i], *content_boxes[i].get_position())
 
             for i in range(pixbuf_count):
                 self.images[i].show()
@@ -387,9 +387,9 @@ class MainWindow(Gtk.Window):
 
             # Reset orientation so scrolling behaviour is sane.
             if self.is_manga_mode:
-                self.layout.set_orientation(constants.MANGA_ORIENTATION)
+                self.__layout.set_orientation(constants.MANGA_ORIENTATION)
             else:
-                self.layout.set_orientation(constants.WESTERN_ORIENTATION)
+                self.__layout.set_orientation(constants.WESTERN_ORIENTATION)
 
             if scroll_to is not None:
                 if constants.SCROLL_TO_START == scroll_to:
@@ -401,15 +401,15 @@ class MainWindow(Gtk.Window):
                 destination = (scroll_to,) * 2
                 self.scroll_to_predefined(destination, index)
 
-            self._main_layout.get_bin_window().thaw_updates()
+            self.__main_layout.get_bin_window().thaw_updates()
         else:
             # Save scroll destination for when the page becomes available.
-            self._last_scroll_destination = scroll_to
+            self.__last_scroll_destination = scroll_to
             # If the pixbuf for the current page(s) isn't available clear old pixbufs.
             self._clear_main_area()
-            self._show_scrollbars([False] * len(self._scroll))
+            self._show_scrollbars([False] * len(self.__scroll))
 
-        self._waiting_for_redraw = False
+        self.__waiting_for_redraw = False
 
         return False
 
@@ -463,7 +463,7 @@ class MainWindow(Gtk.Window):
         current_page = self.imagehandler.get_current_page()
         nb_pages = 2 if self.displayed_double() else 1
         if current_page <= page < (current_page + nb_pages):
-            self.draw_image(scroll_to=self._last_scroll_destination)
+            self.draw_image(scroll_to=self.__last_scroll_destination)
             self._update_page_information()
 
         # Use first page as application icon when opening archives.
@@ -687,11 +687,11 @@ class MainWindow(Gtk.Window):
     def _show_scrollbars(self, request):
         """Enables scroll bars depending on requests and preferences"""
         limit = self._should_toggle_be_visible('show scrollbar')
-        for i in range(len(self._scroll)):
+        for i in range(len(self.__scroll)):
             if limit and request[i]:
-                self._scroll[i].show()
+                self.__scroll[i].show()
             else:
-                self._scroll[i].hide()
+                self.__scroll[i].hide()
 
     def scroll(self, x, y):
         """Scroll <x> px horizontally and <y> px vertically. If <bound> is
@@ -699,13 +699,13 @@ class MainWindow(Gtk.Window):
         page respectively (dependent on manga mode). The <bound> argument
         only makes sense in double page mode.
         Return True if call resulted in new adjustment values, False otherwise"""
-        old_hadjust = self._hadjust.get_value()
-        old_vadjust = self._vadjust.get_value()
+        old_hadjust = self.__hadjust.get_value()
+        old_vadjust = self.__vadjust.get_value()
 
         visible_width, visible_height = self.get_visible_area_size()
 
-        hadjust_upper = max(0, self._hadjust.get_upper() - visible_width)
-        vadjust_upper = max(0, self._vadjust.get_upper() - visible_height)
+        hadjust_upper = max(0, self.__hadjust.get_upper() - visible_width)
+        vadjust_upper = max(0, self.__vadjust.get_upper() - visible_height)
         hadjust_lower = 0
 
         new_hadjust = old_hadjust + x
@@ -717,20 +717,20 @@ class MainWindow(Gtk.Window):
         new_hadjust = min(hadjust_upper, new_hadjust)
         new_vadjust = min(vadjust_upper, new_vadjust)
 
-        self._vadjust.set_value(new_vadjust)
-        self._hadjust.set_value(new_hadjust)
-        self._scroll[0].queue_resize_no_redraw()
-        self._scroll[1].queue_resize_no_redraw()
+        self.__vadjust.set_value(new_vadjust)
+        self.__hadjust.set_value(new_hadjust)
+        self.__scroll[0].queue_resize_no_redraw()
+        self.__scroll[1].queue_resize_no_redraw()
 
         return old_vadjust != new_vadjust or old_hadjust != new_hadjust
 
     def scroll_to_predefined(self, destination, index=None):
-        self.layout.scroll_to_predefined(destination, index)
-        viewport_position = self.layout.get_viewport_box().get_position()
-        self._hadjust.set_value(viewport_position[0])  # 2D only
-        self._vadjust.set_value(viewport_position[1])  # 2D only
-        self._scroll[0].queue_resize_no_redraw()
-        self._scroll[1].queue_resize_no_redraw()
+        self.__layout.scroll_to_predefined(destination, index)
+        viewport_position = self.__layout.get_viewport_box().get_position()
+        self.__hadjust.set_value(viewport_position[0])  # 2D only
+        self.__vadjust.set_value(viewport_position[1])  # 2D only
+        self.__scroll[0].queue_resize_no_redraw()
+        self.__scroll[1].queue_resize_no_redraw()
 
     def clear(self):
         """Clear the currently displayed data (i.e. "close" the file)"""
@@ -743,9 +743,9 @@ class MainWindow(Gtk.Window):
             i.hide()
             i.clear()
 
-        self._show_scrollbars([False] * len(self._scroll))
-        self.layout = _dummy_layout()
-        self._main_layout.set_size(*self.layout.get_union_box().get_size())
+        self._show_scrollbars([False] * len(self.__scroll))
+        self.__layout = _dummy_layout()
+        self.__main_layout.set_size(*self.__layout.get_union_box().get_size())
         self.set_bg_color(prefs['bg color'])
 
     def displayed_double(self):
@@ -759,10 +759,10 @@ class MainWindow(Gtk.Window):
         """Return a 2-tuple with the width and height of the visible part of the main layout area"""
         dimensions = list(self.get_size())
 
-        for preference, action, widget_list in self._toggle_list:
+        for preference, action, widget_list in self.__toggle_list:
             for widget in widget_list:
                 if widget.get_visible():
-                    axis = self._toggle_axis[widget]
+                    axis = self.__toggle_axis[widget]
                     requisition = widget.size_request()
                     if constants.WIDTH_AXIS == axis:
                         size = requisition.width
@@ -775,7 +775,7 @@ class MainWindow(Gtk.Window):
     def set_cursor(self, mode):
         """Set the cursor on the main layout area to <mode>. You should
         probably use the cursor_handler instead of using this method directly"""
-        self._main_layout.get_bin_window().set_cursor(mode)
+        self.__main_layout.get_bin_window().set_cursor(mode)
 
     def update_title(self):
         """Set the title acording to current state"""
@@ -785,7 +785,7 @@ class MainWindow(Gtk.Window):
     def set_bg_color(self, color):
         """Set the background color to <color>. color is a sequence in the
         format (r, g, b). Values are 16-bit"""
-        self._event_box.override_background_color(Gtk.StateType.NORMAL, Gdk.RGBA(*color))
+        self.__event_box.override_background_color(Gtk.StateType.NORMAL, Gdk.RGBA(*color))
         if prefs['thumbnail bg uses main color']:
             self.thumbnailsidebar.change_thumbnail_background_color(prefs['bg color'])
         self._bg_color = color
@@ -948,7 +948,7 @@ class MainWindow(Gtk.Window):
         if Gtk.main_level() > 0:
             Gtk.main_quit()
 
-        if prefs['hide all'] and self.hide_all_forced and self.fullscreen:
+        if prefs['hide all'] and self.__hide_all_forced and self.fullscreen:
             prefs['hide all'] = False
 
         self.write_config_files()
@@ -957,17 +957,17 @@ class MainWindow(Gtk.Window):
 
 
 #: Main window instance
-__main_window = None
+_main_window = None
 
 
 def main_window():
     """Returns the global main window instance"""
-    return __main_window
+    return _main_window
 
 
 def set_main_window(window):
-    global __main_window
-    __main_window = window
+    global _main_window
+    _main_window = window
 
 
 def _dummy_layout():

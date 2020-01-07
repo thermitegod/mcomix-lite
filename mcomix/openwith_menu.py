@@ -17,32 +17,32 @@ class OpenWithMenu(Gtk.Menu):
         """Constructor"""
         super(OpenWithMenu, self).__init__()
 
-        self._window = window
-        self._openwith_manager = _openwith_manager
+        self.__window = window
+        self.__openwith_manager = _openwith_manager
 
         actiongroup = Gtk.ActionGroup(name='mcomix-openwith')
         actiongroup.add_actions([('edit_commands', Gtk.STOCK_EDIT, '_Edit commands', None, None, self._edit_commands)])
 
         action = actiongroup.get_action('edit_commands')
         action.set_accel_group(ui.get_accel_group())
-        self.edit_button = action.create_menu_item()
-        self.append(self.edit_button)
+        self.__edit_button = action.create_menu_item()
+        self.append(self.__edit_button)
 
         self._construct_menu()
 
-        self._window.filehandler.file_opened += self._set_sensitivity
-        self._window.filehandler.file_closed += self._set_sensitivity
-        self._openwith_manager.set_commands += self._construct_menu
+        self.__window.filehandler.file_opened += self._set_sensitivity
+        self.__window.filehandler.file_closed += self._set_sensitivity
+        self.__openwith_manager.set_commands += self._construct_menu
 
         self.show_all()
 
     def _construct_menu(self, *args):
         """Build the menu entries from scratch"""
         for item in self.get_children():
-            if item != self.edit_button:
+            if item != self.__edit_button:
                 self.remove(item)
 
-        commandlist = self._openwith_manager.get_commands()
+        commandlist = self.__openwith_manager.get_commands()
 
         if len(commandlist) > 0:
             separator = Gtk.SeparatorMenuItem()
@@ -65,22 +65,22 @@ class OpenWithMenu(Gtk.Menu):
 
     def _set_sensitivity(self):
         """Enables or disables menu items depending on files being loaded"""
-        sensitive = self._window.filehandler.file_loaded
+        sensitive = self.__window.filehandler.file_loaded
         for item in self.get_children():
-            if item != self.edit_button:
+            if item != self.__edit_button:
                 item.set_sensitive(sensitive)
 
     def _commandmenu_clicked(self, menuitem, cmd, label, cwd, disabled_in_archives):
         """Execute the command associated with the clicked menu"""
         command = openwith.OpenWithCommand(label, cmd, cwd, disabled_in_archives)
-        command.execute(self._window)
+        command.execute(self.__window)
 
     def _edit_commands(self, *args):
         """When clicked, opens the command editor to set up the menu. Make
         sure the dialog isn't opened more than once"""
         global _openwith_edit_diag
         if not _openwith_edit_diag:
-            _openwith_edit_diag = openwith.OpenWithEditor(self._window, self._openwith_manager)
+            _openwith_edit_diag = openwith.OpenWithEditor(self.__window, self.__openwith_manager)
             _openwith_edit_diag.connect_after('response', self._dialog_closed)
 
         _openwith_edit_diag.show_all()

@@ -41,19 +41,19 @@ class Thumbnailer:
         If <archive_support> is True, support for archive thumbnail creation
         (based on cover detection) is enabled. Otherwise, only image files are
         supported"""
-        self.dst_dir = dst_dir
+        self.__dst_dir = dst_dir
         if store_on_disk is None:
-            self.store_on_disk = prefs['create thumbnails']
+            self.__store_on_disk = prefs['create thumbnails']
         else:
-            self.store_on_disk = store_on_disk
+            self.__store_on_disk = store_on_disk
         if size is None:
-            self.width = self.height = prefs['thumbnail size']
-            self.default_sizes = True
+            self.__width = self.__height = prefs['thumbnail size']
+            self.__default_sizes = True
         else:
-            self.width, self.height = size
-            self.default_sizes = False
-        self.force_recreation = force_recreation
-        self.archive_support = archive_support
+            self.__width, self.__height = size
+            self.__default_sizes = False
+        self.__force_recreation = force_recreation
+        self.__archive_support = archive_support
 
     def thumbnail(self, filepath, mt=False):
         """Returns a thumbnail pixbuf for <filepath>, transparently handling
@@ -62,9 +62,9 @@ class Thumbnailer:
         Returns None if thumbnail creation failed, or if the thumbnail creation
         is run asynchrounosly"""
         # Update width and height from preferences if they haven't been set explicitly
-        if self.default_sizes:
-            self.width = prefs['thumbnail size']
-            self.height = prefs['thumbnail size']
+        if self.__default_sizes:
+            self.__width = prefs['thumbnail size']
+            self.__height = prefs['thumbnail size']
 
         if self._thumbnail_exists(filepath):
             thumbpath = self._path_to_thumbpath(filepath)
@@ -100,7 +100,7 @@ class Thumbnailer:
     def _create_thumbnail_pixbuf(self, filepath):
         """Creates a thumbnail pixbuf from <filepath>, and returns it as a
         tuple along with a file metadata dictionary: (pixbuf, tEXt_data)"""
-        if self.archive_support:
+        if self.__archive_support:
             mime = archive_tools.archive_mime_type(filepath)
         else:
             mime = None
@@ -118,8 +118,8 @@ class Thumbnailer:
                 if not os.path.isfile(image_path):
                     return None, None
 
-                pixbuf = image_tools.load_pixbuf_size(image_path, self.width, self.height)
-                if self.store_on_disk:
+                pixbuf = image_tools.load_pixbuf_size(image_path, self.__width, self.__height)
+                if self.__store_on_disk:
                     tEXt_data = self._get_text_data(image_path)
                     # Use the archive's mTime instead of the extracted file's mtime
                     tEXt_data['tEXt::Thumb::MTime'] = str(os.stat(filepath).st_mtime)
@@ -129,8 +129,8 @@ class Thumbnailer:
                 return pixbuf, tEXt_data
 
         elif image_tools.is_image_file(filepath, check_mimetype=True):
-            pixbuf = image_tools.load_pixbuf_size(filepath, self.width, self.height)
-            if self.store_on_disk:
+            pixbuf = image_tools.load_pixbuf_size(filepath, self.__width, self.__height)
+            if self.__store_on_disk:
                 tEXt_data = self._get_text_data(filepath)
             else:
                 tEXt_data = None
@@ -145,7 +145,7 @@ class Thumbnailer:
         pixbuf, tEXt_data = self._create_thumbnail_pixbuf(filepath)
         self.thumbnail_finished(filepath, pixbuf)
 
-        if pixbuf and self.store_on_disk:
+        if pixbuf and self.__store_on_disk:
             thumbpath = self._path_to_thumbpath(filepath)
             self._save_thumbnail(pixbuf, thumbpath, tEXt_data)
 
@@ -198,7 +198,7 @@ class Thumbnailer:
         and it's mTime doesn't match the mTime of <filepath>,
         it's size is different from the one specified in the thumbnailer,
         or if <force_recreation> is True"""
-        if not self.force_recreation:
+        if not self.__force_recreation:
             if os.path.isfile(thumbpath := self._path_to_thumbpath(filepath)):
                 # Check the thumbnail's stored mTime
                 try:
@@ -208,7 +208,7 @@ class Thumbnailer:
                             stored_mtime = float(info['Thumb::MTime'])
                             # The source file might no longer exist
                             file_mtime = os.path.isfile(filepath) and os.stat(filepath).st_mtime or stored_mtime
-                            return stored_mtime == file_mtime and max(*img.size) == max(self.width, self.height)
+                            return stored_mtime == file_mtime and max(*img.size) == max(self.__width, self.__height)
                 except IOError:
                     return False
             else:
@@ -224,7 +224,7 @@ class Thumbnailer:
     def _uri_to_thumbpath(self, uri):
         """Return the full path to the thumbnail for <uri> with <dst_dir>
         being the base thumbnail directory"""
-        return os.path.join(self.dst_dir, f'{md5(uri.encode()).hexdigest()}.png')
+        return os.path.join(self.__dst_dir, f'{md5(uri.encode()).hexdigest()}.png')
 
     @staticmethod
     def _guess_cover(files):

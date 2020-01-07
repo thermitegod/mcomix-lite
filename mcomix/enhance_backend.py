@@ -12,7 +12,7 @@ class ImageEnhancer:
     can be made using an _EnhanceImageDialog"""
 
     def __init__(self, window):
-        self._window = window
+        self.__window = window
         self.brightness = prefs['brightness']
         self.contrast = prefs['contrast']
         self.saturation = prefs['saturation']
@@ -31,4 +31,4 @@ class ImageEnhancer:
 
     def signal_update(self):
         """Signal to the main window that a change in the enhancement values has been made"""
-        self._window.draw_image()
+        self.__window.draw_image()

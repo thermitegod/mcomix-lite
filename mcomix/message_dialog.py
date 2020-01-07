@@ -22,16 +22,16 @@ class MessageDialog(Gtk.MessageDialog):
         self.set_transient_for(parent)
 
         #: Unique dialog identifier (for storing 'Do not ask again')
-        self.dialog_id = None
+        self.__dialog_id = None
         #: List of response IDs that should be remembered
-        self.choices = []
+        self.__choices = []
         #: Automatically destroy dialog after run?
-        self.auto_destroy = True
+        self.__auto_destroy = True
 
-        self.remember_checkbox = Gtk.CheckButton(label='Do not ask again.')
-        self.remember_checkbox.set_no_show_all(True)
-        self.remember_checkbox.set_can_focus(False)
-        self.get_message_area().pack_end(self.remember_checkbox, True, True, 6)
+        self.__remember_checkbox = Gtk.CheckButton(label='Do not ask again.')
+        self.__remember_checkbox.set_no_show_all(True)
+        self.__remember_checkbox.set_can_focus(False)
+        self.get_message_area().pack_end(self.__remember_checkbox, True, True, 6)
 
     def set_text(self, primary, secondary=None):
         """Formats the dialog's text fields.
@@ -44,31 +44,31 @@ class MessageDialog(Gtk.MessageDialog):
 
     def should_remember_choice(self):
         """Returns True when the dialog choice should be remembered"""
-        return self.remember_checkbox.get_active()
+        return self.__remember_checkbox.get_active()
 
     def set_should_remember_choice(self, dialog_id, choices):
         """This method enables the 'Do not ask again' checkbox.
         @param dialog_id: Unique identifier for the dialog (a string).
         @param choices: List of response IDs that should be remembered"""
-        self.remember_checkbox.show()
-        self.dialog_id = dialog_id
-        self.choices = [int(choice) for choice in choices]
+        self.__remember_checkbox.show()
+        self.__dialog_id = dialog_id
+        self.__choices = [int(choice) for choice in choices]
 
     def run(self):
         """Makes the dialog visible and waits for a result. Also destroys
         the dialog after the result has been returned"""
-        if self.dialog_id in prefs['stored dialog choices']:
+        if self.__dialog_id in prefs['stored dialog choices']:
             self.destroy()
-            return prefs['stored dialog choices'][self.dialog_id]
+            return prefs['stored dialog choices'][self.__dialog_id]
         else:
             self.show_all()
             # Prevent checkbox from grabbing focus by only enabling it after show
-            self.remember_checkbox.set_can_focus(True)
+            self.__remember_checkbox.set_can_focus(True)
             result = super(MessageDialog, self).run()
 
-            if self.should_remember_choice() and int(result) in self.choices:
-                prefs['stored dialog choices'][self.dialog_id] = int(result)
+            if self.should_remember_choice() and int(result) in self.__choices:
+                prefs['stored dialog choices'][self.__dialog_id] = int(result)
 
-            if self.auto_destroy:
+            if self.__auto_destroy:
                 self.destroy()
             return result

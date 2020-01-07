@@ -10,18 +10,20 @@ class Bookmark(Gtk.ImageMenuItem):
     and is thus put directly in the bookmarks menu"""
 
     def __init__(self, window, file_handler, name, path, page, numpages, archive_type, date_added):
+        self.__window = window
+        self.__archive_type = archive_type
+
+        self._file_handler = file_handler
+
         self._name = name
         self._path = path
         self._page = page
         self._numpages = numpages
-        self._window = window
-        self._archive_type = archive_type
-        self._file_handler = file_handler
         self._date_added = date_added
 
         super(Bookmark, self).__init__(label=str(self), use_underline=False)
 
-        if self._archive_type is not None:
+        if self.__archive_type is not None:
             im = Gtk.Image.new_from_stock('mcomix-archive', Gtk.IconSize.MENU)
         else:
             im = Gtk.Image.new_from_stock('mcomix-image', Gtk.IconSize.MENU)
@@ -37,10 +39,10 @@ class Bookmark(Gtk.ImageMenuItem):
         if self._file_handler._base_path != self._path:
             self._file_handler.open_file(self._path, self._page)
         else:
-            self._window.set_page(self._page)
+            self.__window.set_page(self._page)
 
-            self._window.toolbar.hide()
-            self._window.toolbar.show()
+            self.__window.toolbar.hide()
+            self.__window.toolbar.show()
 
     def same_path(self, path):
         """Return True if the bookmark is for the file <path>"""
@@ -62,20 +64,20 @@ class Bookmark(Gtk.ImageMenuItem):
     def pack(self):
         """Return a tuple suitable for pickling. The bookmark can be fully
         re-created using the values in the tuple"""
-        return self._name, self._path, self._page, self._numpages, self._archive_type, self._date_added
+        return self._name, self._path, self._page, self._numpages, self.__archive_type, self._date_added
 
     def clone(self):
         """Creates a copy of the provided Bookmark menu item. This is necessary
         since one bookmark item cannot be anchored in more than one menu. There are,
         however, at least two: The main menu and the popup menu"""
         return Bookmark(
-                self._window,
+                self.__window,
                 self._file_handler,
                 self._name,
                 self._path,
                 self._page,
                 self._numpages,
-                self._archive_type,
+                self.__archive_type,
                 self._date_added)
 
     def __eq__(self, other):

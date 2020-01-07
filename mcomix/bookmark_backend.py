@@ -13,39 +13,39 @@ from loguru import logger
 from mcomix import bookmark_menu_item, callback, constants, message_dialog, state
 
 
-class __BookmarksStore:
+class _BookmarksStore:
     """The _BookmarksStore is a backend for both the bookmarks menu and dialog.
     Changes in the _BookmarksStore are mirrored in both"""
 
     def __init__(self):
-        self._initialized = False
-        self._window = None
-        self._file_handler = None
-        self._image_handler = None
+        self.__initialized = False
+        self.__window = None
+        self.__file_handler = None
+        self.__image_handler = None
 
         bookmarks, mtime = self.load_bookmarks()
 
         #: List of bookmarks
-        self._bookmarks = bookmarks
+        self.__bookmarks = bookmarks
         #: Modification date of bookmarks file
-        self._bookmarks_mtime = mtime
+        self.__bookmarks_mtime = mtime
 
     def initialize(self, window):
         """Initializes references to the main window and file/image handlers"""
-        if not self._initialized:
-            self._window = window
-            self._file_handler = window.filehandler
-            self._image_handler = window.imagehandler
-            self._initialized = True
+        if not self.__initialized:
+            self.__window = window
+            self.__file_handler = window.filehandler
+            self.__image_handler = window.imagehandler
+            self.__initialized = True
 
             # Update already loaded bookmarks with window and file handler information
-            for bookmark in self._bookmarks:
-                bookmark._window = window
+            for bookmark in self.__bookmarks:
+                bookmark.__window = window
                 bookmark._file_handler = window.filehandler
 
     def add_bookmark_by_values(self, name, path, page, numpages, archive_type, date_added):
         """Create a bookmark and add it to the list"""
-        bookmark = bookmark_menu_item.Bookmark(self._window, self._file_handler,
+        bookmark = bookmark_menu_item.Bookmark(self.__window, self.__file_handler,
                                                name, path, page, numpages, archive_type, date_added)
 
         self.add_bookmark(bookmark)
@@ -53,29 +53,29 @@ class __BookmarksStore:
     @callback.Callback
     def add_bookmark(self, bookmark):
         """Add the <bookmark> to the list"""
-        self._bookmarks.append(bookmark)
+        self.__bookmarks.append(bookmark)
         self.write_bookmarks_file()
         state.state_changed['bookmarks'] = state.DIRTY
 
     @callback.Callback
     def remove_bookmark(self, bookmark):
         """Remove the <bookmark> from the list"""
-        self._bookmarks.remove(bookmark)
+        self.__bookmarks.remove(bookmark)
         self.write_bookmarks_file()
         state.state_changed['bookmarks'] = state.DIRTY
 
     def add_current_to_bookmarks(self):
         """Add the currently viewed page to the list"""
-        name = self._image_handler.get_current_filename()
-        path = self._image_handler.get_real_path()
-        page = self._image_handler.get_current_page()
-        numpages = self._image_handler.get_number_of_pages()
-        archive_type = self._file_handler.archive_type
+        name = self.__image_handler.get_current_filename()
+        path = self.__image_handler.get_real_path()
+        page = self.__image_handler.get_current_page()
+        numpages = self.__image_handler.get_number_of_pages()
+        archive_type = self.__file_handler.archive_type
         date_added = datetime.datetime.now()
 
         same_file_bookmarks = []
 
-        for bookmark in self._bookmarks:
+        for bookmark in self.__bookmarks:
             if bookmark.same_path(path):
                 if bookmark.same_page(page):
                     logger.info(f'Bookmark already exists for \'{name}\' on page \'{page}\'')
@@ -101,10 +101,10 @@ class __BookmarksStore:
     def get_bookmarks(self):
         """Return all the bookmarks in the list"""
         if not self.file_was_modified():
-            return self._bookmarks
+            return self.__bookmarks
         else:
-            self._bookmarks, self._bookmarks_mtime = self.load_bookmarks()
-            return self._bookmarks
+            self.__bookmarks, self.__bookmarks_mtime = self.load_bookmarks()
+            return self.__bookmarks
 
     def load_bookmarks(self):
         """Loads persisted bookmarks from a local file.
@@ -121,7 +121,7 @@ class __BookmarksStore:
                     packs = pickle.load(fd)
 
                     for pack in packs:
-                        bookmark = bookmark_menu_item.Bookmark(self._window, self._file_handler, *pack)
+                        bookmark = bookmark_menu_item.Bookmark(self.__window, self.__file_handler, *pack)
                         bookmarks.append(bookmark)
 
             except Exception:
@@ -134,7 +134,7 @@ class __BookmarksStore:
         since it was last read"""
         if os.path.isfile(path := constants.BOOKMARK_PATH):
             try:
-                if os.stat(path).st_mtime > self._bookmarks_mtime:
+                if os.stat(path).st_mtime > self.__bookmarks_mtime:
                     return True
                 else:
                     return False
@@ -149,15 +149,15 @@ class __BookmarksStore:
 
         if self.file_was_modified():
             new_bookmarks, _ = self.load_bookmarks()
-            self._bookmarks = list(set(self._bookmarks + new_bookmarks))
+            self.__bookmarks = list(set(self.__bookmarks + new_bookmarks))
 
         with open(constants.BOOKMARK_PATH, 'wb') as fd:
             pickle.dump(constants.VERSION, fd, pickle.HIGHEST_PROTOCOL)
 
-            packs = [bookmark.pack() for bookmark in self._bookmarks]
+            packs = [bookmark.pack() for bookmark in self.__bookmarks]
             pickle.dump(packs, fd, pickle.HIGHEST_PROTOCOL)
 
-        self._bookmarks_mtime = time.time()
+        self.__bookmarks_mtime = time.time()
 
     def show_replace_bookmark_dialog(self, new_page):
         """Present a confirmation dialog to replace old bookmarks.
@@ -165,7 +165,7 @@ class __BookmarksStore:
         RESPONSE_NO to create a new bookmark, RESPONSE_CANCEL to abort creating
         a new bookmark"""
         dialog = message_dialog.MessageDialog(
-                self._window,
+                self.__window,
                 flags=Gtk.DialogFlags.MODAL,
                 message_type=Gtk.MessageType.INFO,
                 buttons=Gtk.ButtonsType.NONE)
@@ -185,4 +185,4 @@ class __BookmarksStore:
 
 
 # Singleton instance of the bookmarks store.
-BookmarksStore = __BookmarksStore()
+BookmarksStore = _BookmarksStore()

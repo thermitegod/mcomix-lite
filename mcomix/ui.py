@@ -13,7 +13,7 @@ class MainUI(Gtk.UIManager):
     def __init__(self, window):
         super(MainUI, self).__init__()
 
-        self._window = window
+        self.__window = window
 
         def _action_lambda(fn, *args):
             return lambda *_: fn(*args)
@@ -21,8 +21,8 @@ class MainUI(Gtk.UIManager):
         # ----------------------------------------------------------------
         # Create actions for the menus.
         # ----------------------------------------------------------------
-        self._actiongroup = Gtk.ActionGroup(name='mcomix-main')
-        self._actiongroup.add_actions([
+        self.__actiongroup = Gtk.ActionGroup(name='mcomix-main')
+        self.__actiongroup.add_actions([
             ('delete', Gtk.STOCK_DELETE, '_Delete',
              None, None, _action_lambda(window.move_file, 'delete')),
             ('next_page', Gtk.STOCK_GO_FORWARD, '_Next page',
@@ -89,7 +89,7 @@ class MainUI(Gtk.UIManager):
             ('menu_autorotate_height', None, '...when height exceeds width'),
             ('expander', None, None, None, None, None)])
 
-        self._actiongroup.add_toggle_actions([
+        self.__actiongroup.add_toggle_actions([
             ('fullscreen', Gtk.STOCK_FULLSCREEN, '_Fullscreen',
              None, None, window.change_fullscreen),
             ('double_page', 'mcomix-double-page', '_Double page mode',
@@ -117,7 +117,7 @@ class MainUI(Gtk.UIManager):
 
         # Note: Don't change the default value for the radio buttons unless
         # also fixing the code for setting the correct one on start-up in main.py.
-        self._actiongroup.add_radio_actions([
+        self.__actiongroup.add_radio_actions([
             ('best_fit_mode', 'mcomix-fitbest', '_Best fit mode',
              None, None, constants.ZOOM_MODE_BEST),
             ('fit_width_mode', 'mcomix-fitwidth', 'Fit _width mode',
@@ -130,7 +130,7 @@ class MainUI(Gtk.UIManager):
              None, None, constants.ZOOM_MODE_MANUAL)], 3, window.change_zoom_mode)
 
         # Automatically rotate image if width>height or height>width
-        self._actiongroup.add_radio_actions([
+        self.__actiongroup.add_radio_actions([
             ('no_autorotation', None, 'Never',
              None, None, constants.AUTOROTATE_NEVER),
             ('rotate_90_width', 'mcomix-rotate-90', '_Rotate 90 degrees CW',
@@ -143,20 +143,20 @@ class MainUI(Gtk.UIManager):
              None, None, constants.AUTOROTATE_HEIGHT_270)],
                 prefs['auto rotate depending on size'], window.change_autorotation)
 
-        self._actiongroup.add_actions([
+        self.__actiongroup.add_actions([
             ('about', Gtk.STOCK_ABOUT, '_About',
              None, None, dialog_handler.open_dialog)], (window, 'about-dialog'))
 
-        self._actiongroup.add_actions([
+        self.__actiongroup.add_actions([
             ('properties', Gtk.STOCK_PROPERTIES, 'Proper_ties',
              None, None, dialog_handler.open_dialog)], (window, 'properties-dialog'))
 
-        self._actiongroup.add_actions([
+        self.__actiongroup.add_actions([
             ('preferences', Gtk.STOCK_PREFERENCES, 'Pr_eferences',
              None, None, preferences_dialog.open_dialog)], window)
 
         # Some actions added separately since they need extra arguments.
-        self._actiongroup.add_actions([
+        self.__actiongroup.add_actions([
             ('open', Gtk.STOCK_OPEN, '_Open...',
              None, None, file_chooser_main_dialog.open_main_filechooser_dialog),
             ('enhance_image', 'mcomix-enhance-image', 'En_hance image...',
@@ -346,21 +346,21 @@ class MainUI(Gtk.UIManager):
         """
 
         self.add_ui_from_string(ui_description)
-        self.insert_action_group(self._actiongroup, 0)
+        self.insert_action_group(self.__actiongroup, 0)
 
-        self.bookmarks = bookmark_menu.BookmarksMenu(self, window)
-        self.get_widget('/Menu/menu_bookmarks').set_submenu(self.bookmarks)
+        self.__bookmarks = bookmark_menu.BookmarksMenu(self, window)
+        self.get_widget('/Menu/menu_bookmarks').set_submenu(self.__bookmarks)
         self.get_widget('/Menu/menu_bookmarks').show()
 
-        self.bookmarks_popup = bookmark_menu.BookmarksMenu(self, window)
-        self.get_widget('/Popup/menu_bookmarks_popup').set_submenu(self.bookmarks_popup)
+        self.__bookmarks_popup = bookmark_menu.BookmarksMenu(self, window)
+        self.get_widget('/Popup/menu_bookmarks_popup').set_submenu(self.__bookmarks_popup)
         self.get_widget('/Popup/menu_bookmarks_popup').show()
 
-        openwith = openwith_menu.OpenWithMenu(self, window)
-        self.get_widget('/Menu/menu_file/menu_open_with').set_submenu(openwith)
+        self.__openwith = openwith_menu.OpenWithMenu(self, window)
+        self.get_widget('/Menu/menu_file/menu_open_with').set_submenu(self.__openwith)
         self.get_widget('/Menu/menu_file/menu_open_with').show()
-        openwith = openwith_menu.OpenWithMenu(self, window)
-        self.get_widget('/Popup/menu_open_with_popup').set_submenu(openwith)
+        self.__openwith = openwith_menu.OpenWithMenu(self, window)
+        self.get_widget('/Popup/menu_open_with_popup').set_submenu(self.__openwith)
         self.get_widget('/Popup/menu_open_with_popup').show()
 
         window.add_accel_group(self.get_accel_group())

@@ -10,70 +10,70 @@ from mcomix.preferences import prefs
 
 class AnimeFrameBuffer:
     def __init__(self, n_frames, loop=1):
-        self.n_frames = n_frames
-        self.width = 0
-        self.height = 0
+        self.__n_frames = n_frames
+        self.__width = 0
+        self.__height = 0
         if prefs['animation mode'] == constants.ANIMATION_INF:
-            self.loop = 0
+            self.__loop = 0
         elif prefs['animation mode'] == constants.ANIMATION_ONCE:
-            self.loop = 1
+            self.__loop = 1
         else:
-            self.loop = 0 if loop > 10 else loop  # loop over 10 is infinitely
+            self.__loop = 0 if loop > 10 else loop  # loop over 10 is infinitely
 
-        self.framelist = [None] * n_frames
-        self.duration = 0
-        self.fps = 0
+        self.__framelist = [None] * n_frames
+        self.__duration = 0
+        self.__fps = 0
 
     def add_frame(self, index, pixbuf, duration, background=None):
-        if self.n_frames <= index:
+        if self.__n_frames <= index:
             raise EOFError('index over')
         width = pixbuf.get_width()
         height = pixbuf.get_height()
-        if self.width * self.height:
-            if width != self.width or height != self.height:
+        if self.__width * self.__height:
+            if width != self.__width or height != self.__height:
                 raise ValueError('frame with different size')
         else:
-            self.width = width
-            self.height = height
+            self.__width = width
+            self.__height = height
         if prefs['animation background'] and background:
             pixbuf = pixbuf.composite_color_simple(
                     width, height, GdkPixbuf.InterpType.NEAREST,
                     255, 1024, background, background
             )
-        self.framelist[index] = (pixbuf, duration)
-        self.duration = math.gcd(duration, self.duration)
+        self.__framelist[index] = (pixbuf, duration)
+        self.__duration = math.gcd(duration, self.__duration)
 
     def copy(self):
-        newbuffer = AnimeFrameBuffer(self.n_frames, loop=self.loop)
-        for n, frame in enumerate(self.framelist):
+        newbuffer = AnimeFrameBuffer(self.__n_frames, loop=self.__loop)
+        for n, frame in enumerate(self.__framelist):
             pixbuf, duration = frame
             newbuffer.add_frame(n, pixbuf, duration)
         return newbuffer
 
     def create_animation(self):
-        if not self.width * self.height:
+        if not self.__width * self.__height:
             raise ValueError('no frames')
-        if not self.fps:
-            if self.duration:
-                self.fps = 1000 / self.duration
+        if not self.__fps:
+            if self.__duration:
+                self.__fps = 1000 / self.__duration
             else:
                 # all duration is 0, set fps to 60
                 # TODO: correctly deal with 0 duration
-                self.fps = 60
-        anime = GdkPixbuf.PixbufSimpleAnim.new(self.width, self.height, self.fps)
-        if self.loop:
+                self.__fps = 60
+        anime = GdkPixbuf.PixbufSimpleAnim.new(self.__width, self.__height, self.__fps)
+        if self.__loop:
             anime.set_loop(False)
         else:
             anime.set_loop(True)
-        for l in range(max(1, self.loop)):
-            for n, frame in enumerate(self.framelist):
+        for l in range(max(1, self.__loop)):
+            for n, frame in enumerate(self.__framelist):
                 if not frame:
                     raise OSError('animation corrupted')
                 pixbuf, duration = frame
-                if not (duration and self.duration):
+                if not (duration and self.__duration):
                     loop = 1
                 else:
-                    loop = duration // self.duration
+                    loop = duration // self.__duration
                 for c in range(loop):
                     anime.add_frame(pixbuf)
 

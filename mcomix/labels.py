@@ -14,16 +14,16 @@ class FormattedLabel(Gtk.Label):
 
     def __init__(self, text='', weight=Pango.Weight.NORMAL, style=Pango.Style.NORMAL, scale=1.0):
         super(FormattedLabel, self).__init__()
-        self._weight = weight
-        self._style = style
-        self._scale = scale
+        self.__weight = weight
+        self.__style = style
+        self.__scale = scale
         self.set_text(text)
 
     def set_text(self, text):
         markup = '<span font_size="%u" font_weight="%u"font_style="%s">%s</span>' % (
-            int(self._scale * 10 * 1024),
-            self._weight,
-            self._STYLES[self._style],
+            int(self.__scale * 10 * 1024),
+            self.__weight,
+            self._STYLES[self.__style],
             GLib.markup_escape_text(text))
         self.set_markup(markup)
 

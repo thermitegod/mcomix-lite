@@ -79,6 +79,8 @@ class OrderedFileProvider(FileProvider):
         will be used as base file"""
         self.set_directory(file_or_directory)
 
+        self.__base_dir = self.__base_dir
+
     def set_directory(self, file_or_directory):
         """Sets the base directory"""
         if os.path.isdir(file_or_directory):
@@ -89,10 +91,10 @@ class OrderedFileProvider(FileProvider):
             # Passed file doesn't exist
             raise ValueError(f'Invalid path: "{file_or_directory}"')
 
-        self.base_dir = os.path.abspath(dir)
+        self.__base_dir = os.path.abspath(dir)
 
     def get_directory(self):
-        return self.base_dir
+        return self.__base_dir
 
     def list_files(self, mode=FileProvider.IMAGES):
         """Lists all files in the current directory. Returns a list of absolute paths, already sorted"""
@@ -107,13 +109,13 @@ class OrderedFileProvider(FileProvider):
         fname_map = {}
         try:
             # listdir() return list of bytes only if path is bytes
-            for fn in os.listdir(self.base_dir):
-                fpath = os.path.join(self.base_dir, fn)
+            for fn in os.listdir(self.__base_dir):
+                fpath = os.path.join(self.__base_dir, fn)
                 if should_accept(fpath):
                     files.append(fpath)
-                    fname_map[fpath] = os.path.join(self.base_dir, fn)
+                    fname_map[fpath] = os.path.join(self.__base_dir, fn)
         except OSError:
-            logger.warning(f'Permission denied, Could not open: \'{self.base_dir}\'')
+            logger.warning(f'Permission denied, Could not open: \'{self.__base_dir}\'')
             return []
 
         FileProvider.sort_files(files)
@@ -123,9 +125,9 @@ class OrderedFileProvider(FileProvider):
         """Switches to the next sibling directory. Next call to
         list_file() returns files in the new directory.
         Returns True if the directory was changed, otherwise False"""
-        if len(directories := self.__get_sibling_directories(self.base_dir)) - 1 \
-                > (current_index := directories.index(self.base_dir)):
-            self.base_dir = directories[current_index + 1]
+        if len(directories := self.__get_sibling_directories(self.__base_dir)) - 1 \
+                > (current_index := directories.index(self.__base_dir)):
+            self.__base_dir = directories[current_index + 1]
             return True
         else:
             return False
@@ -134,9 +136,9 @@ class OrderedFileProvider(FileProvider):
         """Switches to the previous sibling directory. Next call to
         list_file() returns files in the new directory.
         Returns True if the directory was changed, otherwise False"""
-        directories = self.__get_sibling_directories(self.base_dir)
-        if (current_index := directories.index(self.base_dir)) > 0:
-            self.base_dir = directories[current_index - 1]
+        directories = self.__get_sibling_directories(self.__base_dir)
+        if (current_index := directories.index(self.__base_dir)) > 0:
+            self.__base_dir = directories[current_index - 1]
             return True
         else:
             return False

@@ -14,17 +14,17 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
         self.set_border_width(5)
         self.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.ALWAYS)
 
-        self.keymanager = keymanager
+        self.__keymanager = keymanager
 
-        accel_column_num = max([len(self.keymanager.get_bindings_for_action(action))
+        accel_column_num = max([len(self.__keymanager.get_bindings_for_action(action))
                                 for action in keybindings_map.BINDING_INFO.keys()])
-        accel_column_num = self.accel_column_num = max([3, accel_column_num])
+        accel_column_num = self.__accel_column_num = max([3, accel_column_num])
 
         # Human name, action name, true value, shortcut 1, shortcut 2, ...
         model = [str, str, 'gboolean']
         model.extend([str, ] * accel_column_num)
 
-        treestore = self.treestore = Gtk.TreeStore(*model)
+        treestore = self.__treestore = Gtk.TreeStore(*model)
         self.refresh_model()
 
         treeview = Gtk.TreeView(model=treestore)
@@ -35,7 +35,7 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
         tvcol1.pack_start(cell1, True)
         tvcol1.set_attributes(cell1, text=0, editable=2)
 
-        for idx in range(0, self.accel_column_num):
+        for idx in range(0, self.__accel_column_num):
             tvc = Gtk.TreeViewColumn(f'Key {idx + 1}')
             treeview.append_column(tvc)
             accel_cell = Gtk.CellRendererAccel()
@@ -50,79 +50,79 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
 
         self.add_with_viewport(treeview)
 
-        self.action_treeiter_map = {}
+        self.__action_treeiter_map = {}
 
     def refresh_model(self):
         """Initializes the model from data provided by the keybinding manager"""
-        self.treestore.clear()
+        self.__treestore.clear()
         section_order = list(set(d['group'] for d in keybindings_map.BINDING_INFO.values()))
         section_order.sort()
         section_parent_map = {}
         for section_name in section_order:
             row = [section_name, None, False]
-            row.extend([None, ] * self.accel_column_num)
-            section_parent_map[section_name] = self.treestore.append(None, row)
+            row.extend([None, ] * self.__accel_column_num)
+            section_parent_map[section_name] = self.__treestore.append(None, row)
 
-        action_treeiter_map = self.action_treeiter_map = {}
+        action_treeiter_map = self.__action_treeiter_map = {}
         # Sort actions by action name
         actions = sorted(keybindings_map.BINDING_INFO.items(), key=lambda item: item[1]['title'])
         for action_name, action_data in actions:
             title = action_data['title']
             group_name = action_data['group']
-            old_bindings = self.keymanager.get_bindings_for_action(action_name)
-            acc_list = ['', ] * self.accel_column_num
-            for idx in range(0, self.accel_column_num):
+            old_bindings = self.__keymanager.get_bindings_for_action(action_name)
+            acc_list = ['', ] * self.__accel_column_num
+            for idx in range(0, self.__accel_column_num):
                 if len(old_bindings) > idx:
                     acc_list[idx] = Gtk.accelerator_name(*old_bindings[idx])
 
             row = [title, action_name, True]
             row.extend(acc_list)
-            treeiter = self.treestore.append(section_parent_map[group_name], row)
+            treeiter = self.__treestore.append(section_parent_map[group_name], row)
             action_treeiter_map[action_name] = treeiter
 
     def get_on_accel_edited(self, column):
         def on_accel_edited(renderer, path, accel_key, accel_mods, hardware_keycode):
-            iter = self.treestore.get_iter(path)
+            iter = self.__treestore.get_iter(path)
             col = column + 3  # accel cells start from 3 position
-            old_accel = self.treestore.get(iter, col)[0]
+            old_accel = self.__treestore.get(iter, col)[0]
             new_accel = Gtk.accelerator_name(accel_key, accel_mods)
-            self.treestore.set_value(iter, col, new_accel)
-            action_name = self.treestore.get_value(iter, 1)
-            affected_action = self.keymanager.edit_accel(action_name, new_accel, old_accel)
+            self.__treestore.set_value(iter, col, new_accel)
+            action_name = self.__treestore.get_value(iter, 1)
+            affected_action = self.__keymanager.edit_accel(action_name, new_accel, old_accel)
 
             # Find affected row and cell
             if affected_action == action_name:
-                for idx in range(0, self.accel_column_num):
-                    if idx != column and self.treestore.get(iter, idx + 3)[0] == new_accel:
-                        self.treestore.set_value(iter, idx + 3, '')
+                for idx in range(0, self.__accel_column_num):
+                    if idx != column and self.__treestore.get(iter, idx + 3)[0] == new_accel:
+                        self.__treestore.set_value(iter, idx + 3, '')
             elif affected_action is not None:
-                titer = self.action_treeiter_map[affected_action]
-                for idx in range(0, self.accel_column_num):
-                    if self.treestore.get(titer, idx + 3)[0] == new_accel:
-                        self.treestore.set_value(titer, idx + 3, '')
+                titer = self.__action_treeiter_map[affected_action]
+                for idx in range(0, self.__accel_column_num):
+                    if self.__treestore.get(titer, idx + 3)[0] == new_accel:
+                        self.__treestore.set_value(titer, idx + 3, '')
 
             # updating gtk accelerator for label in menu
-            if self.keymanager.get_bindings_for_action(action_name)[0] == (accel_key, accel_mods):
+            if self.__keymanager.get_bindings_for_action(action_name)[0] == (accel_key, accel_mods):
                 Gtk.AccelMap.change_entry(f'<Actions>/mcomix-main/{action_name}', accel_key, accel_mods, True)
 
         return on_accel_edited
 
     def get_on_accel_cleared(self, column):
         def on_accel_cleared(renderer, path, *args):
-            iter = self.treestore.get_iter(path)
+            iter = self.__treestore.get_iter(path)
             col = column + 3
-            accel = self.treestore.get(iter, col)[0]
-            action_name = self.treestore.get_value(iter, 1)
+            accel = self.__treestore.get(iter, col)[0]
+            action_name = self.__treestore.get_value(iter, 1)
             if accel != '':
-                self.keymanager.clear_accel(action_name, accel)
+                self.__keymanager.clear_accel(action_name, accel)
 
                 # updating gtk accelerator for label in menu
-                if len(self.keymanager.get_bindings_for_action(action_name)) == 0:
+                if len(self.__keymanager.get_bindings_for_action(action_name)) == 0:
                     Gtk.AccelMap.change_entry(f'<Actions>/mcomix-main/{action_name}, 0, 0, True')
                 else:
-                    key, mods = self.keymanager.get_bindings_for_action(action_name)[0]
+                    key, mods = self.__keymanager.get_bindings_for_action(action_name)[0]
                     Gtk.AccelMap.change_entry(f'<Actions>/mcomix-main/{action_name}', key, mods, True)
 
-            self.treestore.set_value(iter, col, "")
+            self.__treestore.set_value(iter, col, "")
 
         return on_accel_cleared

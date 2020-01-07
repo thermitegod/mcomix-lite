@@ -20,34 +20,34 @@ class MagnifyingLens:
     module as it uses implementation details not in the interface"""
 
     def __init__(self, window):
-        self._window = window
-        self._area = self._window._main_layout
-        self._area.connect('motion-notify-event', self._motion_event)
+        self.__window = window
+        self.__area = self._window._main_layout
+        self.__area.connect('motion-notify-event', self._motion_event)
 
         #: Stores lens state
-        self._enabled = False
+        self.__enabled = False
         #: Stores a tuple of the last mouse coordinates
-        self._point = None
+        self.__point = None
         #: Stores the last rectangle that was used to render the lens
-        self._last_lens_rect = None
+        self.__last_lens_rect = None
 
     def get_enabled(self):
-        return self._enabled
+        return self.__enabled
 
     def set_enabled(self, enabled):
-        self._enabled = enabled
+        self.__enabled = enabled
 
         if enabled:
             # FIXME: If no file is currently loaded, the cursor will still be hidden.
-            self._window.cursor_handler.set_cursor_type(constants.NO_CURSOR)
-            self._window.osd.clear()
+            self.__window.cursor_handler.set_cursor_type(constants.NO_CURSOR)
+            self.__window.osd.clear()
 
-            if self._point:
-                self._draw_lens(*self._point)
+            if self.__point:
+                self._draw_lens(*self.__point)
         else:
-            self._window.cursor_handler.set_cursor_type(constants.NORMAL_CURSOR)
+            self.__window.cursor_handler.set_cursor_type(constants.NORMAL_CURSOR)
             self._clear_lens()
-            self._last_lens_rect = None
+            self.__last_lens_rect = None
 
     enabled = property(get_enabled, set_enabled)
 
@@ -55,7 +55,7 @@ class MagnifyingLens:
         """Calculate what image data to put in the lens and update the cursor
         with it; <x> and <y> are the positions of the cursor within the
         main window layout area"""
-        if self._window.images[0].get_storage_type() not in (Gtk.ImageType.PIXBUF, Gtk.ImageType.ANIMATION):
+        if self.__window.images[0].get_storage_type() not in (Gtk.ImageType.PIXBUF, Gtk.ImageType.ANIMATION):
             return
 
         rectangle = self._calculate_lens_rect(x, y, prefs['lens size'], prefs['lens size'])
@@ -63,12 +63,12 @@ class MagnifyingLens:
 
         draw_region = Gdk.Rectangle()
         draw_region.x, draw_region.y, draw_region.width, draw_region.height = rectangle
-        if self._last_lens_rect:
+        if self.__last_lens_rect:
             last_region = Gdk.Rectangle()
-            last_region.x, last_region.y, last_region.width, last_region.height = self._last_lens_rect
+            last_region.x, last_region.y, last_region.width, last_region.height = self.__last_lens_rect
             draw_region = Gdk.rectangle_union(draw_region, last_region)
 
-        window = self._window._main_layout.get_bin_window()
+        window = self.__window._main_layout.get_bin_window()
         window.begin_paint_rect(draw_region)
 
         self._clear_lens()
@@ -80,7 +80,7 @@ class MagnifyingLens:
 
         window.end_paint()
 
-        self._last_lens_rect = rectangle
+        self.__last_lens_rect = rectangle
 
     def _calculate_lens_rect(self, x, y, width, height):
         """Calculates the area where the lens will be drawn on screen. This method takes
@@ -89,9 +89,9 @@ class MagnifyingLens:
         lens_x = max(x - width // 2, 0)
         lens_y = max(y - height // 2, 0)
 
-        max_width, max_height = self._window.get_visible_area_size()
-        max_width += int(self._window._hadjust.get_value())
-        max_height += int(self._window._vadjust.get_value())
+        max_width, max_height = self.__window.get_visible_area_size()
+        max_width += int(self.__window._hadjust.get_value())
+        max_height += int(self.__window._vadjust.get_value())
         lens_x = min(lens_x, max_width - width)
         lens_y = min(lens_y, max_height - height)
 
@@ -100,15 +100,15 @@ class MagnifyingLens:
 
     def _clear_lens(self):
         """Invalidates the area that was damaged by the last call to draw_lens"""
-        if not self._last_lens_rect:
+        if not self.__last_lens_rect:
             return
 
-        window = self._window._main_layout.get_bin_window()
+        window = self.__window._main_layout.get_bin_window()
         crect = Gdk.Rectangle()
-        crect.x, crect.y, crect.width, crect.height = self._last_lens_rect
+        crect.x, crect.y, crect.width, crect.height = self.__last_lens_rect
         window.invalidate_rect(crect, True)
         window.process_updates(True)
-        self._last_lens_rect = None
+        self.__last_lens_rect = None
 
     def toggle(self, action):
         """Toggle on or off the lens depending on the state of <action>"""
@@ -116,9 +116,9 @@ class MagnifyingLens:
 
     def _motion_event(self, widget, event):
         """Called whenever the mouse moves over the image area"""
-        self._point = (int(event.x), int(event.y))
+        self.__point = (int(event.x), int(event.y))
         if self.enabled:
-            self._draw_lens(*self._point)
+            self._draw_lens(*self.__point)
 
     def _get_lens_pixbuf(self, x, y):
         """Get a pixbuf containing the appropiate image data for the lens
@@ -127,10 +127,10 @@ class MagnifyingLens:
                                       has_alpha=True, bits_per_sample=8,
                                       width=prefs['lens size'],
                                       height=prefs['lens size'])
-        r, g, b, a = [int(p * 255) for p in self._window.get_bg_color()]
+        r, g, b, a = [int(p * 255) for p in self.__window.get_bg_color()]
         canvas.fill(image_tools.convert_rgb16list_to_rgba8int([r, g, b]))
-        cb = self._window.layout.get_content_boxes()
-        source_pixbufs = self._window.imagehandler.get_pixbufs(len(cb))
+        cb = self.__window.layout.get_content_boxes()
+        source_pixbufs = self.__window.imagehandler.get_pixbufs(len(cb))
         for i in range(len(cb)):
             if image_tools.is_animation(source_pixbufs[i]):
                 continue
@@ -223,7 +223,7 @@ class MagnifyingLens:
         if prefs['vertical flip']:
             subpixbuf = subpixbuf.flip(horizontal=False)
 
-        subpixbuf = self._window.enhancer.enhance(subpixbuf)
+        subpixbuf = self.__window.enhancer.enhance(subpixbuf)
 
         if paste_left:
             dest_x = 0

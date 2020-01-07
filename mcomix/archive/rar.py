@@ -100,27 +100,27 @@ class RarArchive(archive_base.BaseArchive):
     def __init__(self, archive):
         """Initialize Unrar.dll"""
         super(RarArchive, self).__init__(archive)
-        self._unrar = _get_unrar()
-        self._handle = None
-        self._is_solid = False
+        self.__unrar = _get_unrar()
+        self.__handle = None
+        self.__is_solid = False
         # Information about the current file will be stored in this structure
-        self._headerdata = RarArchive._RARHeaderDataEx()
-        self._current_filename = None
+        self.__headerdata = RarArchive._RARHeaderDataEx()
+        self.__current_filename = None
 
         # Set up function prototypes.
         # Mandatory since pointers get truncated on x64 otherwise!
-        self._unrar.RAROpenArchiveEx.restype = ctypes.c_void_p
-        self._unrar.RAROpenArchiveEx.argtypes = [ctypes.POINTER(RarArchive._RAROpenArchiveDataEx)]
-        self._unrar.RARCloseArchive.restype = ctypes.c_int
-        self._unrar.RARCloseArchive.argtypes = [ctypes.c_void_p]
-        self._unrar.RARReadHeaderEx.restype = ctypes.c_int
-        self._unrar.RARReadHeaderEx.argtypes = [ctypes.c_void_p, ctypes.POINTER(RarArchive._RARHeaderDataEx)]
-        self._unrar.RARProcessFileW.restype = ctypes.c_int
-        self._unrar.RARProcessFileW.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_wchar_p, ctypes.c_wchar_p]
-        self._unrar.RARSetCallback.argtypes = [ctypes.c_void_p, UNRARCALLBACK, ctypes.c_long]
+        self.__unrar.RAROpenArchiveEx.restype = ctypes.c_void_p
+        self.__unrar.RAROpenArchiveEx.argtypes = [ctypes.POINTER(RarArchive._RAROpenArchiveDataEx)]
+        self.__unrar.RARCloseArchive.restype = ctypes.c_int
+        self.__unrar.RARCloseArchive.argtypes = [ctypes.c_void_p]
+        self.__unrar.RARReadHeaderEx.restype = ctypes.c_int
+        self.__unrar.RARReadHeaderEx.argtypes = [ctypes.c_void_p, ctypes.POINTER(RarArchive._RARHeaderDataEx)]
+        self.__unrar.RARProcessFileW.restype = ctypes.c_int
+        self.__unrar.RARProcessFileW.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_wchar_p, ctypes.c_wchar_p]
+        self.__unrar.RARSetCallback.argtypes = [ctypes.c_void_p, UNRARCALLBACK, ctypes.c_long]
 
     def is_solid(self):
-        return self._is_solid
+        return self.__is_solid
 
     def iter_contents(self):
         """List archive contents"""
@@ -130,11 +130,11 @@ class RarArchive(archive_base.BaseArchive):
             while True:
                 self._read_header()
                 if (0x10 & self.__headerdata.Flags) != 0:
-                    self._is_solid = True
-                yield (filename := self._current_filename)
+                    self.__is_solid = True
+                yield (filename := self.__current_filename)
                 # Skip to the next entry if we're still on the same name
                 # (extract may have been called by iter_extract).
-                if filename == self._current_filename:
+                if filename == self.__current_filename:
                     self._process()
         except UnrarException as exc:
             logger.error(f'Error while listing contents: {str(exc)}')
@@ -146,14 +146,14 @@ class RarArchive(archive_base.BaseArchive):
 
     def extract(self, filename, destination_dir):
         """Extract <filename> from the archive to <destination_dir>"""
-        if not self._handle:
+        if not self.__handle:
             self._open()
         looped = False
         destination_path = os.path.join(destination_dir, filename)
         while True:
             # Check if the current entry matches the requested file.
-            if self._current_filename is not None:
-                if self._current_filename == filename:
+            if self.__current_filename is not None:
+                if self.__current_filename == filename:
                     # It's the entry we're looking for, extract it.
                     dest = ctypes.c_wchar_p(destination_path)
                     self._process(dest)
@@ -187,10 +187,10 @@ class RarArchive(archive_base.BaseArchive):
                                                        OpenMode=RarArchive._OpenMode.RAR_OM_EXTRACT,
                                                        UserData=0)
 
-        if not (handle := self._unrar.RAROpenArchiveEx(ctypes.byref(archivedata))):
+        if not (handle := self.__unrar.RAROpenArchiveEx(ctypes.byref(archivedata))):
             errormessage = UnrarException.get_error_message(archivedata.OpenResult)
             raise UnrarException(f'Could not open archive: {errormessage}')
-        self._handle = handle
+        self.__handle = handle
 
     def _check_errorcode(self, errorcode):
         if 0 == errorcode:
@@ -206,10 +206,10 @@ class RarArchive(archive_base.BaseArchive):
         raise exc
 
     def _read_header(self):
-        self._current_filename = None
-        errorcode = self._unrar.RARReadHeaderEx(self._handle, ctypes.byref(self._headerdata))
+        self.__current_filename = None
+        errorcode = self.__unrar.RARReadHeaderEx(self.__handle, ctypes.byref(self.__headerdata))
         self._check_errorcode(errorcode)
-        self._current_filename = self._headerdata.FileNameW
+        self.__current_filename = self.__headerdata.FileNameW
 
     def _process(self, dest=None):
         """Process current entry: extract or skip it"""
@@ -217,18 +217,18 @@ class RarArchive(archive_base.BaseArchive):
             mode = RarArchive._ProcessingMode.RAR_SKIP
         else:
             mode = RarArchive._ProcessingMode.RAR_EXTRACT
-        errorcode = self._unrar.RARProcessFileW(self._handle, mode, None, dest)
-        self._current_filename = None
+        errorcode = self.__unrar.RARProcessFileW(self.__handle, mode, None, dest)
+        self.__current_filename = None
         self._check_errorcode(errorcode)
 
     def _close(self):
         """Close the rar handle previously obtained by open"""
-        if self._handle is None:
+        if self.__handle is None:
             return
-        if (errorcode := self._unrar.RARCloseArchive(self._handle)) != 0:
+        if (errorcode := self.__unrar.RARCloseArchive(self.__handle)) != 0:
             errormessage = UnrarException.get_error_message(errorcode)
             raise UnrarException(f'Could not close archive: {errormessage}')
-        self._handle = None
+        self.__handle = None
 
 
 class UnrarException(Exception):

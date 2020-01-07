@@ -23,14 +23,14 @@ class BaseArchive:
         assert isinstance(archive, str), 'File should be an Unicode string.'
 
         self.archive = archive
-        self._password = None
+        self.__password = None
         self.is_encrypted = False
-        self._event = threading.Event()
+        self.__event = threading.Event()
         if self.support_concurrent_extractions:
             # When multiple concurrent extractions are supported,
             # we need a lock to handle concurent calls to _get_password.
-            self._lock = threading.Lock()
-            self._waiting_for_password = False
+            self.__lock = threading.Lock()
+            self.__waiting_for_password = False
 
     def iter_contents(self):
         """Generator for listing the archive contents"""
@@ -100,20 +100,20 @@ class BaseArchive:
         if (password := ask_for_password(self.archive)) is None:
             password = ''
 
-        self._password = password
-        self._event.set()
+        self.__password = password
+        self.__event.set()
 
     def _get_password(self):
         # Don't trigger concurrent password dialogs.
-        if (ask_for_password := self._password is None) and self.support_concurrent_extractions:
-            with self._lock:
-                if self._waiting_for_password:
+        if (ask_for_password := self.__password is None) and self.support_concurrent_extractions:
+            with self.__lock:
+                if self.__waiting_for_password:
                     ask_for_password = False
                 else:
-                    self._waiting_for_password = True
+                    self.__waiting_for_password = True
         if ask_for_password:
             self._password_required()
-        self._event.wait()
+        self.__event.wait()
 
 
 class ExternalExecutableArchive(BaseArchive):
@@ -127,7 +127,7 @@ class ExternalExecutableArchive(BaseArchive):
         # Flag to determine if list_contents() has been called
         # This builds the Unicode mapping and is likely required
         # for extracting filenames that have been internally mapped.
-        self.filenames_initialized = False
+        self.__filenames_initialized = False
 
     def _get_executable(self):
         """Returns the executable's name or path. Return None if no executable
@@ -162,7 +162,7 @@ class ExternalExecutableArchive(BaseArchive):
                 if filename is not None:
                     yield filename
 
-        self.filenames_initialized = True
+        self.__filenames_initialized = True
 
     def extract(self, filename, destination_dir):
         """Extract <filename> from the archive to <destination_dir>"""
@@ -171,7 +171,7 @@ class ExternalExecutableArchive(BaseArchive):
         if not self._get_executable():
             return
 
-        if not self.filenames_initialized:
+        if not self.__filenames_initialized:
             self.list_contents()
 
         destination_path = os.path.join(destination_dir, filename)

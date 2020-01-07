@@ -15,23 +15,23 @@ class Interval:
         if not callable(function):
             raise ValueError(f'{function} is not callable')
 
-        self.delay = delay
-        self.function = function
-        self.args = args
-        self.kwargs = kwargs
-        self.timer = None
+        self.__delay = delay
+        self.__function = function
+        self.__args = args
+        self.__kwargs = kwargs
+        self.__timer = None
 
-        self._lock = Lock()
-        self._calling = False
+        self.__lock = Lock()
+        self.__calling = False
 
     def _caller(self):
         # Call function with optional args and kwargs, then set a new Timer
-        self._calling = True
+        self.__calling = True
         try:
-            self.function(*self.args, **self.kwargs)
+            self.__function(*self.__args, **self.__kwargs)
         except Exception:
             pass
-        self._calling = False
+        self.__calling = False
         self.reset()
 
     def _settimer(self):
@@ -39,85 +39,85 @@ class Interval:
         # this function should be always called in lock
         if self.is_running():
             return
-        self.timer = Timer(self.delay / 1000, self._caller)
-        self.timer.start()
+        self.__timer = Timer(self.__delay / 1000, self._caller)
+        self.__timer.start()
 
     def start(self):
         # Start or restart intervaller.
-        with self._lock:
+        with self.__lock:
             if self.is_running():
                 return
             self._settimer()
 
     def stop(self):
         # Stop intervaller.
-        with self._lock:
+        with self.__lock:
             if not self.is_running():
                 return
-            self.timer.cancel()
-            self.timer = None
+            self.__timer.cancel()
+            self.__timer = None
 
     def reset(self):
         # Reset Timer
-        with self._lock:
+        with self.__lock:
             if not self.is_running():
                 return
-            if self._calling:
+            if self.__calling:
                 return
-            self.timer.cancel()
-            self.timer = None
+            self.__timer.cancel()
+            self.__timer = None
             self._settimer()
 
     def is_running(self):
-        return self.timer is not None
+        return self.__timer is not None
 
 
 class NamedPool(mpThreadPool):
     def __init__(self, *args, name=None, **kwargs):
-        self._name = name
+        self.__name = name
         super(NamedPool, self).__init__(*args, **kwargs)
 
     def Process(self, *args, **kwargs):
-        if self._name:
-            kwargs.update(name=self._name)
+        if self.__name:
+            kwargs.update(name=self.__name)
         return mpThreadPool.Process(*args, **kwargs)
 
 
 class ThreadPool:
     # multiprocessing.dummy.Pool with exc_info in error_callback
     def __init__(self, name=None, processes=None):
-        self._processes = processes
-        self._pool = NamedPool(self._processes, name=name)
-        self._lock = Lock()  # lock for self
-        self._cblock = Lock()  # lock for callback
-        self._errcblock = Lock()  # lock for error_callback
-        self._closed = False
+        self.__processes = processes
+        self.__pool = NamedPool(self.__processes, name=name)
+        self.__lock = Lock()  # lock for self
+        self.__cblock = Lock()  # lock for callback
+        self.__errcblock = Lock()  # lock for error_callback
+        self.__closed = False
 
-        self.name = name
+        self.__name = name
 
     def apply(self, *args, **kwargs):
-        return self._pool.apply(*args, **kwargs)
+        return self.__pool.apply(*args, **kwargs)
 
     def map(self, *args, **kwargs):
-        return self._pool.map(*args, **kwargs)
+        return self.__pool.map(*args, **kwargs)
 
     def map_async(self, *args, **kwargs):
-        return self._pool.map_async(*args, **kwargs)
+        return self.__pool.map_async(*args, **kwargs)
 
     def imap(self, *args, **kwargs):
-        return self._pool.imap(*args, **kwargs)
+        return self.__pool.imap(*args, **kwargs)
 
     def imap_unordered(self, *args, **kwargs):
-        return self._pool.imap_unordered(*args, **kwargs)
+        return self.__pool.imap_unordered(*args, **kwargs)
 
     def starmap(self, *args, **kwargs):
-        return self._pool.starmap(*args, **kwargs)
+        return self.__pool.starmap(*args, **kwargs)
 
     def starmap_async(self, *args, **kwargs):
-        return self._pool.starmap_async(*args, **kwargs)
+        return self.__pool.starmap_async(*args, **kwargs)
 
     def join(self):
-        return self._pool.join()
+        return self.__pool.join()
 
     @staticmethod
     def _uiter(iterable):
@@ -146,13 +146,13 @@ class ThreadPool:
             result = func(*args, **kwargs)
         except Exception:
             etype, value, tb = sys.exc_info()
-            self._trycall(error_callback, args=(self.name, etype, value, tb),
-                          lock=self._errcblock)
+            self._trycall(error_callback, args=(self.__name, etype, value, tb),
+                          lock=self.__errcblock)
             if exc_raise:
                 raise etype(value)
         else:
             self._trycall(callback, args=(result,),
-                          lock=self._cblock)
+                          lock=self.__cblock)
             return result
 
     def apply_async(self, func, args=(), kwargs=None,
@@ -162,7 +162,7 @@ class ThreadPool:
         # other arguments is same as Pool.apply_async
         if kwargs is None:
             kwargs = {}
-        return self._pool.apply_async(
+        return self.__pool.apply_async(
                 self._caller, (func, args, kwargs, None, error_callback, True),
                 callback=callback)
 
@@ -190,25 +190,25 @@ class ThreadPool:
 
     def close(self):
         # same as Pool.close
-        self._closed = True
-        return self._pool.close()
+        self.__closed = True
+        return self.__pool.close()
 
     def terminate(self):
         # same as Pool.terminate
-        self._closed = True
-        return self._pool.terminate()
+        self.__closed = True
+        return self.__pool.terminate()
 
     def renew(self):
         # terminate all process and start a new clean pool
-        with self._lock:
+        with self.__lock:
             self.terminate()
-            self._pool = Pool(self._processes)
-            self._closed = False
+            self.__pool = Pool(self.__processes)
+            self.__closed = False
 
     @property
     def closed(self):
         # True if ThreadPool closed
-        return self._closed
+        return self.__closed
 
     def __enter__(self):
         return self

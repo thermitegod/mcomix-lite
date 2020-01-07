@@ -15,13 +15,13 @@ class Box:
         @param position: The position of this Box.
         @param size: The size of this Box"""
         if size is None:
-            self.position = (0,) * len(position)
-            self.size = tuple(position)
+            self.__position = (0,) * len(position)
+            self.__size = tuple(position)
         else:
-            self.position = tuple(position)
-            self.size = tuple(size)
-        if len(self.position) != len(self.size):
-            raise ValueError(f'different dimensions: {str(len(self.position))} != {str(len(self.size))}')
+            self.__position = tuple(position)
+            self.__size = tuple(size)
+        if len(self.__position) != len(self.__size):
+            raise ValueError(f'different dimensions: {str(len(self.__position))} != {str(len(self.__size))}')
 
     def __str__(self):
         """Returns a string representation of this Box"""
@@ -34,17 +34,17 @@ class Box:
 
     def __len__(self):
         """Returns the number of dimensions of this Box"""
-        return len(self.position)
+        return len(self.__position)
 
     def get_size(self):
         """Returns the size of this Box.
         @return: The size of this Box"""
-        return self.size
+        return self.__size
 
     def get_position(self):
         """Returns the position of this Box.
         @return: The position of this Box"""
-        return self.position
+        return self.__position
 
     def set_position(self, position):
         """Returns a new Box that has the same size as this Box and the
@@ -68,8 +68,8 @@ class Box:
         result = 0
         for i in range(len(point)):
             p = point[i]
-            bs = self.position[i]
-            be = self.size[i] + bs
+            bs = self.__position[i]
+            be = self.__size[i] + bs
             if p < bs:
                 r = bs - p
             elif p >= be:

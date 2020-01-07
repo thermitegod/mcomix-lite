@@ -12,42 +12,42 @@ from mcomix.preferences import prefs
 
 class EventHandler:
     def __init__(self, window):
-        self._window = window
+        self.__window = window
 
-        self._last_pointer_pos_x = 0
-        self._last_pointer_pos_y = 0
-        self._pressed_pointer_pos_x = 0
-        self._pressed_pointer_pos_y = 0
+        self.__last_pointer_pos_x = 0
+        self.__last_pointer_pos_y = 0
+        self.__pressed_pointer_pos_x = 0
+        self.__pressed_pointer_pos_y = 0
 
-        self._drag_timer = None
+        self.__drag_timer = None
 
     def resize_event(self, widget, event):
         """Handle events from resizing and moving the main window"""
-        if (size := (event.width, event.height)) != self._window.previous_size:
-            self._window.previous_size = size
-            self._window.draw_image()
+        if (size := (event.width, event.height)) != self.__window.previous_size:
+            self.__window.previous_size = size
+            self.__window.draw_image()
 
     def window_state_event(self, widget, event):
-        if self._window.was_fullscreen != (is_fullscreen := self._window.is_fullscreen):
+        if self.__window.was_fullscreen != (is_fullscreen := self.__window.is_fullscreen):
             # Fullscreen state changed.
-            self._window.was_fullscreen = is_fullscreen
+            self.__window.was_fullscreen = is_fullscreen
             # Re-enable control, now that transition is complete.
-            toggleaction = self._window.actiongroup.get_action('fullscreen')
+            toggleaction = self.__window.actiongroup.get_action('fullscreen')
             toggleaction.set_sensitive(True)
             if is_fullscreen:
                 redraw = True
             else:
                 # Only redraw if we don't need to restore geometry.
-                redraw = not self._window.restore_window_geometry()
-            self._window.update_toggles_sensitivity()
+                redraw = not self.__window.restore_window_geometry()
+            self.__window.update_toggles_sensitivity()
             if redraw:
-                self._window.previous_size = self._window.get_size()
-                self._window.draw_image()
+                self.__window.previous_size = self.__window.get_size()
+                self.__window.draw_image()
 
     def register_key_events(self):
         """Registers keyboard events and their default binings, and hooks
         them up with their respective callback functions"""
-        manager = keybindings.keybinding_manager(self._window)
+        manager = keybindings.keybinding_manager(self.__window)
 
         # Navigation keys
         manager.register('previous_page',
@@ -69,46 +69,46 @@ class EventHandler:
                          self._flip_page, kwargs={'number_of_pages': 10})
 
         manager.register('first_page',
-                         self._window.first_page)
+                         self.__window.first_page)
         manager.register('last_page',
-                         self._window.last_page)
+                         self.__window.last_page)
         manager.register('go_to',
-                         self._window.page_select)
+                         self.__window.page_select)
 
         # Numpad (without numlock) aligns the image depending on the key.
         manager.register('scroll_left_bottom',
-                         self._window.scroll_to_predefined,
+                         self.__window.scroll_to_predefined,
                          kwargs={'destination': (-1, 1), 'index': constants.UNION_INDEX})
         manager.register('scroll_middle_bottom',
-                         self._window.scroll_to_predefined,
+                         self.__window.scroll_to_predefined,
                          kwargs={'destination': (constants.SCROLL_TO_CENTER, 1),
                                  'index': constants.UNION_INDEX})
         manager.register('scroll_right_bottom',
-                         self._window.scroll_to_predefined,
+                         self.__window.scroll_to_predefined,
                          kwargs={'destination': (1, 1), 'index': constants.UNION_INDEX})
 
         manager.register('scroll_left_middle',
-                         self._window.scroll_to_predefined,
+                         self.__window.scroll_to_predefined,
                          kwargs={'destination': (-1, constants.SCROLL_TO_CENTER),
                                  'index': constants.UNION_INDEX})
         manager.register('scroll_middle',
-                         self._window.scroll_to_predefined,
+                         self.__window.scroll_to_predefined,
                          kwargs={'destination': (constants.SCROLL_TO_CENTER, constants.SCROLL_TO_CENTER),
                                  'index': constants.UNION_INDEX})
         manager.register('scroll_right_middle',
-                         self._window.scroll_to_predefined,
+                         self.__window.scroll_to_predefined,
                          kwargs={'destination': (1, constants.SCROLL_TO_CENTER),
                                  'index': constants.UNION_INDEX})
 
         manager.register('scroll_left_top',
-                         self._window.scroll_to_predefined,
+                         self.__window.scroll_to_predefined,
                          kwargs={'destination': (-1, -1), 'index': constants.UNION_INDEX})
         manager.register('scroll_middle_top',
-                         self._window.scroll_to_predefined,
+                         self.__window.scroll_to_predefined,
                          kwargs={'destination': (constants.SCROLL_TO_CENTER, -1),
                                  'index': constants.UNION_INDEX})
         manager.register('scroll_right_top',
-                         self._window.scroll_to_predefined,
+                         self.__window.scroll_to_predefined,
                          kwargs={'destination': (1, -1), 'index': constants.UNION_INDEX})
 
         # Enter/exit fullscreen.
@@ -117,74 +117,74 @@ class EventHandler:
 
         # View modes
         manager.register('double_page',
-                         self._window.actiongroup.get_action('double_page').activate)
+                         self.__window.actiongroup.get_action('double_page').activate)
 
         manager.register('best_fit_mode',
-                         self._window.actiongroup.get_action('best_fit_mode').activate)
+                         self.__window.actiongroup.get_action('best_fit_mode').activate)
 
         manager.register('fit_width_mode',
-                         self._window.actiongroup.get_action('fit_width_mode').activate)
+                         self.__window.actiongroup.get_action('fit_width_mode').activate)
 
         manager.register('fit_height_mode',
-                         self._window.actiongroup.get_action('fit_height_mode').activate)
+                         self.__window.actiongroup.get_action('fit_height_mode').activate)
 
         manager.register('fit_size_mode',
-                         self._window.actiongroup.get_action('fit_size_mode').activate)
+                         self.__window.actiongroup.get_action('fit_size_mode').activate)
 
         manager.register('fit_manual_mode',
-                         self._window.actiongroup.get_action('fit_manual_mode').activate)
+                         self.__window.actiongroup.get_action('fit_manual_mode').activate)
 
         manager.register('manga_mode',
-                         self._window.actiongroup.get_action('manga_mode').activate)
+                         self.__window.actiongroup.get_action('manga_mode').activate)
 
         manager.register('keep_transformation',
-                         self._window.actiongroup.get_action('keep_transformation').activate)
+                         self.__window.actiongroup.get_action('keep_transformation').activate)
 
         manager.register('lens',
-                         self._window.actiongroup.get_action('lens').activate)
+                         self.__window.actiongroup.get_action('lens').activate)
 
         manager.register('stretch',
-                         self._window.actiongroup.get_action('stretch').activate)
+                         self.__window.actiongroup.get_action('stretch').activate)
 
         # Zooming commands for manual zoom mode
         manager.register('zoom_in',
-                         self._window.actiongroup.get_action('zoom_in').activate)
+                         self.__window.actiongroup.get_action('zoom_in').activate)
 
         manager.register('zoom_out',
-                         self._window.actiongroup.get_action('zoom_out').activate)
+                         self.__window.actiongroup.get_action('zoom_out').activate)
 
         # Zoom out is already defined as GTK menu hotkey
         manager.register('zoom_original',
-                         self._window.actiongroup.get_action('zoom_original').activate)
+                         self.__window.actiongroup.get_action('zoom_original').activate)
 
         manager.register('rotate_90',
-                         self._window.rotate_90)
+                         self.__window.rotate_90)
 
         manager.register('rotate_270',
-                         self._window.rotate_270)
+                         self.__window.rotate_270)
 
         manager.register('rotate_180',
-                         self._window.rotate_180)
+                         self.__window.rotate_180)
 
         manager.register('flip_horiz',
-                         self._window.flip_horizontally)
+                         self.__window.flip_horizontally)
 
         manager.register('flip_vert',
-                         self._window.flip_vertically)
+                         self.__window.flip_vertically)
 
         manager.register('no_autorotation',
-                         self._window.actiongroup.get_action('no_autorotation').activate)
+                         self.__window.actiongroup.get_action('no_autorotation').activate)
 
         manager.register('rotate_90_width',
-                         self._window.actiongroup.get_action('rotate_90_width').activate)
+                         self.__window.actiongroup.get_action('rotate_90_width').activate)
         manager.register('rotate_270_width',
-                         self._window.actiongroup.get_action('rotate_270_width').activate)
+                         self.__window.actiongroup.get_action('rotate_270_width').activate)
 
         manager.register('rotate_90_height',
-                         self._window.actiongroup.get_action('rotate_90_height').activate)
+                         self.__window.actiongroup.get_action('rotate_90_height').activate)
 
         manager.register('rotate_270_height',
-                         self._window.actiongroup.get_action('rotate_270_height').activate)
+                         self.__window.actiongroup.get_action('rotate_270_height').activate)
 
         # Arrow keys scroll the image
         manager.register('scroll_down',
@@ -201,74 +201,74 @@ class EventHandler:
 
         # File operations
         manager.register('close',
-                         self._window.filehandler.close_file)
+                         self.__window.filehandler.close_file)
 
         manager.register('quit',
-                         self._window.terminate_program)
+                         self.__window.terminate_program)
 
         manager.register('delete',
-                         self._window.move_file, kwargs={'action': 'delete'})
+                         self.__window.move_file, kwargs={'action': 'delete'})
 
         manager.register('move_file',
-                         self._window.move_file, kwargs={'action': 'move_file'})
+                         self.__window.move_file, kwargs={'action': 'move_file'})
 
         manager.register('extract_page',
-                         self._window.extract_page)
+                         self.__window.extract_page)
 
         manager.register('refresh_archive',
-                         self._window.filehandler.refresh_file)
+                         self.__window.filehandler.refresh_file)
 
         manager.register('next_archive',
-                         self._window.filehandler.open_next_archive)
+                         self.__window.filehandler.open_next_archive)
 
         manager.register('previous_archive',
-                         self._window.filehandler.open_previous_archive)
+                         self.__window.filehandler.open_previous_archive)
 
         manager.register('next_directory',
-                         self._window.filehandler.open_next_directory)
+                         self.__window.filehandler.open_next_directory)
 
         manager.register('previous_directory',
-                         self._window.filehandler.open_previous_directory)
+                         self.__window.filehandler.open_previous_directory)
 
         manager.register('properties',
-                         self._window.actiongroup.get_action('properties').activate)
+                         self.__window.actiongroup.get_action('properties').activate)
 
         manager.register('preferences',
-                         self._window.actiongroup.get_action('preferences').activate)
+                         self.__window.actiongroup.get_action('preferences').activate)
 
         manager.register('open',
-                         self._window.actiongroup.get_action('open').activate)
+                         self.__window.actiongroup.get_action('open').activate)
 
         manager.register('enhance_image',
-                         self._window.actiongroup.get_action('enhance_image').activate)
+                         self.__window.actiongroup.get_action('enhance_image').activate)
 
         # User interface
         manager.register('osd_panel',
-                         self._window.show_info_panel)
+                         self.__window.show_info_panel)
 
         manager.register('minimize',
-                         self._window.minimize)
+                         self.__window.minimize)
 
         manager.register('fullscreen',
-                         self._window.actiongroup.get_action('fullscreen').activate)
+                         self.__window.actiongroup.get_action('fullscreen').activate)
 
         manager.register('toolbar',
-                         self._window.actiongroup.get_action('toolbar').activate)
+                         self.__window.actiongroup.get_action('toolbar').activate)
 
         manager.register('menubar',
-                         self._window.actiongroup.get_action('menubar').activate)
+                         self.__window.actiongroup.get_action('menubar').activate)
 
         manager.register('statusbar',
-                         self._window.actiongroup.get_action('statusbar').activate)
+                         self.__window.actiongroup.get_action('statusbar').activate)
 
         manager.register('scrollbar',
-                         self._window.actiongroup.get_action('scrollbar').activate)
+                         self.__window.actiongroup.get_action('scrollbar').activate)
 
         manager.register('thumbnails',
-                         self._window.actiongroup.get_action('thumbnails').activate)
+                         self.__window.actiongroup.get_action('thumbnails').activate)
 
         manager.register('hide_all',
-                         self._window.actiongroup.get_action('hide_all').activate)
+                         self.__window.actiongroup.get_action('hide_all').activate)
 
         # Execute external command. Bind keys from 1 to 9 to commands 1 to 9.
         for i in range(1, 10):
@@ -277,7 +277,7 @@ class EventHandler:
     def key_press_event(self, widget, event, *args):
         """Handle key press events on the main window"""
         # Dispatch keyboard input handling
-        manager = keybindings.keybinding_manager(self._window)
+        manager = keybindings.keybinding_manager(self.__window)
         # Some keys require modifiers that are irrelevant to the hotkey. Find out and ignore them.
         ALL_ACCELS_MASK = (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.MOD1_MASK)
 
@@ -302,7 +302,7 @@ class EventHandler:
         # pages in double page mode. This is mainly for mouse scrolling.
         # ---------------------------------------------------------------
         if event.keyval in (Gdk.KEY_Control_L, Gdk.KEY_Control_R):
-            self._window.imagehandler.force_single_step = True
+            self.__window.imagehandler.force_single_step = True
 
         # ---------------------------------------------------------------
         # kill the signals here for the Up, Down, Space and Enter keys,
@@ -312,7 +312,7 @@ class EventHandler:
                              Gdk.KEY_KP_Up, Gdk.KEY_KP_Down, Gdk.KEY_KP_Home, Gdk.KEY_KP_End,
                              Gdk.KEY_KP_Page_Up, Gdk.KEY_KP_Page_Down) or
                 (event.keyval == Gdk.KEY_Return and 'GDK_MOD1_MASK' not in event.get_state().value_names)):
-            self._window.stop_emission_by_name('key_press_event')
+            self.__window.stop_emission_by_name('key_press_event')
             return True
 
     def key_release_event(self, widget, event, *args):
@@ -321,14 +321,14 @@ class EventHandler:
         # Unregister CTRL for scrolling only one page in double page mode
         # ---------------------------------------------------------------
         if event.keyval in (Gdk.KEY_Control_L, Gdk.KEY_Control_R):
-            self._window.imagehandler.force_single_step = False
+            self.__window.imagehandler.force_single_step = False
 
     def escape_event(self):
         """Determines the behavior of the ESC key"""
         if prefs['escape quits']:
-            self._window.terminate_program()
+            self.__window.terminate_program()
         else:
-            self._window.actiongroup.get_action('fullscreen').set_active(False)
+            self.__window.actiongroup.get_action('fullscreen').set_active(False)
 
     def scroll_wheel_event(self, widget, event, *args):
         """Handle scroll wheel events on the main layout area. The scroll
@@ -355,62 +355,62 @@ class EventHandler:
 
         if direction == Gdk.ScrollDirection.UP:
             if event.get_state() & Gdk.ModifierType.CONTROL_MASK:
-                self._window.manual_zoom_in()
+                self.__window.manual_zoom_in()
             else:
                 self._scroll_with_flipping(0, -prefs['number of pixels to scroll per mouse wheel event'])
 
         elif direction == Gdk.ScrollDirection.DOWN:
             if event.get_state() & Gdk.ModifierType.CONTROL_MASK:
-                self._window.manual_zoom_out()
+                self.__window.manual_zoom_out()
             else:
                 self._scroll_with_flipping(0, prefs['number of pixels to scroll per mouse wheel event'])
 
         elif direction == Gdk.ScrollDirection.RIGHT:
-            if self._window.is_manga_mode:
+            if self.__window.is_manga_mode:
                 self._flip_page(-1)
             else:
                 self._flip_page(1)
 
         elif direction == Gdk.ScrollDirection.LEFT:
-            if self._window.is_manga_mode:
+            if self.__window.is_manga_mode:
                 self._flip_page(1)
             else:
                 self._flip_page(-1)
 
     def mouse_press_event(self, widget, event):
         """Handle mouse click events on the main layout area"""
-        if self._window.was_out_of_focus:
+        if self.__window.was_out_of_focus:
             return
 
         if event.button == 1:
             pass
 
         elif event.button == 2:
-            self._window.actiongroup.get_action('lens').set_active(True)
+            self.__window.actiongroup.get_action('lens').set_active(True)
 
         elif (event.button == 3 and
               not event.get_state() & Gdk.ModifierType.MOD1_MASK and
               not event.get_state() & Gdk.ModifierType.SHIFT_MASK):
-            self._window.cursor_handler.set_cursor_type(constants.NORMAL_CURSOR)
-            self._window.popup.popup(None, None, None, None, event.button, event.time)
+            self.__window.cursor_handler.set_cursor_type(constants.NORMAL_CURSOR)
+            self.__window.popup.popup(None, None, None, None, event.button, event.time)
 
         elif event.button == 4:
-            self._window.show_info_panel()
+            self.__window.show_info_panel()
 
     def mouse_release_event(self, widget, event):
         """Handle mouse button release events on the main layout area"""
-        self._window.cursor_handler.set_cursor_type(constants.NORMAL_CURSOR)
+        self.__window.cursor_handler.set_cursor_type(constants.NORMAL_CURSOR)
 
         if event.button == 1:
-            if event.x_root == self._pressed_pointer_pos_x and \
-                    event.y_root == self._pressed_pointer_pos_y and \
-                    not self._window.was_out_of_focus:
+            if event.x_root == self.__pressed_pointer_pos_x and \
+                    event.y_root == self.__pressed_pointer_pos_y and \
+                    not self.__window.was_out_of_focus:
 
                 # right to next, left to previous, no matter the double page mode
                 direction = 1 if event.x > widget.get_property('width') // 2 else -1
 
                 # if in manga mode, left to next, right to previous
-                if self._window.is_manga_mode:
+                if self.__window.is_manga_mode:
                     direction *= -1
 
                 # over flip with shift pressed
@@ -422,10 +422,10 @@ class EventHandler:
                 self._flip_page(distance * direction)
 
             else:
-                self._window.was_out_of_focus = False
+                self.__window.was_out_of_focus = False
 
         elif event.button == 2:
-            self._window.actiongroup.get_action('lens').set_active(False)
+            self.__window.actiongroup.get_action('lens').set_active(False)
 
         elif event.button == 3:
             if event.get_state() & Gdk.ModifierType.MOD1_MASK:
@@ -436,12 +436,12 @@ class EventHandler:
     def mouse_move_event(self, widget, event):
         """Handle mouse pointer movement events"""
         if 'GDK_BUTTON1_MASK' in event.get_state().value_names:
-            self._window.cursor_handler.set_cursor_type(constants.GRAB_CURSOR)
-            self._window.scroll(self._last_pointer_pos_x - event.x_root,
-                                self._last_pointer_pos_y - event.y_root)
-            self._last_pointer_pos_x = event.x_root
-            self._last_pointer_pos_y = event.y_root
-            self._drag_timer = event.time
+            self.__window.cursor_handler.set_cursor_type(constants.GRAB_CURSOR)
+            self.__window.scroll(self.__last_pointer_pos_x - event.x_root,
+                                 self.__last_pointer_pos_y - event.y_root)
+            self.__last_pointer_pos_x = event.x_root
+            self.__last_pointer_pos_y = event.y_root
+            self.__drag_timer = event.time
 
     def drag_n_drop_event(self, widget, context, x, y, selection, drag_id, eventtime):
         """Handle drag-n-drop events on the main layout area"""
@@ -466,18 +466,18 @@ class EventHandler:
         uris = [_normalize_uri(uri) for uri in uris]
 
         if len(paths := [url2pathname(uri) for uri in uris]) > 1:
-            self._window.filehandler.open_file(paths)
+            self.__window.filehandler.open_file(paths)
         else:
-            self._window.filehandler.open_file(paths[0])
+            self.__window.filehandler.open_file(paths[0])
 
     def _scroll_with_flipping(self, x, y):
         """Handle scrolling with the scroll wheel or the arrow keys, for which
         the pages might be flipped depending on the preferences.  Returns True
         if able to scroll without flipping and False if a new page was flipped to"""
-        if self._window.scroll(x, y):
+        if self.__window.scroll(x, y):
             return True
 
-        if y > 0 or (self._window.is_manga_mode and x < 0) or (not self._window.is_manga_mode and x > 0):
+        if y > 0 or (self.__window.is_manga_mode and x < 0) or (not self.__window.is_manga_mode and x > 0):
             self._flip_page(1)
         else:
             self._flip_page(-1)
@@ -501,13 +501,13 @@ class EventHandler:
     def _flip_page(self, number_of_pages, single_step=False):
         """Switches a number of pages forwards/backwards. If C{single_step} is True,
         the page count will be advanced by only one page even in double page mode"""
-        self._window.flip_page(number_of_pages, single_step=single_step)
+        self.__window.flip_page(number_of_pages, single_step=single_step)
 
     def _left_right_page_progress(self, number_of_pages=1):
         """If number_of_pages is positive, this function advances the specified
         number of pages in manga mode and goes back the same number of pages in
         normal mode. The opposite happens for number_of_pages being negative"""
-        self._flip_page(-number_of_pages if self._window.is_manga_mode else number_of_pages)
+        self._flip_page(-number_of_pages if self.__window.is_manga_mode else number_of_pages)
 
     def _execute_command(self, cmdindex):
         """Execute an external command. cmdindex should be an integer from 0 to 9,
@@ -515,4 +515,4 @@ class EventHandler:
         manager = openwith.OpenWithManager()
         commands = [cmd for cmd in manager.get_commands() if not cmd.is_separator()]
         if len(commands) > cmdindex:
-            commands[cmdindex].execute(self._window)
+            commands[cmdindex].execute(self.__window)
