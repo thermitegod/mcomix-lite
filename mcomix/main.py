@@ -549,16 +549,16 @@ class MainWindow(Gtk.Window):
                 not single_step and
                 prefs['default double page'] and
                 prefs['double step in double page mode']):
-            if +1 == step and not self.imagehandler.get_virtual_double_page():
+            if step == +1 and not self.imagehandler.get_virtual_double_page():
                 new_page += 1
-            elif -1 == step and not self.imagehandler.get_virtual_double_page(new_page - 1):
+            elif step == -1 and not self.imagehandler.get_virtual_double_page(new_page - 1):
                 new_page -= 1
 
         if new_page <= 0:
             # Only switch to previous page when flipping one page before the
             # first one. (Note: check for (page number <= 1) to handle empty
             # archive case).
-            if -1 == step and current_page <= 1:
+            if step == -1 and current_page <= 1:
                 return self.previous_book()
             # Handle empty archive case.
             new_page = min(1, number_of_pages)

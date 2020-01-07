@@ -129,7 +129,7 @@ class RarArchive(archive_base.BaseArchive):
         try:
             while True:
                 self._read_header()
-                if 0 != (0x10 & self._headerdata.Flags):
+                if (0x10 & self.__headerdata.Flags) != 0:
                     self._is_solid = True
                 yield (filename := self._current_filename)
                 # Skip to the next entry if we're still on the same name
