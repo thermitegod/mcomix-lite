@@ -47,7 +47,6 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         self.__treeview.connect_after('drag_begin', self._drag_begin)
         self.__treeview.connect('drag_data_get', self._drag_data_get)
         self.__treeview.connect('row-activated', self._row_activated_event)
-        self.__treeview.connect('button_press_event', self._mouse_press_event)
 
         # enable drag and dropping of images from thumbnail bar to some file
         # manager
@@ -199,16 +198,6 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         selected_row = self._get_selected_row()
         self._set_selected_row(selected_row, scroll=False)
         self.__window.set_page(selected_row + 1)
-
-    def _mouse_press_event(self, widget, event):
-        if self.__window.was_out_of_focus:
-            # if the window was out of focus and the user clicks on
-            # the thumbbar then do not select that page because they
-            # more than likely have many pages open and are simply trying
-            # to give mcomix focus again
-            return True
-
-        return False
 
     def _drag_data_get(self, treeview, context, selection, *args):
         """Put the URI of the selected file into the SelectionData, so that

@@ -26,7 +26,6 @@ class MainWindow(Gtk.Window):
         self.was_fullscreen = False
         self.is_manga_mode = False
         self.previous_size = (None, None)
-        self.was_out_of_focus = False
         #: Used to remember if changing to fullscreen enabled 'Hide all'
         self.__hide_all_forced = False
         # Remember last scroll destination.
@@ -170,11 +169,8 @@ class MainWindow(Gtk.Window):
                                          Gdk.DragAction.COPY |
                                          Gdk.DragAction.MOVE)
 
-        self.connect('focus-in-event', self.gained_focus)
-        self.connect('focus-out-event', self.lost_focus)
         self.connect('delete_event', self.terminate_program)
         self.connect('key_press_event', self.__event_handler.key_press_event)
-        self.connect('key_release_event', self.__event_handler.key_release_event)
         self.connect('configure_event', self.__event_handler.resize_event)
         self.connect('window-state-event', self.__event_handler.window_state_event)
 
@@ -224,17 +220,6 @@ class MainWindow(Gtk.Window):
 
     def get_event_handler(self):
         return self.__event_handler
-
-    def gained_focus(self, *args):
-        self.was_out_of_focus = False
-
-    def lost_focus(self, *args):
-        self.was_out_of_focus = True
-
-        # If the user presses CTRL for a keyboard shortcut
-        # key_release_event isn't fired and force_single_step
-        # isn't properly unset.
-        self.imagehandler.force_single_step = False
 
     def draw_image(self, scroll_to=None):
         """Draw the current pages and update the titlebar and statusbar"""

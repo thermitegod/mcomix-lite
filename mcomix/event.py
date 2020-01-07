@@ -295,32 +295,6 @@ class EventHandler:
             # 'consumed' is the modifier that was necessary to type the key
             manager.execute((keyval, event.get_state() & ~consumed & ALL_ACCELS_MASK))
 
-        # ---------------------------------------------------------------
-        # Register CTRL for scrolling only one page instead of two
-        # pages in double page mode. This is mainly for mouse scrolling.
-        # ---------------------------------------------------------------
-        if event.keyval in (Gdk.KEY_Control_L, Gdk.KEY_Control_R):
-            self.__window.imagehandler.force_single_step = True
-
-        # ---------------------------------------------------------------
-        # kill the signals here for the Up, Down, Space and Enter keys,
-        # else they will start fiddling with the thumbnail selector (bad).
-        # ---------------------------------------------------------------
-        if (event.keyval in (Gdk.KEY_Up, Gdk.KEY_Down, Gdk.KEY_space, Gdk.KEY_KP_Enter,
-                             Gdk.KEY_KP_Up, Gdk.KEY_KP_Down, Gdk.KEY_KP_Home, Gdk.KEY_KP_End,
-                             Gdk.KEY_KP_Page_Up, Gdk.KEY_KP_Page_Down) or
-                (event.keyval == Gdk.KEY_Return and 'GDK_MOD1_MASK' not in event.get_state().value_names)):
-            self.__window.stop_emission_by_name('key_press_event')
-            return True
-
-    def key_release_event(self, widget, event, *args):
-        """Handle release of keys for the main window"""
-        # ---------------------------------------------------------------
-        # Unregister CTRL for scrolling only one page in double page mode
-        # ---------------------------------------------------------------
-        if event.keyval in (Gdk.KEY_Control_L, Gdk.KEY_Control_R):
-            self.__window.imagehandler.force_single_step = False
-
     def escape_event(self):
         """Determines the behavior of the ESC key"""
         if prefs['escape quits']:
@@ -377,9 +351,6 @@ class EventHandler:
 
     def mouse_press_event(self, widget, event):
         """Handle mouse click events on the main layout area"""
-        if self.__window.was_out_of_focus:
-            return
-
         if event.button == 1:
             pass
 
@@ -401,8 +372,7 @@ class EventHandler:
 
         if event.button == 1:
             if event.x_root == self.__pressed_pointer_pos_x and \
-                    event.y_root == self.__pressed_pointer_pos_y and \
-                    not self.__window.was_out_of_focus:
+                    event.y_root == self.__pressed_pointer_pos_y:
 
                 # right to next, left to previous, no matter the double page mode
                 direction = 1 if event.x > widget.get_property('width') // 2 else -1
@@ -418,9 +388,6 @@ class EventHandler:
                     distance = 1
 
                 self._flip_page(distance * direction)
-
-            else:
-                self.__window.was_out_of_focus = False
 
         elif event.button == 2:
             self.__window.actiongroup.get_action('lens').set_active(False)
