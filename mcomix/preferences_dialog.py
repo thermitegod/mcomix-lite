@@ -417,7 +417,7 @@ class _PreferencesDialog(Gtk.Dialog):
     def _create_doublepage_as_one_control(self):
         """Creates the ComboBox control for selecting virtual double page options"""
         items = (
-            ('Never', 0),
+            ('Never', constants.SHOW_DOUBLE_NEVER),
             ('Only for title pages', constants.SHOW_DOUBLE_AS_ONE_TITLE),
             ('Only for wide images', constants.SHOW_DOUBLE_AS_ONE_WIDE),
             ('Always', constants.SHOW_DOUBLE_AS_ONE_TITLE | constants.SHOW_DOUBLE_AS_ONE_WIDE))
@@ -461,7 +461,7 @@ class _PreferencesDialog(Gtk.Dialog):
     def _create_sort_by_control(self):
         """Creates the ComboBox control for selecting file sort by options"""
         sortkey_items = (
-            ('No sorting', 0),
+            ('No sorting', constants.SORT_NONE),
             ('File name', constants.SORT_NAME),
             ('File size', constants.SORT_SIZE),
             ('Last modified', constants.SORT_LAST_MODIFIED))
@@ -505,7 +505,7 @@ class _PreferencesDialog(Gtk.Dialog):
     def _create_archive_sort_by_control(self):
         """Creates the ComboBox control for selecting archive sort by options"""
         sortkey_items = (
-            ('No sorting', 0),
+            ('No sorting', constants.SORT_NONE),
             ('Natural order', constants.SORT_NAME),
             ('Literal order', constants.SORT_NAME_LITERAL))
 
