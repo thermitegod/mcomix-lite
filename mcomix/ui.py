@@ -163,95 +163,95 @@ class MainUI(Gtk.UIManager):
         <ui>
             <menubar name="Menu">
                 <menu action="menu_file">
-                    <menuitem action="open" />
-                    <separator />
-                    <menuitem action="extract_page" />
-                    <menuitem action="refresh_archive" />
-                    <menuitem action="properties" />
-                    <separator />
+                    <menuitem action="open"/>
+                    <separator/>
+                    <menuitem action="extract_page"/>
+                    <menuitem action="refresh_archive"/>
+                    <menuitem action="properties"/>
+                    <separator/>
                     <menu action="menu_open_with"></menu>
-                    <separator />
-                    <menuitem action="delete" />
-                    <separator />
-                    <menuitem action="minimize" />
-                    <menuitem action="close" />
-                    <menuitem action="quit" />
+                    <separator/>
+                    <menuitem action="delete"/>
+                    <separator/>
+                    <menuitem action="minimize"/>
+                    <menuitem action="close"/>
+                    <menuitem action="quit"/>
                 </menu>
                 <menu action="menu_edit">
-                    <menuitem action="preferences" />
+                    <menuitem action="preferences"/>
                 </menu>
                 <menu action="menu_view">
-                    <menuitem action="fullscreen" />
-                    <menuitem action="double_page" />
-                    <menuitem action="manga_mode" />
-                    <separator />
-                    <menuitem action="best_fit_mode" />
-                    <menuitem action="fit_width_mode" />
-                    <menuitem action="fit_height_mode" />
-                    <menuitem action="fit_size_mode" />
-                    <menuitem action="fit_manual_mode" />
-                    <separator />
-                    <menuitem action="stretch" />
-                    <menuitem action="lens" />
+                    <menuitem action="fullscreen"/>
+                    <menuitem action="double_page"/>
+                    <menuitem action="manga_mode"/>
+                    <separator/>
+                    <menuitem action="best_fit_mode"/>
+                    <menuitem action="fit_width_mode"/>
+                    <menuitem action="fit_height_mode"/>
+                    <menuitem action="fit_size_mode"/>
+                    <menuitem action="fit_manual_mode"/>
+                    <separator/>
+                    <menuitem action="stretch"/>
+                    <menuitem action="lens"/>
                     <menu action="menu_zoom">
-                        <menuitem action="zoom_in" />
-                        <menuitem action="zoom_out" />
-                        <menuitem action="zoom_original" />
+                        <menuitem action="zoom_in"/>
+                        <menuitem action="zoom_out"/>
+                        <menuitem action="zoom_original"/>
                     </menu>
-                    <separator />
+                    <separator/>
                     <menu action="menu_toolbars">
-                        <menuitem action="menubar" />
-                        <menuitem action="statusbar" />
-                        <menuitem action="scrollbar" />
-                        <menuitem action="thumbnails" />
-                        <separator />
-                        <menuitem action="hide_all" />
+                        <menuitem action="menubar"/>
+                        <menuitem action="statusbar"/>
+                        <menuitem action="scrollbar"/>
+                        <menuitem action="thumbnails"/>
+                        <separator/>
+                        <menuitem action="hide_all"/>
                     </menu>
                 </menu>
                 <menu action="menu_go">
-                    <menuitem action="next_page" />
-                    <menuitem action="previous_page" />
-                    <menuitem action="go_to" />
-                    <menuitem action="first_page" />
-                    <menuitem action="last_page" />
-                    <separator />
-                    <menuitem action="next_archive" />
-                    <menuitem action="previous_archive" />
-                    <separator />
-                    <menuitem action="next_directory" />
-                    <menuitem action="previous_directory" />
+                    <menuitem action="next_page"/>
+                    <menuitem action="previous_page"/>
+                    <menuitem action="go_to"/>
+                    <menuitem action="first_page"/>
+                    <menuitem action="last_page"/>
+                    <separator/>
+                    <menuitem action="next_archive"/>
+                    <menuitem action="previous_archive"/>
+                    <separator/>
+                    <menuitem action="next_directory"/>
+                    <menuitem action="previous_directory"/>
                 </menu>
                 <menu action="menu_bookmarks">
                 </menu>
                 <menu action="menu_tools">
-                    <menuitem action="enhance_image" />
+                    <menuitem action="enhance_image"/>
                     <menu action="menu_transform">
-                        <menuitem action="rotate_90" />
-                        <menuitem action="rotate_270" />
-                        <menuitem action="rotate_180" />
-                        <separator />
+                        <menuitem action="rotate_90"/>
+                        <menuitem action="rotate_270"/>
+                        <menuitem action="rotate_180"/>
+                        <separator/>
                         <menu action="menu_autorotate">
-                            <menuitem action="no_autorotation" />
-                            <separator />
-                            <menuitem action="menu_autorotate_height" />
-                            <separator />
-                            <menuitem action="rotate_90_height" />
-                            <menuitem action="rotate_270_height" />
-                            <separator />
-                            <menuitem action="menu_autorotate_width" />
-                            <separator />
-                            <menuitem action="rotate_90_width" />
-                            <menuitem action="rotate_270_width" />
+                            <menuitem action="no_autorotation"/>
+                            <separator/>
+                            <menuitem action="menu_autorotate_height"/>
+                            <separator/>
+                            <menuitem action="rotate_90_height"/>
+                            <menuitem action="rotate_270_height"/>
+                            <separator/>
+                            <menuitem action="menu_autorotate_width"/>
+                            <separator/>
+                            <menuitem action="rotate_90_width"/>
+                            <menuitem action="rotate_270_width"/>
                         </menu>
-                        <separator />
-                        <menuitem action="flip_horiz" />
-                        <menuitem action="flip_vert" />
-                        <separator />
-                        <menuitem action="keep_transformation" />
+                        <separator/>
+                        <menuitem action="flip_horiz"/>
+                        <menuitem action="flip_vert"/>
+                        <separator/>
+                        <menuitem action="keep_transformation"/>
                     </menu>
                 </menu>
                 <menu action="menu_help">
-                    <menuitem action="about" />
+                    <menuitem action="about"/>
                 </menu>
             </menubar>
         </ui>
