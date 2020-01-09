@@ -94,8 +94,6 @@ class MainUI(Gtk.UIManager):
              None, None, window.change_fullscreen),
             ('double_page', 'mcomix-double-page', '_Double page mode',
              None, None, window.change_double_page),
-            ('toolbar', None, '_Toolbar',
-             None, None, window.change_toolbar_visibility),
             ('menubar', None, '_Menubar',
              None, None, window.change_menubar_visibility),
             ('statusbar', None, 'St_atusbar',
@@ -167,29 +165,6 @@ class MainUI(Gtk.UIManager):
 
         ui_description = """
         <ui>
-            <toolbar name="Tool">
-                <toolitem action="previous_archive" />
-                <toolitem action="first_page" />
-                <toolitem action="previous_page" />
-                <toolitem action="go_to" />
-                <toolitem action="next_page" />
-                <toolitem action="last_page" />
-                <toolitem action="next_archive" />
-                <separator />
-                <toolitem action="fullscreen" />
-                <toolitem action="expander" />
-                <toolitem action="best_fit_mode" />
-                <toolitem action="fit_width_mode" />
-                <toolitem action="fit_height_mode" />
-                <toolitem action="fit_size_mode" />
-                <toolitem action="fit_manual_mode" />
-                <separator />
-                <toolitem action="double_page" />
-                <toolitem action="manga_mode" />
-                <separator />
-                <toolitem action="lens" />
-            </toolbar>
-
             <menubar name="Menu">
                 <menu action="menu_file">
                     <menuitem action="open" />
@@ -230,7 +205,6 @@ class MainUI(Gtk.UIManager):
                     <separator />
                     <menu action="menu_toolbars">
                         <menuitem action="menubar" />
-                        <menuitem action="toolbar" />
                         <menuitem action="statusbar" />
                         <menuitem action="scrollbar" />
                         <menuitem action="thumbnails" />
@@ -322,7 +296,6 @@ class MainUI(Gtk.UIManager):
                     <separator />
                     <menu action="menu_toolbars">
                         <menuitem action="menubar" />
-                        <menuitem action="toolbar" />
                         <menuitem action="statusbar" />
                         <menuitem action="scrollbar" />
                         <menuitem action="thumbnails" />
@@ -364,7 +337,3 @@ class MainUI(Gtk.UIManager):
         self.get_widget('/Popup/menu_open_with_popup').show()
 
         window.add_accel_group(self.get_accel_group())
-
-        # Is there no built-in way to do this?
-        self.get_widget('/Tool/expander').set_expand(True)
-        self.get_widget('/Tool/expander').set_sensitive(False)

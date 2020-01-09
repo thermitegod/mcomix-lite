@@ -63,7 +63,6 @@ class MainWindow(Gtk.Window):
         self.zoom = zoom.ZoomModel()
         self.uimanager = ui.MainUI(self)
         self.menubar = self.uimanager.get_widget('/Menu')
-        self.toolbar = self.uimanager.get_widget('/Tool')
         self.popup = self.uimanager.get_widget('/Popup')
         self.actiongroup = self.uimanager.get_action_groups()[0]
 
@@ -93,8 +92,6 @@ class MainWindow(Gtk.Window):
         table.attach(self.__scroll[constants.WIDTH_AXIS], 1, 2, 4, 5, Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
                      Gtk.AttachOptions.FILL, 0, 0)
         table.attach(self.menubar, 0, 3, 0, 1, Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
-                     Gtk.AttachOptions.FILL, 0, 0)
-        table.attach(self.toolbar, 0, 3, 1, 2, Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
                      Gtk.AttachOptions.FILL, 0, 0)
         table.attach(self.statusbar, 0, 3, 5, 6, Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
                      Gtk.AttachOptions.FILL, 0, 0)
@@ -138,7 +135,6 @@ class MainWindow(Gtk.Window):
             ('show scrollbar', 'scrollbar', self.__scroll),
             ('show statusbar', 'statusbar', (self.statusbar,)),
             ('show thumbnails', 'thumbnails', (self.thumbnailsidebar,)),
-            ('show toolbar', 'toolbar', (self.toolbar,)),
         )
 
         # Each "toggle" widget "eats" part of the main layout visible area.
@@ -147,7 +143,6 @@ class MainWindow(Gtk.Window):
             self.__scroll[constants.HEIGHT_AXIS]: constants.WIDTH_AXIS,
             self.__scroll[constants.WIDTH_AXIS]: constants.HEIGHT_AXIS,
             self.statusbar: constants.HEIGHT_AXIS,
-            self.toolbar: constants.HEIGHT_AXIS,
             self.menubar: constants.HEIGHT_AXIS,
         }
 
@@ -648,9 +643,6 @@ class MainWindow(Gtk.Window):
         prefs['stretch'] = toggleaction.get_active()
         self.zoom.set_scale_up(prefs['stretch'])
         self.draw_image()
-
-    def change_toolbar_visibility(self, toggleaction):
-        self._update_toggle_preference('show toolbar', toggleaction)
 
     def change_menubar_visibility(self, toggleaction):
         self._update_toggle_preference('show menubar', toggleaction)

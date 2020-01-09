@@ -48,7 +48,6 @@ prefs = {
     'show menubar': True,
     'show scrollbar': True,
     'show statusbar': True,
-    'show toolbar': False,
     'show thumbnails': True,
     'rotation': 0,
     'auto rotate from exif': True,

@@ -41,9 +41,6 @@ class Bookmark(Gtk.ImageMenuItem):
         else:
             self.__window.set_page(self._page)
 
-            self.__window.toolbar.hide()
-            self.__window.toolbar.show()
-
     def same_path(self, path):
         """Return True if the bookmark is for the file <path>"""
         return path == self._path

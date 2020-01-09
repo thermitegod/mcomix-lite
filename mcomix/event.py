@@ -250,9 +250,6 @@ class EventHandler:
         manager.register('fullscreen',
                          self.__window.actiongroup.get_action('fullscreen').activate)
 
-        manager.register('toolbar',
-                         self.__window.actiongroup.get_action('toolbar').activate)
-
         manager.register('menubar',
                          self.__window.actiongroup.get_action('menubar').activate)
 
