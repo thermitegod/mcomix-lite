@@ -70,17 +70,13 @@ class MainUI(Gtk.UIManager):
             ('extract_page', Gtk.STOCK_SAVE_AS, 'Save _As',
              None, None, window.extract_page),
             ('menu_zoom', 'mcomix-zoom', '_Zoom'),
-            ('menu_bookmarks_popup', 'comix-add-bookmark', '_Bookmarks'),
             ('menu_bookmarks', None, '_Bookmarks'),
             ('menu_toolbars', None, 'T_oolbars'),
             ('menu_edit', None, '_Edit'),
             ('menu_open_with', Gtk.STOCK_OPEN, 'Open _with', ''),
-            ('menu_open_with_popup', Gtk.STOCK_OPEN, 'Open _with', ''),
             ('menu_file', None, '_File'),
             ('menu_view', None, '_View'),
-            ('menu_view_popup', 'comix-image', '_View'),
             ('menu_go', None, '_Go'),
-            ('menu_go_popup', Gtk.STOCK_GO_FORWARD, '_Go'),
             ('menu_tools', None, '_Tools'),
             ('menu_help', None, '_Help'),
             ('menu_transform', 'mcomix-transform', '_Transform image'),
@@ -258,63 +254,6 @@ class MainUI(Gtk.UIManager):
                     <menuitem action="about" />
                 </menu>
             </menubar>
-
-            <popup name="Popup">
-                <menu action="menu_go_popup">
-                    <menuitem action="next_page" />
-                    <menuitem action="previous_page" />
-                    <menuitem action="go_to" />
-                    <menuitem action="first_page" />
-                    <menuitem action="last_page" />
-                    <separator />
-                    <menuitem action="next_archive" />
-                    <menuitem action="previous_archive" />
-                    <separator />
-                    <menuitem action="next_directory" />
-                    <menuitem action="previous_directory" />
-                </menu>
-                <menu action="menu_view_popup">
-                    <menuitem action="fullscreen" />
-                    <menuitem action="double_page" />
-                    <menuitem action="manga_mode" />
-                    <separator />
-                    <menuitem action="best_fit_mode" />
-                    <menuitem action="fit_width_mode" />
-                    <menuitem action="fit_height_mode" />
-                    <menuitem action="fit_size_mode" />
-                    <menuitem action="fit_manual_mode" />
-                    <separator />
-                    <menuitem action="enhance_image" />
-                    <separator />
-                    <menuitem action="stretch" />
-                    <menuitem action="lens" />
-                    <menu action="menu_zoom">
-                        <menuitem action="zoom_in" />
-                        <menuitem action="zoom_out" />
-                        <menuitem action="zoom_original" />
-                    </menu>
-                    <separator />
-                    <menu action="menu_toolbars">
-                        <menuitem action="menubar" />
-                        <menuitem action="statusbar" />
-                        <menuitem action="scrollbar" />
-                        <menuitem action="thumbnails" />
-                        <separator />
-                        <menuitem action="hide_all" />
-                    </menu>
-                </menu>
-                <menu action="menu_bookmarks_popup">
-                </menu>
-                <separator />
-                <menuitem action="open" />
-                <separator />
-                <menu action="menu_open_with_popup"></menu>
-                <separator />
-                <menuitem action="preferences" />
-                <separator />
-                <menuitem action="close" />
-                <menuitem action="quit" />
-            </popup>
         </ui>
         """
 
@@ -325,15 +264,8 @@ class MainUI(Gtk.UIManager):
         self.get_widget('/Menu/menu_bookmarks').set_submenu(self.__bookmarks)
         self.get_widget('/Menu/menu_bookmarks').show()
 
-        self.__bookmarks_popup = bookmark_menu.BookmarksMenu(self, window)
-        self.get_widget('/Popup/menu_bookmarks_popup').set_submenu(self.__bookmarks_popup)
-        self.get_widget('/Popup/menu_bookmarks_popup').show()
-
         self.__openwith = openwith_menu.OpenWithMenu(self, window)
         self.get_widget('/Menu/menu_file/menu_open_with').set_submenu(self.__openwith)
         self.get_widget('/Menu/menu_file/menu_open_with').show()
-        self.__openwith = openwith_menu.OpenWithMenu(self, window)
-        self.get_widget('/Popup/menu_open_with_popup').set_submenu(self.__openwith)
-        self.get_widget('/Popup/menu_open_with_popup').show()
 
         window.add_accel_group(self.get_accel_group())

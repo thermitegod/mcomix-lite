@@ -354,11 +354,8 @@ class EventHandler:
         elif event.button == 2:
             self.__window.actiongroup.get_action('lens').set_active(True)
 
-        elif (event.button == 3 and
-              not event.get_state() & Gdk.ModifierType.MOD1_MASK and
-              not event.get_state() & Gdk.ModifierType.SHIFT_MASK):
-            self.__window.cursor_handler.set_cursor_type(constants.NORMAL_CURSOR)
-            self.__window.popup.popup(None, None, None, None, event.button, event.time)
+        elif event.button == 3:
+            pass
 
         elif event.button == 4:
             self.__window.show_info_panel()
