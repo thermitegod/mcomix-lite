@@ -23,21 +23,13 @@ def load_icons():
               ('gimp-rotate-180.png', 'mcomix-rotate-180'),
               ('gimp-rotate-270.png', 'mcomix-rotate-270'),
               ('gimp-rotate-90.png', 'mcomix-rotate-90'),
-              ('gimp-thumbnails.png', 'mcomix-thumbnails'),
               ('gimp-transform.png', 'mcomix-transform'),
               ('tango-enhance-image.png', 'mcomix-enhance-image'),
               ('tango-add-bookmark.png', 'mcomix-add-bookmark'),
               ('tango-archive.png', 'mcomix-archive'),
               ('tango-image.png', 'mcomix-image'),
               ('zoom.png', 'mcomix-zoom'),
-              ('lens.png', 'mcomix-lens'),
-              ('double-page.png', 'mcomix-double-page'),
-              ('manga.png', 'mcomix-manga'),
-              ('fitbest.png', 'mcomix-fitbest'),
-              ('fitwidth.png', 'mcomix-fitwidth'),
-              ('fitheight.png', 'mcomix-fitheight'),
-              ('fitmanual.png', 'mcomix-fitmanual'),
-              ('fitsize.png', 'mcomix-fitsize'))
+              ('lens.png', 'mcomix-lens'))
 
     # Load window title icons.
     pixbufs = mcomix_icons()

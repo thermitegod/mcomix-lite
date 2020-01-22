@@ -76,7 +76,6 @@ class MainUI(Gtk.UIManager):
             ('menu_open_with', Gtk.STOCK_OPEN, 'Open _with', ''),
             ('menu_file', None, '_File'),
             ('menu_view', None, '_View'),
-            ('menu_go', None, '_Go'),
             ('menu_tools', None, '_Tools'),
             ('menu_help', None, '_Help'),
             ('menu_transform', 'mcomix-transform', '_Transform image'),
@@ -207,19 +206,6 @@ class MainUI(Gtk.UIManager):
                         <separator/>
                         <menuitem action="hide_all"/>
                     </menu>
-                </menu>
-                <menu action="menu_go">
-                    <menuitem action="next_page"/>
-                    <menuitem action="previous_page"/>
-                    <menuitem action="go_to"/>
-                    <menuitem action="first_page"/>
-                    <menuitem action="last_page"/>
-                    <separator/>
-                    <menuitem action="next_archive"/>
-                    <menuitem action="previous_archive"/>
-                    <separator/>
-                    <menuitem action="next_directory"/>
-                    <menuitem action="previous_directory"/>
                 </menu>
                 <menu action="menu_bookmarks">
                 </menu>
