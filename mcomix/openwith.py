@@ -13,7 +13,6 @@ from mcomix import callback, message_dialog, process
 from mcomix.preferences import prefs
 
 DEBUGGING_CONTEXT, NO_FILE_CONTEXT, IMAGE_FILE_CONTEXT, ARCHIVE_CONTEXT = -1, 0, 1, 2
-PREFNAME = 'external commands'
 
 
 class OpenWithException(Exception):
@@ -27,7 +26,7 @@ class OpenWithManager:
 
     @callback.Callback
     def set_commands(self, cmds):
-        prefs[PREFNAME] = [
+        prefs['external commands'] = [
             (cmd.get_label(), cmd.get_command(),
              cmd.get_cwd(), cmd.is_disabled_for_archives())
             for cmd in cmds]
@@ -37,7 +36,7 @@ class OpenWithManager:
         try:
             return [OpenWithCommand(label, command, cwd, disabled_for_archives)
                     for label, command, cwd, disabled_for_archives
-                    in prefs[PREFNAME]]
+                    in prefs['external commands']]
         except ValueError as e:
             OpenWithException(f'external commands error: {e}.')
 
