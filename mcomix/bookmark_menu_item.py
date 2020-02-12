@@ -2,6 +2,7 @@
 
 """bookmark_menu_item.py - A signle bookmark item"""
 
+from datetime import datetime
 from gi.repository import Gtk
 
 
@@ -9,7 +10,7 @@ class Bookmark(Gtk.ImageMenuItem):
     """_Bookmark represents one bookmark. It extends the Gtk.ImageMenuItem
     and is thus put directly in the bookmarks menu"""
 
-    def __init__(self, window, file_handler, name, path, page, numpages, archive_type, date_added):
+    def __init__(self, window, file_handler, name, path, page, numpages, archive_type, epoch):
         self.__window = window
         self.__archive_type = archive_type
 
@@ -19,7 +20,7 @@ class Bookmark(Gtk.ImageMenuItem):
         self._path = path
         self._page = page
         self._numpages = numpages
-        self._date_added = date_added
+        self._date_added = datetime.fromtimestamp(epoch)
 
         super(Bookmark, self).__init__(label=str(self), use_underline=False)
 
@@ -61,7 +62,7 @@ class Bookmark(Gtk.ImageMenuItem):
     def pack(self):
         """Return a tuple suitable for pickling. The bookmark can be fully
         re-created using the values in the tuple"""
-        return self._name, self._path, self._page, self._numpages, self.__archive_type, self._date_added
+        return self._name, self._path, self._page, self._numpages, self.__archive_type, self._date_added.timestamp()
 
     def clone(self):
         """Creates a copy of the provided Bookmark menu item. This is necessary
@@ -75,7 +76,7 @@ class Bookmark(Gtk.ImageMenuItem):
                 self._page,
                 self._numpages,
                 self.__archive_type,
-                self._date_added)
+                self._date_added.timestamp())
 
     def __eq__(self, other):
         """Equality comparison for Bookmark items"""

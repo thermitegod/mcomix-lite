@@ -21,7 +21,7 @@ BASE_PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 THUMBNAIL_PATH = os.path.join(os.getenv('XDG_CACHE_HOME', os.path.join(HOME_DIR, '.cache')), 'thumbnails/normal')
 PREFERENCE_PATH = os.path.join(CONFIG_DIR, 'preferences.conf')
 KEYBINDINGS_PATH = os.path.join(CONFIG_DIR, 'keybindings.conf')
-BOOKMARK_PATH = os.path.join(DATA_DIR, 'bookmarks.pickle')
+BOOKMARK_PATH = os.path.join(DATA_DIR, 'bookmarks.json')
 
 DISTRIBUTION_AXIS, ALIGNMENT_AXIS = WIDTH_AXIS, HEIGHT_AXIS = range(2)
 SHOW_DOUBLE_NEVER, SHOW_DOUBLE_AS_ONE_TITLE, SHOW_DOUBLE_AS_ONE_WIDE = range(3)

@@ -2,9 +2,8 @@
 
 """bookmark_backend.py - Bookmarks handler"""
 
-import datetime
+import json
 import os
-import pickle
 import time
 
 from gi.repository import Gtk
@@ -43,10 +42,10 @@ class _BookmarksStore:
                 bookmark.__window = window
                 bookmark._file_handler = window.filehandler
 
-    def add_bookmark_by_values(self, name, path, page, numpages, archive_type, date_added):
+    def add_bookmark_by_values(self, name, path, page, numpages, archive_type, epoch):
         """Create a bookmark and add it to the list"""
         bookmark = bookmark_menu_item.Bookmark(self.__window, self.__file_handler,
-                                               name, path, page, numpages, archive_type, date_added)
+                                               name, path, page, numpages, archive_type, epoch)
 
         self.add_bookmark(bookmark)
 
@@ -71,7 +70,7 @@ class _BookmarksStore:
         page = self.__image_handler.get_current_page()
         numpages = self.__image_handler.get_number_of_pages()
         archive_type = self.__file_handler.get_archive_type()
-        date_added = datetime.datetime.now()
+        epoch = time.time()
 
         same_file_bookmarks = []
 
@@ -96,7 +95,7 @@ class _BookmarksStore:
             elif response not in (Gtk.ResponseType.YES, Gtk.ResponseType.NO):
                 return
 
-        self.add_bookmark_by_values(name, path, page, numpages, archive_type, date_added)
+        self.add_bookmark_by_values(name, path, page, numpages, archive_type, epoch)
 
     def get_bookmarks(self):
         """Return all the bookmarks in the list"""
@@ -116,16 +115,13 @@ class _BookmarksStore:
         if os.path.isfile(path):
             try:
                 mtime = os.stat(path).st_mtime
-                with open(path, 'rb') as fd:
-                    version = pickle.load(fd)
-                    packs = pickle.load(fd)
-
-                    for pack in packs:
-                        bookmark = bookmark_menu_item.Bookmark(self.__window, self.__file_handler, *pack)
-                        bookmarks.append(bookmark)
-
+                with open(path, mode='rt', encoding='utf8') as fd:
+                    version, packs = json.load(fd)
             except Exception:
                 logger.error(f'Could not parse bookmarks file: \'{path}\'')
+            else:
+                for pack in packs:
+                    bookmarks.append(bookmark_menu_item.Bookmark(self.__window, self.__file_handler, *pack))
 
         return bookmarks, mtime
 
@@ -150,11 +146,9 @@ class _BookmarksStore:
             new_bookmarks, _ = self.load_bookmarks()
             self.__bookmarks = list(set(self.__bookmarks + new_bookmarks))
 
-        with open(constants.BOOKMARK_PATH, 'wb') as fd:
-            pickle.dump(constants.VERSION, fd, pickle.HIGHEST_PROTOCOL)
-
+        with open(constants.BOOKMARK_PATH, mode='wt', encoding='utf8') as fd:
             packs = [bookmark.pack() for bookmark in self.__bookmarks]
-            pickle.dump(packs, fd, pickle.HIGHEST_PROTOCOL)
+            json.dump((constants.VERSION, packs), fd, ensure_ascii=False, indent=2)
 
         self.__bookmarks_mtime = time.time()
 
