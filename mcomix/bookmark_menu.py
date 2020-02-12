@@ -72,7 +72,6 @@ class BookmarksMenu(Gtk.Menu):
             self.__bookmarks_store.add_current_to_bookmarks()
         except TypeError:
             logger.warning('No file to add to bookmarks')
-            pass
 
     def _edit_bookmarks(self, *args):
         """Open the bookmarks dialog"""
