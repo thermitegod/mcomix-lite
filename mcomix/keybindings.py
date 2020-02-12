@@ -60,10 +60,6 @@ class _KeybindingManager:
 
         assert name in keybindings_map.BINDING_INFO, f'"{name}" is not a valid keyboard action.'
 
-        # use default bindings if not provided
-        if not bindings:
-            bindings = keybindings_map.DEFAULT_BINDINGS.get(name, [])
-
         # Load stored keybindings, or fall back to passed arguments
         if not (keycodes := self.__action_to_bindings[name]):
             keycodes = [Gtk.accelerator_parse(binding) for binding in bindings]
@@ -174,7 +170,7 @@ class _KeybindingManager:
             with open(constants.KEYBINDINGS_PATH, 'r') as fp:
                 stored_action_bindings = json.load(fp)
         except Exception:
-            stored_action_bindings = {}
+            stored_action_bindings = keybindings_map.DEFAULT_BINDINGS.copy()
 
         for action in keybindings_map.BINDING_INFO.keys():
             if action in stored_action_bindings:
