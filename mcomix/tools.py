@@ -7,23 +7,31 @@ import gc
 import math
 import operator
 import re
-from functools import reduce
 
-NUMERIC_REGEXP = re.compile(r"\d+|\D+")  # Split into numerics and characters
+from functools import reduce
+from os.path import splitext
+
+NUMERIC_REGEXP = re.compile(r'\d+[.]\d+|\d+|\D+')  # Split into float, int, and characters
 PREFIXED_BYTE_UNITS = ('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB')
 
 
 def alphanumeric_sort(filenames):
     """Do an in-place alphanumeric sort of the strings in <filenames>,
     such that for an example "1.jpg", "2.jpg", "10.jpg" is a sorted ordering"""
+    def _isfloat(p):
+        try:
+            return 0, float(p)
+        except ValueError:
+            return 1, p.lower()
 
-    def _format_substring(s):
-        if s.isdigit():
-            return 0, int(s)
+    def keyfunc(s):
+        s, e = splitext(s)
+        if e[1:].isdigit():  # extension with only digital is not extension
+            s += e
+            e = ''
+        return [_isfloat(p) for p in (*NUMERIC_REGEXP.findall(s), e)]
 
-        return 1, s.lower()
-
-    filenames.sort(key=lambda s: list(map(_format_substring, NUMERIC_REGEXP.findall(s))))
+    filenames.sort(key=keyfunc)
 
 
 def bin_search(lst, value):
