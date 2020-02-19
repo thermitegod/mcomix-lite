@@ -167,10 +167,9 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
     def _generate_thumbnail(self, uid):
         """Generate the pixbuf for C{path} at demand"""
         assert isinstance(uid, int)
-        page = uid
-        if (pixbuf := self.__window.imagehandler.get_thumbnail(page,
-                                                               prefs['thumbnail size'],
-                                                               prefs['thumbnail size'],
+        size = prefs['thumbnail size']
+        if (pixbuf := self.__window.imagehandler.get_thumbnail(page=uid,
+                                                               size=(size, size),
                                                                nowait=True)) is not None:
             pixbuf = image_tools.add_border(pixbuf, self._BORDER_SIZE)
 

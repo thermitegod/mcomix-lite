@@ -320,7 +320,7 @@ class ImageHandler:
 
         return image_tools.get_image_mime(page_path)
 
-    def get_thumbnail(self, page=None, width=128, height=128, nowait=False):
+    def get_thumbnail(self, page=None, size=(128, 128), nowait=False):
         """Return a thumbnail pixbuf of <page> that fit in a box with
         dimensions <width>x<height>. Return a thumbnail for the current
         page if <page> is None.
@@ -333,7 +333,7 @@ class ImageHandler:
             return None
 
         try:
-            thumbnailer = thumbnail_tools.Thumbnailer(size=(width, height))
+            thumbnailer = thumbnail_tools.Thumbnailer(size=size)
             return thumbnailer.thumbnail(path)
         except Exception:
             logger.error(f'Failed to create thumbnail for image: \'{path}\'')

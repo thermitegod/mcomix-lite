@@ -464,7 +464,7 @@ class MainWindow(Gtk.Window):
         if (page == 1
                 and self.filehandler.get_archive_type() is not None
                 and prefs['archive thumbnail as icon']):
-            pixbuf = self.imagehandler.get_thumbnail(page, 48, 48)
+            pixbuf = self.imagehandler.get_thumbnail(page=page, size=(48, 48))
             self.set_icon(pixbuf)
 
     def _on_file_opened(self):

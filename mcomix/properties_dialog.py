@@ -101,7 +101,7 @@ class PropertiesDialog(Gtk.Dialog):
         if not self.__window.imagehandler.page_is_available(page_number):
             return
         size = prefs['properties thumb size']
-        thumb = self.__window.imagehandler.get_thumbnail(page_number, width=size, height=size)
+        thumb = self.__window.imagehandler.get_thumbnail(page_number, size=(size, size))
         page.set_thumbnail(thumb)
 
     @staticmethod
