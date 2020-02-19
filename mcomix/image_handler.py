@@ -320,12 +320,10 @@ class ImageHandler:
 
         return image_tools.get_image_mime(page_path)
 
-    def get_thumbnail(self, page=None, width=128, height=128, create=False, nowait=False):
+    def get_thumbnail(self, page=None, width=128, height=128, nowait=False):
         """Return a thumbnail pixbuf of <page> that fit in a box with
         dimensions <width>x<height>. Return a thumbnail for the current
         page if <page> is None.
-        If <create> is True, and <width>x<height> <= 128x128, the
-        thumbnail is also stored on disk.
         If <nowait> is True, don't wait for <page> to be available"""
         if not self._wait_on_page(page, check_only=nowait):
             # Page is not available!
@@ -335,7 +333,7 @@ class ImageHandler:
             return None
 
         try:
-            thumbnailer = thumbnail_tools.Thumbnailer(store_on_disk=create, size=(width, height))
+            thumbnailer = thumbnail_tools.Thumbnailer(size=(width, height))
             return thumbnailer.thumbnail(path)
         except Exception:
             logger.error(f'Failed to create thumbnail for image: \'{path}\'')

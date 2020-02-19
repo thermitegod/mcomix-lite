@@ -3,17 +3,13 @@
 """thumbnail.py - Thumbnail module for MComix implementing (most of) the
 freedesktop.org "standard" at http://jens.triq.net/thumbnail-spec/"""
 
-import mimetypes
 import os
 import re
 import threading
-from hashlib import md5
-from urllib.request import pathname2url
 
-import PIL.Image as Image
 from loguru import logger
 
-from mcomix import archive_tools, callback, constants, image_tools, reader, tools
+from mcomix import callback, image_tools, tools
 from mcomix.preferences import prefs
 
 
@@ -23,36 +19,21 @@ class Thumbnailer:
     it either stores thumbnails on disk and retrieves them later,
     or simply creates new thumbnails each time it is called"""
 
-    def __init__(self, dst_dir=constants.THUMBNAIL_PATH, store_on_disk=None,
-                 size=None, force_recreation=False, archive_support=False):
+    def __init__(self, size=None, archive_support=False):
         """<dst_dir> set the thumbnailer's storage directory.
-
-        If <store_on_disk> on disk is True, it changes the thumbnailer's
-        behaviour to store files on disk, or just create new thumbnails each
-        time it was called when set to False. Defaults to the 'create
-        thumbnails' preference if not set.
 
         The dimensions for the created thumbnails is set by <size>, a (width,
         height) tupple. Defaults to the 'thumbnail size' preference if not set.
 
-        If <force_recreation> is True, thumbnails stored on disk
-        will always be re-created instead of being re-used.
-
         If <archive_support> is True, support for archive thumbnail creation
         (based on cover detection) is enabled. Otherwise, only image files are
         supported"""
-        self.__dst_dir = dst_dir
-        if store_on_disk is None:
-            self.__store_on_disk = prefs['create thumbnails']
-        else:
-            self.__store_on_disk = store_on_disk
         if size is None:
             self.__width = self.__height = prefs['thumbnail size']
             self.__default_sizes = True
         else:
             self.__width, self.__height = size
             self.__default_sizes = False
-        self.__force_recreation = force_recreation
         self.__archive_support = archive_support
 
     def thumbnail(self, filepath, mt=False):
@@ -65,12 +46,6 @@ class Thumbnailer:
         if self.__default_sizes:
             self.__width = prefs['thumbnail size']
             self.__height = prefs['thumbnail size']
-
-        if self._thumbnail_exists(filepath):
-            thumbpath = self._path_to_thumbpath(filepath)
-            pixbuf = image_tools.load_pixbuf(thumbpath)
-            self.thumbnail_finished(filepath, pixbuf)
-            return pixbuf
 
         if mt:
             thread = threading.Thread(target=self._create_thumbnail, args=(filepath,))
@@ -90,130 +65,20 @@ class Thumbnailer:
 
     def _create_thumbnail_pixbuf(self, filepath):
         """Creates a thumbnail pixbuf from <filepath>, and returns it as a
-        tuple along with a file metadata dictionary: (pixbuf, tEXt_data)"""
-        if self.__archive_support:
-            mime = archive_tools.archive_mime_type(filepath)
-        else:
-            mime = None
-        if mime is not None:
-            with archive_tools.get_recursive_archive_handler(
-                    filepath, type=mime, prefix='mcomix_archive_thumb.') as archive:
-                if archive is None:
-                    return None, None
-                files = archive.list_contents()
-                wanted = self._guess_cover(files)
-                if wanted is None:
-                    return None, None
-
-                image_path = archive.extract(wanted)
-                if not os.path.isfile(image_path):
-                    return None, None
-
-                pixbuf = image_tools.load_pixbuf_size(image_path, self.__width, self.__height)
-                if self.__store_on_disk:
-                    tEXt_data = self._get_text_data(image_path)
-                    # Use the archive's mTime instead of the extracted file's mtime
-                    tEXt_data['tEXt::Thumb::MTime'] = str(os.stat(filepath).st_mtime)
-                else:
-                    tEXt_data = None
-
-                return pixbuf, tEXt_data
-
-        elif image_tools.is_image_file(filepath, check_mimetype=True):
+        tuple: (pixbuf)"""
+        if image_tools.is_image_file(filepath, check_mimetype=True):
             pixbuf = image_tools.load_pixbuf_size(filepath, self.__width, self.__height)
-            if self.__store_on_disk:
-                tEXt_data = self._get_text_data(filepath)
-            else:
-                tEXt_data = None
-
-            return pixbuf, tEXt_data
+            return pixbuf
 
         return None, None
 
     def _create_thumbnail(self, filepath):
-        """Creates the thumbnail pixbuf for <filepath>, and saves the pixbuf
-        to disk if necessary. Returns the created pixbuf, or None, if creation failed"""
-        pixbuf, tEXt_data = self._create_thumbnail_pixbuf(filepath)
+        """Creates the thumbnail pixbuf for <filepath>
+        Returns the created pixbuf, or None, if creation failed"""
+        pixbuf = self._create_thumbnail_pixbuf(filepath)
         self.thumbnail_finished(filepath, pixbuf)
 
-        if pixbuf and self.__store_on_disk:
-            thumbpath = self._path_to_thumbpath(filepath)
-            self._save_thumbnail(pixbuf, thumbpath, tEXt_data)
-
         return pixbuf
-
-    @staticmethod
-    def _get_text_data(filepath):
-        """Creates a tEXt dictionary for <filepath>"""
-        mime = mimetypes.guess_type(filepath)[0] or "unknown/mime"
-        uri = f'file://{pathname2url(os.path.normpath(filepath))}'
-        stat = os.stat(filepath)
-        # MTime could be floating point number, so convert to long first to have a fixed point number
-        mtime = str(stat.st_mtime)
-        size = str(stat.st_size)
-        width, height = image_tools.get_image_size(filepath)
-        return {
-            'tEXt::Thumb::URI': uri,
-            'tEXt::Thumb::MTime': mtime,
-            'tEXt::Thumb::Size': size,
-            'tEXt::Thumb::Mimetype': mime,
-            'tEXt::Thumb::Image::Width': str(width),
-            'tEXt::Thumb::Image::Height': str(height),
-            'tEXt::Software': f'MComix {constants.VERSION}'
-        }
-
-    @staticmethod
-    def _save_thumbnail(pixbuf, thumbpath, tEXt_data):
-        """Saves <pixbuf> as <thumbpath>, with additional metadata
-        from <tEXt_data>. If <thumbpath> already exists, it is overwritten"""
-        try:
-            if not os.path.isdir(directory := os.path.dirname(thumbpath)):
-                os.makedirs(directory, 0o700)
-            if os.path.isfile(thumbpath):
-                os.remove(thumbpath)
-
-            option_keys = []
-            option_values = []
-            for key, value in tEXt_data.items():
-                option_keys.append(key)
-                option_values.append(value)
-            pixbuf.savev(thumbpath, 'png', option_keys, option_values)
-            os.chmod(thumbpath, 0o600)
-
-        except Exception:
-            logger.error(f'Could not save thumbnail: \'{thumbpath}\'')
-
-    def _thumbnail_exists(self, filepath):
-        """Checks if the thumbnail for <filepath> already exists.
-        This function will return False if the thumbnail exists
-        and it's mTime doesn't match the mTime of <filepath>,
-        it's size is different from the one specified in the thumbnailer,
-        or if <force_recreation> is True"""
-        if not self.__force_recreation:
-            if os.path.isfile(thumbpath := self._path_to_thumbpath(filepath)):
-                # Check the thumbnail's stored mTime
-                try:
-                    with reader.LockedFileIO(thumbpath) as fio:
-                        with Image.open(fio) as img:
-                            info = img.info
-                            stored_mtime = float(info['Thumb::MTime'])
-                            # The source file might no longer exist
-                            file_mtime = os.stat(filepath).st_mtime if os.path.isfile(filepath) else stored_mtime
-                            return stored_mtime == file_mtime and max(*img.size) == max(self.__width, self.__height)
-                except IOError:
-                    pass
-
-        return False
-
-    def _path_to_thumbpath(self, filepath):
-        """Converts <path> to an URI for the thumbnail in <dst_dir>"""
-        uri = f'file://{pathname2url(os.path.normpath(filepath))}'
-        return self._uri_to_thumbpath(uri)
-
-    def _uri_to_thumbpath(self, uri):
-        """Return the full path to the thumbnail for <uri> with <dst_dir>
-        being the base thumbnail directory"""
-        return os.path.join(self.__dst_dir, f'{md5(uri.encode()).hexdigest()}.png')
 
     @staticmethod
     def _guess_cover(files):

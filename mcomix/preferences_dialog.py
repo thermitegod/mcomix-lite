@@ -348,10 +348,6 @@ class _PreferencesDialog(Gtk.Dialog):
                              'max extract threads',
                              1, 1, 16, 1, 4, 0))
 
-        page.add_row(self._create_pref_check_button(
-                'Store thumbnails for opened files (freedesktop.org compliant)',
-                'create thumbnails'))
-
         page.add_row(Gtk.Label(label='Temporary directory (restart required)'),
                      self._create_pref_path_chooser('temporary directory', folder=True, default='/tmp'))
 
