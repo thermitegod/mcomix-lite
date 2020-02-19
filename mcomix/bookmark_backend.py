@@ -135,8 +135,8 @@ class _BookmarksStore:
                 return False
             except IOError:
                 return False
-        else:
-            return True
+
+        return True
 
     def write_bookmarks_file(self):
         """Store relevant bookmark info in the mcomix directory"""
