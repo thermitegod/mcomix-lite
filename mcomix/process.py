@@ -12,7 +12,7 @@ STDOUT = subprocess.STDOUT
 
 
 def call(args, stdin=NULL, stdout=NULL, stderr=NULL, universal_newlines=False):
-    return subprocess.call(args, stdin=stdin, stdout=stdout,
+    return subprocess.call(args, stdin=stdin, stdout=stdout, stderr=stderr,
                            universal_newlines=universal_newlines, creationflags=0) == 0
 
 
