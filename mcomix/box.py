@@ -79,13 +79,6 @@ class Box:
             result += r * r
         return result
 
-    def translate(self, delta):
-        """Returns a new Box that has the same size as this Box and a
-        translated position as specified by delta.
-        @param delta: The distance to the position of this Box.
-        @return: A new Box as specified above"""
-        return Box(tools.vector_add(self.get_position(), delta), self.get_size())
-
     def translate_opposite(self, delta):
         """Returns a new Box that has the same size as this Box and a
         oppositely translated position as specified by delta.
