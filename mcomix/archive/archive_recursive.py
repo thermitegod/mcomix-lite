@@ -16,8 +16,12 @@ class RecursiveArchive(archive_base.BaseArchive):
     def __init__(self, archive, prefix='mcomix.'):
         super(RecursiveArchive, self).__init__(archive.archive)
         self.__main_archive = archive
-        self.__tempdir = tempfile.TemporaryDirectory(
-                prefix=prefix, dir=prefs['temporary directory'])
+
+        __cache_path_top = f'{prefs["temporary directory"]}/mcomix'
+        if not os.path.exists(__cache_path_top):
+            os.makedirs(__cache_path_top)
+
+        self.__tempdir = tempfile.TemporaryDirectory(prefix=prefix, dir=__cache_path_top)
         self.__sub_tempdirs = []
         self.__destdir = self.__tempdir.name
         self.__archive_list = []
