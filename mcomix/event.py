@@ -365,32 +365,13 @@ class EventHandler:
         self.__window.cursor_handler.set_cursor_type(constants.NORMAL_CURSOR)
 
         if event.button == 1:
-            if event.x_root == self.__pressed_pointer_pos_x and \
-                    event.y_root == self.__pressed_pointer_pos_y:
-
-                # right to next, left to previous, no matter the double page mode
-                direction = 1 if event.x > widget.get_property('width') // 2 else -1
-
-                # if in manga mode, left to next, right to previous
-                if self.__window.is_manga_mode:
-                    direction *= -1
-
-                # over flip with shift pressed
-                if event.get_state() & Gdk.ModifierType.SHIFT_MASK:
-                    distance = 10
-                else:
-                    distance = 1
-
-                self._flip_page(distance * direction)
+            pass
 
         elif event.button == 2:
             self.__window.actiongroup.get_action('lens').set_active(False)
 
         elif event.button == 3:
-            if event.get_state() & Gdk.ModifierType.MOD1_MASK:
-                self._flip_page(-1)
-            elif event.get_state() & Gdk.ModifierType.SHIFT_MASK:
-                self._flip_page(-10)
+            pass
 
     def mouse_move_event(self, widget, event):
         """Handle mouse pointer movement events"""
