@@ -101,12 +101,13 @@ class RecursiveArchive(archive_base.BaseArchive):
             return self.__contents
         return [f for f in self.iter_contents()]
 
-    def extract(self, filename):
+    def extract(self, filename, destination_dir=None):
         if not self.__contents_listed:
             self.list_contents()
         archive, name = self.__entry_mapping[filename]
         root = self.__archive_root[archive]
-        destination_dir = self.__destdir
+        if destination_dir is None:
+            destination_dir = self.__destdir
         if root is not None:
             destination_dir = os.path.join(destination_dir, root)
         logger.debug(f'extracting from {archive.archive} to {destination_dir}: {filename}')
