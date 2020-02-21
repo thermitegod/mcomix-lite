@@ -42,13 +42,6 @@ class _BookmarksStore:
                 bookmark.__window = window
                 bookmark._file_handler = window.filehandler
 
-    def add_bookmark_by_values(self, name, path, page, numpages, archive_type, epoch):
-        """Create a bookmark and add it to the list"""
-        bookmark = bookmark_menu_item.Bookmark(self.__window, self.__file_handler,
-                                               name, path, page, numpages, archive_type, epoch)
-
-        self.add_bookmark(bookmark)
-
     @callback.Callback
     def add_bookmark(self, bookmark):
         """Add the <bookmark> to the list"""
@@ -95,7 +88,9 @@ class _BookmarksStore:
             elif response not in (Gtk.ResponseType.YES, Gtk.ResponseType.NO):
                 return
 
-        self.add_bookmark_by_values(name, path, page, numpages, archive_type, epoch)
+        bookmark = bookmark_menu_item.Bookmark(self.__window, self.__file_handler,
+                                               name, path, page, numpages, archive_type, epoch)
+        self.add_bookmark(bookmark)
 
     def get_bookmarks(self):
         """Return all the bookmarks in the list"""
