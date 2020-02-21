@@ -39,7 +39,7 @@ class OnScreenDisplay:
 
         # Calculate surrounding box
         layout_width, layout_height = layout.get_pixel_size()
-        pos_x = max(int(max_width // 2) - int(layout_width // 2) + int(self.__window.get_hadjust().get_value()), 0)
+        pos_x = max(int(max_width / 2) - int(layout_width / 2) + int(self.__window.get_hadjust().get_value()), 0)
         pos_y = max(int(max_height) - int(layout_height * 1.1) + int(self.__window.get_vadjust().get_value()), 0)
 
         rect = (pos_x - 10, pos_y - 20, layout_width + 20, layout_height + 20)
