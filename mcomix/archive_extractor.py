@@ -132,20 +132,15 @@ class Extractor:
     def close(self):
         """Close any open file objects, need only be called manually if the
         extract() method isn't called"""
+        cache_path = self.__dst
 
-        def _bg_cleanup(path):
-            event.wait(5)
-            if os.path.exists(path):
-                shutil.rmtree(path)
-                logger.debug(f'fallback remove used on: \'{path}\'')
+        def _cache_cleanup(path):
+            shutil.rmtree(path)
+            logger.debug(f'cache removed: \'{path}\'')
 
-        tmp_cache = self.__dst
-
-        if os.path.exists(tmp_cache):
-            self.__archive.close()
-            event = threading.Event()
-            cleanup_thread = threading.Thread(target=_bg_cleanup, args=[tmp_cache])
-            cleanup_thread.start()
+        if os.path.exists(cache_path):
+            thread = mt.ThreadPool(name='extracted cache cleanup')
+            thread.apply_async(func=_cache_cleanup, args=[cache_path])
 
     def _extraction_finished(self, name):
         if self.__threadpool.closed:
