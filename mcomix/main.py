@@ -48,6 +48,8 @@ class MainWindow(Gtk.Window):
             Gtk.Scrollbar.new(Gtk.Orientation.VERTICAL, self.__vadjust),
         )
 
+        self.__bg_color = None
+
         self.filehandler = file_handler.FileHandler(self)
         self.filehandler.file_closed += self._on_file_closed
         self.filehandler.file_opened += self._on_file_opened
@@ -779,10 +781,10 @@ class MainWindow(Gtk.Window):
         self.__event_box.override_background_color(Gtk.StateType.NORMAL, Gdk.RGBA(*color))
         if prefs['thumbnail bg uses main color']:
             self.thumbnailsidebar.change_thumbnail_background_color(prefs['bg color'])
-        self._bg_color = color
+        self.__bg_color = color
 
     def get_bg_color(self):
-        return self._bg_color
+        return self.__bg_color
 
     def extract_page(self, *args):
         """Derive some sensible filename (archive name + _ + filename should do) and offer
