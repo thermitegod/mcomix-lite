@@ -806,8 +806,7 @@ class MainWindow(Gtk.Window):
         save_dialog.destroy()
 
     def move_file(self, action=None, *args):
-        """default action is delete for ui compat
-        The currently opened file/archive will be moved to prefs['move file']
+        """The currently opened file/archive will be moved to prefs['move file']
         or
         The currently opened file/archive will be trashed after showing a confirmation dialog"""
         if action is None:
