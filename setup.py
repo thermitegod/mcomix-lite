@@ -60,7 +60,7 @@ setup(
         data_files=[
             ('share/man/man1', ['man/mcomix.1']),
             ('share/applications', ['mime/mcomix.desktop']),
-            ('share/appdata', ['mime/mcomix.appdata.xml']),
+            ('share/metainfo', ['mime/mcomix.appdata.xml']),
             ('share/mime/packages', ['mime/mcomix.xml']),
             ('share/icons/hicolor/48x48/apps', ['mcomix/images/48x48/mcomix.png']),
             ('share/icons/hicolor/48x48/mimetypes',
