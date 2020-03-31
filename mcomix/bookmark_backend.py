@@ -9,7 +9,9 @@ import time
 from gi.repository import Gtk
 from loguru import logger
 
-from mcomix import bookmark_menu_item, callback, constants, message_dialog, state
+from mcomix import bookmark_menu_item, callback, constants, message_dialog
+
+bookmark_state = {'dirty': False}
 
 
 class _BookmarksStore:
@@ -22,7 +24,7 @@ class _BookmarksStore:
         self.__file_handler = None
         self.__image_handler = None
 
-        bookmarks, mtime = self.load_bookmarks()
+        bookmarks, mtime = self.load_bookmarks_file()
 
         #: List of bookmarks
         self.__bookmarks = bookmarks
@@ -46,15 +48,13 @@ class _BookmarksStore:
     def add_bookmark(self, bookmark):
         """Add the <bookmark> to the list"""
         self.__bookmarks.append(bookmark)
-        self.write_bookmarks_file()
-        state.state_changed['bookmarks'] = state.DIRTY
+        bookmark_state['dirty'] = True
 
     @callback.Callback
     def remove_bookmark(self, bookmark):
         """Remove the <bookmark> from the list"""
         self.__bookmarks.remove(bookmark)
-        self.write_bookmarks_file()
-        state.state_changed['bookmarks'] = state.DIRTY
+        bookmark_state['dirty'] = True
 
     def add_current_to_bookmarks(self):
         """Add the currently viewed page to the list"""
@@ -97,10 +97,10 @@ class _BookmarksStore:
         if not self.file_was_modified():
             return self.__bookmarks
 
-        self.__bookmarks, self.__bookmarks_mtime = self.load_bookmarks()
+        self.__bookmarks, self.__bookmarks_mtime = self.load_bookmarks_file()
         return self.__bookmarks
 
-    def load_bookmarks(self):
+    def load_bookmarks_file(self):
         """Loads persisted bookmarks from a local file.
         @return: Tuple of (bookmarks, file mtime)"""
         path = constants.BOOKMARK_PATH
@@ -136,9 +136,13 @@ class _BookmarksStore:
     def write_bookmarks_file(self):
         """Store relevant bookmark info in the mcomix directory"""
         # Merge changes in case file was modified from within other instances
+        if not bookmark_state['dirty']:
+            logger.info('No changes to write for bookmarks')
+            return
+        logger.info('Writing changes to bookmarks')
 
         if self.file_was_modified():
-            new_bookmarks, _ = self.load_bookmarks()
+            new_bookmarks, _ = self.load_bookmarks_file()
             self.__bookmarks = list(set(self.__bookmarks + new_bookmarks))
 
         with open(constants.BOOKMARK_PATH, mode='wt', encoding='utf8') as fd:

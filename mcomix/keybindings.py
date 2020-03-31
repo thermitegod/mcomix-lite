@@ -28,7 +28,9 @@ from collections import defaultdict
 from gi.repository import Gtk
 from loguru import logger
 
-from mcomix import constants, keybindings_map, state
+from mcomix import constants, keybindings_map, tools
+
+keybindings_hash = {'sha256': None}
 
 
 class _KeybindingManager:
@@ -40,7 +42,7 @@ class _KeybindingManager:
         self.__action_to_bindings = defaultdict(list)  # action name => [ (key code, key modifier), ]
         self.__binding_to_action = {}  # (key code, key modifier) => action name
 
-        self._initialize()
+        self.load_keybindings_file()
 
     def register(self, name, callback, args=None, kwargs=None, bindings=None):
         """Registers an action for a predefined keybinding name.
@@ -86,7 +88,6 @@ class _KeybindingManager:
         @param new_binding: Binding to be assigned to action
         @param old_binding: Binding to be removed from action [ can be empty: "" ]
         @return None: new_binding wasn't in any action action name: where new_binding was before"""
-        state.state_changed['keybindings'] = state.DIRTY
         assert name in keybindings_map.BINDING_INFO, f'"{name}" is not a valid keyboard action.'
 
         nb = Gtk.accelerator_parse(new_binding)
@@ -116,7 +117,6 @@ class _KeybindingManager:
 
     def clear_accel(self, name, binding):
         """Remove binding for an action"""
-        state.state_changed['keybindings'] = state.DIRTY
         assert name in keybindings_map.BINDING_INFO, f'"{name}" is not a valid keyboard action.'
 
         ob = Gtk.accelerator_parse(binding)
@@ -125,7 +125,6 @@ class _KeybindingManager:
 
     def clear_all(self):
         """Removes all keybindings. The changes are only persisted if save() is called afterwards"""
-        state.state_changed['keybindings'] = state.DIRTY
         self.__action_to_callback = {}
         self.__action_to_bindings = defaultdict(list)
         self.__binding_to_action = {}
@@ -151,7 +150,7 @@ class _KeybindingManager:
                 self.__window.stop_emission_by_name('key_press_event')
                 return func(*args, **kwargs)
 
-    def save(self):
+    def write_keybindings_file(self):
         """Stores the keybindings that have been set to disk"""
         # Collect keybindings for all registered actions
         action_to_keys = {}
@@ -161,14 +160,24 @@ class _KeybindingManager:
                     Gtk.accelerator_name(keyval, modifiers) for
                     (keyval, modifiers) in bindings
                 ]
-        with open(constants.KEYBINDINGS_PATH, 'w') as fp:
-            json.dump(action_to_keys, fp, indent=2)
 
-    def _initialize(self):
+        json_prefs = json.dumps(action_to_keys, indent=2)
+        sha256hash = tools.sha256str(json_prefs)
+        if sha256hash == keybindings_hash['sha256']:
+            logger.info('No changes to write for keybindings')
+            return
+        keybindings_hash['sha256'] = sha256hash
+
+        logger.info('Writing changes to keybindings')
+
+        with open(constants.KEYBINDINGS_PATH, mode='wt', encoding='utf8') as fd:
+            print(json_prefs, file=fd)
+
+    def load_keybindings_file(self):
         """Load keybindings from disk"""
         try:
-            with open(constants.KEYBINDINGS_PATH, 'r') as fp:
-                stored_action_bindings = json.load(fp)
+            with open(constants.KEYBINDINGS_PATH, mode='rt', encoding='utf8') as fd:
+                stored_action_bindings = json.load(fd)
         except Exception:
             stored_action_bindings = keybindings_map.DEFAULT_BINDINGS.copy()
 
@@ -182,6 +191,8 @@ class _KeybindingManager:
                     self.__binding_to_action[binding] = action
             else:
                 self.__action_to_bindings[action] = []
+
+        keybindings_hash['sha256'] = tools.sha256str(json.dumps(stored_action_bindings, indent=2))
 
     def get_bindings_for_action(self, name):
         """Returns a list of (keycode, modifier) for the action C{name}"""

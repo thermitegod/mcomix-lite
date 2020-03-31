@@ -8,6 +8,7 @@ import math
 import operator
 import re
 
+from hashlib import sha256
 from functools import reduce
 from os.path import splitext
 
@@ -68,6 +69,10 @@ def format_byte_size(n):
 def garbage_collect():
     """Runs the garbage collector"""
     gc.collect(0)
+
+
+def sha256str(s):
+    return sha256(s.encode('utf8')).hexdigest()
 
 
 def div(a, b):

@@ -7,7 +7,9 @@ import os
 
 from loguru import logger
 
-from mcomix import constants
+from mcomix import constants, tools
+
+prefs_hash = {'sha256': None}
 
 # All preferences are stored here.
 prefs = {
@@ -98,13 +100,13 @@ prefs = {
 }
 
 
-def read_preferences_file():
+def load_preferences_file():
     saved_prefs = {}
-
-    if os.path.isfile(pref := constants.PREFERENCE_PATH):
+    pref = constants.PREFERENCE_PATH
+    if os.path.isfile(pref):
         try:
-            with open(pref, 'r') as config_file:
-                saved_prefs.update(json.load(config_file))
+            with open(pref, mode='rt', encoding='utf8') as fd:
+                saved_prefs.update(json.load(fd))
         except Exception:
             if os.path.isfile(corrupt_name := f'{pref}.broken'):
                 os.unlink(corrupt_name)
@@ -114,8 +116,21 @@ def read_preferences_file():
 
     prefs.update(filter(lambda i: i[0] in prefs, saved_prefs.items()))
 
+    prefs_hash['sha256'] = tools.sha256str(json.dumps(prefs, indent=2))
+
 
 def write_preferences_file():
     """Write preference data to disk"""
-    with open(constants.PREFERENCE_PATH, 'w') as config_file:
-        json.dump(prefs, config_file, indent=2)
+    pref = constants.PREFERENCE_PATH
+
+    json_prefs = json.dumps(prefs, indent=2)
+    sha256hash = tools.sha256str(json_prefs)
+    if sha256hash == prefs_hash['sha256']:
+        logger.info('No changes to write for preferences')
+        return
+    prefs_hash['sha256'] = sha256hash
+
+    logger.info('Writing changes to preferences')
+
+    with open(pref, mode='wt', encoding='utf8') as fd:
+        print(json_prefs, file=fd)
