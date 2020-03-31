@@ -9,6 +9,7 @@ from loguru import logger
 
 from mcomix import constants, tools
 
+preference_path = constants.PREFERENCE_PATH
 prefs_hash = {'sha256': None}
 
 # All preferences are stored here.
@@ -102,17 +103,17 @@ prefs = {
 
 def load_preferences_file():
     saved_prefs = {}
-    pref = constants.PREFERENCE_PATH
-    if os.path.isfile(pref):
+    if os.path.isfile(preference_path):
         try:
-            with open(pref, mode='rt', encoding='utf8') as fd:
+            with open(preference_path, mode='rt', encoding='utf8') as fd:
                 saved_prefs.update(json.load(fd))
         except Exception:
-            if os.path.isfile(corrupt_name := f'{pref}.broken'):
+            corrupt_name = f'{preference_path}.broken'
+            if os.path.isfile(corrupt_name):
                 os.unlink(corrupt_name)
 
             logger.error(f'Corrupt preferences file, moving to: \'{corrupt_name}\'')
-            os.rename(pref, corrupt_name)
+            os.rename(preference_path, corrupt_name)
 
     prefs.update(filter(lambda i: i[0] in prefs, saved_prefs.items()))
 
@@ -121,8 +122,6 @@ def load_preferences_file():
 
 def write_preferences_file():
     """Write preference data to disk"""
-    pref = constants.PREFERENCE_PATH
-
     json_prefs = json.dumps(prefs, indent=2)
     sha256hash = tools.sha256str(json_prefs)
     if sha256hash == prefs_hash['sha256']:
@@ -132,5 +131,5 @@ def write_preferences_file():
 
     logger.info('Writing changes to preferences')
 
-    with open(pref, mode='wt', encoding='utf8') as fd:
+    with open(preference_path, mode='wt', encoding='utf8') as fd:
         print(json_prefs, file=fd)

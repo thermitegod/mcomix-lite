@@ -24,6 +24,8 @@ class _BookmarksStore:
         self.__file_handler = None
         self.__image_handler = None
 
+        self.__bookmark_path = constants.BOOKMARK_PATH
+
         bookmarks, mtime = self.load_bookmarks_file()
 
         #: List of bookmarks
@@ -103,17 +105,16 @@ class _BookmarksStore:
     def load_bookmarks_file(self):
         """Loads persisted bookmarks from a local file.
         @return: Tuple of (bookmarks, file mtime)"""
-        path = constants.BOOKMARK_PATH
         bookmarks = []
         mtime = 0
 
-        if os.path.isfile(path):
+        if os.path.isfile(self.__bookmark_path):
             try:
-                mtime = os.stat(path).st_mtime
-                with open(path, mode='rt', encoding='utf8') as fd:
+                mtime = os.stat(self.__bookmark_path).st_mtime
+                with open(self.__bookmark_path, mode='rt', encoding='utf8') as fd:
                     version, packs = json.load(fd)
             except Exception:
-                logger.error(f'Could not parse bookmarks file: \'{path}\'')
+                logger.error(f'Could not parse bookmarks file: \'{self.__bookmark_path}\'')
             else:
                 for pack in packs:
                     bookmarks.append(bookmark_menu_item.Bookmark(self.__window, self.__file_handler, *pack))
@@ -123,9 +124,9 @@ class _BookmarksStore:
     def file_was_modified(self):
         """Checks the bookmark store's mtime to see if it has been modified
         since it was last read"""
-        if os.path.isfile(path := constants.BOOKMARK_PATH):
+        if os.path.isfile(self.__bookmark_path):
             try:
-                if os.stat(path).st_mtime > self.__bookmarks_mtime:
+                if os.stat(self.__bookmark_path).st_mtime > self.__bookmarks_mtime:
                     return True
                 return False
             except IOError:
@@ -145,7 +146,7 @@ class _BookmarksStore:
             new_bookmarks, _ = self.load_bookmarks_file()
             self.__bookmarks = list(set(self.__bookmarks + new_bookmarks))
 
-        with open(constants.BOOKMARK_PATH, mode='wt', encoding='utf8') as fd:
+        with open(self.__bookmark_path, mode='wt', encoding='utf8') as fd:
             packs = [bookmark.pack() for bookmark in self.__bookmarks]
             json.dump((constants.VERSION, packs), fd, ensure_ascii=False, indent=2)
 
