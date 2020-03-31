@@ -352,7 +352,9 @@ def rgb_to_y_601(color):
 
 
 def text_color_for_background_color(bgcolor):
-    return GTK_GDK_COLOR_BLACK if rgb_to_y_601(bgcolor) >= 65535.0 / 2.0 else GTK_GDK_COLOR_WHITE
+    if rgb_to_y_601(bgcolor) >= 65535.0 / 2.0:
+        return GTK_GDK_COLOR_BLACK
+    return GTK_GDK_COLOR_WHITE
 
 
 def get_image_size(path):

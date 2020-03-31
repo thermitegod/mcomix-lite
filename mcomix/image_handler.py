@@ -249,11 +249,15 @@ class ImageHandler:
         a tuple (p, p') where p is the filename of <page> (or the current
         page) and p' is the filename of the page after"""
         if not self.page_is_available():
-            return ('', '') if double else ''
+            if double:
+                return '', ''
+            return ''
 
         def get_fname(page):
             path = self.get_path_to_page(page)
-            return '' if path is None else os.path.basename(path)
+            if path is None:
+                return ''
+            return os.path.basename(path)
 
         if page is None:
             page = self.get_current_page()
@@ -262,7 +266,9 @@ class ImageHandler:
 
         if double:
             second = get_fname(page + 1)
-            return (second, first) if manga else (first, second)
+            if manga:
+                return second, first
+            return first, second
 
         return first
 
@@ -272,12 +278,17 @@ class ImageHandler:
         a tuple (s, s') where s is the filesize of <page> (or the current
         page) and s' is the filesize of the page after"""
         if not self.page_is_available():
-            return ('-1', '-1') if double else '-1'
+            if double:
+                return '-1', '-1'
+            return '-1'
 
         def get_fsize(page):
             path = self.get_path_to_page(page)
             try:
-                fsize = 0 if path is None else os.stat(path).st_size
+                if path is None:
+                    fsize = 0
+                else:
+                    fsize = os.stat(path).st_size
             except OSError:
                 fsize = 0
             return tools.format_byte_size(fsize)
@@ -289,7 +300,9 @@ class ImageHandler:
 
         if double:
             second = get_fsize(page + 1)
-            return (second, first) if manga else (first, second)
+            if manga:
+                return second, first
+            return first, second
 
         return first
 
