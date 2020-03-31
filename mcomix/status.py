@@ -115,16 +115,6 @@ class Statusbar(Gtk.EventBox):
         self.__status.pop(0)
         self.__status.push(0, f'{"":>{Statusbar.SPACING}}{text}')
 
-    def push(self, context_id, message):
-        """Compatibility with Gtk.Statusbar"""
-        assert context_id >= 0
-        self.__status.push(context_id + 1, message)
-
-    def pop(self, context_id):
-        """Compatibility with Gtk.Statusbar"""
-        assert context_id >= 0
-        self.__status.pop(context_id + 1)
-
     def _get_status_text(self):
         """Returns an array of text fields that should be displayed"""
         fields = [

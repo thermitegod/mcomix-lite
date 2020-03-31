@@ -214,7 +214,7 @@ class BaseFileChooserDialog(Gtk.Dialog):
 
     def _update_preview(self, *args):
         if (path := self.filechooser.get_preview_filename()) and os.path.isfile(path):
-            thumbnailer = thumbnail_tools.Thumbnailer(size=(128, 128), archive_support=True)
+            thumbnailer = thumbnail_tools.Thumbnailer(size=(128, 128))
             thumbnailer.thumbnail_finished += self._preview_thumbnail_finished
             thumbnailer.thumbnail(path, mt=True)
         else:

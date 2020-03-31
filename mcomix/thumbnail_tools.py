@@ -19,22 +19,17 @@ class Thumbnailer:
     it either stores thumbnails on disk and retrieves them later,
     or simply creates new thumbnails each time it is called"""
 
-    def __init__(self, size=None, archive_support=False):
+    def __init__(self, size=None):
         """<dst_dir> set the thumbnailer's storage directory.
 
         The dimensions for the created thumbnails is set by <size>, a (width,
-        height) tupple. Defaults to the 'thumbnail size' preference if not set.
-
-        If <archive_support> is True, support for archive thumbnail creation
-        (based on cover detection) is enabled. Otherwise, only image files are
-        supported"""
+        height) tupple. Defaults to the 'thumbnail size' preference if not set."""
         if size is None:
             self.__width = self.__height = prefs['thumbnail size']
             self.__default_sizes = True
         else:
             self.__width, self.__height = size
             self.__default_sizes = False
-        self.__archive_support = archive_support
 
     def thumbnail(self, filepath, mt=False):
         """Returns a thumbnail pixbuf for <filepath>, transparently handling
@@ -79,30 +74,3 @@ class Thumbnailer:
         self.thumbnail_finished(filepath, pixbuf)
 
         return pixbuf
-
-    @staticmethod
-    def _guess_cover(files):
-        """Return the filename within <files> that is the most likely to be the
-        cover of an archive using some simple heuristics"""
-        # Ignore MacOSX meta files.
-        files = filter(lambda filename:
-                       '__MACOSX' not in os.path.normpath(filename).split(os.sep), files)
-        # Ignore credit files if possible.
-        files = filter(lambda filename:
-                       'credit' not in os.path.split(filename)[1].lower(), files)
-
-        images = [f for f in files if image_tools.is_image_file(f)]
-
-        tools.alphanumeric_sort(images)
-
-        front_re = re.compile('(cover|front)', re.I)
-        candidates = filter(front_re.search, images)
-        candidates = [c for c in candidates if 'back' not in c.lower()]
-
-        if candidates:
-            return candidates[0]
-
-        if images:
-            return images[0]
-
-        return None

@@ -102,11 +102,6 @@ def vector_sub(a, b):
     return tuple(map(operator.sub, a, b))
 
 
-def vector_add(a, b):
-    """Adds vector a to vector b"""
-    return tuple(map(operator.add, a, b))
-
-
 def vector_opposite(a):
     """Returns the opposite vector -a"""
     return tuple(map(operator.neg, a))
