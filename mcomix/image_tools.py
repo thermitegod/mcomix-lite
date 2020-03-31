@@ -12,14 +12,6 @@ from gi.repository import GLib, Gdk, GdkPixbuf, Gio, Gtk
 from mcomix import anime_tools, constants, reader
 from mcomix.preferences import prefs
 
-# Fallback pixbuf for missing images.
-MISSING_IMAGE_ICON = None
-
-_missing_icon_dialog = Gtk.Dialog()
-_missing_icon_pixbuf = _missing_icon_dialog.render_icon(Gtk.STOCK_MISSING_IMAGE, Gtk.IconSize.LARGE_TOOLBAR)
-MISSING_IMAGE_ICON = _missing_icon_pixbuf
-assert MISSING_IMAGE_ICON
-
 GTK_GDK_COLOR_BLACK = Gdk.color_parse('black')
 GTK_GDK_COLOR_WHITE = Gdk.color_parse('white')
 

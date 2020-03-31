@@ -100,7 +100,7 @@ class ImageHandler:
                 tools.garbage_collect()
             except Exception:
                 logger.error(f'Could not load pixbuf for page: \'{index + 1}\'')
-                pixbuf = image_tools.MISSING_IMAGE_ICON
+                pixbuf = None
             self.__raw_pixbufs[index] = pixbuf
 
     def set_page(self, page_num):
@@ -337,7 +337,7 @@ class ImageHandler:
             return thumbnailer.thumbnail(path)
         except Exception:
             logger.error(f'Failed to create thumbnail for image: \'{path}\'')
-            return image_tools.MISSING_IMAGE_ICON
+            return None
 
     def _wait_on_page(self, page, check_only=False):
         """Block the running (main) thread until the file corresponding to
