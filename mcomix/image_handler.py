@@ -253,8 +253,8 @@ class ImageHandler:
                 return '', ''
             return ''
 
-        def get_fname(page):
-            path = self.get_path_to_page(page)
+        def get_fname(fname):
+            path = self.get_path_to_page(fname)
             if path is None:
                 return ''
             return os.path.basename(path)
@@ -282,8 +282,8 @@ class ImageHandler:
                 return '-1', '-1'
             return '-1'
 
-        def get_fsize(page):
-            path = self.get_path_to_page(page)
+        def get_fsize(fsize):
+            path = self.get_path_to_page(fsize)
             try:
                 if path is None:
                     fsize = 0
