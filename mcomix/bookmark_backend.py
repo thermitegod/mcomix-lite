@@ -26,12 +26,10 @@ class _BookmarksStore:
 
         self.__bookmark_path = constants.BOOKMARK_PATH
 
-        bookmarks, mtime = self.load_bookmarks_file()
-
         #: List of bookmarks
-        self.__bookmarks = bookmarks
+        self.__bookmarks = self.load_bookmarks_file()
         #: Modification date of bookmarks file
-        self.__bookmarks_mtime = mtime
+        self.__bookmarks_mtime = self.get_bookmarks_file_mtime()
 
     def initialize(self, window):
         """Initializes references to the main window and file/image handlers"""
@@ -99,18 +97,21 @@ class _BookmarksStore:
         if not self.file_was_modified():
             return self.__bookmarks
 
-        self.__bookmarks, self.__bookmarks_mtime = self.load_bookmarks_file()
+        self.__bookmarks = self.load_bookmarks_file()
         return self.__bookmarks
+
+    def get_bookmarks_file_mtime(self):
+        if os.path.isfile(self.__bookmark_path):
+            return os.stat(self.__bookmark_path).st_mtime
+        return 0
 
     def load_bookmarks_file(self):
         """Loads persisted bookmarks from a local file.
         @return: Tuple of (bookmarks, file mtime)"""
         bookmarks = []
-        mtime = 0
 
         if os.path.isfile(self.__bookmark_path):
             try:
-                mtime = os.stat(self.__bookmark_path).st_mtime
                 with open(self.__bookmark_path, mode='rt', encoding='utf8') as fd:
                     version, packs = json.load(fd)
             except Exception:
@@ -119,7 +120,7 @@ class _BookmarksStore:
                 for pack in packs:
                     bookmarks.append(bookmark_menu_item.Bookmark(self.__window, self.__file_handler, *pack))
 
-        return bookmarks, mtime
+        return bookmarks
 
     def file_was_modified(self):
         """Checks the bookmark store's mtime to see if it has been modified
@@ -143,7 +144,7 @@ class _BookmarksStore:
         logger.info('Writing changes to bookmarks')
 
         if self.file_was_modified():
-            new_bookmarks, _ = self.load_bookmarks_file()
+            new_bookmarks = self.load_bookmarks_file()
             self.__bookmarks = list(set(self.__bookmarks + new_bookmarks))
 
         with open(self.__bookmark_path, mode='wt', encoding='utf8') as fd:
