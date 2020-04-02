@@ -13,9 +13,13 @@ REQUIRED_PIL_VERSION = '6.0.0'
 
 CPU_COUNT = os.cpu_count()
 
-HOME_DIR = os.environ.get('HOME')
-CONFIG_DIR = os.path.join(os.getenv('XDG_CONFIG_HOME', os.path.join(HOME_DIR, '.config')), 'mcomix')
-DATA_DIR = os.path.join(os.getenv('XDG_DATA_HOME', os.path.join(HOME_DIR, '.local/share')), 'mcomix')
+try:
+    CONFIG_DIR = os.path.join(os.environ['XDG_CONFIG_HOME'], 'mcomix')
+    DATA_DIR = os.path.join(os.environ['XDG_DATA_HOME'], 'mcomix')
+except KeyError:
+    HOME_DIR = os.environ['HOME']
+    CONFIG_DIR = os.path.join(HOME_DIR, '.config/mcomix')
+    DATA_DIR = os.path.join(HOME_DIR, '.local/share/mcomix')
 
 BASE_PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 PREFERENCE_PATH = os.path.join(CONFIG_DIR, 'preferences.conf')
