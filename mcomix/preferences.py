@@ -44,7 +44,6 @@ prefs = {
     'flip with wheel': True,
     'hide all': False,
     'hide all in fullscreen': True,
-    'stored hide all values': [True, True, True, True, True],
     'show menubar': True,
     'show scrollbar': True,
     'show statusbar': True,
