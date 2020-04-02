@@ -30,8 +30,6 @@ from loguru import logger
 
 from mcomix import constants, keybindings_map, tools
 
-keybindings_hash = {'sha256': None}
-
 
 class _KeybindingManager:
     def __init__(self, window):
@@ -43,6 +41,7 @@ class _KeybindingManager:
         self.__binding_to_action = {}  # (key code, key modifier) => action name
 
         self.__keybindings_path = constants.KEYBINDINGS_PATH
+        self.__keybindings_hash = {'sha256': None}
 
         self.load_keybindings_file()
 
@@ -165,10 +164,10 @@ class _KeybindingManager:
 
         json_prefs = json.dumps(action_to_keys, indent=2)
         sha256hash = tools.sha256str(json_prefs)
-        if sha256hash == keybindings_hash['sha256']:
+        if sha256hash == self.__keybindings_hash['sha256']:
             logger.info('No changes to write for keybindings')
             return
-        keybindings_hash['sha256'] = sha256hash
+        self.__keybindings_hash['sha256'] = sha256hash
 
         logger.info('Writing changes to keybindings')
 
@@ -194,7 +193,7 @@ class _KeybindingManager:
             else:
                 self.__action_to_bindings[action] = []
 
-        keybindings_hash['sha256'] = tools.sha256str(json.dumps(stored_action_bindings, indent=2))
+        self.__keybindings_hash['sha256'] = tools.sha256str(json.dumps(stored_action_bindings, indent=2))
 
     def get_bindings_for_action(self, name):
         """Returns a list of (keycode, modifier) for the action C{name}"""

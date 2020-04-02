@@ -11,8 +11,6 @@ from loguru import logger
 
 from mcomix import bookmark_menu_item, callback, constants, message_dialog
 
-bookmark_state = {'dirty': False}
-
 
 class _BookmarksStore:
     """The _BookmarksStore is a backend for both the bookmarks menu and dialog.
@@ -25,6 +23,7 @@ class _BookmarksStore:
         self.__image_handler = None
 
         self.__bookmark_path = constants.BOOKMARK_PATH
+        self.__bookmark_state = {'dirty': False}
 
         #: List of bookmarks
         self.__bookmarks = self.load_bookmarks_file()
@@ -48,13 +47,13 @@ class _BookmarksStore:
     def add_bookmark(self, bookmark):
         """Add the <bookmark> to the list"""
         self.__bookmarks.append(bookmark)
-        bookmark_state['dirty'] = True
+        self.__bookmark_state['dirty'] = True
 
     @callback.Callback
     def remove_bookmark(self, bookmark):
         """Remove the <bookmark> from the list"""
         self.__bookmarks.remove(bookmark)
-        bookmark_state['dirty'] = True
+        self.__bookmark_state['dirty'] = True
 
     def add_current_to_bookmarks(self):
         """Add the currently viewed page to the list"""
@@ -138,7 +137,7 @@ class _BookmarksStore:
     def write_bookmarks_file(self):
         """Store relevant bookmark info in the mcomix directory"""
         # Merge changes in case file was modified from within other instances
-        if not bookmark_state['dirty']:
+        if not self.__bookmark_state['dirty']:
             logger.info('No changes to write for bookmarks')
             return
         logger.info('Writing changes to bookmarks')

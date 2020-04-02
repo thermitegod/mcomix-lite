@@ -10,8 +10,6 @@ from loguru import logger
 
 from mcomix import constants, tools
 
-prefs_hash = {'sha256': None}
-
 # All preferences are stored here.
 prefs = {
     'number of key presses before page turn': 3,
@@ -100,6 +98,7 @@ prefs = {
 class _PreferenceManager:
     def __init__(self):
         self.__preference_path = constants.PREFERENCE_PATH
+        self.__prefs_hash = {'sha256': None}
 
     def load_preferences_file(self):
         saved_prefs = {}
@@ -113,16 +112,16 @@ class _PreferenceManager:
 
         prefs.update(filter(lambda i: i[0] in prefs, saved_prefs.items()))
 
-        prefs_hash['sha256'] = tools.sha256str(json.dumps(prefs, indent=2))
+        self.__prefs_hash['sha256'] = tools.sha256str(json.dumps(prefs, indent=2))
 
     def write_preferences_file(self):
         """Write preference data to disk"""
         json_prefs = json.dumps(prefs, indent=2)
         sha256hash = tools.sha256str(json_prefs)
-        if sha256hash == prefs_hash['sha256']:
+        if sha256hash == self.__prefs_hash['sha256']:
             logger.info('No changes to write for preferences')
             return
-        prefs_hash['sha256'] = sha256hash
+        self.__prefs_hash['sha256'] = sha256hash
 
         logger.info('Writing changes to preferences')
 
