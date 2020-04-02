@@ -21,7 +21,6 @@ except KeyError:
     CONFIG_DIR = os.path.join(HOME_DIR, '.config/mcomix')
     DATA_DIR = os.path.join(HOME_DIR, '.local/share/mcomix')
 
-BASE_PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 PREFERENCE_PATH = os.path.join(CONFIG_DIR, 'preferences.conf')
 KEYBINDINGS_PATH = os.path.join(CONFIG_DIR, 'keybindings.conf')
 BOOKMARK_PATH = os.path.join(DATA_DIR, 'bookmarks.json')

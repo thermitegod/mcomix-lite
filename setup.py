@@ -17,13 +17,16 @@ Example usage:
 """
 
 
+BASE_PATH = os.path.dirname(os.path.realpath(__file__))
+
+
 def get_data_patterns(directory, *patterns):
     """ Build a list of patterns for all subdirectories of <directory>
     to be passed into package_data. """
     olddir = os.getcwd()
-    os.chdir(os.path.join(constants.BASE_PATH, directory))
+    os.chdir(os.path.join(BASE_PATH, directory))
     allfiles = []
-    for dirpath, subdirs, files in os.walk("."):
+    for dirpath, subdirs, files in os.walk('.'):
         for pattern in patterns:
             current_pattern = os.path.normpath(os.path.join(dirpath, pattern))
             if glob.glob(current_pattern):
@@ -37,7 +40,7 @@ def get_data_patterns(directory, *patterns):
 images = get_data_patterns('mcomix/images', '*.png')
 images.remove('*.png')
 images.extend([os.path.basename(img)
-               for img in glob.glob(os.path.join(constants.BASE_PATH, 'mcomix/images', '*.png'))])
+               for img in glob.glob(os.path.join(BASE_PATH, 'mcomix/images', '*.png'))])
 
 setup(
         name=constants.APPNAME.lower(),
