@@ -88,7 +88,7 @@ def run():
         os.makedirs(constants.CONFIG_DIR, 0o700)
 
     # Load configuration.
-    preferences.load_preferences_file()
+    preferences.PreferenceManager.load_preferences_file()
 
     from mcomix import icons
     icons.load_icons()

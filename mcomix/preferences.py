@@ -4,12 +4,12 @@
 
 import json
 import os
+import sys
 
 from loguru import logger
 
 from mcomix import constants, tools
 
-preference_path = constants.PREFERENCE_PATH
 prefs_hash = {'sha256': None}
 
 # All preferences are stored here.
@@ -17,8 +17,7 @@ prefs = {
     'number of key presses before page turn': 3,
     'auto open next archive': True,
     'auto open next directory': False,
-    'sort by': constants.SORT_NAME,
-    # Normal files obtained by directory listing
+    'sort by': constants.SORT_NAME,  # Normal files obtained by directory listing
     'sort order': constants.SORT_ASCENDING,
     'sort archive by': constants.SORT_NAME,  # Files in archives
     'sort archive order': constants.SORT_ASCENDING,
@@ -98,35 +97,38 @@ prefs = {
 }
 
 
-def load_preferences_file():
-    saved_prefs = {}
-    if os.path.isfile(preference_path):
-        try:
-            with open(preference_path, mode='rt', encoding='utf8') as fd:
-                saved_prefs.update(json.load(fd))
-        except Exception:
-            corrupt_name = f'{preference_path}.broken'
-            if os.path.isfile(corrupt_name):
-                os.unlink(corrupt_name)
+class _PreferenceManager:
+    def __init__(self):
+        self.__preference_path = constants.PREFERENCE_PATH
 
-            logger.error(f'Corrupt preferences file, moving to: \'{corrupt_name}\'')
-            os.rename(preference_path, corrupt_name)
+    def load_preferences_file(self):
+        saved_prefs = {}
+        if os.path.isfile(self.__preference_path):
+            try:
+                with open(self.__preference_path, mode='rt', encoding='utf8') as fd:
+                    saved_prefs.update(json.load(fd))
+            except Exception:
+                logger.error('Preferences file is corrupt')
+                sys.exit(1)
 
-    prefs.update(filter(lambda i: i[0] in prefs, saved_prefs.items()))
+        prefs.update(filter(lambda i: i[0] in prefs, saved_prefs.items()))
 
-    prefs_hash['sha256'] = tools.sha256str(json.dumps(prefs, indent=2))
+        prefs_hash['sha256'] = tools.sha256str(json.dumps(prefs, indent=2))
+
+    def write_preferences_file(self):
+        """Write preference data to disk"""
+        json_prefs = json.dumps(prefs, indent=2)
+        sha256hash = tools.sha256str(json_prefs)
+        if sha256hash == prefs_hash['sha256']:
+            logger.info('No changes to write for preferences')
+            return
+        prefs_hash['sha256'] = sha256hash
+
+        logger.info('Writing changes to preferences')
+
+        with open(self.__preference_path, mode='wt', encoding='utf8') as fd:
+            print(json_prefs, file=fd)
 
 
-def write_preferences_file():
-    """Write preference data to disk"""
-    json_prefs = json.dumps(prefs, indent=2)
-    sha256hash = tools.sha256str(json_prefs)
-    if sha256hash == prefs_hash['sha256']:
-        logger.info('No changes to write for preferences')
-        return
-    prefs_hash['sha256'] = sha256hash
-
-    logger.info('Writing changes to preferences')
-
-    with open(preference_path, mode='wt', encoding='utf8') as fd:
-        print(json_prefs, file=fd)
+# Singleton instance
+PreferenceManager = _PreferenceManager()

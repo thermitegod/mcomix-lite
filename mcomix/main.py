@@ -897,7 +897,7 @@ class MainWindow(Gtk.Window):
         self.iconify()
 
     def write_config_files(self):
-        preferences.write_preferences_file()
+        preferences.PreferenceManager.write_preferences_file()
         keybindings.keybinding_manager(self).write_keybindings_file()
         bookmark_backend.BookmarksStore.write_bookmarks_file()
 
