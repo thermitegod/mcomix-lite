@@ -62,8 +62,6 @@ prefs = {
     'sharpness': 1.0,
     'auto contrast': False,
     'max pages to cache': -1,
-    'pageselector height': -1,
-    'pageselector width': -1,
     'statusbar fields': constants.STATUS_PAGE | constants.STATUS_RESOLUTION | constants.STATUS_PATH | constants.STATUS_FILENAME | constants.STATUS_FILESIZE,
     'max thumbnail threads': constants.CPU_COUNT,
     'max extract threads': 16,
@@ -96,6 +94,8 @@ prefs = {
     'properties width': 870,
     'properties height': 560,
     'properties thumb size': 256,
+    'pageselector height': 820,
+    'pageselector width': 560,
 }
 
 

@@ -277,7 +277,19 @@ class _PreferencesDialog(Gtk.Dialog):
                              'properties thumb size',
                              1, 32, 1024, 1, 10, 0))
 
-        page.new_section('Main window')
+        page.new_section('Page Selector')
+
+        page.add_row(Gtk.Label(label='window size (width):'),
+                     self._create_pref_spinner(
+                             'pageselector width',
+                             1, 560, 10000, 10, 10, 0))
+
+        page.add_row(Gtk.Label(label='window size (height):'),
+                     self._create_pref_spinner(
+                             'pageselector height',
+                             1, 820, 10000, 10, 10, 0))
+
+        page.new_section('Main Window')
 
         page.add_row(self._create_pref_check_button(
                 'Save window size',
