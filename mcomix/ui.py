@@ -4,8 +4,7 @@
 
 from gi.repository import Gtk
 
-from mcomix import bookmark_menu, constants, dialog_handler, enhance_dialog, file_chooser_main_dialog, \
-    openwith_menu, preferences_dialog
+from mcomix import bookmark_menu, constants, dialog_handler, enhance_dialog, openwith_menu, preferences_dialog
 from mcomix.preferences import prefs
 
 
@@ -150,8 +149,6 @@ class MainUI(Gtk.UIManager):
 
         # Some actions added separately since they need extra arguments.
         self.__actiongroup.add_actions([
-            ('open', Gtk.STOCK_OPEN, '_Open...',
-             None, None, file_chooser_main_dialog.open_main_filechooser_dialog),
             ('enhance_image', 'mcomix-enhance-image', 'En_hance image...',
              None, None, enhance_dialog.open_dialog)], window)
 
@@ -162,8 +159,6 @@ class MainUI(Gtk.UIManager):
         <ui>
             <menubar name="Menu">
                 <menu action="menu_file">
-                    <menuitem action="open"/>
-                    <separator/>
                     <menuitem action="extract_page"/>
                     <menuitem action="refresh_archive"/>
                     <menuitem action="properties"/>

@@ -232,9 +232,6 @@ class EventHandler:
         manager.register('preferences',
                          self.__window.actiongroup.get_action('preferences').activate)
 
-        manager.register('open',
-                         self.__window.actiongroup.get_action('open').activate)
-
         manager.register('enhance_image',
                          self.__window.actiongroup.get_action('enhance_image').activate)
 
