@@ -24,6 +24,7 @@ class Extractor:
     for other threads to wait on specific files to be ready"""
 
     def __init__(self):
+        self.__setupped = False
         self.__threadpool = mt.ThreadPool(
                 name=self.__class__.__name__,
                 processes=prefs['max extract threads'] or None)
@@ -51,10 +52,12 @@ class Extractor:
             raise ArchiveException(msg)
 
         self.__dst = self.__archive.get_destdir()
+        self.__extract_started = False
         self.__condition = threading.Condition()
         self.__threadpool.apply_async(
                 self._list_contents, callback=self._list_contents_cb,
                 error_callback=self._list_contents_errcb)
+        self.__setupped = True
 
         return self.__condition
 
@@ -99,6 +102,16 @@ class Extractor:
         with self.__condition:
             return name in self.__extracted
 
+    def stop(self):
+        """Signal the extractor to stop extracting and kill the extracting
+        thread. Blocks until the extracting thread has terminated"""
+        self.__threadpool.terminate()
+        self.__threadpool.join()
+        self.__threadpool.renew()
+        if self.__setupped:
+            self.__extract_started = False
+            self.__setupped = False
+
     def extract(self):
         """Start extracting the files in the file list one by one using a
         new thread. Every time a new file is extracted a notify() will be
@@ -132,15 +145,10 @@ class Extractor:
     def close(self):
         """Close any open file objects, need only be called manually if the
         extract() method isn't called"""
-        cache_path = self.__dst
-
-        def _cache_cleanup(path):
-            shutil.rmtree(path)
-            logger.debug(f'cache removed: \'{path}\'')
-
-        if os.path.exists(cache_path):
-            thread = mt.ThreadPool(name='extracted cache cleanup')
-            thread.apply_async(func=_cache_cleanup, args=[cache_path])
+        self.stop()
+        if self.__archive:
+            logger.debug(f'Cache directory removed: \'{self.__dst}\'')
+            self.__archive.close()
 
     def _extraction_finished(self, name):
         if self.__threadpool.closed:
