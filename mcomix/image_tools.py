@@ -419,12 +419,6 @@ def init_supported_formats():
         SUPPORTED_IMAGE_MIMES.update(mimes)
 
 
-def get_supported_formats():
-    if not SUPPORTED_IMAGE_FORMATS:
-        init_supported_formats()
-    return SUPPORTED_IMAGE_FORMATS
-
-
 def is_image_file(path, check_mimetype=False):
     # if check_mimetype is True,
     # read starting bytes and using Gio.content_type_guess

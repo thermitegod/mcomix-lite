@@ -61,12 +61,6 @@ def init_supported_formats():
         SUPPORTED_ARCHIVE_EXTS.update(SUPPORTED_ARCHIVE_FORMATS[name][1])
 
 
-def get_supported_formats():
-    if not SUPPORTED_ARCHIVE_FORMATS:
-        init_supported_formats()
-    return SUPPORTED_ARCHIVE_FORMATS
-
-
 def is_archive_file(path):
     if not SUPPORTED_ARCHIVE_FORMATS:
         init_supported_formats()
