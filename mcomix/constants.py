@@ -72,6 +72,6 @@ SZIP_FORMATS = (
 
 ARCHIVE_DESCRIPTIONS = {
     ZIP: 'ZIP archive',
-    RAR: 'RAR archive',
     SEVENZIP: '7z archive',
+    RAR: 'RAR archive',
 }

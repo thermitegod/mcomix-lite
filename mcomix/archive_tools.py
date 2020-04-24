@@ -13,8 +13,8 @@ from mcomix.archive import rar, sevenzip, zip
 # Handlers for each archive type.
 _HANDLERS = {
     constants.ZIP: (zip.ZipArchive,),
-    constants.RAR: (rar.RarArchive,),
     constants.SEVENZIP: (sevenzip.SevenZipArchive,),
+    constants.RAR: (rar.RarArchive,),
 }
 
 
@@ -47,8 +47,8 @@ SUPPORTED_ARCHIVE_FORMATS = {}
 def init_supported_formats():
     for name, formats, is_available in (
             ('ZIP', constants.ZIP_FORMATS, True),
-            ('RAR', constants.RAR_FORMATS, rar_available()),
             ('7z', constants.SZIP_FORMATS, szip_available()),
+            ('RAR', constants.RAR_FORMATS, rar_available()),
     ):
         if not is_available:
             continue
@@ -85,10 +85,10 @@ def archive_mime_type(path):
             with open(path, 'rb') as fd:
                 magic = fd.read(10)
 
-            if magic.startswith(b'Rar!\x1a\x07'):
-                return constants.RAR
-            elif magic[0:6] == b'7z\xbc\xaf\x27\x1c':
+            if magic[0:6] == b'7z\xbc\xaf\x27\x1c':
                 return constants.SEVENZIP
+            elif magic.startswith(b'Rar!\x1a\x07'):
+                return constants.RAR
 
             return None
 
