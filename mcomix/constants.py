@@ -32,7 +32,7 @@ SORT_DESCENDING, SORT_ASCENDING = range(2)
 NORMAL_CURSOR, GRAB_CURSOR, WAIT_CURSOR, NO_CURSOR = range(4)
 AUTOROTATE_NEVER, AUTOROTATE_WIDTH_90, AUTOROTATE_WIDTH_270, AUTOROTATE_HEIGHT_90, AUTOROTATE_HEIGHT_270 = range(5)
 ZOOM_MODE_BEST, ZOOM_MODE_WIDTH, ZOOM_MODE_HEIGHT, ZOOM_MODE_MANUAL, ZOOM_MODE_SIZE = range(5)
-ZIP, RAR, PDF, SEVENZIP, LHA = range(5)
+ZIP, RAR, SEVENZIP = range(3)
 
 # These are bit field values, so only use powers of two.
 STATUS_PAGE, STATUS_RESOLUTION, STATUS_PATH, STATUS_FILENAME, STATUS_FILENUMBER, STATUS_FILESIZE = 1, 2, 4, 8, 16, 32
@@ -70,19 +70,8 @@ SZIP_FORMATS = (
     ('.cb7', 'application/x-cb7'),
 )
 
-LHA_FORMATS = (
-    ('.lha', 'application/x-lha'),
-    ('.lzh', 'application/x-lha'),
-)
-
-PDF_FORMATS = (
-    ('.pdf', 'application/pdf'),
-)
-
 ARCHIVE_DESCRIPTIONS = {
     ZIP: 'ZIP archive',
     RAR: 'RAR archive',
-    PDF: 'PDF document',
     SEVENZIP: '7z archive',
-    LHA: 'LHA archive',
 }

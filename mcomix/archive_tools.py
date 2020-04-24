@@ -8,15 +8,13 @@ import zipfile
 from loguru import logger
 
 from mcomix import constants
-from mcomix.archive import pdf, rar, sevenzip, zip
+from mcomix.archive import rar, sevenzip, zip
 
 # Handlers for each archive type.
 _HANDLERS = {
     constants.ZIP: (zip.ZipArchive,),
     constants.RAR: (rar.RarArchive,),
-    constants.LHA: (sevenzip.SevenZipArchive,),
     constants.SEVENZIP: (sevenzip.SevenZipArchive,),
-    constants.PDF: (pdf.PdfArchive,),
 }
 
 
@@ -42,14 +40,6 @@ def rar_available():
     return _is_available(constants.RAR)
 
 
-def lha_available():
-    return _is_available(constants.LHA)
-
-
-def pdf_available():
-    return _is_available(constants.PDF)
-
-
 SUPPORTED_ARCHIVE_EXTS = set()
 SUPPORTED_ARCHIVE_FORMATS = {}
 
@@ -59,8 +49,6 @@ def init_supported_formats():
             ('ZIP', constants.ZIP_FORMATS, True),
             ('RAR', constants.RAR_FORMATS, rar_available()),
             ('7z', constants.SZIP_FORMATS, szip_available()),
-            ('LHA', constants.LHA_FORMATS, lha_available()),
-            ('PDF', constants.PDF_FORMATS, pdf_available()),
     ):
         if not is_available:
             continue
@@ -101,10 +89,6 @@ def archive_mime_type(path):
                 return constants.RAR
             elif magic[0:6] == b'7z\xbc\xaf\x27\x1c':
                 return constants.SEVENZIP
-            elif magic[2:].startswith((b'-lh', b'-lz')):
-                return constants.LHA
-            elif magic[0:4] == b'%PDF':
-                return constants.PDF
 
             return None
 
