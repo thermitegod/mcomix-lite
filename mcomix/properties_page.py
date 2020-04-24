@@ -7,11 +7,11 @@ from gi.repository import Gtk
 from mcomix import image_tools, labels
 
 
-class _Page(Gtk.ScrolledWindow):
+class Page(Gtk.ScrolledWindow):
     """A page to put in the Gtk.Notebook. Contains info about a file, image, or archive.)"""
 
     def __init__(self):
-        super(_Page, self).__init__()
+        super(Page, self).__init__()
         self.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         self.__vbox = Gtk.VBox(homogeneous=False, spacing=12)
         self.add_with_viewport(self.__vbox)

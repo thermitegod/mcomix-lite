@@ -29,8 +29,8 @@ class PropertiesDialog(Gtk.Dialog):
         self.set_border_width(4)
         self.__notebook.set_border_width(6)
 
-        self.__archive_page = properties_page._Page()
-        self.__image_page = properties_page._Page()
+        self.__archive_page = properties_page.Page()
+        self.__image_page = properties_page.Page()
 
         self.__notebook.append_page(self.__archive_page, Gtk.Label(label='Archive'))
         self.__notebook.append_page(self.__image_page, Gtk.Label(label='Image'))
