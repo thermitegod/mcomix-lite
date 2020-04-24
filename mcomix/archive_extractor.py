@@ -152,11 +152,11 @@ class Extractor:
 
     def _extraction_finished(self, name):
         if self.__threadpool.closed:
-            return
+            return True
         with self.__condition:
             self.__files.remove(name)
             self.__extracted.add(name)
-            self.__condition.notifyAll()
+            self.__condition.notify_all()
         self.file_extracted(self, name)
 
     def _extract_all_files(self):
@@ -167,7 +167,8 @@ class Extractor:
 
         logger.debug(f'Extracting from \'{self.__src}\' to \'{self.__dst}\': \'{", ".join(files)}\'')
         for name in self.__archive.iter_extract(files, self.__dst):
-            self._extraction_finished(name)
+            if self._extraction_finished(name):
+                return
 
     def _extract_file(self, name):
         """Extract the file named <name> to the destination directory,
