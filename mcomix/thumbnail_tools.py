@@ -3,13 +3,9 @@
 """thumbnail.py - Thumbnail module for MComix implementing (most of) the
 freedesktop.org "standard" at http://jens.triq.net/thumbnail-spec/"""
 
-import os
-import re
 import threading
 
-from loguru import logger
-
-from mcomix import callback, image_tools, tools
+from mcomix import callback, image_tools
 from mcomix.preferences import prefs
 
 

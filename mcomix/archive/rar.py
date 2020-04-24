@@ -5,9 +5,9 @@ resort to calling rar/unrar manually"""
 
 import ctypes
 import ctypes.util
-import os
 
 from loguru import logger
+from pathlib import Path
 
 from mcomix.archive import archive_base
 
@@ -131,7 +131,8 @@ class RarArchive(archive_base.BaseArchive):
                 self._read_header()
                 if (0x10 & self.__headerdata.Flags) != 0:
                     self.__is_solid = True
-                yield (filename := self.__current_filename)
+                filename = self.__current_filename
+                yield filename
                 # Skip to the next entry if we're still on the same name
                 # (extract may have been called by iter_extract).
                 if filename == self.__current_filename:
@@ -149,13 +150,13 @@ class RarArchive(archive_base.BaseArchive):
         if not self.__handle:
             self._open()
         looped = False
-        destination_path = os.path.join(destination_dir, filename)
+        destination_path = Path() / destination_dir / filename
         while True:
             # Check if the current entry matches the requested file.
             if self.__current_filename is not None:
                 if self.__current_filename == filename:
                     # It's the entry we're looking for, extract it.
-                    dest = ctypes.c_wchar_p(destination_path)
+                    dest = ctypes.c_wchar_p(str(destination_path))
                     self._process(dest)
                     break
                 # Not the right entry, skip it.

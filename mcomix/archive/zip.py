@@ -3,9 +3,9 @@
 """Unicode-aware wrapper for zipfile.ZipFile"""
 
 import collections
-import os
 import threading
 import zipfile
+from pathlib import Path
 
 from loguru import logger
 
@@ -36,7 +36,9 @@ class ZipArchive(archive_base.BaseArchive):
     def extract(self, filename, destination_dir):
         with self.__lock:
             data = self.__zip.read(info := self.__contents_info[filename])
-        with self._create_file(destination_path := os.path.join(destination_dir, filename)) as new:
+
+        destination_path = Path() / destination_dir / filename
+        with self._create_file(destination_path) as new:
             filelen = new.write(data)
 
         if filelen != info.file_size:

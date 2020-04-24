@@ -7,9 +7,8 @@ import gc
 import math
 import operator
 import re
-
-from hashlib import sha256
 from functools import reduce
+from hashlib import sha256
 from os.path import splitext
 
 NUMERIC_REGEXP = re.compile(r'\d+[.]\d+|\d+|\D+')  # Split into float, int, and characters

@@ -2,12 +2,12 @@
 
 """image_tools.py - Various image manipulations"""
 
-import os
 from io import BytesIO
+from pathlib import Path
 
 from PIL import Image, ImageEnhance, ImageOps, ImageSequence
 from PIL.JpegImagePlugin import _getexif
-from gi.repository import GLib, Gdk, GdkPixbuf, Gio, Gtk
+from gi.repository import GLib, Gdk, GdkPixbuf, Gio
 
 from mcomix import anime_tools, constants, reader
 from mcomix.preferences import prefs
@@ -431,9 +431,10 @@ def is_image_file(path, check_mimetype=False):
     # to guess if path is supported, ignoring file extension.
     if not SUPPORTED_IMAGE_FORMATS:
         init_supported_formats()
-    if prefs['check image mimetype'] and check_mimetype and os.path.isfile(path):
-        with open(path, mode='rb') as fd:
+    path = Path(path)
+    if prefs['check image mimetype'] and check_mimetype and Path.is_file(path):
+        with Path.open(path, mode='rb') as fd:
             magic = fd.read(10)
         mime, uncertain = Gio.content_type_guess(data=magic)
         return mime.lower() in SUPPORTED_IMAGE_MIMES
-    return path.lower().endswith(tuple(SUPPORTED_IMAGE_EXTS))
+    return str(path).lower().endswith(tuple(SUPPORTED_IMAGE_EXTS))

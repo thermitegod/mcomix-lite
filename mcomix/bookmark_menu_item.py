@@ -3,6 +3,7 @@
 """bookmark_menu_item.py - A signle bookmark item"""
 
 from datetime import datetime
+
 from gi.repository import Gtk
 
 

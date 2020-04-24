@@ -6,6 +6,7 @@ import os
 import re
 import shlex
 import shutil
+from pathlib import Path
 
 from gi.repository import GLib, GObject, Gtk
 
@@ -82,7 +83,7 @@ class OpenWithCommand:
             text = f'Could not run command {self.get_label()}: {str(e)}'
             window.osd.show(text)
         finally:
-            os.chdir(os.getcwd())
+            os.chdir(Path(Path.cwd()))
 
     def is_executable(self, window):
         """Check if a name is executable. This name can be either
@@ -98,13 +99,16 @@ class OpenWithCommand:
 
     def is_valid_workdir(self, window, allow_empty=False):
         """Check if the working directory is valid"""
-        if not (cwd := self.get_cwd().strip()):
+        cwd = self.get_cwd().strip()
+        if not (cwd):
             return allow_empty
 
-        if len(args := self.parse(window, text=cwd)) > 1:
+        args = self.parse(window, text=cwd)
+        if len(args) > 1:
             return False
 
-        if os.path.isdir(dir := args[0]) and os.access(dir, os.X_OK):
+        dir = args[0]
+        if Path.is_dir(dir) and os.access(dir, os.X_OK):
             return True
 
         return False
@@ -139,18 +143,18 @@ class OpenWithCommand:
                              for tail in ('', 'dir', 'base', 'dirbase'))
             return variables
         variables.update((
-            ('image', os.path.normpath(window.imagehandler.get_path_to_page())),  # %F
+            ('image', Path.resolve(window.imagehandler.get_path_to_page())),  # %F
             ('imagebase', window.imagehandler.get_page_filename()),  # %f
         ))
-        variables['imagedir'] = os.path.dirname(variables['image'])  # %D
-        variables['imagedirbase'] = os.path.basename(variables['imagedir'])  # %d
+        variables['imagedir'] = Path(variables['image']).parent  # %D
+        variables['imagedirbase'] = Path(variables['imagedir']).name  # %d
         if context_type & ARCHIVE_CONTEXT:
             variables.update((
                 ('archive', window.filehandler.get_path_to_base()),  # %A
                 ('archivebase', window.filehandler.get_base_filename()),  # %a
             ))
-            variables['archivedir'] = os.path.dirname(variables['archive'])  # %C
-            variables['archivedirbase'] = os.path.basename(variables['archivedir'])  # %c
+            variables['archivedir'] = Path(variables['archive']).parent  # %C
+            variables['archivedirbase'] = Path(variables['archivedir']).name  # %c
             container = 'archive'  # currently opened archive
         else:
             container = 'imagedir'  # directory containing the currently opened image file
@@ -158,8 +162,8 @@ class OpenWithCommand:
             ('container', variables[container]),  # %B
             ('containerbase', variables[container + 'base']),  # %b
         ))
-        variables['containerdir'] = os.path.dirname(variables['container'])  # %S
-        variables['containerdirbase'] = os.path.basename(variables['containerdir'])  # %s
+        variables['containerdir'] = Path.dirname(variables['container']).parent  # %S
+        variables['containerdirbase'] = Path.basename(variables['containerdir']).name  # %s
         return variables
 
     @staticmethod

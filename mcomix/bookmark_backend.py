@@ -3,8 +3,8 @@
 """bookmark_backend.py - Bookmarks handler"""
 
 import json
-import os
 import time
+from pathlib import Path
 
 from gi.repository import Gtk
 from loguru import logger
@@ -100,8 +100,8 @@ class _BookmarksStore:
         return self.__bookmarks
 
     def get_bookmarks_file_mtime(self):
-        if os.path.isfile(self.__bookmark_path):
-            return os.stat(self.__bookmark_path).st_mtime
+        if Path.is_file(self.__bookmark_path):
+            return Path.stat(self.__bookmark_path).st_mtime
         return 0
 
     def load_bookmarks_file(self):
@@ -109,9 +109,9 @@ class _BookmarksStore:
         @return: Tuple of (bookmarks, file mtime)"""
         bookmarks = []
 
-        if os.path.isfile(self.__bookmark_path):
+        if Path.is_file(self.__bookmark_path):
             try:
-                with open(self.__bookmark_path, mode='rt', encoding='utf8') as fd:
+                with Path.open(self.__bookmark_path, mode='rt', encoding='utf8') as fd:
                     version, packs = json.load(fd)
             except Exception:
                 logger.error(f'Could not parse bookmarks file: \'{self.__bookmark_path}\'')
@@ -124,9 +124,9 @@ class _BookmarksStore:
     def file_was_modified(self):
         """Checks the bookmark store's mtime to see if it has been modified
         since it was last read"""
-        if os.path.isfile(self.__bookmark_path):
+        if Path.is_file(self.__bookmark_path):
             try:
-                if os.stat(self.__bookmark_path).st_mtime > self.__bookmarks_mtime:
+                if Path.stat(self.__bookmark_path).st_mtime > self.__bookmarks_mtime:
                     return True
                 return False
             except IOError:
@@ -146,10 +146,9 @@ class _BookmarksStore:
             new_bookmarks = self.load_bookmarks_file()
             self.__bookmarks = list(set(self.__bookmarks + new_bookmarks))
 
-        with open(self.__bookmark_path, mode='wt', encoding='utf8') as fd:
-            packs = [bookmark.pack() for bookmark in self.__bookmarks]
-            json.dump((constants.VERSION, packs), fd, ensure_ascii=False, indent=2)
-
+        packs = [bookmark.pack() for bookmark in self.__bookmarks]
+        bookmarks = json.dumps((constants.VERSION, packs), ensure_ascii=False, indent=2)
+        Path(self.__bookmark_path).write_text(bookmarks)
         self.__bookmarks_mtime = time.time()
 
     def show_replace_bookmark_dialog(self, new_page):

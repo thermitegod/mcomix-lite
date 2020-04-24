@@ -4,7 +4,7 @@
 switching to the next/previous directory"""
 
 import functools
-import os
+from pathlib import Path
 
 from loguru import logger
 
@@ -22,13 +22,10 @@ def get_file_provider(filelist):
     if "Auto Open last file" is set. Otherwise, no provider is constructed"""
     if len(filelist) > 0:
         if len(filelist) == 1:
-            if os.path.exists(filelist[0]):
+            if Path(filelist[0]).exists:
                 return OrderedFileProvider(filelist[0])
-
             return None
-
         return PreDefinedFileProvider(filelist)
-
     return None
 
 
@@ -41,7 +38,7 @@ class FileProvider:
         pass
 
     def get_directory(self):
-        return os.path.abspath(os.getcwd())
+        return Path.cwd()
 
     def list_files(self, mode=IMAGES):
         return []
@@ -59,10 +56,10 @@ class FileProvider:
             tools.alphanumeric_sort(files)
         elif prefs['sort by'] == constants.SORT_LAST_MODIFIED:
             # Most recently modified file first
-            files.sort(key=lambda filename: os.path.getmtime(filename) * -1)
+            files.sort(key=lambda filename: Path.stat(filename).st_mtime * -1)
         elif prefs['sort by'] == constants.SORT_SIZE:
             # Smallest file first
-            files.sort(key=lambda filename: os.stat(filename).st_size)
+            files.sort(key=lambda filename: Path.stat(filename).st_size)
         # else: don't sort at all: use OS ordering.
 
         # Default is ascending.
@@ -83,15 +80,16 @@ class OrderedFileProvider(FileProvider):
 
     def set_directory(self, file_or_directory):
         """Sets the base directory"""
-        if os.path.isdir(file_or_directory):
-            dir = file_or_directory
-        elif os.path.isfile(file_or_directory):
-            dir = os.path.dirname(file_or_directory)
+        file_or_directory = Path(file_or_directory)
+        if Path.is_dir(file_or_directory):
+            directory = file_or_directory
+        elif Path.is_file(file_or_directory):
+            directory = Path(file_or_directory).parent
         else:
             # Passed file doesn't exist
             raise ValueError(f'Invalid path: "{file_or_directory}"')
 
-        self.__base_dir = os.path.abspath(dir)
+        self.__base_dir = Path.resolve(directory)
 
     def get_directory(self):
         return self.__base_dir
@@ -109,11 +107,11 @@ class OrderedFileProvider(FileProvider):
         fname_map = {}
         try:
             # listdir() return list of bytes only if path is bytes
-            for fn in os.listdir(self.__base_dir):
-                fpath = os.path.join(self.__base_dir, fn)
+            for fn in Path(self.__base_dir).iterdir():
+                fpath = Path(fn)
                 if should_accept(fpath):
                     files.append(fpath)
-                    fname_map[fpath] = os.path.join(self.__base_dir, fn)
+                    fname_map[fpath] = str(fn)
         except OSError:
             logger.warning(f'Permission denied, Could not open: \'{self.__base_dir}\'')
             return []
@@ -146,10 +144,13 @@ class OrderedFileProvider(FileProvider):
     @staticmethod
     def __get_sibling_directories(dir):
         """Returns a list of all sibling directories of <dir>, already sorted"""
-        parent_dir = os.path.dirname(dir)
-        directories = [os.path.join(parent_dir, directory)
-                       for directory in os.listdir(parent_dir)
-                       if os.path.isdir(os.path.join(parent_dir, directory))]
+        parent_dir = Path(dir).dirname
+
+        directories = []
+        for directory in Path(parent_dir).iterdir():
+            sibling_dir = Path() / parent_dir / directory
+            if Path.is_dir(sibling_dir):
+                directories.update(sibling_dir)
 
         return tools.alphanumeric_sort(directories)
 
@@ -167,12 +168,12 @@ class PreDefinedFileProvider(FileProvider):
         self.__files = []
 
         for file in files:
-            if os.path.isdir(file):
+            if Path.is_dir(file):
                 provider = OrderedFileProvider(file)
                 self.__files.extend(provider.list_files())
 
             elif should_accept(file):
-                self.__files.append(os.path.abspath(file))
+                self.__files.append(str(file))
 
     def list_files(self, mode=FileProvider.IMAGES):
         """Returns the files as passed to the constructor"""
@@ -184,7 +185,7 @@ class PreDefinedFileProvider(FileProvider):
         of <files>. Returns either a filter accepting only images, or only archives,
         depending on what type of file is found first in the list"""
         for file in files:
-            if os.path.isfile(file):
+            if Path.is_file(file):
                 if image_tools.is_image_file(file):
                     return image_tools.is_image_file
                 if archive_tools.is_archive_file(file):

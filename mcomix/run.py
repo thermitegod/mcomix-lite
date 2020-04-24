@@ -3,9 +3,9 @@
 # Do not run this script directly, use mcomixstarter.py
 
 import argparse
-import os
 import signal
 import sys
+from pathlib import Path
 
 from loguru import logger
 
@@ -81,11 +81,11 @@ def run():
 
     logger.info(f'Image loaders: Pillow [{PIL.Image.__version__}], GDK [{GdkPixbuf.PIXBUF_VERSION}])')
 
-    if not os.path.exists(constants.DATA_DIR):
-        os.makedirs(constants.DATA_DIR, 0o700)
+    if not Path.exists(constants.DATA_DIR):
+        Path(constants.DATA_DIR).mkdir()
 
-    if not os.path.exists(constants.CONFIG_DIR):
-        os.makedirs(constants.CONFIG_DIR, 0o700)
+    if not Path.exists(constants.CONFIG_DIR):
+        Path(constants.CONFIG_DIR).mkdir()
 
     # Load configuration.
     preferences.PreferenceManager.load_preferences_file()
@@ -99,9 +99,8 @@ def run():
     if isinstance(open_path, list):
         n = 0
         while n < len(open_path):
-            p = os.path.join(os.getcwd(), open_path[n])
-            p = os.path.normpath(p)
-            if not os.path.exists(p):
+            p = Path(Path.cwd(), open_path[n])
+            if not Path.exists(p):
                 logger.error(f'Non existant file: \'{p}\'')
                 open_path.pop(n)
                 continue

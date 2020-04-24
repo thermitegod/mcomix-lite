@@ -3,6 +3,7 @@
 """file_handler.py - File handler that takes care of opening archives and images"""
 
 import os
+from pathlib import Path
 
 from gi.repository import Gtk
 from loguru import logger
@@ -52,7 +53,7 @@ class FileHandler:
     def refresh_file(self, *args, **kwargs):
         """Closes the current file(s)/archive and reloads them"""
         if self.__file_loaded:
-            current_file = os.path.abspath(self.__window.imagehandler.get_real_path())
+            current_file = Path.resolve(Path(self.__window.imagehandler.get_real_path()))
             if self.__archive_type is not None:
                 start_page = self.__window.imagehandler.get_current_page()
             else:
@@ -69,7 +70,7 @@ class FileHandler:
         self._close()
 
         try:
-            path = self._initialize_fileprovider(path, keep_fileprovider)
+            path = Path(self._initialize_fileprovider(path, keep_fileprovider))
         except ValueError as ex:
             self.__window.statusbar.set_message(str(ex))
             self.__window.osd.show(str(ex))
@@ -84,7 +85,7 @@ class FileHandler:
         self.__filelist = self.__file_provider.list_files()
         self.__archive_type = archive_tools.archive_mime_type(path)
         self.__start_page = start_page
-        self.__current_file = os.path.abspath(path)
+        self.__current_file = str(path)
         self.__stop_waiting = False
 
         # Actually open the file(s)/archive passed in path.
@@ -110,7 +111,7 @@ class FileHandler:
         self.file_opened()
 
         if not image_files:
-            msg = f'No images in "{os.path.basename(self.__current_file)}"'
+            msg = f'No images in "{Path(self.__current_file).name}"'
             self.__window.statusbar.set_message(msg)
             self.__window.osd.show(msg)
 
@@ -207,7 +208,7 @@ class FileHandler:
         """Checks for various error that could occur when opening C{path}.
         @param path: Path to file that should be opened.
         @return: An appropriate error string, or C{None} if no error was found."""
-        if not os.path.exists(path):
+        if not Path.exists(path):
             return f'Could not open {path}: No such file.'
         elif not os.access(path, os.R_OK):
             return f'Could not open {path}: Permission denied.'
@@ -236,12 +237,11 @@ class FileHandler:
         archive_images = [image for image in files
                           if image_tools.is_image_file(image)
                           # Remove MacOS meta files from image list
-                          and '__MACOSX' not in os.path.normpath(image).split(os.sep)]
+                          and '__MACOSX' not in image.split('/')]
 
         self._sort_archive_images(archive_images)
-        image_files = [os.path.join(self.__tmp_dir, f)
-                       for f in archive_images]
 
+        image_files = archive_images
         self.__name_table = dict(zip(image_files, archive_images))
         self.__extractor.set_files(archive_images)
         self._archive_opened(image_files)
@@ -306,7 +306,9 @@ class FileHandler:
         if self.__archive_type is None:
             # No file numbers for images.
             return 0, 0
-        if self.__current_file in (file_list := self._get_file_list()):
+
+        file_list = self._get_file_list()
+        if self.__current_file in file_list:
             current_index = file_list.index(self.__current_file)
         else:
             current_index = 0
@@ -318,13 +320,13 @@ class FileHandler:
             return self.__base_path
 
         if filename := self.__window.imagehandler.get_current_path():
-            return os.path.dirname(filename)
+            return Path(filename).parent
 
         return None
 
     def get_base_filename(self):
         """Return the filename of the current base (archive filename or directory name)"""
-        return os.path.basename(self.get_path_to_base())
+        return Path(self.get_path_to_base()).name
 
     def get_current_filename(self):
         """Return a string with the name of the currently viewed file that is suitable for printing"""
@@ -335,11 +337,11 @@ class FileHandler:
         archive in that archive's directory listing, sorted alphabetically.
         Returns True if a new archive was opened, False otherwise"""
         if self.__archive_type is not None:
-            if (absolute_path := os.path.abspath(self.__base_path)) \
-                    not in (files := self._get_file_list()):
+            files = self._get_file_list()
+            if self.__base_path not in files:
                 return
 
-            current_index = files.index(absolute_path)
+            current_index = files.index(self.__base_path)
             for path in files[current_index + 1:]:
                 if archive_tools.archive_mime_type(path) is not None:
                     self._close()
@@ -353,11 +355,11 @@ class FileHandler:
         archive in that archive's directory listing, sorted alphabetically.
         Returns True if a new archive was opened, False otherwise"""
         if self.__archive_type is not None:
-            if (absolute_path := os.path.abspath(self.__base_path)) \
-                    not in (files := self._get_file_list()):
+            files = self._get_file_list()
+            if self.__base_path not in files:
                 return
 
-            current_index = files.index(absolute_path)
+            current_index = files.index(self.__base_path)
             for path in reversed(files[:current_index]):
                 if archive_tools.archive_mime_type(path) is not None:
                     self._close()
@@ -428,8 +430,7 @@ class FileHandler:
         the files were extracted to"""
         if not self.__file_loaded:
             return
-        filepath = os.path.join(extractor.get_directory(), name)
-        self.file_available([filepath])
+        self.file_available([name])
 
     def wait_on_file(self, path):
         """Block the running (main) thread if the file <path> is from an

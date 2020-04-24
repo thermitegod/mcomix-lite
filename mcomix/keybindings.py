@@ -27,6 +27,7 @@ from collections import defaultdict
 
 from gi.repository import Gtk
 from loguru import logger
+from pathlib import Path
 
 from mcomix import constants, keybindings_map, tools
 
@@ -171,13 +172,12 @@ class _KeybindingManager:
 
         logger.info('Writing changes to keybindings')
 
-        with open(self.__keybindings_path, mode='wt', encoding='utf8') as fd:
-            print(json_prefs, file=fd)
+        Path(self.__keybindings_path).write_text(json_prefs)
 
     def load_keybindings_file(self):
         """Load keybindings from disk"""
         try:
-            with open(self.__keybindings_path, mode='rt', encoding='utf8') as fd:
+            with Path.open(self.__keybindings_path, mode='rt', encoding='utf8') as fd:
                 stored_action_bindings = json.load(fd)
         except Exception:
             stored_action_bindings = keybindings_map.DEFAULT_BINDINGS.copy()

@@ -2,8 +2,8 @@
 
 """7z archive extractor"""
 
-import os
 import tempfile
+from pathlib import Path
 
 from mcomix import process
 from mcomix.archive import archive_base
@@ -86,7 +86,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
                            stderr=process.STDOUT,
                            universal_newlines=True) as proc:
             for line in proc.stdout:
-                filename = self._parse_list_output_line(line.rstrip(os.linesep))
+                filename = self._parse_list_output_line(line.rstrip('\n'))
                 if filename is not None:
                     yield filename
 
@@ -102,9 +102,9 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
         if not self.__filenames_initialized:
             self.list_contents()
 
-        destination_path = os.path.join(destination_dir, filename)
+        destination_path = Path() / destination_dir / filename
         with tempfile.NamedTemporaryFile(mode='wt', prefix='mcomix.7z.') as tmplistfile:
-            tmplistfile.write(filename + os.linesep)
+            tmplistfile.write('filename\n')
             tmplistfile.flush()
             with self._create_file(destination_path) as output:
                 process.call(self._get_extract_arguments(list_file=tmplistfile.name), stdout=output)
@@ -127,7 +127,9 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
                 unicode_name = wanted.get(filename, None)
                 if unicode_name is None:
                     continue
-                with self._create_file(os.path.join(destination_dir, unicode_name)) as new:
+
+                destination_path = Path() / destination_dir / unicode_name
+                with self._create_file(destination_path) as new:
                     new.write(data)
                 yield unicode_name
                 del wanted[filename]

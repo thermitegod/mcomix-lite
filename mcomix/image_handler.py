@@ -2,7 +2,7 @@
 
 """image_handler.py - Image handler that takes care of cacheing and giving out images"""
 
-import os
+from pathlib import Path
 
 from loguru import logger
 
@@ -257,7 +257,7 @@ class ImageHandler:
             path = self.get_path_to_page(fname)
             if path is None:
                 return ''
-            return os.path.basename(path)
+            return Path(path).name
 
         if page is None:
             page = self.get_current_page()
@@ -283,12 +283,12 @@ class ImageHandler:
             return '-1'
 
         def get_fsize(fsize):
-            path = self.get_path_to_page(fsize)
+            path = Path(self.get_path_to_page(fsize))
             try:
                 if path is None:
                     fsize = 0
                 else:
-                    fsize = os.stat(path).st_size
+                    fsize = Path.stat(path).st_size
             except OSError:
                 fsize = 0
             return tools.format_byte_size(fsize)
@@ -309,9 +309,9 @@ class ImageHandler:
     def get_current_filename(self):
         """Return a string with the name of the currently viewed file that is suitable for printing"""
         if self.__window.filehandler.get_archive_type() is not None:
-            return os.path.basename(self.__base_path)
+            return Path(self.__base_path).name
 
-        return os.path.abspath(self.get_current_path())
+        return self.get_current_path()
 
     def get_size(self, page=None):
         """Return a tuple (width, height) with the size of <page>. If <page>

@@ -2,10 +2,9 @@
 
 """archive_extractor.py - Archive extraction class"""
 
-import os
-import shutil
 import threading
 import traceback
+from pathlib import Path
 
 from loguru import logger
 
@@ -46,9 +45,9 @@ class Extractor:
         self.__src = src
         self.__files = []
         self.__extracted = set()
-        self.__archive = archive_tools.get_recursive_archive_handler(src, type=type, prefix='mcomix.')
+        self.__archive = archive_tools.get_recursive_archive_handler(src, type=type)
         if self.__archive is None:
-            logger.warning(msg := f'Non-supported archive format: \'{os.path.basename(src)}\'')
+            logger.warning(msg := f'Non-supported archive format: \'{Path(src).name}\'')
             raise ArchiveException(msg)
 
         self.__dst = self.__archive.get_destdir()
@@ -124,7 +123,8 @@ class Extractor:
                      and not self.__archive.is_solid()
                 if mt:
                     self.__threadpool.ucbmap(
-                            self._extract_file, self.__files,
+                            self._extract_file,
+                            self.__files,
                             callback=self._extraction_finished,
                             error_callback=self._extract_files_errcb)
                 else:

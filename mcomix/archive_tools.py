@@ -4,6 +4,7 @@
 
 import os
 import zipfile
+from pathlib import Path
 
 from loguru import logger
 
@@ -69,20 +70,21 @@ def get_supported_formats():
 def is_archive_file(path):
     if not SUPPORTED_ARCHIVE_FORMATS:
         init_supported_formats()
-    return path.lower().endswith(tuple(SUPPORTED_ARCHIVE_EXTS))
+    return str(path).lower().endswith(tuple(SUPPORTED_ARCHIVE_EXTS))
 
 
 def archive_mime_type(path):
     """Return the archive type of <path> or None for non-archives"""
     try:
-        if os.path.isfile(path):
+        path = Path(path)
+        if Path.is_file(path):
             if not os.access(path, os.R_OK):
                 return None
 
             if zipfile.is_zipfile(path):
                 return constants.ZIP
 
-            with open(path, 'rb') as fd:
+            with Path.open(path, 'rb') as fd:
                 magic = fd.read(10)
 
             if magic[0:6] == b'7z\xbc\xaf\x27\x1c':

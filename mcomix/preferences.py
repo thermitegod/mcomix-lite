@@ -3,8 +3,7 @@
 # must not depend on GTK, PIL, or any other optional libraries.
 
 import json
-import os
-import sys
+from pathlib import Path
 
 from loguru import logger
 
@@ -102,12 +101,13 @@ class _PreferenceManager:
 
     def load_preferences_file(self):
         saved_prefs = {}
-        if os.path.isfile(self.__preference_path):
+        if Path.is_file(self.__preference_path):
             try:
-                with open(self.__preference_path, mode='rt', encoding='utf8') as fd:
+                with Path.open(self.__preference_path, mode='rt', encoding='utf8') as fd:
                     saved_prefs.update(json.load(fd))
             except Exception:
                 logger.error('Preferences file is corrupt')
+                import sys
                 sys.exit(1)
 
         prefs.update(filter(lambda i: i[0] in prefs, saved_prefs.items()))
@@ -125,8 +125,7 @@ class _PreferenceManager:
 
         logger.info('Writing changes to preferences')
 
-        with open(self.__preference_path, mode='wt', encoding='utf8') as fd:
-            print(json_prefs, file=fd)
+        Path(self.__preference_path).write_text(json_prefs)
 
 
 # Singleton instance

@@ -2,10 +2,9 @@
 
 """properties_dialog.py - Properties dialog that displays information about the archive/file"""
 
-import os
-import pwd
 import stat
 import time
+from pathlib import Path
 
 from gi.repository import Gtk
 
@@ -90,7 +89,7 @@ class PropertiesDialog(Gtk.Dialog):
             return
         self._update_page_image(page)
         path = window.imagehandler.get_path_to_page()
-        page.set_filename(os.path.basename(path))
+        page.set_filename(Path(path).name)
         width, height = window.imagehandler.get_size()
         main_info = (f'{width}x{height} px', window.imagehandler.get_mime_name(),)
         page.set_main_info(main_info)
@@ -106,11 +105,12 @@ class PropertiesDialog(Gtk.Dialog):
 
     @staticmethod
     def _update_page_secondary_info(page, path):
-        stats = os.stat(path)
-        uid = pwd.getpwuid(stats.st_uid).pw_name
-        gid = pwd.getpwnam(uid).pw_gid
+        path = Path(path)
+        stats = Path.stat(path)
+        uid = Path.owner(path)
+        gid = Path.group(path)
         secondary_info = [
-            ('Location', os.path.dirname(path)),
+            ('Location', Path.resolve(path)),
             ('Size', tools.format_byte_size(stats.st_size)),
             ('Modified', time.strftime('%Y-%m-%d, %H:%M:%S', time.localtime(stats.st_mtime))),
             ('Accessed', time.strftime('%Y-%m-%d, %H:%M:%S', time.localtime(stats.st_atime))),

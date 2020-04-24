@@ -6,6 +6,8 @@
 
 import os
 
+from pathlib import Path
+
 APPNAME = 'MComix-Lite'
 VERSION = '3.0.0-dev'
 
@@ -14,16 +16,16 @@ REQUIRED_PIL_VERSION = '6.0.0'
 CPU_COUNT = os.cpu_count()
 
 try:
-    CONFIG_DIR = os.path.join(os.environ['XDG_CONFIG_HOME'], 'mcomix')
-    DATA_DIR = os.path.join(os.environ['XDG_DATA_HOME'], 'mcomix')
+    CONFIG_DIR = Path() / os.environ['XDG_CONFIG_HOME'] / 'mcomix'
+    DATA_DIR = Path() / os.environ['XDG_DATA_HOME'] / 'mcomix'
 except KeyError:
-    HOME_DIR = os.environ['HOME']
-    CONFIG_DIR = os.path.join(HOME_DIR, '.config/mcomix')
-    DATA_DIR = os.path.join(HOME_DIR, '.local/share/mcomix')
+    HOME_DIR = Path.home()
+    CONFIG_DIR = Path() / HOME_DIR / '.config/mcomix'
+    DATA_DIR = Path() / HOME_DIR / '.local/share/mcomix'
 
-PREFERENCE_PATH = os.path.join(CONFIG_DIR, 'preferences.conf')
-KEYBINDINGS_PATH = os.path.join(CONFIG_DIR, 'keybindings.conf')
-BOOKMARK_PATH = os.path.join(DATA_DIR, 'bookmarks.json')
+PREFERENCE_PATH = Path() / CONFIG_DIR / 'preferences.conf'
+KEYBINDINGS_PATH = Path() / CONFIG_DIR / 'keybindings.conf'
+BOOKMARK_PATH = Path() / DATA_DIR / 'bookmarks.json'
 
 DISTRIBUTION_AXIS, ALIGNMENT_AXIS = WIDTH_AXIS, HEIGHT_AXIS = range(2)
 SHOW_DOUBLE_NEVER, SHOW_DOUBLE_AS_ONE_TITLE, SHOW_DOUBLE_AS_ONE_WIDE = range(3)

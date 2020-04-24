@@ -2,8 +2,8 @@
 
 """Class for transparently handling an archive containing sub-archives"""
 
-import os
 import tempfile
+from pathlib import Path
 
 from loguru import logger
 
@@ -13,15 +13,15 @@ from mcomix.preferences import prefs
 
 
 class RecursiveArchive(archive_base.BaseArchive):
-    def __init__(self, archive, prefix='mcomix.'):
+    def __init__(self, archive):
         super(RecursiveArchive, self).__init__(archive.archive)
         self.__main_archive = archive
 
-        __cache_path_top = f'{prefs["temporary directory"]}/mcomix'
-        if not os.path.exists(__cache_path_top):
-            os.makedirs(__cache_path_top)
+        cache_path = Path() / prefs['temporary directory'] / 'mcomix'
+        if not Path(cache_path).exists:
+            Path(cache_path).mkdir(parents=True, exist_ok=True)
 
-        self.__tempdir = tempfile.TemporaryDirectory(prefix=prefix, dir=__cache_path_top)
+        self.__tempdir = tempfile.TemporaryDirectory(dir=cache_path)
         self.__sub_tempdirs = []
         self.__destdir = self.__tempdir.name
         self.__archive_list = []
@@ -39,7 +39,7 @@ class RecursiveArchive(archive_base.BaseArchive):
 
     def _iter_contents(self, archive, root=None):
         if not root:
-            root = os.path.join(self.__destdir, 'main_archive')
+            root = Path() / self.__destdir / 'main_archive'
         self.__archive_list.append(archive)
         self.__archive_root[archive] = root
         sub_archive_list = []
@@ -52,19 +52,19 @@ class RecursiveArchive(archive_base.BaseArchive):
                 continue
             name = f
             if root is not None:
-                name = os.path.join(root, name)
-            self.__entry_mapping[name] = (archive, f)
-            yield name
+                name = Path() / root / name
+            self.__entry_mapping[str(name)] = (archive, f)
+            yield str(name)
         for f in sub_archive_list:
             # Extract sub-archive.
             destination_dir = self.__destdir
             if root is not None:
-                destination_dir = os.path.join(destination_dir, root)
+                destination_dir = Path() / destination_dir / root
             sub_archive_path = archive.extract(f, destination_dir)
             # And open it and list its contents.
             sub_archive = archive_tools.get_archive_handler(sub_archive_path)
             if sub_archive is None:
-                logger.warning(f'Non-supported archive format: {os.path.basename(sub_archive_path)}')
+                logger.warning(f'Non-supported archive format: {Path(sub_archive_path).name}')
                 continue
             sub_tempdir = tempfile.TemporaryDirectory(
                     prefix=f'sub_archive.{len(self.__archive_list):04}.',
@@ -109,7 +109,7 @@ class RecursiveArchive(archive_base.BaseArchive):
         if destination_dir is None:
             destination_dir = self.__destdir
         if root is not None:
-            destination_dir = os.path.join(destination_dir, root)
+            destination_dir = Path() / destination_dir / root
         logger.debug(f'extracting from {archive.archive} to {destination_dir}: {filename}')
         return archive.extract(name, destination_dir)
 
@@ -129,12 +129,13 @@ class RecursiveArchive(archive_base.BaseArchive):
             if len(archive_wanted) == 0:
                 continue
             root = self.__archive_root[archive]
-            archive_destination_dir = destination_dir
-            if root is not None:
-                archive_destination_dir = os.path.join(destination_dir, root)
+            if root is None:
+                archive_destination_dir = destination_dir
+            else:
+                archive_destination_dir = root
             logger.debug('extracting from '
                          f'{archive.archive} to {archive_destination_dir}: {" ".join(archive_wanted.keys())}')
-            for f in archive.iter_extract(archive_wanted.keys(), archive_destination_dir):
+            for f in archive.iter_extract(archive_wanted.keys(), Path(archive_destination_dir)):
                 yield archive_wanted[f]
             wanted -= set(archive_wanted.values())
             if len(wanted) == 0:

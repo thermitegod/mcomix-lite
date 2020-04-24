@@ -1,7 +1,7 @@
 """main.py - Main window"""
 
-import os
 import shutil
+from pathlib import Path
 
 from gi.repository import GLib, Gdk, Gtk
 from send2trash import send2trash
@@ -791,9 +791,9 @@ class MainWindow(Gtk.Window):
         if self.filehandler.get_archive_type() is not None:
             archive_name = self.filehandler.get_current_filename()
             file_name = self.imagehandler.get_path_to_page()
-            suggested_name = f'{os.path.splitext(archive_name)[0]}_{os.path.split(file_name)[-1]}'
+            suggested_name = f'{Path(archive_name).stem}_{file_name}'
         else:
-            suggested_name = os.path.split(self.imagehandler.get_path_to_page())[-1]
+            suggested_name = self.imagehandler.get_path_to_page()
 
         save_dialog = Gtk.FileChooserDialog(title='Save page as', action=Gtk.FileChooserAction.SAVE)
         save_dialog.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT, Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT)
@@ -817,18 +817,18 @@ class MainWindow(Gtk.Window):
 
         def file_action():
             if action == 'move_file':
-                os.rename(current_file, target_file)
+                Path.rename(current_file, target_file)
             elif action == 'delete':
                 send2trash(current_file)
 
         if action == 'move_file':
-            target_dir = os.path.join(os.path.dirname(current_file), prefs['move file'])
-            target_file = os.path.join(target_dir, os.path.basename(current_file))
-            if not os.path.exists(target_dir):
-                try:
-                    os.makedirs(target_dir)
-                except OSError:
-                    return None
+            current_file = Path(current_file)
+            target_dir = Path() / current_file.parent / prefs['move file']
+            target_file = Path() / target_dir / current_file.name
+
+            if not Path.exists(target_dir):
+                Path(target_dir).mkdir()
+
         elif action == 'delete':
             dialog = message_dialog.MessageDialog(
                     parent=self,
@@ -842,7 +842,7 @@ class MainWindow(Gtk.Window):
             dialog.set_should_remember_choice(
                     'delete-opend-file',
                     (Gtk.ResponseType.OK,))
-            dialog.set_text(f'Trash Selected File: "{os.path.basename(current_file)}"?')
+            dialog.set_text(f'Trash Selected File: "{Path(current_file).name}"?')
             result = dialog.run()
             if result != Gtk.ResponseType.OK:
                 return None
@@ -854,7 +854,7 @@ class MainWindow(Gtk.Window):
             if not next_opened:
                 self.filehandler.close_file()
 
-            if os.path.isfile(current_file):
+            if Path.is_file(current_file):
                 file_action()
         else:
             if self.imagehandler.get_number_of_pages() > 1:
@@ -864,14 +864,14 @@ class MainWindow(Gtk.Window):
                 else:
                     self.flip_page(+1)
                 # Move the desired file
-                if os.path.isfile(current_file):
+                if Path.is_file(current_file):
                     file_action()
 
                 # Refresh the directory
                 self.filehandler.refresh_file()
             else:
                 self.filehandler.close_file()
-                if os.path.isfile(current_file):
+                if Path.is_file(current_file):
                     file_action()
 
     def show_info_panel(self):

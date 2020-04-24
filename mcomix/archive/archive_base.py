@@ -3,8 +3,7 @@
 """Base class for unified handling of various archive formats. Used for simplifying
 extraction and adding new archive formats"""
 
-import errno
-import os
+from pathlib import Path
 
 from mcomix import process
 
@@ -39,7 +38,7 @@ class BaseArchive:
         This filename must be obtained by calling list_contents().
         The file is saved to <destination_dir>."""
         assert isinstance(filename, str) and isinstance(destination_dir, str)
-        return os.path.join(destination_dir, filename)
+        return Path() / destination_dir / filename
 
     def iter_extract(self, entries, destination_dir):
         """Generator to extract <entries> from archive to <destination_dir>"""
@@ -65,21 +64,17 @@ class BaseArchive:
     @staticmethod
     def _create_directory(directory):
         """Recursively create a directory if it doesn't exist yet"""
-        if os.path.exists(directory):
+        if Path.exists(Path(directory)):
             return
-        try:
-            os.makedirs(directory)
-        except OSError as e:
-            # Can happen with concurrent calls.
-            if e.errno != errno.EEXIST:
-                raise e
+
+        Path(directory).mkdir(parents=True, exist_ok=True)
 
     def _create_file(self, dst_path):
         """ Open <dst_path> for writing, making sure base directory exists. """
-        dst_dir = os.path.dirname(dst_path)
+        dst_dir = Path(dst_path).parent
         # Create directory if it doesn't exist
         self._create_directory(dst_dir)
-        return open(dst_path, 'wb')
+        return Path.open(dst_path, 'wb')
 
 
 class ExternalExecutableArchive(BaseArchive):
@@ -124,7 +119,7 @@ class ExternalExecutableArchive(BaseArchive):
                            self._get_list_arguments() +
                            [self.archive]) as proc:
             for line in proc.stdout:
-                filename = self._parse_list_output_line(line.rstrip(os.linesep))
+                filename = self._parse_list_output_line(line.rstrip('\n'))
                 if filename is not None:
                     yield filename
 
@@ -140,7 +135,7 @@ class ExternalExecutableArchive(BaseArchive):
         if not self.__filenames_initialized:
             self.list_contents()
 
-        destination_path = os.path.join(destination_dir, filename)
+        destination_path = Path() / destination_dir / filename
 
         with self._create_file(destination_path) as output:
             process.call([self._get_executable()] +
