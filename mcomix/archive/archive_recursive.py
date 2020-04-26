@@ -18,7 +18,7 @@ class RecursiveArchive(archive_base.BaseArchive):
         self.__main_archive = archive
 
         cache_path = Path() / prefs['temporary directory'] / 'mcomix'
-        if not Path(cache_path).exists:
+        if not Path.exists(cache_path):
             Path(cache_path).mkdir(parents=True, exist_ok=True)
 
         self.__tempdir = tempfile.TemporaryDirectory(dir=cache_path)
