@@ -19,9 +19,8 @@ try:
     CONFIG_DIR = Path() / os.environ['XDG_CONFIG_HOME'] / 'mcomix'
     DATA_DIR = Path() / os.environ['XDG_DATA_HOME'] / 'mcomix'
 except KeyError:
-    HOME_DIR = Path.home()
-    CONFIG_DIR = Path() / HOME_DIR / '.config/mcomix'
-    DATA_DIR = Path() / HOME_DIR / '.local/share/mcomix'
+    CONFIG_DIR = Path.home() / '.config/mcomix'
+    DATA_DIR = Path.home() / '.local/share/mcomix'
 
 PREFERENCE_PATH = Path() / CONFIG_DIR / 'preferences.conf'
 KEYBINDINGS_PATH = Path() / CONFIG_DIR / 'keybindings.conf'
