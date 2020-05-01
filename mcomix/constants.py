@@ -13,7 +13,7 @@ VERSION = '3.0.0-dev'
 
 REQUIRED_PIL_VERSION = '6.0.0'
 
-CPU_COUNT = os.cpu_count()
+MAX_THREADS = 128
 
 try:
     CONFIG_DIR = Path() / os.environ['XDG_CONFIG_HOME'] / 'mcomix'

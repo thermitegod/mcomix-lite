@@ -96,7 +96,7 @@ class _PreferencesDialog(Gtk.Dialog):
         page.add_row(Gtk.Label(label='Maximum number of thumbnail threads (0 will use all cores):'),
                      self._create_pref_spinner(
                              'max thumbnail threads',
-                             1, 0, constants.CPU_COUNT, 1, 4, 0))
+                             1, 0, constants.MAX_THREADS, 1, 4, 0))
 
         page.new_section('Transparency')
 
@@ -358,7 +358,7 @@ class _PreferencesDialog(Gtk.Dialog):
         page.add_row(Gtk.Label(label='Maximum number of concurrent extraction threads:'),
                      self._create_pref_spinner(
                              'max extract threads',
-                             1, 1, 16, 1, 4, 0))
+                             1, 1, constants.MAX_THREADS, 1, 4, 0))
 
         page.add_row(Gtk.Label(label='Temporary directory (restart required)'),
                      self._create_pref_path_chooser('temporary directory', folder=True, default='/tmp'))
