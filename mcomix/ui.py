@@ -4,7 +4,7 @@
 
 from gi.repository import Gtk
 
-from mcomix import bookmark_menu, constants, dialog_handler, enhance_dialog, openwith_menu, preferences_dialog
+from mcomix import bookmark_menu, constants, dialog_handler, enhance_dialog, preferences_dialog
 from mcomix.preferences import prefs
 
 
@@ -244,9 +244,5 @@ class MainUI(Gtk.UIManager):
         self.__bookmarks = bookmark_menu.BookmarksMenu(self, window)
         self.get_widget('/Menu/menu_bookmarks').set_submenu(self.__bookmarks)
         self.get_widget('/Menu/menu_bookmarks').show()
-
-        self.__openwith = openwith_menu.OpenWithMenu(self, window)
-        self.get_widget('/Menu/menu_file/menu_open_with').set_submenu(self.__openwith)
-        self.get_widget('/Menu/menu_file/menu_open_with').show()
 
         window.add_accel_group(self.get_accel_group())

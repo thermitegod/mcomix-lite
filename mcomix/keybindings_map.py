@@ -97,12 +97,6 @@ BINDING_INFO = {
     'enhance_image': {'title': 'Enhance image', 'group': 'File'},
 }
 
-# Generate 9 entries for executing command 1 to 9
-for i in range(1, 10):
-    BINDING_INFO[f'execute_command_{i}'] = {
-        'title': f'Execute external command ({i})',
-        'group': 'External commands'}
-
 DEFAULT_BINDINGS = {
     # Navigation between pages, archives, directories
     'previous_page': ['Page_Up', 'KP_Page_Up', 'BackSpace'],
@@ -203,7 +197,3 @@ DEFAULT_BINDINGS = {
     'open': ['<Control>O'],
     'enhance_image': ['e'],
 }
-
-# Execute external command. Bind keys from 1 to 9 to commands 1 to 9.
-for i in range(1, 10):
-    DEFAULT_BINDINGS[f'execute_command_{i}'] = [str(i)]

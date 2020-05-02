@@ -84,8 +84,6 @@ prefs = {
     'window width': 640,
     'bookmark width': 1300,
     'bookmark height': 650,
-    'openwith width': 600,
-    'openwith height': 400,
     'properties width': 870,
     'properties height': 560,
     'properties thumb size': 256,

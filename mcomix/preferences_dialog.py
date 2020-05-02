@@ -248,18 +248,6 @@ class _PreferencesDialog(Gtk.Dialog):
                              'bookmark height',
                              1, 320, 10000, 10, 10, 0))
 
-        page.new_section('Openwith')
-
-        page.add_row(Gtk.Label(label='Openwith dialog size (width):'),
-                     self._create_pref_spinner(
-                             'openwith width',
-                             1, 480, 10000, 10, 10, 0))
-
-        page.add_row(Gtk.Label(label='Openwith dialog size (height):'),
-                     self._create_pref_spinner(
-                             'openwith height',
-                             1, 320, 10000, 10, 10, 0))
-
         page.new_section('Properties')
 
         page.add_row(Gtk.Label(label='Properties dialog size (width):'),

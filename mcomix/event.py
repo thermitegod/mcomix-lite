@@ -6,7 +6,7 @@ from urllib.request import url2pathname
 
 from gi.repository import Gdk, Gtk
 
-from mcomix import constants, keybindings, openwith
+from mcomix import constants, keybindings
 from mcomix.preferences import prefs
 
 
@@ -260,10 +260,6 @@ class EventHandler:
         manager.register('hide_all',
                          self.__window.actiongroup.get_action('hide_all').activate)
 
-        # Execute external command. Bind keys from 1 to 9 to commands 1 to 9.
-        for i in range(1, 10):
-            manager.register(f'execute_command_{i}', self._execute_command, args=[i - 1])
-
     def key_press_event(self, widget, event, *args):
         """Handle key press events on the main window"""
         # Dispatch keyboard input handling
@@ -442,11 +438,3 @@ class EventHandler:
         number of pages in manga mode and goes back the same number of pages in
         normal mode. The opposite happens for number_of_pages being negative"""
         self._flip_page(-number_of_pages if self.__window.is_manga_mode else number_of_pages)
-
-    def _execute_command(self, cmdindex):
-        """Execute an external command. cmdindex should be an integer from 0 to 9,
-        representing the command that should be executed"""
-        manager = openwith.OpenWithManager()
-        commands = [cmd for cmd in manager.get_commands() if not cmd.is_separator()]
-        if len(commands) > cmdindex:
-            commands[cmdindex].execute(self.__window)
