@@ -58,12 +58,10 @@ class EventHandler:
                          self._left_right_page_progress, kwargs={'number_of_pages': -1})
         manager.register('next_page_dynamic',
                          self._left_right_page_progress, kwargs={'number_of_pages': 1})
-
         manager.register('previous_page_ff',
                          self._flip_page, kwargs={'number_of_pages': -10})
         manager.register('next_page_ff',
                          self._flip_page, kwargs={'number_of_pages': 10})
-
         manager.register('first_page',
                          self.__window.first_page)
         manager.register('last_page',
@@ -78,146 +76,106 @@ class EventHandler:
         # View modes
         manager.register('double_page',
                          self.__window.actiongroup.get_action('double_page').activate)
-
         manager.register('best_fit_mode',
                          self.__window.actiongroup.get_action('best_fit_mode').activate)
-
         manager.register('fit_width_mode',
                          self.__window.actiongroup.get_action('fit_width_mode').activate)
-
         manager.register('fit_height_mode',
                          self.__window.actiongroup.get_action('fit_height_mode').activate)
-
         manager.register('fit_size_mode',
                          self.__window.actiongroup.get_action('fit_size_mode').activate)
-
         manager.register('fit_manual_mode',
                          self.__window.actiongroup.get_action('fit_manual_mode').activate)
-
         manager.register('manga_mode',
                          self.__window.actiongroup.get_action('manga_mode').activate)
-
         manager.register('keep_transformation',
                          self.__window.actiongroup.get_action('keep_transformation').activate)
-
         manager.register('lens',
                          self.__window.actiongroup.get_action('lens').activate)
-
         manager.register('stretch',
                          self.__window.actiongroup.get_action('stretch').activate)
 
         # Zooming commands for manual zoom mode
         manager.register('zoom_in',
                          self.__window.actiongroup.get_action('zoom_in').activate)
-
         manager.register('zoom_out',
                          self.__window.actiongroup.get_action('zoom_out').activate)
 
         # Zoom out is already defined as GTK menu hotkey
         manager.register('zoom_original',
                          self.__window.actiongroup.get_action('zoom_original').activate)
-
         manager.register('rotate_90',
                          self.__window.rotate_90)
-
         manager.register('rotate_270',
                          self.__window.rotate_270)
-
         manager.register('rotate_180',
                          self.__window.rotate_180)
-
         manager.register('flip_horiz',
                          self.__window.flip_horizontally)
-
         manager.register('flip_vert',
                          self.__window.flip_vertically)
-
         manager.register('no_autorotation',
                          self.__window.actiongroup.get_action('no_autorotation').activate)
-
         manager.register('rotate_90_width',
                          self.__window.actiongroup.get_action('rotate_90_width').activate)
         manager.register('rotate_270_width',
                          self.__window.actiongroup.get_action('rotate_270_width').activate)
-
         manager.register('rotate_90_height',
                          self.__window.actiongroup.get_action('rotate_90_height').activate)
-
         manager.register('rotate_270_height',
                          self.__window.actiongroup.get_action('rotate_270_height').activate)
 
         # Arrow keys scroll the image
         manager.register('scroll_down',
                          self._scroll_down)
-
         manager.register('scroll_up',
                          self._scroll_up)
-
         manager.register('scroll_right',
                          self._scroll_right)
-
         manager.register('scroll_left',
                          self._scroll_left)
 
         # File operations
         manager.register('close',
                          self.__window.filehandler.close_file)
-
         manager.register('quit',
                          self.__window.terminate_program)
-
         manager.register('delete',
                          self.__window.move_file, kwargs={'action': 'delete'})
-
         manager.register('move_file',
                          self.__window.move_file, kwargs={'action': 'move_file'})
-
         manager.register('extract_page',
                          self.__window.extract_page)
-
         manager.register('refresh_archive',
                          self.__window.filehandler.refresh_file)
-
         manager.register('next_archive',
                          self.__window.filehandler.open_next_archive)
-
         manager.register('previous_archive',
                          self.__window.filehandler.open_previous_archive)
-
         manager.register('next_directory',
                          self.__window.filehandler.open_next_directory)
-
         manager.register('previous_directory',
                          self.__window.filehandler.open_previous_directory)
-
         manager.register('properties',
                          self.__window.actiongroup.get_action('properties').activate)
-
         manager.register('preferences',
                          self.__window.actiongroup.get_action('preferences').activate)
-
         manager.register('enhance_image',
                          self.__window.actiongroup.get_action('enhance_image').activate)
 
         # User interface
         manager.register('minimize',
                          self.__window.minimize)
-
         manager.register('fullscreen',
                          self.__window.actiongroup.get_action('fullscreen').activate)
-
         manager.register('menubar',
                          self.__window.actiongroup.get_action('menubar').activate)
-
         manager.register('statusbar',
                          self.__window.actiongroup.get_action('statusbar').activate)
-
         manager.register('scrollbar',
                          self.__window.actiongroup.get_action('scrollbar').activate)
-
         manager.register('thumbnails',
                          self.__window.actiongroup.get_action('thumbnails').activate)
-
         manager.register('hide_all',
                          self.__window.actiongroup.get_action('hide_all').activate)
 
