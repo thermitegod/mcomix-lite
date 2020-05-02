@@ -47,15 +47,15 @@ class ZoomModel:
 
     def get_zoomed_size(self, image_sizes, screen_size, distribution_axis, do_not_transform):
         scale_up = self.__scale_up
-        fitted_image_sizes = _fix_page_sizes(image_sizes, distribution_axis, do_not_transform)
-        union_size = _union_size(fitted_image_sizes, distribution_axis)
+        fitted_image_sizes = ZoomModel._fix_page_sizes(image_sizes, distribution_axis, do_not_transform)
+        union_size = ZoomModel._union_size(fitted_image_sizes, distribution_axis)
         limits = ZoomModel._calc_limits(union_size, screen_size, self.__fitmode, scale_up)
 
         prefscale = ZoomModel._preferred_scale(union_size, limits, distribution_axis)
         preferred_scales = [(IDENTITY_ZOOM if dnt else prefscale) for dnt in do_not_transform]
-        prescaled = [tuple(_scale_image_size(size, scale))
+        prescaled = [tuple(ZoomModel._scale_image_size(size, scale))
                      for size, scale in zip(fitted_image_sizes, preferred_scales)]
-        prescaled_union_size = _union_size(prescaled, distribution_axis)
+        prescaled_union_size = ZoomModel._union_size(prescaled, distribution_axis)
 
         def _other_preferences(limits, distribution_axis):
             for idx, item in enumerate(limits):
@@ -84,7 +84,7 @@ class ZoomModel:
         user_scale = 2 ** (self.__user_zoom_log / USER_ZOOM_LOG_SCALE1)
         res_scales = [preferred_scales[idx] * (user_scale if not do_not_transform[idx] else IDENTITY_ZOOM)
                       for idx, item in enumerate(preferred_scales)]
-        return [tuple(_scale_image_size(size, scale))
+        return [tuple(ZoomModel._scale_image_size(size, scale))
                 for size, scale in zip(fitted_image_sizes, res_scales)]
 
     @staticmethod
@@ -179,14 +179,14 @@ class ZoomModel:
             # later. This rescaling is necessary to ensure that the sizes in ALL
             # dimensions are monotonically scaled (with respect to local_scale).
             # A nice side effect of this is that it keeps the aspect ratio better.
-            dummy_approx = _round_nonempty((ideal[axis],))[0]
+            dummy_approx = ZoomModel._round_nonempty((ideal[axis],))[0]
             local_scale = tools.div(dummy_approx, this_size[axis])
             total_axis_size += dummy_approx
             can_be_downscaled = dummy_approx > 1
             if can_be_downscaled:
                 forced_size = dummy_approx - 1
                 forced_scale = tools.div(forced_size, this_size[axis])
-                forced_approx = _scale_image_size(this_size, forced_scale)
+                forced_approx = ZoomModel._scale_image_size(this_size, forced_scale)
                 forced_vol_err = tools.relerr(tools.volume(forced_approx), ideal_vol)
             else:
                 forced_scale = None
@@ -234,36 +234,36 @@ class ZoomModel:
             pass
         return map(lambda d: d[0], scaling_data)
 
+    @staticmethod
+    def _scale_image_size(size, scale):
+        return ZoomModel._round_nonempty(tools.scale(size, scale))
 
-def _scale_image_size(size, scale):
-    return _round_nonempty(tools.scale(size, scale))
+    @staticmethod
+    def _round_nonempty(t):
+        result = [0] * len(t)
+        for idx, item in enumerate(t):
+            x = int(round(t[idx]))
+            result[idx] = x if x > 0 else 1
+        return result
 
+    @staticmethod
+    def _fix_page_sizes(image_sizes, distribution_axis, do_not_transform):
+        if len(image_sizes) < 2:
+            return image_sizes.copy()
+        # in double page mode, resize the smaller image to fit the bigger one
+        sizes = list(zip(*image_sizes))  # [(x1,x2,...),(y1,y2,...)]
+        axis_sizes = sizes[int(not distribution_axis)]  # use axis else of distribution_axis
+        max_size = max(axis_sizes)  # max size of pages
+        ratios = [(1 if do_not_transform[n] else max_size / s)
+                for n, s in enumerate(axis_sizes)]  # scale ratio of every page if do transform
+        return [(int(x * ratios[n]), int(y * ratios[n]))
+                for n, (x, y) in enumerate(image_sizes)]  # scale every page
 
-def _round_nonempty(t):
-    result = [0] * len(t)
-    for idx, item in enumerate(t):
-        x = int(round(t[idx]))
-        result[idx] = x if x > 0 else 1
-    return result
-
-
-def _fix_page_sizes(image_sizes, distribution_axis, do_not_transform):
-    if len(image_sizes) < 2:
-        return image_sizes.copy()
-    # in double page mode, resize the smaller image to fit the bigger one
-    sizes = list(zip(*image_sizes))  # [(x1,x2,...),(y1,y2,...)]
-    axis_sizes = sizes[int(not distribution_axis)]  # use axis else of distribution_axis
-    max_size = max(axis_sizes)  # max size of pages
-    ratios = [(1 if do_not_transform[n] else max_size / s)
-              for n, s in enumerate(axis_sizes)]  # scale ratio of every page if do transform
-    return [(int(x * ratios[n]), int(y * ratios[n]))
-            for n, (x, y) in enumerate(image_sizes)]  # scale every page
-
-
-def _union_size(image_sizes, distribution_axis):
-    if len(image_sizes) == 0:
-        return []
-    n = len(image_sizes[0])
-    union_size = list(map(lambda i: reduce(max, map(lambda x: x[i], image_sizes)), range(n)))
-    union_size[distribution_axis] = sum(tuple(map(lambda x: x[distribution_axis], image_sizes)))
-    return union_size
+    @staticmethod
+    def _union_size(image_sizes, distribution_axis):
+        if len(image_sizes) == 0:
+            return []
+        n = len(image_sizes[0])
+        union_size = list(map(lambda i: reduce(max, map(lambda x: x[i], image_sizes)), range(n)))
+        union_size[distribution_axis] = sum(tuple(map(lambda x: x[distribution_axis], image_sizes)))
+        return union_size
