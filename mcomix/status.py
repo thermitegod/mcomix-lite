@@ -9,10 +9,10 @@ from mcomix.preferences import prefs
 
 
 class Statusbar(Gtk.EventBox):
-    SPACING = prefs['statusbar spacing']
-
     def __init__(self):
         super(Statusbar, self).__init__()
+
+        self.__spacing = prefs['statusbar spacing']
 
         self.__loading = True
 
@@ -66,7 +66,7 @@ class Statusbar(Gtk.EventBox):
         """Set a specific message (such as an error message) on the statusbar,
         replacing whatever was there earlier"""
         self.__status.pop(0)
-        self.__status.push(0, ' ' * Statusbar.SPACING + message)
+        self.__status.push(0, ' ' * self.__spacing + message)
 
     def set_page_number(self, page, total, this_screen):
         """Update the page number"""
@@ -110,10 +110,10 @@ class Statusbar(Gtk.EventBox):
 
     def update(self):
         """Set the statusbar to display the current state"""
-        s = f'{"|":^{Statusbar.SPACING + 2}}'
+        s = f'{"|":^{self.__spacing + 2}}'
         text = s.join(self._get_status_text())
         self.__status.pop(0)
-        self.__status.push(0, f'{"":>{Statusbar.SPACING}}{text}')
+        self.__status.push(0, f'{"":>{self.__spacing}}{text}')
 
     def _get_status_text(self):
         """Returns an array of text fields that should be displayed"""

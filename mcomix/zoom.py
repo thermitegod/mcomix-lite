@@ -7,19 +7,19 @@ from functools import reduce
 from mcomix import constants, tools
 from mcomix.preferences import prefs
 
-IDENTITY_ZOOM = 1.0
-IDENTITY_ZOOM_LOG = 0
-USER_ZOOM_LOG_SCALE1 = 4.0
-MIN_USER_ZOOM_LOG = -20
-MAX_USER_ZOOM_LOG = 12
-
 
 class ZoomModel:
     """Handles zoom and fit modes"""
 
     def __init__(self):
+        self.__identity_zoom = 1.0
+        self.__identity_zoom_log = 0.0
+        self.__user_zoom_log_scale1 = 4.0
+        self.__min_user_zoom_log = -20
+        self.__max_user_zoom_log = 12
+
         #: User zoom level.
-        self.__user_zoom_log = IDENTITY_ZOOM_LOG
+        self.__user_zoom_log = self.__identity_zoom_log
         #: Image fit mode. Determines the base zoom level for an image by
         #: calculating its maximum size.
         self.__fitmode = constants.ZOOM_MODE_MANUAL
@@ -34,7 +34,7 @@ class ZoomModel:
         self.__scale_up = scale_up
 
     def _set_user_zoom_log(self, zoom_log):
-        self.__user_zoom_log = min(max(zoom_log, MIN_USER_ZOOM_LOG), MAX_USER_ZOOM_LOG)
+        self.__user_zoom_log = min(max(zoom_log, self.__min_user_zoom_log), self.__max_user_zoom_log)
 
     def zoom_in(self):
         self._set_user_zoom_log(self.__user_zoom_log + 1)
@@ -43,7 +43,7 @@ class ZoomModel:
         self._set_user_zoom_log(self.__user_zoom_log - 1)
 
     def reset_user_zoom(self):
-        self._set_user_zoom_log(IDENTITY_ZOOM_LOG)
+        self._set_user_zoom_log(self.__identity_zoom_log)
 
     def get_zoomed_size(self, image_sizes, screen_size, distribution_axis, do_not_transform):
         scale_up = self.__scale_up
@@ -52,7 +52,7 @@ class ZoomModel:
         limits = ZoomModel._calc_limits(union_size, screen_size, self.__fitmode, scale_up)
 
         prefscale = ZoomModel._preferred_scale(union_size, limits, distribution_axis)
-        preferred_scales = [(IDENTITY_ZOOM if dnt else prefscale) for dnt in do_not_transform]
+        preferred_scales = [(self.__identity_zoom if dnt else prefscale) for dnt in do_not_transform]
         prescaled = [tuple(ZoomModel._scale_image_size(size, scale))
                      for size, scale in zip(fitted_image_sizes, preferred_scales)]
         prescaled_union_size = ZoomModel._union_size(prescaled, distribution_axis)
@@ -79,10 +79,10 @@ class ZoomModel:
             else:
                 preferred_scales = distributed_scales
         if not scale_up:
-            preferred_scales = map(lambda x: min(x, IDENTITY_ZOOM), preferred_scales)
+            preferred_scales = map(lambda x: min(x, self.__identity_zoom), preferred_scales)
         preferred_scales = list(preferred_scales)
-        user_scale = 2 ** (self.__user_zoom_log / USER_ZOOM_LOG_SCALE1)
-        res_scales = [preferred_scales[idx] * (user_scale if not do_not_transform[idx] else IDENTITY_ZOOM)
+        user_scale = 2 ** (self.__user_zoom_log / self.__user_zoom_log_scale1)
+        res_scales = [preferred_scales[idx] * (user_scale if not do_not_transform[idx] else self.__identity_zoom)
                       for idx, item in enumerate(preferred_scales)]
         return [tuple(ZoomModel._scale_image_size(size, scale))
                 for size, scale in zip(fitted_image_sizes, res_scales)]
@@ -91,7 +91,7 @@ class ZoomModel:
     def _preferred_scale(image_size, limits, distribution_axis):
         """Returns scale that makes an image of size image_size respect the
         limits imposed by limits. If no proper value can be determined,
-        IDENTITY_ZOOM is returned"""
+        self.__identity_zoom is returned"""
         min_scale = None
         for idx, item in enumerate(limits):
             if idx == distribution_axis:
@@ -103,7 +103,7 @@ class ZoomModel:
             if min_scale is None or s < min_scale:
                 min_scale = s
         if min_scale is None:
-            min_scale = IDENTITY_ZOOM
+            min_scale = self.__identity_zoom
         return min_scale
 
     @staticmethod
@@ -157,7 +157,7 @@ class ZoomModel:
             return map(lambda x: tools.div(1, x[axis]), sizes)  # FIXME ignores do_not_transform
         if ((total_axis_size := sum(map(lambda x: x[axis], sizes))) <= max_size) and not allow_upscaling:
             # identity
-            return [IDENTITY_ZOOM] * n
+            return [self.__identity_zoom] * n
 
         # non-trival case
         scale = tools.div(max_size, total_axis_size)  # FIXME initial guess should take unscalable images into account
@@ -169,7 +169,7 @@ class ZoomModel:
             # Shortcut: If the size cannot be changed, accept the original size.
             if do_not_transform[i]:
                 total_axis_size += this_size[axis]
-                scaling_data[i] = [IDENTITY_ZOOM, IDENTITY_ZOOM, False, IDENTITY_ZOOM, 0.0]
+                scaling_data[i] = [self.__identity_zoom, self.__identity_zoom, False, self.__identity_zoom, 0.0]
                 continue
             # Initial guess: The current scale works for all tuples.
             ideal = tools.scale(this_size, scale)

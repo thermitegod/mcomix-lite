@@ -14,8 +14,6 @@ from mcomix.preferences import prefs
 class ThumbnailSidebar(Gtk.ScrolledWindow):
     """A thumbnail sidebar including scrollbar for the main window"""
     # Thumbnail border width in pixels.
-    _BORDER_SIZE = 1
-
     def __init__(self, window):
         super(ThumbnailSidebar, self).__init__()
 
@@ -24,6 +22,8 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         self.__loaded = False
         #: Selected row in treeview
         self.__currently_selected_row = 0
+
+        self.__border_size = 1
 
         self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
         # Disable stupid overlay scrollbars...
@@ -136,7 +136,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
     @property
     def _pixbuf_size(self):
         # Don't forget the extra pixels for the border!
-        return prefs['thumbnail size'] + 2 * self._BORDER_SIZE
+        return prefs['thumbnail size'] + 2 * self.__border_size
 
     def load_thumbnails(self):
         """Load the thumbnails, if it is appropriate to do so"""
@@ -171,7 +171,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         if (pixbuf := self.__window.imagehandler.get_thumbnail(page=uid,
                                                                size=(size, size),
                                                                nowait=True)) is not None:
-            pixbuf = image_tools.add_border(pixbuf, self._BORDER_SIZE)
+            pixbuf = image_tools.add_border(pixbuf, self.__border_size)
 
         return pixbuf
 
