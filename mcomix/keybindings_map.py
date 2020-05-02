@@ -73,7 +73,6 @@ BINDING_INFO = {
     # General UI
     'exit_fullscreen': {'title': 'Exit from fullscreen', 'group': 'User interface'},
 
-    'osd_panel': {'title': 'Show OSD panel', 'group': 'User interface'},
     'minimize': {'title': 'Minimize', 'group': 'User interface'},
     'fullscreen': {'title': 'Fullscreen', 'group': 'User interface'},
     'menubar': {'title': 'Show/hide menubar', 'group': 'User interface'},
@@ -174,7 +173,6 @@ DEFAULT_BINDINGS = {
     # General UI
     'exit_fullscreen': ['Escape'],
 
-    'osd_panel': ['Tab'],
     'minimize': ['n'],
     'fullscreen': ['f', 'F11'],
     'menubar': ['<Control>M'],

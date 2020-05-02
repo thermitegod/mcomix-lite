@@ -70,10 +70,6 @@ prefs = {
     'animation transform': True,
     'temporary directory': '/tmp',
     'move file': 'keep',
-    'osd max font size': 16,  # hard limited from 8 to 60
-    'osd color': [1, 1, 1, 1],
-    'osd bg color': [0, 0, 0, 1],
-    'osd timeout': 3.0,  # in seconds, hard limited from 0.5 to 30.0
     'check image mimetype': False,
     'hide cursor': False,
     'statusbar spacing': 5,

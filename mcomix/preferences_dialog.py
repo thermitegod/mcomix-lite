@@ -35,8 +35,6 @@ class _PreferencesDialog(Gtk.Dialog):
 
         appearance = self._init_appearance_tab()
         notebook.append_page(appearance, Gtk.Label(label='Appearance'))
-        onscrdisp = self._init_onscrdisp_tab()
-        notebook.append_page(onscrdisp, Gtk.Label(label='OSD'))
         behaviour = self._init_behaviour_tab()
         notebook.append_page(behaviour, Gtk.Label(label='Behaviour'))
         display = self._init_display_tab()
@@ -103,32 +101,6 @@ class _PreferencesDialog(Gtk.Dialog):
         page.add_row(self._create_pref_check_button(
                 'Use a checkered background for transparent images',
                 'checkered bg for transparent images'))
-
-        return page
-
-    def _init_onscrdisp_tab(self):
-        # ----------------------------------------------------------------
-        # The "OSD" tab.
-        # ----------------------------------------------------------------
-        page = _PreferencePage(None)
-
-        page.new_section('Onscreen display')
-
-        page.add_row(Gtk.Label(label='Timeout (seconds):'),
-                     self._create_pref_spinner(
-                             'osd timeout',
-                             1.0, 0.5, 30.0, 0.5, 2.0, 1))
-
-        page.add_row(Gtk.Label(label='Max font size (8 to 60):'),
-                     self._create_pref_spinner(
-                             'osd max font size',
-                             1, 8, 60, 1, 10, 0))
-
-        page.add_row(Gtk.Label(label='Font color:'),
-                     self._create_color_button('osd color'))
-
-        page.add_row(Gtk.Label(label='Background color:'),
-                     self._create_color_button('osd bg color'))
 
         return page
 
@@ -704,7 +676,7 @@ class _PreferencesDialog(Gtk.Dialog):
         """Callback for spinner-type preferences"""
         value = spinbutton.get_value()
 
-        if preference == ('lens magnification' or 'osd timeout'):
+        if preference == 'lens magnification':
             prefs[preference] = value
         else:
             prefs[preference] = int(value)

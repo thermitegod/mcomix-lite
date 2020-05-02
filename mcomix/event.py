@@ -236,9 +236,6 @@ class EventHandler:
                          self.__window.actiongroup.get_action('enhance_image').activate)
 
         # User interface
-        manager.register('osd_panel',
-                         self.__window.show_info_panel)
-
         manager.register('minimize',
                          self.__window.minimize)
 
@@ -349,7 +346,7 @@ class EventHandler:
             pass
 
         elif event.button == 4:
-            self.__window.show_info_panel()
+            pass
 
     def mouse_release_event(self, widget, event):
         """Handle mouse button release events on the main layout area"""
@@ -362,6 +359,9 @@ class EventHandler:
             self.__window.actiongroup.get_action('lens').set_active(False)
 
         elif event.button == 3:
+            pass
+
+        elif event.button == 4:
             pass
 
     def mouse_move_event(self, widget, event):

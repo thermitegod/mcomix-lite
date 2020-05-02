@@ -72,13 +72,15 @@ class FileHandler:
         try:
             path = Path(self._initialize_fileprovider(path, keep_fileprovider))
         except ValueError as ex:
-            self.__window.statusbar.set_message(str(ex))
-            self.__window.osd.show(str(ex))
+            ex = str(ex)
+            logger.error(ex)
+            self.__window.statusbar.set_message(ex)
             return False
 
-        if error_message := self._check_access(path):
+        error_message = self._check_access(path)
+        if error_message:
+            logger.error(error_message)
             self.__window.statusbar.set_message(error_message)
-            self.__window.osd.show(error_message)
             self.file_opened()
             return False
 
@@ -93,8 +95,9 @@ class FileHandler:
             try:
                 self._open_archive(self.__current_file)
             except Exception as ex:
-                self.__window.statusbar.set_message(str(ex))
-                self.__window.osd.show(str(ex))
+                ex = str(ex)
+                logger.error(ex)
+                self.__window.statusbar.set_message(ex)
                 self.file_opened()
                 return False
             self.__file_loading = True
@@ -112,8 +115,8 @@ class FileHandler:
 
         if not image_files:
             msg = f'No images in "{Path(self.__current_file).name}"'
+            logger.error(msg)
             self.__window.statusbar.set_message(msg)
-            self.__window.osd.show(msg)
 
         else:
             if self.__archive_type is None:

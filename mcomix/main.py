@@ -7,7 +7,7 @@ from gi.repository import GLib, Gdk, Gtk
 from send2trash import send2trash
 
 from mcomix import bookmark_backend, callback, constants, cursor_handler, enhance_backend, event, file_handler, icons, \
-    image_handler, image_tools, keybindings, layout, lens, message_dialog, osd, pageselect, preferences, status, \
+    image_handler, image_tools, keybindings, layout, lens, message_dialog, pageselect, preferences, status, \
     thumbbar, tools, ui, zoom
 from mcomix.preferences import prefs
 
@@ -60,7 +60,6 @@ class MainWindow(Gtk.Window):
         self.cursor_handler = cursor_handler.CursorHandler(self)
         self.enhancer = enhance_backend.ImageEnhancer(self)
         self.lens = lens.MagnifyingLens(self)
-        self.osd = osd.OnScreenDisplay(self)
         self.zoom = zoom.ZoomModel()
         self.uimanager = ui.MainUI(self)
         self.menubar = self.uimanager.get_widget('/Menu')
@@ -209,11 +208,6 @@ class MainWindow(Gtk.Window):
     def get_vadjust(self):
         return self.__vadjust
 
-    @staticmethod
-    def get_image_box():
-        # XXX transitional(kept for osd.py)
-        return Gtk.HBox(homogeneous=False, spacing=2)
-
     def get_event_handler(self):
         return self.__event_handler
 
@@ -265,8 +259,6 @@ class MainWindow(Gtk.Window):
 
     def _draw_image(self, scroll_to):
         self._update_toggles_visibility()
-
-        self.osd.clear()
 
         if not self.filehandler.get_file_loaded():
             self._clear_main_area()
@@ -873,24 +865,6 @@ class MainWindow(Gtk.Window):
                 self.filehandler.close_file()
                 if Path.is_file(current_file):
                     file_action()
-
-    def show_info_panel(self):
-        """Shows an OSD displaying information about the current page"""
-        if not self.filehandler.get_file_loaded():
-            return
-
-        text = ''
-        if filename := self.imagehandler.get_current_filename():
-            text += f'{filename}\n'
-        file_number, file_count = self.filehandler.get_file_number()
-        if file_count:
-            text += f'({file_number} / {file_count})\n'
-        else:
-            text += '\n'
-        if page_number := self.imagehandler.get_current_page():
-            text += f'Page {page_number}'
-        if text := text.strip('\n'):
-            self.osd.show(text)
 
     def minimize(self, *args):
         """Minimizes the MComix window"""
