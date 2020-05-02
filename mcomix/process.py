@@ -21,10 +21,7 @@ def popen(args, stdin=NULL, stdout=PIPE, stderr=NULL, universal_newlines=False):
 
 
 def find_executable(executable):
-    """Find executable in path"""
-    exe = None
     try:
-        exe = shutil.which(executable)
+        return shutil.which(executable)
     except NameError:
-        pass
-    return exe
+        return None
