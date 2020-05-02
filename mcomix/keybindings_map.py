@@ -23,18 +23,6 @@ BINDING_INFO = {
     'previous_directory': {'title': 'Previous directory', 'group': 'Navigation'},
 
     # Scrolling
-    'scroll_left_bottom': {'title': 'Scroll to bottom left', 'group': 'Scroll'},
-    'scroll_middle_bottom': {'title': 'Scroll to bottom center', 'group': 'Scroll'},
-    'scroll_right_bottom': {'title': 'Scroll to bottom right', 'group': 'Scroll'},
-
-    'scroll_left_middle': {'title': 'Scroll to middle left', 'group': 'Scroll'},
-    'scroll_middle': {'title': 'Scroll to center', 'group': 'Scroll'},
-    'scroll_right_middle': {'title': 'Scroll to middle right', 'group': 'Scroll'},
-
-    'scroll_left_top': {'title': 'Scroll to top left', 'group': 'Scroll'},
-    'scroll_middle_top': {'title': 'Scroll to top center', 'group': 'Scroll'},
-    'scroll_right_top': {'title': 'Scroll to top right', 'group': 'Scroll'},
-
     'scroll_down': {'title': 'Scroll down', 'group': 'Scroll'},
     'scroll_up': {'title': 'Scroll up', 'group': 'Scroll'},
     'scroll_right': {'title': 'Scroll right', 'group': 'Scroll'},
@@ -117,27 +105,11 @@ DEFAULT_BINDINGS = {
     'previous_directory': ['<control>P'],
 
     # Scrolling
-    # Numpad (without numlock) aligns the image depending on the key.
-    'scroll_left_bottom': ['KP_1'],
-    'scroll_middle_bottom': ['KP_2'],
-    'scroll_right_bottom': ['KP_3'],
-
-    'scroll_left_middle': ['KP_4'],
-    'scroll_middle': ['KP_5'],
-    'scroll_right_middle': ['KP_6'],
-
-    'scroll_left_top': ['KP_7'],
-    'scroll_middle_top': ['KP_8'],
-    'scroll_right_top': ['KP_9'],
-
     # Arrow keys scroll the image
     'scroll_down': ['Down', 'KP_Down'],
     'scroll_up': ['Up', 'KP_Up'],
     'scroll_right': ['Right', 'KP_Right'],
     'scroll_left': ['Left', 'KP_Left'],
-
-    'smart_scroll_up': ['<Shift>space'],
-    'smart_scroll_down': ['space'],
 
     # View
     'zoom_in': ['plus', 'KP_Add', 'equal'],

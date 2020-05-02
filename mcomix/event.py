@@ -71,42 +71,6 @@ class EventHandler:
         manager.register('go_to',
                          self.__window.page_select)
 
-        # Numpad (without numlock) aligns the image depending on the key.
-        manager.register('scroll_left_bottom',
-                         self.__window.scroll_to_predefined,
-                         kwargs={'destination': (-1, 1), 'index': constants.UNION_INDEX})
-        manager.register('scroll_middle_bottom',
-                         self.__window.scroll_to_predefined,
-                         kwargs={'destination': (constants.SCROLL_TO_CENTER, 1),
-                                 'index': constants.UNION_INDEX})
-        manager.register('scroll_right_bottom',
-                         self.__window.scroll_to_predefined,
-                         kwargs={'destination': (1, 1), 'index': constants.UNION_INDEX})
-
-        manager.register('scroll_left_middle',
-                         self.__window.scroll_to_predefined,
-                         kwargs={'destination': (-1, constants.SCROLL_TO_CENTER),
-                                 'index': constants.UNION_INDEX})
-        manager.register('scroll_middle',
-                         self.__window.scroll_to_predefined,
-                         kwargs={'destination': (constants.SCROLL_TO_CENTER, constants.SCROLL_TO_CENTER),
-                                 'index': constants.UNION_INDEX})
-        manager.register('scroll_right_middle',
-                         self.__window.scroll_to_predefined,
-                         kwargs={'destination': (1, constants.SCROLL_TO_CENTER),
-                                 'index': constants.UNION_INDEX})
-
-        manager.register('scroll_left_top',
-                         self.__window.scroll_to_predefined,
-                         kwargs={'destination': (-1, -1), 'index': constants.UNION_INDEX})
-        manager.register('scroll_middle_top',
-                         self.__window.scroll_to_predefined,
-                         kwargs={'destination': (constants.SCROLL_TO_CENTER, -1),
-                                 'index': constants.UNION_INDEX})
-        manager.register('scroll_right_top',
-                         self.__window.scroll_to_predefined,
-                         kwargs={'destination': (1, -1), 'index': constants.UNION_INDEX})
-
         # Enter/exit fullscreen.
         manager.register('exit_fullscreen',
                          self.escape_event)
