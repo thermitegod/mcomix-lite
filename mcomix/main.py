@@ -502,7 +502,7 @@ class MainWindow(Gtk.Window):
         archive_open = self.filehandler.get_archive_type() is not None
         next_archive_opened = False
         if prefs['auto open next archive']:
-            next_archive_opened = self.filehandler.open_next_archive()
+            next_archive_opened = self.filehandler.open_archive_direction(forward=True)
 
         # If "Auto open next archive" is disabled, do not go to the next
         # directory if current file was an archive.
@@ -515,7 +515,7 @@ class MainWindow(Gtk.Window):
         archive_open = self.filehandler.get_archive_type() is not None
         previous_archive_opened = False
         if prefs['auto open next archive']:
-            previous_archive_opened = self.filehandler.open_previous_archive()
+            previous_archive_opened = self.filehandler.open_archive_direction(forward=False)
 
         # If "Auto open next archive" is disabled, do not go to the previous
         # directory if current file was an archive.
@@ -840,9 +840,9 @@ class MainWindow(Gtk.Window):
                 return None
 
         if self.filehandler.get_archive_type() is not None:
-            next_opened = self.filehandler.open_next_archive()
+            next_opened = self.filehandler.open_archive_direction(forward=True)
             if not next_opened:
-                next_opened = self.filehandler.open_previous_archive()
+                next_opened = self.filehandler.open_archive_direction(forward=False)
             if not next_opened:
                 self.filehandler.close_file()
 

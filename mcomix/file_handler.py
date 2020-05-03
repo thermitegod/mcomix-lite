@@ -335,9 +335,11 @@ class FileHandler:
         """Return a string with the name of the currently viewed file that is suitable for printing"""
         return self.__window.imagehandler.get_current_filename()
 
-    def open_next_archive(self, *args):
-        """Open the archive that comes directly after the currently loaded
-        archive in that archive's directory listing, sorted alphabetically.
+    def open_archive_direction(self, forward, *args):
+        """Opens the archive that comes directly after the currently loaded
+        archive in that archive's directory listing if forward=True else
+        opens the archive that comes directly before the currently loaded
+        archive in that archive's directory listing. sorted alphabetically.
         Returns True if a new archive was opened, False otherwise"""
         if self.__archive_type is not None:
             files = self._get_file_list()
@@ -345,29 +347,19 @@ class FileHandler:
                 return
 
             current_index = files.index(self.__base_path)
-            for path in files[current_index + 1:]:
-                if archive_tools.archive_mime_type(path) is not None:
-                    self._close()
-                    self.open_file(path, keep_fileprovider=True)
-                    return True
 
-        return False
-
-    def open_previous_archive(self, *args):
-        """Open the archive that comes directly before the currently loaded
-        archive in that archive's directory listing, sorted alphabetically.
-        Returns True if a new archive was opened, False otherwise"""
-        if self.__archive_type is not None:
-            files = self._get_file_list()
-            if self.__base_path not in files:
-                return
-
-            current_index = files.index(self.__base_path)
-            for path in reversed(files[:current_index]):
-                if archive_tools.archive_mime_type(path) is not None:
-                    self._close()
-                    self.open_file(path, -1, keep_fileprovider=True)
-                    return True
+            if forward:
+                for path in files[current_index + 1:]:
+                    if archive_tools.archive_mime_type(path) is not None:
+                        self._close()
+                        self.open_file(path, keep_fileprovider=True)
+                        return True
+            else:
+                for path in reversed(files[:current_index]):
+                    if archive_tools.archive_mime_type(path) is not None:
+                        self._close()
+                        self.open_file(path, -1, keep_fileprovider=True)
+                        return True
 
         return False
 

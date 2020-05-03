@@ -149,9 +149,9 @@ class EventHandler:
         manager.register('refresh_archive',
                          self.__window.filehandler.refresh_file)
         manager.register('next_archive',
-                         self.__window.filehandler.open_next_archive)
+                         self.__window.filehandler.open_archive_direction, kwargs={'forward': True})
         manager.register('previous_archive',
-                         self.__window.filehandler.open_previous_archive)
+                         self.__window.filehandler.open_archive_direction, kwargs={'forward': False})
         manager.register('next_directory',
                          self.__window.filehandler.open_next_directory)
         manager.register('previous_directory',
