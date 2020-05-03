@@ -363,9 +363,10 @@ class FileHandler:
 
         return False
 
-    def open_next_directory(self, *args):
-        """Opens the next sibling directory of the current file, as specified by
-        file provider. Returns True if a new directory was opened and files found"""
+    def open_directory_direction(self, forward, *args):
+        """Opens the next sibling directory of the current file if forward=True, else
+        opens the previous sibling directory of the current file as specified by file
+        provider. Returns True if a new directory was opened and files found"""
         if self.__file_provider is None:
             return
 
@@ -381,36 +382,18 @@ class FileHandler:
             return False
 
         self._close()
-        if len(files := self.__file_provider.list_files(listmode)) > 0:
-            path = files[0]
+        files = self.__file_provider.list_files(listmode)
+        if len(files) > 0:
+            if forward:
+                path = files[0]
+            else:
+                path = files[-1]
         else:
             path = self.__file_provider.get_directory()
-        self.open_file(path, keep_fileprovider=True)
-        return True
-
-    def open_previous_directory(self, *args):
-        """Opens the previous sibling directory of the current file, as specified by
-        file provider. Returns True if a new directory was opened and files found"""
-        if self.__file_provider is None:
-            return
-
-        if self.__archive_type is not None:
-            listmode = file_provider.FileProvider.ARCHIVES
+        if forward:
+            self.open_file(path, keep_fileprovider=True)
         else:
-            listmode = file_provider.FileProvider.IMAGES
-
-        current_dir = self.__file_provider.get_directory()
-        if not self.__file_provider.previous_directory():
-            # Restore current directory if no files were found
-            self.__file_provider.set_directory(current_dir)
-            return False
-
-        self._close()
-        if len(files := self.__file_provider.list_files(listmode)) > 0:
-            path = files[-1]
-        else:
-            path = self.__file_provider.get_directory()
-        self.open_file(path, -1, keep_fileprovider=True)
+            self.open_file(path, -1, keep_fileprovider=True)
         return True
 
     @callback.Callback

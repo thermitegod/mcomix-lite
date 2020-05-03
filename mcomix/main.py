@@ -509,7 +509,7 @@ class MainWindow(Gtk.Window):
         if not next_archive_opened and \
                 prefs['auto open next directory'] and \
                 (not archive_open or prefs['auto open next archive']):
-            self.filehandler.open_next_directory()
+            self.filehandler.open_directory_direction(forward=True)
 
     def previous_book(self):
         archive_open = self.filehandler.get_archive_type() is not None
@@ -522,7 +522,7 @@ class MainWindow(Gtk.Window):
         if not previous_archive_opened and \
                 prefs['auto open next directory'] and \
                 (not archive_open or prefs['auto open next archive']):
-            self.filehandler.open_previous_directory()
+            self.filehandler.open_directory_direction(forward=False)
 
     def flip_page(self, step, single_step=False):
         if not self.filehandler.get_file_loaded():

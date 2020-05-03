@@ -153,9 +153,9 @@ class EventHandler:
         manager.register('previous_archive',
                          self.__window.filehandler.open_archive_direction, kwargs={'forward': False})
         manager.register('next_directory',
-                         self.__window.filehandler.open_next_directory)
+                         self.__window.filehandler.open_directory_direction, kwargs={'forward': True})
         manager.register('previous_directory',
-                         self.__window.filehandler.open_previous_directory)
+                         self.__window.filehandler.open_directory_direction, kwargs={'forward': False})
         manager.register('properties',
                          self.__window.actiongroup.get_action('properties').activate)
         manager.register('preferences',
