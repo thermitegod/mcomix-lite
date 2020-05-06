@@ -376,7 +376,7 @@ class FileHandler:
             listmode = file_provider.FileProvider.IMAGES
 
         current_dir = self.__file_provider.get_directory()
-        if not self.__file_provider.next_directory():
+        if not self.__file_provider.directory_direction(forward=forward):
             # Restore current directory if no files were found
             self.__file_provider.set_directory(current_dir)
             return False

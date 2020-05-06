@@ -43,10 +43,7 @@ class FileProvider:
     def list_files(self, mode=IMAGES):
         return []
 
-    def next_directory(self):
-        return False
-
-    def previous_directory(self):
+    def directory_direction(self, forward):
         return False
 
     @staticmethod
@@ -119,40 +116,35 @@ class OrderedFileProvider(FileProvider):
         FileProvider.sort_files(files)
         return [fname_map[fpath] for fpath in files]
 
-    def next_directory(self):
-        """Switches to the next sibling directory. Next call to
+    def directory_direction(self, forward):
+        """If forward=True switches to the next sibling directory,
+        else Switches to the previous sibling directory. Next call to
         list_file() returns files in the new directory.
         Returns True if the directory was changed, otherwise False"""
-        if len(directories := self.__get_sibling_directories(self.__base_dir)) - 1 \
-                > (current_index := directories.index(self.__base_dir)):
-            self.__base_dir = directories[current_index + 1]
-            return True
+        def __get_sibling_directories(current_dir):
+            """Returns a list of all sibling directories of <dir>, already sorted"""
+            parent_dir = Path(current_dir).parent
+
+            dirs = []
+            for directory in Path(parent_dir).iterdir():
+                if Path.is_dir(directory):
+                    dirs.append(str(directory))
+
+            tools.alphanumeric_sort(dirs)
+            return directories
+
+        directories = __get_sibling_directories(self.__base_dir)
+        current_index = directories.index(str(self.__base_dir))
+        if forward:
+            if len(directories) - 1 > current_index:
+                self.__base_dir = directories[current_index + 1]
+                return True
+        else:
+            if current_index > 0:
+                self.__base_dir = directories[current_index - 1]
+                return True
 
         return False
-
-    def previous_directory(self):
-        """Switches to the previous sibling directory. Next call to
-        list_file() returns files in the new directory.
-        Returns True if the directory was changed, otherwise False"""
-        directories = self.__get_sibling_directories(self.__base_dir)
-        if (current_index := directories.index(self.__base_dir)) > 0:
-            self.__base_dir = directories[current_index - 1]
-            return True
-
-        return False
-
-    @staticmethod
-    def __get_sibling_directories(dir):
-        """Returns a list of all sibling directories of <dir>, already sorted"""
-        parent_dir = Path(dir).dirname
-
-        directories = []
-        for directory in Path(parent_dir).iterdir():
-            sibling_dir = Path() / parent_dir / directory
-            if Path.is_dir(sibling_dir):
-                directories.update(sibling_dir)
-
-        return tools.alphanumeric_sort(directories)
 
 
 class PreDefinedFileProvider(FileProvider):
