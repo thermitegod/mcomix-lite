@@ -5,9 +5,9 @@ resort to calling rar/unrar manually"""
 
 import ctypes
 import ctypes.util
+from pathlib import Path
 
 from loguru import logger
-from pathlib import Path
 
 from mcomix.archive import archive_base
 

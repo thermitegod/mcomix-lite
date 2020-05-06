@@ -46,7 +46,7 @@ setup(
         name=constants.APPNAME.lower(),
         version=constants.VERSION,
         python_requires='>=3.8',
-        packages=['mcomix', 'mcomix.archive', 'mcomix.images'],
+        packages=['mcomix', 'mcomix.archive', 'mcomix.lib', 'mcomix.images'],
         package_data={'mcomix.images': images},
         entry_points={'console_scripts': ['mcomix = mcomix.run:run'],
                       'setuptools.installation': ['eggsecutable=mcomix.run:run'], },

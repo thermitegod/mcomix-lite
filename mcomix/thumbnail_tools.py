@@ -5,7 +5,8 @@ freedesktop.org "standard" at http://jens.triq.net/thumbnail-spec/"""
 
 import threading
 
-from mcomix import callback, image_tools
+from mcomix import image_tools
+from mcomix.lib import callback
 from mcomix.preferences import prefs
 
 

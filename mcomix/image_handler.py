@@ -6,7 +6,8 @@ from pathlib import Path
 
 from loguru import logger
 
-from mcomix import callback, constants, image_tools, mt, thumbnail_tools, tools
+from mcomix import constants, image_tools, thumbnail_tools, tools
+from mcomix.lib import callback, mt
 from mcomix.preferences import prefs
 
 

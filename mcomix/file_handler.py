@@ -8,7 +8,8 @@ from pathlib import Path
 from gi.repository import Gtk
 from loguru import logger
 
-from mcomix import archive_extractor, archive_tools, callback, constants, file_provider, image_tools, tools
+from mcomix import archive_extractor, archive_tools, constants, file_provider, image_tools, tools
+from mcomix.lib import callback
 from mcomix.preferences import prefs
 
 

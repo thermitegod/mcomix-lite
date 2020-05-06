@@ -8,7 +8,8 @@ from pathlib import Path
 
 from loguru import logger
 
-from mcomix import archive_tools, callback, mt
+from mcomix import archive_tools
+from mcomix.lib import callback, mt
 from mcomix.preferences import prefs
 
 

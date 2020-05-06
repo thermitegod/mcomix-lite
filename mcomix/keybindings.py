@@ -24,10 +24,10 @@ Each action_name can have multiple keybindings"""
 
 import json
 from collections import defaultdict
+from pathlib import Path
 
 from gi.repository import Gtk
 from loguru import logger
-from pathlib import Path
 
 from mcomix import constants, keybindings_map, tools
 

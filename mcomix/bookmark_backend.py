@@ -9,7 +9,8 @@ from pathlib import Path
 from gi.repository import Gtk
 from loguru import logger
 
-from mcomix import bookmark_menu_item, callback, constants, message_dialog
+from mcomix import bookmark_menu_item, constants, message_dialog
+from mcomix.lib import callback
 
 
 class _BookmarksStore:

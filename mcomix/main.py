@@ -6,9 +6,10 @@ from pathlib import Path
 from gi.repository import GLib, Gdk, Gtk
 from send2trash import send2trash
 
-from mcomix import bookmark_backend, callback, constants, cursor_handler, enhance_backend, event, file_handler, icons, \
+from mcomix import bookmark_backend, constants, cursor_handler, enhance_backend, event, file_handler, icons, \
     image_handler, image_tools, keybindings, layout, lens, message_dialog, pageselect, preferences, status, \
     thumbbar, tools, ui, zoom
+from mcomix.lib import callback
 from mcomix.preferences import prefs
 
 

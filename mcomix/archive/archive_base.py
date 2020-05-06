@@ -5,7 +5,7 @@ extraction and adding new archive formats"""
 
 from pathlib import Path
 
-from mcomix import process
+from mcomix.lib import process
 
 
 class BaseArchive:

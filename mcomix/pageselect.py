@@ -4,7 +4,7 @@
 
 from gi.repository import Gtk
 
-from mcomix import callback, mt
+from mcomix.lib import callback, mt
 from mcomix.preferences import prefs
 
 

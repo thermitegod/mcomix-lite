@@ -5,8 +5,8 @@
 import tempfile
 from pathlib import Path
 
-from mcomix import process
 from mcomix.archive import archive_base
+from mcomix.lib import process
 
 # Filled on-demand by SevenZipArchive
 _7z_executable = None

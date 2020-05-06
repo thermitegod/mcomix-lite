@@ -7,7 +7,7 @@ import uuid
 
 from gi.repository import Gtk
 
-from mcomix import mt
+from mcomix.lib import mt
 from mcomix.preferences import prefs
 
 

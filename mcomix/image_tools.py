@@ -9,7 +9,8 @@ from PIL import Image, ImageEnhance, ImageOps, ImageSequence
 from PIL.JpegImagePlugin import _getexif
 from gi.repository import GLib, Gdk, GdkPixbuf, Gio
 
-from mcomix import anime_tools, constants, reader
+from mcomix import anime_tools, constants
+from mcomix.lib import reader
 from mcomix.preferences import prefs
 
 GTK_GDK_COLOR_BLACK = Gdk.color_parse('black')
