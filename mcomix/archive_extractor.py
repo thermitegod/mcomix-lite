@@ -27,7 +27,7 @@ class Extractor:
         self.__setupped = False
         self.__threadpool = mt.ThreadPool(
                 name=self.__class__.__name__,
-                processes=prefs['max extract threads'] or None)
+                processes=prefs['max threads extract'])
 
         self.__src = None
         self.__files = None

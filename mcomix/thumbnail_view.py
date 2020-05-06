@@ -29,7 +29,7 @@ class ThumbnailViewBase:
 
         #: Worker thread
         self.__threadpool = mt.ThreadPool(name=self.__class__.__name__,
-                                          processes=prefs['max thumbnail threads'] or None)
+                                          processes=prefs['max threads thumbnail'])
         self.__lock = mt.Lock()
         self.__done = set()
         self.__taskid = 0
@@ -51,7 +51,8 @@ class ThumbnailViewBase:
         if not self.__lock.acquire(blocking=False):
             return
         try:
-            if not (taskid := self.__taskid):
+            taskid = self.__taskid
+            if not taskid:
                 taskid = uuid.uuid4().int
 
             model = self.get_model()

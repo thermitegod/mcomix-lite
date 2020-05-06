@@ -3,8 +3,6 @@
 """thumbnail.py - Thumbnail module for MComix implementing (most of) the
 freedesktop.org "standard" at http://jens.triq.net/thumbnail-spec/"""
 
-import threading
-
 from mcomix import image_tools
 from mcomix.lib import callback
 from mcomix.preferences import prefs
@@ -28,7 +26,7 @@ class Thumbnailer:
             self.__width, self.__height = size
             self.__default_sizes = False
 
-    def thumbnail(self, filepath, mt=False):
+    def thumbnail(self, filepath):
         """Returns a thumbnail pixbuf for <filepath>, transparently handling
         both normal image files and archives. If a thumbnail file already exists,
         it is re-used. Otherwise, a new thumbnail is created from <filepath>.
@@ -38,13 +36,6 @@ class Thumbnailer:
         if self.__default_sizes:
             self.__width = prefs['thumbnail size']
             self.__height = prefs['thumbnail size']
-
-        if mt:
-            thread = threading.Thread(target=self._create_thumbnail, args=(filepath,))
-            thread.name += '-thumbnailer'
-            thread.daemon = True
-            thread.start()
-            return None
 
         return self._create_thumbnail(filepath)
 

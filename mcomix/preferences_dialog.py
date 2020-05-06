@@ -91,11 +91,6 @@ class _PreferencesDialog(Gtk.Dialog):
                              'thumbnail size',
                              1, 20, 500, 1, 10, 0))
 
-        page.add_row(Gtk.Label(label='Maximum number of thumbnail threads (0 will use all cores):'),
-                     self._create_pref_spinner(
-                             'max thumbnail threads',
-                             1, 0, constants.MAX_THREADS, 1, 4, 0))
-
         page.new_section('Transparency')
 
         page.add_row(self._create_pref_check_button(
@@ -315,11 +310,6 @@ class _PreferencesDialog(Gtk.Dialog):
 
         page.new_section('Extraction and cache')
 
-        page.add_row(Gtk.Label(label='Maximum number of concurrent extraction threads:'),
-                     self._create_pref_spinner(
-                             'max extract threads',
-                             1, 1, constants.MAX_THREADS, 1, 4, 0))
-
         page.add_row(Gtk.Label(label='Temporary directory (restart required)'),
                      self._create_pref_path_chooser('temporary directory', folder=True, default='/tmp'))
 
@@ -339,6 +329,23 @@ class _PreferencesDialog(Gtk.Dialog):
                      self._create_pref_spinner(
                              'lens magnification',
                              1, 1.1, 10.0, 0.1, 1.0, 1))
+
+        page.new_section('Threads')
+
+        page.add_row(Gtk.Label(label='Maximum number of thumbnail threads:'),
+                     self._create_pref_spinner(
+                         'max threads thumbnail',
+                         1, 1, constants.MAX_THREADS, 1, 4, 0))
+
+        page.add_row(Gtk.Label(label='Maximum number of concurrent extraction threads:'),
+                     self._create_pref_spinner(
+                         'max threads extract',
+                         1, 1, constants.MAX_THREADS, 1, 4, 0))
+
+        page.add_row(Gtk.Label(label='Maximum number of general threads:'),
+                     self._create_pref_spinner(
+                         'max threads general',
+                         1, 1, constants.MAX_THREADS, 1, 4, 0))
 
         return page
 

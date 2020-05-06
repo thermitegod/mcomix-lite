@@ -25,7 +25,8 @@ class ImageHandler:
         self.__window = window
 
         #: Caching thread
-        self.__thread = mt.ThreadPool(name=self.__class__.__name__)
+        self.__thread = mt.ThreadPool(name=self.__class__.__name__,
+                                      processes=prefs['max threads general'])
         self.__lock = mt.Lock()
         self.__cache_lock = {}
         #: Archive path, if currently opened file is archive

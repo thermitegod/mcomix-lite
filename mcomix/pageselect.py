@@ -68,7 +68,8 @@ class Pageselector(Gtk.Dialog):
 
         # Currently displayed thumbnail page.
         self.__thumbnail_page = 0
-        self.__thread = mt.ThreadPool(name=self.__class__.__name__)
+        self.__thread = mt.ThreadPool(name=self.__class__.__name__,
+                                      processes=prefs['max threads general'])
         self._update_thumbnail(int(self.__selector_adjustment.props.value))
         self.__window.imagehandler.page_available += self._page_available
 

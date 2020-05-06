@@ -58,8 +58,9 @@ prefs = {
     'auto contrast': False,
     'max pages to cache': -1,
     'statusbar fields': constants.STATUS_PAGE | constants.STATUS_RESOLUTION | constants.STATUS_PATH | constants.STATUS_FILENAME | constants.STATUS_FILESIZE,
-    'max thumbnail threads': 16,
-    'max extract threads': 16,
+    'max threads thumbnail': 16,
+    'max threads extract': 16,
+    'max threads general': 16,
     'scaling quality': 2,  # GdkPixbuf.InterpType.BILINEAR
     'escape quits': True,
     'fit to size mode': constants.ZOOM_MODE_HEIGHT,
