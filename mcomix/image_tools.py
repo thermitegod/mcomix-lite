@@ -6,7 +6,6 @@ from io import BytesIO
 from pathlib import Path
 
 from PIL import Image, ImageEnhance, ImageOps, ImageSequence
-from PIL.JpegImagePlugin import _getexif
 from gi.repository import GLib, Gdk, GdkPixbuf, Gio
 
 from mcomix import anime_tools, constants
@@ -15,6 +14,38 @@ from mcomix.preferences import prefs
 
 GTK_GDK_COLOR_BLACK = Gdk.color_parse('black')
 GTK_GDK_COLOR_WHITE = Gdk.color_parse('white')
+
+
+def _getexif(im):
+    exif = {}
+    try:
+        exif.update(im.getexif())
+    except AttributeError:
+        pass
+    if exif:
+        return exif
+
+    try:
+        l1, l2, size, *lines = im.info.get('Raw profile type exif').splitlines()
+        if l2 != 'exif':
+            # Not valid Exif data.
+            return {}
+        size = int(size)
+        data = binascii.unhexlify(''.join(lines))
+        if len(data) != size:
+            # Size not match.
+            return {}
+        im.info['exif'] = data
+    except:
+        # Not valid Exif data.
+        return {}
+
+    # load Exif again
+    try:
+        exif.update(im.getexif())
+    except AttributeError:
+        pass
+    return exif
 
 
 def rotate_pixbuf(src, rotation):
@@ -158,7 +189,8 @@ def pil_to_pixbuf(im, keep_orientation=False):
         has_alpha = True
     else:
         has_alpha = False
-    if im.mode != (target_mode := 'RGBA' if has_alpha else 'RGB'):
+    target_mode = 'RGBA' if has_alpha else 'RGB'
+    if im.mode != target_mode:
         im = im.convert(target_mode)
     pixbuf = GdkPixbuf.Pixbuf.new_from_bytes(
             GLib.Bytes.new(im.tobytes()), GdkPixbuf.Colorspace.RGB,
@@ -168,7 +200,8 @@ def pil_to_pixbuf(im, keep_orientation=False):
     )
     if keep_orientation:
         # Keep orientation metadata.
-        if (orientation := _getexif(im).get(274, None)) is not None:
+        orientation = _getexif(im).get(274, None)
+        if orientation is not None:
             setattr(pixbuf, 'orientation', str(orientation))
     return pixbuf
 
@@ -233,66 +266,27 @@ def load_animation(im):
 
 def load_pixbuf(path):
     """Loads a pixbuf from a given image file"""
-    enable_anime = prefs['animation mode'] != constants.ANIMATION_DISABLED
-    try:
-        with reader.LockedFileIO(path) as fio:
-            with Image.open(fio) as im:
-                # make sure n_frames loaded
-                im.load()
-                if enable_anime and getattr(im, 'is_animated', False):
-                    return load_animation(im)
-                return pil_to_pixbuf(im, keep_orientation=True)
-    except Exception:
-        pass
-    if enable_anime:
-        pixbuf = GdkPixbuf.PixbufAnimation.new_from_file(path)
-        if pixbuf.is_static_image():
-            return pixbuf.get_static_image()
-        return pixbuf
-
-    return GdkPixbuf.Pixbuf.new_from_file(path)
+    with reader.LockedFileIO(path) as fio:
+        with Image.open(fio) as im:
+            # make sure n_frames loaded
+            im.load()
+            if prefs['animation mode'] and getattr(im, 'is_animated', False):
+                return load_animation(im)
+            return pil_to_pixbuf(im, keep_orientation=True)
 
 
 def load_pixbuf_size(path, width, height):
     """Loads a pixbuf from a given image file and scale it to fit inside (width, height)"""
-    try:
-        with reader.LockedFileIO(path) as fio:
-            with Image.open(fio) as im:
-                im.thumbnail((width, height), resample=Image.BOX)
-                return pil_to_pixbuf(im, keep_orientation=True)
-    except Exception:
-        info, image_width, image_height = GdkPixbuf.Pixbuf.get_file_info(path)
-        # If we could not get the image info, still try to load
-        # the image to let GdkPixbuf raise the appropriate exception.
-        if not info:
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file(path)
-        # Don't upscale if smaller than target dimensions!
-        if image_width <= width and image_height <= height:
-            width, height = image_width, image_height
-        # Work around GdkPixbuf bug
-        # https://gitlab.gnome.org/GNOME/gdk-pixbuf/issues/45
-        # TODO: GIF should be always supported by Pillow.
-        #       Is this workaround really needed?
-        if info.get_name() == 'gif':
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file(path)
-        else:
-            # directly return pixbuf
-            return GdkPixbuf.Pixbuf.new_from_file_at_size(path, width, height)
-        return fit_in_rectangle(pixbuf, width, height,
-                                scaling_quality=GdkPixbuf.InterpType.BILINEAR)
+    with reader.LockedFileIO(path) as fio:
+        with Image.open(fio) as im:
+            im.thumbnail((width, height), resample=Image.BOX)
+            return pil_to_pixbuf(im, keep_orientation=True)
 
 
 def load_pixbuf_data(imgdata):
     """Loads a pixbuf from the data passed in <imgdata>"""
-    try:
-        with Image.open(BytesIO(imgdata)) as im:
-            return pil_to_pixbuf(im, keep_orientation=True)
-    except Exception:
-        pass
-    loader = GdkPixbuf.PixbufLoader()
-    loader.write(imgdata)
-    loader.close()
-    return loader.get_pixbuf()
+    with Image.open(BytesIO(imgdata)) as im:
+        return pil_to_pixbuf(im, keep_orientation=True)
 
 
 def enhance(pixbuf, brightness=1.0, contrast=1.0, saturation=1.0, sharpness=1.0, autocontrast=False):
@@ -360,28 +354,16 @@ def text_color_for_background_color(bgcolor):
 
 def get_image_size(path):
     """Return image informations: (format, width, height)"""
-    try:
-        with reader.LockedFileIO(path) as fio:
-            with Image.open(fio) as im:
-                return im.size
-    except Exception:
-        if (info := GdkPixbuf.Pixbuf.get_file_info(path))[0] is None:
-            return 0, 0
-
-        return info[1], info[2]
+    with reader.LockedFileIO(path) as fio:
+        with Image.open(fio) as im:
+            return im.size
 
 
 def get_image_mime(path):
     """Return image informations: (format, width, height)"""
-    try:
-        with reader.LockedFileIO(path) as fio:
-            with Image.open(fio) as im:
-                return im.format
-    except Exception:
-        if (info := GdkPixbuf.Pixbuf.get_file_info(path))[0] is None:
-            return 'Unknown filetype'
-
-        return info[0].get_name().upper()
+    with reader.LockedFileIO(path) as fio:
+        with Image.open(fio) as im:
+            return im.format
 
 
 SUPPORTED_IMAGE_EXTS = set()

@@ -9,5 +9,5 @@ _IOLock = Lock()
 class LockedFileIO(io.BytesIO):
     def __init__(self, path):
         with _IOLock:
-            with Path.open(path, mode='rb') as f:
+            with open(path, mode='rb') as f:
                 super().__init__(f.read())
