@@ -56,7 +56,7 @@ class ThumbnailViewBase:
                 taskid = uuid.uuid4().int
 
             model = self.get_model()
-            for idx, item in set(enumerate(model)):
+            for idx, item in enumerate(model):
                 iter = model.get_iter(idx)
                 uid, generated = model.get(iter, self.__uid_column, self.__status_column)
                 # Do not queue again if thumbnail was already created.
