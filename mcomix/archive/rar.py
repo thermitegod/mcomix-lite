@@ -127,7 +127,7 @@ class RarArchive(archive_base.BaseArchive):
         self._close()
         self._open()
         try:
-            while True:
+            while 1:
                 self._read_header()
                 if (0x10 & self.__headerdata.Flags) != 0:
                     self.__is_solid = True
@@ -151,7 +151,7 @@ class RarArchive(archive_base.BaseArchive):
             self._open()
         looped = False
         destination_path = Path() / destination_dir / filename
-        while True:
+        while 1:
             # Check if the current entry matches the requested file.
             if self.__current_filename is not None:
                 if self.__current_filename == filename:

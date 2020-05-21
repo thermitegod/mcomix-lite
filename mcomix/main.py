@@ -314,7 +314,7 @@ class MainWindow(Gtk.Window):
             expand_area = False
             scrollbar_requests = [False] * len(self.__scroll)
             # Visible area size is recomputed depending on scrollbar visibility
-            while True:
+            while 1:
                 self._show_scrollbars(scrollbar_requests)
                 if (new_viewport_size := self.get_visible_area_size()) == viewport_size:
                     break
