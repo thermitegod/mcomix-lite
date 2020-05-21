@@ -35,7 +35,7 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
         tvcol1.pack_start(cell1, True)
         tvcol1.set_attributes(cell1, text=0, editable=2)
 
-        for idx in range(0, self.__accel_column_num):
+        for idx in range(self.__accel_column_num):
             tvc = Gtk.TreeViewColumn(f'Key {idx + 1}')
             treeview.append_column(tvc)
             accel_cell = Gtk.CellRendererAccel()
@@ -71,7 +71,7 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
             group_name = action_data['group']
             old_bindings = self.__keymanager.get_bindings_for_action(action_name)
             acc_list = ['', ] * self.__accel_column_num
-            for idx in range(0, self.__accel_column_num):
+            for idx in range(self.__accel_column_num):
                 if len(old_bindings) > idx:
                     acc_list[idx] = Gtk.accelerator_name(*old_bindings[idx])
 
@@ -92,12 +92,12 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
 
             # Find affected row and cell
             if affected_action == action_name:
-                for idx in range(0, self.__accel_column_num):
+                for idx in range(self.__accel_column_num):
                     if idx != column and self.__treestore.get(iter, idx + 3)[0] == new_accel:
                         self.__treestore.set_value(iter, idx + 3, '')
             elif affected_action is not None:
                 titer = self.__action_treeiter_map[affected_action]
-                for idx in range(0, self.__accel_column_num):
+                for idx in range(self.__accel_column_num):
                     if self.__treestore.get(titer, idx + 3)[0] == new_accel:
                         self.__treestore.set_value(titer, idx + 3, '')
 
