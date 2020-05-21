@@ -149,7 +149,8 @@ class ZoomModel:
         scales will shrink their respective boxes to 1 along axis. In this case,
         the scaled total size might be greater than max_size"""
         # trivial cases first
-        if (n := len(sizes)) == 0:
+        n = len(sizes)
+        if not n:
             return []
         if n >= max_size:
             # In this case, only one solution or only an approximation is available.
@@ -261,7 +262,7 @@ class ZoomModel:
 
     @staticmethod
     def _union_size(image_sizes, distribution_axis):
-        if len(image_sizes) == 0:
+        if not image_sizes:
             return []
         n = len(image_sizes[0])
         union_size = list(map(lambda i: reduce(max, map(lambda x: x[i], image_sizes)), range(n)))

@@ -190,7 +190,7 @@ class FileHandler:
         @param path: List of file names, or single file/directory as string.
         @param keep_fileprovider: If C{True}, no new provider is constructed.
         @return: If C{path} was a list, returns the first list element. Otherwise, C{path} is not modified"""
-        if isinstance(path, list) and len(path) == 0:
+        if isinstance(path, list) and not path:
             assert False, 'Tried to open an empty list of files.'
 
         elif isinstance(path, list) and len(path) > 0:

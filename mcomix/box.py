@@ -123,7 +123,7 @@ class Box:
                         if c < 0:
                             keep_append_replace = 2
                             break
-                        if c == 0:
+                        if not c:
                             keep_append_replace = 1
                 else:
                     keep_append_replace = 1
@@ -148,7 +148,8 @@ class Box:
         -1 (towards smaller values in this dimension when reading).
         @return An integer as specified above"""
         for idx, item in enumerate(orientation):
-            if (o := orientation[idx]) == 0:
+            o = orientation[idx]
+            if not o:
                 continue
             box1edge = box1.get_position()[idx]
             box2edge = box2.get_position()[idx]
@@ -194,7 +195,7 @@ class Box:
         @param fix: the index of the Box that should not move.
         @param orientation: The orientation to use.
         @return: A list of new Boxes with accordingly translated positions"""
-        if len(boxes) == 0:
+        if not boxes:
             return []
         center_box = boxes[fix]
         if (cs := center_box.get_size()[axis]) % 2 != 0:
@@ -216,7 +217,7 @@ class Box:
         @param fix: the index of the Box that should not move.
         @param spacing: the number of additional pixels between Boxes.
         @return: A new list with new Boxes that are accordingly translated"""
-        if len(boxes) == 0:
+        if not boxes:
             return []
         result = [None] * len(boxes)
         initial_sum = boxes[fix].get_position()[axis]
@@ -261,7 +262,7 @@ class Box:
         that contains all specified Boxes).
         @param boxes: The Boxes to calculate the union from.
         @return: A Box as specified above"""
-        if len(boxes) == 0:
+        if not boxes:
             return Box((), ())
         mins = [None] * len(boxes[0].get_size())
         maxes = [None] * len(mins)

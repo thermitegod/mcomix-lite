@@ -194,7 +194,7 @@ class RarArchive(archive_base.BaseArchive):
         self.__handle = handle
 
     def _check_errorcode(self, errorcode):
-        if errorcode == 0:
+        if not errorcode:
             # No error.
             return
         self._close()

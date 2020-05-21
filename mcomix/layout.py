@@ -83,7 +83,7 @@ class FiniteLayout:  # 2D only
         for idx, item in enumerate(content_size):
             o = orientation[idx]
             d = destination[idx]
-            if d == 0:
+            if not d:
                 continue
             if d < constants.SCROLL_TO_END or d > 1:
                 raise ValueError(f'invalid destination {d} at index {i}')

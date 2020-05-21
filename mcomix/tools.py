@@ -47,7 +47,7 @@ def bin_search(lst, value):
 
 
 def number_of_digits(n):
-    if n == 0:
+    if not n:
         return 1
 
     return int(math.log10(abs(n))) + 1

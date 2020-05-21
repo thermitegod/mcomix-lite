@@ -117,7 +117,7 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
                 self.__keymanager.clear_accel(action_name, accel)
 
                 # updating gtk accelerator for label in menu
-                if len(self.__keymanager.get_bindings_for_action(action_name)) == 0:
+                if not self.__keymanager.get_bindings_for_action(action_name):
                     Gtk.AccelMap.change_entry(f'<Actions>/mcomix-main/{action_name}, 0, 0, True')
                 else:
                     key, mods = self.__keymanager.get_bindings_for_action(action_name)[0]

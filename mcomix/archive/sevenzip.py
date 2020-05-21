@@ -133,7 +133,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
                     new.write(data)
                 yield unicode_name
                 del wanted[filename]
-                if len(wanted) == 0:
+                if not wanted:
                     break
 
     @staticmethod
