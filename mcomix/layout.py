@@ -49,11 +49,11 @@ class FiniteLayout:  # 2D only
         if index is None:
             index = self.get_current_index()
         if not self.__wrap_individually:
-            index = constants.UNION_INDEX
-        if index == constants.UNION_INDEX:
+            index = constants.INDEX_UNION
+        if index == constants.INDEX_UNION:
             current_box = self.__union_box
         else:
-            if index == constants.LAST_INDEX:
+            if index == constants.INDEX_LAST:
                 index = len(self.__content_boxes) - 1
             current_box = self.__wrapper_boxes[index]
         self.set_viewport_position(self._scroll_to_predefined(

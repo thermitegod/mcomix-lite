@@ -122,9 +122,9 @@ class ZoomModel:
                 fitmode = prefs['fit to size mode']  # reassigning fitmode
                 fixed_size = prefs['fit to size px']
             if fitmode == constants.ZOOM_MODE_WIDTH:
-                axis = constants.WIDTH_AXIS
+                axis = constants.AXIS_WIDTH
             elif fitmode == constants.ZOOM_MODE_HEIGHT:
-                axis = constants.HEIGHT_AXIS
+                axis = constants.AXIS_HEIGHT
             else:
                 assert False, 'Cannot map fitmode to axis'
             result[axis] = fixed_size if fixed_size is not None else screen_size[axis]

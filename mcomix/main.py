@@ -88,9 +88,9 @@ class MainWindow(Gtk.Window):
 
         table.attach(self.__event_box, 1, 2, 2, 3, Gtk.AttachOptions.FILL | Gtk.AttachOptions.EXPAND,
                      Gtk.AttachOptions.FILL | Gtk.AttachOptions.EXPAND, 0, 0)
-        table.attach(self.__scroll[constants.HEIGHT_AXIS], 2, 3, 2, 3, Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
+        table.attach(self.__scroll[constants.AXIS_HEIGHT], 2, 3, 2, 3, Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
                      Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK, 0, 0)
-        table.attach(self.__scroll[constants.WIDTH_AXIS], 1, 2, 4, 5, Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
+        table.attach(self.__scroll[constants.AXIS_WIDTH], 1, 2, 4, 5, Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
                      Gtk.AttachOptions.FILL, 0, 0)
         table.attach(self.menubar, 0, 3, 0, 1, Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
                      Gtk.AttachOptions.FILL, 0, 0)
@@ -140,11 +140,11 @@ class MainWindow(Gtk.Window):
 
         # Each "toggle" widget "eats" part of the main layout visible area.
         self.__toggle_axis = {
-            self.thumbnailsidebar: constants.WIDTH_AXIS,
-            self.__scroll[constants.HEIGHT_AXIS]: constants.WIDTH_AXIS,
-            self.__scroll[constants.WIDTH_AXIS]: constants.HEIGHT_AXIS,
-            self.statusbar: constants.HEIGHT_AXIS,
-            self.menubar: constants.HEIGHT_AXIS,
+            self.thumbnailsidebar: constants.AXIS_WIDTH,
+            self.__scroll[constants.AXIS_HEIGHT]: constants.AXIS_WIDTH,
+            self.__scroll[constants.AXIS_WIDTH]: constants.AXIS_HEIGHT,
+            self.statusbar: constants.AXIS_HEIGHT,
+            self.menubar: constants.AXIS_HEIGHT,
         }
 
         self.actiongroup.get_action('menu_autorotate_width').set_sensitive(False)
@@ -267,17 +267,17 @@ class MainWindow(Gtk.Window):
             return False
 
         if self.imagehandler.page_is_available():
-            distribution_axis = constants.DISTRIBUTION_AXIS
-            alignment_axis = constants.ALIGNMENT_AXIS
+            distribution_axis = constants.AXIS_DISTRIBUTION
+            alignment_axis = constants.AXIS_ALIGNMENT
             pixbuf_count = 2 if self.displayed_double() else 1  # XXX limited to at most 2 pages
             pixbuf_list = list(self.imagehandler.get_pixbufs(pixbuf_count))
             do_not_transform = [image_tools.disable_transform(x) for x in pixbuf_list]
             size_list = [[pixbuf.get_width(), pixbuf.get_height()] for pixbuf in pixbuf_list]
 
             if self.is_manga_mode:
-                orientation = constants.MANGA_ORIENTATION
+                orientation = constants.ORIENTATION_MANGA
             else:
-                orientation = constants.WESTERN_ORIENTATION
+                orientation = constants.ORIENTATION_WESTERN
 
             # Rotation handling:
             # - apply Exif rotation on individual images
@@ -375,15 +375,15 @@ class MainWindow(Gtk.Window):
 
             # Reset orientation so scrolling behaviour is sane.
             if self.is_manga_mode:
-                self.__layout.set_orientation(constants.MANGA_ORIENTATION)
+                self.__layout.set_orientation(constants.ORIENTATION_MANGA)
             else:
-                self.__layout.set_orientation(constants.WESTERN_ORIENTATION)
+                self.__layout.set_orientation(constants.ORIENTATION_WESTERN)
 
             if scroll_to is not None:
                 if constants.SCROLL_TO_START == scroll_to:
-                    index = constants.FIRST_INDEX
+                    index = constants.INDEX_FIRST
                 elif constants.SCROLL_TO_END == scroll_to:
-                    index = constants.LAST_INDEX
+                    index = constants.INDEX_LAST
                 else:
                     index = None
                 destination = (scroll_to,) * 2
@@ -749,9 +749,9 @@ class MainWindow(Gtk.Window):
                 if widget.get_visible():
                     axis = self.__toggle_axis[widget]
                     requisition = widget.size_request()
-                    if constants.WIDTH_AXIS == axis:
+                    if constants.AXIS_WIDTH == axis:
                         size = requisition.width
-                    elif constants.HEIGHT_AXIS == axis:
+                    elif constants.AXIS_HEIGHT == axis:
                         size = requisition.height
                     dimensions[axis] -= size
 

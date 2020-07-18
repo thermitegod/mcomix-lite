@@ -39,12 +39,12 @@ class MagnifyingLens:
 
         if enabled:
             # FIXME: If no file is currently loaded, the cursor will still be hidden.
-            self.__window.cursor_handler.set_cursor_type(constants.NO_CURSOR)
+            self.__window.cursor_handler.set_cursor_type(constants.CURSOR_NONE)
 
             if self.__point:
                 self._draw_lens(*self.__point)
         else:
-            self.__window.cursor_handler.set_cursor_type(constants.NORMAL_CURSOR)
+            self.__window.cursor_handler.set_cursor_type(constants.CURSOR_NORMAL)
             self._clear_lens()
             self.__last_lens_rect = None
 

@@ -272,7 +272,7 @@ class EventHandler:
 
     def mouse_release_event(self, widget, event):
         """Handle mouse button release events on the main layout area"""
-        self.__window.cursor_handler.set_cursor_type(constants.NORMAL_CURSOR)
+        self.__window.cursor_handler.set_cursor_type(constants.CURSOR_NORMAL)
 
         if event.button == 1:
             pass
@@ -289,7 +289,7 @@ class EventHandler:
     def mouse_move_event(self, widget, event):
         """Handle mouse pointer movement events"""
         if 'GDK_BUTTON1_MASK' in event.get_state().value_names:
-            self.__window.cursor_handler.set_cursor_type(constants.GRAB_CURSOR)
+            self.__window.cursor_handler.set_cursor_type(constants.CURSOR_GRAB)
             self.__window.scroll(self.__last_pointer_pos_x - event.x_root,
                                  self.__last_pointer_pos_y - event.y_root)
             self.__last_pointer_pos_x = event.x_root
