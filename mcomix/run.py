@@ -16,7 +16,7 @@ def run():
     """Run the program"""
     parser = argparse.ArgumentParser(usage='%%(prog)s %s' % '[OPTION...] [PATH]',
                                      description='View images and manga archives.')
-    parser.add_argument('path', type=str, action='store', nargs='*', default='',
+    parser.add_argument('path', type=str, action='store', nargs='*', default=None,
                         help=argparse.SUPPRESS)
     parser.add_argument('-v', '--version', dest='version', action='store_true',
                         help='Show the version number and exit.')
@@ -93,7 +93,7 @@ def run():
     from mcomix import icons
     icons.load_icons()
 
-    open_path = args.path or None
+    open_path = args.path
     open_page = 1
 
     if isinstance(open_path, list):
