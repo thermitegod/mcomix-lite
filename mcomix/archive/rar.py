@@ -11,9 +11,6 @@ from loguru import logger
 
 from mcomix.archive import archive_base
 
-# Filled on-demand by _get_unrar
-_unrar_dll = None
-
 UNRARCALLBACK = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_uint, ctypes.c_long, ctypes.c_long, ctypes.c_long)
 
 
@@ -95,12 +92,12 @@ class RarArchive(archive_base.BaseArchive):
     @staticmethod
     def is_available():
         """Returns True if unrar.dll can be found, False otherwise"""
-        return bool(_get_unrar())
+        return bool(RarExecutable.find_unrar())
 
     def __init__(self, archive):
         """Initialize Unrar.dll"""
         super(RarArchive, self).__init__(archive)
-        self.__unrar = _get_unrar()
+        self.__unrar = RarExecutable.find_unrar()
         self.__handle = None
         self.__is_solid = False
         # Information about the current file will be stored in this structure
@@ -258,19 +255,24 @@ class UnrarException(Exception):
         return 'Unkown error'
 
 
-def _get_unrar():
-    """Tries to load libunrar and will return a handle of it.
-    Returns None if an error occured or the library couldn't be found"""
-    global _unrar_dll
-    if _unrar_dll is not None:
-        return _unrar_dll
+class _RarExecutable:
+    def __init__(self):
+        self.__unrar = None
 
-    # find_library on UNIX uses various mechanisms to determine the path
-    # of a library, so one could assume the library is not installed
-    # when find_library fails
-    if unrar_path := ctypes.util.find_library('unrar'):
-        try:
-            _unrar_dll = ctypes.cdll.LoadLibrary(unrar_path)
-            return _unrar_dll
-        except OSError:
-            pass
+    def find_unrar(self):
+        """Tries to load libunrar and will return a handle of it.
+        Returns None if an error occured or the library couldn't be found"""
+        if self.__unrar is None:
+            try:
+                # find_library on UNIX uses various mechanisms to determine the path
+                # of a library, so one could assume the library is not installed
+                # when find_library fails
+                self.__unrar = ctypes.cdll.LoadLibrary(ctypes.util.find_library('unrar'))
+            except OSError:
+                pass
+
+        return self.__unrar
+
+
+# Singleton instance
+RarExecutable = _RarExecutable()
