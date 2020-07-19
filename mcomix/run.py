@@ -41,9 +41,6 @@ def run():
     debugopts.add_argument('-L', '--loglevel', default='WARNING', metavar='LEVEL', type=str.upper,
                            choices=['NONE', 'CRITICAL', 'ERROR', 'WARNING', 'INFO', 'VERBOSE', 'DEBUG', 'TRACE'],
                            help='Levels: %(choices)s')
-    # This supresses an error when MComix is used with cProfile
-    debugopts.add_argument('-o', dest='output', action='store',
-                           default='', help=argparse.SUPPRESS)
     args = parser.parse_args()
 
     if args.version:
