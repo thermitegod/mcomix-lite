@@ -7,8 +7,6 @@ from gi.repository import Gtk
 from mcomix import histogram, image_tools
 from mcomix.preferences import prefs
 
-_dialog = None
-
 
 class _EnhanceImageDialog(Gtk.Dialog):
     """A Gtk.Dialog which allows modification of the values belonging to an ImageEnhancer"""
@@ -132,7 +130,7 @@ class _EnhanceImageDialog(Gtk.Dialog):
 
     def _response(self, dialog, response):
         if response in [Gtk.ResponseType.OK, Gtk.ResponseType.DELETE_EVENT]:
-            _close_dialog()
+            EnhanceDialog.close_dialog()
 
         elif response == Gtk.ResponseType.APPLY:
             self._change_values(self)
@@ -153,20 +151,24 @@ class _EnhanceImageDialog(Gtk.Dialog):
             self._change_values(self)
 
 
-def open_dialog(action, window):
-    """Create and display the (singleton) image enhancement dialog"""
-    global _dialog
+class _EnhanceDialog:
+    def __init__(self):
+        self.__dialog = None
 
-    if _dialog is None:
-        _dialog = _EnhanceImageDialog(window)
-    else:
-        _dialog.present()
+    def open_dialog(self, event, window):
+        """Create and display the (singleton) image enhancement dialog"""
+        if self.__dialog is None:
+            self.__dialog = _EnhanceImageDialog(window)
+        else:
+            self.__dialog.present()
+
+    def close_dialog(self):
+        """Destroy the image enhancement dialog"""
+        if self.__dialog is not None:
+            self.__dialog.destroy()
+            self.__dialog = None
 
 
-def _close_dialog(*args):
-    """Destroy the image enhancement dialog"""
-    global _dialog
+# Singleton instance
+EnhanceDialog = _EnhanceDialog()
 
-    if _dialog is not None:
-        _dialog.destroy()
-        _dialog = None

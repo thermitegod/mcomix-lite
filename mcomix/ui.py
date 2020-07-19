@@ -132,7 +132,7 @@ class MainUI(Gtk.UIManager):
         # Some actions added separately since they need extra arguments.
         self.__actiongroup.add_actions([
             ('enhance_image', 'mcomix-enhance-image', 'En_hance image...',
-             None, None, enhance_dialog.open_dialog)], window)
+             None, None, enhance_dialog.EnhanceDialog.open_dialog)], window)
 
         # fix some gtk magic: removing unreqired accelerators
         Gtk.AccelMap.change_entry('<Actions>/mcomix-main/close', 0, 0, True)
