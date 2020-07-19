@@ -263,14 +263,11 @@ class _RarExecutable:
         """Tries to load libunrar and will return a handle of it.
         Returns None if an error occured or the library couldn't be found"""
         if self.__unrar is None:
-            try:
-                # find_library on UNIX uses various mechanisms to determine the path
-                # of a library, so one could assume the library is not installed
-                # when find_library fails
-                self.__unrar = ctypes.cdll.LoadLibrary(ctypes.util.find_library('unrar'))
-            except OSError:
-                pass
-
+            unrar = ctypes.util.find_library('unrar')
+            if unrar is None:
+                logger.error(f'failed to find unrar library')
+                return None
+            self.__unrar = ctypes.cdll.LoadLibrary(unrar)
         return self.__unrar
 
 

@@ -2,7 +2,6 @@
 
 """process.py - Process spawning module"""
 
-import shutil
 import subprocess
 
 NULL = subprocess.DEVNULL
@@ -18,10 +17,3 @@ def call(args, stdin=NULL, stdout=NULL, stderr=NULL, universal_newlines=False):
 def popen(args, stdin=NULL, stdout=PIPE, stderr=NULL, universal_newlines=False):
     return subprocess.Popen(args, stdin=stdin, stdout=stdout, stderr=stderr,
                             universal_newlines=universal_newlines, creationflags=0)
-
-
-def find_executable(executable):
-    try:
-        return shutil.which(executable)
-    except NameError:
-        return None

@@ -2,8 +2,11 @@
 
 """7z archive extractor"""
 
+import shutil
 import tempfile
 from pathlib import Path
+
+from loguru import logger
 
 from mcomix.archive import archive_base
 from mcomix.lib import process
@@ -145,7 +148,10 @@ class _SevenzipExecutable:
         """Tries to start 7z, and returns either '7z' if
         it was started successfully or None otherwise"""
         if self.__sevenzip is None:
-            self.__sevenzip = process.find_executable('7z')
+            self.__sevenzip = shutil.which('7z')
+            if self.__sevenzip is None:
+                logger.error(f'failed to find 7z executable')
+
         return self.__sevenzip
 
 
