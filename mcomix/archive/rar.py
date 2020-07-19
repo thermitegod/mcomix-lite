@@ -29,7 +29,7 @@ class RarArchive(archive_base.BaseArchive):
         RAR_SKIP = 0
         RAR_EXTRACT = 2
 
-    class _ErrorCode:
+    class ErrorCode:
         """Rar error codes"""
         ERAR_END_ARCHIVE = 10
         ERAR_NO_MEMORY = 11
@@ -195,7 +195,7 @@ class RarArchive(archive_base.BaseArchive):
             # No error.
             return
         self._close()
-        if RarArchive._ErrorCode.ERAR_END_ARCHIVE == errorcode:
+        if RarArchive.ErrorCode.ERAR_END_ARCHIVE == errorcode:
             # End of archive reached.
             exc = EOFError()
         else:
@@ -232,19 +232,19 @@ class RarArchive(archive_base.BaseArchive):
 class UnrarException(Exception):
     """Exception class for RarArchive"""
     _exceptions = {
-        RarArchive._ErrorCode.ERAR_END_ARCHIVE: 'End of archive',
-        RarArchive._ErrorCode.ERAR_NO_MEMORY: 'Not enough memory to initialize data structures',
-        RarArchive._ErrorCode.ERAR_BAD_DATA: 'Bad data, CRC mismatch',
-        RarArchive._ErrorCode.ERAR_BAD_ARCHIVE: 'Volume is not valid RAR archive',
-        RarArchive._ErrorCode.ERAR_UNKNOWN_FORMAT: 'Unknown archive format',
-        RarArchive._ErrorCode.ERAR_EOPEN: 'Volume open error',
-        RarArchive._ErrorCode.ERAR_ECREATE: 'File create error',
-        RarArchive._ErrorCode.ERAR_ECLOSE: 'File close error',
-        RarArchive._ErrorCode.ERAR_EREAD: 'Read error',
-        RarArchive._ErrorCode.ERAR_EWRITE: 'Write error',
-        RarArchive._ErrorCode.ERAR_SMALL_BUF: 'Buffer too small',
-        RarArchive._ErrorCode.ERAR_UNKNOWN: 'Unknown error',
-        RarArchive._ErrorCode.ERAR_MISSING_PASSWORD: 'Password missing',
+        RarArchive.ErrorCode.ERAR_END_ARCHIVE: 'End of archive',
+        RarArchive.ErrorCode.ERAR_NO_MEMORY: 'Not enough memory to initialize data structures',
+        RarArchive.ErrorCode.ERAR_BAD_DATA: 'Bad data, CRC mismatch',
+        RarArchive.ErrorCode.ERAR_BAD_ARCHIVE: 'Volume is not valid RAR archive',
+        RarArchive.ErrorCode.ERAR_UNKNOWN_FORMAT: 'Unknown archive format',
+        RarArchive.ErrorCode.ERAR_EOPEN: 'Volume open error',
+        RarArchive.ErrorCode.ERAR_ECREATE: 'File create error',
+        RarArchive.ErrorCode.ERAR_ECLOSE: 'File close error',
+        RarArchive.ErrorCode.ERAR_EREAD: 'Read error',
+        RarArchive.ErrorCode.ERAR_EWRITE: 'Write error',
+        RarArchive.ErrorCode.ERAR_SMALL_BUF: 'Buffer too small',
+        RarArchive.ErrorCode.ERAR_UNKNOWN: 'Unknown error',
+        RarArchive.ErrorCode.ERAR_MISSING_PASSWORD: 'Password missing',
     }
 
     @staticmethod
