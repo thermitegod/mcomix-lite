@@ -873,7 +873,7 @@ class MainWindow(Gtk.Window):
 
     def write_config_files(self):
         preferences.PreferenceManager.write_preferences_file()
-        keybindings.keybinding_manager(self).write_keybindings_file()
+        keybindings.KeybindingManager.keybinding_manager(self).write_keybindings_file()
         bookmark_backend.BookmarksStore.write_bookmarks_file()
 
     def get_window_geometry(self):

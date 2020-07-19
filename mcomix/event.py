@@ -43,7 +43,7 @@ class EventHandler:
     def register_key_events(self):
         """Registers keyboard events and their default binings, and hooks
         them up with their respective callback functions"""
-        manager = keybindings.keybinding_manager(self.__window)
+        manager = keybindings.KeybindingManager.keybinding_manager(self.__window)
 
         # Navigation keys
         manager.register('previous_page',
@@ -182,7 +182,7 @@ class EventHandler:
     def key_press_event(self, widget, event, *args):
         """Handle key press events on the main window"""
         # Dispatch keyboard input handling
-        manager = keybindings.keybinding_manager(self.__window)
+        manager = keybindings.KeybindingManager.keybinding_manager(self.__window)
         # Some keys require modifiers that are irrelevant to the hotkey. Find out and ignore them.
         ALL_ACCELS_MASK = (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.MOD1_MASK)
 

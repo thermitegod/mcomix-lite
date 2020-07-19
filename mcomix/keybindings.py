@@ -32,7 +32,7 @@ from loguru import logger
 from mcomix import constants, keybindings_map, tools
 
 
-class _KeybindingManager:
+class _KeybindingInterface:
     def __init__(self, window):
         #: Main window instance
         self.__window = window
@@ -200,14 +200,18 @@ class _KeybindingManager:
         return self.__action_to_bindings[name]
 
 
-_manager = None
+class _KeybindingManager:
+    def __init__(self):
+        self.__manager = None
+
+    def keybinding_manager(self, window):
+        if self.__manager is None:
+            self.__manager = _KeybindingInterface(window)
+        return self.__manager
 
 
-def keybinding_manager(window):
-    """Returns a singleton instance of the keybinding manager"""
-    global _manager
-    if _manager:
-        return _manager
+# Singleton instance
+KeybindingManager = _KeybindingManager()
 
-    _manager = _KeybindingManager(window)
-    return _manager
+
+
