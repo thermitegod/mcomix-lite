@@ -56,12 +56,11 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
         if self.__state == self.STATE_HEADER:
             if line == 'Solid = +':
                 self.__is_solid = True
-
-        if self.__state == self.STATE_LISTING:
+        elif self.__state == self.STATE_LISTING:
             if line.startswith('Path = '):
                 self.__path = line[7:]
                 return self.__path
-            if line.startswith('Size = '):
+            elif line.startswith('Size = '):
                 filesize = int(line[7:])
                 if filesize > 0:
                     self.__contents.append((self.__path, filesize))
