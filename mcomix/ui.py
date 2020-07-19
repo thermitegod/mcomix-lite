@@ -127,7 +127,7 @@ class MainUI(Gtk.UIManager):
 
         self.__actiongroup.add_actions([
             ('preferences', Gtk.STOCK_PREFERENCES, 'Pr_eferences',
-             None, None, preferences_dialog.open_dialog)], window)
+             None, None, preferences_dialog.PreferenceDialog.open_dialog)], window)
 
         # Some actions added separately since they need extra arguments.
         self.__actiongroup.add_actions([

@@ -7,8 +7,6 @@ from gi.repository import GObject, Gdk, GdkPixbuf, Gtk
 from mcomix import constants, keybindings, keybindings_editor, labels
 from mcomix.preferences import prefs
 
-_dialog = None
-
 
 class _PreferencesDialog(Gtk.Dialog):
     """The preferences dialog where most (but not all) settings that are
@@ -370,7 +368,7 @@ class _PreferencesDialog(Gtk.Dialog):
 
     def _response(self, dialog, response):
         if response == Gtk.ResponseType.CLOSE:
-            _close_dialog()
+            PreferenceDialog.close_dialog()
 
         elif response == constants.RESPONSE_REVERT_TO_DEFAULT:
             if self.notebook.get_nth_page(self.notebook.get_current_page()) == self.shortcuts:
@@ -387,7 +385,7 @@ class _PreferencesDialog(Gtk.Dialog):
 
         else:
             # Other responses close the dialog, e.g. clicking the X icon on the dialog.
-            _close_dialog()
+            PreferenceDialog.close_dialog()
 
     def _create_doublepage_as_one_control(self):
         """Creates the ComboBox control for selecting virtual double page options"""
@@ -731,25 +729,28 @@ class _PreferencesDialog(Gtk.Dialog):
         chooser.set_label(prefs[preference] or '(default)')
 
 
-def open_dialog(action, window):
-    """Create and display the preference dialog"""
-    global _dialog
+class _PreferenceDialog:
+    def __init__(self):
+        self.__dialog = None
 
-    # if the dialog window is not created then create the window
-    if _dialog is None:
-        _dialog = _PreferencesDialog(window)
-    else:
-        # if the dialog window already exists bring it to the forefront of the screen
-        _dialog.present()
+    def open_dialog(self, event, window):
+        """Create and display the preference dialog"""
+        # if the dialog window is not created then create the window
+        if self.__dialog is None:
+            self.__dialog = _PreferencesDialog(window)
+        else:
+            # if the dialog window already exists bring it to the forefront of the screen
+            self.__dialog.present()
+
+    def close_dialog(self):
+        # if the dialog window exists then destroy it
+        if self.__dialog is not None:
+            self.__dialog.destroy()
+            self.__dialog = None
 
 
-def _close_dialog():
-    global _dialog
-
-    # if the dialog window exists then destroy it
-    if _dialog is not None:
-        _dialog.destroy()
-        _dialog = None
+# Singleton instance
+PreferenceDialog = _PreferenceDialog()
 
 
 class _PreferenceSection(Gtk.VBox):
