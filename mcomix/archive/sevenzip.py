@@ -8,9 +8,6 @@ from pathlib import Path
 from mcomix.archive import archive_base
 from mcomix.lib import process
 
-# Filled on-demand by SevenZipArchive
-_7z_executable = None
-
 
 class SevenZipArchive(archive_base.ExternalExecutableArchive):
     """7z file extractor using the 7z executable"""
@@ -27,7 +24,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
         self.__filenames_initialized = False
 
     def _get_executable(self):
-        return SevenZipArchive._find_7z_executable()
+        return SevenzipExecutable.find_sevenzip()
 
     def _get_list_arguments(self):
         args = [self._get_executable(), 'l', '-slt']
@@ -137,14 +134,22 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
                     break
 
     @staticmethod
-    def _find_7z_executable():
+    def is_available():
+        return bool(SevenzipExecutable.find_sevenzip())
+
+
+class _SevenzipExecutable:
+    def __init__(self):
+        self.__sevenzip = None
+
+    def find_sevenzip(self):
         """Tries to start 7z, and returns either '7z' if
         it was started successfully or None otherwise"""
-        global _7z_executable
-        if _7z_executable is None:
-            _7z_executable = process.find_executable('7z')
-        return _7z_executable
+        if self.__sevenzip is None:
+            self.__sevenzip = process.find_executable('7z')
+        return self.__sevenzip
 
-    @staticmethod
-    def is_available():
-        return bool(SevenZipArchive._find_7z_executable())
+
+# Singleton instance
+SevenzipExecutable = _SevenzipExecutable()
+
