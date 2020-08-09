@@ -65,7 +65,6 @@ prefs = {
     'escape quits': True,
     'fit to size mode': constants.ZOOM_MODE_HEIGHT,
     'fit to size px': 1800,
-    'external commands': [],  # (label, command) pairs
     'animation mode': constants.ANIMATION_INF,
     'animation background': True,
     'animation transform': True,
