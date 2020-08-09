@@ -51,7 +51,7 @@ class ZoomModel:
         union_size = ZoomModel._union_size(fitted_image_sizes, distribution_axis)
         limits = ZoomModel._calc_limits(union_size, screen_size, self.__fitmode, scale_up)
 
-        prefscale = ZoomModel._preferred_scale(union_size, limits, distribution_axis)
+        prefscale = self._preferred_scale(union_size, limits, distribution_axis)
         preferred_scales = [(self.__identity_zoom if dnt else prefscale) for dnt in do_not_transform]
         prescaled = [tuple(ZoomModel._scale_image_size(size, scale))
                      for size, scale in zip(fitted_image_sizes, preferred_scales)]
@@ -69,7 +69,7 @@ class ZoomModel:
         if limits[distribution_axis] is not None and \
                 (prescaled_union_size[distribution_axis] > screen_size[distribution_axis]
                  or not other_preferences):
-            distributed_scales = ZoomModel._scale_distributed(fitted_image_sizes,
+            distributed_scales = self._scale_distributed(fitted_image_sizes,
                                                               distribution_axis,
                                                               limits[distribution_axis],
                                                               scale_up,
@@ -87,8 +87,7 @@ class ZoomModel:
         return [tuple(ZoomModel._scale_image_size(size, scale))
                 for size, scale in zip(fitted_image_sizes, res_scales)]
 
-    @staticmethod
-    def _preferred_scale(image_size, limits, distribution_axis):
+    def _preferred_scale(self, image_size, limits, distribution_axis):
         """Returns scale that makes an image of size image_size respect the
         limits imposed by limits. If no proper value can be determined,
         self.__identity_zoom is returned"""
@@ -130,8 +129,7 @@ class ZoomModel:
             result[axis] = fixed_size if fixed_size is not None else screen_size[axis]
         return result
 
-    @staticmethod
-    def _scale_distributed(sizes, axis, max_size, allow_upscaling, do_not_transform):
+    def _scale_distributed(self, sizes, axis, max_size, allow_upscaling, do_not_transform):
         """Calculates scales for a list of boxes that are distributed along a
         given axis (without any gaps). If the resulting scales are applied to
         their respective boxes, their new total size along axis will be as close
