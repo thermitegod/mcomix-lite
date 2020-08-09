@@ -45,7 +45,7 @@ def run():
 
     if args.version:
         print(f'{constants.APPNAME} {constants.VERSION}')
-        sys.exit(0)
+        raise SystemExit
 
     # start logger
     logger.remove()
@@ -64,7 +64,7 @@ def run():
 
     except (ValueError, AssertionError, ImportError):
         logger.error('GTK+ 3.0 import error.')
-        sys.exit(1)
+        raise SystemExit(1)
 
     try:
         import PIL.Image
@@ -74,7 +74,7 @@ def run():
     except (AssertionError, AttributeError, ImportError):
         logger.error('Required version of Pillow is not installed. \n'
                      f'Required version is at least {constants.REQUIRED_PIL_VERSION}')
-        sys.exit(1)
+        raise SystemExit(1)
 
     logger.info(f'Image loaders: Pillow [{PIL.Image.__version__}], GDK [{GdkPixbuf.PIXBUF_VERSION}])')
 
