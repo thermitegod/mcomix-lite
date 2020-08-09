@@ -159,8 +159,8 @@ class RecursiveArchive(archive_base.BaseArchive):
 
         try:
             self.__tempdir.cleanup()
-        except OSError:
-            pass
+        except OSError as ex:
+            logger.error(f'tmpdir removal failed: {ex}')
 
     def __enter__(self):
         return self

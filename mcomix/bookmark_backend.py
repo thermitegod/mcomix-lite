@@ -131,6 +131,7 @@ class _BookmarksStore:
                     return True
                 return False
             except IOError:
+                logger.error('failed to get bookmark file last modification time')
                 return False
 
         return True

@@ -134,10 +134,10 @@ class RarArchive(archive_base.BaseArchive):
                 # (extract may have been called by iter_extract).
                 if filename == self.__current_filename:
                     self._process()
-        except UnrarException as exc:
-            logger.error(f'Error while listing contents: {str(exc)}')
+        except UnrarException as ex:
+            logger.error(f'Error while listing contents: {str(ex)}')
         except EOFError:
-            # End of archive reached.
+            # End of archive reached
             pass
         finally:
             self._close()

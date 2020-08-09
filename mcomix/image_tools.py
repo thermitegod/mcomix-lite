@@ -7,6 +7,7 @@ from pathlib import Path
 
 from PIL import Image, ImageEnhance, ImageOps, ImageSequence
 from gi.repository import GLib, Gdk, GdkPixbuf, Gio
+from loguru import logger
 
 from mcomix import anime_tools, constants
 from mcomix.lib import reader
@@ -280,8 +281,10 @@ def load_pixbuf(path):
                 if enable_anime and getattr(im, 'is_animated', False):
                     return load_animation(im)
                 return pil_to_pixbuf(im, keep_orientation=True)
-    except Exception:
-        pass
+    except Exception as ex:
+        # should only be hit when loading trying to load a gif
+        logger.debug(f'failed to load pixbuf: {ex}')
+
     if enable_anime:
         pixbuf = GdkPixbuf.PixbufAnimation.new_from_file(path)
         if pixbuf.is_static_image():
@@ -299,7 +302,7 @@ def load_pixbuf_size(path, width, height):
                 im.thumbnail((width, height), resample=Image.BOX)
                 return pil_to_pixbuf(im, keep_orientation=True)
     except Exception:
-        pass
+        logger.error('failed to load pixbuf')
 
 
 def load_pixbuf_data(imgdata):
@@ -308,7 +311,7 @@ def load_pixbuf_data(imgdata):
         with Image.open(BytesIO(imgdata)) as im:
             return pil_to_pixbuf(im, keep_orientation=True)
     except Exception:
-        pass
+        logger.error('failed to load pixbuf')
 
 
 def enhance(pixbuf, brightness=1.0, contrast=1.0, saturation=1.0, sharpness=1.0, autocontrast=False):

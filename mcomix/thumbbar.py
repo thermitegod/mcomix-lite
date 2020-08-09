@@ -188,8 +188,8 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         """Return the index of the currently selected row"""
         try:
             return self.__treeview.get_selection().get_selected_rows()[1][0][0]
-
         except IndexError:
+            logger.warning('failed to get thumbar index')
             return 0
 
     def _row_activated_event(self, treeview, path, column):

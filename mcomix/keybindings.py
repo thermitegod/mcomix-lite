@@ -180,6 +180,7 @@ class _KeybindingInterface:
             with Path.open(self.__keybindings_path, mode='rt', encoding='utf8') as fd:
                 stored_action_bindings = json.load(fd)
         except Exception:
+            logger.warning('failed to load keybinding, using defaults')
             stored_action_bindings = keybindings_map.DEFAULT_BINDINGS.copy()
 
         for action in keybindings_map.BINDING_INFO.keys():

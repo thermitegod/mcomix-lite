@@ -100,7 +100,7 @@ class _PreferenceManager:
                 with Path.open(self.__preference_path, mode='rt', encoding='utf8') as fd:
                     saved_prefs.update(json.load(fd))
             except Exception:
-                logger.error('Preferences file is corrupt')
+                logger.error('Failed to load preferences file, exiting')
                 import sys
                 sys.exit(1)
 

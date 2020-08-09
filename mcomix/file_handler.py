@@ -228,6 +228,7 @@ class FileHandler:
         try:
             self.__condition = self.__extractor.setup(self.__base_path, self.__archive_type)
         except Exception:
+            logger.error(f'failed to open archive: {self.__base_path}')
             self.__condition = None
             raise
         self.__tmp_dir = self.__extractor.get_directory()

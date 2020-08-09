@@ -123,6 +123,7 @@ class ImageHandler:
         try:
             return self.__image_files[self.__current_image_index]
         except IndexError:
+            logger.warning(f'failed to get current image path')
             return ''
 
     def get_virtual_double_page(self, page=None):
@@ -292,6 +293,7 @@ class ImageHandler:
                 else:
                     fsize = 0
             except OSError:
+                logger.warning(f'failed to get file size for: {path}')
                 fsize = 0
             return tools.format_byte_size(fsize)
 
