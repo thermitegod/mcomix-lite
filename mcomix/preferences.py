@@ -101,8 +101,7 @@ class _PreferenceManager:
                     saved_prefs.update(json.load(fd))
             except Exception:
                 logger.error('Failed to load preferences file, exiting')
-                import sys
-                sys.exit(1)
+                raise SystemExit
 
         prefs.update(filter(lambda i: i[0] in prefs, saved_prefs.items()))
 

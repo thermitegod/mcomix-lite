@@ -176,11 +176,14 @@ class _KeybindingInterface:
 
     def load_keybindings_file(self):
         """Load keybindings from disk"""
-        try:
-            with Path.open(self.__keybindings_path, mode='rt', encoding='utf8') as fd:
-                stored_action_bindings = json.load(fd)
-        except Exception:
-            logger.warning('failed to load keybinding, using defaults')
+        if Path.is_file(self.__keybindings_path):
+            try:
+                with Path.open(self.__keybindings_path, mode='rt', encoding='utf8') as fd:
+                    stored_action_bindings = json.load(fd)
+            except Exception:
+                logger.error('Failed to load keybinding file, exiting')
+                raise SystemExit
+        else:
             stored_action_bindings = keybindings_map.DEFAULT_BINDINGS.copy()
 
         for action in keybindings_map.BINDING_INFO.keys():
