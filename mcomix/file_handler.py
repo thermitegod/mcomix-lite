@@ -51,6 +51,8 @@ class FileHandler:
         self.__filelist = None
         self.__start_page = 0
 
+        self.__open_first_page = 0 if prefs['open first page'] else -1
+
     def refresh_file(self, *args, **kwargs):
         """Closes the current file(s)/archive and reloads them"""
         if self.__file_loaded:
@@ -361,7 +363,7 @@ class FileHandler:
                 for path in reversed(files[:current_index]):
                     if archive_tools.archive_mime_type(path) is not None:
                         self._close()
-                        self.open_file(path, -1, keep_fileprovider=True)
+                        self.open_file(path, self.__open_first_page, keep_fileprovider=True)
                         return True
 
         return False
@@ -396,7 +398,7 @@ class FileHandler:
         if forward:
             self.open_file(path, keep_fileprovider=True)
         else:
-            self.open_file(path, -1, keep_fileprovider=True)
+            self.open_file(path, self.__open_first_page, keep_fileprovider=True)
         return True
 
     @callback.Callback

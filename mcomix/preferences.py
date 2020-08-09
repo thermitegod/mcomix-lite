@@ -73,6 +73,7 @@ prefs = {
     'check image mimetype': False,
     'hide cursor': False,
     'statusbar spacing': 5,
+    'open first page': True,
     'window save': True,
     'window x': 0,
     'window y': 0,
