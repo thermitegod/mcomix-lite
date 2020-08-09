@@ -146,7 +146,6 @@ class RarArchive(archive_base.BaseArchive):
         """Extract <filename> from the archive to <destination_dir>"""
         if not self.__handle:
             self._open()
-        looped = False
         destination_path = Path() / destination_dir / filename
         while 1:
             # Check if the current entry matches the requested file.
@@ -162,14 +161,10 @@ class RarArchive(archive_base.BaseArchive):
                 self._read_header()
             except EOFError:
                 # Archive end was reached, this might be due to out-of-order
-                # extraction while the handle was still open.  Close the
-                # archive and jump back to archive start and try to extract
-                # file again.  Do this only once; if the file isn't found after
-                # a second full pass, it probably doesn't even exist in the
-                # archive.
-                if looped:
-                    break
-                self._open()
+                # extraction while the handle was still open.
+                logger.error('End of archive reached')
+                break
+
         # After the method returns, the RAR handler is still open and pointing
         # to the next archive file. This will improve extraction speed for sequential file reads.
         # After all files have been extracted, close() should be called to free the handler resources.
