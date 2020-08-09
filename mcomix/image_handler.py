@@ -256,10 +256,10 @@ class ImageHandler:
             return ''
 
         def get_fname(fname):
-            path = self.get_path_to_page(fname)
-            if path is None:
+            path = Path() / self.get_path_to_page(fname)
+            if not Path.exists(path):
                 return ''
-            return Path(path).name
+            return path.name
 
         if page is None:
             page = self.get_current_page()
@@ -285,12 +285,12 @@ class ImageHandler:
             return '-1'
 
         def get_fsize(fsize):
-            path = Path(self.get_path_to_page(fsize))
+            path = Path() / self.get_path_to_page(fsize)
             try:
-                if path is None:
-                    fsize = 0
-                else:
+                if Path.exists(path):
                     fsize = Path.stat(path).st_size
+                else:
+                    fsize = 0
             except OSError:
                 fsize = 0
             return tools.format_byte_size(fsize)

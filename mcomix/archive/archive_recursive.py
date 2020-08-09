@@ -19,7 +19,7 @@ class RecursiveArchive(archive_base.BaseArchive):
 
         cache_path = Path() / prefs['temporary directory'] / 'mcomix'
         if not Path.exists(cache_path):
-            Path(cache_path).mkdir(parents=True, exist_ok=True)
+            cache_path.mkdir(parents=True, exist_ok=True)
 
         self.__tempdir = tempfile.TemporaryDirectory(dir=cache_path)
         self.__sub_tempdirs = []
@@ -130,12 +130,12 @@ class RecursiveArchive(archive_base.BaseArchive):
                 continue
             root = self.__archive_root[archive]
             if root is None:
-                archive_destination_dir = destination_dir
+                archive_destination_dir = Path() / destination_dir
             else:
-                archive_destination_dir = root
+                archive_destination_dir = Path() / root
             logger.debug('extracting from '
                          f'{archive.archive} to {archive_destination_dir}: {" ".join(archive_wanted.keys())}')
-            for f in archive.iter_extract(archive_wanted.keys(), Path(archive_destination_dir)):
+            for f in archive.iter_extract(archive_wanted.keys(), archive_destination_dir):
                 yield archive_wanted[f]
             wanted -= set(archive_wanted.values())
             if not wanted:

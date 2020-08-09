@@ -77,11 +77,11 @@ class OrderedFileProvider(FileProvider):
 
     def set_directory(self, file_or_directory):
         """Sets the base directory"""
-        file_or_directory = Path(file_or_directory)
+        file_or_directory = Path() / file_or_directory
         if Path.is_dir(file_or_directory):
             directory = file_or_directory
         elif Path.is_file(file_or_directory):
-            directory = Path(file_or_directory).parent
+            directory = file_or_directory.parent
         else:
             # Passed file doesn't exist
             raise ValueError(f'Invalid path: "{file_or_directory}"')
@@ -126,7 +126,7 @@ class OrderedFileProvider(FileProvider):
             parent_dir = Path(current_dir).parent
 
             dirs = []
-            for directory in Path(parent_dir).iterdir():
+            for directory in parent_dir.iterdir():
                 if Path.is_dir(directory):
                     dirs.append(str(directory))
 

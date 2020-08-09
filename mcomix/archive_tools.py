@@ -70,7 +70,7 @@ def is_archive_file(path):
 def archive_mime_type(path):
     """Return the archive type of <path> or None for non-archives"""
     try:
-        path = Path(path)
+        path = Path() / path
         if Path.is_file(path):
             if not os.access(path, os.R_OK):
                 return None

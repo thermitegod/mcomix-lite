@@ -120,7 +120,7 @@ class _PreferenceManager:
 
         logger.info('Writing changes to preferences')
 
-        Path(self.__preference_path).write_text(json_prefs)
+        self.__preference_path.write_text(json_prefs)
 
 
 # Singleton instance

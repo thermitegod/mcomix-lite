@@ -782,9 +782,9 @@ class MainWindow(Gtk.Window):
         """Derive some sensible filename (archive name + _ + filename should do) and offer
         the user the choice to save the current page with the selected name"""
         if self.filehandler.get_archive_type() is not None:
-            archive_name = self.filehandler.get_current_filename()
+            archive_name = Path() / self.filehandler.get_current_filename()
             file_name = self.imagehandler.get_path_to_page()
-            suggested_name = f'{Path(archive_name).stem}_{file_name}'
+            suggested_name = f'{archive_name.stem}_{file_name}'
         else:
             suggested_name = self.imagehandler.get_path_to_page()
 
@@ -806,7 +806,7 @@ class MainWindow(Gtk.Window):
         if action is None:
             return None
 
-        current_file = self.imagehandler.get_real_path()
+        current_file = Path() / self.imagehandler.get_real_path()
 
         def file_action():
             if action == 'move_file':
@@ -815,12 +815,11 @@ class MainWindow(Gtk.Window):
                 send2trash(current_file)
 
         if action == 'move_file':
-            current_file = Path(current_file)
             target_dir = Path() / current_file.parent / prefs['move file']
             target_file = Path() / target_dir / current_file.name
 
             if not Path.exists(target_dir):
-                Path(target_dir).mkdir()
+                target_dir.mkdir()
 
         elif action == 'delete':
             dialog = message_dialog.MessageDialog(
@@ -835,7 +834,7 @@ class MainWindow(Gtk.Window):
             dialog.set_should_remember_choice(
                     'delete-opend-file',
                     (Gtk.ResponseType.OK,))
-            dialog.set_text(f'Trash Selected File: "{Path(current_file).name}"?')
+            dialog.set_text(f'Trash Selected File: "{current_file.name}"?')
             result = dialog.run()
             if result != Gtk.ResponseType.OK:
                 return None

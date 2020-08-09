@@ -79,10 +79,10 @@ def run():
     logger.info(f'Image loaders: Pillow [{PIL.Image.__version__}], GDK [{GdkPixbuf.PIXBUF_VERSION}])')
 
     if not Path.exists(constants.DATA_DIR):
-        Path(constants.DATA_DIR).mkdir()
+        constants.DATA_DIR.mkdir()
 
     if not Path.exists(constants.CONFIG_DIR):
-        Path(constants.CONFIG_DIR).mkdir()
+        constants.CONFIG_DIR.mkdir()
 
     # Load configuration.
     preferences.PreferenceManager.load_preferences_file()
@@ -96,7 +96,7 @@ def run():
     if isinstance(open_path, list):
         n = 0
         while n < len(open_path):
-            p = Path(Path.cwd(), open_path[n])
+            p = Path() / open_path[n]
             if not Path.exists(p):
                 logger.error(f'Non existant file: \'{p}\'')
                 open_path.pop(n)

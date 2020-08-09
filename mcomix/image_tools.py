@@ -408,7 +408,7 @@ def is_image_file(path, check_mimetype=False):
     # to guess if path is supported, ignoring file extension.
     if not SUPPORTED_IMAGE_FORMATS:
         init_supported_formats()
-    path = Path(path)
+    path = Path() / path
     if prefs['check image mimetype'] and check_mimetype and Path.is_file(path):
         with Path.open(path, mode='rb') as fd:
             magic = fd.read(10)

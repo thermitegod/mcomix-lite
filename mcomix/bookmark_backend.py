@@ -149,7 +149,7 @@ class _BookmarksStore:
 
         packs = [bookmark.pack() for bookmark in self.__bookmarks]
         bookmarks = json.dumps((constants.VERSION, packs), ensure_ascii=False, indent=2)
-        Path(self.__bookmark_path).write_text(bookmarks)
+        self.__bookmark_path.write_text(bookmarks)
         self.__bookmarks_mtime = time.time()
 
     def show_replace_bookmark_dialog(self, new_page):

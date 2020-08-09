@@ -71,7 +71,7 @@ class FileHandler:
         self._close()
 
         try:
-            path = Path(self._initialize_fileprovider(path, keep_fileprovider))
+            path = Path() / self._initialize_fileprovider(path, keep_fileprovider)
         except ValueError as ex:
             ex = str(ex)
             logger.error(ex)
@@ -323,8 +323,9 @@ class FileHandler:
         if self.__archive_type is not None:
             return self.__base_path
 
-        if filename := self.__window.imagehandler.get_current_path():
-            return Path(filename).parent
+        filename = Path() / self.__window.imagehandler.get_current_path()
+        if filename:
+            return filename.parent
 
         return None
 

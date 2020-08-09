@@ -172,7 +172,7 @@ class _KeybindingInterface:
 
         logger.info('Writing changes to keybindings')
 
-        Path(self.__keybindings_path).write_text(json_prefs)
+        self.__keybindings_path.write_text(json_prefs)
 
     def load_keybindings_file(self):
         """Load keybindings from disk"""

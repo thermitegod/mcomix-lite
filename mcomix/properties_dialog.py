@@ -88,8 +88,8 @@ class PropertiesDialog(Gtk.Dialog):
         if not window.imagehandler.page_is_available():
             return
         self._update_page_image(page)
-        path = window.imagehandler.get_path_to_page()
-        page.set_filename(Path(path).name)
+        path = Path() / window.imagehandler.get_path_to_page()
+        page.set_filename(path.name)
         width, height = window.imagehandler.get_size()
         main_info = (f'{width}x{height} px', window.imagehandler.get_mime_name(),)
         page.set_main_info(main_info)
@@ -105,7 +105,7 @@ class PropertiesDialog(Gtk.Dialog):
 
     @staticmethod
     def _update_page_secondary_info(page, path):
-        path = Path(path)
+        path = Path() / path
         stats = Path.stat(path)
         uid = Path.owner(path)
         gid = Path.group(path)
