@@ -36,7 +36,7 @@ def _getexif(im):
             # Size not match.
             return {}
         im.info['exif'] = data
-    except:
+    except Exception:
         # Not valid Exif data.
         return {}
 
@@ -189,7 +189,12 @@ def pil_to_pixbuf(im, keep_orientation=False):
         has_alpha = True
     else:
         has_alpha = False
-    target_mode = 'RGBA' if has_alpha else 'RGB'
+
+    if has_alpha:
+        target_mode = 'RGBA'
+    else:
+        target_mode = 'RGB'
+
     if im.mode != target_mode:
         im = im.convert(target_mode)
     pixbuf = GdkPixbuf.Pixbuf.new_from_bytes(
@@ -266,27 +271,44 @@ def load_animation(im):
 
 def load_pixbuf(path):
     """Loads a pixbuf from a given image file"""
-    with reader.LockedFileIO(path) as fio:
-        with Image.open(fio) as im:
-            # make sure n_frames loaded
-            im.load()
-            if prefs['animation mode'] and getattr(im, 'is_animated', False):
-                return load_animation(im)
-            return pil_to_pixbuf(im, keep_orientation=True)
+    enable_anime = prefs['animation mode'] != constants.ANIMATION_DISABLED
+    try:
+        with reader.LockedFileIO(path) as fio:
+            with Image.open(fio) as im:
+                # make sure n_frames loaded
+                im.load()
+                if enable_anime and getattr(im, 'is_animated', False):
+                    return load_animation(im)
+                return pil_to_pixbuf(im, keep_orientation=True)
+    except Exception:
+        pass
+    if enable_anime:
+        pixbuf = GdkPixbuf.PixbufAnimation.new_from_file(path)
+        if pixbuf.is_static_image():
+            return pixbuf.get_static_image()
+        return pixbuf
+
+    return GdkPixbuf.Pixbuf.new_from_file(path)
 
 
 def load_pixbuf_size(path, width, height):
     """Loads a pixbuf from a given image file and scale it to fit inside (width, height)"""
-    with reader.LockedFileIO(path) as fio:
-        with Image.open(fio) as im:
-            im.thumbnail((width, height), resample=Image.BOX)
-            return pil_to_pixbuf(im, keep_orientation=True)
+    try:
+        with reader.LockedFileIO(path) as fio:
+            with Image.open(fio) as im:
+                im.thumbnail((width, height), resample=Image.BOX)
+                return pil_to_pixbuf(im, keep_orientation=True)
+    except Exception:
+        pass
 
 
 def load_pixbuf_data(imgdata):
     """Loads a pixbuf from the data passed in <imgdata>"""
-    with Image.open(BytesIO(imgdata)) as im:
-        return pil_to_pixbuf(im, keep_orientation=True)
+    try:
+        with Image.open(BytesIO(imgdata)) as im:
+            return pil_to_pixbuf(im, keep_orientation=True)
+    except Exception:
+        pass
 
 
 def enhance(pixbuf, brightness=1.0, contrast=1.0, saturation=1.0, sharpness=1.0, autocontrast=False):
