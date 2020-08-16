@@ -308,12 +308,12 @@ class _PreferencesDialog(Gtk.Dialog):
         page.new_section('Moving files')
 
         page.add_row(Gtk.Label(label='Move file location (must be relative)'),
-                     self._create_pref_path_chooser('move file', folder=True, default='keep'))
+                     self._create_pref_path_chooser('move file', directory=True, default='keep'))
 
         page.new_section('Extraction and cache')
 
         page.add_row(Gtk.Label(label='Temporary directory (restart required)'),
-                     self._create_pref_path_chooser('temporary directory', folder=True, default='/tmp'))
+                     self._create_pref_path_chooser('temporary directory', directory=True, default='/tmp'))
 
         page.add_row(Gtk.Label(label='Maximum number of pages to store in the cache (-1 caches everything):'),
                      self._create_pref_spinner(
@@ -699,10 +699,10 @@ class _PreferencesDialog(Gtk.Dialog):
         elif preference == 'fit to size px':
             self.__window.change_zoom_mode()
 
-    def _create_pref_path_chooser(self, preference, folder=False, default=None):
+    def _create_pref_path_chooser(self, preference, directory=False, default=None):
         """Select path as preference value"""
         box = Gtk.Box()
-        action = Gtk.FileChooserAction.SELECT_FOLDER if folder else Gtk.FileChooserAction.OPEN
+        action = Gtk.FileChooserAction.SELECT_FOLDER if directory else Gtk.FileChooserAction.OPEN
 
         chooser = Gtk.Button()
         chooser.set_label(prefs[preference] or default or '(default)')
@@ -716,7 +716,7 @@ class _PreferencesDialog(Gtk.Dialog):
 
     def _path_chooser_cb(self, widget, chooser, chooser_action, preference, default):
         """Callback for path chooser"""
-        dialog = Gtk.FileChooserDialog(title='Please choose a folder', action=chooser_action)
+        dialog = Gtk.FileChooserDialog(title='Please choose a directory', action=chooser_action)
         dialog.set_transient_for(self)
         dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, 'Select', Gtk.ResponseType.OK)
 
