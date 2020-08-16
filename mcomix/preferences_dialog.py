@@ -312,9 +312,6 @@ class _PreferencesDialog(Gtk.Dialog):
 
         page.new_section('Extraction and cache')
 
-        page.add_row(Gtk.Label(label='Temporary directory (restart required)'),
-                     self._create_pref_path_chooser('temporary directory', directory=True, default='/tmp'))
-
         page.add_row(Gtk.Label(label='Maximum number of pages to store in the cache (-1 caches everything):'),
                      self._create_pref_spinner(
                              'max pages to cache',
@@ -708,39 +705,6 @@ class _PreferencesDialog(Gtk.Dialog):
         box.set_text(prefs[preference])
         box.connect('changed', save_pref_text_box)
         return box
-
-    def _create_pref_path_chooser(self, preference, directory=False, default=None):
-        """Select path as preference value"""
-        box = Gtk.Box()
-        action = Gtk.FileChooserAction.SELECT_FOLDER if directory else Gtk.FileChooserAction.OPEN
-
-        chooser = Gtk.Button()
-        chooser.set_label(prefs[preference] or default or '(default)')
-        chooser.connect('clicked', self._path_chooser_cb, chooser, action, preference, default)
-        reset = Gtk.Button(label='reset')
-        reset.connect('clicked', self._path_chooser_reset_cb, chooser, preference, default)
-        box.add(chooser)
-        box.add(reset)
-
-        return box
-
-    def _path_chooser_cb(self, widget, chooser, chooser_action, preference, default):
-        """Callback for path chooser"""
-        dialog = Gtk.FileChooserDialog(title='Please choose a directory', action=chooser_action)
-        dialog.set_transient_for(self)
-        dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, 'Select', Gtk.ResponseType.OK)
-
-        response = dialog.run()
-        if response == Gtk.ResponseType.OK:
-            prefs[preference] = dialog.get_filename()
-            chooser.set_label(prefs[preference])
-        dialog.destroy()
-
-    @staticmethod
-    def _path_chooser_reset_cb(widget, chooser, preference, default):
-        """Reset path chooser"""
-        prefs[preference] = default
-        chooser.set_label(prefs[preference] or '(default)')
 
 
 class _PreferenceDialog:

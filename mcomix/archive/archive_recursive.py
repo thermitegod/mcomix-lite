@@ -7,7 +7,7 @@ from pathlib import Path
 
 from loguru import logger
 
-from mcomix import archive_tools
+from mcomix import archive_tools, constants
 from mcomix.archive import archive_base
 from mcomix.preferences import prefs
 
@@ -17,7 +17,7 @@ class RecursiveArchive(archive_base.BaseArchive):
         super(RecursiveArchive, self).__init__(archive.archive)
         self.__main_archive = archive
 
-        cache_path = Path() / prefs['temporary directory'] / 'mcomix'
+        cache_path = constants.CACHE_DIR
         if not Path.exists(cache_path):
             cache_path.mkdir(parents=True, exist_ok=True)
 

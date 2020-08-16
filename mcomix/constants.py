@@ -15,12 +15,15 @@ REQUIRED_PIL_VERSION = '6.0.0'
 
 MAX_THREADS = 128
 
+PROG_NAME = 'mcomix'
 try:
-    CONFIG_DIR = Path() / os.environ['XDG_CONFIG_HOME'] / 'mcomix'
-    DATA_DIR = Path() / os.environ['XDG_DATA_HOME'] / 'mcomix'
+    CONFIG_DIR = Path() / os.environ['XDG_CONFIG_HOME'] / f'{PROG_NAME}'
+    DATA_DIR = Path() / os.environ['XDG_DATA_HOME'] / f'{PROG_NAME}'
+    CACHE_DIR = Path() / os.environ['XDG_CACHE_HOME'] / f'{PROG_NAME}'
 except KeyError:
-    CONFIG_DIR = Path.home() / '.config/mcomix'
-    DATA_DIR = Path.home() / '.local/share/mcomix'
+    CONFIG_DIR = Path.home() / f'.config/{PROG_NAME}'
+    DATA_DIR = Path.home() / f'.local/share/{PROG_NAME}'
+    CACHE_DIR = Path() / f'/tmp/{PROG_NAME}'
 
 PREFERENCE_PATH = Path() / CONFIG_DIR / 'preferences.conf'
 KEYBINDINGS_PATH = Path() / CONFIG_DIR / 'keybindings.conf'

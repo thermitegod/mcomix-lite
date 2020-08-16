@@ -68,7 +68,6 @@ prefs = {
     'animation mode': constants.ANIMATION_INF,
     'animation background': True,
     'animation transform': True,
-    'temporary directory': '/tmp',
     'move file': 'keep',
     'check image mimetype': False,
     'hide cursor': False,
