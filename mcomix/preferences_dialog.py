@@ -308,7 +308,7 @@ class _PreferencesDialog(Gtk.Dialog):
         page.new_section('Moving files')
 
         page.add_row(Gtk.Label(label='Move file location (must be relative)'),
-                     self._create_pref_path_chooser('move file', directory=True, default='keep'))
+                     self._create_pref_text_box('move file'))
 
         page.new_section('Extraction and cache')
 
@@ -698,6 +698,16 @@ class _PreferencesDialog(Gtk.Dialog):
             self.__window.imagehandler.do_cacheing()
         elif preference == 'fit to size px':
             self.__window.change_zoom_mode()
+
+    @staticmethod
+    def _create_pref_text_box(preference):
+        def save_pref_text_box(text):
+            prefs[preference] = text.get_text()
+
+        box = Gtk.Entry()
+        box.set_text(prefs[preference])
+        box.connect('changed', save_pref_text_box)
+        return box
 
     def _create_pref_path_chooser(self, preference, directory=False, default=None):
         """Select path as preference value"""
