@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 
 APPNAME = 'MComix-Lite'
-VERSION = '3.0.0-dev'
+VERSION = '3.0.0.dev0'
 
 REQUIRED_PIL_VERSION = '6.0.0'
 
