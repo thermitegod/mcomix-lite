@@ -141,6 +141,8 @@ class _PreferencesDialog(Gtk.Dialog):
         page.add_row(Gtk.Label(label='Show only one page where appropriate:'),
                      self._create_doublepage_as_one_control())
 
+        page.new_section('Page selection')
+
         page.add_row(self._create_pref_check_button(
             'Goto the first page when opening previous archive (restart required)',
             'open first page'))
