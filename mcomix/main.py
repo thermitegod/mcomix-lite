@@ -31,7 +31,8 @@ class MainWindow(Gtk.Window):
         # Remember last scroll destination.
         self.__last_scroll_destination = constants.SCROLL_TO_START
 
-        self.__layout = _dummy_layout()
+        self.__dummy_layout = layout.FiniteLayout(((1, 1),), (1, 1), (1, 1), 0, False, 0, 0)
+        self.__layout = self.__dummy_layout
         self.__spacing = 2
         self.__waiting_for_redraw = False
 
@@ -729,7 +730,7 @@ class MainWindow(Gtk.Window):
             i.clear()
 
         self._show_scrollbars([False] * len(self.__scroll))
-        self.__layout = _dummy_layout()
+        self.__layout = self.__dummy_layout
         self.__main_layout.set_size(*self.__layout.get_union_box().get_size())
         self.set_bg_color(prefs['bg color'])
 
@@ -913,7 +914,3 @@ class MainWindow(Gtk.Window):
         self.write_config_files()
 
         self.filehandler.close_file()
-
-
-def _dummy_layout():
-    return layout.FiniteLayout(((1, 1),), (1, 1), (1, 1), 0, False, 0, 0)
