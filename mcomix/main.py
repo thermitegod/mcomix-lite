@@ -314,6 +314,8 @@ class MainWindow(Gtk.Window):
             viewport_size = ()  # dummy
             expand_area = False
             scrollbar_requests = [False] * len(self.__scroll)
+            scaled_sizes = [(0, 0)]
+            union_scaled_size = (0, 0)
             # Visible area size is recomputed depending on scrollbar visibility
             while 1:
                 self._show_scrollbars(scrollbar_requests)
@@ -744,6 +746,7 @@ class MainWindow(Gtk.Window):
     def get_visible_area_size(self):
         """Return a 2-tuple with the width and height of the visible part of the main layout area"""
         dimensions = list(self.get_size())
+        size = 0
 
         for preference, action, widget_list in self.__toggle_list:
             for widget in widget_list:
