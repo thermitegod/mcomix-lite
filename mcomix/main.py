@@ -768,8 +768,7 @@ class MainWindow(Gtk.Window):
 
     def update_title(self):
         """Set the title acording to current state"""
-        self.set_title(' '.join([f'[{self.statusbar.get_page_number()}]',
-                                 self.imagehandler.get_current_filename()]))
+        self.set_title(f'[{self.statusbar.get_page_number()}] {self.imagehandler.get_current_filename()}')
 
     def set_bg_color(self, color):
         """Set the background color to <color>. color is a sequence in the
