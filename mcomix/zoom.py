@@ -49,15 +49,15 @@ class ZoomModel:
 
     def get_zoomed_size(self, image_sizes, screen_size, distribution_axis, do_not_transform):
         scale_up = self.__scale_up
-        fitted_image_sizes = ZoomModel._fix_page_sizes(image_sizes, distribution_axis, do_not_transform)
-        union_size = ZoomModel._union_size(fitted_image_sizes, distribution_axis)
-        limits = ZoomModel._calc_limits(union_size, screen_size, self.__fitmode, scale_up)
+        fitted_image_sizes = self._fix_page_sizes(image_sizes, distribution_axis, do_not_transform)
+        union_size = self._union_size(fitted_image_sizes, distribution_axis)
+        limits = self._calc_limits(union_size, screen_size, self.__fitmode, scale_up)
 
         prefscale = self._preferred_scale(union_size, limits, distribution_axis)
         preferred_scales = [(self.__identity_zoom if dnt else prefscale) for dnt in do_not_transform]
-        prescaled = [tuple(ZoomModel._scale_image_size(size, scale))
+        prescaled = [tuple(self._scale_image_size(size, scale))
                      for size, scale in zip(fitted_image_sizes, preferred_scales)]
-        prescaled_union_size = ZoomModel._union_size(prescaled, distribution_axis)
+        prescaled_union_size = self._union_size(prescaled, distribution_axis)
 
         def _other_preferences(limits, distribution_axis):
             for idx, item in enumerate(limits):
@@ -72,10 +72,10 @@ class ZoomModel:
                 (prescaled_union_size[distribution_axis] > screen_size[distribution_axis]
                  or not other_preferences):
             distributed_scales = self._scale_distributed(fitted_image_sizes,
-                                                              distribution_axis,
-                                                              limits[distribution_axis],
-                                                              scale_up,
-                                                              do_not_transform)
+                                                         distribution_axis,
+                                                         limits[distribution_axis],
+                                                         scale_up,
+                                                         do_not_transform)
             if other_preferences:
                 preferred_scales = map(min, preferred_scales, distributed_scales)
             else:
@@ -86,7 +86,7 @@ class ZoomModel:
         user_scale = 2 ** (self.__user_zoom_log / self.__user_zoom_log_scale1)
         res_scales = [preferred_scales[idx] * (user_scale if not do_not_transform[idx] else self.__identity_zoom)
                       for idx, item in enumerate(preferred_scales)]
-        return [tuple(ZoomModel._scale_image_size(size, scale))
+        return [tuple(self._scale_image_size(size, scale))
                 for size, scale in zip(fitted_image_sizes, res_scales)]
 
     def _preferred_scale(self, image_size, limits, distribution_axis):
@@ -189,14 +189,14 @@ class ZoomModel:
             # later. This rescaling is necessary to ensure that the sizes in ALL
             # dimensions are monotonically scaled (with respect to local_scale).
             # A nice side effect of this is that it keeps the aspect ratio better.
-            dummy_approx = ZoomModel._round_nonempty((ideal[axis],))[0]
+            dummy_approx = self._round_nonempty((ideal[axis],))[0]
             local_scale = tools.div(dummy_approx, this_size[axis])
             total_axis_size += dummy_approx
             can_be_downscaled = dummy_approx > 1
             if can_be_downscaled:
                 forced_size = dummy_approx - 1
                 forced_scale = tools.div(forced_size, this_size[axis])
-                forced_approx = ZoomModel._scale_image_size(this_size, forced_scale)
+                forced_approx = self._scale_image_size(this_size, forced_scale)
                 forced_vol_err = tools.relerr(tools.volume(forced_approx), ideal_vol)
             else:
                 forced_scale = None
@@ -244,9 +244,8 @@ class ZoomModel:
             pass
         return map(lambda d: d[0], scaling_data)
 
-    @staticmethod
-    def _scale_image_size(size, scale):
-        return ZoomModel._round_nonempty(tools.scale(size, scale))
+    def _scale_image_size(self, size, scale):
+        return self._round_nonempty(tools.scale(size, scale))
 
     @staticmethod
     def _round_nonempty(t):
@@ -265,7 +264,7 @@ class ZoomModel:
         axis_sizes = sizes[int(not distribution_axis)]  # use axis else of distribution_axis
         max_size = max(axis_sizes)  # max size of pages
         ratios = [(1 if do_not_transform[n] else max_size / s)
-                for n, s in enumerate(axis_sizes)]  # scale ratio of every page if do transform
+                  for n, s in enumerate(axis_sizes)]  # scale ratio of every page if do transform
         return [(int(x * ratios[n]), int(y * ratios[n]))
                 for n, (x, y) in enumerate(image_sizes)]  # scale every page
 
