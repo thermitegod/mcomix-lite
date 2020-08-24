@@ -3,7 +3,6 @@
 """tools.py - Contains various helper functions"""
 
 import bisect
-import gc
 import math
 import operator
 import re
@@ -70,10 +69,6 @@ def format_byte_size(n):
     except IndexError:
         e = f'C{s}i'
     return f'{n:.3f} {e}'
-
-
-def garbage_collect():
-    gc.collect(0)
 
 
 def sha256str(s):

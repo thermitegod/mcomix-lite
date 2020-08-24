@@ -110,7 +110,6 @@ class ImageHandler:
             logger.debug(f'Caching page: \'{index + 1}\'')
             try:
                 pixbuf = image_tools.load_pixbuf(self.__image_files[index])
-                tools.garbage_collect()
             except Exception:
                 logger.error(f'Could not load pixbuf for page: \'{index + 1}\'')
                 pixbuf = None

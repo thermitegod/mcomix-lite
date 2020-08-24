@@ -204,7 +204,7 @@ class FileHandler:
         # Catch up on UI events, so we don't leave idle callbacks.
         while Gtk.events_pending():
             Gtk.main_iteration_do(False)
-        tools.garbage_collect()
+
         if self.__tmp_dir is not None:
             self.__tmp_dir = None
 
