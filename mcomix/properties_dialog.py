@@ -8,7 +8,7 @@ from pathlib import Path
 
 from gi.repository import Gtk
 
-from mcomix import constants, properties_page, tools
+from mcomix import constants, properties_page, image_handler
 from mcomix.preferences import prefs
 
 
@@ -111,7 +111,7 @@ class PropertiesDialog(Gtk.Dialog):
         gid = Path.group(path)
         secondary_info = [
             ('Location', Path.resolve(path)),
-            ('Size', tools.format_byte_size(stats.st_size)),
+            ('Size', image_handler.ImageHandler.format_byte_size(stats.st_size)),
             ('Modified', time.strftime('%Y-%m-%d, %H:%M:%S', time.localtime(stats.st_mtime))),
             ('Accessed', time.strftime('%Y-%m-%d, %H:%M:%S', time.localtime(stats.st_atime))),
             ('Permissions', oct(stat.S_IMODE(stats.st_mode))),

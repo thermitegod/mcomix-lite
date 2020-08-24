@@ -4,12 +4,38 @@
 switching to the next/previous directory"""
 
 import functools
+import re
+from os.path import splitext
 from pathlib import Path
 
 from loguru import logger
 
-from mcomix import archive_tools, constants, image_tools, tools
+from mcomix import archive_tools, constants, image_tools
 from mcomix.preferences import prefs
+
+NUMERIC_REGEXP = re.compile(r'\d+[.]\d+|\d+|\D+')  # Split into float, int, and characters
+
+
+def alphanumeric_sort(filenames):
+    """
+    Do an in-place alphanumeric sort of the strings in <filenames>,
+    such that for an example "1.jpg", "2.jpg", "10.jpg" is a sorted ordering
+    """
+
+    def _isfloat(p):
+        try:
+            return 0, float(p)
+        except ValueError:
+            return 1, p.lower()
+
+    def keyfunc(s):
+        s, e = splitext(s)
+        if e[1:].isdigit():  # extension with only digital is not extension
+            s += e
+            e = ''
+        return [_isfloat(p) for p in (*NUMERIC_REGEXP.findall(s), e)]
+
+    filenames.sort(key=keyfunc)
 
 
 def get_file_provider(filelist):
@@ -59,7 +85,7 @@ class FileProvider:
         """
 
         if prefs['sort by'] == constants.SORT_NAME:
-            tools.alphanumeric_sort(files)
+            alphanumeric_sort(files)
         elif prefs['sort by'] == constants.SORT_LAST_MODIFIED:
             # Most recently modified file first
             files.sort(key=lambda filename: Path.stat(filename).st_mtime * -1)
@@ -156,7 +182,7 @@ class OrderedFileProvider(FileProvider):
                 if Path.is_dir(directory):
                     dirs.append(str(directory))
 
-            tools.alphanumeric_sort(dirs)
+            alphanumeric_sort(dirs)
             return directories
 
         directories = __get_sibling_directories(self.__base_dir)

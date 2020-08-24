@@ -2,12 +2,13 @@
 
 """thumbbar.py - Thumbnail sidebar for main window"""
 
+import math
 from urllib.request import pathname2url
 
 import cairo
 from gi.repository import Gdk, GdkPixbuf, Gtk
 
-from mcomix import image_tools, thumbnail_view, tools
+from mcomix import image_tools, thumbnail_view
 from mcomix.preferences import prefs
 
 
@@ -85,6 +86,13 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         self.__window.page_changed += self._on_page_change
         self.__window.imagehandler.page_available += self._on_page_available
 
+    @staticmethod
+    def number_of_digits(n):
+        if not n:
+            return 1
+
+        return int(math.log10(abs(n))) + 1
+
     def toggle_page_numbers_visible(self):
         """
         Enables or disables page numbers on the thumbnail bar
@@ -92,7 +100,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
 
         if visible := prefs['show page numbers on thumbnails']:
             number_of_pages = self.__window.imagehandler.get_number_of_pages()
-            number_of_digits = tools.number_of_digits(number_of_pages)
+            number_of_digits = self.number_of_digits(number_of_pages)
             self.__text_cellrenderer.set_property('width-chars', number_of_digits + 1)
             w = self.__text_cellrenderer.get_preferred_size(self.__treeview)[1].width
             self.__thumbnail_page_treeviewcolumn.set_fixed_width(w)

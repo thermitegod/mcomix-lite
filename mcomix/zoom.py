@@ -2,9 +2,10 @@
 
 """Handles zoom and fit of images in the main display area"""
 
+import operator
 from functools import reduce
 
-from mcomix import constants, tools
+from mcomix import constants
 from mcomix.preferences import prefs
 
 
@@ -46,6 +47,21 @@ class ZoomModel:
 
     def reset_user_zoom(self):
         self._set_user_zoom_log(self.__identity_zoom_log)
+
+    @staticmethod
+    def scale(t, factor):
+        return [x * factor for x in t]
+
+    @staticmethod
+    def div(a, b):
+        return float(a) / float(b)
+
+    @staticmethod
+    def volume(t):
+        return reduce(operator.mul, t, 1)
+
+    def relerr(self, approx, ideal):
+        return abs(self.div(approx - ideal, ideal))
 
     def get_zoomed_size(self, image_sizes, screen_size, distribution_axis, do_not_transform):
         scale_up = self.__scale_up
@@ -103,7 +119,7 @@ class ZoomModel:
             l = limits[idx]
             if l is None:
                 continue
-            s = tools.div(l, image_size[idx])
+            s = self.div(l, image_size[idx])
             if min_scale is None or s < min_scale:
                 min_scale = s
         if min_scale is None:
@@ -120,7 +136,7 @@ class ZoomModel:
 
         manual = fitmode == constants.ZOOM_MODE_MANUAL
         if fitmode == constants.ZOOM_MODE_BEST or \
-                (manual and allow_upscaling and all(tools.smaller(union_size, screen_size))):
+                (manual and allow_upscaling and all(map(operator.lt, union_size, screen_size))):
             return screen_size
         result = [None] * len(screen_size)
         if not manual:
@@ -164,13 +180,13 @@ class ZoomModel:
         if n >= max_size:
             # In this case, only one solution or only an approximation is available.
             # if n > max_size, the result won't fit into max_size.
-            return map(lambda x: tools.div(1, x[axis]), sizes)  # FIXME ignores do_not_transform
+            return map(lambda x: self.div(1, x[axis]), sizes)  # FIXME ignores do_not_transform
         if ((total_axis_size := sum(map(lambda x: x[axis], sizes))) <= max_size) and not allow_upscaling:
             # identity
             return [self.__identity_zoom] * n
 
         # non-trival case
-        scale = tools.div(max_size, total_axis_size)  # FIXME initial guess should take unscalable images into account
+        scale = self.div(max_size, total_axis_size)  # FIXME initial guess should take unscalable images into account
         scaling_data = [None] * n
         total_axis_size = 0
         # This loop collects some data we need for the actual computations later.
@@ -182,22 +198,22 @@ class ZoomModel:
                 scaling_data[i] = [self.__identity_zoom, self.__identity_zoom, False, self.__identity_zoom, 0.0]
                 continue
             # Initial guess: The current scale works for all tuples.
-            ideal = tools.scale(this_size, scale)
-            ideal_vol = tools.volume(ideal)
+            ideal = self.scale(this_size, scale)
+            ideal_vol = self.volume(ideal)
             # Let's use a dummy to compute the actual (rounded) size along axis
             # so we can rescale the rounded tuple with a better local_scale
             # later. This rescaling is necessary to ensure that the sizes in ALL
             # dimensions are monotonically scaled (with respect to local_scale).
             # A nice side effect of this is that it keeps the aspect ratio better.
             dummy_approx = self._round_nonempty((ideal[axis],))[0]
-            local_scale = tools.div(dummy_approx, this_size[axis])
+            local_scale = self.div(dummy_approx, this_size[axis])
             total_axis_size += dummy_approx
             can_be_downscaled = dummy_approx > 1
             if can_be_downscaled:
                 forced_size = dummy_approx - 1
-                forced_scale = tools.div(forced_size, this_size[axis])
+                forced_scale = self.div(forced_size, this_size[axis])
                 forced_approx = self._scale_image_size(this_size, forced_scale)
-                forced_vol_err = tools.relerr(tools.volume(forced_approx), ideal_vol)
+                forced_vol_err = self.relerr(self.volume(forced_approx), ideal_vol)
             else:
                 forced_scale = None
                 forced_vol_err = None
@@ -245,7 +261,7 @@ class ZoomModel:
         return map(lambda d: d[0], scaling_data)
 
     def _scale_image_size(self, size, scale):
-        return self._round_nonempty(tools.scale(size, scale))
+        return self._round_nonempty(self.scale(size, scale))
 
     @staticmethod
     def _round_nonempty(t):

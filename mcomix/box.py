@@ -2,7 +2,7 @@
 
 """Hyperrectangles"""
 
-from mcomix import tools
+import operator
 
 
 class Box:
@@ -123,7 +123,7 @@ class Box:
         :return: A new Box as specified above
         """
 
-        return Box(tools.vector_sub(self.get_position(), delta), self.get_size())
+        return Box(tuple(map(operator.sub, self.get_position(), delta)), self.get_size())
 
     @staticmethod
     def closest_boxes(point, boxes, orientation=None):
@@ -347,4 +347,4 @@ class Box:
                 ps = p[idx] + s[idx]
                 if (maxes[idx] is None) or (ps > maxes[idx]):
                     maxes[idx] = ps
-        return Box(mins, tools.vector_sub(maxes, mins))
+        return Box(mins, tuple(map(operator.sub, maxes, mins)))

@@ -2,11 +2,12 @@
 
 """image_handler.py - Image handler that takes care of cacheing and giving out images"""
 
+import bisect
 from pathlib import Path
 
 from loguru import logger
 
-from mcomix import constants, image_tools, thumbnail_tools, tools
+from mcomix import constants, image_tools, thumbnail_tools
 from mcomix.lib import callback, mt
 from mcomix.preferences import prefs
 
@@ -47,6 +48,18 @@ class ImageHandler:
         self.__cache_pages = prefs['max pages to cache']
 
         self.__window.filehandler.file_available += self._file_available
+
+    @staticmethod
+    def format_byte_size(n):
+        s = 0
+        while n >= 1024:
+            s += 1
+            n /= 1024.0
+        try:
+            e = ('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB')[s]
+        except IndexError:
+            e = f'C{s}i'
+        return f'{n:.3f} {e}'
 
     def _get_pixbuf(self, index):
         """
@@ -243,6 +256,22 @@ class ImageHandler:
         if index in self.__wanted_pixbufs or -1 == self.__cache_pages:
             self.__thread.apply_async(self._cache_pixbuf, (index,))
 
+    @staticmethod
+    def bin_search(lst, value):
+        """
+        Binary search for sorted list C{lst}, looking for C{value}.
+
+        :returns: List index on success. On failure, it returns the 1's
+        complement of the index where C{value} would be inserted.
+        This implies that the return value is non-negative if and only if
+        C{value} is contained in C{lst}
+        """
+
+        if (index := bisect.bisect_left(lst, value)) != len(lst) and lst[index] == value:
+            return index
+
+        return ~index
+
     def _file_available(self, filepaths):
         """
         Called by the filehandler when a new file becomes available
@@ -254,7 +283,7 @@ class ImageHandler:
 
         available = sorted(filepaths)
         for i, imgpath in enumerate(self.__image_files):
-            if tools.bin_search(available, imgpath) >= 0:
+            if self.bin_search(available, imgpath) >= 0:
                 self.page_available(i + 1)
 
     def get_number_of_pages(self):
@@ -344,7 +373,7 @@ class ImageHandler:
             except OSError:
                 logger.warning(f'failed to get file size for: {path}')
                 fsize = 0
-            return tools.format_byte_size(fsize)
+            return self.format_byte_size(fsize)
 
         if page is None:
             page = self.get_current_page()

@@ -1,5 +1,6 @@
 """main.py - Main window"""
 
+import operator
 import shutil
 from pathlib import Path
 
@@ -8,7 +9,7 @@ from send2trash import send2trash
 
 from mcomix import bookmark_backend, constants, cursor_handler, enhance_backend, event, file_handler, icons, \
     image_handler, image_tools, keybindings, layout, lens, message_dialog, pageselect, preferences, status, \
-    thumbbar, tools, ui, zoom
+    thumbbar, ui, zoom
 from mcomix.lib import callback
 from mcomix.preferences import prefs
 
@@ -278,6 +279,9 @@ class MainWindow(Gtk.Window):
                     (widget.show if should_be_visible else widget.hide)()
 
     def _draw_image(self, scroll_to):
+        def vector_opposite(a):
+            return tuple(map(operator.neg, a))
+
         self._update_toggles_visibility()
 
         if not self.filehandler.get_file_loaded():
@@ -321,13 +325,13 @@ class MainWindow(Gtk.Window):
                 for i in range(pixbuf_count):
                     size_list[i].reverse()
             elif rotation in (180, 270):
-                orientation = tools.vector_opposite(orientation)
+                orientation = vector_opposite(orientation)
             for i in range(pixbuf_count):
                 rotation_list[i] = (rotation_list[i] + rotation) % 360
             if prefs['vertical flip']:
-                orientation = tools.vector_opposite(orientation)
+                orientation = vector_opposite(orientation)
             if prefs['horizontal flip']:
-                orientation = tools.vector_opposite(orientation)
+                orientation = vector_opposite(orientation)
 
             viewport_size = ()  # dummy
             expand_area = False
@@ -354,7 +358,7 @@ class MainWindow(Gtk.Window):
                 union_scaled_size = self.__layout.get_union_box().get_size()
 
                 scrollbar_requests = [(old or new) for old, new in zip(
-                        scrollbar_requests, tools.smaller(viewport_size, union_scaled_size))]
+                        scrollbar_requests, map(operator.lt, viewport_size, union_scaled_size))]
 
                 if len(tuple(filter(None, scrollbar_requests))) > 1 and not expand_area:
                     expand_area = True
