@@ -6,9 +6,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from loguru import logger
-
-from mcomix import constants, preferences
+from mcomix import constants
 
 
 def run():
@@ -46,6 +44,7 @@ def run():
         raise SystemExit
 
     # start logger
+    from loguru import logger
     logger.remove()
     logger.add(sys.stdout, level=args.loglevel, colorize=True)
 
@@ -77,6 +76,7 @@ def run():
     logger.info(f'Image loaders: Pillow [{PIL.Image.__version__}], GDK [{GdkPixbuf.PIXBUF_VERSION}])')
 
     # Load configuration.
+    from mcomix import preferences
     preferences.PreferenceManager.load_preferences_file()
 
     from mcomix import icons
