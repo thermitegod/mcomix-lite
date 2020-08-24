@@ -127,13 +127,13 @@ class EventHandler:
 
         # Arrow keys scroll the image
         manager.register('scroll_down',
-                         self._scroll_down)
+                         self._scroll_with_flipping, kwargs={'x': 0, 'y': prefs['number of pixels to scroll per key event']})
         manager.register('scroll_up',
-                         self._scroll_up)
+                         self._scroll_with_flipping, kwargs={'x': 0, 'y': -prefs['number of pixels to scroll per key event']})
         manager.register('scroll_right',
-                         self._scroll_right)
+                         self._scroll_with_flipping, kwargs={'x': prefs['number of pixels to scroll per key event'], 'y': 0})
         manager.register('scroll_left',
-                         self._scroll_left)
+                         self._scroll_with_flipping, kwargs={'x': -prefs['number of pixels to scroll per key event'], 'y': 0})
 
         # File operations
         manager.register('close',
@@ -333,22 +333,6 @@ class EventHandler:
             self._flip_page(1)
         else:
             self._flip_page(-1)
-
-    def _scroll_down(self):
-        """Scrolls down"""
-        self._scroll_with_flipping(0, prefs['number of pixels to scroll per key event'])
-
-    def _scroll_up(self):
-        """Scrolls up"""
-        self._scroll_with_flipping(0, -prefs['number of pixels to scroll per key event'])
-
-    def _scroll_right(self):
-        """Scrolls right"""
-        self._scroll_with_flipping(prefs['number of pixels to scroll per key event'], 0)
-
-    def _scroll_left(self):
-        """Scrolls left"""
-        self._scroll_with_flipping(-prefs['number of pixels to scroll per key event'], 0)
 
     def _flip_page(self, number_of_pages, single_step=False):
         """Switches a number of pages forwards/backwards. If C{single_step} is True,
