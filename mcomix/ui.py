@@ -10,7 +10,7 @@ from mcomix.preferences import prefs
 
 class MainUI(Gtk.UIManager):
     def __init__(self, window):
-        super(MainUI, self).__init__()
+        super().__init__()
 
         self.__window = window
 

@@ -12,6 +12,8 @@ class CallbackList:
     Add listeners to method calls with method += callback_function"""
 
     def __init__(self, obj, function):
+        super().__init__()
+
         self.__callbacks = []
         self.__object = obj
         self.__function = function
@@ -101,6 +103,8 @@ class Callback:
     """Decorator class for using the CallbackList helper"""
 
     def __init__(self, function):
+        super().__init__()
+
         # This is the function the Callback is decorating.
         self.__function = function
 

@@ -14,6 +14,8 @@ class ImageEnhancer:
     """
 
     def __init__(self, window):
+        super().__init__()
+
         self.__window = window
         self.brightness = prefs['brightness']
         self.contrast = prefs['contrast']

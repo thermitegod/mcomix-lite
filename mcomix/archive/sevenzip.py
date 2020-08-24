@@ -20,7 +20,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
     STATE_HEADER, STATE_LISTING, STATE_FOOTER = 1, 2, 3
 
     def __init__(self, archive):
-        super(SevenZipArchive, self).__init__(archive)
+        super().__init__(archive)
         self.__is_solid = False
         self.__contents = []
 

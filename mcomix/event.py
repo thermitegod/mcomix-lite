@@ -12,6 +12,8 @@ from mcomix.preferences import prefs
 
 class EventHandler:
     def __init__(self, window):
+        super().__init__()
+
         self.__window = window
 
         self.__last_pointer_pos_x = 0

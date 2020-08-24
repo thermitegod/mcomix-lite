@@ -19,7 +19,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
 
     # Thumbnail border width in pixels.
     def __init__(self, window):
-        super(ThumbnailSidebar, self).__init__()
+        super().__init__()
 
         self.__window = window
         #: Thumbnail load status
@@ -119,14 +119,16 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         """
 
         self.load_thumbnails()
-        super(ThumbnailSidebar, self).show()
+
+        super().show()
 
     def hide(self):
         """
         Hide the ThumbnailSidebar
         """
 
-        super(ThumbnailSidebar, self).hide()
+        super().hide()
+
         self.__treeview.stop_update()
 
     def clear(self):

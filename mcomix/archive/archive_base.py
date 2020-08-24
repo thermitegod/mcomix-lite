@@ -21,6 +21,8 @@ class BaseArchive:
     support_concurrent_extractions = False
 
     def __init__(self, archive):
+        super().__init__()
+
         assert isinstance(archive, str), 'File should be an Unicode string.'
 
         self.archive = archive
@@ -131,7 +133,8 @@ class ExternalExecutableArchive(BaseArchive):
     support_concurrent_extractions = True
 
     def __init__(self, archive):
-        super(ExternalExecutableArchive, self).__init__(archive)
+        super().__init__(archive)
+
         # Flag to determine if list_contents() has been called
         # This builds the Unicode mapping and is likely required
         # for extracting filenames that have been internally mapped.

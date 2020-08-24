@@ -18,11 +18,12 @@ class MessageDialog(Gtk.MessageDialog):
         :param buttons: Dialog buttons. Can only be a predefined BUTTONS_XXX constant
         """
 
-        super(MessageDialog, self).__init__(
+        super().__init__(
                 message_type=message_type, buttons=buttons,
                 modal=flags & Gtk.DialogFlags.MODAL,
                 destroy_with_parent=flags & Gtk.DialogFlags.DESTROY_WITH_PARENT,
         )
+
         self.set_transient_for(parent)
 
         #: Unique dialog identifier (for storing 'Do not ask again')
@@ -82,7 +83,8 @@ class MessageDialog(Gtk.MessageDialog):
         self.show_all()
         # Prevent checkbox from grabbing focus by only enabling it after show
         self.__remember_checkbox.set_can_focus(True)
-        result = super(MessageDialog, self).run()
+
+        result = super().run()
 
         if self.should_remember_choice() and int(result) in self.__choices:
             prefs['stored dialog choices'][self.__dialog_id] = int(result)

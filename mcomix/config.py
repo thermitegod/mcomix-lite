@@ -11,6 +11,8 @@ from mcomix import constants
 
 class _ConfigManager:
     def __init__(self):
+        super().__init__()
+
         self.config_dir_check()
 
     @staticmethod

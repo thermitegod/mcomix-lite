@@ -89,6 +89,8 @@ prefs = {
 
 class _PreferenceManager:
     def __init__(self):
+        super().__init__()
+
         self.__preference_path = constants.PREFERENCE_PATH
         self.__prefs_hash = {'sha256': None}
 

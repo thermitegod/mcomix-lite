@@ -24,6 +24,8 @@ class Thumbnailer:
         height) tupple. Defaults to the 'thumbnail size' preference if not set.
         """
 
+        super().__init__()
+
         if size is None:
             self.__width = self.__height = prefs['thumbnail size']
             self.__default_sizes = True

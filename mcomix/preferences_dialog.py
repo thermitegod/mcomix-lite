@@ -15,7 +15,8 @@ class _PreferencesDialog(Gtk.Dialog):
     """
 
     def __init__(self, window):
-        super(_PreferencesDialog, self).__init__(title='Preferences')
+        super().__init__(title='Preferences')
+
         self.set_transient_for(window)
 
         # Button text is set later depending on active tab
@@ -807,7 +808,8 @@ class _PreferenceSection(Gtk.VBox):
         set to that of <right_column_width>
         """
 
-        super(_PreferenceSection, self).__init__(homogeneous=False, spacing=0)
+        super().__init__(homogeneous=False, spacing=0)
+
         self.__right_column_width = right_column_width
         self.__contentbox = Gtk.VBox(homogeneous=False, spacing=6)
         label = labels.BoldLabel(header)
@@ -854,7 +856,7 @@ class _PreferencePage(Gtk.VBox):
         Create a new page where any possible right columns have the width request <right_column_width>
         """
 
-        super(_PreferencePage, self).__init__(homogeneous=False, spacing=12)
+        super().__init__(homogeneous=False, spacing=12)
         self.set_border_width(12)
         self.__right_column_width = right_column_width
         self.__section = None

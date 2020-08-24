@@ -16,7 +16,7 @@ class BookmarksDialog(Gtk.Dialog):
     _SORT_TYPE, _SORT_NAME, _SORT_PAGE, _SORT_ADDED = 100, 101, 102, 103
 
     def __init__(self, window, bookmarks_store):
-        super(BookmarksDialog, self).__init__(title='Edit Bookmarks', destroy_with_parent=True)
+        super().__init__(title='Edit Bookmarks', destroy_with_parent=True)
         self.set_transient_for(window)
 
         self.add_buttons(Gtk.STOCK_REMOVE, constants.RESPONSE_REMOVE, Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)

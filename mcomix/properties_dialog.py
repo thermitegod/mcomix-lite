@@ -14,7 +14,8 @@ from mcomix.preferences import prefs
 
 class PropertiesDialog(Gtk.Dialog):
     def __init__(self, window):
-        super(PropertiesDialog, self).__init__(title='Properties')
+        super().__init__(title='Properties')
+
         self.set_transient_for(window)
         self.add_buttons(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
 

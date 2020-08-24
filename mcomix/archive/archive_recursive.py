@@ -14,7 +14,8 @@ from mcomix.preferences import prefs
 
 class RecursiveArchive(archive_base.BaseArchive):
     def __init__(self, archive):
-        super(RecursiveArchive, self).__init__(archive.archive)
+        super().__init__(archive.archive)
+
         self.__main_archive = archive
 
         cache_path = constants.CACHE_DIR

@@ -22,6 +22,8 @@ class FiniteLayout:  # 2D only
         :param alignment_axis: the axis to center
         """
 
+        super().__init__()
+
         self.__current_index = -1
         self.__wrap_individually = wrap_individually
         self._reset(content_sizes, viewport_size, orientation, spacing,

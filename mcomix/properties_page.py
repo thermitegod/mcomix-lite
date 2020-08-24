@@ -13,7 +13,8 @@ class Page(Gtk.ScrolledWindow):
     """
 
     def __init__(self):
-        super(Page, self).__init__()
+        super().__init__()
+
         self.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         self.__vbox = Gtk.VBox(homogeneous=False, spacing=12)
         self.add_with_viewport(self.__vbox)

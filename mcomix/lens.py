@@ -22,6 +22,8 @@ class MagnifyingLens:
     """
 
     def __init__(self, window):
+        super().__init__()
+
         self.__window = window
         self.__area = self.__window.get_main_layout()
         self.__area.connect('motion-notify-event', self._motion_event)

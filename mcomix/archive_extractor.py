@@ -26,6 +26,8 @@ class Extractor:
     """
 
     def __init__(self):
+        super().__init__()
+
         self.__setupped = False
         self.__threadpool = mt.ThreadPool(
                 name=self.__class__.__name__,

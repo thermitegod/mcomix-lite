@@ -21,7 +21,8 @@ class MainWindow(Gtk.Window):
 
     def __init__(self, fullscreen=False, manga_mode=False, double_page=False,
                  zoom_mode=None, open_path=None, open_page=1):
-        super(MainWindow, self).__init__(type=Gtk.WindowType.TOPLEVEL)
+        super().__init__(type=Gtk.WindowType.TOPLEVEL)
+
         # ----------------------------------------------------------------
         # Attributes
         # ----------------------------------------------------------------

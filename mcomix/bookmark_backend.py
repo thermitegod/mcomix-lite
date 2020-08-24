@@ -20,6 +20,8 @@ class _BookmarksStore:
     """
 
     def __init__(self):
+        super().__init__()
+
         self.__initialized = False
         self.__window = None
         self.__file_handler = None

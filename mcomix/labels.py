@@ -16,7 +16,8 @@ class FormattedLabel(Gtk.Label):
     }
 
     def __init__(self, text='', weight=Pango.Weight.NORMAL, style=Pango.Style.NORMAL, scale=1.0):
-        super(FormattedLabel, self).__init__()
+        super().__init__()
+
         self.__weight = weight
         self.__style = style
         self.__scale = scale
@@ -37,7 +38,7 @@ class BoldLabel(FormattedLabel):
     """
 
     def __init__(self, text=''):
-        super(BoldLabel, self).__init__(text=text, weight=Pango.Weight.BOLD)
+        super().__init__(text=text, weight=Pango.Weight.BOLD)
 
 
 class ItalicLabel(FormattedLabel):
@@ -46,4 +47,4 @@ class ItalicLabel(FormattedLabel):
     """
 
     def __init__(self, text=''):
-        super(ItalicLabel, self).__init__(text=text, style=Pango.Style.ITALIC)
+        super().__init__(text=text, style=Pango.Style.ITALIC)

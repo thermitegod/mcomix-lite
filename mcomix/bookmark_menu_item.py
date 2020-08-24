@@ -25,7 +25,7 @@ class Bookmark(Gtk.ImageMenuItem):
         self._numpages = numpages
         self._date_added = datetime.fromtimestamp(epoch)
 
-        super(Bookmark, self).__init__(label=str(self), use_underline=False)
+        super().__init__(label=str(self), use_underline=False)
 
         if self.__archive_type is not None:
             im = Gtk.Image.new_from_stock('mcomix-archive', Gtk.IconSize.MENU)

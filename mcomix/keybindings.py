@@ -33,6 +33,8 @@ from mcomix import constants, keybindings_map, config
 
 class _KeybindingInterface:
     def __init__(self, window):
+        super().__init__()
+
         #: Main window instance
         self.__window = window
 
@@ -222,6 +224,8 @@ class _KeybindingInterface:
 
 class _KeybindingManager:
     def __init__(self):
+        super().__init__()
+
         self.__manager = None
 
     def keybinding_manager(self, window):

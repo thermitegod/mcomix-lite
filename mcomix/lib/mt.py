@@ -10,7 +10,7 @@ from threading import Lock
 class NamedPool(mpThreadPool):
     def __init__(self, *args, name=None, **kwargs):
         self.__name = name
-        super(NamedPool, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def Process(self, *args, **kwargs):
         if self.__name:
@@ -21,6 +21,8 @@ class NamedPool(mpThreadPool):
 class ThreadPool:
     # multiprocessing.dummy.Pool with exc_info in error_callback
     def __init__(self, name=None, processes=None):
+        super().__init__()
+
         self.__processes = processes
         self.__pool = NamedPool(self.__processes, name=name)
         self.__lock = Lock()  # lock for self

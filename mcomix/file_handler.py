@@ -22,6 +22,8 @@ class FileHandler:
     """
 
     def __init__(self, window):
+        super().__init__()
+
         #: Indicates if files/archives are currently loaded/loading.
         self.__file_loaded = False
         self.__file_loading = False

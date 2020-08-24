@@ -18,6 +18,8 @@ class Box:
         :param size: The size of this Box
         """
 
+        super().__init__()
+
         if size is None:
             self.__position = (0,) * len(position)
             self.__size = tuple(position)

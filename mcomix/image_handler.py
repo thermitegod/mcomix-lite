@@ -24,6 +24,8 @@ class ImageHandler:
     """
 
     def __init__(self, window):
+        super().__init__()
+
         #: Reference to main window
         self.__window = window
 

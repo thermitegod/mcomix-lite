@@ -66,6 +66,9 @@ class FileProvider:
     # Constants for determining which files to list.
     IMAGES, ARCHIVES = 1, 2
 
+    def __init__(self):
+        super().__init__()
+
     def set_directory(self, file_or_directory):
         pass
 
@@ -110,6 +113,8 @@ class OrderedFileProvider(FileProvider):
         directory will be used as base path. If it is a directory, that
         will be used as base file
         """
+
+        super().__init__()
 
         self.set_directory(file_or_directory)
 
@@ -211,6 +216,8 @@ class PreDefinedFileProvider(FileProvider):
         file is, since FileHandler will probably have problems of archives and images
         are mixed in a file list
         """
+
+        super().__init__()
 
         should_accept = self.__get_file_filter(files)
 

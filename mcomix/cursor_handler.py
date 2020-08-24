@@ -9,6 +9,8 @@ from mcomix import constants
 
 class CursorHandler:
     def __init__(self, window):
+        super().__init__()
+
         self.__window = window
         self.__timer_id = None
         self.__auto_hide = False

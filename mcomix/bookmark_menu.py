@@ -16,7 +16,7 @@ class BookmarksMenu(Gtk.Menu):
     """
 
     def __init__(self, ui, window):
-        super(BookmarksMenu, self).__init__()
+        super().__init__()
 
         self.__window = window
         self.__bookmarks_store = bookmark_backend.BookmarksStore

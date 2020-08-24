@@ -119,11 +119,7 @@ class RarArchive(archive_base.BaseArchive):
         return bool(RarExecutable.find_unrar())
 
     def __init__(self, archive):
-        """
-        Initialize Unrar
-        """
-
-        super(RarArchive, self).__init__(archive)
+        super().__init__(archive)
         self.__unrar = RarExecutable.find_unrar()
         self.__handle = None
         self.__is_solid = False

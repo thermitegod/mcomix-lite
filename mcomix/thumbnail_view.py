@@ -27,6 +27,8 @@ class ThumbnailViewBase:
         :param status_column: index of status boolean column (True if pixbuf is not temporary filler)
         """
 
+        super().__init__()
+
         #: Keep track of already generated thumbnails.
         self.__uid_column = uid_column
         self.__pixbuf_column = pixbuf_column
@@ -113,7 +115,9 @@ class ThumbnailViewBase:
 class ThumbnailTreeView(Gtk.TreeView, ThumbnailViewBase):
     def __init__(self, model, uid_column, pixbuf_column, status_column):
         assert (model.get_flags() & Gtk.TreeModelFlags.ITERS_PERSIST) != 0
-        super(ThumbnailTreeView, self).__init__(model=model)
+
+        super().__init__(model=model)
+
         ThumbnailViewBase.__init__(self, uid_column, pixbuf_column, status_column)
 
         # Connect events

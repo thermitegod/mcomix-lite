@@ -12,7 +12,8 @@ from mcomix import constants, image_tools
 
 class AboutDialog(Gtk.AboutDialog):
     def __init__(self, window):
-        super(AboutDialog, self).__init__()
+        super().__init__()
+
         self.set_transient_for(window)
         # self.add_buttons(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
 

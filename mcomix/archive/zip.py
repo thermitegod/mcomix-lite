@@ -14,7 +14,7 @@ from mcomix.archive import archive_base
 
 class ZipArchive(archive_base.BaseArchive):
     def __init__(self, archive):
-        super(ZipArchive, self).__init__(archive)
+        super().__init__(archive)
         self.__zip = zipfile.ZipFile(archive, 'r')
         self.__lock = threading.Lock()
 

@@ -15,6 +15,8 @@ class ZoomModel:
     """
 
     def __init__(self):
+        super().__init__()
+
         self.__identity_zoom = 1.0
         self.__identity_zoom_log = 0.0
         self.__user_zoom_log_scale1 = 4.0

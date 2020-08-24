@@ -10,6 +10,8 @@ from mcomix.preferences import prefs
 
 class AnimeFrameBuffer:
     def __init__(self, n_frames, loop=1):
+        super().__init__()
+
         self.__n_frames = n_frames
         self.__width = 0
         self.__height = 0
