@@ -102,30 +102,32 @@ def archive_mime_type(path):
         return None
 
 
-def get_archive_handler(path, type=None):
+def get_archive_handler(path, archive_type=None):
     """
     Returns a fitting extractor handler for the archive passed in <path>
     (with optional mime type <type>. Returns None if no matching extractor was found
     """
 
-    if type is None:
-        if (type := archive_mime_type(path)) is None:
+    if archive_type is None:
+        archive_type = archive_mime_type(path)
+        if archive_type is None:
             return None
 
-    handler = _get_handler(type)
+    handler = _get_handler(archive_type)
     if handler is None:
         return None
 
     return handler(path)
 
 
-def get_recursive_archive_handler(path, type=None, **kwargs):
+def get_recursive_archive_handler(path, archive_type=None, **kwargs):
     """
     Same as <get_archive_handler> but the handler will transparently handle
     archives within archives
     """
 
-    if (archive := get_archive_handler(path, type=type)) is None:
+    archive = get_archive_handler(path, archive_type=archive_type)
+    if archive is None:
         return None
 
     # XXX: Deferred import to avoid circular dependency

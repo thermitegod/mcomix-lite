@@ -43,7 +43,7 @@ class Extractor:
         self.__extract_started = False
         self.__condition = None
 
-    def setup(self, src, type=None):
+    def setup(self, src, archive_type=None):
         """
         Setup the extractor with archive <src> and destination dir <dst>.
         Return a threading.Condition related to the is_ready() method, or
@@ -53,7 +53,7 @@ class Extractor:
         self.__src = src
         self.__files = []
         self.__extracted = set()
-        self.__archive = archive_tools.get_recursive_archive_handler(src, type=type)
+        self.__archive = archive_tools.get_recursive_archive_handler(src, archive_type=archive_type)
         if self.__archive is None:
             logger.warning(msg := f'Non-supported archive format: \'{Path(src).name}\'')
             raise ArchiveException(msg)
