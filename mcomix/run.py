@@ -83,7 +83,6 @@ def run():
     icons.load_icons()
 
     open_path = args.path
-    open_page = 1
 
     if isinstance(open_path, list):
         n = 0
@@ -107,7 +106,7 @@ def run():
     from mcomix import main
     window = main.MainWindow(fullscreen=args.fullscreen, manga_mode=args.manga,
                              double_page=args.doublepage, zoom_mode=args.zoommode,
-                             open_path=open_path, open_page=open_page)
+                             open_path=open_path)
 
     try:
         Gtk.main()
