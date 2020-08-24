@@ -2,12 +2,11 @@
 
 # must not depend on GTK, PIL, or any other optional libraries.
 
-import json
 from pathlib import Path
 
 from loguru import logger
 
-from mcomix import constants, tools
+from mcomix import constants, config
 
 # All preferences are stored here.
 prefs = {
@@ -96,20 +95,14 @@ class _PreferenceManager:
     def load_preferences_file(self):
         saved_prefs = {}
         if Path.is_file(self.__preference_path):
-            try:
-                with Path.open(self.__preference_path, mode='rt', encoding='utf8') as fd:
-                    saved_prefs.update(json.load(fd))
-            except Exception:
-                logger.error('Failed to load preferences file, exiting')
-                raise SystemExit
+            saved_prefs = config.ConfigManager.load_config(self.__preference_path, saved_prefs)
 
         prefs.update(filter(lambda i: i[0] in prefs, saved_prefs.items()))
 
-        self.__prefs_hash['sha256'] = tools.sha256str(json.dumps(prefs, indent=2))
+        self.__prefs_hash['sha256'] = config.ConfigManager.hash_config(prefs)
 
     def write_preferences_file(self):
-        json_prefs = json.dumps(prefs, indent=2)
-        sha256hash = tools.sha256str(json_prefs)
+        sha256hash = config.ConfigManager.hash_config(prefs)
         if sha256hash == self.__prefs_hash['sha256']:
             logger.info('No changes to write for preferences')
             return
@@ -117,7 +110,7 @@ class _PreferenceManager:
 
         logger.info('Writing changes to preferences')
 
-        self.__preference_path.write_text(json_prefs)
+        config.ConfigManager.write_config(prefs, self.__preference_path)
 
 
 # Singleton instance

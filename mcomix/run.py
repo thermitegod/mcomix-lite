@@ -77,12 +77,6 @@ def run():
 
     logger.info(f'Image loaders: Pillow [{PIL.Image.__version__}], GDK [{GdkPixbuf.PIXBUF_VERSION}])')
 
-    if not Path.exists(constants.DATA_DIR):
-        constants.DATA_DIR.mkdir()
-
-    if not Path.exists(constants.CONFIG_DIR):
-        constants.CONFIG_DIR.mkdir()
-
     # Load configuration.
     preferences.PreferenceManager.load_preferences_file()
 

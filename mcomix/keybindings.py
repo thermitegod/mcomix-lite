@@ -22,14 +22,13 @@ action-name: string => [keycodes: list]
 
 Each action_name can have multiple keybindings"""
 
-import json
 from collections import defaultdict
 from pathlib import Path
 
 from gi.repository import Gtk
 from loguru import logger
 
-from mcomix import constants, keybindings_map, tools
+from mcomix import constants, keybindings_map, config
 
 
 class _KeybindingInterface:
@@ -183,8 +182,7 @@ class _KeybindingInterface:
                     (keyval, modifiers) in bindings
                 ]
 
-        json_prefs = json.dumps(action_to_keys, indent=2)
-        sha256hash = tools.sha256str(json_prefs)
+        sha256hash = config.ConfigManager.hash_config(action_to_keys)
         if sha256hash == self.__keybindings_hash['sha256']:
             logger.info('No changes to write for keybindings')
             return
@@ -192,20 +190,12 @@ class _KeybindingInterface:
 
         logger.info('Writing changes to keybindings')
 
-        self.__keybindings_path.write_text(json_prefs)
+        config.ConfigManager.write_config(action_to_keys, self.__keybindings_path)
 
     def load_keybindings_file(self):
-        """
-        Load keybindings from disk
-        """
-
+        stored_action_bindings = {}
         if Path.is_file(self.__keybindings_path):
-            try:
-                with Path.open(self.__keybindings_path, mode='rt', encoding='utf8') as fd:
-                    stored_action_bindings = json.load(fd)
-            except Exception:
-                logger.error('Failed to load keybinding file, exiting')
-                raise SystemExit
+            config.ConfigManager.load_config(self.__keybindings_path, stored_action_bindings)
         else:
             stored_action_bindings = keybindings_map.DEFAULT_BINDINGS.copy()
 
@@ -220,7 +210,7 @@ class _KeybindingInterface:
             else:
                 self.__action_to_bindings[action] = []
 
-        self.__keybindings_hash['sha256'] = tools.sha256str(json.dumps(stored_action_bindings, indent=2))
+        self.__keybindings_hash['sha256'] = config.ConfigManager.hash_config(stored_action_bindings)
 
     def get_bindings_for_action(self, name):
         """
