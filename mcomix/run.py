@@ -3,7 +3,6 @@
 # Do not run this script directly, use mcomixstarter.py
 
 import argparse
-import signal
 import sys
 from pathlib import Path
 
@@ -110,8 +109,6 @@ def run():
                              double_page=args.doublepage, zoom_mode=args.zoommode,
                              open_path=open_path, open_page=open_page)
 
-    for sig in (signal.SIGINT, signal.SIGTERM):
-        signal.signal(sig, lambda signum, stack: GLib.idle_add(window.terminate_program))
     try:
         Gtk.main()
     except KeyboardInterrupt:
