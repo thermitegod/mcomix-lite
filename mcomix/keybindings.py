@@ -47,14 +47,18 @@ class _KeybindingInterface:
         self.load_keybindings_file()
 
     def register(self, name, callback, args=None, kwargs=None, bindings=None):
-        """Registers an action for a predefined keybinding name.
-        @param name: Action name, defined in L{keybindings_map.BINDING_INFO}.
-        @param bindings: List of keybinding strings, as understood
+        """
+        Registers an action for a predefined keybinding name.
+
+        :param name: Action name, defined in L{keybindings_map.BINDING_INFO}.
+        :param bindings: List of keybinding strings, as understood
                          by L{Gtk.accelerator_parse}. Only used if no
                          bindings were loaded for this action.
-        @param callback: Function callback
-        @param args: List of arguments to pass to the callback
-        @param kwargs: List of keyword arguments to pass to the callback"""
+        :param callback: Function callback
+        :param args: List of arguments to pass to the callback
+        :param kwargs: List of keyword arguments to pass to the callback
+        """
+
         if args is None:
             args = []
         if kwargs is None:
@@ -85,11 +89,15 @@ class _KeybindingInterface:
         self.__action_to_callback[name] = (callback, args, kwargs)
 
     def edit_accel(self, name, new_binding, old_binding):
-        """Changes binding for an action
-        @param name: Action name
-        @param new_binding: Binding to be assigned to action
-        @param old_binding: Binding to be removed from action [ can be empty: "" ]
-        @return None: new_binding wasn't in any action action name: where new_binding was before"""
+        """
+        Changes binding for an action
+
+        :param name: Action name
+        :param new_binding: Binding to be assigned to action
+        :param old_binding: Binding to be removed from action [ can be empty: "" ]
+        :returns: None: new_binding wasn't in any action action name: where new_binding was before
+        """
+
         assert name in keybindings_map.BINDING_INFO, f'"{name}" is not a valid keyboard action.'
 
         nb = Gtk.accelerator_parse(new_binding)
@@ -118,7 +126,10 @@ class _KeybindingInterface:
         return old_action_with_nb
 
     def clear_accel(self, name, binding):
-        """Remove binding for an action"""
+        """
+        Remove binding for an action
+        """
+
         assert name in keybindings_map.BINDING_INFO, f'"{name}" is not a valid keyboard action.'
 
         ob = Gtk.accelerator_parse(binding)
@@ -126,15 +137,21 @@ class _KeybindingInterface:
         self.__binding_to_action.pop(ob)
 
     def clear_all(self):
-        """Removes all keybindings. The changes are only persisted if save() is called afterwards"""
+        """
+        Removes all keybindings. The changes are only persisted if save() is called afterwards
+        """
+
         self.__action_to_callback = {}
         self.__action_to_bindings = defaultdict(list)
         self.__binding_to_action = {}
 
     def execute(self, keybinding):
-        """Executes an action that has been registered for the
+        """
+        Executes an action that has been registered for the
         passed keyboard event. If no action is bound to the passed key, this
-        method is a no-op"""
+        method is a no-op
+        """
+
         if keybinding in self.__binding_to_action:
             action = self.__binding_to_action[keybinding]
             func, args, kwargs = self.__action_to_callback[action]
@@ -153,7 +170,10 @@ class _KeybindingInterface:
                 return func(*args, **kwargs)
 
     def write_keybindings_file(self):
-        """Stores the keybindings that have been set to disk"""
+        """
+        Stores the keybindings that have been set to disk
+        """
+
         # Collect keybindings for all registered actions
         action_to_keys = {}
         for action, bindings in self.__action_to_bindings.items():
@@ -175,7 +195,10 @@ class _KeybindingInterface:
         self.__keybindings_path.write_text(json_prefs)
 
     def load_keybindings_file(self):
-        """Load keybindings from disk"""
+        """
+        Load keybindings from disk
+        """
+
         if Path.is_file(self.__keybindings_path):
             try:
                 with Path.open(self.__keybindings_path, mode='rt', encoding='utf8') as fd:
@@ -200,7 +223,10 @@ class _KeybindingInterface:
         self.__keybindings_hash['sha256'] = tools.sha256str(json.dumps(stored_action_bindings, indent=2))
 
     def get_bindings_for_action(self, name):
-        """Returns a list of (keycode, modifier) for the action C{name}"""
+        """
+        Returns a list of (keycode, modifier) for the action C{name}
+        """
+
         return self.__action_to_bindings[name]
 
 

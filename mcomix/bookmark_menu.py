@@ -9,9 +9,11 @@ from mcomix import bookmark_backend, bookmark_dialog
 
 
 class BookmarksMenu(Gtk.Menu):
-    """BookmarksMenu extends Gtk.Menu with convenience methods relating to
+    """
+    BookmarksMenu extends Gtk.Menu with convenience methods relating to
     bookmarks. It contains fixed items for adding bookmarks etc. as well
-    as dynamic items corresponding to the current bookmarks"""
+    as dynamic items corresponding to the current bookmarks
+    """
 
     def __init__(self, ui, window):
         super(BookmarksMenu, self).__init__()
@@ -61,23 +63,35 @@ class BookmarksMenu(Gtk.Menu):
             self.add_bookmark(bookmark)
 
     def add_bookmark(self, bookmark):
-        """Add <bookmark> to the menu"""
+        """
+        Add <bookmark> to the menu
+        """
+
         bookmark = bookmark.clone()
         bookmark.show()
         self.insert(bookmark, 3)
 
     def _add_current_to_bookmarks(self, *args):
-        """Add the current page to the bookmarks list"""
+        """
+        Add the current page to the bookmarks list
+        """
+
         try:
             self.__bookmarks_store.add_current_to_bookmarks()
         except TypeError:
             logger.warning('No file to add to bookmarks')
 
     def _edit_bookmarks(self, *args):
-        """Open the bookmarks dialog"""
+        """
+        Open the bookmarks dialog
+        """
+
         bookmark_dialog.BookmarksDialog(self.__window, self.__bookmarks_store)
 
     def set_sensitive(self, loaded):
-        """Set the sensitivities of menu items as appropriate if <loaded>
-        represents whether a file is currently loaded in the main program or not"""
+        """
+        Set the sensitivities of menu items as appropriate if <loaded>
+        represents whether a file is currently loaded in the main program or not
+        """
+
         self.__actiongroup.get_action('add_bookmark').set_sensitive(loaded)

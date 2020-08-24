@@ -4,8 +4,11 @@ from gi.repository import GLib, Gtk, Pango
 
 
 class FormattedLabel(Gtk.Label):
-    """FormattedLabel keeps a label always formatted with some pango weight,
-    style and scale, even when new text is set using set_text()"""
+    """
+    FormattedLabel keeps a label always formatted with some pango weight,
+    style and scale, even when new text is set using set_text()
+    """
+
     _STYLES = {
         Pango.Style.NORMAL: 'normal',
         Pango.Style.OBLIQUE: 'oblique',
@@ -29,14 +32,18 @@ class FormattedLabel(Gtk.Label):
 
 
 class BoldLabel(FormattedLabel):
-    """A FormattedLabel that is always bold and otherwise normal"""
+    """
+    A FormattedLabel that is always bold and otherwise normal
+    """
 
     def __init__(self, text=''):
         super(BoldLabel, self).__init__(text=text, weight=Pango.Weight.BOLD)
 
 
 class ItalicLabel(FormattedLabel):
-    """A FormattedLabel that is always italic and otherwise normal"""
+    """
+    A FormattedLabel that is always italic and otherwise normal
+    """
 
     def __init__(self, text=''):
         super(ItalicLabel, self).__init__(text=text, style=Pango.Style.ITALIC)

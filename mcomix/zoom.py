@@ -9,7 +9,9 @@ from mcomix.preferences import prefs
 
 
 class ZoomModel:
-    """Handles zoom and fit modes"""
+    """
+    Handles zoom and fit modes
+    """
 
     def __init__(self):
         self.__identity_zoom = 1.0
@@ -88,9 +90,12 @@ class ZoomModel:
                 for size, scale in zip(fitted_image_sizes, res_scales)]
 
     def _preferred_scale(self, image_size, limits, distribution_axis):
-        """Returns scale that makes an image of size image_size respect the
+        """
+        Returns scale that makes an image of size image_size respect the
         limits imposed by limits. If no proper value can be determined,
-        self.__identity_zoom is returned"""
+        self.__identity_zoom is returned
+        """
+
         min_scale = None
         for idx, item in enumerate(limits):
             if idx == distribution_axis:
@@ -107,9 +112,12 @@ class ZoomModel:
 
     @staticmethod
     def _calc_limits(union_size, screen_size, fitmode, allow_upscaling):
-        """Returns a list or a tuple with the i-th element set to int x if
+        """
+        Returns a list or a tuple with the i-th element set to int x if
         fitmode limits the size at the i-th axis to x, or None if fitmode has no
-        preference for this axis"""
+        preference for this axis
+        """
+
         manual = fitmode == constants.ZOOM_MODE_MANUAL
         if fitmode == constants.ZOOM_MODE_BEST or \
                 (manual and allow_upscaling and all(tools.smaller(union_size, screen_size))):
@@ -130,22 +138,25 @@ class ZoomModel:
         return result
 
     def _scale_distributed(self, sizes, axis, max_size, allow_upscaling, do_not_transform):
-        """Calculates scales for a list of boxes that are distributed along a
+        """
+        Calculates scales for a list of boxes that are distributed along a
         given axis (without any gaps). If the resulting scales are applied to
         their respective boxes, their new total size along axis will be as close
         as possible to max_size. The current implementation ensures that equal
         box sizes are mapped to equal scales.
-        @param sizes: A list of box sizes.
-        @param axis: The axis along which those boxes are distributed.
-        @param max_size: The maximum size the scaled boxes may have along axis.
-        @param allow_upscaling: True if upscaling is allowed, False otherwise.
-        @param do_not_transform: True if the resulting scale must be 1, False
+        :param sizes: A list of box sizes.
+        :param axis: The axis along which those boxes are distributed.
+        :param max_size: The maximum size the scaled boxes may have along axis.
+        :param allow_upscaling: True if upscaling is allowed, False otherwise.
+        :param do_not_transform: True if the resulting scale must be 1, False
         otherwise.
-        @return: A list of scales where the i-th scale belongs to the i-th box
+        :returns: A list of scales where the i-th scale belongs to the i-th box
         size. If sizes is empty, the empty list is returned. If there are more
         boxes than max_size, an approximation is returned where all resulting
         scales will shrink their respective boxes to 1 along axis. In this case,
-        the scaled total size might be greater than max_size"""
+        the scaled total size might be greater than max_size
+        """
+
         # trivial cases first
         n = len(sizes)
         if not n:

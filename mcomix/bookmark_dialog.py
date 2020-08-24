@@ -9,7 +9,10 @@ from mcomix.preferences import prefs
 
 
 class BookmarksDialog(Gtk.Dialog):
-    """BookmarksDialog lets the user remove or rearrange bookmarks"""
+    """
+    BookmarksDialog lets the user remove or rearrange bookmarks
+    """
+
     _SORT_TYPE, _SORT_NAME, _SORT_PAGE, _SORT_ADDED = 100, 101, 102, 103
 
     def __init__(self, window, bookmarks_store):
@@ -101,18 +104,27 @@ class BookmarksDialog(Gtk.Dialog):
         self.show_all()
 
     def _add_bookmark(self, bookmark):
-        """Add the <bookmark> to the dialog"""
+        """
+        Add the <bookmark> to the dialog
+        """
+
         self.__liststore.prepend(bookmark.to_row())
 
     def _remove_selected(self):
-        """Remove the currently selected bookmark from the dialog and from the store"""
+        """
+        Remove the currently selected bookmark from the dialog and from the store
+        """
+
         if (treeiter := self._selection.get_selected()[1]) is not None:
             bookmark = self.__liststore.get_value(treeiter, 5)
             self.__liststore.remove(treeiter)
             self.__bookmarks_store.remove_bookmark(bookmark)
 
     def _bookmark_activated(self, treeview, path, *args):
-        """Open the activated bookmark"""
+        """
+        Open the activated bookmark
+        """
+
         iter = treeview.get_model().get_iter(path)
         bookmark = treeview.get_model().get_value(iter, 5)
 
@@ -121,8 +133,11 @@ class BookmarksDialog(Gtk.Dialog):
 
     @staticmethod
     def _sort_model(treemodel, iter1, iter2, user_data):
-        """Custom sort function to sort to model entries based on the
-        BookmarkMenuItem's fields specified in @C{user_data}. This is a list of field names"""
+        """
+        Custom sort function to sort to model entries based on the
+        BookmarkMenuItem's fields specified in @C{user_data}. This is a list of field names
+        """
+
         bookmark1 = treemodel.get_value(iter1, 5)
         bookmark2 = treemodel.get_value(iter2, 5)
 
@@ -148,7 +163,10 @@ class BookmarksDialog(Gtk.Dialog):
             self._remove_selected()
 
     def _close(self, *args):
-        """Close the dialog and update the _BookmarksStore with the new ordering"""
+        """
+        Close the dialog and update the _BookmarksStore with the new ordering
+        """
+
         ordering = []
         treeiter = self.__liststore.get_iter_first()
 

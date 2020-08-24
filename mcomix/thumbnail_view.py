@@ -12,15 +12,20 @@ from mcomix.preferences import prefs
 
 
 class ThumbnailViewBase:
-    """This class provides shared functionality for Gtk.TreeView and
+    """T
+    his class provides shared functionality for Gtk.TreeView and
     Gtk.IconView. Instantiating this class directly is *impossible*,
-    as it depends on methods provided by the view classes"""
+    as it depends on methods provided by the view classes
+    """
 
     def __init__(self, uid_column, pixbuf_column, status_column):
-        """Constructs a new ThumbnailView.
-        @param uid_column: index of unique identifer column.
-        @param pixbuf_column: index of pixbuf column.
-        @param status_column: index of status boolean column (True if pixbuf is not temporary filler)"""
+        """
+        Constructs a new ThumbnailView.
+
+        :param uid_column: index of unique identifer column.
+        :param pixbuf_column: index of pixbuf column.
+        :param status_column: index of status boolean column (True if pixbuf is not temporary filler)
+        """
 
         #: Keep track of already generated thumbnails.
         self.__uid_column = uid_column
@@ -35,18 +40,27 @@ class ThumbnailViewBase:
         self.__taskid = 0
 
     def generate_thumbnail(self, uid):
-        """This function must return the thumbnail for C{uid}"""
+        """
+        This function must return the thumbnail for C{uid}
+        """
+
         raise NotImplementedError()
 
     def stop_update(self):
-        """Stops generation of pixbufs"""
+        """
+        Stops generation of pixbufs
+        """
+
         with self.__lock:
             self.__taskid = 0
             self.__done.clear()
 
     def draw_thumbnails_on_screen(self, *args):
-        """Prepares valid thumbnails for currently displayed icons.
-        This method is supposed to be called from the expose-event callback function"""
+        """
+        Prepares valid thumbnails for currently displayed icons.
+        This method is supposed to be called from the expose-event callback function
+        """
+
         # 'draw' event called too frequently
         if not self.__lock.acquire(blocking=False):
             return
@@ -73,7 +87,10 @@ class ThumbnailViewBase:
             self.__lock.release()
 
     def _pixbuf_worker(self, uid, iter, model):
-        """Run by a worker thread to generate the thumbnail for a path"""
+        """
+        Run by a worker thread to generate the thumbnail for a path
+        """
+
         pixbuf = self.generate_thumbnail(uid)
         if pixbuf is None:
             self.__done.discard(uid)
@@ -81,8 +98,11 @@ class ThumbnailViewBase:
         return iter, pixbuf, model
 
     def _pixbuf_finished(self, params, taskid=-1):
-        """Executed when a pixbuf was created, to actually insert the pixbuf
-        into the view store. C{params} is a tuple containing (index, pixbuf, model)"""
+        """
+        Executed when a pixbuf was created, to actually insert the pixbuf
+        into the view store. C{params} is a tuple containing (index, pixbuf, model)
+        """
+
         with self.__lock:
             if self.__taskid != taskid:
                 return

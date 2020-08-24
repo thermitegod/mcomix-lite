@@ -108,7 +108,6 @@ class _PreferenceManager:
         self.__prefs_hash['sha256'] = tools.sha256str(json.dumps(prefs, indent=2))
 
     def write_preferences_file(self):
-        """Write preference data to disk"""
         json_prefs = json.dumps(prefs, indent=2)
         sha256hash = tools.sha256str(json_prefs)
         if sha256hash == self.__prefs_hash['sha256']:

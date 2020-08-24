@@ -11,7 +11,10 @@ from mcomix import image_tools
 
 
 def mcomix_icons():
-    """Returns a list of differently sized pixbufs for the application icon"""
+    """
+    Returns a list of differently sized pixbufs for the application icon
+    """
+
     # not using resized since getting namespace errors
     pixbufs = [image_tools.load_pixbuf_data(resources.read_binary('mcomix.images', 'mcomix.png'))]
     return pixbufs

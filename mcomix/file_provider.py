@@ -13,13 +13,16 @@ from mcomix.preferences import prefs
 
 
 def get_file_provider(filelist):
-    """Initialize a FileProvider with the files in <filelist>.
+    """
+    Initialize a FileProvider with the files in <filelist>.
     If len(filelist) is 1, a OrderedFileProvider will be constructed, which
     will simply open all files in the passed directory.
     If len(filelist) is greater 1, a PreDefinedFileProvider will be created,
     which will only ever list the files that were passed into it.
     If len(filelist) is zero, FileProvider will look at the last file opened,
-    if "Auto Open last file" is set. Otherwise, no provider is constructed"""
+    if "Auto Open last file" is set. Otherwise, no provider is constructed
+    """
+
     if len(filelist) > 0:
         if len(filelist) == 1:
             if Path(filelist[0]).exists:
@@ -30,7 +33,10 @@ def get_file_provider(filelist):
 
 
 class FileProvider:
-    """Base class for various file listing strategies"""
+    """
+    Base class for various file listing strategies
+    """
+
     # Constants for determining which files to list.
     IMAGES, ARCHIVES = 1, 2
 
@@ -48,7 +54,10 @@ class FileProvider:
 
     @staticmethod
     def sort_files(files):
-        """Sorts a list of C{files} depending on the current preferences. The list is sorted in-place"""
+        """
+        Sorts a list of C{files} depending on the current preferences. The list is sorted in-place
+        """
+
         if prefs['sort by'] == constants.SORT_NAME:
             tools.alphanumeric_sort(files)
         elif prefs['sort by'] == constants.SORT_LAST_MODIFIED:
@@ -65,18 +74,26 @@ class FileProvider:
 
 
 class OrderedFileProvider(FileProvider):
-    """This provider will list all files in the same directory as the one passed to the constructor"""
+    """
+    This provider will list all files in the same directory as the one passed to the constructor
+    """
 
     def __init__(self, file_or_directory):
-        """Initializes the file listing. If <file_or_directory> is a file,
+        """
+        Initializes the file listing. If <file_or_directory> is a file,
         directory will be used as base path. If it is a directory, that
-        will be used as base file"""
+        will be used as base file
+        """
+
         self.set_directory(file_or_directory)
 
         self.__base_dir = self.__base_dir
 
     def set_directory(self, file_or_directory):
-        """Sets the base directory"""
+        """
+        Sets the base directory
+        """
+
         file_or_directory = Path() / file_or_directory
         if Path.is_dir(file_or_directory):
             directory = file_or_directory
@@ -92,7 +109,10 @@ class OrderedFileProvider(FileProvider):
         return self.__base_dir
 
     def list_files(self, mode=FileProvider.IMAGES):
-        """Lists all files in the current directory. Returns a list of absolute paths, already sorted"""
+        """
+        Lists all files in the current directory. Returns a list of absolute paths, already sorted
+        """
+
         if mode == FileProvider.IMAGES:
             should_accept = functools.partial(image_tools.is_image_file, check_mimetype=True)
         elif mode == FileProvider.ARCHIVES:
@@ -117,12 +137,18 @@ class OrderedFileProvider(FileProvider):
         return [fname_map[fpath] for fpath in files]
 
     def directory_direction(self, forward):
-        """If forward=True switches to the next sibling directory,
+        """
+        If forward=True switches to the next sibling directory,
         else Switches to the previous sibling directory. Next call to
         list_file() returns files in the new directory.
-        Returns True if the directory was changed, otherwise False"""
+        Returns True if the directory was changed, otherwise False
+        """
+
         def __get_sibling_directories(current_dir):
-            """Returns a list of all sibling directories of <dir>, already sorted"""
+            """
+            Returns a list of all sibling directories of <dir>, already sorted
+            """
+
             parent_dir = Path(current_dir).parent
 
             dirs = []
@@ -148,13 +174,18 @@ class OrderedFileProvider(FileProvider):
 
 
 class PreDefinedFileProvider(FileProvider):
-    """Returns only a list of files as passed to the constructor"""
+    """
+    Returns only a list of files as passed to the constructor
+    """
 
     def __init__(self, files):
-        """<files> is a list of files that should be shown. The list is filtered
+        """
+        <files> is a list of files that should be shown. The list is filtered
         to contain either only images, or only archives, depending on what the first
         file is, since FileHandler will probably have problems of archives and images
-        are mixed in a file list"""
+        are mixed in a file list
+        """
+
         should_accept = self.__get_file_filter(files)
 
         self.__files = []
@@ -168,14 +199,20 @@ class PreDefinedFileProvider(FileProvider):
                 self.__files.append(str(file))
 
     def list_files(self, mode=FileProvider.IMAGES):
-        """Returns the files as passed to the constructor"""
+        """
+        Returns the files as passed to the constructor
+        """
+
         return self.__files
 
     @staticmethod
     def __get_file_filter(files):
-        """Determines what kind of files should be filtered in the given list
+        """
+        Determines what kind of files should be filtered in the given list
         of <files>. Returns either a filter accepting only images, or only archives,
-        depending on what type of file is found first in the list"""
+        depending on what type of file is found first in the list
+        """
+
         for file in files:
             if Path.is_file(file):
                 if image_tools.is_image_file(file):

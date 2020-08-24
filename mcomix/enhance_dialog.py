@@ -9,7 +9,9 @@ from mcomix.preferences import prefs
 
 
 class _EnhanceImageDialog(Gtk.Dialog):
-    """A Gtk.Dialog which allows modification of the values belonging to an ImageEnhancer"""
+    """
+    A Gtk.Dialog which allows modification of the values belonging to an ImageEnhancer
+    """
 
     def __init__(self, window):
         super(_EnhanceImageDialog, self).__init__(title='Enhance image')
@@ -107,13 +109,19 @@ class _EnhanceImageDialog(Gtk.Dialog):
             self._on_page_change()
 
     def draw_histogram(self, pixbuf):
-        """Draw a histogram representing <pixbuf> in the dialog"""
+        """
+        Draw a histogram representing <pixbuf> in the dialog
+        """
+
         pixbuf = image_tools.static_image(pixbuf)
         histogram_pixbuf = histogram.draw_histogram(pixbuf, text=False)
         self.__hist_image.set_from_pixbuf(histogram_pixbuf)
 
     def clear_histogram(self):
-        """Clear the histogram in the dialog"""
+        """
+        Clear the histogram in the dialog
+        """
+
         self.__hist_image.clear()
 
     def _change_values(self, *args):
@@ -156,14 +164,20 @@ class _EnhanceDialog:
         self.__dialog = None
 
     def open_dialog(self, event, window):
-        """Create and display the (singleton) image enhancement dialog"""
+        """
+        Create and display the (singleton) image enhancement dialog
+        """
+
         if self.__dialog is None:
             self.__dialog = _EnhanceImageDialog(window)
         else:
             self.__dialog.present()
 
     def close_dialog(self):
-        """Destroy the image enhancement dialog"""
+        """
+        Destroy the image enhancement dialog
+        """
+
         if self.__dialog is not None:
             self.__dialog.destroy()
             self.__dialog = None

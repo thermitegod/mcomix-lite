@@ -13,7 +13,10 @@ from mcomix.lib import process
 
 
 class SevenZipArchive(archive_base.ExternalExecutableArchive):
-    """7z file extractor using the 7z executable"""
+    """
+    7z file extractor using the 7z executable
+    """
+
     STATE_HEADER, STATE_LISTING, STATE_FOOTER = 1, 2, 3
 
     def __init__(self, archive):
@@ -42,9 +45,11 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
         return args
 
     def _parse_list_output_line(self, line):
-        """ Start parsing after the first delimiter (bunch of - characters),
+        """
+        Start parsing after the first delimiter (bunch of - characters),
         and end when delimiters appear again. Format:
-        Date <space> Time <space> Attr <space> Size <space> Compressed <space> Name"""
+        Date <space> Time <space> Attr <space> Size <space> Compressed <space> Name
+        """
 
         if line.startswith('----------'):
             if self.__state == self.STATE_HEADER:
@@ -71,6 +76,13 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
         return None
 
     def is_solid(self):
+        """
+        Check if the archive is solid
+
+        :return: whether the archive is solid
+        :rtype: bool
+        """
+
         return self.__is_solid
 
     def iter_contents(self):
@@ -92,7 +104,17 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
         self.__filenames_initialized = True
 
     def extract(self, filename, destination_dir):
-        """Extract <filename> from the archive to <destination_dir>"""
+        """
+        Extract <filename> from the archive to <destination_dir>
+
+        :param filename: file to extract
+        :type filename: str
+        :param destination_dir: extraction path
+        :type destination_dir: Path
+        :returns: full path of the extracted file
+        :rtype: Path
+        """
+
         assert isinstance(filename, str) and isinstance(destination_dir, str)
 
         if not self._get_executable():
@@ -145,8 +167,14 @@ class _SevenzipExecutable:
         self.__sevenzip = None
 
     def find_sevenzip(self):
-        """Tries to start 7z, and returns either '7z' if
-        it was started successfully or None otherwise"""
+        """
+        Tries to start 7z, and returns either '7z' if
+        it was started successfully or None otherwise
+
+        :returns: path to 7z
+        :rtype: str
+        """
+
         if self.__sevenzip is None:
             self.__sevenzip = shutil.which('7z')
             if self.__sevenzip is None:

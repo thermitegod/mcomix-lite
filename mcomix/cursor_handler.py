@@ -15,9 +15,12 @@ class CursorHandler:
         self.__current_cursor = constants.CURSOR_NORMAL
 
     def set_cursor_type(self, cursor):
-        """Set the cursor to type <cursor>. Supported cursor types are
+        """
+        Set the cursor to type <cursor>. Supported cursor types are
         available as constants in this module. If <cursor> is not one of the
-        cursor constants above, it must be a Gdk.Cursor"""
+        cursor constants above, it must be a Gdk.Cursor
+        """
+
         if cursor == constants.CURSOR_NORMAL:
             mode = None
         elif cursor == constants.CURSOR_GRAB:
@@ -40,14 +43,20 @@ class CursorHandler:
                 self._kill_timer()
 
     def auto_hide_on(self):
-        """Signal that the cursor should auto-hide from now on (e.g. that we are entering fullscreen)"""
+        """
+        Signal that the cursor should auto-hide from now on (e.g. that we are entering fullscreen)
+        """
+
         self.__auto_hide = True
         if self.__current_cursor == constants.CURSOR_NORMAL:
             self._set_hide_timer()
 
     def refresh(self):
-        """Refresh the current cursor (i.e. display it and set a new timer in
-        fullscreen). Used when we move the cursor"""
+        """
+        Refresh the current cursor (i.e. display it and set a new timer in
+        fullscreen). Used when we move the cursor
+        """
+
         if self.__auto_hide:
             self.set_cursor_type(self.__current_cursor)
 

@@ -16,8 +16,11 @@ PREFIXED_BYTE_UNITS = ('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'Yi
 
 
 def alphanumeric_sort(filenames):
-    """Do an in-place alphanumeric sort of the strings in <filenames>,
-    such that for an example "1.jpg", "2.jpg", "10.jpg" is a sorted ordering"""
+    """
+    Do an in-place alphanumeric sort of the strings in <filenames>,
+    such that for an example "1.jpg", "2.jpg", "10.jpg" is a sorted ordering
+    """
+
     def _isfloat(p):
         try:
             return 0, float(p)
@@ -35,11 +38,15 @@ def alphanumeric_sort(filenames):
 
 
 def bin_search(lst, value):
-    """Binary search for sorted list C{lst}, looking for C{value}.
-    @return: List index on success. On failure, it returns the 1's
+    """
+    Binary search for sorted list C{lst}, looking for C{value}.
+
+    :returns: List index on success. On failure, it returns the 1's
     complement of the index where C{value} would be inserted.
     This implies that the return value is non-negative if and only if
-    C{value} is contained in C{lst}"""
+    C{value} is contained in C{lst}
+    """
+
     if (index := bisect.bisect_left(lst, value)) != len(lst) and lst[index] == value:
         return index
 
@@ -66,7 +73,6 @@ def format_byte_size(n):
 
 
 def garbage_collect():
-    """Runs the garbage collector"""
     gc.collect(0)
 
 
@@ -87,8 +93,10 @@ def relerr(approx, ideal):
 
 
 def smaller(a, b):
-    """Returns a list with the i-th element set to True if and only the i-th
-    element in a is less than the i-th element in b"""
+    """
+    Returns a list with the i-th element set to True if and only the i-th
+    element in a is less than the i-th element in b
+    """
     return map(operator.lt, a, b)
 
 

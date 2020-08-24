@@ -35,6 +35,13 @@ class RecursiveArchive(archive_base.BaseArchive):
         self.support_concurrent_extractions = False
 
     def get_destdir(self):
+        """
+        Get the directry that the archive will be extracted to
+
+        :return: path to extraction dir
+        :rtype: str
+        """
+
         return self.__destdir
 
     def _iter_contents(self, archive, root=None):
@@ -102,6 +109,17 @@ class RecursiveArchive(archive_base.BaseArchive):
         return [f for f in self.iter_contents()]
 
     def extract(self, filename, destination_dir=None):
+        """
+        Extract <filename> from the archive to <destination_dir>
+
+        :param filename: file to extract
+        :type filename: str
+        :param destination_dir: extraction path
+        :type destination_dir: Path
+        :returns: full path of the extracted file
+        :rtype: Path
+        """
+
         if not self.__contents_listed:
             self.list_contents()
         archive, name = self.__entry_mapping[filename]
@@ -114,6 +132,10 @@ class RecursiveArchive(archive_base.BaseArchive):
         return archive.extract(name, destination_dir)
 
     def iter_extract(self, entries, destination_dir):
+        """
+        List archive contents
+        """
+
         if not self.__contents_listed:
             self.list_contents()
         # Unfortunately we can't just rely on BaseArchive default
@@ -142,6 +164,13 @@ class RecursiveArchive(archive_base.BaseArchive):
                 break
 
     def is_solid(self):
+        """
+        Check if the archive is solid
+
+        :return: whether the archive is solid
+        :rtype: bool
+        """
+
         if not self.__contents_listed:
             self.list_contents()
         # We're solid if at least one archive is solid.
@@ -151,7 +180,10 @@ class RecursiveArchive(archive_base.BaseArchive):
         return False
 
     def close(self):
-        # close all archives before cleanup temporary directory
+        """
+        Close the archive handle before cleanup temporary directory
+        """
+
         for archive in self.__archive_list:
             archive.close()
         for tempdir in self.__sub_tempdirs:

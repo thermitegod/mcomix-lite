@@ -13,7 +13,6 @@ from mcomix import constants, preferences
 
 
 def run():
-    """Run the program"""
     parser = argparse.ArgumentParser(usage='%%(prog)s %s' % '[OPTION...] [PATH]',
                                      description='View images and manga archives.')
     parser.add_argument('path', type=str, action='store', nargs='*', default=None,
@@ -121,5 +120,6 @@ def run():
         signal.signal(sig, lambda signum, stack: GLib.idle_add(window.terminate_program))
     try:
         Gtk.main()
-    except KeyboardInterrupt:  # Will not always work because of threading.
+    except KeyboardInterrupt:
+        # Will not always work because of threading.
         window.terminate_program()

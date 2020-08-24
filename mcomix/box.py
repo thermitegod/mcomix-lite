@@ -7,13 +7,17 @@ from mcomix import tools
 
 class Box:
     def __init__(self, position, size=None):
-        """A Box is immutable and always axis-aligned.
+        """
+        A Box is immutable and always axis-aligned.
         Each component of size should be positive (i.e. non-zero).
         Both position and size must have equal number of dimensions.
         If there is only one argument, it must be the size. In this case, the
         position is set to origin (i.e. all coordinates are 0) by definition.
-        @param position: The position of this Box.
-        @param size: The size of this Box"""
+
+        :param position: The position of this Box.
+        :param size: The size of this Box
+        """
+
         if size is None:
             self.__position = (0,) * len(position)
             self.__size = tuple(position)
@@ -24,47 +28,78 @@ class Box:
             raise ValueError(f'different dimensions: {str(len(self.__position))} != {str(len(self.__size))}')
 
     def __str__(self):
-        """Returns a string representation of this Box"""
+        """
+        Returns a string representation of this Box
+
+        :returns: a string representation of this Box
+        """
+
         return f'{{{str(self.get_position())}:{str(self.get_size())}}}'
 
     def __eq__(self, other):
-        """Two Boxes are said to be equal if and only if the number of
-        dimensions, the positions and the sizes of the two Boxes are equal, respectively"""
+        """
+        Two Boxes are said to be equal if and only if the number of
+        dimensions, the positions and the sizes of the two Boxes are equal, respectively
+        """
+
         return (self.get_position() == other.get_position()) and (self.get_size() == other.get_size())
 
     def __len__(self):
-        """Returns the number of dimensions of this Box"""
+        """
+        Returns the number of dimensions of this Box
+
+        :returns: the number of dimensions of this Box
+        """
+
         return len(self.__position)
 
     def get_size(self):
-        """Returns the size of this Box.
-        @return: The size of this Box"""
+        """
+        Returns the size of this Box
+
+        :return: The size of this Box
+        """
+
         return self.__size
 
     def get_position(self):
-        """Returns the position of this Box.
-        @return: The position of this Box"""
+        """
+        Returns the position of this Box
+
+        :return: The position of this Box
+        """
+
         return self.__position
 
     def set_position(self, position):
-        """Returns a new Box that has the same size as this Box and the
-        specified position.
-        @return: A new Box as specified above"""
+        """
+        Returns a new Box that has the same size as this Box and the specified position.
+
+        :return: A new Box as specified above
+        """
+
         return Box(position, self.get_size())
 
     def set_size(self, size):
-        """Returns a new Box that has the same position as this Box and the
-        specified size.
-        @return: A new Box as specified above"""
+        """
+        Returns a new Box that has the same position as this Box and the specified size
+
+        :return: A new Box as specified above
+        """
+
         return Box(self.get_position(), size)
 
     def distance_point_squared(self, point):
-        """Returns the square of the Euclidean distance between this Box and a
+        """
+        Returns the square of the Euclidean distance between this Box and a
         point. If the point lies within the Box, this Box is said to have a
         distance of zero. Otherwise, the square of the Euclidean distance
         between point and the closest point of the Box is returned.
-        @param point: The point of interest.
-        @return The distance between the point and the Box as specified above"""
+
+        :param point: The point of interest.
+        :returns: The distance between the point and the Box as specified above
+        """
+
         result = 0
         for idx, item in enumerate(point):
             p = point[idx]
@@ -80,28 +115,35 @@ class Box:
         return result
 
     def translate_opposite(self, delta):
-        """Returns a new Box that has the same size as this Box and a
+        """
+        Returns a new Box that has the same size as this Box and a
         oppositely translated position as specified by delta.
-        @param delta: The distance to the position of this Box, with opposite
-        direction.
-        @return: A new Box as specified above"""
+
+        :param delta: The distance to the position of this Box, with opposite direction.
+        :return: A new Box as specified above
+        """
+
         return Box(tools.vector_sub(self.get_position(), delta), self.get_size())
 
     @staticmethod
     def closest_boxes(point, boxes, orientation=None):
-        """Returns the indices of the Boxes that are closest to the specified
+        """
+        Returns the indices of the Boxes that are closest to the specified
         point. First, the Euclidean distance between point and the closest point
         of the respective Box is used to determine which of these Boxes are the
         closest ones. If two Boxes have the same distance, the Box that is
         closer to the origin as defined by orientation is said to have a shorter
         distance.
-        @param point: The point of interest.
-        @param boxes: A list of Boxes.
-        @param orientation: The orientation which shows where "forward" points
+
+        :param point: The point of interest.
+        :param boxes: A list of Boxes.
+        :param orientation: The orientation which shows where "forward" points
         to. Either 1 (towards larger values in this dimension when reading) or
         -1 (towards smaller values in this dimension when reading). If
         orientation is set to None, it will be ignored.
-        @return The indices of the closest Boxes as specified above"""
+        :returns: The indices of the closest Boxes as specified above
+        """
+
         result = []
         mindist = -1
         for idx, item in enumerate(boxes):
@@ -137,16 +179,20 @@ class Box:
 
     @staticmethod
     def _compare_distance_to_origin(box1, box2, orientation):
-        """Returns an integer that is less than, equal to or greater than zero
+        """
+        Returns an integer that is less than, equal to or greater than zero
         if the distance between box1 and the origin is less than, equal to or
         greater than the distance between box2 and the origin, respectively.
         The origin is implied by orientation.
-        @param box1: The first Box.
-        @param box2: The second Box.
-        @param orientation: The orientation which shows where "forward" points
+
+        :param box1: The first Box.
+        :param box2: The second Box.
+        :param orientation: The orientation which shows where "forward" points
         to. Either 1 (towards larger values in this dimension when reading) or
         -1 (towards smaller values in this dimension when reading).
-        @return An integer as specified above"""
+        :returns: An integer as specified above
+        """
+
         for idx, item in enumerate(orientation):
             o = orientation[idx]
             if not o:
@@ -161,13 +207,17 @@ class Box:
         return 0
 
     def get_center(self, orientation):
-        """Returns the center of this Box. If the exact value is not equal to
+        """
+        Returns the center of this Box. If the exact value is not equal to
         an integer, the integer that is closer to the origin (as implied by
         orientation) is chosen.
-        @orientation: The orientation which shows where "forward" points
+
+        :param orientation: The orientation which shows where "forward" points
         to. Either 1 (towards larger values in this dimension when reading) or
         -1 (towards smaller values in this dimension when reading).
-        @return The center of this Box as specified above"""
+        :return The center of this Box as specified above
+        """
+
         result = [0] * len(orientation)
         bp = self.get_position()
         bs = self.get_size()
@@ -182,19 +232,28 @@ class Box:
         return box_size_delta >> 1
 
     def current_box_index(self, orientation, boxes):
-        """Calculates the index of the Box that is closest to the center of this Box.
-        @param orientation: The orientation to use.
-        @param boxes: The Boxes to examine.
-        @return: The index as specified above"""
+        """
+        Calculates the index of the Box that is closest to the center of this Box.
+
+        :param orientation: The orientation to use.
+        :param boxes: The Boxes to examine.
+        :returns: The index as specified above
+        """
+
         return Box.closest_boxes(self.get_center(orientation), boxes, orientation)[0]
 
     @staticmethod
     def align_center(boxes, axis, fix, orientation):
-        """Aligns Boxes so that the center of each Box appears on the same line.
-        @param axis: the axis to center.
-        @param fix: the index of the Box that should not move.
-        @param orientation: The orientation to use.
-        @return: A list of new Boxes with accordingly translated positions"""
+        """
+        Aligns Boxes so that the center of each Box appears on the same line.
+
+        :param boxes: boxes
+        :param axis: the axis to center.
+        :param fix: the index of the Box that should not move.
+        :param orientation: The orientation to use.
+        :returns: A list of new Boxes with accordingly translated positions
+        """
+
         if not boxes:
             return []
         center_box = boxes[fix]
@@ -211,12 +270,17 @@ class Box:
 
     @staticmethod
     def distribute(boxes, axis, fix, spacing=0):
-        """Ensures that the Boxes do not overlap. For this purpose, the Boxes
+        """
+        Ensures that the Boxes do not overlap. For this purpose, the Boxes
         are distributed according to the index of the respective Box.
-        @param axis: the axis along which the Boxes are distributed.
-        @param fix: the index of the Box that should not move.
-        @param spacing: the number of additional pixels between Boxes.
-        @return: A new list with new Boxes that are accordingly translated"""
+
+        :param boxes: boxes
+        :param axis: the axis along which the Boxes are distributed.
+        :param fix: the index of the Box that should not move.
+        :param spacing: the number of additional pixels between Boxes.
+        :returns: A new list with new Boxes that are accordingly translated
+        """
+
         if not boxes:
             return []
         result = [None] * len(boxes)
@@ -240,11 +304,15 @@ class Box:
         return result
 
     def wrapper_box(self, viewport_size, orientation):
-        """Returns a Box that covers the same area that is covered by a
+        """
+        Returns a Box that covers the same area that is covered by a
         scrollable viewport showing this Box.
-        @param viewport_size: The size of the viewport.
-        @param orientation: The orientation to use.
-        @return: A Box as specified above"""
+
+        :param viewport_size: The size of the viewport.
+        :param orientation: The orientation to use.
+        :returns: A Box as specified above
+        """
+
         size = self.get_size()
         position = self.get_position()
         result_size = [0] * len(size)
@@ -258,10 +326,14 @@ class Box:
 
     @staticmethod
     def bounding_box(boxes):
-        """Returns the union of all specified Boxes (that is, the smallest Box
+        """
+        Returns the union of all specified Boxes (that is, the smallest Box
         that contains all specified Boxes).
-        @param boxes: The Boxes to calculate the union from.
-        @return: A Box as specified above"""
+
+        :param boxes: The Boxes to calculate the union from.
+        :returns: A Box as specified above
+        """
+
         if not boxes:
             return Box((), ())
         mins = [None] * len(boxes[0].get_size())

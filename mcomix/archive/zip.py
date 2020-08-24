@@ -26,14 +26,28 @@ class ZipArchive(archive_base.BaseArchive):
             self.__contents_info[info.filename] = info
 
     def is_solid(self):
-        # zipfile is usually not thread-safe
-        # so treat it as a solid archive to reduce seek operate
+        """
+        zipfile is usually not thread-safe
+        so treat it as a solid archive to reduce seek operate
+        """
+
         return True
 
     def iter_contents(self):
         yield from self.__contents_info.keys()
 
     def extract(self, filename, destination_dir):
+        """
+        Extract <filename> from the archive to <destination_dir>
+
+        :param filename: file to extract
+        :type filename: str
+        :param destination_dir: extraction path
+        :type destination_dir: Path
+        :returns: full path of the extracted file
+        :rtype: Path
+        """
+
         with self.__lock:
             data = self.__zip.read(info := self.__contents_info[filename])
 

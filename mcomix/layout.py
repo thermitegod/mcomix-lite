@@ -8,16 +8,20 @@ from mcomix import box, constants
 class FiniteLayout:  # 2D only
     def __init__(self, content_sizes, viewport_size, orientation, spacing,
                  wrap_individually, distribution_axis, alignment_axis):
-        """Lays out a finite number of Boxes along the first axis.
-        @param content_sizes: The sizes of the Boxes to lay out.
-        @param viewport_size: The size of the viewport.
-        @param orientation: The orientation to use.
-        @param spacing: Number of additional pixels between Boxes.
-        @param wrap_individually: True if each content box should get its own
+        """
+        Lays out a finite number of Boxes along the first axis.
+
+        :param content_sizes: The sizes of the Boxes to lay out.
+        :param viewport_size: The size of the viewport.
+        :param orientation: The orientation to use.
+        :param spacing: Number of additional pixels between Boxes.
+        :param wrap_individually: True if each content box should get its own
         wrapper box, False if the only wrapper box should be the union of all
         content boxes.
-        @param distribution_axis: the axis along which the Boxes are distributed.
-        @param alignment_axis: the axis to center"""
+        :param distribution_axis: the axis along which the Boxes are distributed.
+        :param alignment_axis: the axis to center
+        """
+
         self.__current_index = -1
         self.__wrap_individually = wrap_individually
         self._reset(content_sizes, viewport_size, orientation, spacing,
@@ -28,24 +32,32 @@ class FiniteLayout:  # 2D only
         self.__viewport_box = self.__viewport_box
 
     def set_viewport_position(self, viewport_position):
-        """Moves the viewport to the specified position.
-        @param viewport_position: The new viewport position"""
+        """
+        Moves the viewport to the specified position.
+
+        :param viewport_position: The new viewport position
+        """
+
         self.__viewport_box = self.__viewport_box.set_position(viewport_position)
         self.__dirty_current_index = True
 
     def scroll_to_predefined(self, destination, index=None):
-        """Scrolls the viewport to a predefined destination.
-        @param destination: An integer representing a predefined destination.
+        """
+        Scrolls the viewport to a predefined destination.
+
+        :param destination: An integer representing a predefined destination.
         Either 1 (towards the greatest possible values in this dimension),
         -1 (towards the smallest value in this dimension), 0 (keep position),
         SCROLL_TO_CENTER (scroll to the center of the content in this
         dimension), SCROLL_TO_START (scroll to where the content starts in this
         dimension) or SCROLL_TO_END (scroll to where the content ends in this
         dimension).
-        @param index: The index of the Box the scrolling is related to, None to
+        :param index: The index of the Box the scrolling is related to, None to
         use the index of the current Box, or UNION_INDEX to use the union box
         instead. Note that the current implementation always uses the union box
-        if self.wrap_individually is False"""
+        if self.wrap_individually is False
+        """
+
         if index is None:
             index = self.get_current_index()
         if not self.__wrap_individually:
@@ -61,21 +73,25 @@ class FiniteLayout:  # 2D only
 
     @staticmethod
     def _scroll_to_predefined(content_box, viewport_box, orientation, destination):
-        """Returns a new viewport position when scrolling towards a
+        """
+        Returns a new viewport position when scrolling towards a
         predefined destination. Note that all params are lists of integers
         where each index corresponds to one dimension.
-        @param content_box: The Box of the content to display.
-        @param viewport_box: The viewport Box we are looking through.
-        @param orientation: The orientation which shows where "forward"
+
+        :param content_box: The Box of the content to display.
+        :param viewport_box: The viewport Box we are looking through.
+        :param orientation: The orientation which shows where "forward"
         points to. Either 1 (towards larger values in this dimension when
         reading) or -1 (towards smaller values in this dimension when reading).
-        @param destination: An integer representing a predefined destination.
+        :param destination: An integer representing a predefined destination.
         Either 1 (towards the greatest possible values in this dimension),
         -1 (towards the smallest value in this dimension), 0 (keep position),
         SCROLL_TO_CENTER (scroll to the center of the content in this
         dimension), SCROLL_TO_START (scroll to where the content starts in this
         dimension) or SCROLL_TO_END (scroll to where the content ends in this dimension).
-        @return: A new viewport position as specified above"""
+        :returns: A new viewport position as specified above
+        """
+
         content_position = content_box.get_position()
         content_size = content_box.get_size()
         viewport_size = viewport_box.get_size()
@@ -100,26 +116,42 @@ class FiniteLayout:  # 2D only
         return result
 
     def get_content_boxes(self):
-        """Returns the Boxes as they are arranged in this layout.
-        @return: The Boxes as they are arranged in this layout"""
+        """
+        Returns the Boxes as they are arranged in this layout.
+
+        :returns: The Boxes as they are arranged in this layout
+        """
+
         return self.__content_boxes
 
     def get_union_box(self):
-        """Returns the union Box for this layout.
-        @return: The union Box for this layout"""
+        """
+        Returns the union Box for this layout.
+
+        :return: The union Box for this layout
+        """
+
         return self.__union_box
 
     def get_current_index(self):
-        """Returns the index of the Box that is said to be the current Box.
-        @return: The index of the Box that is said to be the current Box"""
+        """
+        Returns the index of the Box that is said to be the current Box.
+
+        :returns: The index of the Box that is said to be the current Box
+        """
+
         if self.__dirty_current_index:
             self.__current_index = self.__viewport_box.current_box_index(self.__orientation, self.__content_boxes)
             self.__dirty_current_index = False
         return self.__current_index
 
     def get_viewport_box(self):
-        """Returns the current viewport Box.
-        @return: The current viewport Box"""
+        """
+        Returns the current viewport Box.
+
+        :returns: The current viewport Box
+        """
+
         return self.__viewport_box
 
     def set_orientation(self, orientation):

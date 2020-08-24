@@ -9,7 +9,9 @@ from mcomix.preferences import prefs
 
 
 class Pageselector(Gtk.Dialog):
-    """The Pageselector takes care of the popup page selector"""
+    """
+    The Pageselector takes care of the popup page selector
+    """
 
     def __init__(self, window):
         self.__window = window
@@ -74,7 +76,10 @@ class Pageselector(Gtk.Dialog):
         self.__window.imagehandler.page_available += self._page_available
 
     def _cb_value_changed(self, *args):
-        """Called whenever the spinbox value changes. Updates the preview thumbnail"""
+        """
+        Called whenever the spinbox value changes. Updates the preview thumbnail
+        """
+
         page = int(self.__selector_adjustment.props.value)
         if page != self.__thumbnail_page:
             self._update_thumbnail(page)
@@ -89,8 +94,11 @@ class Pageselector(Gtk.Dialog):
         self._update_thumbnail(int(self.__selector_adjustment.props.value))
 
     def _page_text_changed(self, control, *args):
-        """Called when the page selector has been changed. Used to instantly update
-        the preview thumbnail when entering page numbers by hand"""
+        """
+        Called when the page selector has been changed. Used to instantly update
+        the preview thumbnail when entering page numbers by hand
+        """
+
         if control.get_text().isdigit():
             page = int(control.get_text())
             if 0 < page <= self.__number_of_pages:
@@ -105,7 +113,10 @@ class Pageselector(Gtk.Dialog):
         self.destroy()
 
     def _update_thumbnail(self, page):
-        """Trigger a thumbnail update"""
+        """
+        Trigger a thumbnail update
+        """
+
         width = self.__image_preview.get_allocation().width
         height = self.__image_preview.get_allocation().height
         self.__thumbnail_page = page
@@ -114,8 +125,11 @@ class Pageselector(Gtk.Dialog):
                 callback=self._generate_thumbnail_cb)
 
     def _generate_thumbnail(self, page, width, height):
-        """Generate the preview thumbnail for the page selector.
-        A transparent image will be used if the page is not yet available"""
+        """
+        Generate the preview thumbnail for the page selector.
+        A transparent image will be used if the page is not yet available
+        """
+
         return page, self.__window.imagehandler.get_thumbnail(page, size=(width, height), nowait=True)
 
     def _generate_thumbnail_cb(self, params):

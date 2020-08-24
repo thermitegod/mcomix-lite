@@ -14,10 +14,12 @@ from mcomix.preferences import prefs
 
 
 class FileHandler:
-    """The FileHandler keeps track of the actual files/archives opened.
+    """
+    The FileHandler keeps track of the actual files/archives opened.
     While ImageHandler takes care of pages/images, this class provides
     the raw file names for archive members and image files, extracts
-    archives, and lists directories for image files"""
+    archives, and lists directories for image files
+    """
 
     def __init__(self, window):
         #: Indicates if files/archives are currently loaded/loading.
@@ -54,7 +56,10 @@ class FileHandler:
         self.__open_first_page = 0 if prefs['open first page'] else -1
 
     def refresh_file(self, *args, **kwargs):
-        """Closes the current file(s)/archive and reloads them"""
+        """
+        Closes the current file(s)/archive and reloads them
+        """
+
         if self.__file_loaded:
             current_file = Path.resolve(Path(self.__window.imagehandler.get_real_path()))
             if self.__archive_type is not None:
@@ -64,12 +69,16 @@ class FileHandler:
             self.open_file(current_file, start_page, keep_fileprovider=True)
 
     def open_file(self, path, start_page=0, keep_fileprovider=False):
-        """Open the file pointed to by <path>.
+        """
+        Open the file pointed to by <path>.
         If <start_page> is not set we set the current
         page to 1 (first page), if it is set we set the current page to the
         value of <start_page>. If <start_page> is non-positive it means the
         last image.
-        Return True if the file is successfully loaded."""
+
+        :returns: True if the file is successfully loaded.
+        """
+
         self._close()
 
         try:
@@ -111,7 +120,10 @@ class FileHandler:
         return True
 
     def _archive_opened(self, image_files):
-        """Called once the archive has been opened and its contents listed"""
+        """
+        Called once the archive has been opened and its contents listed
+        """
+
         self.__window.imagehandler.set_base_path(self.__base_path)
         self.__window.imagehandler.set_image_files(image_files)
         self.file_opened()
@@ -149,20 +161,32 @@ class FileHandler:
 
     @callback.Callback
     def file_opened(self):
-        """Called when a new set of files has successfully been opened"""
+        """
+        Called when a new set of files has successfully been opened
+        """
+
         self.__file_loaded = True
 
     @callback.Callback
     def file_closed(self):
-        """Called when the current file has been closed"""
+        """
+        Called when the current file has been closed
+        """
+
         pass
 
     def close_file(self):
-        """Close the currently opened file and its provider"""
+        """
+        Close the currently opened file and its provider
+        """
+
         self._close(close_provider=True)
 
     def _close(self, close_provider=False):
-        """Run tasks for "closing" the currently opened file(s)"""
+        """
+        Run tasks for "closing" the currently opened file(s)
+        """
+
         if self.__file_loaded or self.__file_loading:
             if close_provider:
                 self.__file_provider = None
@@ -185,13 +209,17 @@ class FileHandler:
             self.__tmp_dir = None
 
     def _initialize_fileprovider(self, path, keep_fileprovider):
-        """Creates the L{file_provider.FileProvider} for C{path}.
+        """
+        Creates the L{file_provider.FileProvider} for C{path}.
         If C{path} is a list, assumes that only the files in the list
         should be available. If C{path} is a string, assume that it is
         either a directory or an image file, and all files in that directory should be opened.
-        @param path: List of file names, or single file/directory as string.
-        @param keep_fileprovider: If C{True}, no new provider is constructed.
-        @return: If C{path} was a list, returns the first list element. Otherwise, C{path} is not modified"""
+
+        :param path: List of file names, or single file/directory as string.
+        :param keep_fileprovider: If C{True}, no new provider is constructed.
+        :returns: If C{path} was a list, returns the first list element. Otherwise, C{path} is not modified
+        """
+
         if isinstance(path, list) and not path:
             assert False, 'Tried to open an empty list of files.'
 
@@ -211,9 +239,13 @@ class FileHandler:
 
     @staticmethod
     def _check_access(path):
-        """Checks for various error that could occur when opening C{path}.
-        @param path: Path to file that should be opened.
-        @return: An appropriate error string, or C{None} if no error was found."""
+        """
+        Checks for various error that could occur when opening C{path}.
+
+        :param path: Path to file that should be opened.
+        :return: An appropriate error string, or C{None} if no error was found.
+        """
+
         if not Path.exists(path):
             return f'Could not open {path}: No such file.'
         elif not os.access(path, os.R_OK):
@@ -222,10 +254,14 @@ class FileHandler:
         return None
 
     def _open_archive(self, path):
-        """Opens the archive passed in C{path}.
+        """
+        Opens the archive passed in C{path}.
         Creates an L{archive_extractor.Extractor} and extracts all images
         found within the archive.
-        @return: A tuple containing C{(image_files, image_index)}"""
+
+        :returns: A tuple containing C{(image_files, image_index)}
+        """
+
         self.__base_path = path
         try:
             self.__condition = self.__extractor.setup(self.__base_path, self.__archive_type)
@@ -255,7 +291,10 @@ class FileHandler:
 
     @staticmethod
     def _sort_archive_images(filelist):
-        """Sorts the image list passed in C{filelist} based on the sorting preference option"""
+        """
+        Sorts the image list passed in C{filelist} based on the sorting preference option
+        """
+
         if prefs['sort archive by'] == constants.SORT_NAME:
             tools.alphanumeric_sort(filelist)
         elif prefs['sort archive by'] == constants.SORT_NAME_LITERAL:
@@ -269,11 +308,17 @@ class FileHandler:
 
     @staticmethod
     def _get_index_for_page(start_page, num_of_pages, path):
-        """Returns the page that should be displayed for an archive.
-        @param start_page: If -1, show last page. If 0, show either first page
+        """
+        Returns the page that should be displayed for an archive.
+
+        :param start_page: If -1, show last page. If 0, show either first page
                            or last read page. If > 0, show C{start_page}.
-        @param num_of_pages: Page count.
-        @param path: Archive path"""
+        :param num_of_pages: Page count.
+        :param path: Archive path
+        :returns: page index
+        :rtype: int
+        """
+
         if start_page < 0 and prefs['default double page']:
             current_image_index = num_of_pages - 2
         elif start_page < 0 and not prefs['default double page']:
@@ -284,10 +329,14 @@ class FileHandler:
         return min(max(0, current_image_index), num_of_pages - 1)
 
     def _open_image_files(self, filelist, image_path):
-        """Opens all files passed in C{filelist}.
+        """
+        Opens all files passed in C{filelist}.
         If C{image_path} is found in C{filelist}, the current page will be set
         to its index within C{filelist}.
-        @return: Tuple of C{(image_files, image_index)}"""
+
+        :returns: Tuple of C{(image_files, image_index)}
+        """
+
         self.__base_path = self.__file_provider.get_directory()
 
         if image_path in filelist:
@@ -322,7 +371,10 @@ class FileHandler:
         return current_index + 1, len(file_list)
 
     def get_path_to_base(self):
-        """Return the full path to the current base (path to archive or image directory.)"""
+        """
+        Return the full path to the current base (path to archive or image directory.)
+        """
+
         if self.__archive_type is not None:
             return self.__base_path
 
@@ -333,19 +385,33 @@ class FileHandler:
         return None
 
     def get_base_filename(self):
-        """Return the filename of the current base (archive filename or directory name)"""
+        """
+        Return the filename of the current base (archive filename or directory name)
+
+        :returns: filename of the current base
+        """
+
         return Path(self.get_path_to_base()).name
 
     def get_current_filename(self):
-        """Return a string with the name of the currently viewed file that is suitable for printing"""
+        """
+        Return a string with the name of the currently viewed file that is suitable for printing
+
+        :returns: name of the currently viewed file
+        """
+
         return self.__window.imagehandler.get_current_filename()
 
     def open_archive_direction(self, forward, *args):
-        """Opens the archive that comes directly after the currently loaded
+        """
+        Opens the archive that comes directly after the currently loaded
         archive in that archive's directory listing if forward=True else
         opens the archive that comes directly before the currently loaded
         archive in that archive's directory listing. sorted alphabetically.
-        Returns True if a new archive was opened, False otherwise"""
+
+        :returns True if a new archive was opened, False otherwise
+        """
+
         if self.__archive_type is not None:
             files = self._get_file_list()
             if self.__base_path not in files:
@@ -369,9 +435,15 @@ class FileHandler:
         return False
 
     def open_directory_direction(self, forward, *args):
-        """Opens the next sibling directory of the current file if forward=True, else
+        """
+        Opens the next sibling directory of the current file if forward=True, else
         opens the previous sibling directory of the current file as specified by file
-        provider. Returns True if a new directory was opened and files found"""
+        provider. Returns True if a new directory was opened and files found
+
+        :param forward: Which direction to open the next archive
+        :type forward: bool
+        """
+
         if self.__file_provider is None:
             return
 
@@ -403,21 +475,30 @@ class FileHandler:
 
     @callback.Callback
     def file_available(self, filepaths):
-        """Called every time a new file from the Filehandler's opened
-        files becomes available. C{filepaths} is a list of now available files"""
+        """
+        Called every time a new file from the Filehandler's opened
+        files becomes available. C{filepaths} is a list of now available files
+        """
+
         pass
 
     def _extracted_file(self, extractor, name):
-        """Called when the extractor finishes extracting the file at
+        """
+        Called when the extractor finishes extracting the file at
         <name>. This name is relative to the temporary directory
-        the files were extracted to"""
+        the files were extracted to
+        """
+
         if not self.__file_loaded:
             return
         self.file_available([name])
 
     def wait_on_file(self, path):
-        """Block the running (main) thread if the file <path> is from an
-        archive and has not yet been extracted. Return when the file is ready"""
+        """
+        Block the running (main) thread if the file <path> is from an
+        archive and has not yet been extracted. Return when the file is ready
+        """
+
         if self.__archive_type is None or path is None:
             return
 
@@ -431,7 +512,10 @@ class FileHandler:
             return
 
     def ask_for_files(self, files):
-        """Ask for <files> to be given priority for extraction"""
+        """
+        Ask for <files> to be given priority for extraction
+        """
+
         if self.__archive_type is None:
             return
 

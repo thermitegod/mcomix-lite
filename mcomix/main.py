@@ -14,7 +14,9 @@ from mcomix.preferences import prefs
 
 
 class MainWindow(Gtk.Window):
-    """The main window, is created at start and terminates the program when closed"""
+    """
+    The main window, is created at start and terminates the program when closed
+    """
 
     def __init__(self, fullscreen=False, manga_mode=False, double_page=False,
                  zoom_mode=None, open_path=None, open_page=1):
@@ -214,15 +216,22 @@ class MainWindow(Gtk.Window):
         return self.__event_handler
 
     def draw_image(self, scroll_to=None):
-        """Draw the current pages and update the titlebar and statusbar"""
+        """
+        Draw the current pages and update the titlebar and statusbar
+        """
+
         # FIXME: what if scroll_to is different?
         if not self.__waiting_for_redraw:  # Don't stack up redraws.
             self.__waiting_for_redraw = True
             GLib.idle_add(self._draw_image, scroll_to, priority=GLib.PRIORITY_HIGH_IDLE)
 
     def _update_toggle_preference(self, preference, toggleaction):
-        """Update "toggle" widget corresponding <preference>.
-        Note: the widget visibily itself is left unchanged"""
+        """
+        Update "toggle" widget corresponding <preference>.
+
+        Note: the widget visibily itself is left unchanged
+        """
+
         prefs[preference] = toggleaction.get_active()
         if preference == 'hide all':
             self.update_toggles_sensitivity()
@@ -231,7 +240,10 @@ class MainWindow(Gtk.Window):
         self.draw_image()
 
     def _should_toggle_be_visible(self, preference):
-        """Return <True> if "toggle" widget for <preference> should be visible"""
+        """
+        Return <True> if "toggle" widget for <preference> should be visible
+        """
+
         if self.is_fullscreen:
             visible = not prefs['hide all in fullscreen'] and not prefs['hide all']
         else:
@@ -243,7 +255,10 @@ class MainWindow(Gtk.Window):
         return visible
 
     def update_toggles_sensitivity(self):
-        """Update each "toggle" widget sensitivity"""
+        """
+        Update each "toggle" widget sensitivity
+        """
+
         sensitive = True
         if prefs['hide all'] or (prefs['hide all in fullscreen'] and self.is_fullscreen):
             sensitive = False
@@ -251,7 +266,10 @@ class MainWindow(Gtk.Window):
             self.actiongroup.get_action(action).set_sensitive(sensitive)
 
     def _update_toggles_visibility(self):
-        """Update each "toggle" widget visibility"""
+        """
+        Update each "toggle" widget visibility
+        """
+
         for preference, action, widget_list in self.__toggle_list:
             should_be_visible = self._should_toggle_be_visible(preference)
             for widget in widget_list:
@@ -428,7 +446,10 @@ class MainWindow(Gtk.Window):
 
     @staticmethod
     def _get_size_rotation(width, height):
-        """Determines the rotation to be applied. Returns the degree of rotation (0, 90, 180, 270)"""
+        """
+        Determines the rotation to be applied. Returns the degree of rotation (0, 90, 180, 270)
+        """
+
         size_rotation = 0
 
         if (height > width and
@@ -449,7 +470,10 @@ class MainWindow(Gtk.Window):
         return size_rotation
 
     def _page_available(self, page):
-        """Called whenever a new page is ready for displaying"""
+        """
+        Called whenever a new page is ready for displaying
+        """
+
         # Refresh display when currently opened page becomes available.
         current_page = self.imagehandler.get_current_page()
         nb_pages = 2 if self.displayed_double() else 1
@@ -476,7 +500,10 @@ class MainWindow(Gtk.Window):
         self.set_icon_list(icons.mcomix_icons())
 
     def new_page(self, at_bottom=False):
-        """Draw a *new* page correctly (as opposed to redrawing the same image with a new size or whatever)"""
+        """
+        Draw a *new* page correctly (as opposed to redrawing the same image with a new size or whatever)
+        """
+
         if not prefs['keep transformation']:
             prefs['rotation'] = 0
             prefs['horizontal flip'] = False
@@ -491,7 +518,10 @@ class MainWindow(Gtk.Window):
 
     @callback.Callback
     def page_changed(self):
-        """Called on page change"""
+        """
+        Called on page change
+        """
+
         self.thumbnailsidebar.load_thumbnails()
         self._update_page_information()
 
@@ -629,14 +659,20 @@ class MainWindow(Gtk.Window):
         self.draw_image()
 
     def change_autorotation(self, radioaction=None, *args):
-        """Switches between automatic rotation modes, depending on which
-        radiobutton is currently activated"""
+        """
+        Switches between automatic rotation modes, depending on which
+        radiobutton is currently activated
+        """
+
         if radioaction:
             prefs['auto rotate depending on size'] = radioaction.get_current_value()
         self.draw_image()
 
     def change_stretch(self, toggleaction, *args):
-        """Toggles stretching small images"""
+        """
+        Toggles stretching small images
+        """
+
         prefs['stretch'] = toggleaction.get_active()
         self.zoom.set_scale_up(prefs['stretch'])
         self.draw_image()
@@ -673,7 +709,10 @@ class MainWindow(Gtk.Window):
         self.draw_image()
 
     def _show_scrollbars(self, request):
-        """Enables scroll bars depending on requests and preferences"""
+        """
+        Enables scroll bars depending on requests and preferences
+        """
+
         limit = self._should_toggle_be_visible('show scrollbar')
         for idx, item in enumerate(self.__scroll):
             if limit and request[idx]:
@@ -682,11 +721,15 @@ class MainWindow(Gtk.Window):
                 self.__scroll[idx].hide()
 
     def scroll(self, x, y):
-        """Scroll <x> px horizontally and <y> px vertically. If <bound> is
+        """
+        Scroll <x> px horizontally and <y> px vertically. If <bound> is
         'first' or 'second', we will not scroll out of the first or second
         page respectively (dependent on manga mode). The <bound> argument
         only makes sense in double page mode.
-        Return True if call resulted in new adjustment values, False otherwise"""
+
+        :returns: True if call resulted in new adjustment values, False otherwise
+        """
+
         old_hadjust = self.__hadjust.get_value()
         old_vadjust = self.__vadjust.get_value()
 
@@ -721,7 +764,10 @@ class MainWindow(Gtk.Window):
         self.__scroll[1].queue_resize_no_redraw()
 
     def clear(self):
-        """Clear the currently displayed data (i.e. "close" the file)"""
+        """
+        Clear the currently displayed data (i.e. "close" the file)
+        """
+
         self.set_title(constants.APPNAME)
         self.statusbar.set_message('')
         self.draw_image()
@@ -737,14 +783,19 @@ class MainWindow(Gtk.Window):
         self.set_bg_color(prefs['bg color'])
 
     def displayed_double(self):
-        """Return True if two pages are currently displayed"""
+        """
+        :returns: True if two pages are currently displayed
+        """
+
         return (self.imagehandler.get_current_page() and
                 prefs['default double page'] and
                 not self.imagehandler.get_virtual_double_page() and
                 self.imagehandler.get_current_page() != self.imagehandler.get_number_of_pages())
 
     def get_visible_area_size(self):
-        """Return a 2-tuple with the width and height of the visible part of the main layout area"""
+        """
+        :returns: a 2-tuple with the width and height of the visible part of the main layout area
+        """
         dimensions = list(self.get_size())
         size = 0
 
@@ -762,17 +813,26 @@ class MainWindow(Gtk.Window):
         return tuple(dimensions)
 
     def set_cursor(self, mode):
-        """Set the cursor on the main layout area to <mode>. You should
-        probably use the cursor_handler instead of using this method directly"""
+        """
+        Set the cursor on the main layout area to <mode>. You should
+        probably use the cursor_handler instead of using this method directly
+        """
+
         self.__main_layout.get_bin_window().set_cursor(mode)
 
     def update_title(self):
-        """Set the title acording to current state"""
+        """
+        Set the title acording to current state
+        """
+
         self.set_title(f'[{self.statusbar.get_page_number()}] {self.imagehandler.get_current_filename()}')
 
     def set_bg_color(self, color):
-        """Set the background color to <color>. color is a sequence in the
-        format (r, g, b). Values are 16-bit"""
+        """
+        Set the background color to <color>. color is a sequence in the
+        format (r, g, b). Values are 16-bit
+        """
+
         self.__event_box.override_background_color(Gtk.StateType.NORMAL, Gdk.RGBA(*color))
         if prefs['thumbnail bg uses main color']:
             self.thumbnailsidebar.change_thumbnail_background_color(prefs['bg color'])
@@ -782,8 +842,11 @@ class MainWindow(Gtk.Window):
         return self.__bg_color
 
     def extract_page(self, *args):
-        """Derive some sensible filename (archive name + _ + filename should do) and offer
-        the user the choice to save the current page with the selected name"""
+        """
+        Derive some sensible filename (archive name + _ + filename should do) and offer
+        the user the choice to save the current page with the selected name
+        """
+
         if self.filehandler.get_archive_type() is not None:
             archive_name = Path() / self.filehandler.get_current_filename()
             file_name = self.imagehandler.get_path_to_page()
@@ -803,9 +866,12 @@ class MainWindow(Gtk.Window):
         save_dialog.destroy()
 
     def move_file(self, action=None, *args):
-        """The currently opened file/archive will be moved to prefs['move file']
+        """
+        The currently opened file/archive will be moved to prefs['move file']
         or
-        The currently opened file/archive will be trashed after showing a confirmation dialog"""
+        The currently opened file/archive will be trashed after showing a confirmation dialog
+        """
+
         if action is None:
             return None
 
@@ -870,7 +936,10 @@ class MainWindow(Gtk.Window):
                     file_action()
 
     def minimize(self, *args):
-        """Minimizes the MComix window"""
+        """
+        Minimizes the MComix window
+        """
+
         self.iconify()
 
     def write_config_files(self):
@@ -901,7 +970,10 @@ class MainWindow(Gtk.Window):
         return True
 
     def terminate_program(self, *args):
-        """Run clean-up tasks and exit the program"""
+        """
+        Run clean-up tasks and exit the program
+        """
+
         if not self.is_fullscreen:
             self.save_window_geometry()
 

@@ -14,8 +14,10 @@ from mcomix.lib import callback
 
 
 class _BookmarksStore:
-    """The _BookmarksStore is a backend for both the bookmarks menu and dialog.
-    Changes in the _BookmarksStore are mirrored in both"""
+    """
+    The _BookmarksStore is a backend for both the bookmarks menu and dialog.
+    Changes in the _BookmarksStore are mirrored in both
+    """
 
     def __init__(self):
         self.__initialized = False
@@ -32,7 +34,10 @@ class _BookmarksStore:
         self.__bookmarks_mtime = self.get_bookmarks_file_mtime()
 
     def initialize(self, window):
-        """Initializes references to the main window and file/image handlers"""
+        """
+        Initializes references to the main window and file/image handlers
+        """
+
         if not self.__initialized:
             self.__window = window
             self.__file_handler = window.filehandler
@@ -46,18 +51,27 @@ class _BookmarksStore:
 
     @callback.Callback
     def add_bookmark(self, bookmark):
-        """Add the <bookmark> to the list"""
+        """
+        Add the <bookmark> to the list
+        """
+
         self.__bookmarks.append(bookmark)
         self.__bookmark_state['dirty'] = True
 
     @callback.Callback
     def remove_bookmark(self, bookmark):
-        """Remove the <bookmark> from the list"""
+        """
+        Remove the <bookmark> from the list
+        """
+
         self.__bookmarks.remove(bookmark)
         self.__bookmark_state['dirty'] = True
 
     def add_current_to_bookmarks(self):
-        """Add the currently viewed page to the list"""
+        """
+        Add the currently viewed page to the list
+        """
+
         name = self.__image_handler.get_current_filename()
         path = self.__image_handler.get_real_path()
         page = self.__image_handler.get_current_page()
@@ -93,7 +107,10 @@ class _BookmarksStore:
         self.add_bookmark(bookmark)
 
     def get_bookmarks(self):
-        """Return all the bookmarks in the list"""
+        """
+        Return all the bookmarks in the list
+        """
+
         if not self.file_was_modified():
             return self.__bookmarks
 
@@ -106,8 +123,12 @@ class _BookmarksStore:
         return 0
 
     def load_bookmarks_file(self):
-        """Loads persisted bookmarks from a local file.
-        @return: Tuple of (bookmarks, file mtime)"""
+        """
+        Loads persisted bookmarks from a local file.
+
+        :return: Tuple of (bookmarks, file mtime)
+        """
+
         bookmarks = []
 
         if Path.is_file(self.__bookmark_path):
@@ -123,8 +144,11 @@ class _BookmarksStore:
         return bookmarks
 
     def file_was_modified(self):
-        """Checks the bookmark store's mtime to see if it has been modified
-        since it was last read"""
+        """
+        Checks the bookmark store's mtime to see if it has been modified
+        since it was last read
+        """
+
         if Path.is_file(self.__bookmark_path):
             try:
                 if Path.stat(self.__bookmark_path).st_mtime > self.__bookmarks_mtime:
@@ -137,7 +161,10 @@ class _BookmarksStore:
         return True
 
     def write_bookmarks_file(self):
-        """Store relevant bookmark info in the mcomix directory"""
+        """
+        Store relevant bookmark info in the mcomix directory
+        """
+
         # Merge changes in case file was modified from within other instances
         if not self.__bookmark_state['dirty']:
             logger.info('No changes to write for bookmarks')
@@ -154,10 +181,14 @@ class _BookmarksStore:
         self.__bookmarks_mtime = time.time()
 
     def show_replace_bookmark_dialog(self, new_page):
-        """Present a confirmation dialog to replace old bookmarks.
-        @return RESPONSE_YES to create replace bookmarks,
+        """
+        Present a confirmation dialog to replace old bookmarks.
+
+        :returns: RESPONSE_YES to create replace bookmarks,
         RESPONSE_NO to create a new bookmark, RESPONSE_CANCEL to abort creating
-        a new bookmark"""
+        a new bookmark
+        """
+
         dialog = message_dialog.MessageDialog(
                 self.__window,
                 flags=Gtk.DialogFlags.MODAL,

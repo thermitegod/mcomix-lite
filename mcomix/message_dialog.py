@@ -9,11 +9,15 @@ from mcomix.preferences import prefs
 
 class MessageDialog(Gtk.MessageDialog):
     def __init__(self, parent, flags=0, message_type=0, buttons=0):
-        """Creates a dialog window.
-        @param parent: Parent window
-        @param flags: Dialog flags
-        @param type: Dialog icon/type
-        @param buttons: Dialog buttons. Can only be a predefined BUTTONS_XXX constant"""
+        """
+        Creates a dialog window.
+
+        :param parent: Parent window
+        :param flags: Dialog flags
+        :param type: Dialog icon/type
+        :param buttons: Dialog buttons. Can only be a predefined BUTTONS_XXX constant
+        """
+
         super(MessageDialog, self).__init__(
                 message_type=message_type, buttons=buttons,
                 modal=flags & Gtk.DialogFlags.MODAL,
@@ -34,29 +38,43 @@ class MessageDialog(Gtk.MessageDialog):
         self.get_message_area().pack_end(self.__remember_checkbox, True, True, 6)
 
     def set_text(self, primary, secondary=None):
-        """Formats the dialog's text fields.
-        @param primary: Main text.
-        @param secondary: Descriptive text"""
+        """
+        Formats the dialog's text fields.
+
+        :param primary: Main text.
+        :param secondary: Descriptive text
+        """
+
         if primary:
             self.set_markup(f'<span weight="bold" size="larger">{primary}</span>')
         if secondary:
             self.format_secondary_markup(secondary)
 
     def should_remember_choice(self):
-        """Returns True when the dialog choice should be remembered"""
+        """
+        :returns: True when the dialog choice should be remembered
+        """
+
         return self.__remember_checkbox.get_active()
 
     def set_should_remember_choice(self, dialog_id, choices):
-        """This method enables the 'Do not ask again' checkbox.
-        @param dialog_id: Unique identifier for the dialog (a string).
-        @param choices: List of response IDs that should be remembered"""
+        """
+        This method enables the 'Do not ask again' checkbox.
+
+        :param dialog_id: Unique identifier for the dialog (a string).
+        :param choices: List of response IDs that should be remembered
+        """
+
         self.__remember_checkbox.show()
         self.__dialog_id = dialog_id
         self.__choices = [int(choice) for choice in choices]
 
     def run(self):
-        """Makes the dialog visible and waits for a result. Also destroys
-        the dialog after the result has been returned"""
+        """
+        Makes the dialog visible and waits for a result. Also destroys
+        the dialog after the result has been returned
+        """
+
         if self.__dialog_id in prefs['stored dialog choices']:
             self.destroy()
             return prefs['stored dialog choices'][self.__dialog_id]

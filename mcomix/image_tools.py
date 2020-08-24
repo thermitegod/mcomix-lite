@@ -63,13 +63,16 @@ def rotate_pixbuf(src, rotation):
 
 
 def get_fitting_size(source_size, target_size, keep_ratio=True, scale_up=False):
-    """Return a scaled version of <source_size>
+    """
+    Return a scaled version of <source_size>
     small enough to fit in <target_size>.
     Both <source_size> and <target_size>
     must be (width, height) tuples.
     If <keep_ratio> is True, aspect ratio is kept.
     If <scale_up> is True, <source_size> is scaled up
-    when smaller than <target_size>"""
+    when smaller than <target_size>
+    """
+
     width, height = target_size
     src_width, src_height = source_size
     if not scale_up and src_width <= width and src_height <= height:
@@ -110,7 +113,8 @@ def fit_pixbuf_to_rectangle(src, rect, rotation):
 
 def fit_in_rectangle(src, width, height, keep_ratio=True, scale_up=False,
                      rotation=0, scaling_quality=None):
-    """Scale (and return) a pixbuf so that it fits in a rectangle with
+    """
+    Scale (and return) a pixbuf so that it fits in a rectangle with
     dimensions <width> x <height>. A negative <width> or <height>
     means an unbounded dimension - both cannot be negative.
 
@@ -123,7 +127,9 @@ def fit_in_rectangle(src, width, height, keep_ratio=True, scale_up=False,
     If <keep_ratio> is True, the image ratio is kept, and the result
     dimensions may be smaller than the target dimensions.
 
-    If <src> has an alpha channel it gets a checkboard background"""
+    If <src> has an alpha channel it gets a checkboard background
+    """
+
     # "Unbounded" really means "bounded to 10000 px" - for simplicity.
     # MComix would probably choke on larger images anyway.
     if width < 0:
@@ -170,9 +176,11 @@ def fit_in_rectangle(src, width, height, keep_ratio=True, scale_up=False,
 
 
 def add_border(pixbuf, thickness, color=0x000000FF):
-    """Return a pixbuf from <pixbuf> with a <thickness> px border of
+    """
+    Return a pixbuf from <pixbuf> with a <thickness> px border of
     <color> added.
     """
+
     canvas = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8,
                                   pixbuf.get_width() + thickness * 2,
                                   pixbuf.get_height() + thickness * 2)
@@ -183,7 +191,10 @@ def add_border(pixbuf, thickness, color=0x000000FF):
 
 
 def pil_to_pixbuf(im, keep_orientation=False):
-    """Return a pixbuf created from the PIL <im>."""
+    """
+    Return a pixbuf created from the PIL <im>
+    """
+
     if im.mode.startswith('RGB'):
         has_alpha = im.mode == 'RGBA'
     elif im.mode in ('LA', 'P'):
@@ -213,7 +224,10 @@ def pil_to_pixbuf(im, keep_orientation=False):
 
 
 def pixbuf_to_pil(pixbuf):
-    """Return a PIL image created from <pixbuf>"""
+    """
+    Return a PIL image created from <pixbuf>
+    """
+
     dimensions = pixbuf.get_width(), pixbuf.get_height()
     stride = pixbuf.get_rowstride()
     pixels = pixbuf.get_pixels()
@@ -236,7 +250,10 @@ def disable_transform(pixbuf):
 
 
 def static_image(pixbuf):
-    """Returns a non-animated version of the specified pixbuf"""
+    """
+    Returns a non-animated version of the specified pixbuf
+    """
+
     if is_animation(pixbuf):
         return pixbuf.get_static_image()
 
@@ -271,7 +288,10 @@ def load_animation(im):
 
 
 def load_pixbuf(path):
-    """Loads a pixbuf from a given image file"""
+    """
+    Loads a pixbuf from a given image file
+    """
+
     enable_anime = prefs['animation mode'] != constants.ANIMATION_DISABLED
     try:
         with reader.LockedFileIO(path) as fio:
@@ -295,7 +315,10 @@ def load_pixbuf(path):
 
 
 def load_pixbuf_size(path, width, height):
-    """Loads a pixbuf from a given image file and scale it to fit inside (width, height)"""
+    """
+    Loads a pixbuf from a given image file and scale it to fit inside (width, height)
+    """
+
     try:
         with reader.LockedFileIO(path) as fio:
             with Image.open(fio) as im:
@@ -306,7 +329,10 @@ def load_pixbuf_size(path, width, height):
 
 
 def load_pixbuf_data(imgdata):
-    """Loads a pixbuf from the data passed in <imgdata>"""
+    """
+    Loads a pixbuf from the data passed in <imgdata>
+    """
+
     try:
         with Image.open(BytesIO(imgdata)) as im:
             return pil_to_pixbuf(im, keep_orientation=True)
@@ -315,11 +341,14 @@ def load_pixbuf_data(imgdata):
 
 
 def enhance(pixbuf, brightness=1.0, contrast=1.0, saturation=1.0, sharpness=1.0, autocontrast=False):
-    """Return a modified pixbuf from <pixbuf> where the enhancement operations
+    """
+    Return a modified pixbuf from <pixbuf> where the enhancement operations
     corresponding to each argument has been performed. A value of 1.0 means
     no change. If <autocontrast> is True it overrides the <contrast> value,
     but only if the image mode is supported by ImageOps.autocontrast (i.e.
-    it is L or RGB.)"""
+    it is L or RGB.)
+    """
+
     if is_animation(pixbuf):
         return anime_tools.frame_executor(
                 pixbuf, enhance,
@@ -344,11 +373,14 @@ def enhance(pixbuf, brightness=1.0, contrast=1.0, saturation=1.0, sharpness=1.0,
 
 
 def get_implied_rotation(pixbuf):
-    """Return the implied rotation in degrees: 0, 90, 180, or 270.
+    """
+    Return the implied rotation in degrees: 0, 90, 180, or 270.
     The implied rotation is the angle (in degrees) that the raw pixbuf should
     be rotated in order to be displayed "correctly". E.g. a photograph taken
     by a camera that is held sideways might store this fact in its Exif data,
-    and the pixbuf loader will set the orientation option correspondingly"""
+    and the pixbuf loader will set the orientation option correspondingly
+    """
+
     pixbuf = static_image(pixbuf)
     if (orientation := getattr(pixbuf, 'orientation', None)) is None:
         orientation = pixbuf.get_option('orientation')
@@ -378,14 +410,20 @@ def text_color_for_background_color(bgcolor):
 
 
 def get_image_size(path):
-    """Return image informations: (format, width, height)"""
+    """
+    Return image informations: (format, width, height)
+    """
+
     with reader.LockedFileIO(path) as fio:
         with Image.open(fio) as im:
             return im.size
 
 
 def get_image_mime(path):
-    """Return image informations: (format, width, height)"""
+    """
+    Return image informations: (format, width, height)
+    """
+
     with reader.LockedFileIO(path) as fio:
         with Image.open(fio) as im:
             return im.format

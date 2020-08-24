@@ -11,7 +11,10 @@ dialog_windows = {'about-dialog': [None, about_dialog.AboutDialog],
 
 
 def open_dialog(action, data):
-    """Create and display the given dialog"""
+    """
+    Create and display the given dialog
+    """
+
     window, name_of_dialog = data
 
     # if the dialog window is not created then create the window

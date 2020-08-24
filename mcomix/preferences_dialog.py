@@ -9,8 +9,10 @@ from mcomix.preferences import prefs
 
 
 class _PreferencesDialog(Gtk.Dialog):
-    """The preferences dialog where most (but not all) settings that are
-    saved between sessions are presented to the user"""
+    """
+    The preferences dialog where most (but not all) settings that are
+    saved between sessions are presented to the user
+    """
 
     def __init__(self, window):
         super(_PreferencesDialog, self).__init__(title='Preferences')
@@ -360,8 +362,11 @@ class _PreferencesDialog(Gtk.Dialog):
         return page
 
     def _tab_page_changed(self, notebook, page_ptr, page_num):
-        """Dynamically switches the "Reset" button's text
-        depending on the currently selected tab page"""
+        """
+        Dynamically switches the "Reset" button's text
+        depending on the currently selected tab page
+        """
+
         if notebook.get_nth_page(page_num) == self.shortcuts:
             self.__reset_button.set_label('_Reset keys')
             self.__reset_button.set_sensitive(True)
@@ -391,7 +396,10 @@ class _PreferencesDialog(Gtk.Dialog):
             PreferenceDialog.close_dialog()
 
     def _create_doublepage_as_one_control(self):
-        """Creates the ComboBox control for selecting virtual double page options"""
+        """
+        Creates the ComboBox control for selecting virtual double page options
+        """
+
         items = (
             ('Never', constants.SHOW_DOUBLE_NEVER),
             ('Only for title pages', constants.SHOW_DOUBLE_AS_ONE_TITLE),
@@ -405,7 +413,10 @@ class _PreferencesDialog(Gtk.Dialog):
         return box
 
     def _double_page_changed_cb(self, combobox, *args):
-        """Called when a new option was selected for the virtual double page option"""
+        """
+        Called when a new option was selected for the virtual double page option
+        """
+
         iter = combobox.get_active_iter()
         if combobox.get_model().iter_is_valid(iter):
             value = combobox.get_model().get_value(iter, 1)
@@ -425,7 +436,10 @@ class _PreferencesDialog(Gtk.Dialog):
         return box
 
     def _fit_to_size_changed_cb(self, combobox, *args):
-        """Change to 'Fit to size' pixels"""
+        """
+        Change to 'Fit to size' pixels
+        """
+
         iter = combobox.get_active_iter()
         if combobox.get_model().iter_is_valid(iter):
             value = combobox.get_model().get_value(iter, 1)
@@ -435,7 +449,10 @@ class _PreferencesDialog(Gtk.Dialog):
                 self.__window.change_zoom_mode()
 
     def _create_sort_by_control(self):
-        """Creates the ComboBox control for selecting file sort by options"""
+        """
+        Creates the ComboBox control for selecting file sort by options
+        """
+
         sortkey_items = (
             ('No sorting', constants.SORT_NONE),
             ('File name', constants.SORT_NAME),
@@ -461,7 +478,10 @@ class _PreferencesDialog(Gtk.Dialog):
         return box
 
     def _sort_by_changed_cb(self, combobox, *args):
-        """Called when a new option was selected for the virtual double page option"""
+        """
+        Called when a new option was selected for the virtual double page option
+        """
+
         iter = combobox.get_active_iter()
         if combobox.get_model().iter_is_valid(iter):
             value = combobox.get_model().get_value(iter, 1)
@@ -470,7 +490,10 @@ class _PreferencesDialog(Gtk.Dialog):
             self.__window.filehandler.refresh_file()
 
     def _sort_order_changed_cb(self, combobox, *args):
-        """Called when sort order changes (ascending or descending)"""
+        """
+        Called when sort order changes (ascending or descending)
+        """
+
         iter = combobox.get_active_iter()
         if combobox.get_model().iter_is_valid(iter):
             value = combobox.get_model().get_value(iter, 1)
@@ -479,7 +502,10 @@ class _PreferencesDialog(Gtk.Dialog):
             self.__window.filehandler.refresh_file()
 
     def _create_archive_sort_by_control(self):
-        """Creates the ComboBox control for selecting archive sort by options"""
+        """
+        Creates the ComboBox control for selecting archive sort by options
+        """
+
         sortkey_items = (
             ('No sorting', constants.SORT_NONE),
             ('Natural order', constants.SORT_NAME),
@@ -504,7 +530,10 @@ class _PreferencesDialog(Gtk.Dialog):
         return box
 
     def _sort_archive_by_changed_cb(self, combobox, *args):
-        """Called when a new option was selected for the virtual double page option"""
+        """
+        Called when a new option was selected for the virtual double page option
+        """
+
         iter = combobox.get_active_iter()
         if combobox.get_model().iter_is_valid(iter):
             value = combobox.get_model().get_value(iter, 1)
@@ -513,7 +542,10 @@ class _PreferencesDialog(Gtk.Dialog):
             self.__window.filehandler.refresh_file()
 
     def _sort_archive_order_changed_cb(self, combobox, *args):
-        """Called when sort order changes (ascending or descending)"""
+        """
+        Called when sort order changes (ascending or descending)
+        """
+
         iter = combobox.get_active_iter()
         if combobox.get_model().iter_is_valid(iter):
             value = combobox.get_model().get_value(iter, 1)
@@ -522,7 +554,10 @@ class _PreferencesDialog(Gtk.Dialog):
             self.__window.filehandler.refresh_file()
 
     def _create_scaling_quality_combobox(self):
-        """Creates combo box for image scaling quality"""
+        """
+        Creates combo box for image scaling quality
+        """
+
         items = (
             ('Nearest (very fast)', int(GdkPixbuf.InterpType.NEAREST)),
             ('Tiles (fast)', int(GdkPixbuf.InterpType.TILES)),
@@ -536,7 +571,10 @@ class _PreferencesDialog(Gtk.Dialog):
         return box
 
     def _scaling_quality_changed_cb(self, combobox, *args):
-        """Called whan image scaling quality changes"""
+        """
+        Called whan image scaling quality changes
+        """
+
         iter = combobox.get_active_iter()
         if combobox.get_model().iter_is_valid(iter):
             value = combobox.get_model().get_value(iter, 1)
@@ -547,7 +585,10 @@ class _PreferencesDialog(Gtk.Dialog):
                 self.__window.draw_image()
 
     def _create_animation_mode_combobox(self):
-        """Creates combo box for animation mode"""
+        """
+        Creates combo box for animation mode
+        """
+
         items = (
             ('Never', constants.ANIMATION_DISABLED),
             ('Normal', constants.ANIMATION_NORMAL),
@@ -562,7 +603,10 @@ class _PreferencesDialog(Gtk.Dialog):
         return box
 
     def _animation_mode_changed_cb(self, combobox, *args):
-        """Called whenever animation mode has been changed"""
+        """
+        Called whenever animation mode has been changed
+        """
+
         iter = combobox.get_active_iter()
         if combobox.get_model().iter_is_valid(iter):
             value = combobox.get_model().get_value(iter, 1)
@@ -574,12 +618,16 @@ class _PreferencesDialog(Gtk.Dialog):
 
     @staticmethod
     def _create_combobox(options, selected_value, change_callback):
-        """Creates a new dropdown combobox and populates it with the items passed in C{options}.
-        @param options: List of tuples: (Option display text, option value)
-        @param selected_value: One of the values passed in C{options} that will
+        """
+        Creates a new dropdown combobox and populates it with the items passed in C{options}.
+
+        :param options: List of tuples: (Option display text, option value)
+        :param selected_value: One of the values passed in C{options} that will
             be pre-selected when the control is created.
-        @param change_callback: Function that will be called when the 'changed' event is triggered.
-        @returns Gtk.ComboBox"""
+        :param change_callback: Function that will be called when the 'changed' event is triggered.
+        :returns: Gtk.ComboBox
+        """
+
         assert options and len(options[0]) == 2, 'Invalid format for options.'
 
         # Use the first list item to determine typing of model fields.
@@ -626,7 +674,10 @@ class _PreferencesDialog(Gtk.Dialog):
         return button
 
     def _check_button_cb(self, button, preference):
-        """Callback for all checkbutton-type preferences"""
+        """
+        Callback for all checkbutton-type preferences
+        """
+
         prefs[preference] = button.get_active()
 
         if preference == 'color box bg' and button.get_active():
@@ -659,7 +710,10 @@ class _PreferencesDialog(Gtk.Dialog):
             self.__window.filehandler.refresh_file()
 
     def _color_button_cb(self, colorbutton, preference):
-        """Callback for the background color selection button"""
+        """
+        Callback for the background color selection button
+        """
+
         color = colorbutton.get_rgba()
         prefs[preference] = color.red, color.green, color.blue, color.alpha
 
@@ -681,7 +735,10 @@ class _PreferencesDialog(Gtk.Dialog):
         return spinner
 
     def _spinner_cb(self, spinbutton, preference):
-        """Callback for spinner-type preferences"""
+        """
+        Callback for spinner-type preferences
+        """
+
         value = spinbutton.get_value()
 
         if preference == 'lens magnification':
@@ -714,7 +771,10 @@ class _PreferenceDialog:
         self.__dialog = None
 
     def open_dialog(self, event, window):
-        """Create and display the preference dialog"""
+        """
+        Create and display the preference dialog
+        """
+
         # if the dialog window is not created then create the window
         if self.__dialog is None:
             self.__dialog = _PreferencesDialog(window)
@@ -734,14 +794,19 @@ PreferenceDialog = _PreferenceDialog()
 
 
 class _PreferenceSection(Gtk.VBox):
-    """The _PreferenceSection is a convenience class for making one
+    """
+    The _PreferenceSection is a convenience class for making one
     "section" of a preference-style dialog, e.g. it has a bold header
-    and a number of rows which are indented with respect to that header"""
+    and a number of rows which are indented with respect to that header
+    """
 
     def __init__(self, header, right_column_width):
-        """Contruct a new section with the header set to the text in
+        """
+        Contruct a new section with the header set to the text in
         <header>, and the width request of the (possible) right columns
-        set to that of <right_column_width>"""
+        set to that of <right_column_width>
+        """
+
         super(_PreferenceSection, self).__init__(homogeneous=False, spacing=0)
         self.__right_column_width = right_column_width
         self.__contentbox = Gtk.VBox(homogeneous=False, spacing=6)
@@ -754,11 +819,14 @@ class _PreferenceSection(Gtk.VBox):
         self.pack_start(hbox, False, False, 6)
 
     def new_split_vboxes(self):
-        """Return two new VBoxes that are automatically put in the section
+        """
+        Return two new VBoxes that are automatically put in the section
         after the previously added items. The right one has a width request
         equal to the right_column_width value passed to the class contructor,
         in order to make it easy for  all "right column items" in a page to
-        line up nicely"""
+        line up nicely
+        """
+
         left_box = Gtk.VBox(homogeneous=False, spacing=6)
         right_box = Gtk.VBox(homogeneous=False, spacing=6)
 
@@ -776,25 +844,36 @@ class _PreferenceSection(Gtk.VBox):
 
 
 class _PreferencePage(Gtk.VBox):
-    """The _PreferencePage is a conveniece class for making one "page"
-    in a preferences-style dialog that contains one or more _PreferenceSections"""
+    """
+    The _PreferencePage is a conveniece class for making one "page"
+    in a preferences-style dialog that contains one or more _PreferenceSections
+    """
 
     def __init__(self, right_column_width):
-        """Create a new page where any possible right columns have the width request <right_column_width>"""
+        """
+        Create a new page where any possible right columns have the width request <right_column_width>
+        """
+
         super(_PreferencePage, self).__init__(homogeneous=False, spacing=12)
         self.set_border_width(12)
         self.__right_column_width = right_column_width
         self.__section = None
 
     def new_section(self, header):
-        """Start a new section in the page, with the header text from <header>"""
+        """
+        Start a new section in the page, with the header text from <header>
+        """
+
         self.__section = _PreferenceSection(header, self.__right_column_width)
         self.pack_start(self.__section, False, False, 0)
 
     def add_row(self, left_item, right_item=None):
-        """Add a row to the page (in the latest section), containing one
+        """
+        Add a row to the page (in the latest section), containing one
         or two items. If the left item is a label it is automatically
-        aligned properly"""
+        aligned properly
+        """
+
         if isinstance(left_item, Gtk.Label):
             left_item.set_alignment(0, 0.5)
 

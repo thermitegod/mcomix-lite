@@ -18,7 +18,10 @@ class EventHandler:
         self.__last_pointer_pos_y = 0
 
     def resize_event(self, widget, event):
-        """Handle events from resizing and moving the main window"""
+        """
+        Handle events from resizing and moving the main window
+        """
+
         if (size := (event.width, event.height)) != self.__window.previous_size:
             self.__window.previous_size = size
             self.__window.draw_image()
@@ -41,8 +44,11 @@ class EventHandler:
                 self.__window.draw_image()
 
     def register_key_events(self):
-        """Registers keyboard events and their default binings, and hooks
-        them up with their respective callback functions"""
+        """
+        Registers keyboard events and their default binings, and hooks
+        them up with their respective callback functions
+        """
+
         manager = keybindings.KeybindingManager.keybinding_manager(self.__window)
 
         # Navigation keys
@@ -180,7 +186,10 @@ class EventHandler:
                          self.__window.actiongroup.get_action('hide_all').activate)
 
     def key_press_event(self, widget, event, *args):
-        """Handle key press events on the main window"""
+        """
+        Handle key press events on the main window
+        """
+
         # Dispatch keyboard input handling
         manager = keybindings.KeybindingManager.keybinding_manager(self.__window)
         # Some keys require modifiers that are irrelevant to the hotkey. Find out and ignore them.
@@ -203,15 +212,21 @@ class EventHandler:
             manager.execute((keyval, event.get_state() & ~consumed & ALL_ACCELS_MASK))
 
     def escape_event(self):
-        """Determines the behavior of the ESC key"""
+        """
+        Determines the behavior of the ESC key
+        """
+
         if prefs['escape quits']:
             self.__window.terminate_program()
         else:
             self.__window.actiongroup.get_action('fullscreen').set_active(False)
 
     def scroll_wheel_event(self, widget, event, *args):
-        """Handle scroll wheel events on the main layout area. The scroll
-        wheel flips pages in best fit mode and scrolls the scrollbars otherwise"""
+        """
+        Handle scroll wheel events on the main layout area. The scroll
+        wheel flips pages in best fit mode and scrolls the scrollbars otherwise
+        """
+
         if not prefs['flip with wheel']:
             return
 
@@ -257,7 +272,10 @@ class EventHandler:
                 self._flip_page(-1)
 
     def mouse_press_event(self, widget, event):
-        """Handle mouse click events on the main layout area"""
+        """
+        Handle mouse click events on the main layout area
+        """
+
         if event.button == 1:
             pass
 
@@ -271,7 +289,10 @@ class EventHandler:
             pass
 
     def mouse_release_event(self, widget, event):
-        """Handle mouse button release events on the main layout area"""
+        """
+        Handle mouse button release events on the main layout area
+        """
+
         self.__window.cursor_handler.set_cursor_type(constants.CURSOR_NORMAL)
 
         if event.button == 1:
@@ -287,7 +308,10 @@ class EventHandler:
             pass
 
     def mouse_move_event(self, widget, event):
-        """Handle mouse pointer movement events"""
+        """
+        Handle mouse pointer movement events
+        """
+
         if 'GDK_BUTTON1_MASK' in event.get_state().value_names:
             self.__window.cursor_handler.set_cursor_type(constants.CURSOR_GRAB)
             self.__window.scroll(self.__last_pointer_pos_x - event.x_root,
@@ -296,7 +320,10 @@ class EventHandler:
             self.__last_pointer_pos_y = event.y_root
 
     def drag_n_drop_event(self, widget, context, x, y, selection, drag_id, eventtime):
-        """Handle drag-n-drop events on the main layout area"""
+        """
+        Handle drag-n-drop events on the main layout area
+        """
+
         # The drag source is inside MComix itself, so we ignore.
         if Gtk.drag_get_source_widget(context) is not None:
             return
@@ -305,7 +332,10 @@ class EventHandler:
             return
 
         def _normalize_uri(uri):
-            """Normalize URIs passed into the program by different applications, via drag-and-drop"""
+            """
+            Normalize URIs passed into the program by different applications, via drag-and-drop
+            """
+
             if uri.startswith('file://localhost/'):
                 return uri[16:]
             elif uri.startswith('file:///'):
@@ -323,9 +353,12 @@ class EventHandler:
             self.__window.filehandler.open_file(paths[0])
 
     def _scroll_with_flipping(self, x, y):
-        """Handle scrolling with the scroll wheel or the arrow keys, for which
+        """
+        Handle scrolling with the scroll wheel or the arrow keys, for which
         the pages might be flipped depending on the preferences.  Returns True
-        if able to scroll without flipping and False if a new page was flipped to"""
+        if able to scroll without flipping and False if a new page was flipped to
+        """
+
         if self.__window.scroll(x, y):
             return True
 
@@ -335,12 +368,18 @@ class EventHandler:
             self._flip_page(-1)
 
     def _flip_page(self, number_of_pages, single_step=False):
-        """Switches a number of pages forwards/backwards. If C{single_step} is True,
-        the page count will be advanced by only one page even in double page mode"""
+        """
+        Switches a number of pages forwards/backwards. If C{single_step} is True,
+        the page count will be advanced by only one page even in double page mode
+        """
+
         self.__window.flip_page(number_of_pages, single_step=single_step)
 
     def _left_right_page_progress(self, number_of_pages=1):
-        """If number_of_pages is positive, this function advances the specified
+        """
+        If number_of_pages is positive, this function advances the specified
         number of pages in manga mode and goes back the same number of pages in
-        normal mode. The opposite happens for number_of_pages being negative"""
+        normal mode. The opposite happens for number_of_pages being negative
+        """
+
         self._flip_page(-number_of_pages if self.__window.is_manga_mode else number_of_pages)

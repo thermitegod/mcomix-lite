@@ -63,60 +63,93 @@ class Statusbar(Gtk.EventBox):
         self.__loading = False
 
     def set_message(self, message):
-        """Set a specific message (such as an error message) on the statusbar,
-        replacing whatever was there earlier"""
+        """
+        Set a specific message (such as an error message) on the statusbar,
+        replacing whatever was there earlier
+        """
+
         self.__status.pop(0)
         self.__status.push(0, ' ' * self.__spacing + message)
 
     def set_page_number(self, page, total, this_screen):
-        """Update the page number"""
+        """
+        Update the page number
+        """
+
         p = ', '.join(str(page + i) for i in range(this_screen))
         self.__page_info = f'{p} / {total}'
 
     def get_page_number(self):
-        """Returns the bar's page information"""
+        """
+        :returns: the bar's page information
+        """
+
         return self.__page_info
 
     def set_file_number(self, fileno, total):
-        """Updates the file number (i.e. number of current file/total files loaded)"""
+        """
+        Updates the file number (i.e. number of current file/total files loaded)
+        """
+
         if total > 0:
             self.__file_info = f'({fileno} / {total})'
         else:
             self.__file_info = ''
 
     def get_file_number(self):
-        """Returns the bar's file information"""
+        """
+        Returns the bar's file information
+        """
+
         return self.__file_info
 
     def set_resolution(self, dimensions):  # 2D only
-        """Update the resolution data.
+        """
+        Update the resolution data.
         Takes an iterable of tuples, (x, y, scale), describing the original
-        resolution of an image as well as the currently displayed scale"""
+        resolution of an image as well as the currently displayed scale
+        """
+
         self.__resolution = ', '.join(f'{d[0]}x{d[1]} ({d[2]:.2%})' for d in dimensions)
 
     def set_root(self, root):
-        """Set the name of the root (directory or archive)"""
+        """
+        Set the name of the root (directory or archive)
+        """
+
         self.__root = root
 
     def set_filename(self, filename):
-        """Update the filename"""
+        """
+        Update the filename
+        """
+
         self.__filename = filename
 
     def set_filesize(self, size):
-        """Update the filesize"""
+        """
+        Update the filesize
+        """
+
         if size is None:
             size = ''
         self.__filesize = size
 
     def update(self):
-        """Set the statusbar to display the current state"""
+        """
+        Set the statusbar to display the current state
+        """
+
         s = f'{"|":^{self.__spacing + 2}}'
         text = s.join(self._get_status_text())
         self.__status.pop(0)
         self.__status.push(0, f'{"":>{self.__spacing}}{text}')
 
     def _get_status_text(self):
-        """Returns an array of text fields that should be displayed"""
+        """
+        Returns an array of text fields that should be displayed
+        """
+
         fields = [
             (constants.STATUS_PAGE, self.__page_info),
             (constants.STATUS_FILENUMBER, self.__file_info),
@@ -130,7 +163,10 @@ class Statusbar(Gtk.EventBox):
         return [s for c, s in filter(lambda f: f[0] & p, fields)]
 
     def toggle_status_visibility(self, action, *args):
-        """Called when status entries visibility is to be changed"""
+        """
+        Called when status entries visibility is to be changed
+        """
+
         # Ignore events as long as control is still loading.
         if self.__loading:
             return
@@ -155,12 +191,18 @@ class Statusbar(Gtk.EventBox):
         self._update_sensitivity()
 
     def _button_released(self, widget, event, *args):
-        """Triggered when a mouse button is released to open the context menu"""
+        """
+        Triggered when a mouse button is released to open the context menu
+        """
+
         if event.button == 3:
             self.__ui_manager.get_widget('/Statusbar').popup(None, None, None, None, event.button, event.time)
 
     def _update_sensitivity(self):
-        """Updates the action menu's sensitivity based on user preferences"""
+        """
+        Updates the action menu's sensitivity based on user preferences
+        """
+
         p = prefs['statusbar fields']
         names = {
             'pagenumber': p & constants.STATUS_PAGE,
