@@ -23,7 +23,6 @@ class BaseArchive:
 
     def iter_contents(self):
         """Generator for listing the archive contents"""
-        # return
         yield
 
     def list_contents(self):
