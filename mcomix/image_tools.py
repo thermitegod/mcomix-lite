@@ -13,8 +13,8 @@ from mcomix import anime_tools, constants
 from mcomix.lib import reader
 from mcomix.preferences import prefs
 
-GTK_GDK_COLOR_BLACK = Gdk.color_parse('black')
-GTK_GDK_COLOR_WHITE = Gdk.color_parse('white')
+GTK_GDK_COLOR_BLACK = Gdk.Color(red=0, green=0, blue=0)
+GTK_GDK_COLOR_WHITE = Gdk.Color(red=65535, green=65535, blue=65535)
 
 
 def _getexif(im):
