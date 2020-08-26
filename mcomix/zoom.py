@@ -77,7 +77,7 @@ class ZoomModel:
                      for size, scale in zip(fitted_image_sizes, preferred_scales)]
         prescaled_union_size = self._union_size(prescaled, distribution_axis)
 
-        def _other_preferences(limits, distribution_axis):
+        def _other_preferences():
             for idx, item in enumerate(limits):
                 if idx == distribution_axis:
                     continue
@@ -85,7 +85,7 @@ class ZoomModel:
                     return True
             return False
 
-        other_preferences = _other_preferences(limits, distribution_axis)
+        other_preferences = _other_preferences()
         if limits[distribution_axis] is not None and \
                 (prescaled_union_size[distribution_axis] > screen_size[distribution_axis]
                  or not other_preferences):
