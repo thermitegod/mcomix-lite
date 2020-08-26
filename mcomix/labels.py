@@ -39,12 +39,3 @@ class BoldLabel(FormattedLabel):
 
     def __init__(self, text=''):
         super().__init__(text=text, weight=Pango.Weight.BOLD)
-
-
-class ItalicLabel(FormattedLabel):
-    """
-    A FormattedLabel that is always italic and otherwise normal
-    """
-
-    def __init__(self, text=''):
-        super().__init__(text=text, style=Pango.Style.ITALIC)
