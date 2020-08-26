@@ -148,7 +148,7 @@ class MagnifyingLens:
                                       has_alpha=True, bits_per_sample=8,
                                       width=prefs['lens size'],
                                       height=prefs['lens size'])
-        r, g, b, a = [int(p * 255) for p in self.__window.get_bg_color()]
+        r, g, b = [0, 0, 0]
         canvas.fill(image_tools.convert_rgb16list_to_rgba8int([r, g, b]))
         cb = self.__window.get_layout().get_content_boxes()
         source_pixbufs = self.__window.imagehandler.get_pixbufs(len(cb))

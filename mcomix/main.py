@@ -53,8 +53,6 @@ class MainWindow(Gtk.Window):
             Gtk.Scrollbar.new(Gtk.Orientation.VERTICAL, self.__vadjust),
         )
 
-        self.__bg_color = None
-
         self.filehandler = file_handler.FileHandler(self)
         self.filehandler.file_closed += self._on_file_closed
         self.filehandler.file_opened += self._on_file_opened
@@ -85,7 +83,6 @@ class MainWindow(Gtk.Window):
 
         for img in self.images:
             self.__main_layout.put(img, 0, 0)
-        self.set_bg_color(prefs['bg color'])
 
         table = Gtk.Table(n_rows=2, n_columns=2, homogeneous=False)
         table.attach(self.thumbnailsidebar, 0, 1, 2, 5, Gtk.AttachOptions.FILL,
@@ -785,7 +782,6 @@ class MainWindow(Gtk.Window):
         self._show_scrollbars([False] * len(self.__scroll))
         self.__layout = self.__dummy_layout
         self.__main_layout.set_size(*self.__layout.get_union_box().get_size())
-        self.set_bg_color(prefs['bg color'])
 
     def displayed_double(self):
         """
@@ -831,20 +827,6 @@ class MainWindow(Gtk.Window):
         """
 
         self.set_title(f'[{self.statusbar.get_page_number()}] {self.imagehandler.get_current_filename()}')
-
-    def set_bg_color(self, color):
-        """
-        Set the background color to <color>. color is a sequence in the
-        format (r, g, b). Values are 16-bit
-        """
-
-        self.__event_box.override_background_color(Gtk.StateType.NORMAL, Gdk.RGBA(*color))
-        if prefs['thumbnail bg uses main color']:
-            self.thumbnailsidebar.change_thumbnail_background_color(prefs['bg color'])
-        self.__bg_color = color
-
-    def get_bg_color(self):
-        return self.__bg_color
 
     def extract_page(self, *args):
         """

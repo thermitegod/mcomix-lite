@@ -6,15 +6,12 @@ from io import BytesIO
 from pathlib import Path
 
 from PIL import Image, ImageEnhance, ImageOps, ImageSequence
-from gi.repository import GLib, Gdk, GdkPixbuf, Gio
+from gi.repository import GLib, GdkPixbuf, Gio
 from loguru import logger
 
 from mcomix import anime_tools, constants
 from mcomix.lib import reader
 from mcomix.preferences import prefs
-
-GTK_GDK_COLOR_BLACK = Gdk.Color(red=0, green=0, blue=0)
-GTK_GDK_COLOR_WHITE = Gdk.Color(red=65535, green=65535, blue=65535)
 
 
 def _getexif(im):
@@ -397,16 +394,6 @@ def get_implied_rotation(pixbuf):
 
 def convert_rgb16list_to_rgba8int(c):
     return 0x000000FF | (c[0] >> 8 << 24) | (c[1] >> 8 << 16) | (c[2] >> 8 << 8)
-
-
-def rgb_to_y_601(color):
-    return color[0] * 0.299 + color[1] * 0.587 + color[2] * 0.114
-
-
-def text_color_for_background_color(bgcolor):
-    if rgb_to_y_601(bgcolor) >= 65535.0 / 2.0:
-        return GTK_GDK_COLOR_BLACK
-    return GTK_GDK_COLOR_WHITE
 
 
 def get_image_size(path):

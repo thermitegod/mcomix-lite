@@ -17,9 +17,6 @@ prefs = {
     'sort order': constants.SORT_ASCENDING,
     'sort archive by': constants.SORT_NAME,  # Files in archives
     'sort archive order': constants.SORT_ASCENDING,
-    'bg color': [0, 0, 0, 0],
-    'thumb bg color': [0, 0, 0, 0],
-    'thumbnail bg uses main color': False,
     'checkered bg for transparent images': True,
     'cache': True,
     'stretch': True,

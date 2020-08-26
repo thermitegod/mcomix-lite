@@ -65,19 +65,7 @@ class _PreferencesDialog(Gtk.Dialog):
                 'Escape key closes program',
                 'escape quits'))
 
-        page.new_section('Background')
-
-        fixed_bg_button = self._create_binary_pref_radio_buttons(
-                'Background color',
-                'color box bg')
-        page.add_row(fixed_bg_button, self._create_color_button('bg color'))
-
         page.new_section('Thumbnails')
-
-        thumb_fixed_bg_button = self._create_binary_pref_radio_buttons(
-                'Thumbnail background color',
-                'color box thumb bg')
-        page.add_row(thumb_fixed_bg_button, self._create_color_button('thumb bg color'))
 
         page.add_row(self._create_pref_check_button(
                 'Show page numbers on thumbnails',
@@ -662,18 +650,6 @@ class _PreferencesDialog(Gtk.Dialog):
         button.connect('toggled', self._check_button_cb, prefkey)
         return button
 
-    def _create_binary_pref_radio_buttons(self, label, prefkey):
-        button = Gtk.RadioButton(label=label)
-        button.connect('toggled', self._check_button_cb, prefkey)
-        return button
-
-    def _create_color_button(self, prefkey):
-        rgba = prefs[prefkey]
-        button = Gtk.ColorButton.new_with_rgba(Gdk.RGBA(*rgba))
-        button.set_use_alpha(True)
-        button.connect('color_set', self._color_button_cb, prefkey)
-        return button
-
     def _check_button_cb(self, button, preference):
         """
         Callback for all checkbutton-type preferences
@@ -681,20 +657,8 @@ class _PreferencesDialog(Gtk.Dialog):
 
         prefs[preference] = button.get_active()
 
-        if preference == 'color box bg' and button.get_active():
-            if not self.__window.filehandler.get_file_loaded():
-                self.__window.set_bg_color(prefs['bg color'])
-
-        elif preference == 'color box thumb bg' and button.get_active():
-            if prefs[preference]:
-                prefs['thumbnail bg uses main color'] = False
-
-                self.__window.thumbnailsidebar.change_thumbnail_background_color(prefs['thumb bg color'])
-            else:
-                self.__window.draw_image()
-
-        elif preference in ('checkered bg for transparent images',
-                            'no double page for wide images', 'auto rotate from exif'):
+        if preference in ('checkered bg for transparent images',
+                          'no double page for wide images', 'auto rotate from exif'):
             self.__window.draw_image()
 
         elif (preference == 'hide all in fullscreen' and
@@ -709,22 +673,6 @@ class _PreferencesDialog(Gtk.Dialog):
 
         elif preference in ('check image mimetype',):
             self.__window.filehandler.refresh_file()
-
-    def _color_button_cb(self, colorbutton, preference):
-        """
-        Callback for the background color selection button
-        """
-
-        color = colorbutton.get_rgba()
-        prefs[preference] = color.red, color.green, color.blue, color.alpha
-
-        if preference == 'bg color':
-            if not self.__window.filehandler.get_file_loaded():
-                self.__window.set_bg_color(prefs['bg color'])
-
-        elif preference == 'thumb bg color':
-            if not self.__window.filehandler.get_file_loaded():
-                self.__window.thumbnailsidebar.change_thumbnail_background_color(prefs['thumb bg color'])
 
     def _create_pref_spinner(self, prefkey, scale, lower, upper, step_incr, page_incr, digits):
         value = prefs[prefkey] / scale
