@@ -10,7 +10,8 @@ from pathlib import Path
 
 from loguru import logger
 
-from mcomix import archive_tools, constants, image_tools
+from mcomix import constants, image_tools
+from mcomix.archive_tools import ArchiveTools
 from mcomix.preferences import prefs
 
 NUMERIC_REGEXP = re.compile(r'\d+[.]\d+|\d+|\D+')  # Split into float, int, and characters
@@ -147,7 +148,7 @@ class OrderedFileProvider(FileProvider):
         if mode == FileProvider.IMAGES:
             should_accept = functools.partial(image_tools.is_image_file, check_mimetype=True)
         elif mode == FileProvider.ARCHIVES:
-            should_accept = archive_tools.is_archive_file
+            should_accept = ArchiveTools.is_archive_file
         else:
             should_accept = lambda file: True
 
@@ -250,8 +251,8 @@ class PreDefinedFileProvider(FileProvider):
             if Path.is_file(file):
                 if image_tools.is_image_file(file):
                     return image_tools.is_image_file
-                if archive_tools.is_archive_file(file):
-                    return archive_tools.is_archive_file
+                if ArchiveTools.is_archive_file(file):
+                    return ArchiveTools.is_archive_file
 
         # Default filter only accepts images.
         return image_tools.is_image_file

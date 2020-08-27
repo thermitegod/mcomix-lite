@@ -8,7 +8,7 @@ from pathlib import Path
 
 from loguru import logger
 
-from mcomix import archive_tools
+from mcomix.archive_tools import ArchiveTools
 from mcomix.lib.callback import Callback
 from mcomix.lib.mt import ThreadPool
 from mcomix.preferences import prefs
@@ -54,7 +54,7 @@ class Extractor:
         self.__src = src
         self.__files = []
         self.__extracted = set()
-        self.__archive = archive_tools.get_recursive_archive_handler(src, archive_type=archive_type)
+        self.__archive = ArchiveTools.get_recursive_archive_handler(src, archive_type=archive_type)
         if self.__archive is None:
             logger.warning(msg := f'Non-supported archive format: \'{Path(src).name}\'')
             raise ArchiveException(msg)

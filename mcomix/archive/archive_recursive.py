@@ -7,9 +7,9 @@ from pathlib import Path
 
 from loguru import logger
 
-from mcomix import archive_tools, constants
+from mcomix import constants
 from mcomix.archive.archive_base import BaseArchive
-from mcomix.preferences import prefs
+from mcomix.archive_tools import ArchiveTools
 
 
 class RecursiveArchive(BaseArchive):
@@ -52,7 +52,7 @@ class RecursiveArchive(BaseArchive):
         self.__archive_root[archive] = root
         sub_archive_list = []
         for f in archive.iter_contents():
-            if archive_tools.is_archive_file(f):
+            if ArchiveTools.is_archive_file(f):
                 # We found a sub-archive, don't try to extract it now, as we
                 # must finish listing the containing archive contents before
                 # any extraction can be done.
@@ -70,7 +70,7 @@ class RecursiveArchive(BaseArchive):
                 destination_dir = Path() / destination_dir / root
             sub_archive_path = archive.extract(f, destination_dir)
             # And open it and list its contents.
-            sub_archive = archive_tools.get_archive_handler(sub_archive_path)
+            sub_archive = ArchiveTools.get_archive_handler(sub_archive_path)
             if sub_archive is None:
                 logger.warning(f'Non-supported archive format: {Path(sub_archive_path).name}')
                 continue

@@ -8,8 +8,9 @@ from pathlib import Path
 from gi.repository import Gtk
 from loguru import logger
 
-from mcomix import archive_tools, constants, image_tools, file_provider
+from mcomix import constants, image_tools, file_provider
 from mcomix.archive_extractor import Extractor
+from mcomix.archive_tools import ArchiveTools
 from mcomix.file_provider import FileProvider
 from mcomix.lib.callback import Callback
 from mcomix.preferences import prefs
@@ -101,7 +102,7 @@ class FileHandler:
             return False
 
         self.__filelist = self.__file_provider.list_files()
-        self.__archive_type = archive_tools.archive_mime_type(path)
+        self.__archive_type = ArchiveTools.archive_mime_type(path)
         self.__start_page = start_page
         self.__current_file = str(path)
         self.__stop_waiting = False
@@ -425,13 +426,13 @@ class FileHandler:
 
             if forward:
                 for path in files[current_index + 1:]:
-                    if archive_tools.archive_mime_type(path) is not None:
+                    if ArchiveTools.archive_mime_type(path) is not None:
                         self._close()
                         self.open_file(path, keep_fileprovider=True)
                         return True
             else:
                 for path in reversed(files[:current_index]):
-                    if archive_tools.archive_mime_type(path) is not None:
+                    if ArchiveTools.archive_mime_type(path) is not None:
                         self._close()
                         self.open_file(path, self.__open_first_page, keep_fileprovider=True)
                         return True
