@@ -4,8 +4,9 @@
 
 from gi.repository import Gtk
 
-from mcomix import constants, dialog_handler
+from mcomix import constants
 from mcomix.bookmark_menu import BookmarksMenu
+from mcomix.dialog_handler import DialogHandler
 from mcomix.enhance_dialog import EnhanceDialog
 from mcomix.preferences import prefs
 from mcomix.preferences_dialog import PreferenceDialog
@@ -122,11 +123,11 @@ class MainUI(Gtk.UIManager):
 
         self.__actiongroup.add_actions([
             ('about', Gtk.STOCK_ABOUT, '_About',
-             None, None, dialog_handler.open_dialog)], (window, 'about-dialog'))
+             None, None, DialogHandler.open_dialog)], (window, 'about-dialog'))
 
         self.__actiongroup.add_actions([
             ('properties', Gtk.STOCK_PROPERTIES, 'Proper_ties',
-             None, None, dialog_handler.open_dialog)], (window, 'properties-dialog'))
+             None, None, DialogHandler.open_dialog)], (window, 'properties-dialog'))
 
         self.__actiongroup.add_actions([
             ('preferences', Gtk.STOCK_PREFERENCES, 'Pr_eferences',
