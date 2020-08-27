@@ -59,7 +59,7 @@ class BaseArchive:
         :rtype: Path
         """
 
-        assert isinstance(filename, str) and isinstance(destination_dir, str)
+        assert isinstance(filename, str) and isinstance(destination_dir, Path)
         return Path() / destination_dir / filename
 
     def iter_extract(self, entries, destination_dir):
@@ -199,7 +199,7 @@ class ExternalExecutableArchive(BaseArchive):
         :rtype: Path
         """
 
-        assert isinstance(filename, str) and isinstance(destination_dir, str)
+        assert isinstance(filename, str) and isinstance(destination_dir, Path)
 
         if not self._get_executable():
             return

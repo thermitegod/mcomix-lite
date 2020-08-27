@@ -115,7 +115,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
         :rtype: Path
         """
 
-        assert isinstance(filename, str) and isinstance(destination_dir, str)
+        assert isinstance(filename, str) and isinstance(destination_dir, Path)
 
         if not self._get_executable():
             return
