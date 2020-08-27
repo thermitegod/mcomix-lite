@@ -111,7 +111,7 @@ class PropertiesDialog(Gtk.Dialog):
         uid = Path.owner(path)
         gid = Path.group(path)
         secondary_info = [
-            ('Location', Path.resolve(path)),
+            ('Location', Path.resolve(path).parent),
             ('Size', image_handler.ImageHandler.format_byte_size(stats.st_size)),
             ('Modified', time.strftime('%Y-%m-%d, %H:%M:%S', time.localtime(stats.st_mtime))),
             ('Accessed', time.strftime('%Y-%m-%d, %H:%M:%S', time.localtime(stats.st_atime))),
