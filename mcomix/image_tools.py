@@ -9,9 +9,10 @@ from PIL import Image, ImageEnhance, ImageOps, ImageSequence
 from gi.repository import GLib, GdkPixbuf, Gio
 from loguru import logger
 
-from mcomix import anime_tools, constants
+from mcomix import constants
 from mcomix.lib.reader import LockedFileIO
 from mcomix.preferences import prefs
+from mcomix.anime_tools import AnimeFrameBuffer, AnimeFrameExecutor
 
 
 class _ImageTools:
@@ -105,7 +106,7 @@ class _ImageTools:
 
     def trans_pixbuf(self, src, flip: bool = False, flop: bool = False):
         if self.is_animation(src):
-            return anime_tools.frame_executor(
+            return AnimeFrameExecutor.frame_executor(
                 src, self.trans_pixbuf,
                 kwargs=dict(flip=flip, flop=flop)
             )
@@ -117,7 +118,7 @@ class _ImageTools:
 
     def fit_pixbuf_to_rectangle(self, src, rect: tuple, rotation: int):
         if self.is_animation(src):
-            return anime_tools.frame_executor(
+            return AnimeFrameExecutor.frame_executor(
                 src, self.fit_pixbuf_to_rectangle,
                 args=(rect, rotation)
             )
@@ -280,7 +281,7 @@ class _ImageTools:
             # TODO: Pillow has bug with gif animation
             # https://github.com/python-pillow/Pillow/labels/GIF
             raise NotImplementedError('Pillow has bug with gif animation, fallback to GdkPixbuf')
-        anime = anime_tools.AnimeFrameBuffer(im.n_frames, loop=im.info['loop'])
+        anime = AnimeFrameBuffer(im.n_frames, loop=im.info['loop'])
         background = im.info.get('background', None)
         if isinstance(background, tuple):
             color = 0
@@ -355,7 +356,7 @@ class _ImageTools:
         """
 
         if self.is_animation(pixbuf):
-            return anime_tools.frame_executor(
+            return AnimeFrameExecutor.frame_executor(
                 pixbuf, self.enhance,
                 kwargs=dict(
                     brightness=brightness, contrast=contrast,
