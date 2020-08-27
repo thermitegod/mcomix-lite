@@ -30,6 +30,8 @@ class _PreferencesDialog(Gtk.Dialog):
         self.set_resizable(True)
         self.set_default_response(Gtk.ResponseType.CLOSE)
 
+        self.__manager = KeybindingManager.keybinding_manager(self.__window)
+
         self.connect('response', self._response)
 
         notebook = self.notebook = Gtk.Notebook()
@@ -343,8 +345,7 @@ class _PreferencesDialog(Gtk.Dialog):
         # ----------------------------------------------------------------
         # The "Shortcuts" tab.
         # ----------------------------------------------------------------
-        km = KeybindingManager.keybinding_manager(self.__window)
-        page = KeybindingEditorWindow(km)
+        page = KeybindingEditorWindow(self.__manager)
 
         return page
 
@@ -368,10 +369,9 @@ class _PreferencesDialog(Gtk.Dialog):
         elif response == constants.RESPONSE_REVERT_TO_DEFAULT:
             if self.notebook.get_nth_page(self.notebook.get_current_page()) == self.shortcuts:
                 # "Shortcuts" page is active, reset all keys to their default value
-                km = KeybindingManager.keybinding_manager(self.__window)
-                km.clear_all()
+                self.__manager.clear_all()
                 self.__window.get_event_handler().register_key_events()
-                km.save()
+                self.__manager.save()
                 self.shortcuts.refresh_model()
             else:
                 # Reset stored choices
