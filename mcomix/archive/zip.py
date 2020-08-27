@@ -13,7 +13,7 @@ from mcomix.archive import archive_base
 
 
 class ZipArchive(archive_base.BaseArchive):
-    def __init__(self, archive):
+    def __init__(self, archive: str):
         super().__init__(archive)
         self.__zip = zipfile.ZipFile(archive, 'r')
         self.__lock = threading.Lock()
@@ -36,7 +36,7 @@ class ZipArchive(archive_base.BaseArchive):
     def iter_contents(self):
         yield from self.__contents_info.keys()
 
-    def extract(self, filename, destination_dir):
+    def extract(self, filename: str, destination_dir: Path):
         """
         Extract <filename> from the archive to <destination_dir>
 

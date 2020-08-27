@@ -114,7 +114,7 @@ class Pageselector(Gtk.Dialog):
         self.__thread.renew()
         self.destroy()
 
-    def _update_thumbnail(self, page):
+    def _update_thumbnail(self, page: int):
         """
         Trigger a thumbnail update
         """
@@ -126,7 +126,7 @@ class Pageselector(Gtk.Dialog):
                 self._generate_thumbnail, args=(page, width, height),
                 callback=self._generate_thumbnail_cb)
 
-    def _generate_thumbnail(self, page, width, height):
+    def _generate_thumbnail(self, page: int, width: int, height: int):
         """
         Generate the preview thumbnail for the page selector.
         A transparent image will be used if the page is not yet available
@@ -139,11 +139,11 @@ class Pageselector(Gtk.Dialog):
         return self._thumbnail_finished(page, pixbuf)
 
     @callback.Callback
-    def _thumbnail_finished(self, page, pixbuf):
+    def _thumbnail_finished(self, page: int, pixbuf):
         # Don't bother if we changed page in the meantime.
         if page == self.__thumbnail_page:
             self.__image_preview.set_from_pixbuf(pixbuf)
 
-    def _page_available(self, page):
+    def _page_available(self, page: int):
         if page == int(self.__selector_adjustment.props.value):
             self._update_thumbnail(page)

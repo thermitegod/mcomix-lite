@@ -43,7 +43,7 @@ class Extractor:
         self.__extract_started = False
         self.__condition = None
 
-    def setup(self, src, archive_type=None):
+    def setup(self, src: str, archive_type: int = None):
         """
         Setup the extractor with archive <src> and destination dir <dst>.
         Return a threading.Condition related to the is_ready() method, or
@@ -88,7 +88,7 @@ class Extractor:
 
         return self.__dst
 
-    def set_files(self, files):
+    def set_files(self, files: list):
         """
         Set the files that the extractor should extract from the archive in
         the order of extraction. Normally one would get the list of all files
@@ -112,7 +112,7 @@ class Extractor:
             if self.__extract_started:
                 self.extract()
 
-    def is_ready(self, name):
+    def is_ready(self, name: str):
         """
         Return True if the file <name> in the extractor's file list
         (as set by set_files()) is fully extracted
@@ -159,7 +159,7 @@ class Extractor:
                             error_callback=self._extract_files_errcb)
 
     @callback.Callback
-    def contents_listed(self, extractor, files):
+    def contents_listed(self, extractor, files: list):
         """
         Called after the contents of the archive has been listed
         """
@@ -167,7 +167,7 @@ class Extractor:
         pass
 
     @callback.Callback
-    def file_extracted(self, extractor, filename):
+    def file_extracted(self, extractor, filename: str):
         """
         Called whenever a new file is extracted and ready
         """
@@ -185,7 +185,7 @@ class Extractor:
             logger.debug(f'Cache directory removed: \'{self.__dst}\'')
             self.__archive.close()
 
-    def _extraction_finished(self, name):
+    def _extraction_finished(self, name: str):
         if self.__threadpool.closed:
             return True
         with self.__condition:
@@ -205,7 +205,7 @@ class Extractor:
             if self._extraction_finished(name):
                 return
 
-    def _extract_file(self, name):
+    def _extract_file(self, name: str):
         """
         Extract the file named <name> to the destination directory,
         mark the file as "ready", then signal a notify() on the Condition
@@ -228,7 +228,7 @@ class Extractor:
     def _list_contents(self):
         return [filename for filename in self.__archive.iter_contents()]
 
-    def _list_contents_cb(self, files):
+    def _list_contents_cb(self, files: list):
         with self.__condition:
             self.__files[:] = files
             self.__contents_listed = True

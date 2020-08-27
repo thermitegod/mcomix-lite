@@ -109,7 +109,7 @@ class RecursiveArchive(archive_base.BaseArchive):
             return self.__contents
         return [f for f in self.iter_contents()]
 
-    def extract(self, filename, destination_dir=None):
+    def extract(self, filename: str, destination_dir: Path):
         """
         Extract <filename> from the archive to <destination_dir>
 
@@ -132,7 +132,7 @@ class RecursiveArchive(archive_base.BaseArchive):
         logger.debug(f'extracting from {archive.archive} to {destination_dir}: {filename}')
         return archive.extract(name, destination_dir)
 
-    def iter_extract(self, entries, destination_dir):
+    def iter_extract(self, entries, destination_dir: Path):
         """
         List archive contents
         """

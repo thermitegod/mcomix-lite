@@ -73,7 +73,7 @@ class Box:
 
         return self.__position
 
-    def set_position(self, position):
+    def set_position(self, position: list):
         """
         Returns a new Box that has the same size as this Box and the specified position.
 
@@ -116,7 +116,7 @@ class Box:
             result += r * r
         return result
 
-    def translate_opposite(self, delta):
+    def translate_opposite(self, delta: tuple):
         """
         Returns a new Box that has the same size as this Box and a
         oppositely translated position as specified by delta.
@@ -128,7 +128,7 @@ class Box:
         return Box(tuple(map(operator.sub, self.get_position(), delta)), self.get_size())
 
     @staticmethod
-    def closest_boxes(point, boxes, orientation=None):
+    def closest_boxes(point, boxes: list, orientation=None):
         """
         Returns the indices of the Boxes that are closest to the specified
         point. First, the Euclidean distance between point and the closest point
@@ -228,7 +228,7 @@ class Box:
         return result
 
     @staticmethod
-    def box_to_center_offset_1d(box_size_delta, orientation):
+    def box_to_center_offset_1d(box_size_delta: int, orientation: int):
         if orientation == -1:
             box_size_delta += 1
         return box_size_delta >> 1
@@ -245,7 +245,7 @@ class Box:
         return Box.closest_boxes(self.get_center(orientation), boxes, orientation)[0]
 
     @staticmethod
-    def align_center(boxes, axis, fix, orientation):
+    def align_center(boxes: tuple, axis: int, fix: int, orientation: int):
         """
         Aligns Boxes so that the center of each Box appears on the same line.
 
@@ -271,7 +271,7 @@ class Box:
         return result
 
     @staticmethod
-    def distribute(boxes, axis, fix, spacing=0):
+    def distribute(boxes: list, axis: int, fix: int, spacing: int = 0):
         """
         Ensures that the Boxes do not overlap. For this purpose, the Boxes
         are distributed according to the index of the respective Box.
@@ -305,7 +305,7 @@ class Box:
             result[bi] = Box(p, s)
         return result
 
-    def wrapper_box(self, viewport_size, orientation):
+    def wrapper_box(self, viewport_size: tuple, orientation: tuple):
         """
         Returns a Box that covers the same area that is covered by a
         scrollable viewport showing this Box.
@@ -327,7 +327,7 @@ class Box:
         return Box(result_position, result_size)
 
     @staticmethod
-    def bounding_box(boxes):
+    def bounding_box(boxes: list):
         """
         Returns the union of all specified Boxes (that is, the smallest Box
         that contains all specified Boxes).

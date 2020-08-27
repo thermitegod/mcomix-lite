@@ -333,7 +333,7 @@ class EventHandler:
         if not (uris := selection.get_uris()):
             return
 
-        def _normalize_uri(uri):
+        def _normalize_uri(uri: str):
             """
             Normalize URIs passed into the program by different applications, via drag-and-drop
             """
@@ -354,7 +354,7 @@ class EventHandler:
         else:
             self.__window.filehandler.open_file(paths[0])
 
-    def _scroll_with_flipping(self, x, y):
+    def _scroll_with_flipping(self, x: int, y: int):
         """
         Handle scrolling with the scroll wheel or the arrow keys, for which
         the pages might be flipped depending on the preferences.  Returns True
@@ -369,7 +369,7 @@ class EventHandler:
         else:
             self._flip_page(-1)
 
-    def _flip_page(self, number_of_pages, single_step=False):
+    def _flip_page(self, number_of_pages: int, single_step: bool = False):
         """
         Switches a number of pages forwards/backwards. If C{single_step} is True,
         the page count will be advanced by only one page even in double page mode
@@ -377,7 +377,7 @@ class EventHandler:
 
         self.__window.flip_page(number_of_pages, single_step=single_step)
 
-    def _left_right_page_progress(self, number_of_pages=1):
+    def _left_right_page_progress(self, number_of_pages: int = 1):
         """
         If number_of_pages is positive, this function advances the specified
         number of pages in manga mode and goes back the same number of pages in

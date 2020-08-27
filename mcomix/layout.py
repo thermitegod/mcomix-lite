@@ -6,12 +6,14 @@ from mcomix import box, constants
 
 
 class FiniteLayout:  # 2D only
-    def __init__(self, content_sizes, viewport_size, orientation, spacing,
-                 wrap_individually, distribution_axis, alignment_axis):
+    def __init__(self, content_sizes, viewport_size: tuple, orientation: tuple, spacing: int,
+                 wrap_individually: bool, distribution_axis: int, alignment_axis: int):
         """
         Lays out a finite number of Boxes along the first axis.
 
         :param content_sizes: The sizes of the Boxes to lay out.
+        :type content_sizes tuple
+        :type content_sizes list
         :param viewport_size: The size of the viewport.
         :param orientation: The orientation to use.
         :param spacing: Number of additional pixels between Boxes.
@@ -33,7 +35,7 @@ class FiniteLayout:  # 2D only
         self.__orientation = None
         self.__viewport_box = self.__viewport_box
 
-    def set_viewport_position(self, viewport_position):
+    def set_viewport_position(self, viewport_position: list):
         """
         Moves the viewport to the specified position.
 
@@ -43,7 +45,7 @@ class FiniteLayout:  # 2D only
         self.__viewport_box = self.__viewport_box.set_position(viewport_position)
         self.__dirty_current_index = True
 
-    def scroll_to_predefined(self, destination, index=None):
+    def scroll_to_predefined(self, destination: tuple, index: int = None):
         """
         Scrolls the viewport to a predefined destination.
 
@@ -74,7 +76,7 @@ class FiniteLayout:  # 2D only
                 current_box, self.__viewport_box, self.__orientation, destination))
 
     @staticmethod
-    def _scroll_to_predefined(content_box, viewport_box, orientation, destination):
+    def _scroll_to_predefined(content_box, viewport_box, orientation: tuple, destination: tuple):
         """
         Returns a new viewport position when scrolling towards a
         predefined destination. Note that all params are lists of integers
@@ -156,11 +158,11 @@ class FiniteLayout:  # 2D only
 
         return self.__viewport_box
 
-    def set_orientation(self, orientation):
+    def set_orientation(self, orientation: tuple):
         self.__orientation = orientation
 
-    def _reset(self, content_sizes, viewport_size, orientation, spacing,
-               wrap_individually, distribution_axis, alignment_axis):
+    def _reset(self, content_sizes, viewport_size: tuple, orientation: tuple, spacing: int,
+               wrap_individually: bool, distribution_axis: int, alignment_axis: int):
         # reverse order if necessary
         if orientation[distribution_axis] == -1:
             content_sizes = tuple(reversed(content_sizes))
@@ -193,7 +195,7 @@ class FiniteLayout:  # 2D only
         self.__dirty_current_index = True
 
     @staticmethod
-    def _wrap_individually(temp_cb_list, viewport_size, orientation):
+    def _wrap_individually(temp_cb_list: list, viewport_size: tuple, orientation: tuple):
         # calculate (potentially oversized) wrapper Boxes
         temp_wb_list = [None] * len(temp_cb_list)
         for idx, item in enumerate(temp_cb_list):
@@ -203,7 +205,7 @@ class FiniteLayout:  # 2D only
         return temp_wb_list, temp_bb
 
     @staticmethod
-    def _wrap_union(temp_cb_list, viewport_size, orientation):
+    def _wrap_union(temp_cb_list: list, viewport_size: tuple, orientation: tuple):
         # calculate bounding Box
         temp_wb_list = [box.Box.bounding_box(temp_cb_list).wrapper_box(viewport_size, orientation)]
         return temp_wb_list, temp_wb_list[0]

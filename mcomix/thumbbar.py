@@ -86,7 +86,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         self.__window.imagehandler.page_available += self._on_page_available
 
     @staticmethod
-    def number_of_digits(n):
+    def number_of_digits(n: int):
         if not n:
             return 1
 
@@ -182,7 +182,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         # Update current image selection in the thumb bar.
         self._set_selected_row(self.__currently_selected_row)
 
-    def _generate_thumbnail(self, uid):
+    def _generate_thumbnail(self, uid: int):
         """
         Generate the pixbuf for C{path} at demand
         """
@@ -196,7 +196,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
 
         return pixbuf
 
-    def _set_selected_row(self, row, scroll=True):
+    def _set_selected_row(self, row: int, scroll: bool = True):
         """
         Set currently selected row.
         If <scroll> is True, the tree is automatically

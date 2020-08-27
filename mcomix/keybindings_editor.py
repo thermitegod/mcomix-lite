@@ -87,8 +87,8 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
             treeiter = self.__treestore.append(section_parent_map[group_name], row)
             action_treeiter_map[action_name] = treeiter
 
-    def get_on_accel_edited(self, column):
-        def on_accel_edited(renderer, path, accel_key, accel_mods, hardware_keycode):
+    def get_on_accel_edited(self, column: int):
+        def on_accel_edited(renderer, path: str, accel_key: int, accel_mods, hardware_keycode: int):
             iter = self.__treestore.get_iter(path)
             col = column + 3  # accel cells start from 3 position
             old_accel = self.__treestore.get(iter, col)[0]
@@ -114,8 +114,8 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
 
         return on_accel_edited
 
-    def get_on_accel_cleared(self, column):
-        def on_accel_cleared(renderer, path, *args):
+    def get_on_accel_cleared(self, column: int):
+        def on_accel_cleared(renderer, path: str, *args):
             iter = self.__treestore.get_iter(path)
             col = column + 3
             accel = self.__treestore.get(iter, col)[0]

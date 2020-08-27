@@ -25,16 +25,16 @@ class _ConfigManager:
             logger.info(f'Creating missing data dir: {constants.DATA_DIR}')
             constants.DATA_DIR.mkdir()
 
-    def hash_config(self, config):
+    def hash_config(self, config: dict):
         config_json = self.dump_config(config)
         return sha256(config_json.encode('utf8')).hexdigest()
 
     @staticmethod
-    def dump_config(config):
+    def dump_config(config: dict):
         return json.dumps(config, ensure_ascii=False, indent=2)
 
     @staticmethod
-    def load_config(config, saved_prefs):
+    def load_config(config: Path, saved_prefs: dict):
         try:
             with Path.open(config, mode='rt', encoding='utf8') as fd:
                 saved_prefs.update(json.load(fd))
@@ -44,7 +44,7 @@ class _ConfigManager:
 
         return saved_prefs
 
-    def write_config(self, config, path):
+    def write_config(self, config: dict, path: Path):
         config_json = self.dump_config(config)
         path.write_text(config_json)
 

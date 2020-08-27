@@ -45,7 +45,7 @@ class BaseArchive:
 
         return [filename for filename in self.iter_contents()]
 
-    def extract(self, filename, destination_dir):
+    def extract(self, filename: str, destination_dir: Path):
         """
         Extracts the file specified by <filename> and return the path of it.
         This filename must be obtained by calling list_contents().
@@ -62,7 +62,7 @@ class BaseArchive:
         assert isinstance(filename, str) and isinstance(destination_dir, Path)
         return Path() / destination_dir / filename
 
-    def iter_extract(self, entries, destination_dir):
+    def iter_extract(self, entries, destination_dir: Path):
         """
         Generator to extract <entries> from archive to <destination_dir>
 
@@ -98,12 +98,11 @@ class BaseArchive:
         return False
 
     @staticmethod
-    def _create_directory(directory):
+    def _create_directory(directory: Path):
         """
         Recursively create a directory if it doesn't exist yet
         """
 
-        directory = Path() / directory
         if Path.exists(directory):
             return
 
@@ -187,7 +186,7 @@ class ExternalExecutableArchive(BaseArchive):
 
         self.__filenames_initialized = True
 
-    def extract(self, filename, destination_dir):
+    def extract(self, filename: str, destination_dir: Path):
         """
         Extract <filename> from the archive to <destination_dir>
 

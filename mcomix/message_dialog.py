@@ -8,7 +8,7 @@ from mcomix.preferences import prefs
 
 
 class MessageDialog(Gtk.MessageDialog):
-    def __init__(self, parent, flags=0, message_type=0, buttons=0):
+    def __init__(self, parent, flags: int = 0, message_type: int = 0, buttons: int = 0):
         """
         Creates a dialog window.
 
@@ -38,7 +38,7 @@ class MessageDialog(Gtk.MessageDialog):
         self.__remember_checkbox.set_can_focus(False)
         self.get_message_area().pack_end(self.__remember_checkbox, True, True, 6)
 
-    def set_text(self, primary, secondary=None):
+    def set_text(self, primary: str, secondary: str = None):
         """
         Formats the dialog's text fields.
 
@@ -58,7 +58,7 @@ class MessageDialog(Gtk.MessageDialog):
 
         return self.__remember_checkbox.get_active()
 
-    def set_should_remember_choice(self, dialog_id, choices):
+    def set_should_remember_choice(self, dialog_id: str, choices: tuple):
         """
         This method enables the 'Do not ask again' checkbox.
 

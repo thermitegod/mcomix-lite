@@ -54,7 +54,7 @@ class Page(Gtk.ScrolledWindow):
         pixbuf = image_tools.add_border(pixbuf, 1)
         self.__thumb.set_from_pixbuf(pixbuf)
 
-    def set_filename(self, filename):
+    def set_filename(self, filename: str):
         """
         Set the filename to be displayed to <filename>. Call this before set_main_info()
         """
@@ -66,7 +66,7 @@ class Page(Gtk.ScrolledWindow):
         self.__mainbox.pack_start(label, False, False, 0)
         self.__mainbox.pack_start(Gtk.VBox(homogeneous=True, spacing=0), True, True, 0)
 
-    def set_main_info(self, info):
+    def set_main_info(self, info: tuple):
         """
         Set the information in the main info box (below the filename) to the values in the sequence <info>
         """
@@ -77,7 +77,7 @@ class Page(Gtk.ScrolledWindow):
             label.set_selectable(True)
             self.__mainbox.pack_start(label, False, False, 0)
 
-    def set_secondary_info(self, info):
+    def set_secondary_info(self, info: tuple):
         """
         Set the information below the main info box to the values in the
         sequence <info>. Each entry in info should be a tuple (desc, value)

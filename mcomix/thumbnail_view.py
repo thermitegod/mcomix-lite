@@ -18,7 +18,7 @@ class ThumbnailViewBase:
     as it depends on methods provided by the view classes
     """
 
-    def __init__(self, uid_column, pixbuf_column, status_column):
+    def __init__(self, uid_column: int, pixbuf_column: int, status_column: int):
         """
         Constructs a new ThumbnailView.
 
@@ -41,7 +41,7 @@ class ThumbnailViewBase:
         self.__done = set()
         self.__taskid = 0
 
-    def generate_thumbnail(self, uid):
+    def generate_thumbnail(self, uid: int):
         """
         This function must return the thumbnail for C{uid}
         """
@@ -88,7 +88,7 @@ class ThumbnailViewBase:
         finally:
             self.__lock.release()
 
-    def _pixbuf_worker(self, uid, iter, model):
+    def _pixbuf_worker(self, uid: int, iter, model):
         """
         Run by a worker thread to generate the thumbnail for a path
         """
@@ -99,7 +99,7 @@ class ThumbnailViewBase:
             raise Exception('no pixbuf, skip callback.')
         return iter, pixbuf, model
 
-    def _pixbuf_finished(self, params, taskid=-1):
+    def _pixbuf_finished(self, params: tuple, taskid: int = -1):
         """
         Executed when a pixbuf was created, to actually insert the pixbuf
         into the view store. C{params} is a tuple containing (index, pixbuf, model)
@@ -113,7 +113,7 @@ class ThumbnailViewBase:
 
 
 class ThumbnailTreeView(Gtk.TreeView, ThumbnailViewBase):
-    def __init__(self, model, uid_column, pixbuf_column, status_column):
+    def __init__(self, model, uid_column: int, pixbuf_column: int, status_column: int):
         assert (model.get_flags() & Gtk.TreeModelFlags.ITERS_PERSIST) != 0
 
         super().__init__(model=model)

@@ -16,7 +16,7 @@ class CursorHandler:
         self.__auto_hide = False
         self.__current_cursor = constants.CURSOR_NORMAL
 
-    def set_cursor_type(self, cursor):
+    def set_cursor_type(self, cursor: int):
         """
         Set the cursor to type <cursor>. Supported cursor types are
         available as constants in this module. If <cursor> is not one of the

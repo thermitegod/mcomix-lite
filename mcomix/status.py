@@ -62,7 +62,7 @@ class Statusbar(Gtk.EventBox):
 
         self.__loading = False
 
-    def set_message(self, message):
+    def set_message(self, message: str):
         """
         Set a specific message (such as an error message) on the statusbar,
         replacing whatever was there earlier
@@ -71,7 +71,7 @@ class Statusbar(Gtk.EventBox):
         self.__status.pop(0)
         self.__status.push(0, ' ' * self.__spacing + message)
 
-    def set_page_number(self, page, total, this_screen):
+    def set_page_number(self, page: int, total: int, this_screen: int):
         """
         Update the page number
         """
@@ -86,7 +86,7 @@ class Statusbar(Gtk.EventBox):
 
         return self.__page_info
 
-    def set_file_number(self, fileno, total):
+    def set_file_number(self, fileno: int, total: int):
         """
         Updates the file number (i.e. number of current file/total files loaded)
         """
@@ -103,7 +103,7 @@ class Statusbar(Gtk.EventBox):
 
         return self.__file_info
 
-    def set_resolution(self, dimensions):  # 2D only
+    def set_resolution(self, dimensions: list):  # 2D only
         """
         Update the resolution data.
         Takes an iterable of tuples, (x, y, scale), describing the original
@@ -112,21 +112,21 @@ class Statusbar(Gtk.EventBox):
 
         self.__resolution = ', '.join(f'{d[0]}x{d[1]} ({d[2]:.2%})' for d in dimensions)
 
-    def set_root(self, root):
+    def set_root(self, root: str):
         """
         Set the name of the root (directory or archive)
         """
 
         self.__root = root
 
-    def set_filename(self, filename):
+    def set_filename(self, filename: str):
         """
         Update the filename
         """
 
         self.__filename = filename
 
-    def set_filesize(self, size):
+    def set_filesize(self, size: str):
         """
         Update the filesize
         """

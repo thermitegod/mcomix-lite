@@ -19,7 +19,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
 
     STATE_HEADER, STATE_LISTING, STATE_FOOTER = 1, 2, 3
 
-    def __init__(self, archive):
+    def __init__(self, archive: str):
         super().__init__(archive)
         self.__is_solid = False
         self.__contents = []
@@ -44,7 +44,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
         args.extend(('--', self.archive))
         return args
 
-    def _parse_list_output_line(self, line):
+    def _parse_list_output_line(self, line: str):
         """
         Start parsing after the first delimiter (bunch of - characters),
         and end when delimiters appear again. Format:
@@ -103,7 +103,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
 
         self.__filenames_initialized = True
 
-    def extract(self, filename, destination_dir):
+    def extract(self, filename: str, destination_dir: Path):
         """
         Extract <filename> from the archive to <destination_dir>
 
@@ -131,7 +131,7 @@ class SevenZipArchive(archive_base.ExternalExecutableArchive):
                 process.call(self._get_extract_arguments(list_file=tmplistfile.name), stdout=output)
         return destination_path
 
-    def iter_extract(self, entries, destination_dir):
+    def iter_extract(self, entries, destination_dir: Path):
         if not self._get_executable():
             return
 

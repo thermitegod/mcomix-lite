@@ -15,7 +15,7 @@ class FormattedLabel(Gtk.Label):
         Pango.Style.ITALIC: 'italic',
     }
 
-    def __init__(self, text='', weight=Pango.Weight.NORMAL, style=Pango.Style.NORMAL, scale=1.0):
+    def __init__(self, text: str = '', weight=Pango.Weight.NORMAL, style=Pango.Style.NORMAL, scale: float = 1.0):
         super().__init__()
 
         self.__weight = weight
@@ -23,7 +23,7 @@ class FormattedLabel(Gtk.Label):
         self.__scale = scale
         self.set_text(text)
 
-    def set_text(self, text):
+    def set_text(self, text: str):
         markup = f'<span font_size="{int(self.__scale * 10 * 1024)}" ' \
                  f'font_weight="{int(self.__weight)}" ' \
                  f'font_style="{self._STYLES[self.__style]}">{GLib.markup_escape_text(text)}</span>'

@@ -118,7 +118,7 @@ class RarArchive(archive_base.BaseArchive):
 
         return bool(RarExecutable.find_unrar())
 
-    def __init__(self, archive):
+    def __init__(self, archive: str):
         super().__init__(archive)
         self.__unrar = RarExecutable.find_unrar()
         self.__handle = None
@@ -175,7 +175,7 @@ class RarArchive(archive_base.BaseArchive):
         finally:
             self._close()
 
-    def extract(self, filename, destination_dir):
+    def extract(self, filename: str, destination_dir: Path):
         """
         Extract <filename> from the archive to <destination_dir>
 
@@ -234,7 +234,7 @@ class RarArchive(archive_base.BaseArchive):
             raise UnrarException(f'Could not open archive: {errormessage}')
         self.__handle = handle
 
-    def _check_errorcode(self, errorcode):
+    def _check_errorcode(self, errorcode: int):
         """
         Check rar error code to see if any exceptions should be raised
 

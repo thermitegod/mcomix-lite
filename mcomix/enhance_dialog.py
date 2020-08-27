@@ -55,7 +55,7 @@ class _EnhanceImageDialog(Gtk.Dialog):
         hbox.pack_start(vbox_left, False, False, 2)
         hbox.pack_start(vbox_right, True, True, 2)
 
-        def _create_scale(label_text):
+        def _create_scale(label_text: str):
             label = Gtk.Label(label=label_text)
             label.set_alignment(1, 0.5)
             label.set_use_underline(True)
@@ -98,7 +98,7 @@ class _EnhanceImageDialog(Gtk.Dialog):
 
         self.show_all()
 
-    def draw_histogram(self, height=170, fill=170, text=False):
+    def draw_histogram(self, height: int = 170, fill: int = 170, text: bool = False):
         """
         Draw a histogram (RGB) from self.__pixbuf and return it as another pixbuf.
 
@@ -193,7 +193,7 @@ class _EnhanceImageDialog(Gtk.Dialog):
         self.__contrast_scale.set_sensitive(not self.__autocontrast_button.get_active())
         self.__enhancer.signal_update()
 
-    def _response(self, dialog, response):
+    def _response(self, dialog, response: int):
         if response in [Gtk.ResponseType.OK, Gtk.ResponseType.DELETE_EVENT]:
             EnhanceDialog.close_dialog()
 

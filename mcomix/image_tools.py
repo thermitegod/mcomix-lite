@@ -46,7 +46,7 @@ def _getexif(im):
     return exif
 
 
-def rotate_pixbuf(src, rotation):
+def rotate_pixbuf(src, rotation: int):
     rotation %= 360
     if rotation == 0:
         return src
@@ -59,7 +59,7 @@ def rotate_pixbuf(src, rotation):
     raise ValueError(f'unsupported rotation: {rotation}')
 
 
-def get_fitting_size(source_size, target_size, keep_ratio=True, scale_up=False):
+def get_fitting_size(source_size: tuple, target_size: tuple, keep_ratio: bool = True, scale_up: bool = False):
     """
     Return a scaled version of <source_size>
     small enough to fit in <target_size>.
@@ -83,7 +83,7 @@ def get_fitting_size(source_size, target_size, keep_ratio=True, scale_up=False):
     return width, height
 
 
-def trans_pixbuf(src, flip=False, flop=False):
+def trans_pixbuf(src, flip: bool = False, flop: bool = False):
     if is_animation(src):
         return anime_tools.frame_executor(
                 src, trans_pixbuf,
@@ -96,7 +96,7 @@ def trans_pixbuf(src, flip=False, flop=False):
     return src
 
 
-def fit_pixbuf_to_rectangle(src, rect, rotation):
+def fit_pixbuf_to_rectangle(src, rect: tuple, rotation: int):
     if is_animation(src):
         return anime_tools.frame_executor(
                 src, fit_pixbuf_to_rectangle,
@@ -108,8 +108,8 @@ def fit_pixbuf_to_rectangle(src, rect, rotation):
                             scale_up=True)
 
 
-def fit_in_rectangle(src, width, height, keep_ratio=True, scale_up=False,
-                     rotation=0, scaling_quality=None):
+def fit_in_rectangle(src, width: int, height: int, keep_ratio: bool = True,
+                     scale_up: bool = False, rotation: int = 0, scaling_quality=None):
     """
     Scale (and return) a pixbuf so that it fits in a rectangle with
     dimensions <width> x <height>. A negative <width> or <height>
@@ -172,7 +172,7 @@ def fit_in_rectangle(src, width, height, keep_ratio=True, scale_up=False,
     return src
 
 
-def add_border(pixbuf, thickness, color=0x000000FF):
+def add_border(pixbuf, thickness: int, color: int = 0x000000FF):
     """
     Return a pixbuf from <pixbuf> with a <thickness> px border of
     <color> added.
@@ -187,7 +187,7 @@ def add_border(pixbuf, thickness, color=0x000000FF):
     return canvas
 
 
-def pil_to_pixbuf(im, keep_orientation=False):
+def pil_to_pixbuf(im, keep_orientation: bool = False):
     """
     Return a pixbuf created from the PIL <im>
     """
@@ -284,7 +284,7 @@ def load_animation(im):
     return anime.create_animation()
 
 
-def load_pixbuf(path):
+def load_pixbuf(path: str):
     """
     Loads a pixbuf from a given image file
     """
@@ -311,7 +311,7 @@ def load_pixbuf(path):
     return GdkPixbuf.Pixbuf.new_from_file(path)
 
 
-def load_pixbuf_size(path, width, height):
+def load_pixbuf_size(path: str, width: int, height: int):
     """
     Loads a pixbuf from a given image file and scale it to fit inside (width, height)
     """
@@ -337,7 +337,8 @@ def load_pixbuf_data(imgdata):
         logger.error('failed to load pixbuf')
 
 
-def enhance(pixbuf, brightness=1.0, contrast=1.0, saturation=1.0, sharpness=1.0, autocontrast=False):
+def enhance(pixbuf, brightness: float = 1.0, contrast: float = 1.0,
+            saturation: float = 1.0, sharpness: float = 1.0, autocontrast: bool = False):
     """
     Return a modified pixbuf from <pixbuf> where the enhancement operations
     corresponding to each argument has been performed. A value of 1.0 means
@@ -392,7 +393,7 @@ def get_implied_rotation(pixbuf):
     return 0
 
 
-def get_image_size(path):
+def get_image_size(path: str):
     """
     Return image informations: (format, width, height)
     """
@@ -402,7 +403,7 @@ def get_image_size(path):
             return im.size
 
 
-def get_image_mime(path):
+def get_image_mime(path: str):
     """
     Return image informations: (format, width, height)
     """
@@ -448,7 +449,7 @@ def init_supported_formats():
         SUPPORTED_IMAGE_MIMES.update(mimes)
 
 
-def is_image_file(path, check_mimetype=False):
+def is_image_file(path: str, check_mimetype: bool = False):
     # if check_mimetype is True,
     # read starting bytes and using Gio.content_type_guess
     # to guess if path is supported, ignoring file extension.

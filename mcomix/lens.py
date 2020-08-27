@@ -54,7 +54,7 @@ class MagnifyingLens:
 
     enabled = property(get_enabled, set_enabled)
 
-    def _draw_lens(self, x, y):
+    def _draw_lens(self, x: int, y: int):
         """
         Calculate what image data to put in the lens and update the cursor
         with it; <x> and <y> are the positions of the cursor within the
@@ -88,7 +88,7 @@ class MagnifyingLens:
 
         self.__last_lens_rect = rectangle
 
-    def _calculate_lens_rect(self, x, y, width, height):
+    def _calculate_lens_rect(self, x: int, y: int, width: int, height: int):
         """
         Calculates the area where the lens will be drawn on screen. This method takes
         screen space into calculation and moves the rectangle accordingly when the the rectangle
@@ -138,7 +138,7 @@ class MagnifyingLens:
         if self.enabled:
             self._draw_lens(*self.__point)
 
-    def _get_lens_pixbuf(self, x, y):
+    def _get_lens_pixbuf(self, x: int, y: int):
         """
         Get a pixbuf containing the appropiate image data for the lens
         where <x> and <y> are the positions of the cursor
@@ -163,7 +163,7 @@ class MagnifyingLens:
 
         return image_tools.add_border(canvas, 1)
 
-    def _add_subpixbuf(self, canvas, x, y, image_size, source_pixbuf):
+    def _add_subpixbuf(self, canvas, x: int, y: int, image_size: tuple, source_pixbuf):
         """
         Copy a subpixbuf from <source_pixbuf> to <canvas> as it should
         be in the lens if the coordinates <x>, <y> are the mouse pointer

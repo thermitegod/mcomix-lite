@@ -30,15 +30,15 @@ class ZoomModel:
         self.__fitmode = constants.ZOOM_MODE_MANUAL
         self.__scale_up = False
 
-    def set_fit_mode(self, fitmode):
+    def set_fit_mode(self, fitmode: int):
         if fitmode < constants.ZOOM_MODE_BEST or fitmode > constants.ZOOM_MODE_SIZE:
             raise ValueError(f'No fit mode for id {fitmode}')
         self.__fitmode = fitmode
 
-    def set_scale_up(self, scale_up):
+    def set_scale_up(self, scale_up: bool):
         self.__scale_up = scale_up
 
-    def _set_user_zoom_log(self, zoom_log):
+    def _set_user_zoom_log(self, zoom_log: float):
         self.__user_zoom_log = min(max(zoom_log, self.__min_user_zoom_log), self.__max_user_zoom_log)
 
     def zoom_in(self):
@@ -51,21 +51,21 @@ class ZoomModel:
         self._set_user_zoom_log(self.__identity_zoom_log)
 
     @staticmethod
-    def scale(t, factor):
+    def scale(t: list, factor: float):
         return [x * factor for x in t]
 
     @staticmethod
-    def div(a, b):
+    def div(a: float, b: float):
         return float(a) / float(b)
 
     @staticmethod
-    def volume(t):
+    def volume(t: list):
         return reduce(operator.mul, t, 1)
 
-    def relerr(self, approx, ideal):
+    def relerr(self, approx: int, ideal: float):
         return abs(self.div(approx - ideal, ideal))
 
-    def get_zoomed_size(self, image_sizes, screen_size, distribution_axis, do_not_transform):
+    def get_zoomed_size(self, image_sizes: list, screen_size: list, distribution_axis: int, do_not_transform: list):
         scale_up = self.__scale_up
         fitted_image_sizes = self._fix_page_sizes(image_sizes, distribution_axis, do_not_transform)
         union_size = self._union_size(fitted_image_sizes, distribution_axis)
@@ -107,7 +107,7 @@ class ZoomModel:
         return [tuple(self._scale_image_size(size, scale))
                 for size, scale in zip(fitted_image_sizes, res_scales)]
 
-    def _preferred_scale(self, image_size, limits, distribution_axis):
+    def _preferred_scale(self, image_size: list, limits: list, distribution_axis: int):
         """
         Returns scale that makes an image of size image_size respect the
         limits imposed by limits. If no proper value can be determined,
@@ -129,7 +129,7 @@ class ZoomModel:
         return min_scale
 
     @staticmethod
-    def _calc_limits(union_size, screen_size, fitmode, allow_upscaling):
+    def _calc_limits(union_size: list, screen_size: list, fitmode: int, allow_upscaling: bool):
         """
         Returns a list or a tuple with the i-th element set to int x if
         fitmode limits the size at the i-th axis to x, or None if fitmode has no
@@ -155,7 +155,8 @@ class ZoomModel:
             result[axis] = fixed_size if fixed_size is not None else screen_size[axis]
         return result
 
-    def _scale_distributed(self, sizes, axis, max_size, allow_upscaling, do_not_transform):
+    def _scale_distributed(self, sizes: list, axis: int, max_size: int,
+                           allow_upscaling: bool, do_not_transform: list):
         """
         Calculates scales for a list of boxes that are distributed along a
         given axis (without any gaps). If the resulting scales are applied to
@@ -274,7 +275,7 @@ class ZoomModel:
         return result
 
     @staticmethod
-    def _fix_page_sizes(image_sizes, distribution_axis, do_not_transform):
+    def _fix_page_sizes(image_sizes: list, distribution_axis: int, do_not_transform: list):
         if len(image_sizes) < 2:
             return image_sizes.copy()
         # in double page mode, resize the smaller image to fit the bigger one
@@ -287,7 +288,7 @@ class ZoomModel:
                 for n, (x, y) in enumerate(image_sizes)]  # scale every page
 
     @staticmethod
-    def _union_size(image_sizes, distribution_axis):
+    def _union_size(image_sizes: list, distribution_axis: int):
         if not image_sizes:
             return []
         n = len(image_sizes[0])

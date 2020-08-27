@@ -19,8 +19,8 @@ class MainWindow(Gtk.Window):
     The main window, is created at start and terminates the program when closed
     """
 
-    def __init__(self, fullscreen=False, manga_mode=False, double_page=False,
-                 zoom_mode=None, open_path=None):
+    def __init__(self, fullscreen: bool = False, manga_mode: bool = False, double_page: bool = False,
+                 zoom_mode: int = None, open_path: list = None):
         super().__init__(type=Gtk.WindowType.TOPLEVEL)
 
         # ----------------------------------------------------------------
@@ -224,7 +224,7 @@ class MainWindow(Gtk.Window):
             self.__waiting_for_redraw = True
             GLib.idle_add(self._draw_image, scroll_to, priority=GLib.PRIORITY_HIGH_IDLE)
 
-    def _update_toggle_preference(self, preference, toggleaction):
+    def _update_toggle_preference(self, preference: str, toggleaction):
         """
         Update "toggle" widget corresponding <preference>.
 
@@ -238,7 +238,7 @@ class MainWindow(Gtk.Window):
         # on the visible "toggles", redraw the page.
         self.draw_image()
 
-    def _should_toggle_be_visible(self, preference):
+    def _should_toggle_be_visible(self, preference: str):
         """
         Return <True> if "toggle" widget for <preference> should be visible
         """
@@ -276,8 +276,8 @@ class MainWindow(Gtk.Window):
                 if should_be_visible != widget.get_visible():
                     (widget.show if should_be_visible else widget.hide)()
 
-    def _draw_image(self, scroll_to):
-        def vector_opposite(a):
+    def _draw_image(self, scroll_to: int):
+        def vector_opposite(a: int):
             return tuple(map(operator.neg, a))
 
         self._update_toggles_visibility()
@@ -447,7 +447,7 @@ class MainWindow(Gtk.Window):
         self.update_title()
 
     @staticmethod
-    def _get_size_rotation(width, height):
+    def _get_size_rotation(width: int, height: int):
         """
         Determines the rotation to be applied. Returns the degree of rotation (0, 90, 180, 270)
         """
@@ -471,7 +471,7 @@ class MainWindow(Gtk.Window):
 
         return size_rotation
 
-    def _page_available(self, page):
+    def _page_available(self, page: int):
         """
         Called whenever a new page is ready for displaying
         """
@@ -501,7 +501,7 @@ class MainWindow(Gtk.Window):
         self.thumbnailsidebar.clear()
         self.set_icon_list(icons.mcomix_icons())
 
-    def new_page(self, at_bottom=False):
+    def new_page(self, at_bottom: bool = False):
         """
         Draw a *new* page correctly (as opposed to redrawing the same image with a new size or whatever)
         """
@@ -527,7 +527,7 @@ class MainWindow(Gtk.Window):
         self.thumbnailsidebar.load_thumbnails()
         self._update_page_information()
 
-    def set_page(self, num, at_bottom=False):
+    def set_page(self, num: int, at_bottom: bool = False):
         if num == self.imagehandler.get_current_page():
             return
         self.imagehandler.set_page(num)
@@ -560,7 +560,7 @@ class MainWindow(Gtk.Window):
                 (not archive_open or prefs['auto open next archive']):
             self.filehandler.open_directory_direction(forward=False)
 
-    def flip_page(self, step, single_step=False):
+    def flip_page(self, step: int, single_step: bool = False):
         if not self.filehandler.get_file_loaded():
             return
 
@@ -722,7 +722,7 @@ class MainWindow(Gtk.Window):
             else:
                 self.__scroll[idx].hide()
 
-    def scroll(self, x, y):
+    def scroll(self, x: int, y: int):
         """
         Scroll <x> px horizontally and <y> px vertically. If <bound> is
         'first' or 'second', we will not scroll out of the first or second
@@ -757,7 +757,7 @@ class MainWindow(Gtk.Window):
 
         return old_vadjust != new_vadjust or old_hadjust != new_hadjust
 
-    def scroll_to_predefined(self, destination, index=None):
+    def scroll_to_predefined(self, destination: tuple, index: int = None):
         self.__layout.scroll_to_predefined(destination, index)
         viewport_position = self.__layout.get_viewport_box().get_position()
         self.__hadjust.set_value(viewport_position[0])  # 2D only
@@ -852,7 +852,7 @@ class MainWindow(Gtk.Window):
 
         save_dialog.destroy()
 
-    def move_file(self, action=None, *args):
+    def move_file(self, action: str = None, *args):
         """
         The currently opened file/archive will be moved to prefs['move file']
         or

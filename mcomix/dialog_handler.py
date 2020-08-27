@@ -10,7 +10,7 @@ dialog_windows = {'about-dialog': [None, about_dialog.AboutDialog],
                   'properties-dialog': [None, properties_dialog.PropertiesDialog]}
 
 
-def open_dialog(action, data):
+def open_dialog(action, data: tuple):
     """
     Create and display the given dialog
     """
@@ -27,7 +27,7 @@ def open_dialog(action, data):
         _dialog[0].present()
 
 
-def _close_dialog(action, exit_response, name_of_dialog):
+def _close_dialog(action, exit_response: int, name_of_dialog: str):
     # if the dialog window exists then destroy it
     if (_dialog := dialog_windows[name_of_dialog])[0] is not None:
         _dialog[0].destroy()

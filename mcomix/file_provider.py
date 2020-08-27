@@ -16,7 +16,7 @@ from mcomix.preferences import prefs
 NUMERIC_REGEXP = re.compile(r'\d+[.]\d+|\d+|\D+')  # Split into float, int, and characters
 
 
-def alphanumeric_sort(filenames):
+def alphanumeric_sort(filenames: list):
     """
     Do an in-place alphanumeric sort of the strings in <filenames>,
     such that for an example "1.jpg", "2.jpg", "10.jpg" is a sorted ordering
@@ -38,7 +38,7 @@ def alphanumeric_sort(filenames):
     filenames.sort(key=keyfunc)
 
 
-def get_file_provider(filelist):
+def get_file_provider(filelist: list):
     """
     Initialize a FileProvider with the files in <filelist>.
     If len(filelist) is 1, a OrderedFileProvider will be constructed, which
@@ -75,14 +75,14 @@ class FileProvider:
     def get_directory(self):
         return Path.cwd()
 
-    def list_files(self, mode=IMAGES):
+    def list_files(self, mode: int = IMAGES):
         return []
 
-    def directory_direction(self, forward):
+    def directory_direction(self, forward: bool):
         return False
 
     @staticmethod
-    def sort_files(files):
+    def sort_files(files: list):
         """
         Sorts a list of C{files} depending on the current preferences. The list is sorted in-place
         """
@@ -107,7 +107,7 @@ class OrderedFileProvider(FileProvider):
     This provider will list all files in the same directory as the one passed to the constructor
     """
 
-    def __init__(self, file_or_directory):
+    def __init__(self, file_or_directory: str):
         """
         Initializes the file listing. If <file_or_directory> is a file,
         directory will be used as base path. If it is a directory, that
@@ -120,7 +120,7 @@ class OrderedFileProvider(FileProvider):
 
         self.__base_dir = self.__base_dir
 
-    def set_directory(self, file_or_directory):
+    def set_directory(self, file_or_directory: str):
         """
         Sets the base directory
         """
@@ -139,7 +139,7 @@ class OrderedFileProvider(FileProvider):
     def get_directory(self):
         return self.__base_dir
 
-    def list_files(self, mode=FileProvider.IMAGES):
+    def list_files(self, mode: int = FileProvider.IMAGES):
         """
         Lists all files in the current directory. Returns a list of absolute paths, already sorted
         """
@@ -167,7 +167,7 @@ class OrderedFileProvider(FileProvider):
         FileProvider.sort_files(files)
         return [fname_map[fpath] for fpath in files]
 
-    def directory_direction(self, forward):
+    def directory_direction(self, forward: bool):
         """
         If forward=True switches to the next sibling directory,
         else Switches to the previous sibling directory. Next call to
@@ -175,12 +175,12 @@ class OrderedFileProvider(FileProvider):
         Returns True if the directory was changed, otherwise False
         """
 
-        def __get_sibling_directories(current_dir):
+        def __get_sibling_directories(current_dir: Path):
             """
             Returns a list of all sibling directories of <dir>, already sorted
             """
 
-            parent_dir = Path(current_dir).parent
+            parent_dir = current_dir.parent
 
             dirs = []
             for directory in parent_dir.iterdir():
@@ -209,7 +209,7 @@ class PreDefinedFileProvider(FileProvider):
     Returns only a list of files as passed to the constructor
     """
 
-    def __init__(self, files):
+    def __init__(self, files: list):
         """
         <files> is a list of files that should be shown. The list is filtered
         to contain either only images, or only archives, depending on what the first
@@ -231,7 +231,7 @@ class PreDefinedFileProvider(FileProvider):
             elif should_accept(file):
                 self.__files.append(str(file))
 
-    def list_files(self, mode=FileProvider.IMAGES):
+    def list_files(self, mode: int = FileProvider.IMAGES):
         """
         Returns the files as passed to the constructor
         """
@@ -239,7 +239,7 @@ class PreDefinedFileProvider(FileProvider):
         return self.__files
 
     @staticmethod
-    def __get_file_filter(files):
+    def __get_file_filter(files: list):
         """
         Determines what kind of files should be filtered in the given list
         of <files>. Returns either a filter accepting only images, or only archives,

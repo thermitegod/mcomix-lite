@@ -350,7 +350,7 @@ class _PreferencesDialog(Gtk.Dialog):
 
         return page
 
-    def _tab_page_changed(self, notebook, page_ptr, page_num):
+    def _tab_page_changed(self, notebook, page_ptr, page_num: int):
         """
         Dynamically switches the "Reset" button's text
         depending on the currently selected tab page
@@ -606,7 +606,7 @@ class _PreferencesDialog(Gtk.Dialog):
                 self.__window.filehandler.refresh_file()
 
     @staticmethod
-    def _create_combobox(options, selected_value, change_callback):
+    def _create_combobox(options: tuple, selected_value: int, change_callback):
         """
         Creates a new dropdown combobox and populates it with the items passed in C{options}.
 
@@ -644,13 +644,13 @@ class _PreferencesDialog(Gtk.Dialog):
 
         return box
 
-    def _create_pref_check_button(self, label, prefkey):
+    def _create_pref_check_button(self, label: str, prefkey: str):
         button = Gtk.CheckButton(label=label)
         button.set_active(prefs[prefkey])
         button.connect('toggled', self._check_button_cb, prefkey)
         return button
 
-    def _check_button_cb(self, button, preference):
+    def _check_button_cb(self, button, preference: str):
         """
         Callback for all checkbutton-type preferences
         """
@@ -674,7 +674,8 @@ class _PreferencesDialog(Gtk.Dialog):
         elif preference in ('check image mimetype',):
             self.__window.filehandler.refresh_file()
 
-    def _create_pref_spinner(self, prefkey, scale, lower, upper, step_incr, page_incr, digits):
+    def _create_pref_spinner(self, prefkey: str, scale: int, lower: int, upper: int,
+                             step_incr: int, page_incr: int, digits: int):
         value = prefs[prefkey] / scale
         adjustment = Gtk.Adjustment(value=value, lower=lower, upper=upper, step_increment=step_incr,
                                     page_increment=page_incr)
@@ -683,7 +684,7 @@ class _PreferencesDialog(Gtk.Dialog):
         spinner.connect('value_changed', self._spinner_cb, prefkey)
         return spinner
 
-    def _spinner_cb(self, spinbutton, preference):
+    def _spinner_cb(self, spinbutton, preference: str):
         """
         Callback for spinner-type preferences
         """
@@ -705,7 +706,7 @@ class _PreferencesDialog(Gtk.Dialog):
             self.__window.change_zoom_mode()
 
     @staticmethod
-    def _create_pref_text_box(preference):
+    def _create_pref_text_box(preference: str):
         def save_pref_text_box(text):
             prefs[preference] = text.get_text()
 

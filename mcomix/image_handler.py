@@ -52,7 +52,7 @@ class ImageHandler:
         self.__window.filehandler.file_available += self._file_available
 
     @staticmethod
-    def format_byte_size(n):
+    def format_byte_size(n: int):
         s = 0
         while n >= 1024:
             s += 1
@@ -63,7 +63,7 @@ class ImageHandler:
             e = f'C{s}i'
         return f'{n:.3f} {e}'
 
-    def _get_pixbuf(self, index):
+    def _get_pixbuf(self, index: int):
         """
         Return the pixbuf indexed by <index> from cache.
         Pixbufs not found in cache are fetched from disk first
@@ -72,7 +72,7 @@ class ImageHandler:
         self._cache_pixbuf(index)
         return self.__raw_pixbufs[index]
 
-    def get_pixbufs(self, number_of_bufs):
+    def get_pixbufs(self, number_of_bufs: int):
         """
         Returns number_of_bufs pixbufs for the image(s) that should be
         currently displayed. This method might fetch images from disk, so make
@@ -114,7 +114,7 @@ class ImageHandler:
         finally:
             self.__lock.release()
 
-    def _cache_pixbuf(self, index):
+    def _cache_pixbuf(self, index: int):
         self._wait_on_page(index + 1)
         with self.__cache_lock[index]:
             if index in self.__raw_pixbufs:
@@ -130,7 +130,7 @@ class ImageHandler:
                 pixbuf = None
             self.__raw_pixbufs[index] = pixbuf
 
-    def set_page(self, page_num):
+    def set_page(self, page_num: int):
         """
         Set up filehandler to the page <page_num>
         """
@@ -139,11 +139,11 @@ class ImageHandler:
         self.__current_image_index = page_num - 1
         self.do_cacheing()
 
-    def set_image_files(self, files):
+    def set_image_files(self, files: list):
         # Set list of image file names
         self.__image_files[:] = files
 
-    def set_base_path(self, path):
+    def set_base_path(self, path: str):
         self.__base_path = path
 
     def get_current_path(self):
@@ -154,7 +154,7 @@ class ImageHandler:
             logger.warning(f'failed to get current image path')
             return ''
 
-    def get_virtual_double_page(self, page=None):
+    def get_virtual_double_page(self, page: int = None):
         """
         Return True if the current state warrants use of virtual
         double page mode (i.e. if double page mode is on, the corresponding
@@ -221,7 +221,7 @@ class ImageHandler:
         self.__available_images.clear()
         self.__raw_pixbufs.clear()
 
-    def page_is_available(self, page=None):
+    def page_is_available(self, page: int = None):
         """
         Returns True if <page> is available and calls to get_pixbufs
         would not block. If <page> is None, the current page(s) are assumed
@@ -244,7 +244,7 @@ class ImageHandler:
         return True
 
     @callback.Callback
-    def page_available(self, page):
+    def page_available(self, page: int):
         """
         Called whenever a new page becomes available, i.e. the corresponding file has been extracted
         """
@@ -259,7 +259,7 @@ class ImageHandler:
             self.__thread.apply_async(self._cache_pixbuf, (index,))
 
     @staticmethod
-    def bin_search(lst, value):
+    def bin_search(lst: list, value: str):
         """
         Binary search for sorted list C{lst}, looking for C{value}.
 
@@ -274,7 +274,7 @@ class ImageHandler:
 
         return ~index
 
-    def _file_available(self, filepaths):
+    def _file_available(self, filepaths: list):
         """
         Called by the filehandler when a new file becomes available
         """
@@ -305,7 +305,7 @@ class ImageHandler:
 
         return 0
 
-    def get_path_to_page(self, page=None):
+    def get_path_to_page(self, page: int = None):
         """
         Return the full path to the image file for <page>, or the current page if <page> is None
         """
@@ -320,7 +320,7 @@ class ImageHandler:
 
         return None
 
-    def get_page_filename(self, page=None, double=False, manga=False):
+    def get_page_filename(self, page: int = None, double: bool = False, manga: bool = False):
         """
         Return the filename of the <page>, or the filename of the
         currently viewed page if <page> is None. If <double> is True, return
@@ -352,7 +352,7 @@ class ImageHandler:
 
         return first
 
-    def get_page_filesize(self, page=None, double=False, manga=False):
+    def get_page_filesize(self, page: int = None, double: bool = False, manga: bool = False):
         """
         Return the filesize of the <page>, or the filesize of the
         currently viewed page if <page> is None. If <double> is True, return
@@ -400,7 +400,7 @@ class ImageHandler:
 
         return self.get_current_path()
 
-    def get_size(self, page=None):
+    def get_size(self, page: int = None):
         """
         Return a tuple (width, height) with the size of <page>. If <page>
         is None, return the size of the current page
@@ -413,7 +413,7 @@ class ImageHandler:
 
         return image_tools.get_image_size(page_path)
 
-    def get_mime_name(self, page=None):
+    def get_mime_name(self, page: int = None):
         """
         Return a string with the name of the mime type of <page>. If
         <page> is None, return the mime type name of the current page
@@ -426,7 +426,7 @@ class ImageHandler:
 
         return image_tools.get_image_mime(page_path)
 
-    def get_thumbnail(self, page=None, size=(128, 128), nowait=False):
+    def get_thumbnail(self, page: int = None, size: tuple = (128, 128), nowait: bool = False):
         """
         Return a thumbnail pixbuf of <page> that fit in a box with
         dimensions <width>x<height>. Return a thumbnail for the current
@@ -448,7 +448,7 @@ class ImageHandler:
             logger.error(f'Failed to create thumbnail for image: \'{path}\'')
             return None
 
-    def _wait_on_page(self, page, check_only=False):
+    def _wait_on_page(self, page: int, check_only: bool = False):
         """
         Block the running (main) thread until the file corresponding to
         image <page> has been fully extracted.
@@ -471,7 +471,7 @@ class ImageHandler:
         self.__window.filehandler.wait_on_file(path)
         return True
 
-    def _ask_for_pages(self, page):
+    def _ask_for_pages(self, page: int):
         """
         Ask for pages around <page> to be given priority extraction
         """

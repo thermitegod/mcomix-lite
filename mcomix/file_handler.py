@@ -70,7 +70,7 @@ class FileHandler:
                 start_page = 0
             self.open_file(current_file, start_page, keep_fileprovider=True)
 
-    def open_file(self, path, start_page=0, keep_fileprovider=False):
+    def open_file(self, path: list, start_page: int = 0, keep_fileprovider: bool = False):
         """
         Open the file pointed to by <path>.
         If <start_page> is not set we set the current
@@ -121,7 +121,7 @@ class FileHandler:
 
         return True
 
-    def _archive_opened(self, image_files):
+    def _archive_opened(self, image_files: list):
         """
         Called once the archive has been opened and its contents listed
         """
@@ -184,7 +184,7 @@ class FileHandler:
 
         self._close(close_provider=True)
 
-    def _close(self, close_provider=False):
+    def _close(self, close_provider: bool = False):
         """
         Run tasks for "closing" the currently opened file(s)
         """
@@ -210,7 +210,7 @@ class FileHandler:
         if self.__tmp_dir is not None:
             self.__tmp_dir = None
 
-    def _initialize_fileprovider(self, path, keep_fileprovider):
+    def _initialize_fileprovider(self, path: list, keep_fileprovider: bool):
         """
         Creates the L{file_provider.FileProvider} for C{path}.
         If C{path} is a list, assumes that only the files in the list
@@ -240,7 +240,7 @@ class FileHandler:
             return path
 
     @staticmethod
-    def _check_access(path):
+    def _check_access(path: Path):
         """
         Checks for various error that could occur when opening C{path}.
 
@@ -255,7 +255,7 @@ class FileHandler:
 
         return None
 
-    def _open_archive(self, path):
+    def _open_archive(self, path: str):
         """
         Opens the archive passed in C{path}.
         Creates an L{archive_extractor.Extractor} and extracts all images
@@ -292,7 +292,7 @@ class FileHandler:
         self._archive_opened(image_files)
 
     @staticmethod
-    def _sort_archive_images(filelist):
+    def _sort_archive_images(filelist: list):
         """
         Sorts the image list passed in C{filelist} based on the sorting preference option
         """
@@ -309,7 +309,7 @@ class FileHandler:
             filelist.reverse()
 
     @staticmethod
-    def _get_index_for_page(start_page, num_of_pages, path):
+    def _get_index_for_page(start_page: int, num_of_pages: int, path: str):
         """
         Returns the page that should be displayed for an archive.
 
@@ -330,7 +330,7 @@ class FileHandler:
 
         return min(max(0, current_image_index), num_of_pages - 1)
 
-    def _open_image_files(self, filelist, image_path):
+    def _open_image_files(self, filelist: list, image_path: str):
         """
         Opens all files passed in C{filelist}.
         If C{image_path} is found in C{filelist}, the current page will be set
@@ -404,7 +404,7 @@ class FileHandler:
 
         return self.__window.imagehandler.get_current_filename()
 
-    def open_archive_direction(self, forward, *args):
+    def open_archive_direction(self, forward: bool, *args):
         """
         Opens the archive that comes directly after the currently loaded
         archive in that archive's directory listing if forward=True else
@@ -436,7 +436,7 @@ class FileHandler:
 
         return False
 
-    def open_directory_direction(self, forward, *args):
+    def open_directory_direction(self, forward: bool, *args):
         """
         Opens the next sibling directory of the current file if forward=True, else
         opens the previous sibling directory of the current file as specified by file
@@ -476,7 +476,7 @@ class FileHandler:
         return True
 
     @callback.Callback
-    def file_available(self, filepaths):
+    def file_available(self, filepaths: list):
         """
         Called every time a new file from the Filehandler's opened
         files becomes available. C{filepaths} is a list of now available files
@@ -484,7 +484,7 @@ class FileHandler:
 
         pass
 
-    def _extracted_file(self, extractor, name):
+    def _extracted_file(self, extractor, name: str):
         """
         Called when the extractor finishes extracting the file at
         <name>. This name is relative to the temporary directory
@@ -513,7 +513,7 @@ class FileHandler:
             logger.error(f'Waiting on extraction failed: \'{path}\'')
             return
 
-    def ask_for_files(self, files):
+    def ask_for_files(self, files: list):
         """
         Ask for <files> to be given priority for extraction
         """

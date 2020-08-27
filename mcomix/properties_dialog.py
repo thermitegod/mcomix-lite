@@ -49,7 +49,7 @@ class PropertiesDialog(Gtk.Dialog):
     def _on_book_change(self):
         self._update_archive_page()
 
-    def _on_page_available(self, page_number):
+    def _on_page_available(self, page_number: int):
         if page_number == 1:
             self._update_page_image(self.__archive_page, 1)
         current_page_number = self.__window.imagehandler.get_current_page()
@@ -97,7 +97,7 @@ class PropertiesDialog(Gtk.Dialog):
         self._update_page_secondary_info(page, path)
         page.show_all()
 
-    def _update_page_image(self, page, page_number=None):
+    def _update_page_image(self, page, page_number: int = None):
         if not self.__window.imagehandler.page_is_available(page_number):
             return
         size = prefs['properties thumb size']
@@ -105,7 +105,7 @@ class PropertiesDialog(Gtk.Dialog):
         page.set_thumbnail(thumb)
 
     @staticmethod
-    def _update_page_secondary_info(page, path):
+    def _update_page_secondary_info(page, path: Path):
         path = Path() / path
         stats = Path.stat(path)
         uid = Path.owner(path)

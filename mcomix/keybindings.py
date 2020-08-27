@@ -47,7 +47,7 @@ class _KeybindingInterface:
 
         self.load_keybindings_file()
 
-    def register(self, name, callback, args=None, kwargs=None, bindings=None):
+    def register(self, name: str, callback, args: list = None, kwargs: dict = None, bindings: list = None):
         """
         Registers an action for a predefined keybinding name.
 
@@ -89,7 +89,7 @@ class _KeybindingInterface:
 
         self.__action_to_callback[name] = (callback, args, kwargs)
 
-    def edit_accel(self, name, new_binding, old_binding):
+    def edit_accel(self, name: str, new_binding: str, old_binding: str):
         """
         Changes binding for an action
 
@@ -126,7 +126,7 @@ class _KeybindingInterface:
 
         return old_action_with_nb
 
-    def clear_accel(self, name, binding):
+    def clear_accel(self, name: str, binding: str):
         """
         Remove binding for an action
         """
@@ -146,7 +146,7 @@ class _KeybindingInterface:
         self.__action_to_bindings = defaultdict(list)
         self.__binding_to_action = {}
 
-    def execute(self, keybinding):
+    def execute(self, keybinding: tuple):
         """
         Executes an action that has been registered for the
         passed keyboard event. If no action is bound to the passed key, this

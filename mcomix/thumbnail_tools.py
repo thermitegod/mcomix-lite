@@ -16,7 +16,7 @@ class Thumbnailer:
     or simply creates new thumbnails each time it is called
     """
 
-    def __init__(self, size=None):
+    def __init__(self, size: tuple = None):
         """
         <dst_dir> set the thumbnailer's storage directory.
 
@@ -33,7 +33,7 @@ class Thumbnailer:
             self.__width, self.__height = size
             self.__default_sizes = False
 
-    def thumbnail(self, filepath):
+    def thumbnail(self, filepath: str):
         """
         Returns a thumbnail pixbuf for <filepath>, transparently handling
         both normal image files and archives. If a thumbnail file already exists,
@@ -50,7 +50,7 @@ class Thumbnailer:
         return self._create_thumbnail(filepath)
 
     @callback.Callback
-    def thumbnail_finished(self, filepath, pixbuf):
+    def thumbnail_finished(self, filepath: str, pixbuf):
         """
         Called every time a thumbnail has been completed.
         <filepath> is the file that was used as source, <pixbuf> is the
@@ -59,7 +59,7 @@ class Thumbnailer:
 
         pass
 
-    def _create_thumbnail_pixbuf(self, filepath):
+    def _create_thumbnail_pixbuf(self, filepath: str):
         """
         Creates a thumbnail pixbuf from <filepath>, and returns it as a
         tuple: (pixbuf)
@@ -71,7 +71,7 @@ class Thumbnailer:
 
         return None, None
 
-    def _create_thumbnail(self, filepath):
+    def _create_thumbnail(self, filepath: str):
         """
         Creates the thumbnail pixbuf for <filepath>
 
