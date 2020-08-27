@@ -11,7 +11,7 @@ from gi.repository import Gtk
 from mcomix import constants
 from mcomix.image_handler import ImageHandler
 from mcomix.preferences import prefs
-from mcomix.properties_page import Page
+from mcomix.properties_page import PropertiesPage
 
 
 class PropertiesDialog(Gtk.Dialog):
@@ -31,8 +31,8 @@ class PropertiesDialog(Gtk.Dialog):
         self.set_border_width(4)
         self.__notebook.set_border_width(6)
 
-        self.__archive_page = Page()
-        self.__image_page = Page()
+        self.__archive_page = PropertiesPage()
+        self.__image_page = PropertiesPage()
 
         self.__notebook.append_page(self.__archive_page, Gtk.Label(label='Archive'))
         self.__notebook.append_page(self.__image_page, Gtk.Label(label='Image'))

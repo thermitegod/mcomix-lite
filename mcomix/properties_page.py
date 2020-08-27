@@ -8,7 +8,7 @@ from mcomix import image_tools
 from mcomix.labels import BoldLabel
 
 
-class Page(Gtk.ScrolledWindow):
+class PropertiesPage(Gtk.ScrolledWindow):
     """
     A page to put in the Gtk.Notebook. Contains info about a file, image, or archive.)
     """
