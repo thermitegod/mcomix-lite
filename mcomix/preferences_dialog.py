@@ -121,11 +121,6 @@ class _PreferencesDialog(Gtk.Dialog):
                              'number of pixels to scroll per mouse wheel event',
                              1, 1, 500, 1, 3, 0))
 
-        page.add_row(Gtk.Label(label='Number of "steps" to take before flipping the page (smaller = faster):'),
-                     self._create_pref_spinner(
-                             'number of key presses before page turn',
-                             1, 1, 100, 1, 3, 0))
-
         page.new_section('Double page mode')
 
         page.add_row(self._create_pref_check_button(

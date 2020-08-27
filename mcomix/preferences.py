@@ -11,7 +11,6 @@ from mcomix.config import ConfigManager
 
 # All preferences are stored here.
 prefs = {
-    'number of key presses before page turn': 3,
     'auto open next archive': True,
     'auto open next directory': False,
     'sort by': constants.SORT_NAME,  # Normal files obtained by directory listing
@@ -19,7 +18,6 @@ prefs = {
     'sort archive by': constants.SORT_NAME,  # Files in archives
     'sort archive order': constants.SORT_ASCENDING,
     'checkered bg for transparent images': True,
-    'cache': True,
     'stretch': True,
     'default double page': True,
     'default fullscreen': False,
