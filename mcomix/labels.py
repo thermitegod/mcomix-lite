@@ -24,11 +24,9 @@ class FormattedLabel(Gtk.Label):
         self.set_text(text)
 
     def set_text(self, text):
-        markup = '<span font_size="%u" font_weight="%u"font_style="%s">%s</span>' % (
-            int(self.__scale * 10 * 1024),
-            self.__weight,
-            self._STYLES[self.__style],
-            GLib.markup_escape_text(text))
+        markup = f'<span font_size="{int(self.__scale * 10 * 1024)}" ' \
+                 f'font_weight="{int(self.__weight)}" ' \
+                 f'font_style="{self._STYLES[self.__style]}">{GLib.markup_escape_text(text)}</span>'
         self.set_markup(markup)
 
 
