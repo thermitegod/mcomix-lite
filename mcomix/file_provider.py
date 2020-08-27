@@ -40,24 +40,29 @@ def alphanumeric_sort(filenames: list):
     filenames.sort(key=keyfunc)
 
 
-def get_file_provider(filelist: list):
-    """
-    Initialize a FileProvider with the files in <filelist>.
-    If len(filelist) is 1, a OrderedFileProvider will be constructed, which
-    will simply open all files in the passed directory.
-    If len(filelist) is greater 1, a PreDefinedFileProvider will be created,
-    which will only ever list the files that were passed into it.
-    If len(filelist) is zero, FileProvider will look at the last file opened,
-    if "Auto Open last file" is set. Otherwise, no provider is constructed
-    """
+class GetFileProvider:
+    def __int__(self):
+        super().__init__()
 
-    if len(filelist) > 0:
-        if len(filelist) == 1:
-            if Path(filelist[0]).exists:
-                return OrderedFileProvider(filelist[0])
-            return None
-        return PreDefinedFileProvider(filelist)
-    return None
+    @staticmethod
+    def get_file_provider(filelist: list):
+        """
+        Initialize a FileProvider with the files in <filelist>.
+        If len(filelist) is 1, a OrderedFileProvider will be constructed, which
+        will simply open all files in the passed directory.
+        If len(filelist) is greater 1, a PreDefinedFileProvider will be created,
+        which will only ever list the files that were passed into it.
+        If len(filelist) is zero, FileProvider will look at the last file opened,
+        if "Auto Open last file" is set. Otherwise, no provider is constructed
+        """
+
+        if len(filelist) > 0:
+            if len(filelist) == 1:
+                if Path(filelist[0]).exists:
+                    return OrderedFileProvider(filelist[0])
+                return None
+            return PreDefinedFileProvider(filelist)
+        return None
 
 
 class FileProvider:

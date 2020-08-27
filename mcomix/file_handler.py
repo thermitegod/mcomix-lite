@@ -11,7 +11,7 @@ from loguru import logger
 from mcomix import constants, file_provider
 from mcomix.archive_extractor import Extractor
 from mcomix.archive_tools import ArchiveTools
-from mcomix.file_provider import FileProvider
+from mcomix.file_provider import FileProvider, GetFileProvider
 from mcomix.image_tools import ImageTools
 from mcomix.lib.callback import Callback
 from mcomix.preferences import prefs
@@ -232,14 +232,14 @@ class FileHandler:
         elif isinstance(path, list) and len(path) > 0:
             # A list of files was passed - open only these files.
             if self.__file_provider is None or not keep_fileprovider:
-                self.__file_provider = file_provider.get_file_provider(path)
+                self.__file_provider = GetFileProvider.get_file_provider(path)
 
             return path[0]
         else:
             # A single file was passed - use Comix' classic open mode
             # and open all files in its directory.
             if self.__file_provider is None or not keep_fileprovider:
-                self.__file_provider = file_provider.get_file_provider([path])
+                self.__file_provider = GetFileProvider.get_file_provider([path])
 
             return path
 
