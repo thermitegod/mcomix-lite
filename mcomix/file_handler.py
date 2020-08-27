@@ -8,10 +8,11 @@ from pathlib import Path
 from gi.repository import Gtk
 from loguru import logger
 
-from mcomix import constants, image_tools, file_provider
+from mcomix import constants, file_provider
 from mcomix.archive_extractor import Extractor
 from mcomix.archive_tools import ArchiveTools
 from mcomix.file_provider import FileProvider
+from mcomix.image_tools import ImageTools
 from mcomix.lib.callback import Callback
 from mcomix.preferences import prefs
 
@@ -283,7 +284,7 @@ class FileHandler:
 
         files = self.__extractor.get_files()
         archive_images = [image for image in files
-                          if image_tools.is_image_file(image)
+                          if ImageTools.is_image_file(image)
                           # Remove MacOS meta files from image list
                           and '__MACOSX' not in image.split('/')]
 

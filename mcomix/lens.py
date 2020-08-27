@@ -6,7 +6,8 @@ import math
 
 from gi.repository import Gdk, GdkPixbuf, Gtk
 
-from mcomix import constants, image_tools
+from mcomix import constants
+from mcomix.image_tools import ImageTools
 from mcomix.preferences import prefs
 
 
@@ -156,12 +157,12 @@ class MagnifyingLens:
         cb = self.__window.get_layout().get_content_boxes()
         source_pixbufs = self.__window.imagehandler.get_pixbufs(len(cb))
         for idx, item in enumerate(cb):
-            if image_tools.is_animation(source_pixbufs[idx]):
+            if ImageTools.is_animation(source_pixbufs[idx]):
                 continue
             cpos = cb[idx].get_position()
             self._add_subpixbuf(canvas, x - cpos[0], y - cpos[1], cb[idx].get_size(), source_pixbufs[idx])
 
-        return image_tools.add_border(canvas, 1)
+        return ImageTools.add_border(canvas, 1)
 
     def _add_subpixbuf(self, canvas, x: int, y: int, image_size: tuple, source_pixbuf):
         """
@@ -179,11 +180,11 @@ class MagnifyingLens:
         # FIXME This merely prevents Errors being raised if source_pixbuf is an
         # animation. The result might be broken, though, since animation,
         # rotation etc. might not match or will be ignored:
-        source_pixbuf = image_tools.static_image(source_pixbuf)
+        source_pixbuf = ImageTools.static_image(source_pixbuf)
 
         rotation = prefs['rotation']
         if prefs['auto rotate from exif']:
-            rotation += image_tools.get_implied_rotation(source_pixbuf)
+            rotation += ImageTools.get_implied_rotation(source_pixbuf)
             rotation %= 360
 
         if rotation in [90, 270]:

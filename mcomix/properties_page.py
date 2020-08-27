@@ -4,7 +4,7 @@
 
 from gi.repository import Gtk
 
-from mcomix import image_tools
+from mcomix.image_tools import ImageTools
 from mcomix.labels import BoldLabel
 
 
@@ -52,7 +52,7 @@ class PropertiesPage(Gtk.ScrolledWindow):
         self.__vbox.pack_start(self.__extrabox, False, False, 0)
 
     def set_thumbnail(self, pixbuf):
-        pixbuf = image_tools.add_border(pixbuf, 1)
+        pixbuf = ImageTools.add_border(pixbuf, 1)
         self.__thumb.set_from_pixbuf(pixbuf)
 
     def set_filename(self, filename: str):

@@ -8,7 +8,7 @@ from urllib.request import pathname2url
 import cairo
 from gi.repository import Gdk, GdkPixbuf, Gtk
 
-from mcomix import image_tools
+from mcomix.image_tools import ImageTools
 from mcomix.preferences import prefs
 from mcomix.thumbnail_view import ThumbnailTreeView
 
@@ -193,7 +193,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         if (pixbuf := self.__window.imagehandler.get_thumbnail(page=uid,
                                                                size=(size, size),
                                                                nowait=True)) is not None:
-            pixbuf = image_tools.add_border(pixbuf, self.__border_size)
+            pixbuf = ImageTools.add_border(pixbuf, self.__border_size)
 
         return pixbuf
 

@@ -7,7 +7,8 @@ from importlib import resources
 
 from gi.repository import Gtk
 
-from mcomix import constants, image_tools
+from mcomix import constants
+from mcomix.image_tools import ImageTools
 
 
 class AboutDialog(Gtk.AboutDialog):
@@ -26,7 +27,7 @@ class AboutDialog(Gtk.AboutDialog):
         self.set_copyright('Copyright (C) 2005-2020')
 
         icon_data = resources.read_binary('mcomix.images', 'mcomix.png')
-        pixbuf = image_tools.load_pixbuf_data(icon_data)
+        pixbuf = ImageTools.load_pixbuf_data(icon_data)
         self.set_logo(pixbuf)
 
         self.set_comments(f'{constants.APPNAME} is an image viewer specifically designed to handle manga/comics. '

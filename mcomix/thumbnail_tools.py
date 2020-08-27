@@ -3,7 +3,7 @@
 """thumbnail.py - Thumbnail module for MComix implementing (most of) the
 freedesktop.org "standard" at http://jens.triq.net/thumbnail-spec/"""
 
-from mcomix import image_tools
+from mcomix.image_tools import ImageTools
 from mcomix.lib.callback import Callback
 from mcomix.preferences import prefs
 
@@ -65,8 +65,8 @@ class Thumbnailer:
         tuple: (pixbuf)
         """
 
-        if image_tools.is_image_file(filepath, check_mimetype=True):
-            pixbuf = image_tools.load_pixbuf_size(filepath, self.__width, self.__height)
+        if ImageTools.is_image_file(filepath, check_mimetype=True):
+            pixbuf = ImageTools.load_pixbuf_size(filepath, self.__width, self.__height)
             return pixbuf
 
         return None, None

@@ -7,13 +7,12 @@ from pathlib import Path
 
 from loguru import logger
 
-from mcomix import constants, image_tools
-
-from mcomix.preferences import prefs
-from mcomix.thumbnail_tools import Thumbnailer
-
+from mcomix import constants
+from mcomix.image_tools import ImageTools
 from mcomix.lib.callback import Callback
 from mcomix.lib.mt import ThreadPool, Lock
+from mcomix.preferences import prefs
+from mcomix.thumbnail_tools import Thumbnailer
 
 
 class ImageHandler:
@@ -128,7 +127,7 @@ class ImageHandler:
                     return
             logger.debug(f'Caching page: \'{index + 1}\'')
             try:
-                pixbuf = image_tools.load_pixbuf(self.__image_files[index])
+                pixbuf = ImageTools.load_pixbuf(self.__image_files[index])
             except Exception:
                 logger.error(f'Could not load pixbuf for page: \'{index + 1}\'')
                 pixbuf = None
@@ -189,7 +188,7 @@ class ImageHandler:
             pixbuf = self._get_pixbuf(page - 1)
             width, height = pixbuf.get_width(), pixbuf.get_height()
             if prefs['auto rotate from exif']:
-                rotation = image_tools.get_implied_rotation(pixbuf)
+                rotation = ImageTools.get_implied_rotation(pixbuf)
                 assert rotation in (0, 90, 180, 270)
                 if rotation in (90, 270):
                     width, height = height, width
@@ -415,7 +414,7 @@ class ImageHandler:
         if (page_path := self.get_path_to_page(page)) is None:
             return 0, 0
 
-        return image_tools.get_image_size(page_path)
+        return ImageTools.get_image_size(page_path)
 
     def get_mime_name(self, page: int = None):
         """
@@ -428,7 +427,7 @@ class ImageHandler:
         if (page_path := self.get_path_to_page(page)) is None:
             return None
 
-        return image_tools.get_image_mime(page_path)
+        return ImageTools.get_image_mime(page_path)
 
     def get_thumbnail(self, page: int = None, size: tuple = (128, 128), nowait: bool = False):
         """

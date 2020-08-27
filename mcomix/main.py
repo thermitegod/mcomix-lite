@@ -7,13 +7,14 @@ from pathlib import Path
 from gi.repository import GLib, Gdk, Gtk
 from send2trash import send2trash
 
-from mcomix import constants, icons, image_tools
+from mcomix import constants, icons
 from mcomix.bookmark_backend import BookmarksStore
 from mcomix.cursor_handler import CursorHandler
 from mcomix.enhance_backend import ImageEnhancer
 from mcomix.event import EventHandler
 from mcomix.file_handler import FileHandler
 from mcomix.image_handler import ImageHandler
+from mcomix.image_tools import ImageTools
 from mcomix.keybindings import KeybindingManager
 from mcomix.layout import FiniteLayout
 from mcomix.lens import MagnifyingLens
@@ -306,7 +307,7 @@ class MainWindow(Gtk.Window):
             alignment_axis = constants.AXIS_ALIGNMENT
             pixbuf_count = 2 if self.displayed_double() else 1  # XXX limited to at most 2 pages
             pixbuf_list = list(self.imagehandler.get_pixbufs(pixbuf_count))
-            do_not_transform = [image_tools.disable_transform(x) for x in pixbuf_list]
+            do_not_transform = [ImageTools.disable_transform(x) for x in pixbuf_list]
             size_list = [[pixbuf.get_width(), pixbuf.get_height()] for pixbuf in pixbuf_list]
 
             if self.is_manga_mode:
@@ -319,7 +320,7 @@ class MainWindow(Gtk.Window):
             # - apply automatic rotation (size based) on whole page
             # - apply manual rotation on whole page
             if prefs['auto rotate from exif']:
-                rotation_list = [image_tools.get_implied_rotation(pixbuf) for pixbuf in pixbuf_list]
+                rotation_list = [ImageTools.get_implied_rotation(pixbuf) for pixbuf in pixbuf_list]
             else:
                 rotation_list = [0] * len(pixbuf_list)
             virtual_size = [0, 0]
@@ -377,18 +378,18 @@ class MainWindow(Gtk.Window):
                     viewport_size = ()  # start anew
 
             for i in range(pixbuf_count):
-                pixbuf_list[i] = image_tools.fit_pixbuf_to_rectangle(
+                pixbuf_list[i] = ImageTools.fit_pixbuf_to_rectangle(
                         pixbuf_list[i], scaled_sizes[i], rotation_list[i])
 
             for i in range(pixbuf_count):
-                pixbuf_list[i] = image_tools.trans_pixbuf(
+                pixbuf_list[i] = ImageTools.trans_pixbuf(
                         pixbuf_list[i],
                         flip=prefs['vertical flip'],
                         flop=prefs['horizontal flip'])
                 pixbuf_list[i] = self.enhancer.enhance(pixbuf_list[i])
 
             for i in range(pixbuf_count):
-                image_tools.set_from_pixbuf(self.images[i], pixbuf_list[i])
+                ImageTools.set_from_pixbuf(self.images[i], pixbuf_list[i])
 
             resolutions = [(*size, scaled_size[0] / size[0])
                            for scaled_size, size in zip(scaled_sizes, size_list)]

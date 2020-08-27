@@ -7,7 +7,7 @@ import PIL.ImageDraw as ImageDraw
 import PIL.ImageOps as ImageOps
 from gi.repository import Gtk
 
-from mcomix import image_tools
+from mcomix.image_tools import ImageTools
 from mcomix.preferences import prefs
 
 
@@ -109,10 +109,10 @@ class _EnhanceImageDialog(Gtk.Dialog):
         :returns: modified pixbuf, the returned prixbuf will be 262x<height> px.
         """
 
-        self.__pixbuf = image_tools.static_image(self.__pixbuf)
+        self.__pixbuf = ImageTools.static_image(self.__pixbuf)
 
         im = Image.new('RGB', (258, height - 4), (30, 30, 30))
-        hist_data = image_tools.pixbuf_to_pil(self.__pixbuf).histogram()
+        hist_data = ImageTools.pixbuf_to_pil(self.__pixbuf).histogram()
         maximum = max(hist_data[:768] + [1])
         y_scale = float(height - 6) / maximum
         r = [int(hist_data[n] * y_scale) for n in range(256)]
@@ -155,7 +155,7 @@ class _EnhanceImageDialog(Gtk.Dialog):
         im = ImageOps.expand(im, 1, (80, 80, 80))
         im = ImageOps.expand(im, 1, (0, 0, 0))
 
-        self.__hist_image.set_from_pixbuf(image_tools.pil_to_pixbuf(im))
+        self.__hist_image.set_from_pixbuf(ImageTools.pil_to_pixbuf(im))
 
     def _on_book_close(self):
         self.clear_histogram()

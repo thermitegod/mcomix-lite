@@ -2,7 +2,7 @@
 
 """enhance_backend.py - Image enhancement handler and dialog (e.g. contrast, brightness etc.)"""
 
-from mcomix import image_tools
+from mcomix.image_tools import ImageTools
 from mcomix.preferences import prefs
 
 
@@ -31,8 +31,8 @@ class ImageEnhancer:
         if (self.brightness != 1.0 or self.contrast != 1.0 or
                 self.saturation != 1.0 or self.sharpness != 1.0 or
                 self.autocontrast):
-            return image_tools.enhance(pixbuf, self.brightness, self.contrast,
-                                       self.saturation, self.sharpness, self.autocontrast)
+            return ImageTools.enhance(pixbuf, self.brightness, self.contrast,
+                                      self.saturation, self.sharpness, self.autocontrast)
 
         return pixbuf
 

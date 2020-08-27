@@ -7,7 +7,7 @@ from importlib import resources
 from gi.repository import Gtk
 from loguru import logger
 
-from mcomix import image_tools
+from mcomix.image_tools import ImageTools
 
 
 def mcomix_icons():
@@ -16,7 +16,7 @@ def mcomix_icons():
     """
 
     # not using resized since getting namespace errors
-    pixbufs = [image_tools.load_pixbuf_data(resources.read_binary('mcomix.images', 'mcomix.png'))]
+    pixbufs = [ImageTools.load_pixbuf_data(resources.read_binary('mcomix.images', 'mcomix.png'))]
     return pixbufs
 
 
@@ -43,7 +43,7 @@ def load_icons():
     for filename, stockid in _icons:
         try:
             icon_data = resources.read_binary('mcomix.images', filename)
-            pixbuf = image_tools.load_pixbuf_data(icon_data)
+            pixbuf = ImageTools.load_pixbuf_data(icon_data)
             iconset = Gtk.IconSet.new_from_pixbuf(pixbuf)
             factory.add(stockid, iconset)
         except Exception:
