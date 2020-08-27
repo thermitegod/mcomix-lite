@@ -459,7 +459,10 @@ class MainWindow(Gtk.Window):
             filesize = self.imagehandler.get_page_filesize()
         self.statusbar.set_page_number(page_number, self.imagehandler.get_number_of_pages(), number_of_pages)
         self.statusbar.set_filename(filename)
-        self.statusbar.set_root(self.filehandler.get_base_filename())
+        if prefs['statusbar fullpath']:
+            self.statusbar.set_root(self.filehandler.get_path_to_base())
+        else:
+            self.statusbar.set_root(self.filehandler.get_base_filename())
         self.statusbar.set_filesize(filesize)
         self.statusbar.update()
         self.update_title()

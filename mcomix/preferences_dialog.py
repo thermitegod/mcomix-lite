@@ -185,6 +185,10 @@ class _PreferencesDialog(Gtk.Dialog):
 
         page.new_section('Statusbar')
 
+        page.add_row(self._create_pref_check_button(
+            'Show full path of current file in statusbar',
+            'statusbar fullpath'))
+
         page.add_row(Gtk.Label(label='Statusbar spacing:'),
                      self._create_pref_spinner(
                          'statusbar spacing',
