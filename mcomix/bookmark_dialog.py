@@ -4,8 +4,9 @@
 
 from gi.repository import GObject, Gdk, GdkPixbuf, Gtk
 
-from mcomix import bookmark_menu_item, constants
+from mcomix import constants
 from mcomix.preferences import prefs
+from mcomix.bookmark_menu_item import Bookmark
 
 
 class BookmarksDialog(Gtk.Dialog):
@@ -35,7 +36,7 @@ class BookmarksDialog(Gtk.Dialog):
         self.vbox.pack_start(scrolled, True, True, 0)
 
         self.__liststore = Gtk.ListStore(GdkPixbuf.Pixbuf, GObject.TYPE_STRING, GObject.TYPE_STRING,
-                                         GObject.TYPE_STRING, GObject.TYPE_STRING, bookmark_menu_item.Bookmark)
+                                         GObject.TYPE_STRING, GObject.TYPE_STRING, Bookmark)
 
         self.__treeview = Gtk.TreeView(model=self.__liststore)
         self.__treeview.set_rules_hint(True)

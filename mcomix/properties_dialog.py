@@ -8,8 +8,10 @@ from pathlib import Path
 
 from gi.repository import Gtk
 
-from mcomix import constants, properties_page, image_handler
+from mcomix import constants
+from mcomix.image_handler import ImageHandler
 from mcomix.preferences import prefs
+from mcomix.properties_page import Page
 
 
 class PropertiesDialog(Gtk.Dialog):
@@ -29,8 +31,8 @@ class PropertiesDialog(Gtk.Dialog):
         self.set_border_width(4)
         self.__notebook.set_border_width(6)
 
-        self.__archive_page = properties_page.Page()
-        self.__image_page = properties_page.Page()
+        self.__archive_page = Page()
+        self.__image_page = Page()
 
         self.__notebook.append_page(self.__archive_page, Gtk.Label(label='Archive'))
         self.__notebook.append_page(self.__image_page, Gtk.Label(label='Image'))
@@ -112,7 +114,7 @@ class PropertiesDialog(Gtk.Dialog):
         gid = Path.group(path)
         secondary_info = [
             ('Location', Path.resolve(path).parent),
-            ('Size', image_handler.ImageHandler.format_byte_size(stats.st_size)),
+            ('Size', ImageHandler.format_byte_size(stats.st_size)),
             ('Modified', time.strftime('%Y-%m-%d, %H:%M:%S', time.localtime(stats.st_mtime))),
             ('Accessed', time.strftime('%Y-%m-%d, %H:%M:%S', time.localtime(stats.st_atime))),
             ('Permissions', oct(stat.S_IMODE(stats.st_mode))),

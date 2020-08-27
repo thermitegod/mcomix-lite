@@ -9,13 +9,15 @@ from pathlib import Path
 from loguru import logger
 
 from mcomix import constants
-from mcomix.archive import rar, sevenzip, zip
+from mcomix.archive.rar import RarArchive
+from mcomix.archive.sevenzip import SevenZipArchive
+from mcomix.archive.zip import ZipArchive
 
 # Handlers for each archive type.
 _HANDLERS = {
-    constants.ZIP: (zip.ZipArchive,),
-    constants.SEVENZIP: (sevenzip.SevenZipArchive,),
-    constants.RAR: (rar.RarArchive,),
+    constants.ZIP: (ZipArchive,),
+    constants.SEVENZIP: (SevenZipArchive,),
+    constants.RAR: (RarArchive,),
 }
 
 

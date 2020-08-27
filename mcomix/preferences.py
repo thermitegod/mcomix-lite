@@ -6,7 +6,8 @@ from pathlib import Path
 
 from loguru import logger
 
-from mcomix import constants, config
+from mcomix import constants
+from mcomix.config import ConfigManager
 
 # All preferences are stored here.
 prefs = {
@@ -94,14 +95,14 @@ class _PreferenceManager:
     def load_preferences_file(self):
         saved_prefs = {}
         if Path.is_file(self.__preference_path):
-            saved_prefs = config.ConfigManager.load_config(self.__preference_path, saved_prefs)
+            saved_prefs = ConfigManager.load_config(self.__preference_path, saved_prefs)
 
         prefs.update(filter(lambda i: i[0] in prefs, saved_prefs.items()))
 
-        self.__prefs_hash['sha256'] = config.ConfigManager.hash_config(prefs)
+        self.__prefs_hash['sha256'] = ConfigManager.hash_config(prefs)
 
     def write_preferences_file(self):
-        sha256hash = config.ConfigManager.hash_config(prefs)
+        sha256hash = ConfigManager.hash_config(prefs)
         if sha256hash == self.__prefs_hash['sha256']:
             logger.info('No changes to write for preferences')
             return
@@ -109,7 +110,7 @@ class _PreferenceManager:
 
         logger.info('Writing changes to preferences')
 
-        config.ConfigManager.write_config(prefs, self.__preference_path)
+        ConfigManager.write_config(prefs, self.__preference_path)
 
 
 # Singleton instance

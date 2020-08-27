@@ -5,7 +5,8 @@
 from gi.repository import Gtk
 from loguru import logger
 
-from mcomix import bookmark_backend, bookmark_dialog
+from mcomix.bookmark_backend import BookmarksStore
+from mcomix.bookmark_dialog import BookmarksDialog
 
 
 class BookmarksMenu(Gtk.Menu):
@@ -19,7 +20,7 @@ class BookmarksMenu(Gtk.Menu):
         super().__init__()
 
         self.__window = window
-        self.__bookmarks_store = bookmark_backend.BookmarksStore
+        self.__bookmarks_store = BookmarksStore
         self.__bookmarks_store.initialize(window)
 
         self.__actiongroup = Gtk.ActionGroup(name='mcomix-bookmarks')
@@ -86,7 +87,7 @@ class BookmarksMenu(Gtk.Menu):
         Open the bookmarks dialog
         """
 
-        bookmark_dialog.BookmarksDialog(self.__window, self.__bookmarks_store)
+        BookmarksDialog(self.__window, self.__bookmarks_store)
 
     def set_sensitive(self, loaded):
         """

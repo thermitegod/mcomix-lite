@@ -2,7 +2,8 @@
 
 """Layout"""
 
-from mcomix import box, constants
+from mcomix import constants
+from mcomix.box import Box
 
 
 class FiniteLayout:  # 2D only
@@ -114,7 +115,7 @@ class FiniteLayout:  # 2D only
             c = content_size[idx]
             v = viewport_size[idx]
             invisible_size = c - v
-            result[idx] = content_position[idx] + (box.Box.box_to_center_offset_1d(invisible_size, o)
+            result[idx] = content_position[idx] + (Box.box_to_center_offset_1d(invisible_size, o)
                                                    if d == constants.SCROLL_TO_CENTER
                                                    else invisible_size if d == 1 else 0)  # if d == -1
         return result
@@ -166,11 +167,11 @@ class FiniteLayout:  # 2D only
         # reverse order if necessary
         if orientation[distribution_axis] == -1:
             content_sizes = tuple(reversed(content_sizes))
-        temp_cb_list = tuple(map(box.Box, content_sizes))
+        temp_cb_list = tuple(map(Box, content_sizes))
         # align to center
-        temp_cb_list = box.Box.align_center(temp_cb_list, alignment_axis, 0, orientation[alignment_axis])
+        temp_cb_list = Box.align_center(temp_cb_list, alignment_axis, 0, orientation[alignment_axis])
         # distribute
-        temp_cb_list = box.Box.distribute(temp_cb_list, distribution_axis, 0, spacing)
+        temp_cb_list = Box.distribute(temp_cb_list, distribution_axis, 0, spacing)
         if wrap_individually:
             temp_wb_list, temp_bb = FiniteLayout._wrap_individually(temp_cb_list, viewport_size, orientation)
         else:
@@ -190,7 +191,7 @@ class FiniteLayout:  # 2D only
         self.__content_boxes = temp_cb_list
         self.__wrapper_boxes = temp_wb_list
         self.__union_box = temp_bb
-        self.__viewport_box = box.Box(viewport_size)
+        self.__viewport_box = Box(viewport_size)
         self.__orientation = orientation
         self.__dirty_current_index = True
 
@@ -201,11 +202,11 @@ class FiniteLayout:  # 2D only
         for idx, item in enumerate(temp_cb_list):
             temp_wb_list[idx] = temp_cb_list[idx].wrapper_box(viewport_size, orientation)
         # calculate bounding Box
-        temp_bb = box.Box.bounding_box(temp_wb_list)
+        temp_bb = Box.bounding_box(temp_wb_list)
         return temp_wb_list, temp_bb
 
     @staticmethod
     def _wrap_union(temp_cb_list: list, viewport_size: tuple, orientation: tuple):
         # calculate bounding Box
-        temp_wb_list = [box.Box.bounding_box(temp_cb_list).wrapper_box(viewport_size, orientation)]
+        temp_wb_list = [Box.bounding_box(temp_cb_list).wrapper_box(viewport_size, orientation)]
         return temp_wb_list, temp_wb_list[0]

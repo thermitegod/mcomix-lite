@@ -10,7 +10,7 @@ from gi.repository import GLib, GdkPixbuf, Gio
 from loguru import logger
 
 from mcomix import anime_tools, constants
-from mcomix.lib import reader
+from mcomix.lib.reader import LockedFileIO
 from mcomix.preferences import prefs
 
 
@@ -291,7 +291,7 @@ def load_pixbuf(path: str):
 
     enable_anime = prefs['animation mode'] != constants.ANIMATION_DISABLED
     try:
-        with reader.LockedFileIO(path) as fio:
+        with LockedFileIO(path) as fio:
             with Image.open(fio) as im:
                 # make sure n_frames loaded
                 im.load()
@@ -317,7 +317,7 @@ def load_pixbuf_size(path: str, width: int, height: int):
     """
 
     try:
-        with reader.LockedFileIO(path) as fio:
+        with LockedFileIO(path) as fio:
             with Image.open(fio) as im:
                 im.thumbnail((width, height), resample=Image.BOX)
                 return pil_to_pixbuf(im, keep_orientation=True)
@@ -398,7 +398,7 @@ def get_image_size(path: str):
     Return image informations: (format, width, height)
     """
 
-    with reader.LockedFileIO(path) as fio:
+    with LockedFileIO(path) as fio:
         with Image.open(fio) as im:
             return im.size
 
@@ -408,7 +408,7 @@ def get_image_mime(path: str):
     Return image informations: (format, width, height)
     """
 
-    with reader.LockedFileIO(path) as fio:
+    with LockedFileIO(path) as fio:
         with Image.open(fio) as im:
             return im.format
 

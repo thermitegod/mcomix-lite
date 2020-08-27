@@ -4,7 +4,7 @@
 freedesktop.org "standard" at http://jens.triq.net/thumbnail-spec/"""
 
 from mcomix import image_tools
-from mcomix.lib import callback
+from mcomix.lib.callback import Callback
 from mcomix.preferences import prefs
 
 
@@ -49,7 +49,7 @@ class Thumbnailer:
 
         return self._create_thumbnail(filepath)
 
-    @callback.Callback
+    @Callback
     def thumbnail_finished(self, filepath: str, pixbuf):
         """
         Called every time a thumbnail has been completed.

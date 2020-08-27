@@ -8,8 +8,10 @@ from pathlib import Path
 from gi.repository import Gtk
 from loguru import logger
 
-from mcomix import archive_extractor, archive_tools, constants, file_provider, image_tools
-from mcomix.lib import callback
+from mcomix import archive_tools, constants, image_tools, file_provider
+from mcomix.archive_extractor import Extractor
+from mcomix.file_provider import FileProvider
+from mcomix.lib.callback import Callback
 from mcomix.preferences import prefs
 
 
@@ -44,7 +46,7 @@ class FileHandler:
         #: Mapping of absolute paths to archive path names.
         self.__name_table = {}
         #: Archive extractor.
-        self.__extractor = archive_extractor.Extractor()
+        self.__extractor = Extractor()
         self.__extractor.file_extracted += self._extracted_file
         self.__extractor.contents_listed += self._listed_contents
         #: Condition to wait on when extracting archives and waiting on files.
@@ -161,7 +163,7 @@ class FileHandler:
 
             self.__window.set_page(current_image_index + 1)
 
-    @callback.Callback
+    @Callback
     def file_opened(self):
         """
         Called when a new set of files has successfully been opened
@@ -169,7 +171,7 @@ class FileHandler:
 
         self.__file_loaded = True
 
-    @callback.Callback
+    @Callback
     def file_closed(self):
         """
         Called when the current file has been closed
@@ -358,7 +360,7 @@ class FileHandler:
         return self.__base_path
 
     def _get_file_list(self):
-        return self.__file_provider.list_files(file_provider.FileProvider.ARCHIVES)
+        return self.__file_provider.list_files(FileProvider.ARCHIVES)
 
     def get_file_number(self):
         if self.__archive_type is None:
@@ -450,9 +452,9 @@ class FileHandler:
             return
 
         if self.__archive_type is not None:
-            listmode = file_provider.FileProvider.ARCHIVES
+            listmode = FileProvider.ARCHIVES
         else:
-            listmode = file_provider.FileProvider.IMAGES
+            listmode = FileProvider.IMAGES
 
         current_dir = self.__file_provider.get_directory()
         if not self.__file_provider.directory_direction(forward=forward):
@@ -475,7 +477,7 @@ class FileHandler:
             self.open_file(path, self.__open_first_page, keep_fileprovider=True)
         return True
 
-    @callback.Callback
+    @Callback
     def file_available(self, filepaths: list):
         """
         Called every time a new file from the Filehandler's opened

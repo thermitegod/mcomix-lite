@@ -4,10 +4,11 @@
 Dialog windows should only be taken care of here if they are windows that need to display
 information and then exit with no added functionality inbetween"""
 
-from mcomix import about_dialog, properties_dialog
+from mcomix.about_dialog import AboutDialog
+from mcomix.properties_dialog import PropertiesDialog
 
-dialog_windows = {'about-dialog': [None, about_dialog.AboutDialog],
-                  'properties-dialog': [None, properties_dialog.PropertiesDialog]}
+dialog_windows = {'about-dialog': [None, AboutDialog],
+                  'properties-dialog': [None, PropertiesDialog]}
 
 
 def open_dialog(action, data: tuple):

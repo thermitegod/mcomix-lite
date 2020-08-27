@@ -76,8 +76,8 @@ def run():
     logger.info(f'Image loaders: Pillow [{PIL.Image.__version__}], GDK [{GdkPixbuf.PIXBUF_VERSION}])')
 
     # Load configuration.
-    from mcomix import preferences
-    preferences.PreferenceManager.load_preferences_file()
+    from mcomix.preferences import PreferenceManager
+    PreferenceManager.load_preferences_file()
 
     from mcomix import icons
     icons.load_icons()
@@ -103,10 +103,10 @@ def run():
     # Enable icons for menu items.
     settings.props.gtk_menu_images = True
 
-    from mcomix import main
-    window = main.MainWindow(fullscreen=args.fullscreen, manga_mode=args.manga,
-                             double_page=args.doublepage, zoom_mode=args.zoommode,
-                             open_path=open_path)
+    from mcomix.main import MainWindow
+    window = MainWindow(fullscreen=args.fullscreen, manga_mode=args.manga,
+                        double_page=args.doublepage, zoom_mode=args.zoommode,
+                        open_path=open_path)
 
     try:
         Gtk.main()

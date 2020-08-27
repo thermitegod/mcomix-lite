@@ -9,8 +9,10 @@ from pathlib import Path
 from gi.repository import Gtk
 from loguru import logger
 
-from mcomix import bookmark_menu_item, constants, message_dialog
-from mcomix.lib import callback
+from mcomix import constants
+from mcomix.bookmark_menu_item import Bookmark
+from mcomix.lib.callback import Callback
+from mcomix.message_dialog import MessageDialog
 
 
 class _BookmarksStore:
@@ -51,7 +53,7 @@ class _BookmarksStore:
                 bookmark.__window = window
                 bookmark._file_handler = window.filehandler
 
-    @callback.Callback
+    @Callback
     def add_bookmark(self, bookmark):
         """
         Add the <bookmark> to the list
@@ -60,7 +62,7 @@ class _BookmarksStore:
         self.__bookmarks.append(bookmark)
         self.__bookmark_state['dirty'] = True
 
-    @callback.Callback
+    @Callback
     def remove_bookmark(self, bookmark):
         """
         Remove the <bookmark> from the list
@@ -104,7 +106,7 @@ class _BookmarksStore:
             elif response not in (Gtk.ResponseType.YES, Gtk.ResponseType.NO):
                 return
 
-        bookmark = bookmark_menu_item.Bookmark(self.__window, self.__file_handler,
+        bookmark = Bookmark(self.__window, self.__file_handler,
                                                name, path, page, numpages, archive_type, epoch)
         self.add_bookmark(bookmark)
 
@@ -141,7 +143,7 @@ class _BookmarksStore:
                 logger.error(f'Could not parse bookmarks file: \'{self.__bookmark_path}\'')
             else:
                 for pack in packs:
-                    bookmarks.append(bookmark_menu_item.Bookmark(self.__window, self.__file_handler, *pack))
+                    bookmarks.append(Bookmark(self.__window, self.__file_handler, *pack))
 
         return bookmarks
 
@@ -191,7 +193,7 @@ class _BookmarksStore:
         a new bookmark
         """
 
-        dialog = message_dialog.MessageDialog(
+        dialog = MessageDialog(
                 self.__window,
                 flags=Gtk.DialogFlags.MODAL,
                 message_type=Gtk.MessageType.INFO,

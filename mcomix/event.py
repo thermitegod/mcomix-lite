@@ -6,7 +6,8 @@ from urllib.request import url2pathname
 
 from gi.repository import Gdk, Gtk
 
-from mcomix import constants, keybindings
+from mcomix import constants
+from mcomix.keybindings import KeybindingManager
 from mcomix.preferences import prefs
 
 
@@ -51,7 +52,7 @@ class EventHandler:
         them up with their respective callback functions
         """
 
-        manager = keybindings.KeybindingManager.keybinding_manager(self.__window)
+        manager = KeybindingManager.keybinding_manager(self.__window)
 
         # Navigation keys
         manager.register('previous_page',
@@ -193,7 +194,7 @@ class EventHandler:
         """
 
         # Dispatch keyboard input handling
-        manager = keybindings.KeybindingManager.keybinding_manager(self.__window)
+        manager = KeybindingManager.keybinding_manager(self.__window)
         # Some keys require modifiers that are irrelevant to the hotkey. Find out and ignore them.
         ALL_ACCELS_MASK = (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.MOD1_MASK)
 

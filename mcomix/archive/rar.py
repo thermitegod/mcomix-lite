@@ -9,12 +9,12 @@ from pathlib import Path
 
 from loguru import logger
 
-from mcomix.archive import archive_base
+from mcomix.archive.archive_base import BaseArchive
 
 UNRARCALLBACK = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_uint, ctypes.c_long, ctypes.c_long, ctypes.c_long)
 
 
-class RarArchive(archive_base.BaseArchive):
+class RarArchive(BaseArchive):
     """
     Wrapper class for libunrar. All string values passed to this class must be unicode objects.
     In turn, all values returned are also unicode

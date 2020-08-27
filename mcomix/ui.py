@@ -4,8 +4,11 @@
 
 from gi.repository import Gtk
 
-from mcomix import bookmark_menu, constants, dialog_handler, enhance_dialog, preferences_dialog
+from mcomix import constants, dialog_handler
+from mcomix.bookmark_menu import BookmarksMenu
+from mcomix.enhance_dialog import EnhanceDialog
 from mcomix.preferences import prefs
+from mcomix.preferences_dialog import PreferenceDialog
 
 
 class MainUI(Gtk.UIManager):
@@ -127,12 +130,12 @@ class MainUI(Gtk.UIManager):
 
         self.__actiongroup.add_actions([
             ('preferences', Gtk.STOCK_PREFERENCES, 'Pr_eferences',
-             None, None, preferences_dialog.PreferenceDialog.open_dialog)], window)
+             None, None, PreferenceDialog.open_dialog)], window)
 
         # Some actions added separately since they need extra arguments.
         self.__actiongroup.add_actions([
             ('enhance_image', 'mcomix-enhance-image', 'En_hance image...',
-             None, None, enhance_dialog.EnhanceDialog.open_dialog)], window)
+             None, None, EnhanceDialog.open_dialog)], window)
 
         # fix some gtk magic: removing unreqired accelerators
         Gtk.AccelMap.change_entry('<Actions>/mcomix-main/close', 0, 0, True)
@@ -223,7 +226,7 @@ class MainUI(Gtk.UIManager):
         self.add_ui_from_string(ui_description)
         self.insert_action_group(self.__actiongroup, 0)
 
-        self.__bookmarks = bookmark_menu.BookmarksMenu(self, window)
+        self.__bookmarks = BookmarksMenu(self, window)
         self.get_widget('/Menu/menu_bookmarks').set_submenu(self.__bookmarks)
         self.get_widget('/Menu/menu_bookmarks').show()
 

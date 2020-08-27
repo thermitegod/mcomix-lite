@@ -8,11 +8,11 @@ from pathlib import Path
 from loguru import logger
 
 from mcomix import archive_tools, constants
-from mcomix.archive import archive_base
+from mcomix.archive.archive_base import BaseArchive
 from mcomix.preferences import prefs
 
 
-class RecursiveArchive(archive_base.BaseArchive):
+class RecursiveArchive(BaseArchive):
     def __init__(self, archive):
         super().__init__(archive.archive)
 

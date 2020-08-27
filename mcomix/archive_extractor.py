@@ -9,7 +9,8 @@ from pathlib import Path
 from loguru import logger
 
 from mcomix import archive_tools
-from mcomix.lib import callback, mt
+from mcomix.lib.callback import Callback
+from mcomix.lib.mt import ThreadPool
 from mcomix.preferences import prefs
 
 
@@ -29,7 +30,7 @@ class Extractor:
         super().__init__()
 
         self.__setupped = False
-        self.__threadpool = mt.ThreadPool(
+        self.__threadpool = ThreadPool(
                 name=self.__class__.__name__,
                 processes=prefs['max threads extract'])
 
@@ -158,7 +159,7 @@ class Extractor:
                             self._extract_all_files,
                             error_callback=self._extract_files_errcb)
 
-    @callback.Callback
+    @Callback
     def contents_listed(self, extractor, files: list):
         """
         Called after the contents of the archive has been listed
@@ -166,7 +167,7 @@ class Extractor:
 
         pass
 
-    @callback.Callback
+    @Callback
     def file_extracted(self, extractor, filename: str):
         """
         Called whenever a new file is extracted and ready

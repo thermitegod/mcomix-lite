@@ -2,9 +2,12 @@
 
 """preferences_dialog.py - Preferences dialog"""
 
-from gi.repository import GObject, Gdk, GdkPixbuf, Gtk
+from gi.repository import GObject, GdkPixbuf, Gtk
 
-from mcomix import constants, keybindings, keybindings_editor, labels
+from mcomix import constants
+from mcomix.keybindings import KeybindingManager
+from mcomix.keybindings_editor import KeybindingEditorWindow
+from mcomix.labels import BoldLabel
 from mcomix.preferences import prefs
 
 
@@ -345,8 +348,8 @@ class _PreferencesDialog(Gtk.Dialog):
         # ----------------------------------------------------------------
         # The "Shortcuts" tab.
         # ----------------------------------------------------------------
-        km = keybindings.KeybindingManager.keybinding_manager(self.__window)
-        page = keybindings_editor.KeybindingEditorWindow(km)
+        km = KeybindingManager.keybinding_manager(self.__window)
+        page = KeybindingEditorWindow(km)
 
         return page
 
@@ -370,7 +373,7 @@ class _PreferencesDialog(Gtk.Dialog):
         elif response == constants.RESPONSE_REVERT_TO_DEFAULT:
             if self.notebook.get_nth_page(self.notebook.get_current_page()) == self.shortcuts:
                 # "Shortcuts" page is active, reset all keys to their default value
-                km = keybindings.KeybindingManager.keybinding_manager(self.__window)
+                km = KeybindingManager.keybinding_manager(self.__window)
                 km.clear_all()
                 self.__window.get_event_handler().register_key_events()
                 km.save()
@@ -761,7 +764,7 @@ class _PreferenceSection(Gtk.VBox):
 
         self.__right_column_width = right_column_width
         self.__contentbox = Gtk.VBox(homogeneous=False, spacing=6)
-        label = labels.BoldLabel(header)
+        label = BoldLabel(header)
         label.set_alignment(0, 0.5)
         hbox = Gtk.HBox(homogeneous=False, spacing=0)
         hbox.pack_start(Gtk.HBox(homogeneous=True, spacing=0), False, False, 6)

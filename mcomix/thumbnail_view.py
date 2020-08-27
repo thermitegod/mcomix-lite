@@ -7,7 +7,7 @@ import uuid
 
 from gi.repository import Gtk
 
-from mcomix.lib import mt
+from mcomix.lib.mt import ThreadPool, Lock
 from mcomix.preferences import prefs
 
 
@@ -35,9 +35,9 @@ class ThumbnailViewBase:
         self.__status_column = status_column
 
         #: Worker thread
-        self.__threadpool = mt.ThreadPool(name=self.__class__.__name__,
-                                          processes=prefs['max threads thumbnail'])
-        self.__lock = mt.Lock()
+        self.__threadpool = ThreadPool(name=self.__class__.__name__,
+                                       processes=prefs['max threads thumbnail'])
+        self.__lock = Lock()
         self.__done = set()
         self.__taskid = 0
 

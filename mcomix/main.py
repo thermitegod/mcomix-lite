@@ -7,11 +7,25 @@ from pathlib import Path
 from gi.repository import GLib, Gdk, Gtk
 from send2trash import send2trash
 
-from mcomix import bookmark_backend, constants, cursor_handler, enhance_backend, event, file_handler, icons, \
-    image_handler, image_tools, keybindings, layout, lens, message_dialog, pageselect, preferences, status, \
-    thumbbar, ui, zoom
-from mcomix.lib import callback
+from mcomix import constants, icons, image_tools
+from mcomix.bookmark_backend import BookmarksStore
+from mcomix.cursor_handler import CursorHandler
+from mcomix.enhance_backend import ImageEnhancer
+from mcomix.event import EventHandler
+from mcomix.file_handler import FileHandler
+from mcomix.image_handler import ImageHandler
+from mcomix.keybindings import KeybindingManager
+from mcomix.layout import FiniteLayout
+from mcomix.lens import MagnifyingLens
+from mcomix.lib.callback import Callback
+from mcomix.message_dialog import MessageDialog
+from mcomix.pageselect import Pageselector
+from mcomix.preferences import PreferenceManager
 from mcomix.preferences import prefs
+from mcomix.status import Statusbar
+from mcomix.thumbbar import ThumbnailSidebar
+from mcomix.ui import MainUI
+from mcomix.zoom import ZoomModel
 
 
 class MainWindow(Gtk.Window):
@@ -35,7 +49,7 @@ class MainWindow(Gtk.Window):
         # Remember last scroll destination.
         self.__last_scroll_destination = constants.SCROLL_TO_START
 
-        self.__dummy_layout = layout.FiniteLayout(((1, 1),), (1, 1), (1, 1), 0, False, 0, 0)
+        self.__dummy_layout = FiniteLayout(((1, 1),), (1, 1), (1, 1), 0, False, 0, 0)
         self.__layout = self.__dummy_layout
         self.__spacing = 2
         self.__waiting_for_redraw = False
@@ -45,7 +59,7 @@ class MainWindow(Gtk.Window):
         # we  can change its background color.
         self.__event_box = Gtk.EventBox()
         self.__event_box.add(self.__main_layout)
-        self.__event_handler = event.EventHandler(self)
+        self.__event_handler = EventHandler(self)
         self.__vadjust = self.__main_layout.get_vadjustment()
         self.__hadjust = self.__main_layout.get_hadjustment()
         self.__scroll = (
@@ -53,19 +67,19 @@ class MainWindow(Gtk.Window):
             Gtk.Scrollbar.new(Gtk.Orientation.VERTICAL, self.__vadjust),
         )
 
-        self.filehandler = file_handler.FileHandler(self)
+        self.filehandler = FileHandler(self)
         self.filehandler.file_closed += self._on_file_closed
         self.filehandler.file_opened += self._on_file_opened
-        self.imagehandler = image_handler.ImageHandler(self)
+        self.imagehandler = ImageHandler(self)
         self.imagehandler.page_available += self._page_available
-        self.thumbnailsidebar = thumbbar.ThumbnailSidebar(self)
+        self.thumbnailsidebar = ThumbnailSidebar(self)
 
-        self.statusbar = status.Statusbar()
-        self.cursor_handler = cursor_handler.CursorHandler(self)
-        self.enhancer = enhance_backend.ImageEnhancer(self)
-        self.lens = lens.MagnifyingLens(self)
-        self.zoom = zoom.ZoomModel()
-        self.uimanager = ui.MainUI(self)
+        self.statusbar = Statusbar()
+        self.cursor_handler = CursorHandler(self)
+        self.enhancer = ImageEnhancer(self)
+        self.lens = MagnifyingLens(self)
+        self.zoom = ZoomModel()
+        self.uimanager = MainUI(self)
         self.menubar = self.uimanager.get_widget('/Menu')
         self.popup = self.uimanager.get_widget('/Popup')
         self.actiongroup = self.uimanager.get_action_groups()[0]
@@ -349,7 +363,7 @@ class MainWindow(Gtk.Window):
                 scaled_sizes = self.zoom.get_zoomed_size(size_list, zoom_dummy_size,
                                                          distribution_axis, do_not_transform)
 
-                self.__layout = layout.FiniteLayout(
+                self.__layout = FiniteLayout(
                         scaled_sizes, viewport_size, orientation, self.__spacing,
                         expand_area, distribution_axis, alignment_axis)
 
@@ -518,7 +532,7 @@ class MainWindow(Gtk.Window):
 
         self.draw_image(scroll_to=scroll_to)
 
-    @callback.Callback
+    @Callback
     def page_changed(self):
         """
         Called on page change
@@ -602,7 +616,7 @@ class MainWindow(Gtk.Window):
             self.set_page(number_of_pages)
 
     def page_select(self, *args):
-        pageselect.Pageselector(self)
+        Pageselector(self)
 
     def rotate_90(self, *args):
         prefs['rotation'] = (prefs['rotation'] + 90) % 360
@@ -878,7 +892,7 @@ class MainWindow(Gtk.Window):
                 target_dir.mkdir()
 
         elif action == 'delete':
-            dialog = message_dialog.MessageDialog(
+            dialog = MessageDialog(
                     parent=self,
                     flags=Gtk.DialogFlags.MODAL,
                     message_type=Gtk.MessageType.QUESTION,
@@ -930,9 +944,9 @@ class MainWindow(Gtk.Window):
         self.iconify()
 
     def write_config_files(self):
-        preferences.PreferenceManager.write_preferences_file()
-        keybindings.KeybindingManager.keybinding_manager(self).write_keybindings_file()
-        bookmark_backend.BookmarksStore.write_bookmarks_file()
+        PreferenceManager.write_preferences_file()
+        KeybindingManager.keybinding_manager(self).write_keybindings_file()
+        BookmarksStore.write_bookmarks_file()
 
     def get_window_geometry(self):
         return self.get_position() + self.get_size()

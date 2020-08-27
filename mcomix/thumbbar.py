@@ -8,8 +8,9 @@ from urllib.request import pathname2url
 import cairo
 from gi.repository import Gdk, GdkPixbuf, Gtk
 
-from mcomix import image_tools, thumbnail_view
+from mcomix import image_tools
 from mcomix.preferences import prefs
+from mcomix.thumbnail_view import ThumbnailTreeView
 
 
 class ThumbnailSidebar(Gtk.ScrolledWindow):
@@ -38,7 +39,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         self.__thumbnail_liststore = Gtk.ListStore(int, GdkPixbuf.Pixbuf, bool)
 
         # view - responsible for laying out the columns
-        self.__treeview = thumbnail_view.ThumbnailTreeView(
+        self.__treeview = ThumbnailTreeView(
                 self.__thumbnail_liststore,
                 0,  # UID
                 1,  # pixbuf

@@ -7,9 +7,13 @@ from pathlib import Path
 
 from loguru import logger
 
-from mcomix import constants, image_tools, thumbnail_tools
-from mcomix.lib import callback, mt
+from mcomix import constants, image_tools
+
 from mcomix.preferences import prefs
+from mcomix.thumbnail_tools import Thumbnailer
+
+from mcomix.lib.callback import Callback
+from mcomix.lib.mt import ThreadPool, Lock
 
 
 class ImageHandler:
@@ -30,9 +34,9 @@ class ImageHandler:
         self.__window = window
 
         #: Caching thread
-        self.__thread = mt.ThreadPool(name=self.__class__.__name__,
-                                      processes=prefs['max threads general'])
-        self.__lock = mt.Lock()
+        self.__thread = ThreadPool(name=self.__class__.__name__,
+                                   processes=prefs['max threads general'])
+        self.__lock = Lock()
         self.__cache_lock = {}
         #: Archive path, if currently opened file is archive
         self.__base_path = None
@@ -243,7 +247,7 @@ class ImageHandler:
 
         return True
 
-    @callback.Callback
+    @Callback
     def page_available(self, page: int):
         """
         Called whenever a new page becomes available, i.e. the corresponding file has been extracted
@@ -252,7 +256,7 @@ class ImageHandler:
         logger.debug(f'Page is available: \'{page}\'')
         index = page - 1
         assert index not in self.__available_images
-        self.__cache_lock[index] = mt.Lock()
+        self.__cache_lock[index] = Lock()
         self.__available_images.add(index)
         # Check if we need to cache it.
         if index in self.__wanted_pixbufs or -1 == self.__cache_pages:
@@ -442,7 +446,7 @@ class ImageHandler:
             return None
 
         try:
-            thumbnailer = thumbnail_tools.Thumbnailer(size=size)
+            thumbnailer = Thumbnailer(size=size)
             return thumbnailer.thumbnail(path)
         except Exception:
             logger.error(f'Failed to create thumbnail for image: \'{path}\'')

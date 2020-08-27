@@ -9,10 +9,10 @@ from pathlib import Path
 
 from loguru import logger
 
-from mcomix.archive import archive_base
+from mcomix.archive.archive_base import BaseArchive
 
 
-class ZipArchive(archive_base.BaseArchive):
+class ZipArchive(BaseArchive):
     def __init__(self, archive: str):
         super().__init__(archive)
         self.__zip = zipfile.ZipFile(archive, 'r')

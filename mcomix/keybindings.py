@@ -28,7 +28,8 @@ from pathlib import Path
 from gi.repository import Gtk
 from loguru import logger
 
-from mcomix import constants, keybindings_map, config
+from mcomix import constants, keybindings_map
+from mcomix.config import ConfigManager
 
 
 class _KeybindingInterface:
@@ -184,7 +185,7 @@ class _KeybindingInterface:
                     (keyval, modifiers) in bindings
                 ]
 
-        sha256hash = config.ConfigManager.hash_config(action_to_keys)
+        sha256hash = ConfigManager.hash_config(action_to_keys)
         if sha256hash == self.__keybindings_hash['sha256']:
             logger.info('No changes to write for keybindings')
             return
@@ -192,12 +193,12 @@ class _KeybindingInterface:
 
         logger.info('Writing changes to keybindings')
 
-        config.ConfigManager.write_config(action_to_keys, self.__keybindings_path)
+        ConfigManager.write_config(action_to_keys, self.__keybindings_path)
 
     def load_keybindings_file(self):
         stored_action_bindings = {}
         if Path.is_file(self.__keybindings_path):
-            config.ConfigManager.load_config(self.__keybindings_path, stored_action_bindings)
+            ConfigManager.load_config(self.__keybindings_path, stored_action_bindings)
         else:
             stored_action_bindings = keybindings_map.DEFAULT_BINDINGS.copy()
 
@@ -212,7 +213,7 @@ class _KeybindingInterface:
             else:
                 self.__action_to_bindings[action] = []
 
-        self.__keybindings_hash['sha256'] = config.ConfigManager.hash_config(stored_action_bindings)
+        self.__keybindings_hash['sha256'] = ConfigManager.hash_config(stored_action_bindings)
 
     def get_bindings_for_action(self, name):
         """

@@ -8,11 +8,11 @@ from pathlib import Path
 
 from loguru import logger
 
-from mcomix.archive import archive_base
+from mcomix.archive.archive_base import ExternalExecutableArchive
 from mcomix.lib import process
 
 
-class SevenZipArchive(archive_base.ExternalExecutableArchive):
+class SevenZipArchive(ExternalExecutableArchive):
     """
     7z file extractor using the 7z executable
     """
