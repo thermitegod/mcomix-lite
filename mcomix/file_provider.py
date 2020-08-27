@@ -5,7 +5,6 @@ switching to the next/previous directory"""
 
 import functools
 import re
-from os.path import splitext
 from pathlib import Path
 
 from loguru import logger
@@ -15,29 +14,37 @@ from mcomix.archive_tools import ArchiveTools
 from mcomix.image_tools import ImageTools
 from mcomix.preferences import prefs
 
-NUMERIC_REGEXP = re.compile(r'\d+[.]\d+|\d+|\D+')  # Split into float, int, and characters
+
+# Split into float, int, and characters
+NUMERIC_REGEXP = re.compile(r'\d+[.]\d+|\d+|\D+')
 
 
-def alphanumeric_sort(filenames: list):
-    """
-    Do an in-place alphanumeric sort of the strings in <filenames>,
-    such that for an example "1.jpg", "2.jpg", "10.jpg" is a sorted ordering
-    """
+class SortAlphanumeric:
+    def __int__(self):
+        super().__init__()
 
-    def _isfloat(p):
-        try:
-            return 0, float(p)
-        except ValueError:
-            return 1, p.lower()
+    @staticmethod
+    def alphanumeric_sort(filenames: list):
+        """
+        Do an in-place alphanumeric sort of the strings in <filenames>,
+        such that for an example "1.jpg", "2.jpg", "10.jpg" is a sorted ordering
+        """
 
-    def keyfunc(s):
-        s, e = splitext(s)
-        if e[1:].isdigit():  # extension with only digital is not extension
-            s += e
-            e = ''
-        return [_isfloat(p) for p in (*NUMERIC_REGEXP.findall(s), e)]
+        def isfloat(p):
+            try:
+                return 0, float(p)
+            except ValueError:
+                return 1, p.lower()
 
-    filenames.sort(key=keyfunc)
+        def keyfunc(s):
+            x, y, z = str(s).rpartition('.')
+            if z.isdigit():
+                # extension with only digital is not extension
+                x = f'{x}{y}{z}'
+                z = ''
+            return [isfloat(p) for p in (*NUMERIC_REGEXP.findall(x), z)]
+
+        filenames.sort(key=keyfunc)
 
 
 class GetFileProvider:
@@ -65,7 +72,7 @@ class GetFileProvider:
         return None
 
 
-class FileProvider:
+class FileProvider(SortAlphanumeric):
     """
     Base class for various file listing strategies
     """
@@ -95,7 +102,7 @@ class FileProvider:
         """
 
         if prefs['sort by'] == constants.SORT_NAME:
-            alphanumeric_sort(files)
+            SortAlphanumeric.alphanumeric_sort(files)
         elif prefs['sort by'] == constants.SORT_LAST_MODIFIED:
             # Most recently modified file first
             files.sort(key=lambda filename: Path.stat(filename).st_mtime * -1)
@@ -194,7 +201,7 @@ class OrderedFileProvider(FileProvider):
                 if Path.is_dir(directory):
                     dirs.append(str(directory))
 
-            alphanumeric_sort(dirs)
+            SortAlphanumeric.alphanumeric_sort(dirs)
             return directories
 
         directories = __get_sibling_directories(self.__base_dir)

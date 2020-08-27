@@ -8,10 +8,10 @@ from pathlib import Path
 from gi.repository import Gtk
 from loguru import logger
 
-from mcomix import constants, file_provider
+from mcomix import constants
 from mcomix.archive_extractor import Extractor
 from mcomix.archive_tools import ArchiveTools
-from mcomix.file_provider import FileProvider, GetFileProvider
+from mcomix.file_provider import FileProvider, GetFileProvider, SortAlphanumeric
 from mcomix.image_tools import ImageTools
 from mcomix.lib.callback import Callback
 from mcomix.preferences import prefs
@@ -302,7 +302,7 @@ class FileHandler:
         """
 
         if prefs['sort archive by'] == constants.SORT_NAME:
-            file_provider.alphanumeric_sort(filelist)
+            SortAlphanumeric.alphanumeric_sort(filelist)
         elif prefs['sort archive by'] == constants.SORT_NAME_LITERAL:
             filelist.sort()
         else:
