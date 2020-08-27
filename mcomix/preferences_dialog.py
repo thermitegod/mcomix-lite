@@ -67,29 +67,29 @@ class _PreferencesDialog(Gtk.Dialog):
         page.new_section('User interface')
 
         page.add_row(self._create_pref_check_button(
-                'Escape key closes program',
-                'escape quits'))
+            'Escape key closes program',
+            'escape quits'))
 
         page.new_section('Thumbnails')
 
         page.add_row(self._create_pref_check_button(
-                'Show page numbers on thumbnails',
-                'show page numbers on thumbnails'))
+            'Show page numbers on thumbnails',
+            'show page numbers on thumbnails'))
 
         page.add_row(self._create_pref_check_button(
-                'Use archive thumbnail as application icon',
-                'archive thumbnail as icon'))
+            'Use archive thumbnail as application icon',
+            'archive thumbnail as icon'))
 
         page.add_row(Gtk.Label(label='Thumbnail size (in pixels):'),
                      self._create_pref_spinner(
-                             'thumbnail size',
-                             1, 20, 500, 1, 10, 0))
+                         'thumbnail size',
+                         1, 20, 500, 1, 10, 0))
 
         page.new_section('Transparency')
 
         page.add_row(self._create_pref_check_button(
-                'Use a checkered background for transparent images',
-                'checkered bg for transparent images'))
+            'Use a checkered background for transparent images',
+            'checkered bg for transparent images'))
 
         return page
 
@@ -108,32 +108,32 @@ class _PreferencesDialog(Gtk.Dialog):
         page.new_section('Scroll')
 
         page.add_row(self._create_pref_check_button(
-                'Flip pages with mouse wheel',
-                'flip with wheel'))
+            'Flip pages with mouse wheel',
+            'flip with wheel'))
 
         page.add_row(self._create_pref_check_button(
-                'Automatically open the next archive',
-                'auto open next archive'))
+            'Automatically open the next archive',
+            'auto open next archive'))
 
         page.add_row(self._create_pref_check_button(
-                'Automatically open next directory',
-                'auto open next directory'))
+            'Automatically open next directory',
+            'auto open next directory'))
 
         page.add_row(Gtk.Label(label='Number of pixels to scroll a page per arrow key press:'),
                      self._create_pref_spinner(
-                             'number of pixels to scroll per key event',
-                             1, 1, 500, 1, 3, 0))
+                         'number of pixels to scroll per key event',
+                         1, 1, 500, 1, 3, 0))
 
         page.add_row(Gtk.Label(label='Number of pixels to scroll a page per mouse wheel turn:'),
                      self._create_pref_spinner(
-                             'number of pixels to scroll per mouse wheel event',
-                             1, 1, 500, 1, 3, 0))
+                         'number of pixels to scroll per mouse wheel event',
+                         1, 1, 500, 1, 3, 0))
 
         page.new_section('Double page mode')
 
         page.add_row(self._create_pref_check_button(
-                'Flip two pages in double page mode',
-                'double step in double page mode'))
+            'Flip two pages in double page mode',
+            'double step in double page mode'))
 
         page.add_row(Gtk.Label(label='Show only one page where appropriate:'),
                      self._create_doublepage_as_one_control())
@@ -155,12 +155,12 @@ class _PreferencesDialog(Gtk.Dialog):
         page.new_section('Fullscreen')
 
         page.add_row(self._create_pref_check_button(
-                'Use fullscreen by default',
-                'default fullscreen'))
+            'Use fullscreen by default',
+            'default fullscreen'))
 
         page.add_row(self._create_pref_check_button(
-                'Hide all toolbars in fullscreen',
-                'hide all in fullscreen'))
+            'Hide all toolbars in fullscreen',
+            'hide all in fullscreen'))
 
         page.new_section('Fit to size mode')
 
@@ -169,14 +169,14 @@ class _PreferencesDialog(Gtk.Dialog):
 
         page.add_row(Gtk.Label(label='Fixed size for this mode:'),
                      self._create_pref_spinner(
-                             'fit to size px',
-                             1, 10, 10000, 10, 50, 0))
+                         'fit to size px',
+                         1, 10, 10000, 10, 50, 0))
 
         page.new_section('Rotation')
 
         page.add_row(self._create_pref_check_button(
-                'Rotate images according to their metadata',
-                'auto rotate from exif'))
+            'Rotate images according to their metadata',
+            'auto rotate from exif'))
 
         page.new_section('Image quality')
 
@@ -187,14 +187,14 @@ class _PreferencesDialog(Gtk.Dialog):
 
         page.add_row(Gtk.Label(label='Statusbar spacing:'),
                      self._create_pref_spinner(
-                             'statusbar spacing',
-                             1, 1, 20, 1, 10, 0))
+                         'statusbar spacing',
+                         1, 1, 20, 1, 10, 0))
 
         page.new_section('Cursor')
 
         page.add_row(self._create_pref_check_button(
-                'Hide cursor after delay',
-                'hide cursor'))
+            'Hide cursor after delay',
+            'hide cursor'))
 
         return page
 
@@ -208,58 +208,58 @@ class _PreferencesDialog(Gtk.Dialog):
 
         page.add_row(Gtk.Label(label='Bookmark dialog size (width):'),
                      self._create_pref_spinner(
-                             'bookmark width',
-                             1, 480, 10000, 10, 10, 0))
+                         'bookmark width',
+                         1, 480, 10000, 10, 10, 0))
 
         page.add_row(Gtk.Label(label='Bookmark dialog size (height):'),
                      self._create_pref_spinner(
-                             'bookmark height',
-                             1, 320, 10000, 10, 10, 0))
+                         'bookmark height',
+                         1, 320, 10000, 10, 10, 0))
 
         page.new_section('Properties')
 
         page.add_row(Gtk.Label(label='Properties dialog size (width):'),
                      self._create_pref_spinner(
-                             'properties width',
-                             1, 480, 10000, 10, 10, 0))
+                         'properties width',
+                         1, 480, 10000, 10, 10, 0))
 
         page.add_row(Gtk.Label(label='Properties dialog size (height):'),
                      self._create_pref_spinner(
-                             'properties height',
-                             1, 320, 10000, 10, 10, 0))
+                         'properties height',
+                         1, 320, 10000, 10, 10, 0))
 
         page.add_row(Gtk.Label(label='Properties thumb size:'),
                      self._create_pref_spinner(
-                             'properties thumb size',
-                             1, 32, 1024, 1, 10, 0))
+                         'properties thumb size',
+                         1, 32, 1024, 1, 10, 0))
 
         page.new_section('Page Selector')
 
         page.add_row(Gtk.Label(label='window size (width):'),
                      self._create_pref_spinner(
-                             'pageselector width',
-                             1, 560, 10000, 10, 10, 0))
+                         'pageselector width',
+                         1, 560, 10000, 10, 10, 0))
 
         page.add_row(Gtk.Label(label='window size (height):'),
                      self._create_pref_spinner(
-                             'pageselector height',
-                             1, 820, 10000, 10, 10, 0))
+                         'pageselector height',
+                         1, 820, 10000, 10, 10, 0))
 
         page.new_section('Main Window')
 
         page.add_row(self._create_pref_check_button(
-                'Save window size',
-                'window save'))
+            'Save window size',
+            'window save'))
 
         page.add_row(Gtk.Label(label='window size (width):'),
                      self._create_pref_spinner(
-                             'window width',
-                             1, 480, 10000, 10, 10, 0))
+                         'window width',
+                         1, 480, 10000, 10, 10, 0))
 
         page.add_row(Gtk.Label(label='window size (height):'),
                      self._create_pref_spinner(
-                             'window height',
-                             1, 320, 10000, 10, 10, 0))
+                         'window height',
+                         1, 320, 10000, 10, 10, 0))
 
         return page
 
@@ -275,12 +275,12 @@ class _PreferencesDialog(Gtk.Dialog):
                      self._create_animation_mode_combobox())
 
         page.add_row(self._create_pref_check_button(
-                'Use animation background (otherwise uses Appearance -> Background)',
-                'animation background'))
+            'Use animation background (otherwise uses Appearance -> Background)',
+            'animation background'))
 
         page.add_row(self._create_pref_check_button(
-                'Enable scale, rotate, flip and enhance operation on animation',
-                'animation transform'))
+            'Enable scale, rotate, flip and enhance operation on animation',
+            'animation transform'))
 
         return page
 
@@ -301,8 +301,8 @@ class _PreferencesDialog(Gtk.Dialog):
         page.new_section('File detection')
 
         page.add_row(self._create_pref_check_button(
-                'Detect image file(s) by mimetypes',
-                'check image mimetype'))
+            'Detect image file(s) by mimetypes',
+            'check image mimetype'))
 
         page.new_section('Moving files')
 
@@ -313,20 +313,20 @@ class _PreferencesDialog(Gtk.Dialog):
 
         page.add_row(Gtk.Label(label='Maximum number of pages to store in the cache (-1 caches everything):'),
                      self._create_pref_spinner(
-                             'max pages to cache',
-                             1, -1, 500, 1, 3, 0))
+                         'max pages to cache',
+                         1, -1, 500, 1, 3, 0))
 
         page.new_section('Magnifying Lens')
 
         page.add_row(Gtk.Label(label='Magnifying lens size (in pixels):'),
                      self._create_pref_spinner(
-                             'lens size',
-                             1, 50, 400, 1, 10, 0))
+                         'lens size',
+                         1, 50, 400, 1, 10, 0))
 
         page.add_row(Gtk.Label(label='Magnification lens factor:'),
                      self._create_pref_spinner(
-                             'lens magnification',
-                             1, 1.1, 10.0, 0.1, 1.0, 1))
+                         'lens magnification',
+                         1, 1.1, 10.0, 0.1, 1.0, 1))
 
         page.new_section('Threads')
 
