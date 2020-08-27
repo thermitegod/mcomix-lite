@@ -144,12 +144,15 @@ class MagnifyingLens:
         where <x> and <y> are the positions of the cursor
         """
 
+        def convert_rgb16list_to_rgba8int(c):
+            return 0x000000FF | (c[0] >> 8 << 24) | (c[1] >> 8 << 16) | (c[2] >> 8 << 8)
+
         canvas = GdkPixbuf.Pixbuf.new(colorspace=GdkPixbuf.Colorspace.RGB,
                                       has_alpha=True, bits_per_sample=8,
                                       width=prefs['lens size'],
                                       height=prefs['lens size'])
         r, g, b = [0, 0, 0]
-        canvas.fill(image_tools.convert_rgb16list_to_rgba8int([r, g, b]))
+        canvas.fill(convert_rgb16list_to_rgba8int([r, g, b]))
         cb = self.__window.get_layout().get_content_boxes()
         source_pixbufs = self.__window.imagehandler.get_pixbufs(len(cb))
         for idx, item in enumerate(cb):

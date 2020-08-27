@@ -392,10 +392,6 @@ def get_implied_rotation(pixbuf):
     return 0
 
 
-def convert_rgb16list_to_rgba8int(c):
-    return 0x000000FF | (c[0] >> 8 << 24) | (c[1] >> 8 << 16) | (c[2] >> 8 << 8)
-
-
 def get_image_size(path):
     """
     Return image informations: (format, width, height)
