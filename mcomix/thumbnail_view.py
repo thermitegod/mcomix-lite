@@ -73,8 +73,8 @@ class ThumbnailViewBase:
 
             model = self.get_model()
             for idx, item in enumerate(model):
-                iter = model.get_iter(idx)
-                uid, generated = model.get(iter, self.__uid_column, self.__status_column)
+                _iter = model.get_iter(idx)
+                uid, generated = model.get(_iter, self.__uid_column, self.__status_column)
                 # Do not queue again if thumbnail was already created.
                 if generated:
                     continue
@@ -83,12 +83,12 @@ class ThumbnailViewBase:
                 self.__taskid = taskid
                 self.__done.add(uid)
                 self.__threadpool.apply_async(
-                        self._pixbuf_worker, args=(uid, iter, model),
+                        self._pixbuf_worker, args=(uid, _iter, model),
                         callback=functools.partial(self._pixbuf_finished, taskid=taskid))
         finally:
             self.__lock.release()
 
-    def _pixbuf_worker(self, uid: int, iter, model):
+    def _pixbuf_worker(self, uid: int, _iter, model):
         """
         Run by a worker thread to generate the thumbnail for a path
         """
@@ -97,7 +97,7 @@ class ThumbnailViewBase:
         if pixbuf is None:
             self.__done.discard(uid)
             raise Exception('no pixbuf, skip callback.')
-        return iter, pixbuf, model
+        return _iter, pixbuf, model
 
     def _pixbuf_finished(self, params: tuple, taskid: int = -1):
         """
@@ -108,8 +108,8 @@ class ThumbnailViewBase:
         with self.__lock:
             if self.__taskid != taskid:
                 return
-            iter, pixbuf, model = params
-            model.set(iter, self.__status_column, True, self.__pixbuf_column, pixbuf)
+            _iter, pixbuf, model = params
+            model.set(_iter, self.__status_column, True, self.__pixbuf_column, pixbuf)
 
 
 class ThumbnailTreeView(Gtk.TreeView, ThumbnailViewBase):

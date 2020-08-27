@@ -409,9 +409,9 @@ class _PreferencesDialog(Gtk.Dialog):
         Called when a new option was selected for the virtual double page option
         """
 
-        iter = combobox.get_active_iter()
-        if combobox.get_model().iter_is_valid(iter):
-            value = combobox.get_model().get_value(iter, 1)
+        _iter = combobox.get_active_iter()
+        if combobox.get_model().iter_is_valid(_iter):
+            value = combobox.get_model().get_value(_iter, 1)
             prefs['virtual double page for fitting images'] = value
             self.__window.draw_image()
 
@@ -432,9 +432,9 @@ class _PreferencesDialog(Gtk.Dialog):
         Change to 'Fit to size' pixels
         """
 
-        iter = combobox.get_active_iter()
-        if combobox.get_model().iter_is_valid(iter):
-            value = combobox.get_model().get_value(iter, 1)
+        _iter = combobox.get_active_iter()
+        if combobox.get_model().iter_is_valid(_iter):
+            value = combobox.get_model().get_value(_iter, 1)
 
             if prefs['fit to size mode'] != value:
                 prefs['fit to size mode'] = value
@@ -475,9 +475,9 @@ class _PreferencesDialog(Gtk.Dialog):
         Called when a new option was selected for the virtual double page option
         """
 
-        iter = combobox.get_active_iter()
-        if combobox.get_model().iter_is_valid(iter):
-            value = combobox.get_model().get_value(iter, 1)
+        _iter = combobox.get_active_iter()
+        if combobox.get_model().iter_is_valid(_iter):
+            value = combobox.get_model().get_value(_iter, 1)
             prefs['sort by'] = value
 
             self.__window.filehandler.refresh_file()
@@ -487,9 +487,9 @@ class _PreferencesDialog(Gtk.Dialog):
         Called when sort order changes (ascending or descending)
         """
 
-        iter = combobox.get_active_iter()
-        if combobox.get_model().iter_is_valid(iter):
-            value = combobox.get_model().get_value(iter, 1)
+        _iter = combobox.get_active_iter()
+        if combobox.get_model().iter_is_valid(_iter):
+            value = combobox.get_model().get_value(_iter, 1)
             prefs['sort order'] = value
 
             self.__window.filehandler.refresh_file()
@@ -527,9 +527,9 @@ class _PreferencesDialog(Gtk.Dialog):
         Called when a new option was selected for the virtual double page option
         """
 
-        iter = combobox.get_active_iter()
-        if combobox.get_model().iter_is_valid(iter):
-            value = combobox.get_model().get_value(iter, 1)
+        _iter = combobox.get_active_iter()
+        if combobox.get_model().iter_is_valid(_iter):
+            value = combobox.get_model().get_value(_iter, 1)
             prefs['sort archive by'] = value
 
             self.__window.filehandler.refresh_file()
@@ -539,9 +539,9 @@ class _PreferencesDialog(Gtk.Dialog):
         Called when sort order changes (ascending or descending)
         """
 
-        iter = combobox.get_active_iter()
-        if combobox.get_model().iter_is_valid(iter):
-            value = combobox.get_model().get_value(iter, 1)
+        _iter = combobox.get_active_iter()
+        if combobox.get_model().iter_is_valid(_iter):
+            value = combobox.get_model().get_value(_iter, 1)
             prefs['sort archive order'] = value
 
             self.__window.filehandler.refresh_file()
@@ -568,9 +568,9 @@ class _PreferencesDialog(Gtk.Dialog):
         Called whan image scaling quality changes
         """
 
-        iter = combobox.get_active_iter()
-        if combobox.get_model().iter_is_valid(iter):
-            value = combobox.get_model().get_value(iter, 1)
+        _iter = combobox.get_active_iter()
+        if combobox.get_model().iter_is_valid(_iter):
+            value = combobox.get_model().get_value(_iter, 1)
             last_value = prefs['scaling quality']
             prefs['scaling quality'] = value
 
@@ -600,9 +600,9 @@ class _PreferencesDialog(Gtk.Dialog):
         Called whenever animation mode has been changed
         """
 
-        iter = combobox.get_active_iter()
-        if combobox.get_model().iter_is_valid(iter):
-            value = combobox.get_model().get_value(iter, 1)
+        _iter = combobox.get_active_iter()
+        if combobox.get_model().iter_is_valid(_iter):
+            value = combobox.get_model().get_value(_iter, 1)
             last_value = prefs['animation mode']
             prefs['animation mode'] = value
 
@@ -635,13 +635,13 @@ class _PreferencesDialog(Gtk.Dialog):
         box.add_attribute(renderer, 'text', 0)
 
         # Set active box option
-        iter = model.get_iter_first()
-        while iter:
-            if model.get_value(iter, 1) == selected_value:
-                box.set_active_iter(iter)
+        _iter = model.get_iter_first()
+        while _iter:
+            if model.get_value(_iter, 1) == selected_value:
+                box.set_active_iter(_iter)
                 break
             else:
-                iter = model.iter_next(iter)
+                _iter = model.iter_next(_iter)
 
         if change_callback:
             box.connect('changed', change_callback)

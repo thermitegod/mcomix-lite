@@ -126,8 +126,8 @@ class BookmarksDialog(Gtk.Dialog):
         Open the activated bookmark
         """
 
-        iter = treeview.get_model().get_iter(path)
-        bookmark = treeview.get_model().get_value(iter, 5)
+        _iter = treeview.get_model().get_iter(path)
+        bookmark = treeview.get_model().get_value(_iter, 5)
 
         self._close()
         bookmark.load()
