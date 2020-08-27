@@ -9,7 +9,7 @@ from pathlib import Path
 from mcomix import constants
 
 
-def run():
+def parse_args():
     parser = argparse.ArgumentParser(usage='%%(prog)s %s' % '[OPTION...] [PATH]',
                                      description='View images and manga archives.')
     parser.add_argument('path', type=str, action='store', nargs='*', default=None,
@@ -37,7 +37,11 @@ def run():
     debugopts.add_argument('-L', '--loglevel', default='WARNING', metavar='LEVEL', type=str.upper,
                            choices=['NONE', 'CRITICAL', 'ERROR', 'WARNING', 'INFO', 'VERBOSE', 'DEBUG', 'TRACE'],
                            help='Levels: %(choices)s')
-    args = parser.parse_args()
+    return parser.parse_args()
+
+
+def run():
+    args = parse_args()
 
     if args.version:
         print(f'{constants.APPNAME} {constants.VERSION}')
