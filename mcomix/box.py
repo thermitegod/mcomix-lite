@@ -204,7 +204,9 @@ class Box:
             if o < 0:
                 box1edge = box1.get_size()[idx] - box1edge
                 box2edge = box2.get_size()[idx] - box2edge
-            if (d := box1edge - box2edge) != 0:
+
+            d = box1edge - box2edge
+            if d != 0:
                 return d
         return 0
 
@@ -259,7 +261,8 @@ class Box:
         if not boxes:
             return []
         center_box = boxes[fix]
-        if (cs := center_box.get_size()[axis]) % 2 != 0:
+        cs = center_box.get_size()[axis]
+        if cs % 2 != 0:
             cs += 1
         cp = center_box.get_position()[axis]
         result = []

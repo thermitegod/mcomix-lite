@@ -56,8 +56,8 @@ class Extractor:
         self.__extracted = set()
         self.__archive = ArchiveTools.get_recursive_archive_handler(src, archive_type=archive_type)
         if self.__archive is None:
-            logger.warning(msg := f'Non-supported archive format: \'{Path(src).name}\'')
-            raise ArchiveException(msg)
+            logger.warning(f'Non-supported archive format: \'{Path(src).name}\'')
+            raise ArchiveException
 
         self.__dst = self.__archive.get_destdir()
         self.__extract_started = False

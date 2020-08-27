@@ -71,7 +71,8 @@ class _KeybindingInterface:
         assert name in keybindings_map.BINDING_INFO, f'"{name}" is not a valid keyboard action.'
 
         # Load stored keybindings, or fall back to passed arguments
-        if not (keycodes := self.__action_to_bindings[name]):
+        keycodes = self.__action_to_bindings[name]
+        if not keycodes:
             keycodes = [Gtk.accelerator_parse(binding) for binding in bindings]
 
         for keycode in keycodes:
@@ -103,7 +104,8 @@ class _KeybindingInterface:
         assert name in keybindings_map.BINDING_INFO, f'"{name}" is not a valid keyboard action.'
 
         nb = Gtk.accelerator_parse(new_binding)
-        if (old_action_with_nb := self.__binding_to_action.get(nb)) is not None:
+        old_action_with_nb = self.__binding_to_action.get(nb)
+        if old_action_with_nb is not None:
             # The new key is already bound to an action, erase the action
             self.__binding_to_action.pop(nb)
             self.__action_to_bindings[old_action_with_nb].remove(nb)

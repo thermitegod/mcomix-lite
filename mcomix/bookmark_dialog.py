@@ -116,7 +116,8 @@ class BookmarksDialog(Gtk.Dialog):
         Remove the currently selected bookmark from the dialog and from the store
         """
 
-        if (treeiter := self._selection.get_selected()[1]) is not None:
+        treeiter = self._selection.get_selected()[1]
+        if treeiter is not None:
             bookmark = self.__liststore.get_value(treeiter, 5)
             self.__liststore.remove(treeiter)
             self.__bookmarks_store.remove_bookmark(bookmark)

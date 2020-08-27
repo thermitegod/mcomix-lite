@@ -25,12 +25,14 @@ class EventHandler:
         Handle events from resizing and moving the main window
         """
 
-        if (size := (event.width, event.height)) != self.__window.previous_size:
+        size = (event.width, event.height)
+        if size != self.__window.previous_size:
             self.__window.previous_size = size
             self.__window.draw_image()
 
     def window_state_event(self, widget, event):
-        if self.__window.was_fullscreen != (is_fullscreen := self.__window.is_fullscreen):
+        is_fullscreen = self.__window.is_fullscreen
+        if self.__window.was_fullscreen != is_fullscreen:
             # Fullscreen state changed.
             self.__window.was_fullscreen = is_fullscreen
             # Re-enable control, now that transition is complete.
@@ -200,7 +202,8 @@ class EventHandler:
 
         keymap = Gdk.Keymap.get_default()
 
-        if (code := keymap.translate_keyboard_state(event.hardware_keycode, event.get_state(), event.group))[0]:
+        code = keymap.translate_keyboard_state(event.hardware_keycode, event.get_state(), event.group)
+        if code[0]:
             keyval = code[1]
             consumed = code[4]
 
@@ -331,10 +334,11 @@ class EventHandler:
         if Gtk.drag_get_source_widget(context) is not None:
             return
 
-        if not (uris := selection.get_uris()):
+        uris = selection.get_uris()
+        if not uris:
             return
 
-        def _normalize_uri(uri: str):
+        def normalize_uri(uri: str):
             """
             Normalize URIs passed into the program by different applications, via drag-and-drop
             """
@@ -348,9 +352,10 @@ class EventHandler:
             return uri
 
         # Normalize URIs
-        uris = [_normalize_uri(uri) for uri in uris]
+        uris = [normalize_uri(uri) for uri in uris]
 
-        if len(paths := [url2pathname(uri) for uri in uris]) > 1:
+        paths = [url2pathname(uri) for uri in uris]
+        if len(paths) > 1:
             self.__window.filehandler.open_file(paths)
         else:
             self.__window.filehandler.open_file(paths[0])

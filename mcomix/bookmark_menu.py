@@ -54,7 +54,8 @@ class BookmarksMenu(Gtk.Menu):
                 self.remove(item)
 
         # Add separator
-        if bookmarks := self.__bookmarks_store.get_bookmarks():
+        bookmarks = self.__bookmarks_store.get_bookmarks()
+        if bookmarks:
             separator = Gtk.SeparatorMenuItem()
             separator.show()
             self.append(separator)

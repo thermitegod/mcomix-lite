@@ -231,7 +231,8 @@ class ImageHandler:
         """
 
         if page is None:
-            if not (current_page := self.get_current_page()):
+            current_page = self.get_current_page()
+            if not current_page:
                 # Current 'book' has no page.
                 return False
             index_list = [current_page - 1]
@@ -272,7 +273,8 @@ class ImageHandler:
         C{value} is contained in C{lst}
         """
 
-        if (index := bisect.bisect_left(lst, value)) != len(lst) and lst[index] == value:
+        index = bisect.bisect_left(lst, value)
+        if index != len(lst) and lst[index] == value:
             return index
 
         return ~index
@@ -411,7 +413,8 @@ class ImageHandler:
 
         self._wait_on_page(page)
 
-        if (page_path := self.get_path_to_page(page)) is None:
+        page_path = self.get_path_to_page(page)
+        if page_path is None:
             return 0, 0
 
         return ImageTools.get_image_size(page_path)
@@ -424,7 +427,8 @@ class ImageHandler:
 
         self._wait_on_page(page)
 
-        if (page_path := self.get_path_to_page(page)) is None:
+        page_path = self.get_path_to_page(page)
+        if page_path is None:
             return None
 
         return ImageTools.get_image_mime(page_path)
@@ -441,7 +445,8 @@ class ImageHandler:
             # Page is not available!
             return None
 
-        if (path := self.get_path_to_page(page)) is None:
+        path = self.get_path_to_page(page)
+        if path is None:
             return None
 
         try:
@@ -481,7 +486,8 @@ class ImageHandler:
 
         total_pages = range(self.get_number_of_pages())
 
-        if (num_pages := self.__cache_pages) < 0:
+        num_pages = self.__cache_pages
+        if num_pages < 0:
             # default to 10 pages
             num_pages = min(10, len(total_pages))
 

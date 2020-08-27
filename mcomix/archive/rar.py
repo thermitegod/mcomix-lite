@@ -229,7 +229,8 @@ class RarArchive(BaseArchive):
                                                        OpenMode=RarArchive._OpenMode.RAR_OM_EXTRACT,
                                                        UserData=0)
 
-        if not (handle := self.__unrar.RAROpenArchiveEx(ctypes.byref(archivedata))):
+        handle = self.__unrar.RAROpenArchiveEx(ctypes.byref(archivedata))
+        if not handle:
             errormessage = UnrarException.get_error_message(archivedata.OpenResult)
             raise UnrarException(f'Could not open archive: {errormessage}')
         self.__handle = handle
@@ -280,7 +281,8 @@ class RarArchive(BaseArchive):
 
         if self.__handle is None:
             return
-        if (errorcode := self.__unrar.RARCloseArchive(self.__handle)) != 0:
+        errorcode = self.__unrar.RARCloseArchive(self.__handle)
+        if errorcode != 0:
             errormessage = UnrarException.get_error_message(errorcode)
             raise UnrarException(f'Could not close archive: {errormessage}')
         self.__handle = None

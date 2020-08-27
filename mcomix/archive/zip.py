@@ -49,7 +49,8 @@ class ZipArchive(BaseArchive):
         """
 
         with self.__lock:
-            data = self.__zip.read(info := self.__contents_info[filename])
+            info = self.__contents_info[filename]
+            data = self.__zip.read(info)
 
         destination_path = Path() / destination_dir / filename
         with self._create_file(destination_path) as new:

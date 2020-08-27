@@ -184,7 +184,9 @@ class ZoomModel:
             # In this case, only one solution or only an approximation is available.
             # if n > max_size, the result won't fit into max_size.
             return map(lambda x: self.div(1, x[axis]), sizes)  # FIXME ignores do_not_transform
-        if ((total_axis_size := sum(map(lambda x: x[axis], sizes))) <= max_size) and not allow_upscaling:
+
+        total_axis_size = sum(map(lambda x: x[axis], sizes))
+        if (total_axis_size <= max_size) and not allow_upscaling:
             # identity
             return [self.__identity_zoom] * n
 

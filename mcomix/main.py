@@ -354,11 +354,13 @@ class MainWindow(Gtk.Window):
             # Visible area size is recomputed depending on scrollbar visibility
             while 1:
                 self._show_scrollbars(scrollbar_requests)
-                if (new_viewport_size := self.get_visible_area_size()) == viewport_size:
+                new_viewport_size = self.get_visible_area_size()
+                if new_viewport_size == viewport_size:
                     break
                 viewport_size = new_viewport_size
                 zoom_dummy_size = list(viewport_size)
-                if (dasize := zoom_dummy_size[distribution_axis] - self.__spacing * (pixbuf_count - 1)) <= 0:
+                dasize = zoom_dummy_size[distribution_axis] - self.__spacing * (pixbuf_count - 1)
+                if dasize <= 0:
                     dasize = 1
                 zoom_dummy_size[distribution_axis] = dasize
                 scaled_sizes = self.zoom.get_zoomed_size(size_list, zoom_dummy_size,
@@ -442,7 +444,8 @@ class MainWindow(Gtk.Window):
     def _update_page_information(self):
         """Updates the window with information that can be gathered
         even when the page pixbuf(s) aren't ready yet"""
-        if not (page_number := self.imagehandler.get_current_page()):
+        page_number = self.imagehandler.get_current_page()
+        if not page_number:
             return
         if self.displayed_double():
             number_of_pages = 2
@@ -613,7 +616,8 @@ class MainWindow(Gtk.Window):
             self.set_page(1)
 
     def last_page(self):
-        if number_of_pages := self.imagehandler.get_number_of_pages():
+        number_of_pages = self.imagehandler.get_number_of_pages()
+        if number_of_pages:
             self.set_page(number_of_pages)
 
     def page_select(self, *args):

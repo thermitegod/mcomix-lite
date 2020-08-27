@@ -98,7 +98,8 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         Enables or disables page numbers on the thumbnail bar
         """
 
-        if visible := prefs['show page numbers on thumbnails']:
+        visible = prefs['show page numbers on thumbnails']
+        if visible:
             number_of_pages = self.__window.imagehandler.get_number_of_pages()
             number_of_digits = self.number_of_digits(number_of_pages)
             self.__text_cellrenderer.set_property('width-chars', number_of_digits + 1)
@@ -190,9 +191,8 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
 
         assert isinstance(uid, int)
         size = prefs['thumbnail size']
-        if (pixbuf := self.__window.imagehandler.get_thumbnail(page=uid,
-                                                               size=(size, size),
-                                                               nowait=True)) is not None:
+        pixbuf = self.__window.imagehandler.get_thumbnail(page=uid, size=(size, size), nowait=True)
+        if pixbuf is not None:
             pixbuf = ImageTools.add_border(pixbuf, self.__border_size)
 
         return pixbuf
@@ -275,7 +275,8 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         return pixbuf
 
     def _on_page_change(self):
-        if (row := self.__window.imagehandler.get_current_page() - 1) == self.__currently_selected_row:
+        row = self.__window.imagehandler.get_current_page() - 1
+        if row == self.__currently_selected_row:
             return
         self._set_selected_row(row)
 
