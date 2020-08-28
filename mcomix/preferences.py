@@ -53,7 +53,7 @@ prefs = {
     'sharpness': 1.0,
     'auto contrast': False,
     'max pages to cache': -1,
-    'statusbar fields': constants.STATUS_PAGE | constants.STATUS_RESOLUTION | constants.STATUS_PATH | constants.STATUS_FILENAME | constants.STATUS_FILESIZE,
+    'statusbar fields': constants.STATUS_PAGE | constants.STATUS_RESOLUTION | constants.STATUS_PATH | constants.STATUS_FILENAME | constants.STATUS_FILESIZE | constants.STATUS_MODE,
     'statusbar fullpath': True,
     'max threads thumbnail': 16,
     'max threads extract': 16,

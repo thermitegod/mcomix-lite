@@ -25,12 +25,13 @@ class Statusbar(Gtk.EventBox):
         ui_description = """
         <ui>
             <popup name="Statusbar">
-                <menuitem action="pagenumber" />
-                <menuitem action="filenumber" />
-                <menuitem action="resolution" />
-                <menuitem action="rootpath" />
-                <menuitem action="filename" />
-                <menuitem action="filesize" />
+                <menuitem action="view mode"/>
+                <menuitem action="pagenumber"/>
+                <menuitem action="filenumber"/>
+                <menuitem action="resolution"/>
+                <menuitem action="rootpath"/>
+                <menuitem action="filename"/>
+                <menuitem action="filesize"/>
             </popup>
         </ui>
         """
@@ -38,6 +39,7 @@ class Statusbar(Gtk.EventBox):
 
         actiongroup = Gtk.ActionGroup(name='mcomix-statusbar')
         actiongroup.add_toggle_actions([
+            ('view mode', None, 'Show current mode', None, None, self.toggle_status_visibility),
             ('pagenumber', None, 'Show page numbers', None, None, self.toggle_status_visibility),
             ('filenumber', None, 'Show file numbers', None, None, self.toggle_status_visibility),
             ('resolution', None, 'Show resolution', None, None, self.toggle_status_visibility),
@@ -57,6 +59,7 @@ class Statusbar(Gtk.EventBox):
         self.__root = ''
         self.__filename = ''
         self.__filesize = ''
+        self.__view_mode = ''
         self._update_sensitivity()
         self.show_all()
 
@@ -85,6 +88,16 @@ class Statusbar(Gtk.EventBox):
         """
 
         return self.__page_info
+
+    def set_mode(self):
+        """
+        Update the mode
+        """
+
+        if prefs['default manga mode']:
+            self.__view_mode = 'Manga Mode'
+        else:
+            self.__view_mode = 'Western Mode'
 
     def set_file_number(self, fileno: int, total: int):
         """
@@ -151,6 +164,7 @@ class Statusbar(Gtk.EventBox):
         """
 
         fields = [
+            (constants.STATUS_MODE, self.__view_mode),
             (constants.STATUS_PAGE, self.__page_info),
             (constants.STATUS_FILENUMBER, self.__file_info),
             (constants.STATUS_RESOLUTION, self.__resolution),
@@ -172,6 +186,7 @@ class Statusbar(Gtk.EventBox):
             return
 
         names = {
+            'view mode': constants.STATUS_MODE,
             'pagenumber': constants.STATUS_PAGE,
             'resolution': constants.STATUS_RESOLUTION,
             'rootpath': constants.STATUS_PATH,
@@ -205,6 +220,7 @@ class Statusbar(Gtk.EventBox):
 
         p = prefs['statusbar fields']
         names = {
+            'view mode': p & constants.STATUS_MODE,
             'pagenumber': p & constants.STATUS_PAGE,
             'filenumber': p & constants.STATUS_FILENUMBER,
             'resolution': p & constants.STATUS_RESOLUTION,
