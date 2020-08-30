@@ -73,11 +73,10 @@ def run():
         assert pilver >= constants.REQUIRED_PIL_VERSION
 
     except (AssertionError, AttributeError, ImportError):
-        logger.error('Required version of Pillow is not installed. \n'
-                     f'Required version is at least {constants.REQUIRED_PIL_VERSION}')
+        logger.error(f'Required Pillow version is at least {constants.REQUIRED_PIL_VERSION}')
         raise SystemExit(1)
 
-    logger.info(f'Image loaders: Pillow [{PIL.Image.__version__}], GDK [{GdkPixbuf.PIXBUF_VERSION}])')
+    logger.info(f'Image loaders: Pillow [{PIL.Image.__version__}], GDK [{GdkPixbuf.PIXBUF_VERSION}]')
 
     # Load configuration.
     from mcomix.preferences import PreferenceManager
@@ -93,9 +92,10 @@ def run():
         while n < len(open_path):
             p = Path() / open_path[n]
             if not Path.exists(p):
-                logger.error(f'Non existant file: \'{p}\'')
+                logger.warning(f'File does not exist: \'{p}\'')
                 open_path.pop(n)
                 continue
+            logger.info(f'Loading file from command line: \'{p}\'')
             open_path[n] = p
             n += 1
         if not open_path:

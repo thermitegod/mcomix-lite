@@ -201,7 +201,9 @@ class Extractor:
         with self.__condition:
             files = list(set(self.__files) - self.__extracted)
 
-        logger.debug(f'Extracting from \'{self.__src}\' to \'{self.__dst}\': \'{", ".join(files)}\'')
+        logger.debug(f'Extracting from \'{self.__src}\' to \'{self.__dst}\'')
+        logger.trace(f'{", ".join(files)}')
+
         for name in self.__archive.iter_extract(files, self.__dst):
             if self._extraction_finished(name):
                 return

@@ -129,7 +129,7 @@ class RecursiveArchive(BaseArchive):
             destination_dir = self.__destdir
         if root is not None:
             destination_dir = Path() / destination_dir / root
-        logger.debug(f'extracting from {archive.archive} to {destination_dir}: {filename}')
+        logger.debug(f'Extracting from {archive.archive} to {destination_dir}: {filename}')
         return archive.extract(name, destination_dir)
 
     def iter_extract(self, entries, destination_dir: Path):
@@ -156,7 +156,7 @@ class RecursiveArchive(BaseArchive):
                 archive_destination_dir = Path() / destination_dir
             else:
                 archive_destination_dir = Path() / root
-            logger.debug('extracting from '
+            logger.debug('Extracting from '
                          f'{archive.archive} to {archive_destination_dir}: {" ".join(archive_wanted.keys())}')
             for f in archive.iter_extract(archive_wanted.keys(), archive_destination_dir):
                 yield archive_wanted[f]
