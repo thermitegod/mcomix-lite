@@ -99,6 +99,12 @@ class _PreferencesDialog(Gtk.Dialog):
         # ----------------------------------------------------------------
         page = _PreferencePage(None)
 
+        page.new_section('Manga')
+
+        page.add_row(self._create_pref_check_button(
+            'Use western style page flipping in manga mode',
+            'manga flip right'))
+
         page.new_section('Scroll')
 
         page.add_row(self._create_pref_check_button(

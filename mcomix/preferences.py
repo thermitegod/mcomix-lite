@@ -23,6 +23,7 @@ prefs = {
     'default fullscreen': False,
     'zoom mode': constants.ZOOM_MODE_BEST,
     'default manga mode': True,
+    'manga flip right': False,
     'lens magnification': 2,
     'lens size': 200,
     'virtual double page for fitting images': constants.SHOW_DOUBLE_AS_ONE_TITLE | constants.SHOW_DOUBLE_AS_ONE_WIDE,

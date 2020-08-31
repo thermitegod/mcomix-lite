@@ -269,13 +269,13 @@ class EventHandler:
                 self._scroll_with_flipping(0, prefs['number of pixels to scroll per mouse wheel event'])
 
         elif direction == Gdk.ScrollDirection.RIGHT:
-            if self.__window.is_manga_mode:
+            if self.__window.is_manga_mode and not prefs['manga flip right']:
                 self._flip_page(-1)
             else:
                 self._flip_page(1)
 
         elif direction == Gdk.ScrollDirection.LEFT:
-            if self.__window.is_manga_mode:
+            if self.__window.is_manga_mode and not prefs['manga flip right']:
                 self._flip_page(1)
             else:
                 self._flip_page(-1)
@@ -373,7 +373,8 @@ class EventHandler:
         if self.__window.scroll(x, y):
             return True
 
-        if y > 0 or (self.__window.is_manga_mode and x < 0) or (not self.__window.is_manga_mode and x > 0):
+        if y > 0 or ((self.__window.is_manga_mode and not prefs['manga flip right']) and x < 0) \
+                or (not (self.__window.is_manga_mode and not prefs['manga flip right']) and x > 0):
             self._flip_page(1)
         else:
             self._flip_page(-1)
@@ -393,4 +394,7 @@ class EventHandler:
         normal mode. The opposite happens for number_of_pages being negative
         """
 
-        self._flip_page(-number_of_pages if self.__window.is_manga_mode else number_of_pages)
+        if self.__window.is_manga_mode and not prefs['manga flip right']:
+            self._flip_page(-number_of_pages)
+        else:
+            self._flip_page(number_of_pages)
