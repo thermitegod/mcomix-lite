@@ -25,13 +25,13 @@ class Statusbar(Gtk.EventBox):
         ui_description = """
         <ui>
             <popup name="Statusbar">
-                <menuitem action="view mode"/>
                 <menuitem action="pagenumber"/>
                 <menuitem action="filenumber"/>
                 <menuitem action="resolution"/>
                 <menuitem action="rootpath"/>
                 <menuitem action="filename"/>
                 <menuitem action="filesize"/>
+                <menuitem action="view mode"/>
             </popup>
         </ui>
         """
@@ -39,13 +39,13 @@ class Statusbar(Gtk.EventBox):
 
         actiongroup = Gtk.ActionGroup(name='mcomix-statusbar')
         actiongroup.add_toggle_actions([
-            ('view mode', None, 'Show current mode', None, None, self.toggle_status_visibility),
             ('pagenumber', None, 'Show page numbers', None, None, self.toggle_status_visibility),
             ('filenumber', None, 'Show file numbers', None, None, self.toggle_status_visibility),
             ('resolution', None, 'Show resolution', None, None, self.toggle_status_visibility),
             ('rootpath', None, 'Show path', None, None, self.toggle_status_visibility),
             ('filename', None, 'Show filename', None, None, self.toggle_status_visibility),
-            ('filesize', None, 'Show filesize', None, None, self.toggle_status_visibility)])
+            ('filesize', None, 'Show filesize', None, None, self.toggle_status_visibility),
+            ('view mode', None, 'Show current mode', None, None, self.toggle_status_visibility)])
         self.__ui_manager.insert_action_group(actiongroup, 0)
 
         # Hook mouse release event
@@ -164,13 +164,13 @@ class Statusbar(Gtk.EventBox):
         """
 
         fields = [
-            (constants.STATUS_MODE, self.__view_mode),
             (constants.STATUS_PAGE, self.__page_info),
             (constants.STATUS_FILENUMBER, self.__file_info),
             (constants.STATUS_RESOLUTION, self.__resolution),
             (constants.STATUS_PATH, self.__root),
             (constants.STATUS_FILENAME, self.__filename),
             (constants.STATUS_FILESIZE, self.__filesize),
+            (constants.STATUS_MODE, self.__view_mode),
         ]
         p = prefs['statusbar fields']
 
@@ -186,13 +186,13 @@ class Statusbar(Gtk.EventBox):
             return
 
         names = {
-            'view mode': constants.STATUS_MODE,
             'pagenumber': constants.STATUS_PAGE,
             'resolution': constants.STATUS_RESOLUTION,
             'rootpath': constants.STATUS_PATH,
             'filename': constants.STATUS_FILENAME,
             'filenumber': constants.STATUS_FILENUMBER,
             'filesize': constants.STATUS_FILESIZE,
+            'view mode': constants.STATUS_MODE,
         }
 
         bit = names[action.get_name()]
@@ -220,13 +220,13 @@ class Statusbar(Gtk.EventBox):
 
         p = prefs['statusbar fields']
         names = {
-            'view mode': p & constants.STATUS_MODE,
             'pagenumber': p & constants.STATUS_PAGE,
             'filenumber': p & constants.STATUS_FILENUMBER,
             'resolution': p & constants.STATUS_RESOLUTION,
             'rootpath': p & constants.STATUS_PATH,
             'filename': p & constants.STATUS_FILENAME,
             'filesize': p & constants.STATUS_FILESIZE,
+            'view mode': p & constants.STATUS_MODE,
         }
 
         for n, v in names.items():
