@@ -2,8 +2,8 @@
 
 """Class for transparently handling an archive containing sub-archives"""
 
-import tempfile
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 from loguru import logger
 
@@ -21,7 +21,7 @@ class RecursiveArchive(BaseArchive):
         if not Path.exists(constants.CACHE_DIR):
             constants.CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
-        self.__tempdir = tempfile.TemporaryDirectory(dir=constants.CACHE_DIR)
+        self.__tempdir = TemporaryDirectory(dir=constants.CACHE_DIR)
         self.__sub_tempdirs = []
         self.__destdir = self.__tempdir.name
         self.__archive_list = []
@@ -73,7 +73,7 @@ class RecursiveArchive(BaseArchive):
             if sub_archive is None:
                 logger.warning(f'Non-supported archive format: {Path(sub_archive_path).name}')
                 continue
-            sub_tempdir = tempfile.TemporaryDirectory(
+            sub_tempdir = TemporaryDirectory(
                     prefix=f'sub_archive.{len(self.__archive_list):04}.',
                     dir=self.__destdir)
             sub_root = sub_tempdir.name

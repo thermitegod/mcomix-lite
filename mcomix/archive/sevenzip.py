@@ -3,8 +3,8 @@
 """7z archive extractor"""
 
 import shutil
-import tempfile
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 
 from loguru import logger
 
@@ -124,7 +124,7 @@ class SevenZipArchive(ExternalExecutableArchive):
             self.list_contents()
 
         destination_path = Path() / destination_dir / filename
-        with tempfile.NamedTemporaryFile(mode='wt', prefix='mcomix.7z.') as tmplistfile:
+        with NamedTemporaryFile(mode='wt', prefix='mcomix.7z.') as tmplistfile:
             tmplistfile.write('filename\n')
             tmplistfile.flush()
             with self._create_file(destination_path) as output:
