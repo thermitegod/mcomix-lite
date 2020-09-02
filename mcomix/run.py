@@ -64,7 +64,7 @@ def run():
         from gi.repository import GLib, Gdk, GdkPixbuf, Gtk
 
     except (ValueError, AssertionError, ImportError):
-        logger.error('GTK+ 3.0 import error.')
+        logger.critical('GTK+ 3.0 import error')
         raise SystemExit(1)
 
     try:
@@ -73,7 +73,7 @@ def run():
         assert pilver >= constants.REQUIRED_PIL_VERSION
 
     except (AssertionError, AttributeError, ImportError):
-        logger.error(f'Required Pillow version is at least {constants.REQUIRED_PIL_VERSION}')
+        logger.critical(f'Required Pillow version is at least {constants.REQUIRED_PIL_VERSION}')
         raise SystemExit(1)
 
     logger.info(f'Image loaders: Pillow [{PIL.Image.__version__}], GDK [{GdkPixbuf.PIXBUF_VERSION}]')
