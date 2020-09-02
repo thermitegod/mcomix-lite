@@ -68,15 +68,15 @@ def run():
         raise SystemExit(1)
 
     try:
-        import PIL.Image
-        pilver = getattr(PIL.Image, '__version__', None)
-        assert pilver >= constants.REQUIRED_PIL_VERSION
+        import PIL
+        pil_version = PIL.__version__
+        assert pil_version >= constants.REQUIRED_PIL_VERSION
 
     except (AssertionError, AttributeError, ImportError):
         logger.critical(f'Required Pillow version is at least {constants.REQUIRED_PIL_VERSION}')
         raise SystemExit(1)
 
-    logger.info(f'Image loaders: Pillow [{PIL.Image.__version__}], GDK [{GdkPixbuf.PIXBUF_VERSION}]')
+    logger.info(f'Image loaders: Pillow [{pil_version}], GDK [{GdkPixbuf.PIXBUF_VERSION}]')
 
     # Load configuration.
     from mcomix.preferences import PreferenceManager
