@@ -683,8 +683,8 @@ class _PreferencesDialog(Gtk.Dialog):
         elif preference in ('check image mimetype',):
             self.__window.filehandler.refresh_file()
 
-    def _create_pref_spinner(self, prefkey: str, scale: int, lower: int, upper: int,
-                             step_incr: int, page_incr: int, digits: int):
+    def _create_pref_spinner(self, prefkey: str, scale: float, lower: float, upper: float,
+                             step_incr: float, page_incr: float, digits: float):
         value = prefs[prefkey] / scale
         adjustment = Gtk.Adjustment(value=value, lower=lower, upper=upper, step_increment=step_incr,
                                     page_increment=page_incr)
