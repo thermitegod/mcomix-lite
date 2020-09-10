@@ -54,17 +54,6 @@ class ZoomModel:
     def scale(t: list, factor: float):
         return [x * factor for x in t]
 
-    @staticmethod
-    def div(a: float, b: float):
-        return float(a) / float(b)
-
-    @staticmethod
-    def volume(t: list):
-        return reduce(operator.mul, t, 1)
-
-    def relerr(self, approx: int, ideal: float):
-        return abs(self.div(approx - ideal, ideal))
-
     def get_zoomed_size(self, image_sizes: list, screen_size: list, distribution_axis: int, do_not_transform: list):
         scale_up = self.__scale_up
         fitted_image_sizes = self._fix_page_sizes(image_sizes, distribution_axis, do_not_transform)
@@ -121,7 +110,7 @@ class ZoomModel:
             l = limits[idx]
             if l is None:
                 continue
-            s = self.div(l, image_size[idx])
+            s = l / image_size[idx]
             if min_scale is None or s < min_scale:
                 min_scale = s
         if min_scale is None:
@@ -183,7 +172,7 @@ class ZoomModel:
         if n >= max_size:
             # In this case, only one solution or only an approximation is available.
             # if n > max_size, the result won't fit into max_size.
-            return map(lambda x: self.div(1, x[axis]), sizes)  # FIXME ignores do_not_transform
+            return map(lambda x: (1 / x[axis]), sizes)  # FIXME ignores do_not_transform
 
         total_axis_size = sum(map(lambda x: x[axis], sizes))
         if (total_axis_size <= max_size) and not allow_upscaling:
@@ -191,7 +180,7 @@ class ZoomModel:
             return [self.__identity_zoom] * n
 
         # non-trival case
-        scale = self.div(max_size, total_axis_size)  # FIXME initial guess should take unscalable images into account
+        scale = max_size / total_axis_size  # FIXME initial guess should take unscalable images into account
         scaling_data = [None] * n
         total_axis_size = 0
         # This loop collects some data we need for the actual computations later.
@@ -204,21 +193,21 @@ class ZoomModel:
                 continue
             # Initial guess: The current scale works for all tuples.
             ideal = self.scale(this_size, scale)
-            ideal_vol = self.volume(ideal)
+            ideal_vol = reduce(operator.mul, ideal, 1)
             # Let's use a dummy to compute the actual (rounded) size along axis
             # so we can rescale the rounded tuple with a better local_scale
             # later. This rescaling is necessary to ensure that the sizes in ALL
             # dimensions are monotonically scaled (with respect to local_scale).
             # A nice side effect of this is that it keeps the aspect ratio better.
             dummy_approx = self._round_nonempty((ideal[axis],))[0]
-            local_scale = self.div(dummy_approx, this_size[axis])
+            local_scale = dummy_approx / this_size[axis]
             total_axis_size += dummy_approx
             can_be_downscaled = dummy_approx > 1
             if can_be_downscaled:
                 forced_size = dummy_approx - 1
-                forced_scale = self.div(forced_size, this_size[axis])
+                forced_scale = forced_size / this_size[axis]
                 forced_approx = self._scale_image_size(this_size, forced_scale)
-                forced_vol_err = self.relerr(self.volume(forced_approx), ideal_vol)
+                forced_vol_err = (reduce(operator.mul, forced_approx, 1) - ideal_vol) / ideal_vol
             else:
                 forced_scale = None
                 forced_vol_err = None
