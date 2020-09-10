@@ -15,7 +15,7 @@ REQUIRED_PIL_VERSION = '6.0.0'
 
 MAX_THREADS = 128
 
-PROG_NAME = 'mcomix'
+PROG_NAME = APPNAME.lower()
 try:
     CONFIG_DIR = Path() / os.environ['XDG_CONFIG_HOME'] / f'{PROG_NAME}'
     DATA_DIR = Path() / os.environ['XDG_DATA_HOME'] / f'{PROG_NAME}'
