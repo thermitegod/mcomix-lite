@@ -156,9 +156,9 @@ class EventHandler:
         self.__manager.register('quit',
                                 self.__window.terminate_program)
         self.__manager.register('delete',
-                                self.__window.move_file, kwargs={'action': 'delete'})
+                                self.__window.move_file, kwargs={'move_else_delete': False})
         self.__manager.register('move_file',
-                                self.__window.move_file, kwargs={'action': 'move_file'})
+                                self.__window.move_file, kwargs={'move_else_delete': True})
         self.__manager.register('extract_page',
                                 self.__window.extract_page)
         self.__manager.register('refresh_archive',

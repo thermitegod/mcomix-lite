@@ -875,32 +875,29 @@ class MainWindow(Gtk.Window):
 
         save_dialog.destroy()
 
-    def move_file(self, action: str = None, *args):
+    def move_file(self, move_else_delete: bool = True, *args):
         """
         The currently opened file/archive will be moved to prefs['move file']
         or
         The currently opened file/archive will be trashed after showing a confirmation dialog
         """
 
-        if action is None:
-            return None
-
         current_file = Path() / self.imagehandler.get_real_path()
 
-        def file_action():
-            if action == 'move_file':
+        def file_action(move: bool = True):
+            if move:
                 Path.rename(current_file, target_file)
-            elif action == 'delete':
+            else:
                 send2trash(current_file)
 
-        if action == 'move_file':
+        if move_else_delete:
             target_dir = Path() / current_file.parent / prefs['move file']
             target_file = Path() / target_dir / current_file.name
 
             if not Path.exists(target_dir):
                 target_dir.mkdir()
 
-        elif action == 'delete':
+        else:
             dialog = MessageDialog(
                     parent=self,
                     flags=Gtk.DialogFlags.MODAL,
@@ -926,7 +923,7 @@ class MainWindow(Gtk.Window):
                 self.filehandler.close_file()
 
             if Path.is_file(current_file):
-                file_action()
+                file_action(move_else_delete)
         else:
             if self.imagehandler.get_number_of_pages() > 1:
                 # Open the next/previous file
@@ -936,14 +933,14 @@ class MainWindow(Gtk.Window):
                     self.flip_page(+1)
                 # Move the desired file
                 if Path.is_file(current_file):
-                    file_action()
+                    file_action(move_else_delete)
 
                 # Refresh the directory
                 self.filehandler.refresh_file()
             else:
                 self.filehandler.close_file()
                 if Path.is_file(current_file):
-                    file_action()
+                    file_action(move_else_delete)
 
     def minimize(self, *args):
         """

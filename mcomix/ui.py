@@ -27,7 +27,7 @@ class MainUI(Gtk.UIManager):
         self.__actiongroup = Gtk.ActionGroup(name='mcomix-main')
         self.__actiongroup.add_actions([
             ('delete', Gtk.STOCK_DELETE, '_Delete',
-             None, None, _action_lambda(self.__window.move_file, 'delete')),
+             None, None, _action_lambda(self.__window.move_file, False)),
             ('refresh_archive', Gtk.STOCK_REFRESH, 'Re_fresh',
              None, None, self.__window.filehandler.refresh_file),
             ('zoom_in', Gtk.STOCK_ZOOM_IN, 'Zoom _In',
