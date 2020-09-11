@@ -60,7 +60,7 @@ class _ImageTools:
         # read starting bytes and using Gio.content_type_guess
         # to guess if path is supported, ignoring file extension.
         path = Path() / path
-        if prefs['check image mimetype'] and check_mimetype and Path.is_file(path):
+        if prefs['CHECK_IMAGE_MIMETYPE'] and check_mimetype and Path.is_file(path):
             with Path.open(path, mode='rb') as fd:
                 magic = fd.read(10)
             mime, uncertain = Gio.content_type_guess(data=magic)
@@ -162,7 +162,7 @@ class _ImageTools:
             width, height = height, width
 
         if scaling_quality is None:
-            scaling_quality = prefs['scaling quality']
+            scaling_quality = prefs['SCALING_QUALITY']
 
         src_width = src.get_width()
         src_height = src.get_height()
@@ -173,7 +173,7 @@ class _ImageTools:
                                               scale_up=scale_up)
 
         if src.get_has_alpha():
-            if prefs['checkered bg for transparent images']:
+            if prefs['CHECKERED_BG_FOR_TRANSPARENT_IMAGES']:
                 check_size, color1, color2 = 8, 0x777777, 0x999999
             else:
                 check_size, color1, color2 = 1024, 0xFFFFFF, 0xFFFFFF
@@ -255,7 +255,7 @@ class _ImageTools:
         if self.is_animation(pixbuf):
             if not hasattr(pixbuf, 'framebuffer'):
                 return True
-            if not prefs['animation transform']:
+            if not prefs['ANIMATION_TRANSFORM']:
                 return True
 
         return False
@@ -300,7 +300,7 @@ class _ImageTools:
         Loads a pixbuf from a given image file
         """
 
-        enable_anime = prefs['animation mode'] != constants.ANIMATION_DISABLED
+        enable_anime = prefs['ANIMATION_MODE'] != constants.ANIMATION_DISABLED
         try:
             with LockedFileIO(path) as fio:
                 with Image.open(fio) as im:

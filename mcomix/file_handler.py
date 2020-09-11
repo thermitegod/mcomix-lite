@@ -59,7 +59,7 @@ class FileHandler:
         self.__filelist = None
         self.__start_page = 0
 
-        self.__open_first_page = 0 if prefs['open first page'] else -1
+        self.__open_first_page = 0 if prefs['OPEN_FIRST_PAGE'] else -1
 
     def refresh_file(self, *args, **kwargs):
         """
@@ -301,15 +301,15 @@ class FileHandler:
         Sorts the image list passed in C{filelist} based on the sorting preference option
         """
 
-        if prefs['sort archive by'] == constants.SORT_NAME:
+        if prefs['SORT_ARCHIVE_BY'] == constants.SORT_NAME:
             SortAlphanumeric.alphanumeric_sort(filelist)
-        elif prefs['sort archive by'] == constants.SORT_NAME_LITERAL:
+        elif prefs['SORT_ARCHIVE_BY'] == constants.SORT_NAME_LITERAL:
             filelist.sort()
         else:
             # No sorting
             pass
 
-        if prefs['sort archive order'] == constants.SORT_DESCENDING:
+        if prefs['SORT_ARCHIVE_ORDER'] == constants.SORT_DESCENDING:
             filelist.reverse()
 
     @staticmethod
@@ -325,9 +325,9 @@ class FileHandler:
         :rtype: int
         """
 
-        if start_page < 0 and prefs['default double page']:
+        if start_page < 0 and prefs['DEFAULT_DOUBLE_PAGE']:
             current_image_index = num_of_pages - 2
-        elif start_page < 0 and not prefs['default double page']:
+        elif start_page < 0 and not prefs['DEFAULT_DOUBLE_PAGE']:
             current_image_index = num_of_pages - 1
         else:
             current_image_index = start_page - 1

@@ -15,9 +15,9 @@ class AnimeFrameBuffer:
         self.__n_frames = n_frames
         self.__width = 0
         self.__height = 0
-        if prefs['animation mode'] == constants.ANIMATION_INF:
+        if prefs['ANIMATION_MODE'] == constants.ANIMATION_INF:
             self.__loop = 0
-        elif prefs['animation mode'] == constants.ANIMATION_ONCE:
+        elif prefs['ANIMATION_MODE'] == constants.ANIMATION_ONCE:
             self.__loop = 1
         else:
             self.__loop = 0 if loop > 10 else loop  # loop over 10 is infinitely
@@ -37,7 +37,7 @@ class AnimeFrameBuffer:
         else:
             self.__width = width
             self.__height = height
-        if prefs['animation background'] and background:
+        if prefs['ANIMATION_BACKGROUND'] and background:
             pixbuf = pixbuf.composite_color_simple(
                     width, height, GdkPixbuf.InterpType.NEAREST,
                     255, 1024, background, background
@@ -89,7 +89,7 @@ class AnimeFrameExecutor:
     def frame_executor(animation, function, args=(), kwargs=None):
         if kwargs is None:
             kwargs = {}
-        if not prefs['animation transform']:
+        if not prefs['ANIMATION_TRANSFORM']:
             # transform disabled, do nothing
             return animation
         if not callable(function):

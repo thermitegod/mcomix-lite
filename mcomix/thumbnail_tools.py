@@ -21,13 +21,13 @@ class Thumbnailer:
         <dst_dir> set the thumbnailer's storage directory.
 
         The dimensions for the created thumbnails is set by <size>, a (width,
-        height) tupple. Defaults to the 'thumbnail size' preference if not set.
+        height) tupple. Defaults to the 'THUMBNAIL_SIZE' preference if not set.
         """
 
         super().__init__()
 
         if size is None:
-            self.__width = self.__height = prefs['thumbnail size']
+            self.__width = self.__height = prefs['THUMBNAIL_SIZE']
             self.__default_sizes = True
         else:
             self.__width, self.__height = size
@@ -44,8 +44,8 @@ class Thumbnailer:
 
         # Update width and height from preferences if they haven't been set explicitly
         if self.__default_sizes:
-            self.__width = prefs['thumbnail size']
-            self.__height = prefs['thumbnail size']
+            self.__width = prefs['THUMBNAIL_SIZE']
+            self.__height = prefs['THUMBNAIL_SIZE']
 
         return self._create_thumbnail(filepath)
 

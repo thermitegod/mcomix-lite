@@ -12,7 +12,7 @@ class Statusbar(Gtk.EventBox):
     def __init__(self):
         super().__init__()
 
-        self.__spacing = prefs['statusbar spacing']
+        self.__spacing = prefs['STATUSBAR_SPACING']
 
         self.__loading = True
 
@@ -94,7 +94,7 @@ class Statusbar(Gtk.EventBox):
         Update the mode
         """
 
-        if prefs['default manga mode']:
+        if prefs['DEFAULT_MANGA_MODE']:
             self.__view_mode = 'Manga Mode'
         else:
             self.__view_mode = 'Western Mode'
@@ -172,7 +172,7 @@ class Statusbar(Gtk.EventBox):
             (constants.STATUS_FILESIZE, self.__filesize),
             (constants.STATUS_MODE, self.__view_mode),
         ]
-        p = prefs['statusbar fields']
+        p = prefs['STATUSBAR_FIELDS']
 
         return [s for c, s in filter(lambda f: f[0] & p, fields)]
 
@@ -198,9 +198,9 @@ class Statusbar(Gtk.EventBox):
         bit = names[action.get_name()]
 
         if action.get_active():
-            prefs['statusbar fields'] |= bit
+            prefs['STATUSBAR_FIELDS'] |= bit
         else:
-            prefs['statusbar fields'] &= ~bit
+            prefs['STATUSBAR_FIELDS'] &= ~bit
 
         self.update()
         self._update_sensitivity()
@@ -218,7 +218,7 @@ class Statusbar(Gtk.EventBox):
         Updates the action menu's sensitivity based on user preferences
         """
 
-        p = prefs['statusbar fields']
+        p = prefs['STATUSBAR_FIELDS']
         names = {
             'pagenumber': p & constants.STATUS_PAGE,
             'filenumber': p & constants.STATUS_FILENUMBER,

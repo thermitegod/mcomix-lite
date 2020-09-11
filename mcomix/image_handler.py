@@ -34,7 +34,7 @@ class ImageHandler:
 
         #: Caching thread
         self.__thread = ThreadPool(name=self.__class__.__name__,
-                                   processes=prefs['max threads general'])
+                                   processes=prefs['MAX_THREADS_GENERAL'])
         self.__lock = Lock()
         self.__cache_lock = {}
         #: Archive path, if currently opened file is archive
@@ -50,7 +50,7 @@ class ImageHandler:
         #: Pixbuf map from page > Pixbuf
         self.__raw_pixbufs = {}
         #: How many pages to keep in cache
-        self.__cache_pages = prefs['max pages to cache']
+        self.__cache_pages = prefs['MAX_PAGES_TO_CACHE']
 
         self.__window.filehandler.file_available += self._file_available
 
@@ -173,12 +173,12 @@ class ImageHandler:
             page = self.get_current_page()
 
         if (page == 1 and
-                prefs['virtual double page for fitting images'] & constants.SHOW_DOUBLE_AS_ONE_TITLE and
+                prefs['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & constants.SHOW_DOUBLE_AS_ONE_TITLE and
                 self.__window.filehandler.get_archive_type() is not None):
             return True
 
-        if (not prefs['default double page'] or
-                not prefs['virtual double page for fitting images'] & constants.SHOW_DOUBLE_AS_ONE_WIDE or
+        if (not prefs['DEFAULT_DOUBLE_PAGE'] or
+                not prefs['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & constants.SHOW_DOUBLE_AS_ONE_WIDE or
                 page == self.get_number_of_pages()):
             return False
 
@@ -187,7 +187,7 @@ class ImageHandler:
                 return False
             pixbuf = self._get_pixbuf(page - 1)
             width, height = pixbuf.get_width(), pixbuf.get_height()
-            if prefs['auto rotate from exif']:
+            if prefs['AUTO_ROTATE_FROM_EXIF']:
                 rotation = ImageTools.get_implied_rotation(pixbuf)
                 assert rotation in (0, 90, 180, 270)
                 if rotation in (90, 270):

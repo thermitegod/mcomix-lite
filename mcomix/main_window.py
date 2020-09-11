@@ -45,7 +45,7 @@ class MainWindow(Gtk.Window):
         self.was_fullscreen = False
         self.is_manga_mode = False
         self.previous_size = (None, None)
-        #: Used to remember if changing to fullscreen enabled 'Hide all'
+        #: Used to remember if changing to fullscreen enabled 'HIDE_ALL'
         self.__hide_all_forced = False
         # Remember last scroll destination.
         self.__last_scroll_destination = constants.SCROLL_TO_START
@@ -114,10 +114,10 @@ class MainWindow(Gtk.Window):
         table.attach(self.statusbar, 0, 3, 5, 6, Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
                      Gtk.AttachOptions.FILL, 0, 0)
 
-        if prefs['default double page'] or double_page:
+        if prefs['DEFAULT_DOUBLE_PAGE'] or double_page:
             self.actiongroup.get_action('double_page').activate()
 
-        if prefs['default manga mode'] or manga_mode:
+        if prefs['DEFAULT_MANGA_MODE'] or manga_mode:
             self.actiongroup.get_action('manga_mode').activate()
 
         # Determine zoom mode. If zoom_mode is passed, it overrides
@@ -131,28 +131,28 @@ class MainWindow(Gtk.Window):
         if zoom_mode is not None:
             zoom_action = zoom_actions[zoom_mode]
         else:
-            zoom_action = zoom_actions[prefs['zoom mode']]
+            zoom_action = zoom_actions[prefs['ZOOM_MODE']]
 
         self.actiongroup.get_action(zoom_action).activate()
 
-        if prefs['stretch']:
+        if prefs['STRETCH']:
             self.actiongroup.get_action('stretch').activate()
 
-        if prefs['keep transformation']:
-            prefs['keep transformation'] = False
+        if prefs['KEEP_TRANSFORMATION']:
+            prefs['KEEP_TRANSFORMATION'] = False
             self.actiongroup.get_action('keep_transformation').activate()
         else:
-            prefs['rotation'] = 0
-            prefs['vertical flip'] = False
-            prefs['horizontal flip'] = False
+            prefs['ROTATION'] = 0
+            prefs['VERTICAL_FLIP'] = False
+            prefs['HORIZONTAL_FLIP'] = False
 
         # List of "toggles" than can be shown/hidden by the user.
         self.__toggle_list = (
             # Preference        Action        Widget(s)
-            ('show menubar', 'menubar', (self.menubar,)),
-            ('show scrollbar', 'scrollbar', self.__scroll),
-            ('show statusbar', 'statusbar', (self.statusbar,)),
-            ('show thumbnails', 'thumbnails', (self.thumbnailsidebar,)),
+            ('SHOW_MENUBAR', 'menubar', (self.menubar,)),
+            ('SHOW_SCROLLBAR', 'scrollbar', self.__scroll),
+            ('SHOW_STATUSBAR', 'statusbar', (self.statusbar,)),
+            ('SHOW_THUMBNAILS', 'thumbnails', (self.thumbnailsidebar,)),
         )
 
         # Each "toggle" widget "eats" part of the main layout visible area.
@@ -195,14 +195,14 @@ class MainWindow(Gtk.Window):
 
         self.show()
 
-        if prefs['default fullscreen'] or fullscreen:
+        if prefs['DEFAULT_FULLSCREEN'] or fullscreen:
             toggleaction = self.actiongroup.get_action('fullscreen')
             toggleaction.set_active(True)
 
         if open_path is not None:
             self.filehandler.open_file(open_path)
 
-        if prefs['hide cursor']:
+        if prefs['HIDE_CURSOR']:
             self.cursor_handler.auto_hide_on()
 
             # Make sure we receive *all* mouse motion events,
@@ -247,7 +247,7 @@ class MainWindow(Gtk.Window):
         """
 
         prefs[preference] = toggleaction.get_active()
-        if preference == 'hide all':
+        if preference == 'HIDE_ALL':
             self.update_toggles_sensitivity()
         # Since the size of the drawing area is dependent
         # on the visible "toggles", redraw the page.
@@ -259,11 +259,11 @@ class MainWindow(Gtk.Window):
         """
 
         if self.is_fullscreen:
-            visible = not prefs['hide all in fullscreen'] and not prefs['hide all']
+            visible = not prefs['HIDE_ALL_IN_FULLSCREEN'] and not prefs['HIDE_ALL']
         else:
-            visible = not prefs['hide all']
+            visible = not prefs['HIDE_ALL']
         visible &= prefs[preference]
-        if preference == 'show thumbnails':
+        if preference == 'SHOW_THUMBNAILS':
             visible &= self.filehandler.get_file_loaded()
             visible &= self.imagehandler.get_number_of_pages() > 0
         return visible
@@ -274,7 +274,7 @@ class MainWindow(Gtk.Window):
         """
 
         sensitive = True
-        if prefs['hide all'] or (prefs['hide all in fullscreen'] and self.is_fullscreen):
+        if prefs['HIDE_ALL'] or (prefs['HIDE_ALL_IN_FULLSCREEN'] and self.is_fullscreen):
             sensitive = False
         for preference, action, widget_list in self.__toggle_list:
             self.actiongroup.get_action(action).set_sensitive(sensitive)
@@ -319,7 +319,7 @@ class MainWindow(Gtk.Window):
             # - apply Exif rotation on individual images
             # - apply automatic rotation (size based) on whole page
             # - apply manual rotation on whole page
-            if prefs['auto rotate from exif']:
+            if prefs['AUTO_ROTATE_FROM_EXIF']:
                 rotation_list = [ImageTools.get_implied_rotation(pixbuf) for pixbuf in pixbuf_list]
             else:
                 rotation_list = [0] * len(pixbuf_list)
@@ -330,7 +330,7 @@ class MainWindow(Gtk.Window):
                 size = size_list[i]
                 virtual_size[distribution_axis] += size[distribution_axis]
                 virtual_size[alignment_axis] = max(virtual_size[alignment_axis], size[alignment_axis])
-            rotation = (self._get_size_rotation(*virtual_size) + prefs['rotation']) % 360
+            rotation = (self._get_size_rotation(*virtual_size) + prefs['ROTATION']) % 360
             if rotation in (90, 270):
                 distribution_axis, alignment_axis = alignment_axis, distribution_axis
                 orientation = list(orientation)
@@ -341,9 +341,9 @@ class MainWindow(Gtk.Window):
                 orientation = vector_opposite(orientation)
             for i in range(pixbuf_count):
                 rotation_list[i] = (rotation_list[i] + rotation) % 360
-            if prefs['vertical flip']:
+            if prefs['VERTICAL_FLIP']:
                 orientation = vector_opposite(orientation)
-            if prefs['horizontal flip']:
+            if prefs['HORIZONTAL_FLIP']:
                 orientation = vector_opposite(orientation)
 
             viewport_size = ()  # dummy
@@ -386,8 +386,8 @@ class MainWindow(Gtk.Window):
             for i in range(pixbuf_count):
                 pixbuf_list[i] = ImageTools.trans_pixbuf(
                         pixbuf_list[i],
-                        flip=prefs['vertical flip'],
-                        flop=prefs['horizontal flip'])
+                        flip=prefs['VERTICAL_FLIP'],
+                        flop=prefs['HORIZONTAL_FLIP'])
                 pixbuf_list[i] = self.enhancer.enhance(pixbuf_list[i])
 
             for i in range(pixbuf_count):
@@ -459,7 +459,7 @@ class MainWindow(Gtk.Window):
             filesize = self.imagehandler.get_page_filesize()
         self.statusbar.set_page_number(page_number, self.imagehandler.get_number_of_pages(), number_of_pages)
         self.statusbar.set_filename(filename)
-        if prefs['statusbar fullpath']:
+        if prefs['STATUSBAR_FULLPATH']:
             self.statusbar.set_root(self.filehandler.get_path_to_base())
         else:
             self.statusbar.set_root(self.filehandler.get_base_filename())
@@ -477,16 +477,16 @@ class MainWindow(Gtk.Window):
         size_rotation = 0
 
         if (height > width and
-                prefs['auto rotate depending on size'] in
+                prefs['AUTO_ROTATE_DEPENDING_ON_SIZE'] in
                 (constants.AUTOROTATE_HEIGHT_90, constants.AUTOROTATE_HEIGHT_270)):
-            if prefs['auto rotate depending on size'] == constants.AUTOROTATE_HEIGHT_90:
+            if prefs['AUTO_ROTATE_DEPENDING_ON_SIZE'] == constants.AUTOROTATE_HEIGHT_90:
                 size_rotation = 90
             else:
                 size_rotation = 270
         elif (width > height and
-              prefs['auto rotate depending on size'] in
+              prefs['AUTO_ROTATE_DEPENDING_ON_SIZE'] in
               (constants.AUTOROTATE_WIDTH_90, constants.AUTOROTATE_WIDTH_270)):
-            if prefs['auto rotate depending on size'] == constants.AUTOROTATE_WIDTH_90:
+            if prefs['AUTO_ROTATE_DEPENDING_ON_SIZE'] == constants.AUTOROTATE_WIDTH_90:
                 size_rotation = 90
             else:
                 size_rotation = 270
@@ -508,7 +508,7 @@ class MainWindow(Gtk.Window):
         # Use first page as application icon when opening archives.
         if (page == 1
                 and self.filehandler.get_archive_type() is not None
-                and prefs['archive thumbnail as icon']):
+                and prefs['ARCHIVE_THUMBNAIL_AS_ICON']):
             pixbuf = self.imagehandler.get_thumbnail(page=page, size=(48, 48))
             self.set_icon(pixbuf)
 
@@ -528,10 +528,10 @@ class MainWindow(Gtk.Window):
         Draw a *new* page correctly (as opposed to redrawing the same image with a new size or whatever)
         """
 
-        if not prefs['keep transformation']:
-            prefs['rotation'] = 0
-            prefs['horizontal flip'] = False
-            prefs['vertical flip'] = False
+        if not prefs['KEEP_TRANSFORMATION']:
+            prefs['ROTATION'] = 0
+            prefs['HORIZONTAL_FLIP'] = False
+            prefs['VERTICAL_FLIP'] = False
 
         if at_bottom:
             scroll_to = constants.SCROLL_TO_END
@@ -559,27 +559,27 @@ class MainWindow(Gtk.Window):
     def next_book(self):
         archive_open = self.filehandler.get_archive_type() is not None
         next_archive_opened = False
-        if prefs['auto open next archive']:
+        if prefs['AUTO_OPEN_NEXT_ARCHIVE']:
             next_archive_opened = self.filehandler.open_archive_direction(forward=True)
 
         # If "Auto open next archive" is disabled, do not go to the next
         # directory if current file was an archive.
         if not next_archive_opened and \
-                prefs['auto open next directory'] and \
-                (not archive_open or prefs['auto open next archive']):
+                prefs['AUTO_OPEN_NEXT_DIRECTORY'] and \
+                (not archive_open or prefs['AUTO_OPEN_NEXT_ARCHIVE']):
             self.filehandler.open_directory_direction(forward=True)
 
     def previous_book(self):
         archive_open = self.filehandler.get_archive_type() is not None
         previous_archive_opened = False
-        if prefs['auto open next archive']:
+        if prefs['AUTO_OPEN_NEXT_ARCHIVE']:
             previous_archive_opened = self.filehandler.open_archive_direction(forward=False)
 
         # If "Auto open next archive" is disabled, do not go to the previous
         # directory if current file was an archive.
         if not previous_archive_opened and \
-                prefs['auto open next directory'] and \
-                (not archive_open or prefs['auto open next archive']):
+                prefs['AUTO_OPEN_NEXT_DIRECTORY'] and \
+                (not archive_open or prefs['AUTO_OPEN_NEXT_ARCHIVE']):
             self.filehandler.open_directory_direction(forward=False)
 
     def flip_page(self, step: int, single_step: bool = False):
@@ -592,8 +592,8 @@ class MainWindow(Gtk.Window):
         new_page = current_page + step
         if (abs(step) == 1 and
                 not single_step and
-                prefs['default double page'] and
-                prefs['double step in double page mode']):
+                prefs['DEFAULT_DOUBLE_PAGE'] and
+                prefs['DOUBLE_STEP_IN_DOUBLE_PAGE_MODE']):
             if step == +1 and not self.imagehandler.get_virtual_double_page():
                 new_page += 1
             elif step == -1 and not self.imagehandler.get_virtual_double_page(new_page - 1):
@@ -628,32 +628,32 @@ class MainWindow(Gtk.Window):
         Pageselector(self)
 
     def rotate_90(self, *args):
-        prefs['rotation'] = (prefs['rotation'] + 90) % 360
+        prefs['ROTATION'] = (prefs['ROTATION'] + 90) % 360
         self.draw_image()
 
     def rotate_180(self, *args):
-        prefs['rotation'] = (prefs['rotation'] + 180) % 360
+        prefs['ROTATION'] = (prefs['ROTATION'] + 180) % 360
         self.draw_image()
 
     def rotate_270(self, *args):
-        prefs['rotation'] = (prefs['rotation'] + 270) % 360
+        prefs['ROTATION'] = (prefs['ROTATION'] + 270) % 360
         self.draw_image()
 
     def flip_horizontally(self, *args):
-        prefs['horizontal flip'] = not prefs['horizontal flip']
+        prefs['HORIZONTAL_FLIP'] = not prefs['HORIZONTAL_FLIP']
         self.draw_image()
 
     def flip_vertically(self, *args):
-        prefs['vertical flip'] = not prefs['vertical flip']
+        prefs['VERTICAL_FLIP'] = not prefs['VERTICAL_FLIP']
         self.draw_image()
 
     def change_double_page(self, toggleaction):
-        prefs['default double page'] = toggleaction.get_active()
+        prefs['DEFAULT_DOUBLE_PAGE'] = toggleaction.get_active()
         self._update_page_information()
         self.draw_image()
 
     def change_manga_mode(self, toggleaction):
-        prefs['default manga mode'] = toggleaction.get_active()
+        prefs['DEFAULT_MANGA_MODE'] = toggleaction.get_active()
         self.is_manga_mode = toggleaction.get_active()
         self._update_page_information()
         self.draw_image()
@@ -677,9 +677,9 @@ class MainWindow(Gtk.Window):
 
     def change_zoom_mode(self, radioaction=None, *args):
         if radioaction:
-            prefs['zoom mode'] = radioaction.get_current_value()
-        self.zoom.set_fit_mode(prefs['zoom mode'])
-        self.zoom.set_scale_up(prefs['stretch'])
+            prefs['ZOOM_MODE'] = radioaction.get_current_value()
+        self.zoom.set_fit_mode(prefs['ZOOM_MODE'])
+        self.zoom.set_scale_up(prefs['STRETCH'])
         self.zoom.reset_user_zoom()
         self.draw_image()
 
@@ -690,7 +690,7 @@ class MainWindow(Gtk.Window):
         """
 
         if radioaction:
-            prefs['auto rotate depending on size'] = radioaction.get_current_value()
+            prefs['AUTO_ROTATE_DEPENDING_ON_SIZE'] = radioaction.get_current_value()
         self.draw_image()
 
     def change_stretch(self, toggleaction, *args):
@@ -698,28 +698,28 @@ class MainWindow(Gtk.Window):
         Toggles stretching small images
         """
 
-        prefs['stretch'] = toggleaction.get_active()
-        self.zoom.set_scale_up(prefs['stretch'])
+        prefs['STRETCH'] = toggleaction.get_active()
+        self.zoom.set_scale_up(prefs['STRETCH'])
         self.draw_image()
 
     def change_menubar_visibility(self, toggleaction):
-        self._update_toggle_preference('show menubar', toggleaction)
+        self._update_toggle_preference('SHOW_MENUBAR', toggleaction)
 
     def change_statusbar_visibility(self, toggleaction):
-        self._update_toggle_preference('show statusbar', toggleaction)
+        self._update_toggle_preference('SHOW_STATUSBAR', toggleaction)
 
     def change_scrollbar_visibility(self, toggleaction):
-        self._update_toggle_preference('show scrollbar', toggleaction)
+        self._update_toggle_preference('SHOW_SCROLLBAR', toggleaction)
 
     def change_thumbnails_visibility(self, toggleaction):
-        self._update_toggle_preference('show thumbnails', toggleaction)
+        self._update_toggle_preference('SHOW_THUMBNAILS', toggleaction)
 
     def change_hide_all(self, toggleaction):
-        self._update_toggle_preference('hide all', toggleaction)
+        self._update_toggle_preference('HIDE_ALL', toggleaction)
 
     @staticmethod
     def change_keep_transformation(*args):
-        prefs['keep transformation'] = not prefs['keep transformation']
+        prefs['KEEP_TRANSFORMATION'] = not prefs['KEEP_TRANSFORMATION']
 
     def manual_zoom_in(self, *args):
         self.zoom.zoom_in()
@@ -738,7 +738,7 @@ class MainWindow(Gtk.Window):
         Enables scroll bars depending on requests and preferences
         """
 
-        limit = self._should_toggle_be_visible('show scrollbar')
+        limit = self._should_toggle_be_visible('SHOW_SCROLLBAR')
         for idx, item in enumerate(self.__scroll):
             if limit and request[idx]:
                 self.__scroll[idx].show()
@@ -812,7 +812,7 @@ class MainWindow(Gtk.Window):
         """
 
         return (self.imagehandler.get_current_page() and
-                prefs['default double page'] and
+                prefs['DEFAULT_DOUBLE_PAGE'] and
                 not self.imagehandler.get_virtual_double_page() and
                 self.imagehandler.get_current_page() != self.imagehandler.get_number_of_pages())
 
@@ -877,7 +877,7 @@ class MainWindow(Gtk.Window):
 
     def move_file(self, move_else_delete: bool = True, *args):
         """
-        The currently opened file/archive will be moved to prefs['move file']
+        The currently opened file/archive will be moved to prefs['MOVE_FILE']
         or
         The currently opened file/archive will be trashed after showing a confirmation dialog
         """
@@ -891,7 +891,7 @@ class MainWindow(Gtk.Window):
                 send2trash(current_file)
 
         if move_else_delete:
-            target_dir = Path() / current_file.parent / prefs['move file']
+            target_dir = Path() / current_file.parent / prefs['MOVE_FILE']
             target_file = Path() / target_dir / current_file.name
 
             if not Path.exists(target_dir):
@@ -958,22 +958,22 @@ class MainWindow(Gtk.Window):
         return self.get_position() + self.get_size()
 
     def save_window_geometry(self):
-        if prefs['window save']:
+        if prefs['WINDOW_SAVE']:
             (
-                prefs['window x'],
-                prefs['window y'],
-                prefs['window width'],
-                prefs['window height'],
+                prefs['WINDOW_X'],
+                prefs['WINDOW_Y'],
+                prefs['WINDOW_WIDTH'],
+                prefs['WINDOW_HEIGHT'],
             ) = self.get_window_geometry()
 
     def restore_window_geometry(self):
-        if self.get_window_geometry() == (prefs['window x'],
-                                          prefs['window y'],
-                                          prefs['window width'],
-                                          prefs['window height']):
+        if self.get_window_geometry() == (prefs['WINDOW_X'],
+                                          prefs['WINDOW_Y'],
+                                          prefs['WINDOW_WIDTH'],
+                                          prefs['WINDOW_HEIGHT']):
             return False
-        self.resize(prefs['window width'], prefs['window height'])
-        self.move(prefs['window x'], prefs['window y'])
+        self.resize(prefs['WINDOW_WIDTH'], prefs['WINDOW_HEIGHT'])
+        self.move(prefs['WINDOW_X'], prefs['WINDOW_Y'])
         return True
 
     def terminate_program(self, *args):
@@ -989,8 +989,8 @@ class MainWindow(Gtk.Window):
         if Gtk.main_level() > 0:
             Gtk.main_quit()
 
-        if prefs['hide all'] and self.__hide_all_forced and self.fullscreen:
-            prefs['hide all'] = False
+        if prefs['HIDE_ALL'] and self.__hide_all_forced and self.fullscreen:
+            prefs['HIDE_ALL'] = False
 
         self.write_config_files()
 

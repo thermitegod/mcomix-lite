@@ -139,16 +139,16 @@ class EventHandler:
         # Arrow keys scroll the image
         self.__manager.register('scroll_down',
                                 self._scroll_with_flipping,
-                                kwargs={'x': 0, 'y': prefs['number of pixels to scroll per key event']})
+                                kwargs={'x': 0, 'y': prefs['PIXELS_TO_SCROLL_PER_KEY_EVENT']})
         self.__manager.register('scroll_up',
                                 self._scroll_with_flipping,
-                                kwargs={'x': 0, 'y': -prefs['number of pixels to scroll per key event']})
+                                kwargs={'x': 0, 'y': -prefs['PIXELS_TO_SCROLL_PER_KEY_EVENT']})
         self.__manager.register('scroll_right',
                                 self._scroll_with_flipping,
-                                kwargs={'x': prefs['number of pixels to scroll per key event'], 'y': 0})
+                                kwargs={'x': prefs['PIXELS_TO_SCROLL_PER_KEY_EVENT'], 'y': 0})
         self.__manager.register('scroll_left',
                                 self._scroll_with_flipping,
-                                kwargs={'x': -prefs['number of pixels to scroll per key event'], 'y': 0})
+                                kwargs={'x': -prefs['PIXELS_TO_SCROLL_PER_KEY_EVENT'], 'y': 0})
 
         # File operations
         self.__manager.register('close',
@@ -225,7 +225,7 @@ class EventHandler:
         Determines the behavior of the ESC key
         """
 
-        if prefs['escape quits']:
+        if prefs['ESCAPE_QUITS']:
             self.__window.terminate_program()
         else:
             self.__window.actiongroup.get_action('fullscreen').set_active(False)
@@ -236,7 +236,7 @@ class EventHandler:
         wheel flips pages in best fit mode and scrolls the scrollbars otherwise
         """
 
-        if not prefs['flip with wheel']:
+        if not prefs['FLIP_WITH_WHEEL']:
             return
 
         if event.get_state() & Gdk.ModifierType.BUTTON2_MASK:
@@ -260,22 +260,22 @@ class EventHandler:
             if event.get_state() & Gdk.ModifierType.CONTROL_MASK:
                 self.__window.manual_zoom_in()
             else:
-                self._scroll_with_flipping(0, -prefs['number of pixels to scroll per mouse wheel event'])
+                self._scroll_with_flipping(0, -prefs['PIXELS_TO_SCROLL_PER_MOUSE_WHEEL_EVENT'])
 
         elif direction == Gdk.ScrollDirection.DOWN:
             if event.get_state() & Gdk.ModifierType.CONTROL_MASK:
                 self.__window.manual_zoom_out()
             else:
-                self._scroll_with_flipping(0, prefs['number of pixels to scroll per mouse wheel event'])
+                self._scroll_with_flipping(0, prefs['PIXELS_TO_SCROLL_PER_MOUSE_WHEEL_EVENT'])
 
         elif direction == Gdk.ScrollDirection.RIGHT:
-            if self.__window.is_manga_mode and not prefs['manga flip right']:
+            if self.__window.is_manga_mode and not prefs['MANGA_FLIP_RIGHT']:
                 self._flip_page(-1)
             else:
                 self._flip_page(1)
 
         elif direction == Gdk.ScrollDirection.LEFT:
-            if self.__window.is_manga_mode and not prefs['manga flip right']:
+            if self.__window.is_manga_mode and not prefs['MANGA_FLIP_RIGHT']:
                 self._flip_page(1)
             else:
                 self._flip_page(-1)
@@ -373,8 +373,8 @@ class EventHandler:
         if self.__window.scroll(x, y):
             return True
 
-        if y > 0 or ((self.__window.is_manga_mode and not prefs['manga flip right']) and x < 0) \
-                or (not (self.__window.is_manga_mode and not prefs['manga flip right']) and x > 0):
+        if y > 0 or ((self.__window.is_manga_mode and not prefs['MANGA_FLIP_RIGHT']) and x < 0) \
+                or (not (self.__window.is_manga_mode and not prefs['MANGA_FLIP_RIGHT']) and x > 0):
             self._flip_page(1)
         else:
             self._flip_page(-1)
@@ -394,7 +394,7 @@ class EventHandler:
         normal mode. The opposite happens for number_of_pages being negative
         """
 
-        if self.__window.is_manga_mode and not prefs['manga flip right']:
+        if self.__window.is_manga_mode and not prefs['MANGA_FLIP_RIGHT']:
             self._flip_page(-number_of_pages)
         else:
             self._flip_page(number_of_pages)

@@ -22,7 +22,7 @@ class PropertiesDialog(Gtk.Dialog):
         self.add_buttons(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
 
         self.__window = window
-        self.resize(prefs['properties width'], prefs['properties height'])
+        self.resize(prefs['PROPERTIES_WIDTH'], prefs['PROPERTIES_HEIGHT'])
         self.set_resizable(True)
         self.set_default_response(Gtk.ResponseType.CLOSE)
 
@@ -102,7 +102,7 @@ class PropertiesDialog(Gtk.Dialog):
     def _update_page_image(self, page, page_number: int = None):
         if not self.__window.imagehandler.page_is_available(page_number):
             return
-        size = prefs['properties thumb size']
+        size = prefs['PROPERTIES_THUMB_SIZE']
         thumb = self.__window.imagehandler.get_thumbnail(page_number, size=(size, size))
         page.set_thumbnail(thumb)
 

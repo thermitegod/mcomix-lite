@@ -17,11 +17,11 @@ class ImageEnhancer:
         super().__init__()
 
         self.__window = window
-        self.brightness = prefs['brightness']
-        self.contrast = prefs['contrast']
-        self.saturation = prefs['saturation']
-        self.sharpness = prefs['sharpness']
-        self.autocontrast = prefs['auto contrast']
+        self.brightness = prefs['BRIGHTNESS']
+        self.contrast = prefs['CONTRAST']
+        self.saturation = prefs['SATURATION']
+        self.sharpness = prefs['SHARPNESS']
+        self.autocontrast = prefs['AUTO_CONTRAST']
 
     def enhance(self, pixbuf):
         """

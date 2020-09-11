@@ -32,7 +32,7 @@ class Extractor:
         self.__setupped = False
         self.__threadpool = ThreadPool(
                 name=self.__class__.__name__,
-                processes=prefs['max threads extract'])
+                processes=prefs['MAX_THREADS_EXTRACT'])
 
         self.__src = None
         self.__files = None

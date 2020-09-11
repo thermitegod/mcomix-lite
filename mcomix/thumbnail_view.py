@@ -36,7 +36,7 @@ class ThumbnailViewBase:
 
         #: Worker thread
         self.__threadpool = ThreadPool(name=self.__class__.__name__,
-                                       processes=prefs['max threads thumbnail'])
+                                       processes=prefs['MAX_THREADS_THUMBNAIL'])
         self.__lock = Lock()
         self.__done = set()
         self.__taskid = 0
