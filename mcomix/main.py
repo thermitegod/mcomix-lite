@@ -40,7 +40,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def run():
+def main():
     args = parse_args()
 
     if args.version:

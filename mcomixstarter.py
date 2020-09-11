@@ -15,6 +15,6 @@
 # along with this program; if not, write to the Free Software
 # -------------------------------------------------------------------------
 
-import mcomix.run
+import mcomix.main
 
-mcomix.run.run()
+mcomix.main.main()
