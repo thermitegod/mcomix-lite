@@ -107,7 +107,7 @@ def run():
     # Enable icons for menu items.
     settings.props.gtk_menu_images = True
 
-    from mcomix.main import MainWindow
+    from mcomix.main_window import MainWindow
     window = MainWindow(fullscreen=args.fullscreen, manga_mode=args.manga,
                         double_page=args.doublepage, zoom_mode=args.zoommode,
                         open_path=open_path)
