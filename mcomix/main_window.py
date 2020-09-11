@@ -627,16 +627,8 @@ class MainWindow(Gtk.Window):
     def page_select(self, *args):
         Pageselector(self)
 
-    def rotate_90(self, *args):
-        prefs['ROTATION'] = (prefs['ROTATION'] + 90) % 360
-        self.draw_image()
-
-    def rotate_180(self, *args):
-        prefs['ROTATION'] = (prefs['ROTATION'] + 180) % 360
-        self.draw_image()
-
-    def rotate_270(self, *args):
-        prefs['ROTATION'] = (prefs['ROTATION'] + 270) % 360
+    def rotate_x(self, rotation: int, *args):
+        prefs['ROTATION'] = (prefs['ROTATION'] + rotation) % 360
         self.draw_image()
 
     def flip_horizontally(self, *args):

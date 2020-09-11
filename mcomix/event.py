@@ -116,11 +116,14 @@ class EventHandler:
         self.__manager.register('zoom_original',
                                 self.__window.actiongroup.get_action('zoom_original').activate)
         self.__manager.register('rotate_90',
-                                self.__window.rotate_90)
+                                self.__window.rotate_x,
+                                kwargs={'rotation': 90})
         self.__manager.register('rotate_270',
-                                self.__window.rotate_270)
+                                self.__window.rotate_x,
+                                kwargs={'rotation': 270})
         self.__manager.register('rotate_180',
-                                self.__window.rotate_180)
+                                self.__window.rotate_x,
+                                kwargs={'rotation': 180})
         self.__manager.register('flip_horiz',
                                 self.__window.flip_horizontally)
         self.__manager.register('flip_vert',
