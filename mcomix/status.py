@@ -130,7 +130,7 @@ class Statusbar(Gtk.EventBox):
         Set the name of the root (directory or archive)
         """
 
-        self.__root = root
+        self.__root = str(root)
 
     def set_filename(self, filename: str):
         """
