@@ -116,11 +116,11 @@ class RarArchive(BaseArchive):
         :rtype: bool
         """
 
-        return bool(RarExecutable.find_unrar())
+        return bool(RarExecutable.unrar_executable)
 
     def __init__(self, archive: str):
         super().__init__(archive)
-        self.__unrar = RarExecutable.find_unrar()
+        self.__unrar = RarExecutable.unrar_executable
         self.__handle = None
         self.__is_solid = False
         # Information about the current file will be stored in this structure
@@ -319,9 +319,10 @@ class UnrarException(Exception):
 
 class _RarExecutable:
     def __init__(self):
-        self.__unrar = None
+        self.unrar_executable = self.find_unrar()
 
-    def find_unrar(self):
+    @staticmethod
+    def find_unrar():
         """
         Tries to load libunrar and will return a handle of it.
         Returns None if an error occured or the library couldn't be found
@@ -329,13 +330,12 @@ class _RarExecutable:
         :returns: loaded unrar library
         """
 
-        if self.__unrar is None:
-            unrar = ctypes.util.find_library('unrar')
-            if unrar is None:
-                logger.error(f'failed to find unrar library')
-                return None
-            self.__unrar = ctypes.cdll.LoadLibrary(unrar)
-        return self.__unrar
+        unrar = ctypes.util.find_library('unrar')
+        if unrar is None:
+            logger.error(f'failed to find unrar library')
+            return None
+
+        return ctypes.cdll.LoadLibrary(unrar)
 
 
 # Singleton instance
