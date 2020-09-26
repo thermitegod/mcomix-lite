@@ -31,7 +31,7 @@ class SevenZipArchive(BaseArchive):
 
     @staticmethod
     def _get_executable():
-        return SevenzipExecutable.find_sevenzip()
+        return SevenzipExecutable.sevenzip_executable
 
     def _get_list_arguments(self):
         args = [self._get_executable(), 'l', '-slt']
@@ -160,14 +160,15 @@ class SevenZipArchive(BaseArchive):
 
     @staticmethod
     def is_available():
-        return bool(SevenzipExecutable.find_sevenzip())
+        return bool(SevenzipExecutable.sevenzip_executable)
 
 
 class _SevenzipExecutable:
     def __init__(self):
-        self.__sevenzip = None
+        self.sevenzip_executable = self.find_sevenzip()
 
-    def find_sevenzip(self):
+    @staticmethod
+    def find_sevenzip():
         """
         Tries to start 7z, and returns either '7z' if
         it was started successfully or None otherwise
@@ -176,12 +177,11 @@ class _SevenzipExecutable:
         :rtype: str
         """
 
-        if self.__sevenzip is None:
-            self.__sevenzip = shutil.which('7z')
-            if self.__sevenzip is None:
-                logger.error(f'failed to find 7z executable')
+        sevenzip = shutil.which('7z')
+        if sevenzip is None:
+            logger.error(f'failed to find 7z executable')
 
-        return self.__sevenzip
+        return sevenzip
 
 
 # Singleton instance
