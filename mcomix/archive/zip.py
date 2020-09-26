@@ -30,11 +30,8 @@ class ZipArchive(BaseArchive):
         return True
 
     def is_solid(self):
-        """
-        zipfile is usually not thread-safe
-        so treat it as a solid archive to reduce seek operate
-        """
-
+        # zipfile is usually not thread-safe
+        # so treat it as a solid archive to reduce seek operate
         return True
 
     def iter_contents(self):
