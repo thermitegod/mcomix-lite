@@ -8,11 +8,11 @@ from tempfile import NamedTemporaryFile
 
 from loguru import logger
 
-from mcomix.archive.archive_base import ExternalExecutableArchive
+from mcomix.archive.archive_base import BaseArchive
 from mcomix.lib import process
 
 
-class SevenZipArchive(ExternalExecutableArchive):
+class SevenZipArchive(BaseArchive):
     """
     7z file extractor using the 7z executable
     """
@@ -29,7 +29,8 @@ class SevenZipArchive(ExternalExecutableArchive):
 
         self.__filenames_initialized = False
 
-    def _get_executable(self):
+    @staticmethod
+    def _get_executable():
         return SevenzipExecutable.find_sevenzip()
 
     def _get_list_arguments(self):
