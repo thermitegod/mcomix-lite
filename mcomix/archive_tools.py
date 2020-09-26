@@ -32,9 +32,9 @@ class _ArchiveTools:
 
     def init_supported_formats(self):
         for name, formats, is_available in (
-                ('ZIP', constants.ZIP_FORMATS, True),
-                ('7z', constants.SZIP_FORMATS, self.szip_available()),
-                ('RAR', constants.RAR_FORMATS, self.rar_available()),
+                ('ZIP', constants.ZIP_FORMATS, self._get_handler(constants.ZIP)),
+                ('7z', constants.SZIP_FORMATS, self._get_handler(constants.SEVENZIP)),
+                ('RAR', constants.RAR_FORMATS, self._get_handler(constants.RAR)),
         ):
             if not is_available:
                 continue
@@ -51,23 +51,10 @@ class _ArchiveTools:
         """
 
         for handler in self.__handlers[archive_type]:
-            if not hasattr(handler, 'is_available'):
-                return handler
             if handler.is_available():
                 return handler
-
-    def _is_available(self, archive_type):
-        """
-        :returns: Return True if a handler supporting the <archive_type> format is available
-        """
-
-        return self._get_handler(archive_type) is not None
-
-    def szip_available(self):
-        return self._is_available(constants.SEVENZIP)
-
-    def rar_available(self):
-        return self._is_available(constants.RAR)
+            else:
+                return False
 
     def is_archive_file(self, path):
         return str(path).lower().endswith(tuple(self.__supported_archive_ext))

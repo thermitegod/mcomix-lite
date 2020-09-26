@@ -25,6 +25,10 @@ class ZipArchive(BaseArchive):
         for info in self.__zip.infolist():
             self.__contents_info[info.filename] = info
 
+    @staticmethod
+    def is_available():
+        return True
+
     def is_solid(self):
         """
         zipfile is usually not thread-safe
