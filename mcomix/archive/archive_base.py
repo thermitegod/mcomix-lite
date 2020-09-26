@@ -95,17 +95,7 @@ class BaseArchive:
         return False
 
     @staticmethod
-    def _create_directory(directory: Path):
-        """
-        Recursively create a directory if it doesn't exist yet
-        """
-
-        if Path.exists(directory):
-            return
-
-        directory.mkdir(parents=True, exist_ok=True)
-
-    def _create_file(self, dst_path):
+    def _create_file(dst_path):
         """
         Open <dst_path> for writing, making sure base directory exists
 
@@ -114,8 +104,11 @@ class BaseArchive:
         """
 
         dst_dir = Path(dst_path).parent
+
         # Create directory if it doesn't exist
-        self._create_directory(dst_dir)
+        if not Path.exists(dst_dir):
+            dst_dir.mkdir(parents=True, exist_ok=True)
+
         return Path.open(dst_path, 'wb')
 
 
