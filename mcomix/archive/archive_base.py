@@ -23,8 +23,6 @@ class BaseArchive:
     def __init__(self, archive):
         super().__init__()
 
-        assert isinstance(archive, str), 'File should be an Unicode string.'
-
         self.archive = archive
 
     def iter_contents(self):
@@ -59,8 +57,7 @@ class BaseArchive:
         :rtype: Path
         """
 
-        assert isinstance(filename, str) and isinstance(destination_dir, Path)
-        return Path() / destination_dir / filename
+        raise NotImplementedError('Subclasses must override extract.')
 
     def iter_extract(self, entries, destination_dir: Path):
         """
@@ -170,21 +167,7 @@ class ExternalExecutableArchive(BaseArchive):
         or None if the current line doesn't contain any file references
         """
 
-        return line
-
-    def iter_contents(self):
-        if not self._get_executable():
-            return
-
-        with process.popen([self._get_executable()] +
-                           self._get_list_arguments() +
-                           [self.archive]) as proc:
-            for line in proc.stdout:
-                filename = self._parse_list_output_line(line.rstrip('\n'))
-                if filename is not None:
-                    yield filename
-
-        self.__filenames_initialized = True
+        raise NotImplementedError('Subclasses must override _parse_list_output_line.')
 
     def extract(self, filename: str, destination_dir: Path):
         """
@@ -198,19 +181,4 @@ class ExternalExecutableArchive(BaseArchive):
         :rtype: Path
         """
 
-        assert isinstance(filename, str) and isinstance(destination_dir, Path)
-
-        if not self._get_executable():
-            return
-
-        if not self.__filenames_initialized:
-            self.list_contents()
-
-        destination_path = Path() / destination_dir / filename
-
-        with self._create_file(destination_path) as output:
-            process.call([self._get_executable()] +
-                         self._get_extract_arguments() +
-                         [self.archive, filename],
-                         stdout=output)
-        return destination_path
+        raise NotImplementedError('Subclasses must override extract.')
