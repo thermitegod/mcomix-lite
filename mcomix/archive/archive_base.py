@@ -109,7 +109,7 @@ class BaseArchive:
         if not Path.exists(dst_dir):
             dst_dir.mkdir(parents=True, exist_ok=True)
 
-        return Path.open(dst_path, 'wb')
+        return Path.open(dst_path, mode='wb')
 
 
 class ExternalExecutableArchive(BaseArchive):

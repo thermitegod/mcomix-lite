@@ -74,7 +74,7 @@ class _ArchiveTools:
                 if zipfile.is_zipfile(path):
                     return constants.ZIP
 
-                with Path.open(path, 'rb') as fd:
+                with Path.open(path, mode='rb') as fd:
                     magic = fd.read(10)
 
                 if magic[0:6] == b'7z\xbc\xaf\x27\x1c':
