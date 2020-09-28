@@ -33,16 +33,12 @@ class SevenZipArchive(BaseArchive):
         self.__filenames_initialized = False
 
     def _get_list_arguments(self):
-        args = [self.__sevenzip, 'l', '-slt']
-        args.extend(('--', self.archive))
-        return args
+        return [self.__sevenzip, 'l', '-slt', '--', self.archive]
 
     def _get_extract_arguments(self, list_file=None):
-        args = [self.__sevenzip, 'x', '-so']
-        if list_file is not None:
-            args.append('-i@' + list_file)
-        args.extend(('--', self.archive))
-        return args
+        if list_file is None:
+            return [self.__sevenzip, 'x', '-so', '--', self.archive]
+        return [self.__sevenzip, 'x', '-so', '-i@' + list_file, '--', self.archive]
 
     def _parse_list_output_line(self, line: str):
         """
