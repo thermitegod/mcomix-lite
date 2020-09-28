@@ -29,17 +29,6 @@ class BaseArchive:
 
         yield
 
-    def list_contents(self):
-        """
-        These names do not necessarily exist in the actual archive since they
-        need to saveable on the local filesystems, so some characters might
-        need to be replaced
-
-        :returns a list of unicode filenames relative to the archive root.
-        """
-
-        return [filename for filename in self.iter_contents()]
-
     def extract(self, filename: str, destination_dir: Path):
         """
         Extracts the file specified by <filename> and return the path of it.

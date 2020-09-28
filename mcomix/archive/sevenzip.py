@@ -110,9 +110,6 @@ class SevenZipArchive(BaseArchive):
 
         assert isinstance(filename, str) and isinstance(destination_dir, Path)
 
-        if not self.__filenames_initialized:
-            self.list_contents()
-
         destination_path = Path() / destination_dir / filename
         with NamedTemporaryFile(mode='wt', prefix='mcomix.7z.') as tmplistfile:
             tmplistfile.write('filename\n')
@@ -122,9 +119,6 @@ class SevenZipArchive(BaseArchive):
         return destination_path
 
     def iter_extract(self, entries, destination_dir: Path):
-        if not self.__filenames_initialized:
-            self.list_contents()
-
         with process.popen(self._get_extract_arguments()) as proc:
             wanted = dict([(unicode_name, unicode_name) for unicode_name in entries])
 

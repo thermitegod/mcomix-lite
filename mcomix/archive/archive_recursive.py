@@ -90,11 +90,6 @@ class RecursiveArchive(BaseArchive):
             yield f
         self.__contents_listed = True
 
-    def list_contents(self):
-        if self.__contents_listed:
-            return self.__contents
-        return [f for f in self.iter_contents()]
-
     def extract(self, filename: str, destination_dir: Path):
         """
         Extract <filename> from the archive to <destination_dir>
@@ -107,8 +102,6 @@ class RecursiveArchive(BaseArchive):
         :rtype: Path
         """
 
-        if not self.__contents_listed:
-            self.list_contents()
         archive, name = self.__entry_mapping[filename]
         root = self.__archive_root[archive]
         if destination_dir is None:
@@ -123,8 +116,6 @@ class RecursiveArchive(BaseArchive):
         List archive contents
         """
 
-        if not self.__contents_listed:
-            self.list_contents()
         # Unfortunately we can't just rely on BaseArchive default
         # implementation if solid archives are to be correctly supported:
         # we need to call iter_extract (not extract) for each archive ourselves.
@@ -158,8 +149,6 @@ class RecursiveArchive(BaseArchive):
         :rtype: bool
         """
 
-        if not self.__contents_listed:
-            self.list_contents()
         # We're solid if at least one archive is solid.
         for archive in self.__archive_list:
             if archive.is_solid():
