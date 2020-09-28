@@ -58,16 +58,6 @@ class ThreadPool:
         return self.__pool.join()
 
     @staticmethod
-    def _uiter(iterable):
-        buf = []
-        for item in iterable:
-            if item in buf:
-                continue
-            yield item
-            buf.append(item)
-        buf.clear()
-
-    @staticmethod
     def _trycall(func, args=(), kwargs=None, lock=None):
         if kwargs is None:
             kwargs = {}
@@ -103,28 +93,6 @@ class ThreadPool:
         return self.__pool.apply_async(
                 self._caller, (func, args, kwargs, None, error_callback, True),
                 callback=callback)
-
-    def cbmap(self, func, iterable, chunksize=None,
-              callback=None, error_callback=None, block=False):
-        # shortcut of:
-        #
-        # for item in iterable:
-        #     apply_async(func,args=(items,),kwargs={},
-        #                 callback=callback,error_callback=error_callback)
-        #
-        # always return None
-        # block if block set to True
-        (self.starmap if block else self.starmap_async)(
-                self._caller,
-                ((func, (item,), {}, callback, error_callback, not block)
-                 for item in iterable),
-                chunksize=chunksize)
-
-    def ucbmap(self, func, iterable, chunksize=None,
-               callback=None, error_callback=None, block=False):
-        # unique version of ThreadPool.cbmap
-        return self.cbmap(func, self._uiter(iterable), chunksize,
-                          callback, error_callback, block)
 
     def close(self):
         # same as Pool.close

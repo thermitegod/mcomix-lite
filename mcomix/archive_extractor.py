@@ -29,7 +29,6 @@ class Extractor:
     def __init__(self):
         super().__init__()
 
-        self.__setupped = False
         self.__threadpool = ThreadPool(
                 name=self.__class__.__name__,
                 processes=prefs['MAX_THREADS_EXTRACT'])
@@ -41,7 +40,6 @@ class Extractor:
 
         self.__dst = None
         self.__contents_listed = False
-        self.__extract_started = False
         self.__condition = None
 
     def setup(self, src: str, archive_type: int = None):
@@ -60,12 +58,10 @@ class Extractor:
             raise ArchiveException
 
         self.__dst = self.__archive.get_destdir()
-        self.__extract_started = False
         self.__condition = threading.Condition()
         self.__threadpool.apply_async(
                 self._list_contents, callback=self._list_contents_cb,
                 error_callback=self._list_contents_errcb)
-        self.__setupped = True
 
         return self.__condition
 
@@ -110,8 +106,6 @@ class Extractor:
             if not self.__files:
                 # Nothing to do!
                 return
-            if self.__extract_started:
-                self.extract()
 
     def is_ready(self, name: str):
         """
@@ -131,9 +125,6 @@ class Extractor:
         self.__threadpool.terminate()
         self.__threadpool.join()
         self.__threadpool.renew()
-        if self.__setupped:
-            self.__extract_started = False
-            self.__setupped = False
 
     def extract(self):
         """
@@ -145,19 +136,10 @@ class Extractor:
         with self.__condition:
             if not self.__contents_listed:
                 return
-            if not self.__extract_started:
-                mt = self.__archive.support_concurrent_extractions \
-                     and not self.__archive.is_solid()
-                if mt:
-                    self.__threadpool.ucbmap(
-                            self._extract_file,
-                            self.__files,
-                            callback=self._extraction_finished,
-                            error_callback=self._extract_files_errcb)
-                else:
-                    self.__threadpool.apply_async(
-                            self._extract_all_files,
-                            error_callback=self._extract_files_errcb)
+
+            self.__threadpool.apply_async(
+                self._extract_all_files,
+                error_callback=self._extract_files_errcb)
 
     @Callback
     def contents_listed(self, extractor, files: list):
@@ -207,17 +189,6 @@ class Extractor:
         for name in self.__archive.iter_extract(files, self.__dst):
             if self._extraction_finished(name):
                 return
-
-    def _extract_file(self, name: str):
-        """
-        Extract the file named <name> to the destination directory,
-        mark the file as "ready", then signal a notify() on the Condition
-        returned by setup()
-        """
-
-        logger.debug(f'Extracting from \'{self.__src}\' to \'{self.__dst}\': \'{name}\'')
-        self.__archive.extract(name)
-        return name
 
     @staticmethod
     def _extract_files_errcb(name, etype, value, tb):
