@@ -339,7 +339,7 @@ class _PreferencesDialog(Gtk.Dialog):
                          'MAX_THREADS_THUMBNAIL',
                          1, 1, constants.MAX_THREADS, 1, 4, 0))
 
-        page.add_row(Gtk.Label(label='Maximum number of concurrent extraction threads:'),
+        page.add_row(Gtk.Label(label='Maximum number of extraction threads:'),
                      self._create_pref_spinner(
                          'MAX_THREADS_EXTRACT',
                          1, 1, constants.MAX_THREADS, 1, 4, 0))

@@ -20,9 +20,6 @@ class RarArchive(BaseArchive):
     In turn, all values returned are also unicode
     """
 
-    # Nope! Not a good idea...
-    support_concurrent_extractions = False
-
     class _OpenMode:
         """
         Rar open mode

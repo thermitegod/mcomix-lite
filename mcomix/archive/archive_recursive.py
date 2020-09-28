@@ -31,8 +31,6 @@ class RecursiveArchive(BaseArchive):
         self.__archive_root = {}
         self.__contents_listed = False
         self.__contents = []
-        # Assume concurrent extractions are not supported.
-        self.support_concurrent_extractions = False
 
     def get_destdir(self):
         """
@@ -81,15 +79,6 @@ class RecursiveArchive(BaseArchive):
             for name in self._iter_contents(sub_archive, sub_root):
                 yield name
 
-    def _check_concurrent_extraction_support(self):
-        supported = True
-        # We need all archives to support concurrent extractions.
-        for archive in self.__archive_list:
-            if not archive.support_concurrent_extractions:
-                supported = False
-                break
-        self.support_concurrent_extractions = supported
-
     def iter_contents(self):
         if self.__contents_listed:
             for f in self.__contents:
@@ -100,8 +89,6 @@ class RecursiveArchive(BaseArchive):
             self.__contents.append(f)
             yield f
         self.__contents_listed = True
-        # We can now check if concurrent extractions are really supported.
-        self._check_concurrent_extraction_support()
 
     def list_contents(self):
         if self.__contents_listed:

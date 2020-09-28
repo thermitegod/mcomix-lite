@@ -17,9 +17,6 @@ class BaseArchive:
     Unicode with some guess-work
     """
 
-    # True if concurrent calls to extract is supported
-    support_concurrent_extractions = False
-
     def __init__(self, archive):
         super().__init__()
 
