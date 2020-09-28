@@ -165,6 +165,8 @@ class SevenZipArchive(BaseArchive):
 
 class _SevenzipExecutable:
     def __init__(self):
+        super().__init__()
+
         self.sevenzip_executable = self.find_sevenzip()
 
     @staticmethod

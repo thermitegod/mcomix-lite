@@ -319,6 +319,8 @@ class UnrarException(Exception):
 
 class _RarExecutable:
     def __init__(self):
+        super().__init__()
+
         self.unrar_executable = self.find_unrar()
 
     @staticmethod
