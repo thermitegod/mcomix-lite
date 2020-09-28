@@ -21,6 +21,9 @@ class SevenZipArchive(BaseArchive):
 
     def __init__(self, archive: str):
         super().__init__(archive)
+
+        self.__sevenzip = SevenzipExecutable.sevenzip_executable
+
         self.__is_solid = False
         self.__contents = []
 
@@ -29,17 +32,13 @@ class SevenZipArchive(BaseArchive):
 
         self.__filenames_initialized = False
 
-    @staticmethod
-    def _get_executable():
-        return SevenzipExecutable.sevenzip_executable
-
     def _get_list_arguments(self):
-        args = [self._get_executable(), 'l', '-slt']
+        args = [self.__sevenzip, 'l', '-slt']
         args.extend(('--', self.archive))
         return args
 
     def _get_extract_arguments(self, list_file=None):
-        args = [self._get_executable(), 'x', '-so']
+        args = [self.__sevenzip, 'x', '-so']
         if list_file is not None:
             args.append('-i@' + list_file)
         args.extend(('--', self.archive))
@@ -87,9 +86,6 @@ class SevenZipArchive(BaseArchive):
         return self.__is_solid
 
     def iter_contents(self):
-        if not self._get_executable():
-            return
-
         #: Indicates which part of the file listing has been read.
         self.__state = self.STATE_HEADER
         #: Current path while listing contents.
@@ -118,9 +114,6 @@ class SevenZipArchive(BaseArchive):
 
         assert isinstance(filename, str) and isinstance(destination_dir, Path)
 
-        if not self._get_executable():
-            return
-
         if not self.__filenames_initialized:
             self.list_contents()
 
@@ -133,9 +126,6 @@ class SevenZipArchive(BaseArchive):
         return destination_path
 
     def iter_extract(self, entries, destination_dir: Path):
-        if not self._get_executable():
-            return
-
         if not self.__filenames_initialized:
             self.list_contents()
 
