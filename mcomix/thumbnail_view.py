@@ -114,8 +114,6 @@ class ThumbnailViewBase:
 
 class ThumbnailTreeView(Gtk.TreeView, ThumbnailViewBase):
     def __init__(self, model, uid_column: int, pixbuf_column: int, status_column: int):
-        assert (model.get_flags() & Gtk.TreeModelFlags.ITERS_PERSIST) != 0
-
         super().__init__(model=model)
 
         ThumbnailViewBase.__init__(self, uid_column, pixbuf_column, status_column)

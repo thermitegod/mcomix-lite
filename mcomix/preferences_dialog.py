@@ -626,8 +626,6 @@ class _PreferencesDialog(Gtk.Dialog):
         :returns: Gtk.ComboBox
         """
 
-        assert options and len(options[0]) == 2, 'Invalid format for options.'
-
         # Use the first list item to determine typing of model fields.
         # First field is textual description, second field is value.
         model = Gtk.ListStore(GObject.TYPE_STRING, type(options[0][1]))

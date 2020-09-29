@@ -5,6 +5,8 @@
 import operator
 from functools import reduce
 
+from loguru import logger
+
 from mcomix import constants
 from mcomix.preferences import prefs
 
@@ -140,7 +142,7 @@ class ZoomModel:
             elif fitmode == constants.ZOOM_MODE_HEIGHT:
                 axis = constants.AXIS_HEIGHT
             else:
-                assert False, 'Cannot map fitmode to axis'
+                logger.error('Cannot map fitmode to axis')
             result[axis] = fixed_size if fixed_size is not None else screen_size[axis]
         return result
 

@@ -189,7 +189,6 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         Generate the pixbuf for C{path} at demand
         """
 
-        assert isinstance(uid, int)
         size = prefs['THUMBNAIL_SIZE']
         pixbuf = self.__window.imagehandler.get_thumbnail(page=uid, size=(size, size), nowait=True)
         if pixbuf is not None:

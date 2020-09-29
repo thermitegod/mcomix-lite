@@ -138,7 +138,9 @@ class ImageHandler:
         Set up filehandler to the page <page_num>
         """
 
-        assert 0 < page_num <= self.get_number_of_pages()
+        # if 0 > page_num > self.get_number_of_pages():
+        #     return
+
         self.__current_image_index = page_num - 1
         self.do_cacheing()
 
@@ -189,7 +191,10 @@ class ImageHandler:
             width, height = pixbuf.get_width(), pixbuf.get_height()
             if prefs['AUTO_ROTATE_FROM_EXIF']:
                 rotation = ImageTools.get_implied_rotation(pixbuf)
-                assert rotation in (0, 90, 180, 270)
+
+                # if rotation not in (0, 90, 180, 270):
+                #     return
+
                 if rotation in (90, 270):
                     width, height = height, width
             if width > height:
@@ -255,7 +260,10 @@ class ImageHandler:
 
         logger.debug(f'Page is available: \'{page}\'')
         index = page - 1
-        assert index not in self.__available_images
+
+        # if index in self.__available_images:
+        #     return
+
         self.__cache_lock[index] = Lock()
         self.__available_images.add(index)
         # Check if we need to cache it.

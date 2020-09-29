@@ -108,8 +108,6 @@ class SevenZipArchive(BaseArchive):
         :rtype: Path
         """
 
-        assert isinstance(filename, str) and isinstance(destination_dir, Path)
-
         destination_path = Path() / destination_dir / filename
         with NamedTemporaryFile(mode='wt', prefix='mcomix.7z.') as tmplistfile:
             tmplistfile.write('filename\n')

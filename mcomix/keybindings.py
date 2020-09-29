@@ -48,6 +48,11 @@ class _KeybindingInterface:
 
         self.load_keybindings_file()
 
+    @staticmethod
+    def keybinding_check(name):
+        if name not in keybindings_map.BINDING_INFO:
+            logger.error(f'"{name}" is not a valid keyboard action.')
+
     def register(self, name: str, callback, args: list = None, kwargs: dict = None, bindings: list = None):
         """
         Registers an action for a predefined keybinding name.
@@ -68,7 +73,7 @@ class _KeybindingInterface:
         if bindings is None:
             bindings = []
 
-        assert name in keybindings_map.BINDING_INFO, f'"{name}" is not a valid keyboard action.'
+        self.keybinding_check(name=name)
 
         # Load stored keybindings, or fall back to passed arguments
         keycodes = self.__action_to_bindings[name]
@@ -101,7 +106,7 @@ class _KeybindingInterface:
         :returns: None: new_binding wasn't in any action action name: where new_binding was before
         """
 
-        assert name in keybindings_map.BINDING_INFO, f'"{name}" is not a valid keyboard action.'
+        self.keybinding_check(name=name)
 
         nb = Gtk.accelerator_parse(new_binding)
         old_action_with_nb = self.__binding_to_action.get(nb)
@@ -134,7 +139,7 @@ class _KeybindingInterface:
         Remove binding for an action
         """
 
-        assert name in keybindings_map.BINDING_INFO, f'"{name}" is not a valid keyboard action.'
+        self.keybinding_check(name=name)
 
         ob = Gtk.accelerator_parse(binding)
         self.__action_to_bindings[name].remove(ob)

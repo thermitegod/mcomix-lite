@@ -227,7 +227,7 @@ class FileHandler:
         """
 
         if isinstance(path, list) and not path:
-            assert False, 'Tried to open an empty list of files.'
+            logger.error('Tried to open an empty list of files.')
 
         elif isinstance(path, list) and len(path) > 0:
             # A list of files was passed - open only these files.

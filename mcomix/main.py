@@ -9,6 +9,10 @@ from pathlib import Path
 from mcomix import constants
 
 
+class VersionError(BaseException):
+    pass
+
+
 def parse_args():
     parser = argparse.ArgumentParser(usage='%%(prog)s %s' % '[OPTION...] [PATH]',
                                      description='View images and manga archives.')
@@ -55,7 +59,9 @@ def main():
     # Check for PyGTK and PIL dependencies.
     try:
         from gi import version_info, require_version
-        assert version_info >= (3, 24, 0)
+
+        if version_info < (3, 24, 0):
+            raise VersionError
 
         require_version('PangoCairo', '1.0')
         require_version('Gtk', '3.0')
@@ -63,16 +69,18 @@ def main():
 
         from gi.repository import GLib, Gdk, GdkPixbuf, Gtk
 
-    except (ValueError, AssertionError, ImportError):
+    except (ValueError, VersionError, ImportError):
         logger.critical('GTK+ 3.0 import error')
         raise SystemExit(1)
 
     try:
         import PIL
         pil_version = PIL.__version__
-        assert pil_version >= constants.REQUIRED_PIL_VERSION
 
-    except (AssertionError, AttributeError, ImportError):
+        if pil_version < constants.REQUIRED_PIL_VERSION:
+            raise VersionError
+
+    except (AttributeError, ImportError, VersionError):
         logger.critical(f'Required Pillow version is at least {constants.REQUIRED_PIL_VERSION}')
         raise SystemExit(1)
 
