@@ -81,7 +81,7 @@ class BaseArchive:
         return False
 
     @staticmethod
-    def _create_file(dst_path):
+    def _create_file(dst_path: Path):
         """
         Open <dst_path> for writing, making sure base directory exists
 
@@ -89,7 +89,7 @@ class BaseArchive:
         :rtype: buffer
         """
 
-        dst_dir = Path(dst_path).parent
+        dst_dir = dst_path.parent
 
         # Create directory if it doesn't exist
         if not Path.exists(dst_dir):

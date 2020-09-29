@@ -88,14 +88,14 @@ class FileHandler:
         self._close()
 
         try:
-            path = Path() / self._initialize_fileprovider(path, keep_fileprovider)
+            file_path = Path() / self._initialize_fileprovider(path=path, keep_fileprovider=keep_fileprovider)
         except ValueError as ex:
             ex = str(ex)
             logger.error(ex)
             self.__window.statusbar.set_message(ex)
             return False
 
-        error_message = self._check_access(path)
+        error_message = self._check_access(path=file_path)
         if error_message:
             logger.error(error_message)
             self.__window.statusbar.set_message(error_message)
@@ -103,9 +103,9 @@ class FileHandler:
             return False
 
         self.__filelist = self.__file_provider.list_files()
-        self.__archive_type = ArchiveTools.archive_mime_type(path)
+        self.__archive_type = ArchiveTools.archive_mime_type(file_path)
         self.__start_page = start_page
-        self.__current_file = str(path)
+        self.__current_file = file_path
         self.__stop_waiting = False
 
         # Actually open the file(s)/archive passed in path.
@@ -135,7 +135,7 @@ class FileHandler:
         self.file_opened()
 
         if not image_files:
-            msg = f'No images in "{Path(self.__current_file).name}"'
+            msg = f'No images in "{self.__current_file.name}"'
             logger.error(msg)
             self.__window.statusbar.set_message(msg)
 
@@ -151,8 +151,7 @@ class FileHandler:
             else:
                 self.__extractor.extract()
                 last_image_index = self._get_index_for_page(self.__start_page,
-                                                            len(image_files),
-                                                            self.__current_file)
+                                                            len(image_files))
                 if self.__start_page:
                     current_image_index = last_image_index
                 else:
@@ -259,7 +258,7 @@ class FileHandler:
 
         return None
 
-    def _open_archive(self, path: str):
+    def _open_archive(self, path: Path):
         """
         Opens the archive passed in C{path}.
         Creates an L{archive_extractor.Extractor} and extracts all images
@@ -313,7 +312,7 @@ class FileHandler:
             filelist.reverse()
 
     @staticmethod
-    def _get_index_for_page(start_page: int, num_of_pages: int, path: str):
+    def _get_index_for_page(start_page: int, num_of_pages: int):
         """
         Returns the page that should be displayed for an archive.
 
@@ -334,7 +333,7 @@ class FileHandler:
 
         return min(max(0, current_image_index), num_of_pages - 1)
 
-    def _open_image_files(self, filelist: list, image_path: str):
+    def _open_image_files(self, filelist: list, image_path: Path):
         """
         Opens all files passed in C{filelist}.
         If C{image_path} is found in C{filelist}, the current page will be set
@@ -370,8 +369,9 @@ class FileHandler:
             return 0, 0
 
         file_list = self._get_file_list()
-        if self.__current_file in file_list:
-            current_index = file_list.index(self.__current_file)
+        current_file = str(self.__current_file)
+        if current_file in file_list:
+            current_index = file_list.index(current_file)
         else:
             current_index = 0
         return current_index + 1, len(file_list)
@@ -397,7 +397,7 @@ class FileHandler:
         :returns: filename of the current base
         """
 
-        return Path(self.get_path_to_base()).name
+        return self.get_path_to_base().name
 
     def get_current_filename(self):
         """
@@ -420,20 +420,21 @@ class FileHandler:
 
         if self.__archive_type is not None:
             files = self._get_file_list()
-            if self.__base_path not in files:
+            base_path = str(self.__base_path)
+            if base_path not in files:
                 return
 
-            current_index = files.index(self.__base_path)
+            current_index = files.index(base_path)
 
             if forward:
                 for path in files[current_index + 1:]:
-                    if ArchiveTools.archive_mime_type(path) is not None:
+                    if ArchiveTools.archive_mime_type(path=Path(path)) is not None:
                         self._close()
                         self.open_file(path, keep_fileprovider=True)
                         return True
             else:
                 for path in reversed(files[:current_index]):
-                    if ArchiveTools.archive_mime_type(path) is not None:
+                    if ArchiveTools.archive_mime_type(path=Path(path)) is not None:
                         self._close()
                         self.open_file(path, self.__open_first_page, keep_fileprovider=True)
                         return True

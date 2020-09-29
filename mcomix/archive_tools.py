@@ -56,17 +56,16 @@ class _ArchiveTools:
             else:
                 return False
 
-    def is_archive_file(self, path):
+    def is_archive_file(self, path: Path):
         return str(path).lower().endswith(tuple(self.__supported_archive_ext))
 
     @staticmethod
-    def archive_mime_type(path):
+    def archive_mime_type(path: Path):
         """
         Return the archive type of <path> or None for non-archives
         """
 
         try:
-            path = Path() / path
             if Path.is_file(path):
                 if not os.access(path, os.R_OK):
                     return None
@@ -88,30 +87,30 @@ class _ArchiveTools:
             logger.warning(f'Could not read: \'{path}\'')
             return None
 
-    def get_archive_handler(self, path, archive_type=None):
+    def get_archive_handler(self, path: Path, archive_type=None):
         """
         Returns a fitting extractor handler for the archive passed in <path>
         (with optional mime type <type>. Returns None if no matching extractor was found
         """
 
         if archive_type is None:
-            archive_type = self.archive_mime_type(path)
+            archive_type = self.archive_mime_type(path=path)
             if archive_type is None:
                 return None
 
-        handler = self._get_handler(archive_type)
+        handler = self._get_handler(archive_type=archive_type)
         if handler is None:
             return None
 
-        return handler(path)
+        return handler(str(path))
 
-    def get_recursive_archive_handler(self, path, archive_type=None, **kwargs):
+    def get_recursive_archive_handler(self, path: Path, archive_type=None, **kwargs):
         """
         Same as <get_archive_handler> but the handler will transparently handle
         archives within archives
         """
 
-        archive = self.get_archive_handler(path, archive_type=archive_type)
+        archive = self.get_archive_handler(path=path, archive_type=archive_type)
         if archive is None:
             return None
 

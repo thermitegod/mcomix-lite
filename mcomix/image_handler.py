@@ -148,7 +148,7 @@ class ImageHandler:
         # Set list of image file names
         self.__image_files[:] = files
 
-    def set_base_path(self, path: str):
+    def set_base_path(self, path: Path):
         self.__base_path = path
 
     def get_current_path(self):
