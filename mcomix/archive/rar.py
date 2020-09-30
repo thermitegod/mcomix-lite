@@ -119,7 +119,6 @@ class RarArchive(BaseArchive):
         super().__init__(archive)
         self.__unrar = RarExecutable.unrar_executable
         self.__handle = None
-        self.__is_solid = False
         # Information about the current file will be stored in this structure
         self.__headerdata = RarArchive._RARHeaderDataEx()
         self.__current_filename = None
@@ -136,16 +135,6 @@ class RarArchive(BaseArchive):
         self.__unrar.RARProcessFileW.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_wchar_p, ctypes.c_wchar_p]
         self.__unrar.RARSetCallback.argtypes = [ctypes.c_void_p, UNRARCALLBACK, ctypes.c_long]
 
-    def is_solid(self):
-        """
-        Check if the archive is solid
-
-        :return: whether the archive is solid
-        :rtype: bool
-        """
-
-        return self.__is_solid
-
     def iter_contents(self):
         """
         List archive contents
@@ -156,8 +145,6 @@ class RarArchive(BaseArchive):
         try:
             while 1:
                 self._read_header()
-                if (0x10 & self.__headerdata.Flags) != 0:
-                    self.__is_solid = True
                 filename = self.__current_filename
                 yield filename
                 # Skip to the next entry if we're still on the same name

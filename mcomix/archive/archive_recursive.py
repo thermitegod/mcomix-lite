@@ -141,20 +141,6 @@ class RecursiveArchive(BaseArchive):
             if not wanted:
                 break
 
-    def is_solid(self):
-        """
-        Check if the archive is solid
-
-        :return: whether the archive is solid
-        :rtype: bool
-        """
-
-        # We're solid if at least one archive is solid.
-        for archive in self.__archive_list:
-            if archive.is_solid():
-                return True
-        return False
-
     def close(self):
         """
         Close the archive handle before cleanup temporary directory

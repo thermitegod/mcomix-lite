@@ -70,16 +70,6 @@ class BaseArchive:
 
         pass
 
-    def is_solid(self):
-        """
-        Check if the archive is solid since extraction will vary if it is True
-
-        :returns: is True if the archive is solid and extraction should be done in one pass
-        :rtype: bool
-        """
-
-        return False
-
     @staticmethod
     def _create_file(dst_path: Path):
         """

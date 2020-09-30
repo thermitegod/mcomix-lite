@@ -29,11 +29,6 @@ class ZipArchive(BaseArchive):
     def is_available():
         return True
 
-    def is_solid(self):
-        # zipfile is usually not thread-safe
-        # so treat it as a solid archive to reduce seek operate
-        return True
-
     def iter_contents(self):
         yield from self.__contents_info.keys()
 

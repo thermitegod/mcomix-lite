@@ -24,7 +24,6 @@ class SevenZipArchive(BaseArchive):
 
         self.__sevenzip = SevenzipExecutable.sevenzip_executable
 
-        self.__is_solid = False
         self.__contents = []
 
         self.__state = None
@@ -58,8 +57,7 @@ class SevenZipArchive(BaseArchive):
             return None
 
         if self.__state == self.STATE_HEADER:
-            if line == 'Solid = +':
-                self.__is_solid = True
+            pass
         elif self.__state == self.STATE_LISTING:
             if line.startswith('Path = '):
                 self.__path = line[7:]
@@ -70,16 +68,6 @@ class SevenZipArchive(BaseArchive):
                     self.__contents.append((self.__path, filesize))
 
         return None
-
-    def is_solid(self):
-        """
-        Check if the archive is solid
-
-        :return: whether the archive is solid
-        :rtype: bool
-        """
-
-        return self.__is_solid
 
     def iter_contents(self):
         #: Indicates which part of the file listing has been read.
