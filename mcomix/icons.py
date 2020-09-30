@@ -44,6 +44,6 @@ def load_icons():
             pixbuf = ImageTools.load_pixbuf_data(icon_data)
             iconset = Gtk.IconSet.new_from_pixbuf(pixbuf)
             factory.add(stockid, iconset)
-        except Exception:
+        except FileNotFoundError:
             logger.warning(f'Could not load icon: \'{filename}\'')
     factory.add_default()
