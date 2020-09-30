@@ -15,9 +15,7 @@ def mcomix_icons():
     Returns a list of differently sized pixbufs for the application icon
     """
 
-    # not using resized since getting namespace errors
-    pixbufs = [ImageTools.load_pixbuf_data(resources.read_binary('mcomix.images', 'mcomix.png'))]
-    return pixbufs
+    return [ImageTools.load_pixbuf_data(resources.read_binary('mcomix.images', 'mcomix.png'))]
 
 
 def load_icons():
