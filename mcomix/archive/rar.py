@@ -60,7 +60,7 @@ class RarArchive(BaseArchive):
         """
 
         _pack_ = 1
-        _fields_ = [
+        _fields_ = (
             ('ArcName', ctypes.c_char_p),
             ('ArcNameW', ctypes.c_wchar_p),
             ('OpenMode', ctypes.c_uint),
@@ -73,7 +73,7 @@ class RarArchive(BaseArchive):
             ('Callback', UNRARCALLBACK),
             ('UserData', ctypes.c_long),
             ('Reserved', ctypes.c_uint * 28),
-        ]
+        )
 
     class _RARHeaderDataEx(ctypes.Structure):
         """
@@ -81,7 +81,7 @@ class RarArchive(BaseArchive):
         """
 
         _pack_ = 1
-        _fields_ = [
+        _fields_ = (
             ('ArcName', ctypes.c_char * 1024),
             ('ArcNameW', ctypes.c_wchar * 1024),
             ('FileName', ctypes.c_char * 1024),
@@ -102,7 +102,7 @@ class RarArchive(BaseArchive):
             ('CmtSize', ctypes.c_uint),
             ('CmtState', ctypes.c_uint),
             ('Reserved', ctypes.c_uint * 1024),
-        ]
+        )
 
     @staticmethod
     def is_available():
