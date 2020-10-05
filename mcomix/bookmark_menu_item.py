@@ -20,7 +20,7 @@ class Bookmark(Gtk.ImageMenuItem):
         self._file_handler = file_handler
 
         self._name = name
-        self._path = path
+        self._path = str(path)
         self._page = page
         self._numpages = numpages
         self._date_added = datetime.fromtimestamp(epoch)
