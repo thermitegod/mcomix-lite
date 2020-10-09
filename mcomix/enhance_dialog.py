@@ -147,7 +147,7 @@ class _EnhanceImageDialog(Gtk.Dialog):
                 r_px, g_px, b_px = im_data.getpixel((x, height - 5 - y))
                 im_data.putpixel((x, height - 5 - y), (r_px, g_px, 255))
         if text:
-            maxstr = f'max: {maximum}'
+            maxstr = f'max pixel value: {maximum}'
             draw = ImageDraw.Draw(im)
             draw.rectangle((0, 0, len(maxstr) * 6 + 2, 10), fill=(30, 30, 30))
             draw.text((2, 0), maxstr, fill=(255, 255, 255))
@@ -166,7 +166,7 @@ class _EnhanceImageDialog(Gtk.Dialog):
             return
         # XXX transitional(double page limitation)
         self.__pixbuf = self.__window.imagehandler.get_pixbufs(1)[0]
-        self.draw_histogram()
+        self.draw_histogram(text=prefs['ENHANCE_EXTRA'])
 
     def _on_page_available(self, page_number):
         current_page_number = self.__window.imagehandler.get_current_page()

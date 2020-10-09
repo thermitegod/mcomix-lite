@@ -332,6 +332,12 @@ class _PreferencesDialog(Gtk.Dialog):
                          'LENS_MAGNIFICATION',
                          1, 1.1, 10.0, 0.1, 1.0, 1))
 
+        page.new_section('Enhance')
+
+        page.add_row(self._create_pref_check_button(
+            'Show extra info on enhance dialog',
+            'ENHANCE_EXTRA'))
+
         page.new_section('Threads')
 
         page.add_row(Gtk.Label(label='Maximum number of thumbnail threads:'),
