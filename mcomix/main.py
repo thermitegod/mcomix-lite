@@ -87,7 +87,7 @@ def main():
     logger.info(f'Image loaders: Pillow [{pil_version}], GDK [{GdkPixbuf.PIXBUF_VERSION}]')
 
     # Load configuration.
-    from mcomix.preferences import PreferenceManager
+    from mcomix.preferences_manager import PreferenceManager
     PreferenceManager.load_preferences_file()
 
     from mcomix import icons

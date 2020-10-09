@@ -2,11 +2,6 @@
 
 # must not depend on GTK, PIL, or any other optional libraries.
 
-from pathlib import Path
-
-from loguru import logger
-
-from mcomix.config import ConfigManager
 from mcomix.constants import Constants
 
 # All preferences are stored here.
@@ -84,35 +79,3 @@ prefs = {
     'PAGESELECTOR_HEIGHT': 820,
     'PAGESELECTOR_WIDTH': 560,
 }
-
-
-class _PreferenceManager:
-    def __init__(self):
-        super().__init__()
-
-        self.__preference_path = Constants.PREFERENCE_PATH
-        self.__prefs_hash = {'sha256': None}
-
-    def load_preferences_file(self):
-        saved_prefs = {}
-        if Path.is_file(self.__preference_path):
-            saved_prefs = ConfigManager.load_config(self.__preference_path, saved_prefs)
-
-        prefs.update(filter(lambda i: i[0] in prefs, saved_prefs.items()))
-
-        self.__prefs_hash['sha256'] = ConfigManager.hash_config(prefs)
-
-    def write_preferences_file(self):
-        sha256hash = ConfigManager.hash_config(prefs)
-        if sha256hash == self.__prefs_hash['sha256']:
-            logger.info('No changes to write for preferences')
-            return
-        self.__prefs_hash['sha256'] = sha256hash
-
-        logger.info('Writing changes to preferences')
-
-        ConfigManager.write_config(prefs, self.__preference_path)
-
-
-# Singleton instance
-PreferenceManager = _PreferenceManager()

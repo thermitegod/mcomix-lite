@@ -22,7 +22,7 @@ from mcomix.lens import MagnifyingLens
 from mcomix.lib.callback import Callback
 from mcomix.message_dialog import MessageDialog
 from mcomix.pageselect import Pageselector
-from mcomix.preferences import PreferenceManager
+from mcomix.preferences_manager import PreferenceManager
 from mcomix.preferences import prefs
 from mcomix.status import Statusbar
 from mcomix.thumbbar import ThumbnailSidebar
