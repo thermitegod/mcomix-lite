@@ -28,9 +28,9 @@ from pathlib import Path
 from gi.repository import Gtk
 from loguru import logger
 
-from mcomix import keybindings_map
 from mcomix.config import ConfigManager
 from mcomix.constants import Constants
+from mcomix.keybindings_map import KeyBindingsInfo, KeyBindingsDefault
 
 
 class _KeybindingInterface:
@@ -51,7 +51,7 @@ class _KeybindingInterface:
 
     @staticmethod
     def keybinding_check(name):
-        if name not in keybindings_map.BINDING_INFO:
+        if name not in KeyBindingsInfo.BINDING_INFO:
             logger.error(f'"{name}" is not a valid keyboard action.')
 
     def register(self, name: str, callback, args: list = None, kwargs: dict = None, bindings: list = None):
@@ -208,9 +208,9 @@ class _KeybindingInterface:
         if Path.is_file(self.__keybindings_path):
             ConfigManager.load_config(self.__keybindings_path, stored_action_bindings)
         else:
-            stored_action_bindings = keybindings_map.DEFAULT_BINDINGS.copy()
+            stored_action_bindings = KeyBindingsDefault.DEFAULT_BINDINGS.copy()
 
-        for action in keybindings_map.BINDING_INFO.keys():
+        for action in KeyBindingsInfo.BINDING_INFO.keys():
             if action in stored_action_bindings:
                 bindings = [
                     Gtk.accelerator_parse(keyname)
