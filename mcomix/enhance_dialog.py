@@ -147,7 +147,7 @@ class _EnhanceImageDialog(Gtk.Dialog):
                 r_px, g_px, b_px = im_data.getpixel((x, height - 5 - y))
                 im_data.putpixel((x, height - 5 - y), (r_px, g_px, 255))
         if text:
-            maxstr = f'max: {str(maximum)}'
+            maxstr = f'max: {maximum}'
             draw = ImageDraw.Draw(im)
             draw.rectangle((0, 0, len(maxstr) * 6 + 2, 10), fill=(30, 30, 30))
             draw.text((2, 0), maxstr, fill=(255, 255, 255))

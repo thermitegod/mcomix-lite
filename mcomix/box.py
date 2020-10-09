@@ -27,7 +27,7 @@ class Box:
             self.__position = tuple(position)
             self.__size = tuple(size)
         if len(self.__position) != len(self.__size):
-            raise ValueError(f'different dimensions: {str(len(self.__position))} != {str(len(self.__size))}')
+            raise ValueError(f'different dimensions: {len(self.__position)} != {len(self.__size)}')
 
     def __str__(self):
         """
