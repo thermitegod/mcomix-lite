@@ -64,7 +64,7 @@ class _PreferencesDialog(Gtk.Dialog):
         # ----------------------------------------------------------------
         page = _PreferencePage(None)
 
-        page.new_section('User interface')
+        page.new_section('User Interface')
 
         page.add_row(self._create_pref_check_button(
             'Escape key closes program',
@@ -80,7 +80,7 @@ class _PreferencesDialog(Gtk.Dialog):
             'Use archive thumbnail as application icon',
             'ARCHIVE_THUMBNAIL_AS_ICON'))
 
-        page.add_row(Gtk.Label(label='Thumbnail size (in pixels):'),
+        page.add_row(Gtk.Label(label='Thumbnail size (pixels):'),
                      self._create_pref_spinner(
                          'THUMBNAIL_SIZE',
                          1, 20, 500, 1, 10, 0))
@@ -129,7 +129,7 @@ class _PreferencesDialog(Gtk.Dialog):
                          'PIXELS_TO_SCROLL_PER_MOUSE_WHEEL_EVENT',
                          1, 1, 500, 1, 3, 0))
 
-        page.new_section('Double page mode')
+        page.new_section('Double Page Mode')
 
         page.add_row(self._create_pref_check_button(
             'Flip two pages in double page mode',
@@ -138,7 +138,7 @@ class _PreferencesDialog(Gtk.Dialog):
         page.add_row(Gtk.Label(label='Show only one page where appropriate:'),
                      self._create_doublepage_as_one_control())
 
-        page.new_section('Page selection')
+        page.new_section('Page Selection')
 
         page.add_row(self._create_pref_check_button(
             'Goto the first page when opening previous archive (restart required)',
@@ -162,7 +162,7 @@ class _PreferencesDialog(Gtk.Dialog):
             'Hide all toolbars in fullscreen',
             'HIDE_ALL_IN_FULLSCREEN'))
 
-        page.new_section('FIT_TO_SIZE_MODE')
+        page.new_section('Fit To Size Mode')
 
         page.add_row(Gtk.Label(label='Fit to width or height:'),
                      self._create_fitmode_control())
@@ -172,13 +172,13 @@ class _PreferencesDialog(Gtk.Dialog):
                          'FIT_TO_SIZE_PX',
                          1, 10, 10000, 10, 50, 0))
 
-        page.new_section('ROTATION')
+        page.new_section('Rotation')
 
         page.add_row(self._create_pref_check_button(
             'Rotate images according to their metadata',
             'AUTO_ROTATE_FROM_EXIF'))
 
-        page.new_section('Image quality')
+        page.new_section('Image Quality')
 
         page.add_row(Gtk.Label(label='Scaling mode'),
                      self._create_scaling_quality_combobox())
@@ -189,7 +189,7 @@ class _PreferencesDialog(Gtk.Dialog):
             'Show full path of current file in statusbar',
             'STATUSBAR_FULLPATH'))
 
-        page.add_row(Gtk.Label(label='Statusbar spacing:'),
+        page.add_row(Gtk.Label(label='Statusbar Spacing:'),
                      self._create_pref_spinner(
                          'STATUSBAR_SPACING',
                          1, 1, 20, 1, 10, 0))
@@ -273,7 +273,7 @@ class _PreferencesDialog(Gtk.Dialog):
         # ----------------------------------------------------------------
         page = _PreferencePage(None)
 
-        page.new_section('Animated images')
+        page.new_section('Animated Images')
 
         page.add_row(Gtk.Label(label='ANIMATION_MODE'),
                      self._create_animation_mode_combobox())
@@ -294,7 +294,7 @@ class _PreferencesDialog(Gtk.Dialog):
         # ----------------------------------------------------------------
         page = _PreferencePage(None)
 
-        page.new_section('File order')
+        page.new_section('File Order')
 
         page.add_row(Gtk.Label(label='Sort files and directories by:'),
                      self._create_sort_by_control())
@@ -302,18 +302,18 @@ class _PreferencesDialog(Gtk.Dialog):
         page.add_row(Gtk.Label(label='Sort archives by:'),
                      self._create_archive_sort_by_control())
 
-        page.new_section('File detection')
+        page.new_section('File Detection')
 
         page.add_row(self._create_pref_check_button(
             'Detect image file(s) by mimetypes',
             'CHECK_IMAGE_MIMETYPE'))
 
-        page.new_section('Moving files')
+        page.new_section('Moving Files')
 
         page.add_row(Gtk.Label(label='Move file location (must be relative)'),
                      self._create_pref_text_box('MOVE_FILE'))
 
-        page.new_section('Extraction and cache')
+        page.new_section('Extraction And Cache')
 
         page.add_row(Gtk.Label(label='Maximum number of pages to store in the cache (-1 caches everything):'),
                      self._create_pref_spinner(
