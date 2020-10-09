@@ -5,8 +5,9 @@
 """constants.py - Miscellaneous constants"""
 
 import os
-
 from pathlib import Path
+
+from loguru import logger
 
 
 class _Constants:
@@ -24,6 +25,7 @@ class _Constants:
             self.DATA_DIR = Path() / os.environ['XDG_DATA_HOME'] / self.PROG_NAME
             self.CACHE_DIR = Path() / os.environ['XDG_CACHE_HOME'] / self.PROG_NAME
         except KeyError:
+            logger.warning('Not using XDG dirs, falling back to hardcoded paths')
             self.CONFIG_DIR = Path.home() / '.config' / self.PROG_NAME
             self.DATA_DIR = Path.home() / '.local/share' / self.PROG_NAME
             self.CACHE_DIR = Path() / '/tmp' / self.PROG_NAME
