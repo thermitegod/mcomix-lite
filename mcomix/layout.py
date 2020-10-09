@@ -2,8 +2,8 @@
 
 """Layout"""
 
-from mcomix import constants
 from mcomix.box import Box
+from mcomix.constants import Constants
 
 
 class FiniteLayout:  # 2D only
@@ -66,11 +66,11 @@ class FiniteLayout:  # 2D only
         if index is None:
             index = self.get_current_index()
         if not self.__wrap_individually:
-            index = constants.INDEX_UNION
-        if index == constants.INDEX_UNION:
+            index = Constants.INDEX_UNION
+        if index == Constants.INDEX_UNION:
             current_box = self.__union_box
         else:
-            if index == constants.INDEX_LAST:
+            if index == Constants.INDEX_LAST:
                 index = len(self.__content_boxes) - 1
             current_box = self.__wrapper_boxes[index]
         self.set_viewport_position(self._scroll_to_predefined(
@@ -106,17 +106,17 @@ class FiniteLayout:  # 2D only
             d = destination[idx]
             if not d:
                 continue
-            if d < constants.SCROLL_TO_END or d > 1:
+            if d < Constants.SCROLL_TO_END or d > 1:
                 raise ValueError(f'invalid destination {d} at index {i}')
-            if d == constants.SCROLL_TO_END:
+            if d == Constants.SCROLL_TO_END:
                 d = o
-            if d == constants.SCROLL_TO_START:
+            if d == Constants.SCROLL_TO_START:
                 d = -o
             c = content_size[idx]
             v = viewport_size[idx]
             invisible_size = c - v
             result[idx] = content_position[idx] + (Box.box_to_center_offset_1d(invisible_size, o)
-                                                   if d == constants.SCROLL_TO_CENTER
+                                                   if d == Constants.SCROLL_TO_CENTER
                                                    else invisible_size if d == 1 else 0)  # if d == -1
         return result
 

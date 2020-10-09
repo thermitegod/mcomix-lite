@@ -3,9 +3,10 @@
 
 import glob
 import os
+
 from setuptools import setup
 
-from mcomix import constants
+from mcomix.constants import Constants
 
 """ MComix installation routines.
 Example usage:
@@ -43,8 +44,8 @@ images.extend([os.path.basename(img)
                for img in glob.glob(os.path.join(BASE_PATH, 'mcomix/images', '*.png'))])
 
 setup(
-        name=constants.APPNAME.lower(),
-        version=constants.VERSION,
+        name=Constants.APPNAME.lower(),
+        version=Constants.VERSION,
         python_requires='>=3.8',
         packages=['mcomix', 'mcomix.archive', 'mcomix.lib', 'mcomix.images'],
         package_data={'mcomix.images': images},

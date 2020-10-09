@@ -6,28 +6,28 @@ from pathlib import Path
 
 from loguru import logger
 
-from mcomix import constants
 from mcomix.config import ConfigManager
+from mcomix.constants import Constants
 
 # All preferences are stored here.
 prefs = {
     'AUTO_OPEN_NEXT_ARCHIVE': True,
     'AUTO_OPEN_NEXT_DIRECTORY': False,
-    'SORT_BY': constants.SORT_NAME,  # Normal files obtained by directory listing
-    'SORT_ORDER': constants.SORT_ASCENDING,
-    'SORT_ARCHIVE_BY': constants.SORT_NAME,  # Files in archives
-    'SORT_ARCHIVE_ORDER': constants.SORT_ASCENDING,
+    'SORT_BY': Constants.SORT_NAME,  # Normal files obtained by directory listing
+    'SORT_ORDER': Constants.SORT_ASCENDING,
+    'SORT_ARCHIVE_BY': Constants.SORT_NAME,  # Files in archives
+    'SORT_ARCHIVE_ORDER': Constants.SORT_ASCENDING,
     'CHECKERED_BG_FOR_TRANSPARENT_IMAGES': True,
     'STRETCH': True,
     'DEFAULT_DOUBLE_PAGE': True,
     'DEFAULT_FULLSCREEN': False,
-    'ZOOM_MODE': constants.ZOOM_MODE_BEST,
+    'ZOOM_MODE': Constants.ZOOM_MODE_BEST,
     'DEFAULT_MANGA_MODE': True,
     'MANGA_FLIP_RIGHT': False,
     'LENS_MAGNIFICATION': 2,
     'LENS_SIZE': 200,
     'ENHANCE_EXTRA': True,
-    'VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES': constants.SHOW_DOUBLE_AS_ONE_TITLE | constants.SHOW_DOUBLE_AS_ONE_WIDE,
+    'VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES': Constants.SHOW_DOUBLE_AS_ONE_TITLE | Constants.SHOW_DOUBLE_AS_ONE_WIDE,
     'DOUBLE_STEP_IN_DOUBLE_PAGE_MODE': True,
     'SHOW_PAGE_NUMBERS_ON_THUMBNAILS': True,
     'THUMBNAIL_SIZE': 80,
@@ -43,7 +43,7 @@ prefs = {
     'SHOW_THUMBNAILS': True,
     'ROTATION': 0,
     'AUTO_ROTATE_FROM_EXIF': True,
-    'AUTO_ROTATE_DEPENDING_ON_SIZE': constants.AUTOROTATE_NEVER,
+    'AUTO_ROTATE_DEPENDING_ON_SIZE': Constants.AUTOROTATE_NEVER,
     'VERTICAL_FLIP': False,
     'HORIZONTAL_FLIP': False,
     'KEEP_TRANSFORMATION': False,
@@ -54,16 +54,16 @@ prefs = {
     'SHARPNESS': 1.0,
     'AUTO_CONTRAST': False,
     'MAX_PAGES_TO_CACHE': -1,
-    'STATUSBAR_FIELDS': constants.STATUS_PAGE | constants.STATUS_RESOLUTION | constants.STATUS_PATH | constants.STATUS_FILENAME | constants.STATUS_FILESIZE | constants.STATUS_MODE,
+    'STATUSBAR_FIELDS': Constants.STATUS_PAGE | Constants.STATUS_RESOLUTION | Constants.STATUS_PATH | Constants.STATUS_FILENAME | Constants.STATUS_FILESIZE | Constants.STATUS_MODE,
     'STATUSBAR_FULLPATH': True,
     'MAX_THREADS_THUMBNAIL': 16,
     'MAX_THREADS_EXTRACT': 16,
     'MAX_THREADS_GENERAL': 16,
     'SCALING_QUALITY': 2,  # GdkPixbuf.InterpType.BILINEAR
     'ESCAPE_QUITS': True,
-    'FIT_TO_SIZE_MODE': constants.ZOOM_MODE_HEIGHT,
+    'FIT_TO_SIZE_MODE': Constants.ZOOM_MODE_HEIGHT,
     'FIT_TO_SIZE_PX': 1800,
-    'ANIMATION_MODE': constants.ANIMATION_INF,
+    'ANIMATION_MODE': Constants.ANIMATION_INF,
     'ANIMATION_BACKGROUND': True,
     'ANIMATION_TRANSFORM': True,
     'MOVE_FILE': 'keep',
@@ -90,7 +90,7 @@ class _PreferenceManager:
     def __init__(self):
         super().__init__()
 
-        self.__preference_path = constants.PREFERENCE_PATH
+        self.__preference_path = Constants.PREFERENCE_PATH
         self.__prefs_hash = {'sha256': None}
 
     def load_preferences_file(self):

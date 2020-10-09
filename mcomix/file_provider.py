@@ -4,17 +4,16 @@
 switching to the next/previous directory"""
 
 import functools
-import re
 import locale
+import re
 from pathlib import Path
 
 from loguru import logger
 
-from mcomix import constants
 from mcomix.archive_tools import ArchiveTools
+from mcomix.constants import Constants
 from mcomix.image_tools import ImageTools
 from mcomix.preferences import prefs
-
 
 # Split into float, int, and characters
 NUMERIC_REGEXP = re.compile(r'\d+[.]\d+|\d+|\D+')
@@ -102,15 +101,15 @@ class FileProvider(SortAlphanumeric):
         Sorts a list of C{files} depending on the current preferences. The list is sorted in-place
         """
 
-        if prefs['SORT_BY'] == constants.SORT_NAME:
+        if prefs['SORT_BY'] == Constants.SORT_NAME:
             SortAlphanumeric.alphanumeric_sort(files)
-        elif prefs['SORT_BY'] == constants.SORT_LAST_MODIFIED:
+        elif prefs['SORT_BY'] == Constants.SORT_LAST_MODIFIED:
             # Most recently modified file first
             files.sort(key=lambda filename: Path.stat(filename).st_mtime * -1)
-        elif prefs['SORT_BY'] == constants.SORT_SIZE:
+        elif prefs['SORT_BY'] == Constants.SORT_SIZE:
             # Smallest file first
             files.sort(key=lambda filename: Path.stat(filename).st_size)
-        elif prefs['SORT_BY'] == constants.SORT_LOCALE:
+        elif prefs['SORT_BY'] == Constants.SORT_LOCALE:
             # Use the user's local to match ordering in most applications.
             sorted(str(files), key=locale.strxfrm)
         else:
@@ -118,7 +117,7 @@ class FileProvider(SortAlphanumeric):
             pass
 
         # Default is ascending.
-        if prefs['SORT_ORDER'] == constants.SORT_DESCENDING:
+        if prefs['SORT_ORDER'] == Constants.SORT_DESCENDING:
             files.reverse()
 
 

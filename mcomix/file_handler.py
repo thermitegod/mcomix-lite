@@ -8,9 +8,9 @@ from pathlib import Path
 from gi.repository import Gtk
 from loguru import logger
 
-from mcomix import constants
 from mcomix.archive_extractor import Extractor
 from mcomix.archive_tools import ArchiveTools
+from mcomix.constants import Constants
 from mcomix.file_provider import FileProvider, GetFileProvider, SortAlphanumeric
 from mcomix.image_tools import ImageTools
 from mcomix.lib.callback import Callback
@@ -301,15 +301,15 @@ class FileHandler:
         Sorts the image list passed in C{filelist} based on the sorting preference option
         """
 
-        if prefs['SORT_ARCHIVE_BY'] == constants.SORT_NAME:
+        if prefs['SORT_ARCHIVE_BY'] == Constants.SORT_NAME:
             SortAlphanumeric.alphanumeric_sort(filelist)
-        elif prefs['SORT_ARCHIVE_BY'] == constants.SORT_NAME_LITERAL:
+        elif prefs['SORT_ARCHIVE_BY'] == Constants.SORT_NAME_LITERAL:
             filelist.sort()
         else:
             # No sorting
             pass
 
-        if prefs['SORT_ARCHIVE_ORDER'] == constants.SORT_DESCENDING:
+        if prefs['SORT_ARCHIVE_ORDER'] == Constants.SORT_DESCENDING:
             filelist.reverse()
 
     @staticmethod

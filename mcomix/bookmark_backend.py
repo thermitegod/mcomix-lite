@@ -9,8 +9,8 @@ from pathlib import Path
 from gi.repository import Gtk
 from loguru import logger
 
-from mcomix import constants
 from mcomix.bookmark_menu_item import Bookmark
+from mcomix.constants import Constants
 from mcomix.lib.callback import Callback
 from mcomix.message_dialog import MessageDialog
 
@@ -29,7 +29,7 @@ class _BookmarksStore:
         self.__file_handler = None
         self.__image_handler = None
 
-        self.__bookmark_path = constants.BOOKMARK_PATH
+        self.__bookmark_path = Constants.BOOKMARK_PATH
         self.__bookmark_state = {'dirty': False}
 
         #: List of bookmarks
@@ -180,7 +180,7 @@ class _BookmarksStore:
             self.__bookmarks = list(set(self.__bookmarks + new_bookmarks))
 
         packs = [bookmark.pack() for bookmark in self.__bookmarks]
-        bookmarks = json.dumps((constants.VERSION, packs), ensure_ascii=False, indent=2)
+        bookmarks = json.dumps((Constants.VERSION, packs), ensure_ascii=False, indent=2)
         self.__bookmark_path.write_text(bookmarks)
         self.__bookmarks_mtime = time.time()
 

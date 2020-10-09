@@ -7,7 +7,7 @@ from pathlib import Path
 
 from loguru import logger
 
-from mcomix import constants
+from mcomix.constants import Constants
 from mcomix.image_tools import ImageTools
 from mcomix.lib.callback import Callback
 from mcomix.lib.mt import ThreadPool, Lock
@@ -175,12 +175,12 @@ class ImageHandler:
             page = self.get_current_page()
 
         if (page == 1 and
-                prefs['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & constants.SHOW_DOUBLE_AS_ONE_TITLE and
+                prefs['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & Constants.SHOW_DOUBLE_AS_ONE_TITLE and
                 self.__window.filehandler.get_archive_type() is not None):
             return True
 
         if (not prefs['DEFAULT_DOUBLE_PAGE'] or
-                not prefs['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & constants.SHOW_DOUBLE_AS_ONE_WIDE or
+                not prefs['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & Constants.SHOW_DOUBLE_AS_ONE_WIDE or
                 page == self.get_number_of_pages()):
             return False
 

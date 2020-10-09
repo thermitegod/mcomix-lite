@@ -9,10 +9,10 @@ from PIL import Image, ImageEnhance, ImageOps, ImageSequence
 from gi.repository import GLib, GdkPixbuf, Gio
 from loguru import logger
 
-from mcomix import constants
+from mcomix.anime_tools import AnimeFrameBuffer, AnimeFrameExecutor
+from mcomix.constants import Constants
 from mcomix.lib.reader import LockedFileIO
 from mcomix.preferences import prefs
-from mcomix.anime_tools import AnimeFrameBuffer, AnimeFrameExecutor
 
 
 class _ImageTools:
@@ -300,7 +300,7 @@ class _ImageTools:
         Loads a pixbuf from a given image file
         """
 
-        enable_anime = prefs['ANIMATION_MODE'] != constants.ANIMATION_DISABLED
+        enable_anime = prefs['ANIMATION_MODE'] != Constants.ANIMATION_DISABLED
         try:
             with LockedFileIO(path) as fio:
                 with Image.open(fio) as im:

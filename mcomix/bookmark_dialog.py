@@ -4,9 +4,9 @@
 
 from gi.repository import GObject, Gdk, GdkPixbuf, Gtk
 
-from mcomix import constants
-from mcomix.preferences import prefs
 from mcomix.bookmark_menu_item import Bookmark
+from mcomix.constants import Constants
+from mcomix.preferences import prefs
 
 
 class BookmarksDialog(Gtk.Dialog):
@@ -20,7 +20,7 @@ class BookmarksDialog(Gtk.Dialog):
         super().__init__(title='Edit Bookmarks', destroy_with_parent=True)
         self.set_transient_for(window)
 
-        self.add_buttons(Gtk.STOCK_REMOVE, constants.RESPONSE_REMOVE, Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
+        self.add_buttons(Gtk.STOCK_REMOVE, Constants.RESPONSE_REMOVE, Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
 
         self.__bookmarks_store = bookmarks_store
 
@@ -155,7 +155,7 @@ class BookmarksDialog(Gtk.Dialog):
     def _response(self, dialog, response):
         if response == Gtk.ResponseType.CLOSE:
             self._close()
-        elif response == constants.RESPONSE_REMOVE:
+        elif response == Constants.RESPONSE_REMOVE:
             self._remove_selected()
         else:
             self.destroy()

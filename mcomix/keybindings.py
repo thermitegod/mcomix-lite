@@ -28,8 +28,9 @@ from pathlib import Path
 from gi.repository import Gtk
 from loguru import logger
 
-from mcomix import constants, keybindings_map
+from mcomix import keybindings_map
 from mcomix.config import ConfigManager
+from mcomix.constants import Constants
 
 
 class _KeybindingInterface:
@@ -43,7 +44,7 @@ class _KeybindingInterface:
         self.__action_to_bindings = defaultdict(list)  # action name => [ (key code, key modifier), ]
         self.__binding_to_action = {}  # (key code, key modifier) => action name
 
-        self.__keybindings_path = constants.KEYBINDINGS_PATH
+        self.__keybindings_path = Constants.KEYBINDINGS_PATH
         self.__keybindings_hash = {'sha256': None}
 
         self.load_keybindings_file()

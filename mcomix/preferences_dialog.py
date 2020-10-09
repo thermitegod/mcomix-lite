@@ -4,7 +4,7 @@
 
 from gi.repository import GObject, GdkPixbuf, Gtk
 
-from mcomix import constants
+from mcomix.constants import Constants
 from mcomix.keybindings import KeybindingManager
 from mcomix.keybindings_editor import KeybindingEditorWindow
 from mcomix.labels import BoldLabel
@@ -23,7 +23,7 @@ class _PreferencesDialog(Gtk.Dialog):
         self.set_transient_for(window)
 
         # Button text is set later depending on active tab
-        self.__reset_button = self.add_button('', constants.RESPONSE_REVERT_TO_DEFAULT)
+        self.__reset_button = self.add_button('', Constants.RESPONSE_REVERT_TO_DEFAULT)
         self.add_button(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
 
         self.__window = window
@@ -343,17 +343,17 @@ class _PreferencesDialog(Gtk.Dialog):
         page.add_row(Gtk.Label(label='Maximum number of thumbnail threads:'),
                      self._create_pref_spinner(
                          'MAX_THREADS_THUMBNAIL',
-                         1, 1, constants.MAX_THREADS, 1, 4, 0))
+                         1, 1, Constants.MAX_THREADS, 1, 4, 0))
 
         page.add_row(Gtk.Label(label='Maximum number of extraction threads:'),
                      self._create_pref_spinner(
                          'MAX_THREADS_EXTRACT',
-                         1, 1, constants.MAX_THREADS, 1, 4, 0))
+                         1, 1, Constants.MAX_THREADS, 1, 4, 0))
 
         page.add_row(Gtk.Label(label='Maximum number of general threads:'),
                      self._create_pref_spinner(
                          'MAX_THREADS_GENERAL',
-                         1, 1, constants.MAX_THREADS, 1, 4, 0))
+                         1, 1, Constants.MAX_THREADS, 1, 4, 0))
 
         return page
 
@@ -382,7 +382,7 @@ class _PreferencesDialog(Gtk.Dialog):
         if response == Gtk.ResponseType.CLOSE:
             PreferenceDialog.close_dialog()
 
-        elif response == constants.RESPONSE_REVERT_TO_DEFAULT:
+        elif response == Constants.RESPONSE_REVERT_TO_DEFAULT:
             if self.notebook.get_nth_page(self.notebook.get_current_page()) == self.shortcuts:
                 # "Shortcuts" page is active, reset all keys to their default value
                 self.__manager.clear_all()
@@ -404,10 +404,10 @@ class _PreferencesDialog(Gtk.Dialog):
         """
 
         items = (
-            ('Never', constants.SHOW_DOUBLE_NEVER),
-            ('Only for title pages', constants.SHOW_DOUBLE_AS_ONE_TITLE),
-            ('Only for wide images', constants.SHOW_DOUBLE_AS_ONE_WIDE),
-            ('Always', constants.SHOW_DOUBLE_AS_ONE_TITLE | constants.SHOW_DOUBLE_AS_ONE_WIDE))
+            ('Never', Constants.SHOW_DOUBLE_NEVER),
+            ('Only for title pages', Constants.SHOW_DOUBLE_AS_ONE_TITLE),
+            ('Only for wide images', Constants.SHOW_DOUBLE_AS_ONE_WIDE),
+            ('Always', Constants.SHOW_DOUBLE_AS_ONE_TITLE | Constants.SHOW_DOUBLE_AS_ONE_WIDE))
 
         box = self._create_combobox(items,
                                     prefs['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'],
@@ -429,8 +429,8 @@ class _PreferencesDialog(Gtk.Dialog):
     def _create_fitmode_control(self):
         """Combobox for fit to size mode"""
         items = (
-            ('Fit to width', constants.ZOOM_MODE_WIDTH),
-            ('Fit to height', constants.ZOOM_MODE_HEIGHT))
+            ('Fit to width', Constants.ZOOM_MODE_WIDTH),
+            ('Fit to height', Constants.ZOOM_MODE_HEIGHT))
 
         box = self._create_combobox(items,
                                     prefs['FIT_TO_SIZE_MODE'],
@@ -457,19 +457,19 @@ class _PreferencesDialog(Gtk.Dialog):
         """
 
         sortkey_items = (
-            ('No sorting', constants.SORT_NONE),
-            ('File name', constants.SORT_NAME),
-            ('File name (locale)', constants.SORT_LOCALE),
-            ('File size', constants.SORT_SIZE),
-            ('Last modified', constants.SORT_LAST_MODIFIED))
+            ('No sorting', Constants.SORT_NONE),
+            ('File name', Constants.SORT_NAME),
+            ('File name (locale)', Constants.SORT_LOCALE),
+            ('File size', Constants.SORT_SIZE),
+            ('Last modified', Constants.SORT_LAST_MODIFIED))
 
         sortkey_box = self._create_combobox(sortkey_items,
                                             prefs['SORT_BY'],
                                             self._sort_by_changed_cb)
 
         sortorder_items = (
-            ('Ascending', constants.SORT_ASCENDING),
-            ('Descending', constants.SORT_DESCENDING))
+            ('Ascending', Constants.SORT_ASCENDING),
+            ('Descending', Constants.SORT_DESCENDING))
 
         sortorder_box = self._create_combobox(sortorder_items,
                                               prefs['SORT_ORDER'],
@@ -511,17 +511,17 @@ class _PreferencesDialog(Gtk.Dialog):
         """
 
         sortkey_items = (
-            ('No sorting', constants.SORT_NONE),
-            ('Natural order', constants.SORT_NAME),
-            ('Literal order', constants.SORT_NAME_LITERAL))
+            ('No sorting', Constants.SORT_NONE),
+            ('Natural order', Constants.SORT_NAME),
+            ('Literal order', Constants.SORT_NAME_LITERAL))
 
         sortkey_box = self._create_combobox(sortkey_items,
                                             prefs['SORT_ARCHIVE_BY'],
                                             self._sort_archive_by_changed_cb)
 
         sortorder_items = (
-            ('Ascending', constants.SORT_ASCENDING),
-            ('Descending', constants.SORT_DESCENDING))
+            ('Ascending', Constants.SORT_ASCENDING),
+            ('Descending', Constants.SORT_DESCENDING))
 
         sortorder_box = self._create_combobox(sortorder_items,
                                               prefs['SORT_ARCHIVE_ORDER'],
@@ -594,10 +594,10 @@ class _PreferencesDialog(Gtk.Dialog):
         """
 
         items = (
-            ('Never', constants.ANIMATION_DISABLED),
-            ('Normal', constants.ANIMATION_NORMAL),
-            ('Once', constants.ANIMATION_ONCE),
-            ('Infinity', constants.ANIMATION_INF),
+            ('Never', Constants.ANIMATION_DISABLED),
+            ('Normal', Constants.ANIMATION_NORMAL),
+            ('Once', Constants.ANIMATION_ONCE),
+            ('Infinity', Constants.ANIMATION_INF),
         )
 
         selection = prefs['ANIMATION_MODE']

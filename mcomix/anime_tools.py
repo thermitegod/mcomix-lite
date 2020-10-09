@@ -4,7 +4,7 @@ import math
 
 from gi.repository import GdkPixbuf
 
-from mcomix import constants
+from mcomix.constants import Constants
 from mcomix.preferences import prefs
 
 
@@ -15,9 +15,9 @@ class AnimeFrameBuffer:
         self.__n_frames = n_frames
         self.__width = 0
         self.__height = 0
-        if prefs['ANIMATION_MODE'] == constants.ANIMATION_INF:
+        if prefs['ANIMATION_MODE'] == Constants.ANIMATION_INF:
             self.__loop = 0
-        elif prefs['ANIMATION_MODE'] == constants.ANIMATION_ONCE:
+        elif prefs['ANIMATION_MODE'] == Constants.ANIMATION_ONCE:
             self.__loop = 1
         else:
             self.__loop = 0 if loop > 10 else loop  # loop over 10 is infinitely

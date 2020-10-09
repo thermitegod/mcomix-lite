@@ -8,7 +8,7 @@ from pathlib import Path
 
 from gi.repository import Gtk
 
-from mcomix import constants
+from mcomix.constants import Constants
 from mcomix.image_handler import ImageHandler
 from mcomix.preferences import prefs
 from mcomix.properties_page import PropertiesPage
@@ -78,7 +78,7 @@ class PropertiesDialog(Gtk.Dialog):
         path = window.filehandler.get_path_to_base()
         main_info = (
             f'{window.imagehandler.get_number_of_pages()} pages',
-            constants.ARCHIVE_DESCRIPTIONS[window.filehandler.get_archive_type()])
+            Constants.ARCHIVE_DESCRIPTIONS[window.filehandler.get_archive_type()])
         page.set_main_info(main_info)
         self._update_page_secondary_info(page, path)
         page.show_all()

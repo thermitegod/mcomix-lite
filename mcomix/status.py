@@ -4,7 +4,7 @@
 
 from gi.repository import Gdk, Gtk
 
-from mcomix import constants
+from mcomix.constants import Constants
 from mcomix.preferences import prefs
 
 
@@ -164,13 +164,13 @@ class Statusbar(Gtk.EventBox):
         """
 
         fields = [
-            (constants.STATUS_PAGE, self.__page_info),
-            (constants.STATUS_FILENUMBER, self.__file_info),
-            (constants.STATUS_RESOLUTION, self.__resolution),
-            (constants.STATUS_PATH, self.__root),
-            (constants.STATUS_FILENAME, self.__filename),
-            (constants.STATUS_FILESIZE, self.__filesize),
-            (constants.STATUS_MODE, self.__view_mode),
+            (Constants.STATUS_PAGE, self.__page_info),
+            (Constants.STATUS_FILENUMBER, self.__file_info),
+            (Constants.STATUS_RESOLUTION, self.__resolution),
+            (Constants.STATUS_PATH, self.__root),
+            (Constants.STATUS_FILENAME, self.__filename),
+            (Constants.STATUS_FILESIZE, self.__filesize),
+            (Constants.STATUS_MODE, self.__view_mode),
         ]
         p = prefs['STATUSBAR_FIELDS']
 
@@ -186,13 +186,13 @@ class Statusbar(Gtk.EventBox):
             return
 
         names = {
-            'pagenumber': constants.STATUS_PAGE,
-            'resolution': constants.STATUS_RESOLUTION,
-            'rootpath': constants.STATUS_PATH,
-            'filename': constants.STATUS_FILENAME,
-            'filenumber': constants.STATUS_FILENUMBER,
-            'filesize': constants.STATUS_FILESIZE,
-            'view mode': constants.STATUS_MODE,
+            'pagenumber': Constants.STATUS_PAGE,
+            'resolution': Constants.STATUS_RESOLUTION,
+            'rootpath': Constants.STATUS_PATH,
+            'filename': Constants.STATUS_FILENAME,
+            'filenumber': Constants.STATUS_FILENUMBER,
+            'filesize': Constants.STATUS_FILESIZE,
+            'view mode': Constants.STATUS_MODE,
         }
 
         bit = names[action.get_name()]
@@ -220,13 +220,13 @@ class Statusbar(Gtk.EventBox):
 
         p = prefs['STATUSBAR_FIELDS']
         names = {
-            'pagenumber': p & constants.STATUS_PAGE,
-            'filenumber': p & constants.STATUS_FILENUMBER,
-            'resolution': p & constants.STATUS_RESOLUTION,
-            'rootpath': p & constants.STATUS_PATH,
-            'filename': p & constants.STATUS_FILENAME,
-            'filesize': p & constants.STATUS_FILESIZE,
-            'view mode': p & constants.STATUS_MODE,
+            'pagenumber': p & Constants.STATUS_PAGE,
+            'filenumber': p & Constants.STATUS_FILENUMBER,
+            'resolution': p & Constants.STATUS_RESOLUTION,
+            'rootpath': p & Constants.STATUS_PATH,
+            'filename': p & Constants.STATUS_FILENAME,
+            'filesize': p & Constants.STATUS_FILESIZE,
+            'view mode': p & Constants.STATUS_MODE,
         }
 
         for n, v in names.items():

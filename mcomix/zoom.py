@@ -7,7 +7,7 @@ from functools import reduce
 
 from loguru import logger
 
-from mcomix import constants
+from mcomix.constants import Constants
 from mcomix.preferences import prefs
 
 
@@ -29,11 +29,11 @@ class ZoomModel:
         self.__user_zoom_log = self.__identity_zoom_log
         #: Image fit mode. Determines the base zoom level for an image by
         #: calculating its maximum size.
-        self.__fitmode = constants.ZOOM_MODE_MANUAL
+        self.__fitmode = Constants.ZOOM_MODE_MANUAL
         self.__scale_up = False
 
     def set_fit_mode(self, fitmode: int):
-        if fitmode < constants.ZOOM_MODE_BEST or fitmode > constants.ZOOM_MODE_SIZE:
+        if fitmode < Constants.ZOOM_MODE_BEST or fitmode > Constants.ZOOM_MODE_SIZE:
             raise ValueError(f'No fit mode for id {fitmode}')
         self.__fitmode = fitmode
 
@@ -127,20 +127,20 @@ class ZoomModel:
         preference for this axis
         """
 
-        manual = fitmode == constants.ZOOM_MODE_MANUAL
-        if fitmode == constants.ZOOM_MODE_BEST or \
+        manual = fitmode == Constants.ZOOM_MODE_MANUAL
+        if fitmode == Constants.ZOOM_MODE_BEST or \
                 (manual and allow_upscaling and all(map(operator.lt, union_size, screen_size))):
             return screen_size
         result = [None] * len(screen_size)
         if not manual:
             fixed_size = None
-            if fitmode == constants.ZOOM_MODE_SIZE:
+            if fitmode == Constants.ZOOM_MODE_SIZE:
                 fitmode = prefs['FIT_TO_SIZE_MODE']  # reassigning fitmode
                 fixed_size = prefs['FIT_TO_SIZE_PX']
-            if fitmode == constants.ZOOM_MODE_WIDTH:
-                axis = constants.AXIS_WIDTH
-            elif fitmode == constants.ZOOM_MODE_HEIGHT:
-                axis = constants.AXIS_HEIGHT
+            if fitmode == Constants.ZOOM_MODE_WIDTH:
+                axis = Constants.AXIS_WIDTH
+            elif fitmode == Constants.ZOOM_MODE_HEIGHT:
+                axis = Constants.AXIS_HEIGHT
             else:
                 logger.error('Cannot map fitmode to axis')
             result[axis] = fixed_size if fixed_size is not None else screen_size[axis]

@@ -6,7 +6,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from mcomix import constants
+from mcomix.constants import Constants
 
 
 class VersionError(BaseException):
@@ -29,13 +29,13 @@ def parse_args():
                            help='Start the application in double page mode.')
     fitmodes = parser.add_argument_group('Zoom modes')
     fitmodes.add_argument('-b', '--zoom-best', dest='zoommode', action='store_const',
-                          const=constants.ZOOM_MODE_BEST,
+                          const=Constants.ZOOM_MODE_BEST,
                           help='Start the application with zoom set to best fit mode.')
     fitmodes.add_argument('-zw', '--zoom-width', dest='zoommode', action='store_const',
-                          const=constants.ZOOM_MODE_WIDTH,
+                          const=Constants.ZOOM_MODE_WIDTH,
                           help='Start the application with zoom set to fit width.')
     fitmodes.add_argument('-zh', '--zoom-height', dest='zoommode', action='store_const',
-                          const=constants.ZOOM_MODE_HEIGHT,
+                          const=Constants.ZOOM_MODE_HEIGHT,
                           help='Start the application with zoom set to fit height.')
     debugopts = parser.add_argument_group('Debug options')
     debugopts.add_argument('-L', '--loglevel', default='WARNING', metavar='LEVEL', type=str.upper,
@@ -48,7 +48,7 @@ def main():
     args = parse_args()
 
     if args.version:
-        print(f'{constants.APPNAME} {constants.VERSION}')
+        print(f'{Constants.APPNAME} {Constants.VERSION}')
         raise SystemExit
 
     # start logger
@@ -77,11 +77,11 @@ def main():
         import PIL
         pil_version = PIL.__version__
 
-        if pil_version < constants.REQUIRED_PIL_VERSION:
+        if pil_version < Constants.REQUIRED_PIL_VERSION:
             raise VersionError
 
     except (AttributeError, ImportError, VersionError):
-        logger.critical(f'Required Pillow version is at least {constants.REQUIRED_PIL_VERSION}')
+        logger.critical(f'Required Pillow version is at least {Constants.REQUIRED_PIL_VERSION}')
         raise SystemExit(1)
 
     logger.info(f'Image loaders: Pillow [{pil_version}], GDK [{GdkPixbuf.PIXBUF_VERSION}]')
@@ -109,7 +109,7 @@ def main():
         if not open_path:
             open_path = None
 
-    Gdk.set_program_class(constants.APPNAME)
+    Gdk.set_program_class(Constants.APPNAME)
 
     settings = Gtk.Settings.get_default()
     # Enable icons for menu items.

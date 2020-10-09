@@ -4,8 +4,8 @@
 
 from gi.repository import Gtk
 
-from mcomix import constants
 from mcomix.bookmark_menu import BookmarksMenu
+from mcomix.constants import Constants
 from mcomix.dialog_handler import DialogHandler
 from mcomix.enhance_dialog import EnhanceDialog
 from mcomix.preferences import prefs
@@ -97,28 +97,28 @@ class MainUI(Gtk.UIManager):
         # also fixing the code for setting the correct one on start-up in main.py.
         self.__actiongroup.add_radio_actions([
             ('best_fit_mode', 'mcomix-fitbest', '_Best fit mode',
-             None, None, constants.ZOOM_MODE_BEST),
+             None, None, Constants.ZOOM_MODE_BEST),
             ('fit_width_mode', 'mcomix-fitwidth', 'Fit _width mode',
-             None, None, constants.ZOOM_MODE_WIDTH),
+             None, None, Constants.ZOOM_MODE_WIDTH),
             ('fit_height_mode', 'mcomix-fitheight', 'Fit _height mode',
-             None, None, constants.ZOOM_MODE_HEIGHT),
+             None, None, Constants.ZOOM_MODE_HEIGHT),
             ('fit_size_mode', 'mcomix-fitsize', 'Fit _size mode',
-             None, None, constants.ZOOM_MODE_SIZE),
+             None, None, Constants.ZOOM_MODE_SIZE),
             ('fit_manual_mode', 'mcomix-fitmanual', 'M_anual zoom mode',
-             None, None, constants.ZOOM_MODE_MANUAL)], 3, self.__window.change_zoom_mode)
+             None, None, Constants.ZOOM_MODE_MANUAL)], 3, self.__window.change_zoom_mode)
 
         # Automatically rotate image if width>height or height>width
         self.__actiongroup.add_radio_actions([
             ('no_autorotation', None, 'Never',
-             None, None, constants.AUTOROTATE_NEVER),
+             None, None, Constants.AUTOROTATE_NEVER),
             ('rotate_90_width', 'mcomix-rotate-90', '_Rotate 90 degrees CW',
-             None, None, constants.AUTOROTATE_WIDTH_90),
+             None, None, Constants.AUTOROTATE_WIDTH_90),
             ('rotate_270_width', 'mcomix-rotate-270', 'Rotat_e 90 degrees CCW',
-             None, None, constants.AUTOROTATE_WIDTH_270),
+             None, None, Constants.AUTOROTATE_WIDTH_270),
             ('rotate_90_height', 'mcomix-rotate-90', '_Rotate 90 degrees CW',
-             None, None, constants.AUTOROTATE_HEIGHT_90),
+             None, None, Constants.AUTOROTATE_HEIGHT_90),
             ('rotate_270_height', 'mcomix-rotate-270', 'Rotat_e 90 degrees CCW',
-             None, None, constants.AUTOROTATE_HEIGHT_270)],
+             None, None, Constants.AUTOROTATE_HEIGHT_270)],
                 prefs['AUTO_ROTATE_DEPENDING_ON_SIZE'], self.__window.change_autorotation)
 
         self.__actiongroup.add_actions([

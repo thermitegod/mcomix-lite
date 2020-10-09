@@ -6,7 +6,7 @@ from pathlib import Path
 
 from loguru import logger
 
-from mcomix import constants
+from mcomix.constants import Constants
 
 
 class _ConfigManager:
@@ -17,13 +17,13 @@ class _ConfigManager:
 
     @staticmethod
     def config_dir_check():
-        if not Path.exists(constants.CONFIG_DIR):
-            logger.info(f'Creating missing config dir: {constants.CONFIG_DIR}')
-            constants.CONFIG_DIR.mkdir()
+        if not Path.exists(Constants.CONFIG_DIR):
+            logger.info(f'Creating missing config dir: {Constants.CONFIG_DIR}')
+            Constants.CONFIG_DIR.mkdir()
 
-        if not Path.exists(constants.DATA_DIR):
-            logger.info(f'Creating missing data dir: {constants.DATA_DIR}')
-            constants.DATA_DIR.mkdir()
+        if not Path.exists(Constants.DATA_DIR):
+            logger.info(f'Creating missing data dir: {Constants.DATA_DIR}')
+            Constants.DATA_DIR.mkdir()
 
     def hash_config(self, config: dict):
         config_json = self.dump_config(config)

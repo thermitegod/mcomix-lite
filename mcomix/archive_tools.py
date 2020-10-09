@@ -8,10 +8,10 @@ from pathlib import Path
 
 from loguru import logger
 
-from mcomix import constants
 from mcomix.archive.rar import RarArchive
 from mcomix.archive.sevenzip import SevenZipArchive
 from mcomix.archive.zip import ZipArchive
+from mcomix.constants import Constants
 
 
 class _ArchiveTools:
@@ -23,18 +23,18 @@ class _ArchiveTools:
 
         # Handlers for each archive type.
         self.__handlers = {
-            constants.ZIP: (ZipArchive,),
-            constants.SEVENZIP: (SevenZipArchive,),
-            constants.RAR: (RarArchive,),
+            Constants.ZIP: (ZipArchive,),
+            Constants.SEVENZIP: (SevenZipArchive,),
+            Constants.RAR: (RarArchive,),
         }
 
         self.init_supported_formats()
 
     def init_supported_formats(self):
         for name, formats, is_available in (
-                ('ZIP', constants.ZIP_FORMATS, self._get_handler(constants.ZIP)),
-                ('7z', constants.SZIP_FORMATS, self._get_handler(constants.SEVENZIP)),
-                ('RAR', constants.RAR_FORMATS, self._get_handler(constants.RAR)),
+                ('ZIP', Constants.ZIP_FORMATS, self._get_handler(Constants.ZIP)),
+                ('7z', Constants.SZIP_FORMATS, self._get_handler(Constants.SEVENZIP)),
+                ('RAR', Constants.RAR_FORMATS, self._get_handler(Constants.RAR)),
         ):
             if not is_available:
                 continue
@@ -71,15 +71,15 @@ class _ArchiveTools:
                     return None
 
                 if zipfile.is_zipfile(path):
-                    return constants.ZIP
+                    return Constants.ZIP
 
                 with Path.open(path, mode='rb') as fd:
                     magic = fd.read(10)
 
                 if magic[0:6] == b'7z\xbc\xaf\x27\x1c':
-                    return constants.SEVENZIP
+                    return Constants.SEVENZIP
                 elif magic.startswith(b'Rar!\x1a\x07'):
-                    return constants.RAR
+                    return Constants.RAR
 
                 return None
 
