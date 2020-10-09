@@ -55,7 +55,7 @@ class _ImageTools:
             self.__supported_image_exts.update(exts)
             self.__supported_image_mimes.update(mimes)
 
-    def is_image_file(self, path: str, check_mimetype: bool = False):
+    def is_image_file(self, path: Path, check_mimetype: bool = False):
         # if check_mimetype is True,
         # read starting bytes and using Gio.content_type_guess
         # to guess if path is supported, ignoring file extension.

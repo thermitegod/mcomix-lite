@@ -3,6 +3,8 @@
 """thumbnail.py - Thumbnail module for MComix implementing (most of) the
 freedesktop.org "standard" at http://jens.triq.net/thumbnail-spec/"""
 
+from pathlib import Path
+
 from mcomix.image_tools import ImageTools
 from mcomix.lib.callback import Callback
 from mcomix.preferences import prefs
@@ -47,10 +49,10 @@ class Thumbnailer:
             self.__width = prefs['THUMBNAIL_SIZE']
             self.__height = prefs['THUMBNAIL_SIZE']
 
-        return self._create_thumbnail(filepath)
+        return self._create_thumbnail(Path(filepath))
 
     @Callback
-    def thumbnail_finished(self, filepath: str, pixbuf):
+    def thumbnail_finished(self, filepath: Path, pixbuf):
         """
         Called every time a thumbnail has been completed.
         <filepath> is the file that was used as source, <pixbuf> is the
@@ -59,7 +61,7 @@ class Thumbnailer:
 
         pass
 
-    def _create_thumbnail_pixbuf(self, filepath: str):
+    def _create_thumbnail_pixbuf(self, filepath: Path):
         """
         Creates a thumbnail pixbuf from <filepath>, and returns it as a
         tuple: (pixbuf)
@@ -71,7 +73,7 @@ class Thumbnailer:
 
         return None, None
 
-    def _create_thumbnail(self, filepath: str):
+    def _create_thumbnail(self, filepath: Path):
         """
         Creates the thumbnail pixbuf for <filepath>
 
