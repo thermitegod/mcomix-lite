@@ -13,7 +13,7 @@ from loguru import logger
 class _Constants:
     def __init__(self):
         self.APPNAME = 'MComix-Lite'
-        self.VERSION = '3.0.0'
+        self.VERSION = '3.1.0.dev0'
 
         self.REQUIRED_PIL_VERSION = '6.0.0'
 
