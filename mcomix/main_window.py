@@ -7,7 +7,7 @@ from pathlib import Path
 from gi.repository import GLib, Gdk, Gtk
 from send2trash import send2trash
 
-from mcomix import icons
+from mcomix.icons import Icons
 from mcomix.bookmark_backend import BookmarksStore
 from mcomix.constants import Constants
 from mcomix.cursor_handler import CursorHandler
@@ -522,7 +522,7 @@ class MainWindow(Gtk.Window):
         self.clear()
         self.thumbnailsidebar.hide()
         self.thumbnailsidebar.clear()
-        self.set_icon_list(icons.mcomix_icons())
+        self.set_icon_list(Icons.mcomix_icons())
 
     def new_page(self, at_bottom: bool = False):
         """

@@ -90,8 +90,8 @@ def main():
     from mcomix.preferences_manager import PreferenceManager
     PreferenceManager.load_preferences_file()
 
-    from mcomix import icons
-    icons.load_icons()
+    from mcomix.icons import Icons
+    Icons.load_icons()
 
     open_path = args.path
 
