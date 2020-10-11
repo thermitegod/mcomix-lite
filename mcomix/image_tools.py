@@ -203,7 +203,8 @@ class _ImageTools:
                          canvas, thickness, thickness)
         return canvas
 
-    def pil_to_pixbuf(self, im, keep_orientation: bool = False):
+    @staticmethod
+    def pil_to_pixbuf(im, keep_orientation: bool = False):
         """
         Return a pixbuf created from the PIL <im>
         """
@@ -230,7 +231,7 @@ class _ImageTools:
         )
         if keep_orientation:
             # Keep orientation metadata.
-            orientation = self._getexif(im).get(274, None)
+            orientation = im.getexif().get(274, None)
             if orientation is not None:
                 setattr(pixbuf, 'orientation', str(orientation))
         return pixbuf
@@ -419,38 +420,6 @@ class _ImageTools:
         with LockedFileIO(path) as fio:
             with Image.open(fio) as im:
                 return im.format
-
-    @staticmethod
-    def _getexif(im):
-        exif = {}
-        try:
-            exif.update(im.getexif())
-        except AttributeError:
-            pass
-        if exif:
-            return exif
-
-        try:
-            l1, l2, size, *lines = im.info.get('Raw profile type exif').splitlines()
-            if l2 != 'exif':
-                # Not valid Exif data.
-                return {}
-            size = int(size)
-            data = binascii.unhexlify(''.join(lines))
-            if len(data) != size:
-                # Size not match.
-                return {}
-            im.info['exif'] = data
-        except Exception:
-            # Not valid Exif data.
-            return {}
-
-        # load Exif again
-        try:
-            exif.update(im.getexif())
-        except AttributeError:
-            pass
-        return exif
 
 
 ImageTools = _ImageTools()
