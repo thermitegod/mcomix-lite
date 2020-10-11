@@ -52,7 +52,7 @@ class MainUI(Gtk.UIManager):
              None, None, self.__window.flip_horizontally),
             ('flip_vert', 'mcomix-flip-vertical', 'Flip _vertically',
              None, None, self.__window.flip_vertically),
-            ('extract_page', Gtk.STOCK_SAVE_AS, 'Save _As',
+            ('extract_page', Gtk.STOCK_SAVE_AS, 'Save Page _As',
              None, None, self.__window.extract_page),
             ('menu_zoom', 'mcomix-zoom', '_Zoom'),
             ('menu_bookmarks', None, '_Bookmarks'),
