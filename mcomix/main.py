@@ -16,29 +16,50 @@ class VersionError(BaseException):
 def parse_args():
     parser = argparse.ArgumentParser(usage='%%(prog)s %s' % '[OPTION...] [PATH]',
                                      description='View images and manga archives.')
-    parser.add_argument('path', type=str, action='store', nargs='*', default=None,
+    parser.add_argument('path',
+                        type=str,
+                        action='store',
+                        nargs='*',
+                        default=None,
                         help=argparse.SUPPRESS)
-    parser.add_argument('-v', '--version', dest='version', action='store_true',
+    parser.add_argument('-v', '--version',
+                        dest='version',
+                        action='store_true',
                         help='Show the version number and exit.')
     viewmodes = parser.add_argument_group('View modes')
-    viewmodes.add_argument('-f', '--fullscreen', dest='fullscreen', action='store_true',
+    viewmodes.add_argument('-f', '--fullscreen',
+                           dest='fullscreen',
+                           action='store_true',
                            help='Start the application in fullscreen mode.')
-    viewmodes.add_argument('-m', '--manga', dest='manga', action='store_true',
+    viewmodes.add_argument('-m', '--manga',
+                           dest='manga',
+                           action='store_true',
                            help='Start the application in manga mode.')
-    viewmodes.add_argument('-d', '--double-page', dest='doublepage', action='store_true',
+    viewmodes.add_argument('-d', '--double-page',
+                           dest='doublepage',
+                           action='store_true',
                            help='Start the application in double page mode.')
     fitmodes = parser.add_argument_group('Zoom modes')
-    fitmodes.add_argument('-b', '--zoom-best', dest='zoommode', action='store_const',
+    fitmodes.add_argument('-b', '--zoom-best',
+                          dest='zoommode',
+                          action='store_const',
                           const=Constants.ZOOM_MODE_BEST,
                           help='Start the application with zoom set to best fit mode.')
-    fitmodes.add_argument('-zw', '--zoom-width', dest='zoommode', action='store_const',
+    fitmodes.add_argument('-zw', '--zoom-width',
+                          dest='zoommode',
+                          action='store_const',
                           const=Constants.ZOOM_MODE_WIDTH,
                           help='Start the application with zoom set to fit width.')
-    fitmodes.add_argument('-zh', '--zoom-height', dest='zoommode', action='store_const',
+    fitmodes.add_argument('-zh', '--zoom-height',
+                          dest='zoommode',
+                          action='store_const',
                           const=Constants.ZOOM_MODE_HEIGHT,
                           help='Start the application with zoom set to fit height.')
     debugopts = parser.add_argument_group('Debug options')
-    debugopts.add_argument('-L', '--loglevel', default='WARNING', metavar='LEVEL', type=str.upper,
+    debugopts.add_argument('-L', '--loglevel',
+                           default='WARNING',
+                           metavar='LEVEL',
+                           type=str.upper,
                            choices=['NONE', 'CRITICAL', 'ERROR', 'WARNING', 'INFO', 'VERBOSE', 'DEBUG', 'TRACE'],
                            help='Levels: %(choices)s')
     return parser.parse_args()
