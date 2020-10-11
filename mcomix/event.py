@@ -22,6 +22,12 @@ class EventHandler:
 
         self.__manager = KeybindingManager.keybinding_manager(self.__window)
 
+    def get_manga_flip_direction(self):
+        if (self.__window.is_manga_mode and not prefs['MANGA_FLIP_RIGHT']) or \
+                (not self.__window.is_manga_mode and prefs['WESTERN_FLIP_LEFT']):
+            return True
+        return False
+
     def resize_event(self, widget, event):
         """
         Handle events from resizing and moving the main window
@@ -272,13 +278,13 @@ class EventHandler:
                 self._scroll_with_flipping(0, prefs['PIXELS_TO_SCROLL_PER_MOUSE_WHEEL_EVENT'])
 
         elif direction == Gdk.ScrollDirection.RIGHT:
-            if self.__window.is_manga_mode and not prefs['MANGA_FLIP_RIGHT']:
+            if self.get_manga_flip_direction():
                 self._flip_page(-1)
             else:
                 self._flip_page(1)
 
         elif direction == Gdk.ScrollDirection.LEFT:
-            if self.__window.is_manga_mode and not prefs['MANGA_FLIP_RIGHT']:
+            if self.get_manga_flip_direction():
                 self._flip_page(1)
             else:
                 self._flip_page(-1)
@@ -376,8 +382,8 @@ class EventHandler:
         if self.__window.scroll(x, y):
             return True
 
-        if y > 0 or ((self.__window.is_manga_mode and not prefs['MANGA_FLIP_RIGHT']) and x < 0) \
-                or (not (self.__window.is_manga_mode and not prefs['MANGA_FLIP_RIGHT']) and x > 0):
+        if y > 0 or (self.get_manga_flip_direction() and x < 0) or \
+                (not self.get_manga_flip_direction() and x > 0):
             self._flip_page(1)
         else:
             self._flip_page(-1)
@@ -397,7 +403,7 @@ class EventHandler:
         normal mode. The opposite happens for number_of_pages being negative
         """
 
-        if self.__window.is_manga_mode and not prefs['MANGA_FLIP_RIGHT']:
+        if self.get_manga_flip_direction():
             self._flip_page(-number_of_pages)
         else:
             self._flip_page(number_of_pages)

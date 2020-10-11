@@ -19,6 +19,7 @@ prefs = {
     'ZOOM_MODE': Constants.ZOOM_MODE_BEST,
     'DEFAULT_MANGA_MODE': True,
     'MANGA_FLIP_RIGHT': False,
+    'WESTERN_FLIP_LEFT': False,
     'LENS_MAGNIFICATION': 2,
     'LENS_SIZE': 200,
     'ENHANCE_EXTRA': True,
