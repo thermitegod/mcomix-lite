@@ -14,10 +14,14 @@ class BookmarksDialog(Gtk.Dialog):
     BookmarksDialog lets the user remove or rearrange bookmarks
     """
 
-    _SORT_TYPE, _SORT_NAME, _SORT_PAGE, _SORT_ADDED = 100, 101, 102, 103
-
     def __init__(self, window, bookmarks_store):
         super().__init__(title='Edit Bookmarks', destroy_with_parent=True)
+
+        self.__SORT_TYPE = 100
+        self.__SORT_NAME = 101
+        self.__SORT_PAGE = 102
+        self.__SORT_ADDED = 103
+
         self.set_transient_for(window)
 
         self.add_buttons(Gtk.STOCK_REMOVE, Constants.RESPONSE_REMOVE, Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
@@ -71,16 +75,16 @@ class BookmarksDialog(Gtk.Dialog):
         self.__date_add_col.set_attributes(cellrenderer_text, text=4)
         self.__name_col.set_expand(True)
 
-        self.__liststore.set_sort_func(BookmarksDialog._SORT_TYPE, self._sort_model, ('_archive_type', '_name', '_page'))
-        self.__liststore.set_sort_func(BookmarksDialog._SORT_NAME, self._sort_model, ('_name', '_page', '_path'))
-        self.__liststore.set_sort_func(BookmarksDialog._SORT_PAGE, self._sort_model, ('_numpages', '_page', '_name'))
-        self.__liststore.set_sort_func(BookmarksDialog._SORT_ADDED, self._sort_model, ('_date_added',))
+        self.__liststore.set_sort_func(self.__SORT_TYPE, self._sort_model, ('_archive_type', '_name', '_page'))
+        self.__liststore.set_sort_func(self.__SORT_NAME, self._sort_model, ('_name', '_page', '_path'))
+        self.__liststore.set_sort_func(self.__SORT_PAGE, self._sort_model, ('_numpages', '_page', '_name'))
+        self.__liststore.set_sort_func(self.__SORT_ADDED, self._sort_model, ('_date_added',))
 
-        self.__icon_col.set_sort_column_id(BookmarksDialog._SORT_TYPE)
-        self.__name_col.set_sort_column_id(BookmarksDialog._SORT_NAME)
-        self.__page_col.set_sort_column_id(BookmarksDialog._SORT_PAGE)
+        self.__icon_col.set_sort_column_id(self.__SORT_TYPE)
+        self.__name_col.set_sort_column_id(self.__SORT_NAME)
+        self.__page_col.set_sort_column_id(self.__SORT_PAGE)
         self.__path_col.set_sort_column_id(3)
-        self.__date_add_col.set_sort_column_id(BookmarksDialog._SORT_ADDED)
+        self.__date_add_col.set_sort_column_id(self.__SORT_ADDED)
 
         self.__icon_col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         self.__name_col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
