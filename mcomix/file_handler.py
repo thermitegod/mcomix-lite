@@ -429,13 +429,13 @@ class FileHandler:
 
             if forward:
                 for path in files[current_index + 1:]:
-                    if ArchiveTools.archive_mime_type(path=Path(path)) is not None:
+                    if ArchiveTools.is_archive_file(path=path):
                         self._close()
                         self.open_file(path, keep_fileprovider=True)
                         return True
             else:
                 for path in reversed(files[:current_index]):
-                    if ArchiveTools.archive_mime_type(path=Path(path)) is not None:
+                    if ArchiveTools.is_archive_file(path=path):
                         self._close()
                         self.open_file(path, self.__open_first_page, keep_fileprovider=True)
                         return True
