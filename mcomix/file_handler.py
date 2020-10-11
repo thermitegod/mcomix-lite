@@ -102,7 +102,7 @@ class FileHandler:
             self.file_opened()
             return False
 
-        self.__filelist = self.__file_provider.list_files()
+        self.__filelist = self.__file_provider.list_files(mode=Constants.IMAGES)
         self.__archive_type = ArchiveTools.archive_mime_type(file_path)
         self.__start_page = start_page
         self.__current_file = file_path
@@ -362,7 +362,7 @@ class FileHandler:
         return self.__base_path
 
     def _get_file_list(self):
-        return self.__file_provider.list_files(FileProvider.ARCHIVES)
+        return self.__file_provider.list_files(mode=Constants.ARCHIVES)
 
     def get_file_number(self):
         if self.__archive_type is None:
@@ -456,9 +456,9 @@ class FileHandler:
             return
 
         if self.__archive_type is not None:
-            listmode = FileProvider.ARCHIVES
+            listmode = Constants.ARCHIVES
         else:
-            listmode = FileProvider.IMAGES
+            listmode = Constants.IMAGES
 
         current_dir = self.__file_provider.get_directory()
         if not self.__file_provider.directory_direction(forward=forward):
@@ -467,7 +467,7 @@ class FileHandler:
             return False
 
         self._close()
-        files = self.__file_provider.list_files(listmode)
+        files = self.__file_provider.list_files(mode=listmode)
         if len(files) > 0:
             if forward:
                 path = files[0]

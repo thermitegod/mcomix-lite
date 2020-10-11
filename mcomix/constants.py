@@ -75,6 +75,10 @@ class _Constants:
         self.SEVENZIP = 1
         self.RAR = 2
 
+        # Constants for determining which files to list.
+        self.IMAGES = 1
+        self.ARCHIVES = 2
+
         self.SCROLL_TO_END = -4
         self.SCROLL_TO_START = -3
         self.SCROLL_TO_CENTER = -2

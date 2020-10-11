@@ -65,9 +65,6 @@ class FileProvider(SortAlphanumeric):
     Base class for various file listing strategies
     """
 
-    # Constants for determining which files to list.
-    IMAGES, ARCHIVES = 1, 2
-
     def __init__(self):
         super().__init__()
 
@@ -77,7 +74,7 @@ class FileProvider(SortAlphanumeric):
     def get_directory(self):
         return Path.cwd()
 
-    def list_files(self, mode: int = IMAGES):
+    def list_files(self, mode: int):
         return []
 
     def directory_direction(self, forward: bool):
@@ -146,14 +143,14 @@ class OrderedFileProvider(FileProvider):
     def get_directory(self):
         return self.__base_dir
 
-    def list_files(self, mode: int = FileProvider.IMAGES):
+    def list_files(self, mode: int):
         """
         Lists all files in the current directory. Returns a list of absolute paths, already sorted
         """
 
-        if mode == FileProvider.IMAGES:
+        if mode == Constants.IMAGES:
             should_accept = functools.partial(ImageTools.is_image_file, check_mimetype=True)
-        elif mode == FileProvider.ARCHIVES:
+        elif mode == Constants.ARCHIVES:
             should_accept = ArchiveTools.is_archive_file
         else:
             should_accept = lambda file: True
@@ -233,12 +230,12 @@ class PreDefinedFileProvider(FileProvider):
         for file in files:
             if Path.is_dir(file):
                 provider = OrderedFileProvider(file)
-                self.__files.extend(provider.list_files())
+                self.__files.extend(provider.list_files(mode=Constants.IMAGES))
 
             elif should_accept(file):
                 self.__files.append(str(file))
 
-    def list_files(self, mode: int = FileProvider.IMAGES):
+    def list_files(self, mode: int):
         """
         Returns the files as passed to the constructor
         """
