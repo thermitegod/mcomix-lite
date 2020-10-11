@@ -15,9 +15,6 @@ from mcomix.constants import Constants
 from mcomix.image_tools import ImageTools
 from mcomix.preferences import prefs
 
-# Split into float, int, and characters
-NUMERIC_REGEXP = re.compile(r'\d+[.]\d+|\d+|\D+')
-
 
 class SortAlphanumeric:
     def __int__(self):
@@ -30,19 +27,10 @@ class SortAlphanumeric:
         such that for an example "1.jpg", "2.jpg", "10.jpg" is a sorted ordering
         """
 
-        def isfloat(p):
-            try:
-                return 0, float(p)
-            except ValueError:
-                return 1, p.lower()
-
         def keyfunc(s):
             x, y, z = str(s).rpartition('.')
-            if z.isdigit():
-                # extension with only digital is not extension
-                x = f'{x}{y}{z}'
-                z = ''
-            return [isfloat(p) for p in (*NUMERIC_REGEXP.findall(x), z)]
+            # re.compile splits into float, int, and characters
+            return [p for p in (*re.compile(r'\d+[.]\d+|\d+|\D+').findall(x), z)]
 
         filenames.sort(key=keyfunc)
 
