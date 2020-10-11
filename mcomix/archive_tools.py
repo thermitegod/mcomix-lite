@@ -53,8 +53,7 @@ class _ArchiveTools:
         for handler in self.__handlers[archive_type]:
             if handler.is_available():
                 return handler
-            else:
-                return False
+            return False
 
     def is_archive_file(self, path: Path):
         return str(path).lower().endswith(tuple(self.__supported_archive_ext))
