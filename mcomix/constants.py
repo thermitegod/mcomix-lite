@@ -34,24 +34,74 @@ class _Constants:
         self.KEYBINDINGS_PATH = Path() / self.CONFIG_DIR / 'keybindings.conf'
         self.BOOKMARK_PATH = Path() / self.DATA_DIR / 'bookmarks.json'
 
-        self.AXIS_DISTRIBUTION, self.AXIS_ALIGNMENT = self.AXIS_WIDTH, self.AXIS_HEIGHT = 0, 1
-        self.SHOW_DOUBLE_NEVER, self.SHOW_DOUBLE_AS_ONE_TITLE, self.SHOW_DOUBLE_AS_ONE_WIDE = 0, 1, 2
-        self.SORT_NONE, self.SORT_NAME, self.SORT_LOCALE, self.SORT_SIZE, self.SORT_LAST_MODIFIED, self.SORT_NAME_LITERAL = 0, 1, 2, 3, 4, 5
-        self.SORT_DESCENDING, self.SORT_ASCENDING = 0, 1
-        self.CURSOR_NORMAL, self.CURSOR_GRAB, self.CURSOR_WAIT, self.CURSOR_NONE = 0, 1, 2, 3
-        self.AUTOROTATE_NEVER, self.AUTOROTATE_WIDTH_90, self.AUTOROTATE_WIDTH_270, self.AUTOROTATE_HEIGHT_90, self.AUTOROTATE_HEIGHT_270 = 0, 1, 2, 3, 4
-        self.ZOOM_MODE_BEST, self.ZOOM_MODE_WIDTH, self.ZOOM_MODE_HEIGHT, self.ZOOM_MODE_MANUAL, self.ZOOM_MODE_SIZE = 0, 1, 2, 3, 4
-        self.ZIP, self.RAR, self.SEVENZIP = 0, 1, 2
+        self.AXIS_DISTRIBUTION = 0
+        self.AXIS_ALIGNMENT = 1
 
-        self.SCROLL_TO_END, self.SCROLL_TO_START, self.SCROLL_TO_CENTER = -4, -3, -2
-        self.INDEX_UNION, self.INDEX_LAST, self.INDEX_FIRST = -2, -1, 0
-        self.ANIMATION_DISABLED, self.ANIMATION_NORMAL, self.ANIMATION_ONCE, self.ANIMATION_INF = 0, 1, 2, 3
-        self.RESPONSE_REVERT_TO_DEFAULT, self.RESPONSE_REMOVE = 3, 4
+        self.AXIS_WIDTH = 0
+        self.AXIS_HEIGHT = 1
+
+        self.SHOW_DOUBLE_NEVER = 0
+        self.SHOW_DOUBLE_AS_ONE_TITLE = 1
+        self.SHOW_DOUBLE_AS_ONE_WIDE = 2
+
+        self.SORT_NONE = 0
+        self.SORT_NAME = 1
+        self.SORT_LOCALE = 2
+        self.SORT_SIZE = 3
+        self.SORT_LAST_MODIFIED = 4
+        self.SORT_NAME_LITERAL = 5
+
+        self.SORT_DESCENDING = 0
+        self.SORT_ASCENDING = 1
+
+        self.CURSOR_NORMAL = 0
+        self.CURSOR_GRAB = 1
+        self.CURSOR_WAIT = 2
+        self.CURSOR_NONE = 3
+
+        self.AUTOROTATE_NEVER = 0
+        self.AUTOROTATE_WIDTH_90 = 1
+        self.AUTOROTATE_WIDTH_270 = 2
+        self.AUTOROTATE_HEIGHT_90 = 3
+        self.AUTOROTATE_HEIGHT_270 = 4
+
+        self.ZOOM_MODE_BEST = 0
+        self.ZOOM_MODE_WIDTH = 1
+        self.ZOOM_MODE_HEIGHT = 2
+        self.ZOOM_MODE_MANUAL = 3
+        self.ZOOM_MODE_SIZE = 4
+
+        self.ZIP = 0
+        self.SEVENZIP = 1
+        self.RAR = 2
+
+        self.SCROLL_TO_END = -4
+        self.SCROLL_TO_START = -3
+        self.SCROLL_TO_CENTER = -2
+
+        self.INDEX_UNION = -2
+        self.INDEX_LAST = -1
+        self.INDEX_FIRST = 0
+
+        self.ANIMATION_DISABLED = 0
+        self.ANIMATION_NORMAL = 1
+        self.ANIMATION_ONCE = 2
+        self.ANIMATION_INF = 3
+
+        self.RESPONSE_REVERT_TO_DEFAULT = 3
+        self.RESPONSE_REMOVE = 4
 
         # These are bit field values, so only use powers of two.
-        self.STATUS_PAGE, self.STATUS_RESOLUTION, self.STATUS_PATH, self.STATUS_FILENAME, self.STATUS_FILENUMBER, self.STATUS_FILESIZE, self.STATUS_MODE = 1, 2, 4, 8, 16, 32, 62
+        self.STATUS_PAGE = 1
+        self.STATUS_RESOLUTION = 2
+        self.STATUS_PATH = 4
+        self.STATUS_FILENAME = 8
+        self.STATUS_FILENUMBER = 16
+        self.STATUS_FILESIZE = 32
+        self.STATUS_MODE = 62
 
-        self.ORIENTATION_MANGA, self.ORIENTATION_WESTERN = (-1, 1), (1, 1)
+        self.ORIENTATION_MANGA = (-1, 1)
+        self.ORIENTATION_WESTERN = (1, 1)
 
         # see https://www.freedesktop.org/wiki/Software/shared-mime-info/
         # for mimetypes not registed to IANA
