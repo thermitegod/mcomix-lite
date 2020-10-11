@@ -28,6 +28,10 @@ class _ArchiveTools:
             Constants.RAR: (RarArchive,),
         }
 
+        self.__zip_ext = tuple([ext[0] for ext in Constants.ZIP_FORMATS])
+        self.__sevenzip_ext = tuple([ext[0] for ext in Constants.SZIP_FORMATS])
+        self.__rar_ext = tuple([ext[0] for ext in Constants.RAR_FORMATS])
+
         self.init_supported_formats()
 
     def init_supported_formats(self):
@@ -58,33 +62,21 @@ class _ArchiveTools:
     def is_archive_file(self, path: Path):
         return str(path).lower().endswith(tuple(self.__supported_archive_ext))
 
-    @staticmethod
-    def archive_mime_type(path: Path):
+    def archive_mime_type(self, path: Path):
         """
         Return the archive type of <path> or None for non-archives
         """
 
-        try:
-            if Path.is_file(path):
-                if not os.access(path, os.R_OK):
-                    return None
+        if self.is_archive_file(path=path):
+            filename = str(path)
+            if filename.endswith(self.__zip_ext):
+                return Constants.ZIP
+            elif filename.endswith(self.__sevenzip_ext):
+                return Constants.SEVENZIP
+            elif filename.endswith(self.__rar_ext):
+                return Constants.RAR
 
-                if zipfile.is_zipfile(path):
-                    return Constants.ZIP
-
-                with Path.open(path, mode='rb') as fd:
-                    magic = fd.read(10)
-
-                if magic[0:6] == b'7z\xbc\xaf\x27\x1c':
-                    return Constants.SEVENZIP
-                elif magic.startswith(b'Rar!\x1a\x07'):
-                    return Constants.RAR
-
-                return None
-
-        except Exception:
-            logger.warning(f'Could not read: \'{path}\'')
-            return None
+        return None
 
     def get_archive_handler(self, path: Path, archive_type=None):
         """
