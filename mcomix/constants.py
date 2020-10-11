@@ -45,7 +45,7 @@ class _Constants:
 
         self.SCROLL_TO_END, self.SCROLL_TO_START, self.SCROLL_TO_CENTER = -4, -3, -2
         self.INDEX_UNION, self.INDEX_LAST, self.INDEX_FIRST = -2, -1, 0
-        self.ANIMATION_DISABLED, self.ANIMATION_NORMAL, self.ANIMATION_ONCE, self.ANIMATION_INF = 0, 1, 1 << 1, 1 << 2
+        self.ANIMATION_DISABLED, self.ANIMATION_NORMAL, self.ANIMATION_ONCE, self.ANIMATION_INF = 0, 1, 2, 3
         self.RESPONSE_REVERT_TO_DEFAULT, self.RESPONSE_REMOVE = 3, 4
 
         # These are bit field values, so only use powers of two.
