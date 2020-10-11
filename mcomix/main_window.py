@@ -842,7 +842,9 @@ class MainWindow(Gtk.Window):
         Set the title acording to current state
         """
 
-        self.set_title(f'[{self.statusbar.get_page_number()}] {self.imagehandler.get_current_filename()}')
+        self.set_title(f'[{self.statusbar.get_page_number()}] '
+                       f'{self.imagehandler.get_current_filename()} '
+                       f'[{self.statusbar.get_mode()}]')
 
     def extract_page(self, *args):
         """

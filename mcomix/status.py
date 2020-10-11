@@ -89,6 +89,9 @@ class Statusbar(Gtk.EventBox):
 
         return self.__page_info
 
+    def get_mode(self):
+        return self.__view_mode
+
     def set_mode(self):
         """
         Update the mode
