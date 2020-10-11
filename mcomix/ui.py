@@ -58,7 +58,6 @@ class MainUI(Gtk.UIManager):
             ('menu_bookmarks', None, '_Bookmarks'),
             ('menu_toolbars', None, 'T_oolbars'),
             ('menu_edit', None, '_Edit'),
-            ('menu_open_with', Gtk.STOCK_OPEN, 'Open _with', ''),
             ('menu_file', None, '_File'),
             ('menu_view', None, '_View'),
             ('menu_tools', None, '_Tools'),
@@ -148,8 +147,6 @@ class MainUI(Gtk.UIManager):
                     <menuitem action="extract_page"/>
                     <menuitem action="refresh_archive"/>
                     <menuitem action="properties"/>
-                    <separator/>
-                    <menu action="menu_open_with"></menu>
                     <separator/>
                     <menuitem action="delete"/>
                     <separator/>
