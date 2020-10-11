@@ -29,8 +29,6 @@ class SevenZipArchive(BaseArchive):
         self.__state = None
         self.__path = None
 
-        self.__filenames_initialized = False
-
     def _get_list_arguments(self):
         return [self.__sevenzip, 'l', '-slt', '--', self.archive]
 
@@ -81,8 +79,6 @@ class SevenZipArchive(BaseArchive):
                 filename = self._parse_list_output_line(line.rstrip('\n'))
                 if filename is not None:
                     yield filename
-
-        self.__filenames_initialized = True
 
     def extract(self, filename: str, destination_dir: Path):
         """
