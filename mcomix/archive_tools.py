@@ -33,13 +33,17 @@ class _ArchiveTools:
 
         self.init_supported_formats()
 
+    @staticmethod
+    def _create_ext_tuple(archive_format):
+        return tuple([ext[0] for ext in archive_format])
+
     def init_supported_formats(self):
         if ZipArchive.is_available():
-            self.__zip_ext = tuple([ext[0] for ext in Constants.ZIP_FORMATS])
+            self.__zip_ext = self._create_ext_tuple(Constants.ZIP_FORMATS)
         if SevenZipArchive.is_available():
-            self.__sevenzip_ext = tuple([ext[0] for ext in Constants.SZIP_FORMATS])
+            self.__sevenzip_ext = self._create_ext_tuple(Constants.SZIP_FORMATS)
         if RarArchive.is_available():
-            self.__rar_ext = tuple([ext[0] for ext in Constants.RAR_FORMATS])
+            self.__rar_ext = self._create_ext_tuple(Constants.RAR_FORMATS)
 
         self.__supported_archive_ext = self.__zip_ext + self.__sevenzip_ext + self.__rar_ext
 
