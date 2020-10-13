@@ -13,7 +13,7 @@ from mcomix.archive.archive_base import BaseArchive
 
 
 class ZipArchive(BaseArchive):
-    def __init__(self, archive: str):
+    def __init__(self, archive: Path):
         super().__init__(archive)
         self.__zip = zipfile.ZipFile(archive, 'r')
         self.__lock = threading.Lock()

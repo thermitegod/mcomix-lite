@@ -42,7 +42,7 @@ class Extractor:
         self.__contents_listed = False
         self.__condition = None
 
-    def setup(self, src: str, archive_type: int = None):
+    def setup(self, src: Path, archive_type: int = None):
         """
         Setup the extractor with archive <src> and destination dir <dst>.
         Return a threading.Condition related to the is_ready() method, or

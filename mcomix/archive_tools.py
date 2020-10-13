@@ -79,7 +79,7 @@ class _ArchiveTools:
 
         for handler in self.__handlers[archive_type]:
             if handler.is_available():
-                return handler(str(path))
+                return handler(path)
 
         return None
 

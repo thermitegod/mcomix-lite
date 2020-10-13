@@ -115,7 +115,7 @@ class RarArchive(BaseArchive):
 
         return bool(RarExecutable.unrar_executable)
 
-    def __init__(self, archive: str):
+    def __init__(self, archive: Path):
         super().__init__(archive)
         self.__unrar = RarExecutable.unrar_executable
         self.__handle = None

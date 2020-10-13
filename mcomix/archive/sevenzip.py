@@ -19,7 +19,7 @@ class SevenZipArchive(BaseArchive):
 
     STATE_HEADER, STATE_LISTING, STATE_FOOTER = 1, 2, 3
 
-    def __init__(self, archive: str):
+    def __init__(self, archive: Path):
         super().__init__(archive)
 
         self.__sevenzip = SevenzipExecutable.sevenzip_executable
