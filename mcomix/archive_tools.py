@@ -18,8 +18,11 @@ class _ArchiveTools:
     def __init__(self):
         super().__init__()
 
-        self.__supported_archive_ext = set()
-        self.__supported_archive_formats = {}
+        self.__supported_archive_ext = ()
+
+        self.__zip_ext = ()
+        self.__sevenzip_ext = ()
+        self.__rar_ext = ()
 
         # Handlers for each archive type.
         self.__handlers = {
@@ -28,26 +31,17 @@ class _ArchiveTools:
             Constants.RAR: (RarArchive,),
         }
 
-        self.__zip_ext = tuple([ext[0] for ext in Constants.ZIP_FORMATS])
-        self.__sevenzip_ext = tuple([ext[0] for ext in Constants.SZIP_FORMATS])
-        self.__rar_ext = tuple([ext[0] for ext in Constants.RAR_FORMATS])
-
         self.init_supported_formats()
 
     def init_supported_formats(self):
-        for name, formats, is_available in (
-                ('ZIP', Constants.ZIP_FORMATS, self._get_handler(Constants.ZIP)),
-                ('7z', Constants.SZIP_FORMATS, self._get_handler(Constants.SEVENZIP)),
-                ('RAR', Constants.RAR_FORMATS, self._get_handler(Constants.RAR)),
-        ):
-            if not is_available:
-                continue
-            self.__supported_archive_formats[name] = (set(), set())
-            for ext, mime in formats:
-                self.__supported_archive_formats[name][0].add(mime.lower())
-                self.__supported_archive_formats[name][1].add(ext.lower())
-            # also add to supported extensions list
-            self.__supported_archive_ext.update(self.__supported_archive_formats[name][1])
+        if ZipArchive.is_available():
+            self.__zip_ext = tuple([ext[0] for ext in Constants.ZIP_FORMATS])
+        if SevenZipArchive.is_available():
+            self.__sevenzip_ext = tuple([ext[0] for ext in Constants.SZIP_FORMATS])
+        if RarArchive.is_available():
+            self.__rar_ext = tuple([ext[0] for ext in Constants.RAR_FORMATS])
+
+        self.__supported_archive_ext = self.__zip_ext + self.__sevenzip_ext + self.__rar_ext
 
     def _get_handler(self, archive_type):
         """
@@ -60,7 +54,7 @@ class _ArchiveTools:
             return False
 
     def is_archive_file(self, path: Path):
-        return str(path).lower().endswith(tuple(self.__supported_archive_ext))
+        return str(path).lower().endswith(self.__supported_archive_ext)
 
     def archive_mime_type(self, path: Path):
         """
