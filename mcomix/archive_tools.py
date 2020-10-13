@@ -43,16 +43,6 @@ class _ArchiveTools:
 
         self.__supported_archive_ext = self.__zip_ext + self.__sevenzip_ext + self.__rar_ext
 
-    def _get_handler(self, archive_type):
-        """
-        :returns: Return best archive class for format <archive_type>
-        """
-
-        for handler in self.__handlers[archive_type]:
-            if handler.is_available():
-                return handler
-            return False
-
     def is_archive_file(self, path: Path):
         return str(path).lower().endswith(self.__supported_archive_ext)
 
@@ -83,11 +73,11 @@ class _ArchiveTools:
             if archive_type is None:
                 return None
 
-        handler = self._get_handler(archive_type=archive_type)
-        if handler is None:
-            return None
+        for handler in self.__handlers[archive_type]:
+            if handler.is_available():
+                return handler(str(path))
 
-        return handler(str(path))
+        return None
 
     def get_recursive_archive_handler(self, path: Path, archive_type=None, **kwargs):
         """
