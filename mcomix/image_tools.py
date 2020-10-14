@@ -332,8 +332,8 @@ class _ImageTools:
                 with Image.open(fio) as im:
                     im.thumbnail((width, height), resample=Image.BOX)
                     return self.pil_to_pixbuf(im, keep_orientation=True)
-        except Exception:
-            logger.error('failed to load pixbuf')
+        except Exception as ex:
+            logger.error(f'failed to load pixbuf: {ex}')
 
     def load_pixbuf_data(self, imgdata):
         """
@@ -343,8 +343,8 @@ class _ImageTools:
         try:
             with Image.open(BytesIO(imgdata)) as im:
                 return self.pil_to_pixbuf(im, keep_orientation=True)
-        except Exception:
-            logger.error('failed to load pixbuf')
+        except Exception as ex:
+            logger.error(f'failed to load pixbuf: {ex}')
 
     def enhance(self, pixbuf, brightness: float = 1.0, contrast: float = 1.0,
                 saturation: float = 1.0, sharpness: float = 1.0, autocontrast: bool = False):
