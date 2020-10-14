@@ -56,7 +56,7 @@ class _ArchiveTools:
         """
 
         if self.is_archive_file(path=path):
-            filename = str(path)
+            filename = str(path).lower()
             if filename.endswith(self.__zip_ext):
                 return Constants.ZIP
             elif filename.endswith(self.__sevenzip_ext):
