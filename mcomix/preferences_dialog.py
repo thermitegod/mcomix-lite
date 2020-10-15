@@ -73,7 +73,7 @@ class _PreferencesDialog(Gtk.Dialog):
         page.new_section('Thumbnails')
 
         page.add_row(self._create_pref_check_button(
-            'SHOW_PAGE_NUMBERS_ON_THUMBNAILS',
+            'Show page numbers on thumbnails',
             'SHOW_PAGE_NUMBERS_ON_THUMBNAILS'))
 
         page.add_row(self._create_pref_check_button(
@@ -99,7 +99,7 @@ class _PreferencesDialog(Gtk.Dialog):
         # ----------------------------------------------------------------
         page = _PreferencePage(None)
 
-        page.new_section('Manga')
+        page.new_section('Page Flipping')
 
         page.add_row(self._create_pref_check_button(
             'Use western style page flipping in manga mode',
@@ -279,7 +279,7 @@ class _PreferencesDialog(Gtk.Dialog):
 
         page.new_section('Animated Images')
 
-        page.add_row(Gtk.Label(label='ANIMATION_MODE'),
+        page.add_row(Gtk.Label(label='Animation Mode'),
                      self._create_animation_mode_combobox())
 
         page.add_row(self._create_pref_check_button(
