@@ -492,19 +492,19 @@ class ImageHandler:
         Ask for pages around <page> to be given priority extraction
         """
 
-        total_pages = range(self.get_number_of_pages())
+        total_pages = self.get_number_of_pages()
 
         num_pages = self.__cache_pages
         if num_pages < 0:
             # default to 10 pages
-            num_pages = min(10, len(total_pages))
+            num_pages = min(10, total_pages)
 
         page -= 1
         harf = num_pages // 2 - 1
         start = max(0, page - harf)
         end = start + num_pages
-        page_list = list(total_pages[start:end])
-        if end > len(total_pages):
+        page_list = list(range(total_pages)[start:end])
+        if end > total_pages:
             start = page_list[0] - (num_pages - len(page_list))
             page_list.extend(range(max(0, start), page_list[0]))
         page_list.sort()
