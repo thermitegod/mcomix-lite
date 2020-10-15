@@ -109,7 +109,7 @@ class ImageHandler:
                 for index in set(self.__raw_pixbufs) - set(wanted_pixbufs):
                     del self.__raw_pixbufs[index]
             logger.debug(f'Caching page(s): \'{" ".join([str(index + 1) for index in wanted_pixbufs])}\'')
-            self.__wanted_pixbufs[:] = wanted_pixbufs
+            self.__wanted_pixbufs = wanted_pixbufs.copy()
             # Start caching available images not already in cache.
             wanted_pixbufs = [index for index in wanted_pixbufs
                               if index in self.__available_images]
@@ -146,7 +146,7 @@ class ImageHandler:
 
     def set_image_files(self, files: list):
         # Set list of image file names
-        self.__image_files[:] = files
+        self.__image_files = files.copy()
 
     def set_base_path(self, path: Path):
         self.__base_path = path
@@ -512,7 +512,7 @@ class ImageHandler:
         # move page before now to the end
         pos = page_list.index(page)
         head = page_list[:pos]
-        page_list[:] = page_list[pos:]
+        page_list = page_list[pos:].copy()
         page_list.extend(reversed(head))
 
         logger.debug(f'Ask for priority extraction around page: \'{page + 1}\': '

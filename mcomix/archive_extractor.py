@@ -76,7 +76,7 @@ class Extractor:
         with self.__condition:
             if not self.__contents_listed:
                 return
-            return self.__files[:]
+            return self.__files.copy()
 
     def get_directory(self):
         """
@@ -102,7 +102,7 @@ class Extractor:
         with self.__condition:
             if not self.__contents_listed:
                 return
-            self.__files[:] = [f for f in files if f not in self.__extracted]
+            self.__files = [f for f in files.copy() if f not in self.__extracted]
             if not self.__files:
                 # Nothing to do!
                 return
@@ -204,7 +204,7 @@ class Extractor:
 
     def _list_contents_cb(self, files: list):
         with self.__condition:
-            self.__files[:] = files
+            self.__files = files.copy()
             self.__contents_listed = True
         self.contents_listed(self, files)
 
