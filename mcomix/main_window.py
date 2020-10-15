@@ -937,11 +937,6 @@ class MainWindow(Gtk.Window):
 
         self.iconify()
 
-    def write_config_files(self):
-        PreferenceManager.write_preferences_file()
-        KeybindingManager.keybinding_manager(self).write_keybindings_file()
-        BookmarksStore.write_bookmarks_file()
-
     def get_window_geometry(self):
         return self.get_position() + self.get_size()
 
@@ -980,6 +975,9 @@ class MainWindow(Gtk.Window):
         if prefs['HIDE_ALL'] and self.__hide_all_forced and self.fullscreen:
             prefs['HIDE_ALL'] = False
 
-        self.write_config_files()
+        # write config file
+        PreferenceManager.write_preferences_file()
+        KeybindingManager.keybinding_manager(self).write_keybindings_file()
+        BookmarksStore.write_bookmarks_file()
 
         self.filehandler.close_file()
