@@ -69,7 +69,7 @@ def main():
     args = parse_args()
 
     if args.version:
-        print(f'{Constants.APPNAME} {Constants.VERSION}')
+        print(Constants.APPNAME, Constants.VERSION)
         raise SystemExit
 
     # start logger
