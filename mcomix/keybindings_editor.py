@@ -20,13 +20,12 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
 
         self.__keymanager = keymanager
 
-        accel_column_num = max([len(self.__keymanager.get_bindings_for_action(action))
-                                for action in KeyBindingsInfo.BINDING_INFO.keys()])
-        accel_column_num = self.__accel_column_num = max([3, accel_column_num])
+        # max number of keybindings for a single action
+        self.__accel_column_num = 5
 
         # Human name, action name, true value, shortcut 1, shortcut 2, ...
         model = [str, str, 'gboolean']
-        model.extend([str, ] * accel_column_num)
+        model.extend([str, ] * self.__accel_column_num)
 
         treestore = self.__treestore = Gtk.TreeStore(*model)
         self.refresh_model()
