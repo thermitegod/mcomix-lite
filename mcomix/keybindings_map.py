@@ -11,8 +11,6 @@ class _KeyBindingsInfo:
             'next_page': {'title': 'Next page', 'group': 'Navigation'},
             'previous_page_ff': {'title': 'Back ten pages', 'group': 'Navigation'},
             'next_page_ff': {'title': 'Forward ten pages', 'group': 'Navigation'},
-            'previous_page_dynamic': {'title': 'Previous page (dynamic)', 'group': 'Navigation'},
-            'next_page_dynamic': {'title': 'Next page (dynamic)', 'group': 'Navigation'},
             'previous_page_singlestep': {'title': 'Previous page (always one page)', 'group': 'Navigation'},
             'next_page_singlestep': {'title': 'Next page (always one page)', 'group': 'Navigation'},
 
@@ -96,8 +94,6 @@ class _KeyBindingsDefault:
             'next_page': ['Page_Down', 'KP_Page_Down'],
             'previous_page_singlestep': ['<Primary>Up', '<Primary>Page_Up', '<Primary>KP_Page_Up'],
             'next_page_singlestep': ['<Primary>Down', '<Primary>Page_Down', '<Primary>KP_Page_Down'],
-            'previous_page_dynamic': ['<Mod1>Left'],
-            'next_page_dynamic': ['<Mod1>Right'],
             'previous_page_ff': ['<Shift>Page_Up', '<Shift>KP_Page_Up', '<Shift>BackSpace', '<Shift><Mod1>Left'],
             'next_page_ff': ['<Shift>Page_Down', '<Shift>KP_Page_Down', '<Shift><Mod1>Right'],
 

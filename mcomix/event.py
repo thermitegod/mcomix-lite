@@ -70,11 +70,7 @@ class EventHandler:
         self.__manager.register('previous_page_singlestep',
                                 self._flip_page, kwargs={'number_of_pages': -1, 'single_step': True})
         self.__manager.register('next_page_singlestep',
-                                self._flip_page, kwargs={'number_of_pages': 1, 'single_step': True})
-        self.__manager.register('previous_page_dynamic',
-                                self._left_right_page_progress, kwargs={'number_of_pages': -1})
-        self.__manager.register('next_page_dynamic',
-                                self._left_right_page_progress, kwargs={'number_of_pages': 1})
+                                self.__window.flip_page, kwargs={'number_of_pages': +1, 'single_step': True})
         self.__manager.register('previous_page_ff',
                                 self._flip_page, kwargs={'number_of_pages': -10})
         self.__manager.register('next_page_ff',
@@ -368,23 +364,3 @@ class EventHandler:
             self._flip_page(1)
         else:
             self._flip_page(-1)
-
-    def _flip_page(self, number_of_pages: int, single_step: bool = False):
-        """
-        Switches a number of pages forwards/backwards. If C{single_step} is True,
-        the page count will be advanced by only one page even in double page mode
-        """
-
-        self.__window.flip_page(number_of_pages, single_step=single_step)
-
-    def _left_right_page_progress(self, number_of_pages: int = 1):
-        """
-        If number_of_pages is positive, this function advances the specified
-        number of pages in manga mode and goes back the same number of pages in
-        normal mode. The opposite happens for number_of_pages being negative
-        """
-
-        if self.get_manga_flip_direction():
-            self._flip_page(-number_of_pages)
-        else:
-            self._flip_page(number_of_pages)
