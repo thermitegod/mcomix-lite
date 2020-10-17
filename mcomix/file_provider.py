@@ -228,7 +228,7 @@ class PreDefinedFileProvider(FileProvider):
         self.__files = []
 
         for file in files:
-            if Path.is_dir(file):
+            if Path.is_dir(Path(file)):
                 provider = OrderedFileProvider(file)
                 self.__files.extend(provider.list_files(mode=Constants.IMAGES))
 
@@ -251,7 +251,7 @@ class PreDefinedFileProvider(FileProvider):
         """
 
         for file in files:
-            if Path.is_file(file):
+            if Path.is_file(Path(file)):
                 if ImageTools.is_image_file(file):
                     return ImageTools.is_image_file
                 if ArchiveTools.is_archive_file(file):
