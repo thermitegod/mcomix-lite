@@ -2,7 +2,7 @@
 
 """event.py - Event handling (keyboard, mouse, etc.) for the main window"""
 
-from urllib.request import url2pathname
+import urllib
 
 from gi.repository import Gdk, Gtk
 
@@ -350,23 +350,8 @@ class EventHandler:
         if not uris:
             return
 
-        def normalize_uri(uri: str):
-            """
-            Normalize URIs passed into the program by different applications, via drag-and-drop
-            """
+        paths = [urllib.request.url2pathname(urllib.parse.urlparse(uri).path) for uri in uris]
 
-            if uri.startswith('file://localhost/'):
-                return uri[16:]
-            elif uri.startswith('file:///'):
-                return uri[7:]
-            elif uri.startswith('file:/'):
-                return uri[5:]
-            return uri
-
-        # Normalize URIs
-        uris = [normalize_uri(uri) for uri in uris]
-
-        paths = [url2pathname(uri) for uri in uris]
         if len(paths) > 1:
             self.__window.filehandler.open_file(paths)
         else:
