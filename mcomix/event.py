@@ -351,11 +351,7 @@ class EventHandler:
             return
 
         paths = [urllib.request.url2pathname(urllib.parse.urlparse(uri).path) for uri in uris]
-
-        if len(paths) > 1:
-            self.__window.filehandler.open_file(paths)
-        else:
-            self.__window.filehandler.open_file(paths[0])
+        self.__window.filehandler.open_file(paths)
 
     def _scroll_with_flipping(self, x: int, y: int):
         """
