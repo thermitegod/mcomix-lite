@@ -674,20 +674,14 @@ class _PreferencesDialog(Gtk.Dialog):
 
         prefs[preference] = button.get_active()
 
-        if preference in ('CHECKERED_BG_FOR_TRANSPARENT_IMAGES', 'AUTO_ROTATE_FROM_EXIF'):
-            self.__window.draw_image()
-
-        elif (preference == 'HIDE_ALL_IN_FULLSCREEN' and
-              self.__window.is_fullscreen):
+        if (preference in ('CHECKERED_BG_FOR_TRANSPARENT_IMAGES', 'AUTO_ROTATE_FROM_EXIF')) or \
+                (preference in ('HIDE_ALL_IN_FULLSCREEN',) and self.__window.is_fullscreen):
             self.__window.draw_image()
 
         elif preference in ('ANIMATION_BACKGROUND', 'ANIMATION_TRANSFORM'):
             self.__window.thumbnailsidebar.toggle_page_numbers_visible()
 
-        elif preference in ('ANIMATION_BACKGROUND', 'ANIMATION_TRANSFORM'):
-            self.__window.filehandler.refresh_file()
-
-        elif preference in ('CHECK_IMAGE_MIMETYPE',):
+        elif preference in ('ANIMATION_BACKGROUND', 'ANIMATION_TRANSFORM', 'CHECK_IMAGE_MIMETYPE'):
             self.__window.filehandler.refresh_file()
 
     def _create_pref_spinner(self, prefkey: str, scale: float, lower: float, upper: float,
@@ -707,18 +701,18 @@ class _PreferencesDialog(Gtk.Dialog):
 
         value = spinbutton.get_value()
 
-        if preference == 'LENS_MAGNIFICATION':
-            prefs[preference] = value
+        if preference in ('LENS_MAGNIFICATION',):
+            prefs[preference] = float(value)
         else:
             prefs[preference] = int(value)
 
         #  now apply new pref
-        if preference == 'THUMBNAIL_SIZE':
+        if preference in ('THUMBNAIL_SIZE',):
             self.__window.thumbnailsidebar.resize()
             self.__window.draw_image()
-        elif preference == 'MAX_PAGES_TO_CACHE':
+        elif preference in ('MAX_PAGES_TO_CACHE',):
             self.__window.imagehandler.do_cacheing()
-        elif preference == 'FIT_TO_SIZE_PX':
+        elif preference in ('FIT_TO_SIZE_PX',):
             self.__window.change_zoom_mode()
 
     @staticmethod
