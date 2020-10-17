@@ -64,17 +64,17 @@ class EventHandler:
 
         # Navigation keys
         self.__manager.register('previous_page',
-                                self._flip_page, kwargs={'number_of_pages': -1})
+                                self.__window.flip_page, kwargs={'number_of_pages': -1})
         self.__manager.register('next_page',
-                                self._flip_page, kwargs={'number_of_pages': 1})
+                                self.__window.flip_page, kwargs={'number_of_pages': +1})
         self.__manager.register('previous_page_singlestep',
-                                self._flip_page, kwargs={'number_of_pages': -1, 'single_step': True})
+                                self.__window.flip_page, kwargs={'number_of_pages': -1, 'single_step': True})
         self.__manager.register('next_page_singlestep',
                                 self.__window.flip_page, kwargs={'number_of_pages': +1, 'single_step': True})
         self.__manager.register('previous_page_ff',
-                                self._flip_page, kwargs={'number_of_pages': -10})
+                                self.__window.flip_page, kwargs={'number_of_pages': -10})
         self.__manager.register('next_page_ff',
-                                self._flip_page, kwargs={'number_of_pages': 10})
+                                self.__window.flip_page, kwargs={'number_of_pages': +10})
         self.__manager.register('first_page',
                                 self.__window.first_page)
         self.__manager.register('last_page',
@@ -275,15 +275,15 @@ class EventHandler:
 
         elif direction == Gdk.ScrollDirection.RIGHT:
             if self.get_manga_flip_direction():
-                self._flip_page(-1)
+                self.__window.flip_page(number_of_pages=-1)
             else:
-                self._flip_page(1)
+                self.__window.flip_page(number_of_pages=+1)
 
         elif direction == Gdk.ScrollDirection.LEFT:
             if self.get_manga_flip_direction():
-                self._flip_page(1)
+                self.__window.flip_page(number_of_pages=+1)
             else:
-                self._flip_page(-1)
+                self.__window.flip_page(number_of_pages=-1)
 
     def mouse_press_event(self, widget, event):
         """
@@ -361,6 +361,6 @@ class EventHandler:
 
         if y > 0 or (self.get_manga_flip_direction() and x < 0) or \
                 (not self.get_manga_flip_direction() and x > 0):
-            self._flip_page(1)
+            self.__window.flip_page(number_of_pages=+1)
         else:
-            self._flip_page(-1)
+            self.__window.flip_page(number_of_pages=-1)

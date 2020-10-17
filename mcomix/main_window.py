@@ -583,38 +583,38 @@ class MainWindow(Gtk.Window):
                 (not archive_open or prefs['AUTO_OPEN_NEXT_ARCHIVE']):
             self.filehandler.open_directory_direction(forward=False)
 
-    def flip_page(self, step: int, single_step: bool = False):
+    def flip_page(self, number_of_pages: int, single_step: bool = False):
         if not self.filehandler.get_file_loaded():
             return
 
         current_page = self.imagehandler.get_current_page()
-        number_of_pages = self.imagehandler.get_number_of_pages()
+        current_number_of_pages = self.imagehandler.get_number_of_pages()
 
-        new_page = current_page + step
-        if (abs(step) == 1 and
+        new_page = current_page + number_of_pages
+        if (abs(number_of_pages) == 1 and
                 not single_step and
                 prefs['DEFAULT_DOUBLE_PAGE'] and
                 prefs['DOUBLE_STEP_IN_DOUBLE_PAGE_MODE']):
-            if step == +1 and not self.imagehandler.get_virtual_double_page():
-                new_page += 1
-            elif step == -1 and not self.imagehandler.get_virtual_double_page(new_page - 1):
+            if number_of_pages == +1 and not self.imagehandler.get_virtual_double_page():
+                new_page += +1
+            elif number_of_pages == -1 and not self.imagehandler.get_virtual_double_page(new_page - 1):
                 new_page -= 1
 
         if new_page <= 0:
             # Only switch to previous page when flipping one page before the
             # first one. (Note: check for (page number <= 1) to handle empty
             # archive case).
-            if step == -1 and current_page <= 1:
+            if number_of_pages == -1 and current_page <= +1:
                 return self.previous_book()
             # Handle empty archive case.
-            new_page = min(1, number_of_pages)
-        elif new_page > number_of_pages:
-            if step == 1:
+            new_page = min(+1, current_number_of_pages)
+        elif new_page > current_number_of_pages:
+            if number_of_pages == +1:
                 return self.next_book()
-            new_page = number_of_pages
+            new_page = current_number_of_pages
 
         if new_page != current_page:
-            self.set_page(new_page, at_bottom=(-1 == step))
+            self.set_page(new_page, at_bottom=(-1 == number_of_pages))
 
     def first_page(self):
         if self.imagehandler.get_number_of_pages():
@@ -916,9 +916,9 @@ class MainWindow(Gtk.Window):
             if self.imagehandler.get_number_of_pages() > 1:
                 # Open the next/previous file
                 if self.imagehandler.get_current_page() >= self.imagehandler.get_number_of_pages():
-                    self.flip_page(-1)
+                    self.flip_page(number_of_pages=-1)
                 else:
-                    self.flip_page(+1)
+                    self.flip_page(number_of_pages=+1)
                 # Move the desired file
                 if Path.is_file(current_file):
                     file_action(move_else_delete)
