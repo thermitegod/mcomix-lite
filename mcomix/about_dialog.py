@@ -3,12 +3,11 @@
 """about_dialog.py - About dialog"""
 
 import webbrowser
-from importlib import resources
 
 from gi.repository import Gtk
 
 from mcomix.constants import Constants
-from mcomix.image_tools import ImageTools
+from mcomix.icons import Icons
 
 
 class AboutDialog(Gtk.AboutDialog):
@@ -26,9 +25,7 @@ class AboutDialog(Gtk.AboutDialog):
         self.set_website_label('Github')
         self.set_copyright('Copyright (C) 2005-2020')
 
-        icon_data = resources.read_binary('mcomix.images', 'mcomix.png')
-        pixbuf = ImageTools.load_pixbuf_data(icon_data)
-        self.set_logo(pixbuf)
+        self.set_logo(Icons.load_icons())
 
         self.set_comments(f'{Constants.APPNAME} is an image viewer specifically designed to handle manga/comics. '
                           'It supports ZIP, 7Z, RAR, CBZ, CB7, CBR, and image files.')
