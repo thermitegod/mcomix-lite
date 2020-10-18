@@ -2,6 +2,7 @@
 
 """preferences_dialog.py - Preferences dialog"""
 
+import PIL.Image  # for PIL interpolation prefs
 from gi.repository import GObject, GdkPixbuf, Gtk
 
 from mcomix.constants import Constants
@@ -186,6 +187,11 @@ class _PreferencesDialog(Gtk.Dialog):
 
         page.add_row(Gtk.Label(label='Scaling mode'),
                      self._create_scaling_quality_combobox())
+
+        page.new_section('Advanced filters')
+
+        page.add_row(Gtk.Label(label='High-quality scaling for main area'),
+                     self._create_pil_scaling_filter_combobox())
 
         page.new_section('Statusbar')
 
@@ -570,7 +576,8 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Nearest (very fast)', int(GdkPixbuf.InterpType.NEAREST)),
             ('Tiles (fast)', int(GdkPixbuf.InterpType.TILES)),
             ('Bilinear (normal)', int(GdkPixbuf.InterpType.BILINEAR)),
-            ('Hyperbolic (slow)', int(GdkPixbuf.InterpType.HYPER)))
+            ('Hyperbolic (slow)', int(GdkPixbuf.InterpType.HYPER)),
+        )
 
         selection = prefs['SCALING_QUALITY']
 
@@ -588,6 +595,36 @@ class _PreferencesDialog(Gtk.Dialog):
             value = combobox.get_model().get_value(_iter, 1)
             last_value = prefs['SCALING_QUALITY']
             prefs['SCALING_QUALITY'] = value
+
+            if value != last_value:
+                self.__window.draw_image()
+
+    def _create_pil_scaling_filter_combobox(self):
+        """
+        Creates combo box for PIL filter to scale with in main view
+        """
+
+        items = (
+            ('None', -1),  # -1 defers to 'scaling quality'
+            ('Lanczos', int(PIL.Image.LANCZOS))  # PIL type 1.
+        )
+
+        selection = prefs['PIL_SCALING_FILTER']
+
+        box = self._create_combobox(items, selection, self._pil_scaling_filter_changed_cb)
+
+        return box
+
+    def _pil_scaling_filter_changed_cb(self, combobox, *args):
+        """
+        Called whan PIL filter selection changes.
+        """
+
+        _iter = combobox.get_active_iter()
+        if combobox.get_model().iter_is_valid(_iter):
+            value = combobox.get_model().get_value(_iter, 1)
+            last_value = prefs['PIL_SCALING_FILTER']
+            prefs['PIL_SCALING_FILTER'] = value
 
             if value != last_value:
                 self.__window.draw_image()

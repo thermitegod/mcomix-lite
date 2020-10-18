@@ -128,7 +128,8 @@ class _ImageTools:
                                      scale_up=True)
 
     def fit_in_rectangle(self, src, width: int, height: int, keep_ratio: bool = True,
-                         scale_up: bool = False, rotation: int = 0, scaling_quality=None):
+                         scale_up: bool = False, rotation: int = 0, scaling_quality=None,
+                         pil_filter: int = None):
         """
         Scale (and return) a pixbuf so that it fits in a rectangle with
         dimensions <width> x <height>. A negative <width> or <height>
@@ -146,7 +147,7 @@ class _ImageTools:
         If <src> has an alpha channel it gets a checkboard background
         """
 
-        # "Unbounded" really means "bounded to 10000 px" - for simplicity.
+        # "Unbounded" really means "bounded to 100000 px" - for simplicity.
         # MComix would probably choke on larger images anyway.
         if width < 0:
             width = 100000
@@ -164,6 +165,9 @@ class _ImageTools:
         if scaling_quality is None:
             scaling_quality = prefs['SCALING_QUALITY']
 
+        if pil_filter is None:
+            pil_filter = prefs['PIL_SCALING_FILTER']
+
         src_width = src.get_width()
         src_height = src.get_height()
 
@@ -171,6 +175,13 @@ class _ImageTools:
                                               (width, height),
                                               keep_ratio=keep_ratio,
                                               scale_up=scale_up)
+
+        if (width != src_width or height != src_height) and pil_filter > -1:
+            # scale by PIL interpolation filter
+            src = self.pil_to_pixbuf(self.pixbuf_to_pil(src).resize([width, height],
+                                                                    resample=pil_filter))
+            src_width = src.get_width()
+            src_height = src.get_height()
 
         if src.get_has_alpha():
             if prefs['CHECKERED_BG_FOR_TRANSPARENT_IMAGES']:
@@ -181,6 +192,7 @@ class _ImageTools:
                 # Using anything other than nearest interpolation will result in a
                 # modified image if no resizing takes place (even if it's opaque).
                 scaling_quality = GdkPixbuf.InterpType.NEAREST
+
             src = src.composite_color_simple(width, height, scaling_quality,
                                              255, check_size, color1, color2)
         elif width != src_width or height != src_height:

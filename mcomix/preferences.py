@@ -56,6 +56,7 @@ prefs = {
     'MAX_THREADS_EXTRACT': 16,
     'MAX_THREADS_GENERAL': 16,
     'SCALING_QUALITY': 2,  # GdkPixbuf.InterpType.BILINEAR
+    'PIL_SCALING_FILTER': 1,  # Use a PIL filter (just lanczos for now) in main viewing area. -1 to just use GdkPixbuf
     'ESCAPE_QUITS': True,
     'FIT_TO_SIZE_MODE': Constants.ZOOM_MODE_HEIGHT,
     'FIT_TO_SIZE_PX': 1800,
