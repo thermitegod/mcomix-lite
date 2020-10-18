@@ -575,8 +575,7 @@ class _PreferencesDialog(Gtk.Dialog):
         items = (
             ('Nearest (very fast)', int(GdkPixbuf.InterpType.NEAREST)),
             ('Tiles (fast)', int(GdkPixbuf.InterpType.TILES)),
-            ('Bilinear (normal)', int(GdkPixbuf.InterpType.BILINEAR)),
-            ('Hyperbolic (slow)', int(GdkPixbuf.InterpType.HYPER)),
+            ('Bilinear (normal)', int(GdkPixbuf.InterpType.BILINEAR))
         )
 
         selection = prefs['SCALING_QUALITY']
