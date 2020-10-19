@@ -47,8 +47,6 @@ class _ConfigManager:
             logger.error('Loading config failed, exiting')
             raise SystemExit
 
-        return saved_prefs
-
     def write_config(self, config: dict, path: Path):
         config_json = self.dump_config(config)
         path.write_text(config_json)
