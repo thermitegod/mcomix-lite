@@ -204,6 +204,9 @@ class _PreferencesDialog(Gtk.Dialog):
                          'STATUSBAR_SPACING',
                          1, 1, 20, 1, 10, 0))
 
+        page.add_row(Gtk.Label(label='Charactor to use as statusbar separator'),
+                     self._create_pref_text_box('STATUSBAR_SEPARATOR'))
+
         page.new_section('Cursor')
 
         page.add_row(self._create_pref_check_button(
