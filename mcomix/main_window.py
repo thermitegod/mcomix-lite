@@ -24,7 +24,7 @@ from mcomix.message_dialog import MessageDialog
 from mcomix.pageselect import Pageselector
 from mcomix.preferences_manager import PreferenceManager
 from mcomix.preferences import config
-from mcomix.status import Statusbar
+from mcomix.statusbar import Statusbar
 from mcomix.thumbbar import ThumbnailSidebar
 from mcomix.ui import MainUI
 from mcomix.zoom import ZoomModel
