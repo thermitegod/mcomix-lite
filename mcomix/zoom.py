@@ -8,7 +8,7 @@ from functools import reduce
 from loguru import logger
 
 from mcomix.constants import Constants
-from mcomix.preferences import prefs
+from mcomix.preferences import config
 
 
 class ZoomModel:
@@ -135,8 +135,8 @@ class ZoomModel:
         if not manual:
             fixed_size = None
             if fitmode == Constants.ZOOM_MODE_SIZE:
-                fitmode = prefs['FIT_TO_SIZE_MODE']  # reassigning fitmode
-                fixed_size = prefs['FIT_TO_SIZE_PX']
+                fitmode = config['FIT_TO_SIZE_MODE']  # reassigning fitmode
+                fixed_size = config['FIT_TO_SIZE_PX']
             if fitmode == Constants.ZOOM_MODE_WIDTH:
                 axis = Constants.AXIS_WIDTH
             elif fitmode == Constants.ZOOM_MODE_HEIGHT:

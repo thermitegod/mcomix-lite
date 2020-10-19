@@ -8,7 +8,7 @@ from mcomix.bookmark_menu import BookmarksMenu
 from mcomix.constants import Constants
 from mcomix.dialog_handler import DialogHandler
 from mcomix.enhance_dialog import EnhanceDialog
-from mcomix.preferences import prefs
+from mcomix.preferences import config
 from mcomix.preferences_dialog import PreferenceDialog
 
 
@@ -118,7 +118,7 @@ class MainUI(Gtk.UIManager):
              None, None, Constants.AUTOROTATE_HEIGHT_90),
             ('rotate_270_height', 'mcomix-rotate-270', 'Rotat_e 90 degrees CCW',
              None, None, Constants.AUTOROTATE_HEIGHT_270)],
-                prefs['AUTO_ROTATE_DEPENDING_ON_SIZE'], self.__window.change_autorotation)
+                config['AUTO_ROTATE_DEPENDING_ON_SIZE'], self.__window.change_autorotation)
 
         self.__actiongroup.add_actions([
             ('about', Gtk.STOCK_ABOUT, '_About',

@@ -11,7 +11,7 @@ from mcomix.constants import Constants
 from mcomix.image_tools import ImageTools
 from mcomix.lib.callback import Callback
 from mcomix.lib.mt import ThreadPool, Lock
-from mcomix.preferences import prefs
+from mcomix.preferences import config
 from mcomix.thumbnail_tools import Thumbnailer
 
 
@@ -34,7 +34,7 @@ class ImageHandler:
 
         #: Caching thread
         self.__thread = ThreadPool(name=self.__class__.__name__,
-                                   processes=prefs['MAX_THREADS_GENERAL'])
+                                   processes=config['MAX_THREADS_GENERAL'])
         self.__lock = Lock()
         self.__cache_lock = {}
         #: Archive path, if currently opened file is archive
@@ -50,7 +50,7 @@ class ImageHandler:
         #: Pixbuf map from page > Pixbuf
         self.__raw_pixbufs = {}
         #: How many pages to keep in cache
-        self.__cache_pages = prefs['MAX_PAGES_TO_CACHE']
+        self.__cache_pages = config['MAX_PAGES_TO_CACHE']
 
         self.__window.filehandler.file_available += self._file_available
 
@@ -175,12 +175,12 @@ class ImageHandler:
             page = self.get_current_page()
 
         if (page == 1 and
-                prefs['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & Constants.SHOW_DOUBLE_AS_ONE_TITLE and
+                config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & Constants.SHOW_DOUBLE_AS_ONE_TITLE and
                 self.__window.filehandler.get_archive_type() is not None):
             return True
 
-        if (not prefs['DEFAULT_DOUBLE_PAGE'] or
-                not prefs['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & Constants.SHOW_DOUBLE_AS_ONE_WIDE or
+        if (not config['DEFAULT_DOUBLE_PAGE'] or
+                not config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & Constants.SHOW_DOUBLE_AS_ONE_WIDE or
                 page == self.get_number_of_pages()):
             return False
 
@@ -189,7 +189,7 @@ class ImageHandler:
                 return False
             pixbuf = self._get_pixbuf(page - 1)
             width, height = pixbuf.get_width(), pixbuf.get_height()
-            if prefs['AUTO_ROTATE_FROM_EXIF']:
+            if config['AUTO_ROTATE_FROM_EXIF']:
                 rotation = ImageTools.get_implied_rotation(pixbuf)
 
                 # if rotation not in (0, 90, 180, 270):

@@ -8,7 +8,7 @@ import PIL.ImageOps as ImageOps
 from gi.repository import Gtk
 
 from mcomix.image_tools import ImageTools
-from mcomix.preferences import prefs
+from mcomix.preferences import config
 
 
 class _EnhanceImageDialog(Gtk.Dialog):
@@ -166,7 +166,7 @@ class _EnhanceImageDialog(Gtk.Dialog):
             return
         # XXX transitional(double page limitation)
         self.__pixbuf = self.__window.imagehandler.get_pixbufs(1)[0]
-        self.draw_histogram(text=prefs['ENHANCE_EXTRA'])
+        self.draw_histogram(text=config['ENHANCE_EXTRA'])
 
     def _on_page_available(self, page_number):
         current_page_number = self.__window.imagehandler.get_current_page()
@@ -199,19 +199,19 @@ class _EnhanceImageDialog(Gtk.Dialog):
 
         elif response == Gtk.ResponseType.APPLY:
             self._change_values(self)
-            prefs['BRIGHTNESS'] = self.__enhancer.brightness()
-            prefs['CONTRAST'] = self.__enhancer.contrast()
-            prefs['SATURATION'] = self.__enhancer.saturation()
-            prefs['SHARPNESS'] = self.__enhancer.sharpness()
-            prefs['AUTO_CONTRAST'] = self.__enhancer.autocontrast()
+            config['BRIGHTNESS'] = self.__enhancer.brightness()
+            config['CONTRAST'] = self.__enhancer.contrast()
+            config['SATURATION'] = self.__enhancer.saturation()
+            config['SHARPNESS'] = self.__enhancer.sharpness()
+            config['AUTO_CONTRAST'] = self.__enhancer.autocontrast()
 
         elif response == Gtk.ResponseType.REJECT:
             self.__block = True
-            self.__brightness_scale.set_value(prefs['BRIGHTNESS'] - 1.0)
-            self.__contrast_scale.set_value(prefs['CONTRAST'] - 1.0)
-            self.__saturation_scale.set_value(prefs['SATURATION'] - 1.0)
-            self.__sharpness_scale.set_value(prefs['SHARPNESS'] - 1.0)
-            self.__autocontrast_button.set_active(prefs['AUTO_CONTRAST'])
+            self.__brightness_scale.set_value(config['BRIGHTNESS'] - 1.0)
+            self.__contrast_scale.set_value(config['CONTRAST'] - 1.0)
+            self.__saturation_scale.set_value(config['SATURATION'] - 1.0)
+            self.__sharpness_scale.set_value(config['SHARPNESS'] - 1.0)
+            self.__autocontrast_button.set_active(config['AUTO_CONTRAST'])
             self.__block = False
             self._change_values(self)
 

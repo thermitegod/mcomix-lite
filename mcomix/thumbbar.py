@@ -9,7 +9,7 @@ import cairo
 from gi.repository import Gdk, GdkPixbuf, Gtk
 
 from mcomix.image_tools import ImageTools
-from mcomix.preferences import prefs
+from mcomix.preferences import config
 from mcomix.thumbnail_view import ThumbnailTreeView
 
 
@@ -98,7 +98,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         Enables or disables page numbers on the thumbnail bar
         """
 
-        visible = prefs['SHOW_PAGE_NUMBERS_ON_THUMBNAILS']
+        visible = config['SHOW_PAGE_NUMBERS_ON_THUMBNAILS']
         if visible:
             number_of_pages = self.__window.imagehandler.get_number_of_pages()
             number_of_digits = self.number_of_digits(number_of_pages)
@@ -153,7 +153,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
     @property
     def _pixbuf_size(self):
         # Don't forget the extra pixels for the border!
-        return prefs['THUMBNAIL_SIZE'] + 2 * self.__border_size
+        return config['THUMBNAIL_SIZE'] + 2 * self.__border_size
 
     def load_thumbnails(self):
         """
@@ -189,7 +189,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         Generate the pixbuf for C{path} at demand
         """
 
-        size = prefs['THUMBNAIL_SIZE']
+        size = config['THUMBNAIL_SIZE']
         pixbuf = self.__window.imagehandler.get_thumbnail(page=uid, size=(size, size), nowait=True)
         if pixbuf is not None:
             pixbuf = ImageTools.add_border(pixbuf, self.__border_size)

@@ -9,7 +9,7 @@ from mcomix.constants import Constants
 from mcomix.keybindings import KeybindingManager
 from mcomix.keybindings_editor import KeybindingEditorWindow
 from mcomix.labels import BoldLabel
-from mcomix.preferences import prefs
+from mcomix.preferences import config
 
 
 class _PreferencesDialog(Gtk.Dialog):
@@ -389,7 +389,7 @@ class _PreferencesDialog(Gtk.Dialog):
             self.__reset_button.set_sensitive(True)
         else:
             self.__reset_button.set_label('Clear _dialog choices')
-            self.__reset_button.set_sensitive(len(prefs['STORED_DIALOG_CHOICES']) > 0)
+            self.__reset_button.set_sensitive(len(config['STORED_DIALOG_CHOICES']) > 0)
 
     def _response(self, dialog, response):
         if response == Gtk.ResponseType.CLOSE:
@@ -404,7 +404,7 @@ class _PreferencesDialog(Gtk.Dialog):
                 self.shortcuts.refresh_model()
             else:
                 # Reset stored choices
-                prefs['STORED_DIALOG_CHOICES'] = {}
+                config['STORED_DIALOG_CHOICES'] = {}
                 self.__reset_button.set_sensitive(False)
 
         else:
@@ -423,7 +423,7 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Always', Constants.SHOW_DOUBLE_AS_ONE_TITLE | Constants.SHOW_DOUBLE_AS_ONE_WIDE))
 
         box = self._create_combobox(items,
-                                    prefs['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'],
+                                    config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'],
                                     self._double_page_changed_cb)
 
         return box
@@ -436,7 +436,7 @@ class _PreferencesDialog(Gtk.Dialog):
         _iter = combobox.get_active_iter()
         if combobox.get_model().iter_is_valid(_iter):
             value = combobox.get_model().get_value(_iter, 1)
-            prefs['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] = value
+            config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] = value
             self.__window.draw_image()
 
     def _create_fitmode_control(self):
@@ -446,7 +446,7 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Fit to height', Constants.ZOOM_MODE_HEIGHT))
 
         box = self._create_combobox(items,
-                                    prefs['FIT_TO_SIZE_MODE'],
+                                    config['FIT_TO_SIZE_MODE'],
                                     self._fit_to_size_changed_cb)
 
         return box
@@ -460,8 +460,8 @@ class _PreferencesDialog(Gtk.Dialog):
         if combobox.get_model().iter_is_valid(_iter):
             value = combobox.get_model().get_value(_iter, 1)
 
-            if prefs['FIT_TO_SIZE_MODE'] != value:
-                prefs['FIT_TO_SIZE_MODE'] = value
+            if config['FIT_TO_SIZE_MODE'] != value:
+                config['FIT_TO_SIZE_MODE'] = value
                 self.__window.change_zoom_mode()
 
     def _create_sort_by_control(self):
@@ -477,7 +477,7 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Last modified', Constants.SORT_LAST_MODIFIED))
 
         sortkey_box = self._create_combobox(sortkey_items,
-                                            prefs['SORT_BY'],
+                                            config['SORT_BY'],
                                             self._sort_by_changed_cb)
 
         sortorder_items = (
@@ -485,7 +485,7 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Descending', Constants.SORT_DESCENDING))
 
         sortorder_box = self._create_combobox(sortorder_items,
-                                              prefs['SORT_ORDER'],
+                                              config['SORT_ORDER'],
                                               self._sort_order_changed_cb)
 
         box = Gtk.HBox()
@@ -502,7 +502,7 @@ class _PreferencesDialog(Gtk.Dialog):
         _iter = combobox.get_active_iter()
         if combobox.get_model().iter_is_valid(_iter):
             value = combobox.get_model().get_value(_iter, 1)
-            prefs['SORT_BY'] = value
+            config['SORT_BY'] = value
 
             self.__window.filehandler.refresh_file()
 
@@ -514,7 +514,7 @@ class _PreferencesDialog(Gtk.Dialog):
         _iter = combobox.get_active_iter()
         if combobox.get_model().iter_is_valid(_iter):
             value = combobox.get_model().get_value(_iter, 1)
-            prefs['SORT_ORDER'] = value
+            config['SORT_ORDER'] = value
 
             self.__window.filehandler.refresh_file()
 
@@ -529,7 +529,7 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Literal order', Constants.SORT_NAME_LITERAL))
 
         sortkey_box = self._create_combobox(sortkey_items,
-                                            prefs['SORT_ARCHIVE_BY'],
+                                            config['SORT_ARCHIVE_BY'],
                                             self._sort_archive_by_changed_cb)
 
         sortorder_items = (
@@ -537,7 +537,7 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Descending', Constants.SORT_DESCENDING))
 
         sortorder_box = self._create_combobox(sortorder_items,
-                                              prefs['SORT_ARCHIVE_ORDER'],
+                                              config['SORT_ARCHIVE_ORDER'],
                                               self._sort_archive_order_changed_cb)
 
         box = Gtk.HBox()
@@ -554,7 +554,7 @@ class _PreferencesDialog(Gtk.Dialog):
         _iter = combobox.get_active_iter()
         if combobox.get_model().iter_is_valid(_iter):
             value = combobox.get_model().get_value(_iter, 1)
-            prefs['SORT_ARCHIVE_BY'] = value
+            config['SORT_ARCHIVE_BY'] = value
 
             self.__window.filehandler.refresh_file()
 
@@ -566,7 +566,7 @@ class _PreferencesDialog(Gtk.Dialog):
         _iter = combobox.get_active_iter()
         if combobox.get_model().iter_is_valid(_iter):
             value = combobox.get_model().get_value(_iter, 1)
-            prefs['SORT_ARCHIVE_ORDER'] = value
+            config['SORT_ARCHIVE_ORDER'] = value
 
             self.__window.filehandler.refresh_file()
 
@@ -581,7 +581,7 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Bilinear (normal)', int(GdkPixbuf.InterpType.BILINEAR))
         )
 
-        selection = prefs['SCALING_QUALITY']
+        selection = config['SCALING_QUALITY']
 
         box = self._create_combobox(items, selection, self._scaling_quality_changed_cb)
 
@@ -595,8 +595,8 @@ class _PreferencesDialog(Gtk.Dialog):
         _iter = combobox.get_active_iter()
         if combobox.get_model().iter_is_valid(_iter):
             value = combobox.get_model().get_value(_iter, 1)
-            last_value = prefs['SCALING_QUALITY']
-            prefs['SCALING_QUALITY'] = value
+            last_value = config['SCALING_QUALITY']
+            config['SCALING_QUALITY'] = value
 
             if value != last_value:
                 self.__window.draw_image()
@@ -611,7 +611,7 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Lanczos', int(PIL.Image.LANCZOS))  # PIL type 1.
         )
 
-        selection = prefs['PIL_SCALING_FILTER']
+        selection = config['PIL_SCALING_FILTER']
 
         box = self._create_combobox(items, selection, self._pil_scaling_filter_changed_cb)
 
@@ -625,8 +625,8 @@ class _PreferencesDialog(Gtk.Dialog):
         _iter = combobox.get_active_iter()
         if combobox.get_model().iter_is_valid(_iter):
             value = combobox.get_model().get_value(_iter, 1)
-            last_value = prefs['PIL_SCALING_FILTER']
-            prefs['PIL_SCALING_FILTER'] = value
+            last_value = config['PIL_SCALING_FILTER']
+            config['PIL_SCALING_FILTER'] = value
 
             if value != last_value:
                 self.__window.draw_image()
@@ -643,7 +643,7 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Infinity', Constants.ANIMATION_INF),
         )
 
-        selection = prefs['ANIMATION_MODE']
+        selection = config['ANIMATION_MODE']
 
         box = self._create_combobox(items, selection, self._animation_mode_changed_cb)
 
@@ -657,8 +657,8 @@ class _PreferencesDialog(Gtk.Dialog):
         _iter = combobox.get_active_iter()
         if combobox.get_model().iter_is_valid(_iter):
             value = combobox.get_model().get_value(_iter, 1)
-            last_value = prefs['ANIMATION_MODE']
-            prefs['ANIMATION_MODE'] = value
+            last_value = config['ANIMATION_MODE']
+            config['ANIMATION_MODE'] = value
 
             if value != last_value:
                 self.__window.filehandler.refresh_file()
@@ -702,7 +702,7 @@ class _PreferencesDialog(Gtk.Dialog):
 
     def _create_pref_check_button(self, label: str, prefkey: str):
         button = Gtk.CheckButton(label=label)
-        button.set_active(prefs[prefkey])
+        button.set_active(config[prefkey])
         button.connect('toggled', self._check_button_cb, prefkey)
         return button
 
@@ -711,7 +711,7 @@ class _PreferencesDialog(Gtk.Dialog):
         Callback for all checkbutton-type preferences
         """
 
-        prefs[preference] = button.get_active()
+        config[preference] = button.get_active()
 
         if (preference in ('CHECKERED_BG_FOR_TRANSPARENT_IMAGES', 'AUTO_ROTATE_FROM_EXIF')) or \
                 (preference in ('HIDE_ALL_IN_FULLSCREEN',) and self.__window.is_fullscreen):
@@ -725,7 +725,7 @@ class _PreferencesDialog(Gtk.Dialog):
 
     def _create_pref_spinner(self, prefkey: str, scale: float, lower: float, upper: float,
                              step_incr: float, page_incr: float, digits: float):
-        value = prefs[prefkey] / scale
+        value = config[prefkey] / scale
         adjustment = Gtk.Adjustment(value=value, lower=lower, upper=upper, step_increment=step_incr,
                                     page_increment=page_incr)
         spinner = Gtk.SpinButton.new(adjustment, 0.0, digits)
@@ -741,9 +741,9 @@ class _PreferencesDialog(Gtk.Dialog):
         value = spinbutton.get_value()
 
         if preference in ('LENS_MAGNIFICATION',):
-            prefs[preference] = float(value)
+            config[preference] = float(value)
         else:
-            prefs[preference] = int(value)
+            config[preference] = int(value)
 
         #  now apply new pref
         if preference in ('THUMBNAIL_SIZE',):
@@ -757,10 +757,10 @@ class _PreferencesDialog(Gtk.Dialog):
     @staticmethod
     def _create_pref_text_box(preference: str):
         def save_pref_text_box(text):
-            prefs[preference] = text.get_text()
+            config[preference] = text.get_text()
 
         box = Gtk.Entry()
-        box.set_text(prefs[preference])
+        box.set_text(config[preference])
         box.connect('changed', save_pref_text_box)
         return box
 

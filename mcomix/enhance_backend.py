@@ -3,7 +3,7 @@
 """enhance_backend.py - Image enhancement handler and dialog (e.g. contrast, brightness etc.)"""
 
 from mcomix.image_tools import ImageTools
-from mcomix.preferences import prefs
+from mcomix.preferences import config
 
 
 class ImageEnhancer:
@@ -17,11 +17,11 @@ class ImageEnhancer:
         super().__init__()
 
         self.__window = window
-        self.brightness = prefs['BRIGHTNESS']
-        self.contrast = prefs['CONTRAST']
-        self.saturation = prefs['SATURATION']
-        self.sharpness = prefs['SHARPNESS']
-        self.autocontrast = prefs['AUTO_CONTRAST']
+        self.brightness = config['BRIGHTNESS']
+        self.contrast = config['CONTRAST']
+        self.saturation = config['SATURATION']
+        self.sharpness = config['SHARPNESS']
+        self.autocontrast = config['AUTO_CONTRAST']
 
     def enhance(self, pixbuf):
         """

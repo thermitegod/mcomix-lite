@@ -5,15 +5,15 @@
 from gi.repository import Gdk, Gtk
 
 from mcomix.constants import Constants
-from mcomix.preferences import prefs
+from mcomix.preferences import config
 
 
 class Statusbar(Gtk.EventBox):
     def __init__(self):
         super().__init__()
 
-        self.__spacing = prefs['STATUSBAR_SPACING']
-        self.__sep = prefs['STATUSBAR_SEPARATOR']
+        self.__spacing = config['STATUSBAR_SPACING']
+        self.__sep = config['STATUSBAR_SEPARATOR']
 
         self.__loading = True
 
@@ -98,7 +98,7 @@ class Statusbar(Gtk.EventBox):
         Update the mode
         """
 
-        if prefs['DEFAULT_MANGA_MODE']:
+        if config['DEFAULT_MANGA_MODE']:
             self.__view_mode = 'Manga Mode'
         else:
             self.__view_mode = 'Western Mode'
@@ -176,7 +176,7 @@ class Statusbar(Gtk.EventBox):
             (Constants.STATUS_FILESIZE, self.__filesize),
             (Constants.STATUS_MODE, self.__view_mode),
         ]
-        p = prefs['STATUSBAR_FIELDS']
+        p = config['STATUSBAR_FIELDS']
 
         return [s for c, s in filter(lambda f: f[0] & p, fields)]
 
@@ -202,9 +202,9 @@ class Statusbar(Gtk.EventBox):
         bit = names[action.get_name()]
 
         if action.get_active():
-            prefs['STATUSBAR_FIELDS'] |= bit
+            config['STATUSBAR_FIELDS'] |= bit
         else:
-            prefs['STATUSBAR_FIELDS'] &= ~bit
+            config['STATUSBAR_FIELDS'] &= ~bit
 
         self.update()
         self._update_sensitivity()
@@ -222,7 +222,7 @@ class Statusbar(Gtk.EventBox):
         Updates the action menu's sensitivity based on user preferences
         """
 
-        p = prefs['STATUSBAR_FIELDS']
+        p = config['STATUSBAR_FIELDS']
         names = {
             'pagenumber': p & Constants.STATUS_PAGE,
             'filenumber': p & Constants.STATUS_FILENUMBER,

@@ -4,7 +4,7 @@
 
 from gi.repository import Gtk
 
-from mcomix.preferences import prefs
+from mcomix.preferences import config
 
 
 class MessageDialog(Gtk.MessageDialog):
@@ -76,9 +76,9 @@ class MessageDialog(Gtk.MessageDialog):
         the dialog after the result has been returned
         """
 
-        if self.__dialog_id in prefs['STORED_DIALOG_CHOICES']:
+        if self.__dialog_id in config['STORED_DIALOG_CHOICES']:
             self.destroy()
-            return prefs['STORED_DIALOG_CHOICES'][self.__dialog_id]
+            return config['STORED_DIALOG_CHOICES'][self.__dialog_id]
 
         self.show_all()
         # Prevent checkbox from grabbing focus by only enabling it after show
@@ -87,7 +87,7 @@ class MessageDialog(Gtk.MessageDialog):
         result = super().run()
 
         if self.should_remember_choice() and int(result) in self.__choices:
-            prefs['STORED_DIALOG_CHOICES'][self.__dialog_id] = int(result)
+            config['STORED_DIALOG_CHOICES'][self.__dialog_id] = int(result)
 
         if self.__auto_destroy:
             self.destroy()

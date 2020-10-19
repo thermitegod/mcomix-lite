@@ -7,7 +7,7 @@ from pathlib import Path
 
 from mcomix.image_tools import ImageTools
 from mcomix.lib.callback import Callback
-from mcomix.preferences import prefs
+from mcomix.preferences import config
 
 
 class Thumbnailer:
@@ -29,7 +29,7 @@ class Thumbnailer:
         super().__init__()
 
         if size is None:
-            self.__width = self.__height = prefs['THUMBNAIL_SIZE']
+            self.__width = self.__height = config['THUMBNAIL_SIZE']
             self.__default_sizes = True
         else:
             self.__width, self.__height = size
@@ -46,8 +46,8 @@ class Thumbnailer:
 
         # Update width and height from preferences if they haven't been set explicitly
         if self.__default_sizes:
-            self.__width = prefs['THUMBNAIL_SIZE']
-            self.__height = prefs['THUMBNAIL_SIZE']
+            self.__width = config['THUMBNAIL_SIZE']
+            self.__height = config['THUMBNAIL_SIZE']
 
         return self._create_thumbnail(Path(filepath))
 

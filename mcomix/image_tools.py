@@ -12,7 +12,7 @@ from loguru import logger
 from mcomix.anime_tools import AnimeFrameBuffer, AnimeFrameExecutor
 from mcomix.constants import Constants
 from mcomix.lib.reader import LockedFileIO
-from mcomix.preferences import prefs
+from mcomix.preferences import config
 
 
 class _ImageTools:
@@ -60,7 +60,7 @@ class _ImageTools:
         # read starting bytes and using Gio.content_type_guess
         # to guess if path is supported, ignoring file extension.
         path = Path() / path
-        if prefs['CHECK_IMAGE_MIMETYPE'] and check_mimetype and Path.is_file(path):
+        if config['CHECK_IMAGE_MIMETYPE'] and check_mimetype and Path.is_file(path):
             with Path.open(path, mode='rb') as fd:
                 magic = fd.read(10)
             mime, uncertain = Gio.content_type_guess(data=magic)
@@ -163,10 +163,10 @@ class _ImageTools:
             width, height = height, width
 
         if scaling_quality is None:
-            scaling_quality = prefs['SCALING_QUALITY']
+            scaling_quality = config['SCALING_QUALITY']
 
         if pil_filter is None:
-            pil_filter = prefs['PIL_SCALING_FILTER']
+            pil_filter = config['PIL_SCALING_FILTER']
 
         src_width = src.get_width()
         src_height = src.get_height()
@@ -184,7 +184,7 @@ class _ImageTools:
             src_height = src.get_height()
 
         if src.get_has_alpha():
-            if prefs['CHECKERED_BG_FOR_TRANSPARENT_IMAGES']:
+            if config['CHECKERED_BG_FOR_TRANSPARENT_IMAGES']:
                 check_size, color1, color2 = 8, 0x777777, 0x999999
             else:
                 check_size, color1, color2 = 1024, 0xFFFFFF, 0xFFFFFF
@@ -268,7 +268,7 @@ class _ImageTools:
         if self.is_animation(pixbuf):
             if not hasattr(pixbuf, 'framebuffer'):
                 return True
-            if not prefs['ANIMATION_TRANSFORM']:
+            if not config['ANIMATION_TRANSFORM']:
                 return True
 
         return False
@@ -313,7 +313,7 @@ class _ImageTools:
         Loads a pixbuf from a given image file
         """
 
-        enable_anime = prefs['ANIMATION_MODE'] != Constants.ANIMATION_DISABLED
+        enable_anime = config['ANIMATION_MODE'] != Constants.ANIMATION_DISABLED
         try:
             with LockedFileIO(path) as fio:
                 with Image.open(fio) as im:

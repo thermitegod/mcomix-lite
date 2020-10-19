@@ -6,7 +6,7 @@ from gi.repository import GObject, Gdk, GdkPixbuf, Gtk
 
 from mcomix.bookmark_menu_item import Bookmark
 from mcomix.constants import Constants
-from mcomix.preferences import prefs
+from mcomix.preferences import config
 
 
 class BookmarksDialog(Gtk.Dialog):
@@ -95,7 +95,7 @@ class BookmarksDialog(Gtk.Dialog):
         # FIXME Hide extra columns. Needs UI controls to enable these.
         self.__path_col.set_visible(False)
 
-        self.resize(prefs['BOOKMARK_WIDTH'], prefs['BOOKMARK_HEIGHT'])
+        self.resize(config['BOOKMARK_WIDTH'], config['BOOKMARK_HEIGHT'])
 
         self.connect('response', self._response)
         self.connect('delete_event', self._close)

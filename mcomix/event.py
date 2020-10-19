@@ -8,7 +8,7 @@ from gi.repository import Gdk, Gtk
 
 from mcomix.constants import Constants
 from mcomix.keybindings import KeybindingManager
-from mcomix.preferences import prefs
+from mcomix.preferences import config
 
 
 class EventHandler:
@@ -23,8 +23,8 @@ class EventHandler:
         self.__manager = KeybindingManager.keybinding_manager(self.__window)
 
     def get_manga_flip_direction(self):
-        if (self.__window.is_manga_mode and not prefs['MANGA_FLIP_RIGHT']) or \
-                (not self.__window.is_manga_mode and prefs['WESTERN_FLIP_LEFT']):
+        if (self.__window.is_manga_mode and not config['MANGA_FLIP_RIGHT']) or \
+                (not self.__window.is_manga_mode and config['WESTERN_FLIP_LEFT']):
             return True
         return False
 
@@ -144,16 +144,16 @@ class EventHandler:
         # Arrow keys scroll the image
         self.__manager.register('scroll_down',
                                 self._scroll_with_flipping,
-                                kwargs={'x': 0, 'y': prefs['PIXELS_TO_SCROLL_PER_KEY_EVENT']})
+                                kwargs={'x': 0, 'y': config['PIXELS_TO_SCROLL_PER_KEY_EVENT']})
         self.__manager.register('scroll_up',
                                 self._scroll_with_flipping,
-                                kwargs={'x': 0, 'y': -prefs['PIXELS_TO_SCROLL_PER_KEY_EVENT']})
+                                kwargs={'x': 0, 'y': -config['PIXELS_TO_SCROLL_PER_KEY_EVENT']})
         self.__manager.register('scroll_right',
                                 self._scroll_with_flipping,
-                                kwargs={'x': prefs['PIXELS_TO_SCROLL_PER_KEY_EVENT'], 'y': 0})
+                                kwargs={'x': config['PIXELS_TO_SCROLL_PER_KEY_EVENT'], 'y': 0})
         self.__manager.register('scroll_left',
                                 self._scroll_with_flipping,
-                                kwargs={'x': -prefs['PIXELS_TO_SCROLL_PER_KEY_EVENT'], 'y': 0})
+                                kwargs={'x': -config['PIXELS_TO_SCROLL_PER_KEY_EVENT'], 'y': 0})
 
         # File operations
         self.__manager.register('close',
@@ -230,7 +230,7 @@ class EventHandler:
         Determines the behavior of the ESC key
         """
 
-        if prefs['ESCAPE_QUITS']:
+        if config['ESCAPE_QUITS']:
             self.__window.terminate_program()
         else:
             self.__window.actiongroup.get_action('fullscreen').set_active(False)
@@ -241,7 +241,7 @@ class EventHandler:
         wheel flips pages in best fit mode and scrolls the scrollbars otherwise
         """
 
-        if not prefs['FLIP_WITH_WHEEL']:
+        if not config['FLIP_WITH_WHEEL']:
             return
 
         if event.get_state() & Gdk.ModifierType.BUTTON2_MASK:
@@ -265,13 +265,13 @@ class EventHandler:
             if event.get_state() & Gdk.ModifierType.CONTROL_MASK:
                 self.__window.manual_zoom_in()
             else:
-                self._scroll_with_flipping(0, -prefs['PIXELS_TO_SCROLL_PER_MOUSE_WHEEL_EVENT'])
+                self._scroll_with_flipping(0, -config['PIXELS_TO_SCROLL_PER_MOUSE_WHEEL_EVENT'])
 
         elif direction == Gdk.ScrollDirection.DOWN:
             if event.get_state() & Gdk.ModifierType.CONTROL_MASK:
                 self.__window.manual_zoom_out()
             else:
-                self._scroll_with_flipping(0, prefs['PIXELS_TO_SCROLL_PER_MOUSE_WHEEL_EVENT'])
+                self._scroll_with_flipping(0, config['PIXELS_TO_SCROLL_PER_MOUSE_WHEEL_EVENT'])
 
         elif direction == Gdk.ScrollDirection.RIGHT:
             if self.get_manga_flip_direction():

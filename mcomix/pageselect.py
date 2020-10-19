@@ -6,7 +6,7 @@ from gi.repository import Gtk
 
 from mcomix.lib.callback import Callback
 from mcomix.lib.mt import ThreadPool
-from mcomix.preferences import prefs
+from mcomix.preferences import config
 
 
 class Pageselector(Gtk.Dialog):
@@ -44,10 +44,10 @@ class Pageselector(Gtk.Dialog):
         self.__pages_label.set_alignment(0, 0.5)
 
         self.__image_preview = Gtk.Image()
-        self.__image_preview.set_size_request(prefs['THUMBNAIL_SIZE'], prefs['THUMBNAIL_SIZE'])
+        self.__image_preview.set_size_request(config['THUMBNAIL_SIZE'], config['THUMBNAIL_SIZE'])
 
         self.connect('configure-event', self._size_changed_cb)
-        self.set_size_request(prefs['PAGESELECTOR_WIDTH'], prefs['PAGESELECTOR_HEIGHT'])
+        self.set_size_request(config['PAGESELECTOR_WIDTH'], config['PAGESELECTOR_HEIGHT'])
 
         # Group preview image and page selector next to each other
         preview_box = Gtk.HBox()
@@ -74,7 +74,7 @@ class Pageselector(Gtk.Dialog):
         # Currently displayed thumbnail page.
         self.__thumbnail_page = 0
         self.__thread = ThreadPool(name=self.__class__.__name__,
-                                   processes=prefs['MAX_THREADS_GENERAL'])
+                                   processes=config['MAX_THREADS_GENERAL'])
         self._update_thumbnail(int(self.__selector_adjustment.props.value))
         self.__window.imagehandler.page_available += self._page_available
 
@@ -91,8 +91,8 @@ class Pageselector(Gtk.Dialog):
         # Window cannot be scaled down unless the size request is reset
         self.set_size_request(-1, -1)
         # Store dialog size
-        prefs['PAGESELECTOR_WIDTH'] = self.get_allocation().width
-        prefs['PAGESELECTOR_HEIGHT'] = self.get_allocation().height
+        config['PAGESELECTOR_WIDTH'] = self.get_allocation().width
+        config['PAGESELECTOR_HEIGHT'] = self.get_allocation().height
 
         self._update_thumbnail(int(self.__selector_adjustment.props.value))
 

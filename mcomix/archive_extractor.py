@@ -11,7 +11,7 @@ from loguru import logger
 from mcomix.archive_tools import ArchiveTools
 from mcomix.lib.callback import Callback
 from mcomix.lib.mt import ThreadPool
-from mcomix.preferences import prefs
+from mcomix.preferences import config
 
 
 class Extractor:
@@ -31,7 +31,7 @@ class Extractor:
 
         self.__threadpool = ThreadPool(
                 name=self.__class__.__name__,
-                processes=prefs['MAX_THREADS_EXTRACT'])
+                processes=config['MAX_THREADS_EXTRACT'])
 
         self.__src = None
         self.__files = None

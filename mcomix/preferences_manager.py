@@ -8,7 +8,7 @@ from loguru import logger
 
 from mcomix.config import ConfigManager
 from mcomix.constants import Constants
-from mcomix.preferences import prefs
+from mcomix.preferences import config
 
 
 class _PreferenceManager:
@@ -23,12 +23,12 @@ class _PreferenceManager:
         if Path.is_file(self.__preference_path):
             saved_prefs = ConfigManager.load_config(self.__preference_path, saved_prefs)
 
-        prefs.update(filter(lambda i: i[0] in prefs, saved_prefs.items()))
+        config.update(filter(lambda i: i[0] in config, saved_prefs.items()))
 
-        self.__prefs_hash['sha256'] = ConfigManager.hash_config(prefs)
+        self.__prefs_hash['sha256'] = ConfigManager.hash_config(config)
 
     def write_preferences_file(self):
-        sha256hash = ConfigManager.hash_config(prefs)
+        sha256hash = ConfigManager.hash_config(config)
         if sha256hash == self.__prefs_hash['sha256']:
             logger.info('No changes to write for preferences')
             return
@@ -36,7 +36,7 @@ class _PreferenceManager:
 
         logger.info('Writing changes to preferences')
 
-        ConfigManager.write_config(prefs, self.__preference_path)
+        ConfigManager.write_config(config, self.__preference_path)
 
 
 PreferenceManager = _PreferenceManager()

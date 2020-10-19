@@ -14,7 +14,7 @@ from mcomix.constants import Constants
 from mcomix.file_provider import FileProvider, GetFileProvider, SortAlphanumeric
 from mcomix.image_tools import ImageTools
 from mcomix.lib.callback import Callback
-from mcomix.preferences import prefs
+from mcomix.preferences import config
 
 
 class FileHandler:
@@ -59,7 +59,7 @@ class FileHandler:
         self.__filelist = None
         self.__start_page = 0
 
-        self.__open_first_page = 0 if prefs['OPEN_FIRST_PAGE'] else -1
+        self.__open_first_page = 0 if config['OPEN_FIRST_PAGE'] else -1
 
     def refresh_file(self, *args, **kwargs):
         """
@@ -300,15 +300,15 @@ class FileHandler:
         Sorts the image list passed in C{filelist} based on the sorting preference option
         """
 
-        if prefs['SORT_ARCHIVE_BY'] == Constants.SORT_NAME:
+        if config['SORT_ARCHIVE_BY'] == Constants.SORT_NAME:
             SortAlphanumeric.alphanumeric_sort(filelist)
-        elif prefs['SORT_ARCHIVE_BY'] == Constants.SORT_NAME_LITERAL:
+        elif config['SORT_ARCHIVE_BY'] == Constants.SORT_NAME_LITERAL:
             filelist.sort()
         else:
             # No sorting
             pass
 
-        if prefs['SORT_ARCHIVE_ORDER'] == Constants.SORT_DESCENDING:
+        if config['SORT_ARCHIVE_ORDER'] == Constants.SORT_DESCENDING:
             filelist.reverse()
 
     @staticmethod
@@ -324,9 +324,9 @@ class FileHandler:
         :rtype: int
         """
 
-        if start_page < 0 and prefs['DEFAULT_DOUBLE_PAGE']:
+        if start_page < 0 and config['DEFAULT_DOUBLE_PAGE']:
             current_image_index = num_of_pages - 2
-        elif start_page < 0 and not prefs['DEFAULT_DOUBLE_PAGE']:
+        elif start_page < 0 and not config['DEFAULT_DOUBLE_PAGE']:
             current_image_index = num_of_pages - 1
         else:
             current_image_index = start_page - 1

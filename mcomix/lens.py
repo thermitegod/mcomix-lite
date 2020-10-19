@@ -8,7 +8,7 @@ from gi.repository import Gdk, GdkPixbuf, Gtk
 
 from mcomix.constants import Constants
 from mcomix.image_tools import ImageTools
-from mcomix.preferences import prefs
+from mcomix.preferences import config
 
 
 class MagnifyingLens:
@@ -65,7 +65,7 @@ class MagnifyingLens:
         if self.__window.images[0].get_storage_type() not in (Gtk.ImageType.PIXBUF, Gtk.ImageType.ANIMATION):
             return
 
-        rectangle = self._calculate_lens_rect(x, y, prefs['LENS_SIZE'], prefs['LENS_SIZE'])
+        rectangle = self._calculate_lens_rect(x, y, config['LENS_SIZE'], config['LENS_SIZE'])
         pixbuf = self._get_lens_pixbuf(x, y)
 
         draw_region = Gdk.Rectangle()
@@ -150,8 +150,8 @@ class MagnifyingLens:
 
         canvas = GdkPixbuf.Pixbuf.new(colorspace=GdkPixbuf.Colorspace.RGB,
                                       has_alpha=True, bits_per_sample=8,
-                                      width=prefs['LENS_SIZE'],
-                                      height=prefs['LENS_SIZE'])
+                                      width=config['LENS_SIZE'],
+                                      height=config['LENS_SIZE'])
         r, g, b = [0, 0, 0]
         canvas.fill(convert_rgb16list_to_rgba8int([r, g, b]))
         cb = self.__window.get_layout().get_content_boxes()
@@ -182,8 +182,8 @@ class MagnifyingLens:
         # rotation etc. might not match or will be ignored:
         source_pixbuf = ImageTools.static_image(source_pixbuf)
 
-        rotation = prefs['ROTATION']
-        if prefs['AUTO_ROTATE_FROM_EXIF']:
+        rotation = config['ROTATION']
+        if config['AUTO_ROTATE_FROM_EXIF']:
             rotation += ImageTools.get_implied_rotation(source_pixbuf)
             rotation %= 360
 
@@ -195,8 +195,8 @@ class MagnifyingLens:
         x *= scale
         y *= scale
 
-        source_mag = prefs['LENS_MAGNIFICATION'] / scale
-        width = height = prefs['LENS_SIZE'] / source_mag
+        source_mag = config['LENS_MAGNIFICATION'] / scale
+        width = height = config['LENS_SIZE'] / source_mag
 
         paste_left = x > width / 2
         paste_top = y > height / 2
@@ -210,12 +210,12 @@ class MagnifyingLens:
             y = source_pixbuf.get_height() - y
         elif rotation == 270:
             x, y = source_pixbuf.get_width() - y, x
-        if prefs['HORIZONTAL_FLIP']:
+        if config['HORIZONTAL_FLIP']:
             if rotation in (90, 270):
                 y = source_pixbuf.get_height() - y
             else:
                 x = source_pixbuf.get_width() - x
-        if prefs['VERTICAL_FLIP']:
+        if config['VERTICAL_FLIP']:
             if rotation in (90, 270):
                 x = source_pixbuf.get_width() - x
             else:
@@ -238,7 +238,7 @@ class MagnifyingLens:
         subpixbuf = subpixbuf.scale_simple(
                 int(math.ceil(source_mag * subpixbuf.get_width())),
                 int(math.ceil(source_mag * subpixbuf.get_height())),
-                prefs['SCALING_QUALITY'])
+                config['SCALING_QUALITY'])
 
         if rotation == 90:
             subpixbuf = subpixbuf.rotate_simple(Gdk.PIXBUF_ROTATE_CLOCKWISE)
@@ -246,9 +246,9 @@ class MagnifyingLens:
             subpixbuf = subpixbuf.rotate_simple(Gdk.PIXBUF_ROTATE_UPSIDEDOWN)
         elif rotation == 270:
             subpixbuf = subpixbuf.rotate_simple(Gdk.PIXBUF_ROTATE_COUNTERCLOCKWISE)
-        if prefs['HORIZONTAL_FLIP']:
+        if config['HORIZONTAL_FLIP']:
             subpixbuf = subpixbuf.flip(horizontal=True)
-        if prefs['VERTICAL_FLIP']:
+        if config['VERTICAL_FLIP']:
             subpixbuf = subpixbuf.flip(horizontal=False)
 
         subpixbuf = self.__window.enhancer.enhance(subpixbuf)
@@ -262,7 +262,7 @@ class MagnifyingLens:
         else:
             dest_y = min(canvas.get_height() - subpixbuf.get_height(), dest_y)
 
-        if subpixbuf.get_has_alpha() and prefs['CHECKERED_BG_FOR_TRANSPARENT_IMAGES']:
+        if subpixbuf.get_has_alpha() and config['CHECKERED_BG_FOR_TRANSPARENT_IMAGES']:
             subpixbuf = subpixbuf.composite_color_simple(subpixbuf.get_width(), subpixbuf.get_height(),
                                                          GdkPixbuf.InterpType.NEAREST, 255, 8, 0x777777, 0x999999)
 

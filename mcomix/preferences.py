@@ -5,7 +5,7 @@
 from mcomix.constants import Constants
 
 # All preferences are stored here.
-prefs = {
+config = {
     'AUTO_OPEN_NEXT_ARCHIVE': True,
     'AUTO_OPEN_NEXT_DIRECTORY': False,
     'SORT_BY': Constants.SORT_NAME,  # Normal files obtained by directory listing
