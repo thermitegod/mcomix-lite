@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import hashlib
 import json
-from hashlib import sha256
 from pathlib import Path
 
 from loguru import logger
@@ -32,7 +32,7 @@ class _ConfigManager:
 
     def hash_config(self, config: dict):
         config_json = self.dump_config(config)
-        return sha256(config_json.encode('utf8')).hexdigest()
+        return hashlib.blake2b(config_json.encode('utf8')).hexdigest()
 
     @staticmethod
     def dump_config(config: dict):
