@@ -16,7 +16,6 @@ class _PreferenceManager:
         super().__init__()
 
         self.__preference_path = Constants.PREFERENCE_PATH
-        self.__prefs_hash = {'sha256': None}
 
     def load_preferences_file(self):
         saved_prefs = {}
@@ -25,14 +24,14 @@ class _PreferenceManager:
 
         config.update(filter(lambda i: i[0] in config, saved_prefs.items()))
 
-        self.__prefs_hash['sha256'] = ConfigManager.hash_config(config)
+        ConfigManager.stored_config_hash['preferences'] = ConfigManager.hash_config(config)
 
     def write_preferences_file(self):
         sha256hash = ConfigManager.hash_config(config)
-        if sha256hash == self.__prefs_hash['sha256']:
+        if sha256hash == ConfigManager.stored_config_hash['preferences']:
             logger.info('No changes to write for preferences')
             return
-        self.__prefs_hash['sha256'] = sha256hash
+        ConfigManager.stored_config_hash['preferences'] = sha256hash
 
         logger.info('Writing changes to preferences')
 

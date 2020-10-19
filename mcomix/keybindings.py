@@ -45,7 +45,6 @@ class _KeybindingInterface:
         self.__binding_to_action = {}  # (key code, key modifier) => action name
 
         self.__keybindings_path = Constants.KEYBINDINGS_PATH
-        self.__keybindings_hash = {'sha256': None}
 
         self.load_keybindings_file()
 
@@ -194,10 +193,10 @@ class _KeybindingInterface:
                 ]
 
         sha256hash = ConfigManager.hash_config(action_to_keys)
-        if sha256hash == self.__keybindings_hash['sha256']:
+        if sha256hash == ConfigManager.stored_config_hash['keybindings']:
             logger.info('No changes to write for keybindings')
             return
-        self.__keybindings_hash['sha256'] = sha256hash
+        ConfigManager.stored_config_hash['keybindings'] = sha256hash
 
         logger.info('Writing changes to keybindings')
 
@@ -221,7 +220,7 @@ class _KeybindingInterface:
             else:
                 self.__action_to_bindings[action] = []
 
-        self.__keybindings_hash['sha256'] = ConfigManager.hash_config(stored_action_bindings)
+        ConfigManager.stored_config_hash['keybindings'] = ConfigManager.hash_config(stored_action_bindings)
 
     def get_bindings_for_action(self, name):
         """

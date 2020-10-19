@@ -13,6 +13,11 @@ class _ConfigManager:
     def __init__(self):
         super().__init__()
 
+        self.stored_config_hash = {
+            'preferences': None,
+            'keybindings': None,
+        }
+
         self.config_dir_check()
 
     @staticmethod
