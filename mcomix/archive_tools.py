@@ -8,9 +8,9 @@ from pathlib import Path
 
 from loguru import logger
 
-from mcomix.archive.rar import RarArchive
-from mcomix.archive.sevenzip import SevenZipArchive
-from mcomix.archive.zip import ZipArchive
+from mcomix.archive.format_rar import RarArchive
+from mcomix.archive.format_sevenzip import SevenZipArchive
+from mcomix.archive.format_zip import ZipArchive
 from mcomix.constants import Constants
 
 
