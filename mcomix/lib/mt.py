@@ -24,35 +24,22 @@ class ThreadPool:
     def __init__(self, name: str = None, processes: int = None):
         super().__init__()
 
+        self.__name = name
         self.__processes = processes
-        self.__pool = NamedPool(self.__processes, name=name)
+        self.__pool = NamedPool(self.__processes, name=self.__name)
         self.__lock = Lock()  # lock for self
         self.__cblock = Lock()  # lock for callback
         self.__errcblock = Lock()  # lock for error_callback
         self.__closed = False
 
-        self.__name = name
+    def __enter__(self):
+        return self
 
-    def apply(self, *args, **kwargs):
-        return self.__pool.apply(*args, **kwargs)
-
-    def map(self, *args, **kwargs):
-        return self.__pool.map(*args, **kwargs)
+    def __exit__(self, etype, value, tb):
+        self.terminate()
 
     def map_async(self, *args, **kwargs):
         return self.__pool.map_async(*args, **kwargs)
-
-    def imap(self, *args, **kwargs):
-        return self.__pool.imap(*args, **kwargs)
-
-    def imap_unordered(self, *args, **kwargs):
-        return self.__pool.imap_unordered(*args, **kwargs)
-
-    def starmap(self, *args, **kwargs):
-        return self.__pool.starmap(*args, **kwargs)
-
-    def starmap_async(self, *args, **kwargs):
-        return self.__pool.starmap_async(*args, **kwargs)
 
     def join(self):
         return self.__pool.join()
@@ -115,9 +102,3 @@ class ThreadPool:
     def closed(self):
         # True if ThreadPool closed
         return self.__closed
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, etype, value, tb):
-        self.terminate()
