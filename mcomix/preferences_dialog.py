@@ -423,21 +423,10 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Always', Constants.SHOW_DOUBLE_AS_ONE_TITLE | Constants.SHOW_DOUBLE_AS_ONE_WIDE))
 
         box = self._create_combobox(items,
-                                    config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'],
-                                    self._double_page_changed_cb)
+                                    'VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES',
+                                    self._changed_cb)
 
         return box
-
-    def _double_page_changed_cb(self, combobox, *args):
-        """
-        Called when a new option was selected for the virtual double page option
-        """
-
-        _iter = combobox.get_active_iter()
-        if combobox.get_model().iter_is_valid(_iter):
-            value = combobox.get_model().get_value(_iter, 1)
-            config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] = value
-            self.__window.draw_image()
 
     def _create_fitmode_control(self):
         """Combobox for fit to size mode"""
@@ -446,23 +435,10 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Fit to height', Constants.ZOOM_MODE_HEIGHT))
 
         box = self._create_combobox(items,
-                                    config['FIT_TO_SIZE_MODE'],
-                                    self._fit_to_size_changed_cb)
+                                    'FIT_TO_SIZE_MODE',
+                                    self._changed_cb)
 
         return box
-
-    def _fit_to_size_changed_cb(self, combobox, *args):
-        """
-        Change to 'Fit to size' pixels
-        """
-
-        _iter = combobox.get_active_iter()
-        if combobox.get_model().iter_is_valid(_iter):
-            value = combobox.get_model().get_value(_iter, 1)
-
-            if config['FIT_TO_SIZE_MODE'] != value:
-                config['FIT_TO_SIZE_MODE'] = value
-                self.__window.change_zoom_mode()
 
     def _create_sort_by_control(self):
         """
@@ -477,46 +453,22 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Last modified', Constants.SORT_LAST_MODIFIED))
 
         sortkey_box = self._create_combobox(sortkey_items,
-                                            config['SORT_BY'],
-                                            self._sort_by_changed_cb)
+                                            'SORT_BY',
+                                            self._changed_cb)
 
         sortorder_items = (
             ('Ascending', Constants.SORT_ASCENDING),
             ('Descending', Constants.SORT_DESCENDING))
 
         sortorder_box = self._create_combobox(sortorder_items,
-                                              config['SORT_ORDER'],
-                                              self._sort_order_changed_cb)
+                                              'SORT_ORDER',
+                                              self._changed_cb)
 
         box = Gtk.HBox()
         box.pack_start(sortkey_box, True, True, 0)
         box.pack_start(sortorder_box, True, True, 0)
 
         return box
-
-    def _sort_by_changed_cb(self, combobox, *args):
-        """
-        Called when a new option was selected for the virtual double page option
-        """
-
-        _iter = combobox.get_active_iter()
-        if combobox.get_model().iter_is_valid(_iter):
-            value = combobox.get_model().get_value(_iter, 1)
-            config['SORT_BY'] = value
-
-            self.__window.filehandler.refresh_file()
-
-    def _sort_order_changed_cb(self, combobox, *args):
-        """
-        Called when sort order changes (ascending or descending)
-        """
-
-        _iter = combobox.get_active_iter()
-        if combobox.get_model().iter_is_valid(_iter):
-            value = combobox.get_model().get_value(_iter, 1)
-            config['SORT_ORDER'] = value
-
-            self.__window.filehandler.refresh_file()
 
     def _create_archive_sort_by_control(self):
         """
@@ -529,46 +481,22 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Literal order', Constants.SORT_NAME_LITERAL))
 
         sortkey_box = self._create_combobox(sortkey_items,
-                                            config['SORT_ARCHIVE_BY'],
-                                            self._sort_archive_by_changed_cb)
+                                            'SORT_ARCHIVE_BY',
+                                            self._changed_cb)
 
         sortorder_items = (
             ('Ascending', Constants.SORT_ASCENDING),
             ('Descending', Constants.SORT_DESCENDING))
 
         sortorder_box = self._create_combobox(sortorder_items,
-                                              config['SORT_ARCHIVE_ORDER'],
-                                              self._sort_archive_order_changed_cb)
+                                              'SORT_ARCHIVE_ORDER',
+                                              self._changed_cb)
 
         box = Gtk.HBox()
         box.pack_start(sortkey_box, True, True, 0)
         box.pack_start(sortorder_box, True, True, 0)
 
         return box
-
-    def _sort_archive_by_changed_cb(self, combobox, *args):
-        """
-        Called when a new option was selected for the virtual double page option
-        """
-
-        _iter = combobox.get_active_iter()
-        if combobox.get_model().iter_is_valid(_iter):
-            value = combobox.get_model().get_value(_iter, 1)
-            config['SORT_ARCHIVE_BY'] = value
-
-            self.__window.filehandler.refresh_file()
-
-    def _sort_archive_order_changed_cb(self, combobox, *args):
-        """
-        Called when sort order changes (ascending or descending)
-        """
-
-        _iter = combobox.get_active_iter()
-        if combobox.get_model().iter_is_valid(_iter):
-            value = combobox.get_model().get_value(_iter, 1)
-            config['SORT_ARCHIVE_ORDER'] = value
-
-            self.__window.filehandler.refresh_file()
 
     def _create_scaling_quality_combobox(self):
         """
@@ -581,25 +509,11 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Bilinear (normal)', int(GdkPixbuf.InterpType.BILINEAR))
         )
 
-        selection = config['SCALING_QUALITY']
-
-        box = self._create_combobox(items, selection, self._scaling_quality_changed_cb)
+        box = self._create_combobox(items,
+                                    'SCALING_QUALITY',
+                                    self._changed_cb)
 
         return box
-
-    def _scaling_quality_changed_cb(self, combobox, *args):
-        """
-        Called whan image scaling quality changes
-        """
-
-        _iter = combobox.get_active_iter()
-        if combobox.get_model().iter_is_valid(_iter):
-            value = combobox.get_model().get_value(_iter, 1)
-            last_value = config['SCALING_QUALITY']
-            config['SCALING_QUALITY'] = value
-
-            if value != last_value:
-                self.__window.draw_image()
 
     def _create_pil_scaling_filter_combobox(self):
         """
@@ -607,29 +521,17 @@ class _PreferencesDialog(Gtk.Dialog):
         """
 
         items = (
-            ('None', -1),  # -1 defers to 'scaling quality'
-            ('Lanczos', int(PIL.Image.LANCZOS))  # PIL type 1.
+            # -1 defers to 'scaling quality'
+            ('None', -1),
+            # PIL type 1.
+            ('Lanczos', int(PIL.Image.LANCZOS)),
         )
 
-        selection = config['PIL_SCALING_FILTER']
-
-        box = self._create_combobox(items, selection, self._pil_scaling_filter_changed_cb)
+        box = self._create_combobox(items,
+                                    'PIL_SCALING_FILTER',
+                                    self._changed_cb)
 
         return box
-
-    def _pil_scaling_filter_changed_cb(self, combobox, *args):
-        """
-        Called whan PIL filter selection changes.
-        """
-
-        _iter = combobox.get_active_iter()
-        if combobox.get_model().iter_is_valid(_iter):
-            value = combobox.get_model().get_value(_iter, 1)
-            last_value = config['PIL_SCALING_FILTER']
-            config['PIL_SCALING_FILTER'] = value
-
-            if value != last_value:
-                self.__window.draw_image()
 
     def _create_animation_mode_combobox(self):
         """
@@ -643,33 +545,40 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Infinity', Constants.ANIMATION_INF),
         )
 
-        selection = config['ANIMATION_MODE']
-
-        box = self._create_combobox(items, selection, self._animation_mode_changed_cb)
+        box = self._create_combobox(items,
+                                    'ANIMATION_MODE',
+                                    self._changed_cb)
 
         return box
 
-    def _animation_mode_changed_cb(self, combobox, *args):
+    def _changed_cb(self, combobox, preference: str):
         """
-        Called whenever animation mode has been changed
+        Called whenever cb box has been changed
         """
 
         _iter = combobox.get_active_iter()
         if combobox.get_model().iter_is_valid(_iter):
             value = combobox.get_model().get_value(_iter, 1)
-            last_value = config['ANIMATION_MODE']
-            config['ANIMATION_MODE'] = value
+            last_value = config[preference]
+            config[preference] = value
 
             if value != last_value:
-                self.__window.filehandler.refresh_file()
+                if preference in ('ANIMATION_MODE', 'SORT_ARCHIVE_ORDER',
+                                  'SORT_ARCHIVE_BY', 'SORT_ORDER', 'SORT_BY'):
+                    self.__window.filehandler.refresh_file()
+                elif preference in ('PIL_SCALING_FILTER', 'SCALING_QUALITY',
+                                    'VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'):
+                    self.__window.draw_image()
+                elif preference in ('FIT_TO_SIZE_MODE',):
+                    self.__window.change_zoom_mode()
 
     @staticmethod
-    def _create_combobox(options: tuple, selected_value: int, change_callback):
+    def _create_combobox(options: tuple, preference: str, change_callback):
         """
         Creates a new dropdown combobox and populates it with the items passed in C{options}.
 
         :param options: List of tuples: (Option display text, option value)
-        :param selected_value: One of the values passed in C{options} that will
+        :param preference: One of the values passed in C{options} that will
             be pre-selected when the control is created.
         :param change_callback: Function that will be called when the 'changed' event is triggered.
         :returns: Gtk.ComboBox
@@ -689,14 +598,14 @@ class _PreferencesDialog(Gtk.Dialog):
         # Set active box option
         _iter = model.get_iter_first()
         while _iter:
-            if model.get_value(_iter, 1) == selected_value:
+            if model.get_value(_iter, 1) == config[preference]:
                 box.set_active_iter(_iter)
                 break
             else:
                 _iter = model.iter_next(_iter)
 
         if change_callback:
-            box.connect('changed', change_callback)
+            box.connect('changed', change_callback, preference)
 
         return box
 
