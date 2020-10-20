@@ -60,7 +60,10 @@ class _BookmarksStore:
         """
 
         self.__bookmarks.append(bookmark)
+
         self.__bookmark_state['dirty'] = True
+        self.write_bookmarks_file()
+        self.__bookmark_state['dirty'] = False
 
     @Callback
     def remove_bookmark(self, bookmark):
@@ -69,7 +72,10 @@ class _BookmarksStore:
         """
 
         self.__bookmarks.remove(bookmark)
+
         self.__bookmark_state['dirty'] = True
+        self.write_bookmarks_file()
+        self.__bookmark_state['dirty'] = False
 
     def add_current_to_bookmarks(self):
         """
