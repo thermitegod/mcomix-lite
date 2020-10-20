@@ -10,7 +10,7 @@ from loguru import logger
 from mcomix.constants import Constants
 from mcomix.image_tools import ImageTools
 from mcomix.lib.callback import Callback
-from mcomix.lib.mt import ThreadPool, Lock
+from mcomix.lib.mt import GlobalThreadPool, Lock
 from mcomix.preferences import config
 from mcomix.thumbnail_tools import Thumbnailer
 
@@ -33,8 +33,7 @@ class ImageHandler:
         self.__window = window
 
         #: Caching thread
-        self.__thread = ThreadPool(name=self.__class__.__name__,
-                                   processes=config['MAX_THREADS_GENERAL'])
+        self.__threadpool = GlobalThreadPool.threadpool
         self.__lock = Lock()
         self.__cache_lock = {}
         #: Archive path, if currently opened file is archive
@@ -113,7 +112,7 @@ class ImageHandler:
             # Start caching available images not already in cache.
             wanted_pixbufs = [index for index in wanted_pixbufs
                               if index in self.__available_images]
-            self.__thread.map_async(self._cache_pixbuf, wanted_pixbufs)
+            self.__threadpool.map_async(self._cache_pixbuf, wanted_pixbufs)
         finally:
             self.__lock.release()
 
@@ -217,7 +216,7 @@ class ImageHandler:
         Run clean-up tasks. Should be called prior to exit
         """
 
-        self.__thread.renew()
+        self.__threadpool.renew()
         self.__wanted_pixbufs.clear()
         while self.__cache_lock:
             index, lock = self.__cache_lock.popitem()
@@ -268,7 +267,7 @@ class ImageHandler:
         self.__available_images.add(index)
         # Check if we need to cache it.
         if index in self.__wanted_pixbufs or -1 == self.__cache_pages:
-            self.__thread.apply_async(self._cache_pixbuf, (index,))
+            self.__threadpool.apply_async(self._cache_pixbuf, (index,))
 
     @staticmethod
     def bin_search(lst: list, value: str):

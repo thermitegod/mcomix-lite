@@ -5,7 +5,7 @@
 from gi.repository import Gtk
 
 from mcomix.lib.callback import Callback
-from mcomix.lib.mt import ThreadPool
+from mcomix.lib.mt import GlobalThreadPool
 from mcomix.preferences import config
 
 
@@ -73,8 +73,7 @@ class Pageselector(Gtk.Dialog):
 
         # Currently displayed thumbnail page.
         self.__thumbnail_page = 0
-        self.__thread = ThreadPool(name=self.__class__.__name__,
-                                   processes=config['MAX_THREADS_GENERAL'])
+        self.__threadpool = GlobalThreadPool.threadpool
         self._update_thumbnail(int(self.__selector_adjustment.props.value))
         self.__window.imagehandler.page_available += self._page_available
 
@@ -112,7 +111,7 @@ class Pageselector(Gtk.Dialog):
             self.__window.set_page(int(self.__selector_adjustment.props.value))
 
         self.__window.imagehandler.page_available -= self._page_available
-        self.__thread.renew()
+        self.__threadpool.renew()
         self.destroy()
 
     def _update_thumbnail(self, page: int):
@@ -123,7 +122,7 @@ class Pageselector(Gtk.Dialog):
         width = self.__image_preview.get_allocation().width
         height = self.__image_preview.get_allocation().height
         self.__thumbnail_page = page
-        self.__thread.apply_async(
+        self.__threadpool.apply_async(
                 self._generate_thumbnail, args=(page, width, height),
                 callback=self._generate_thumbnail_cb)
 

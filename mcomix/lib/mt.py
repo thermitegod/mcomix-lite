@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import sys
-
 from multiprocessing.dummy import Pool
 from multiprocessing.pool import ThreadPool as mpThreadPool
 from threading import Lock
+
+from mcomix.preferences import config
 
 
 class NamedPool(mpThreadPool):
@@ -102,3 +103,14 @@ class ThreadPool:
     def closed(self):
         # True if ThreadPool closed
         return self.__closed
+
+
+class _GlobalThreadPool:
+    def __init__(self):
+        super().__init__()
+
+        self.threadpool = ThreadPool(name='GlobalThreadPool',
+                                     processes=config['MAX_THREADS'])
+
+
+GlobalThreadPool = _GlobalThreadPool()
