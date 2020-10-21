@@ -94,7 +94,7 @@ class ThumbnailViewBase:
         pixbuf = self.generate_thumbnail(uid)
         if pixbuf is None:
             self.__done.discard(uid)
-            raise Exception('no pixbuf, skip callback.')
+            raise MissingPixbuf
         return _iter, pixbuf, model
 
     def _pixbuf_finished(self, params: tuple, taskid: int = -1):
@@ -108,6 +108,10 @@ class ThumbnailViewBase:
                 return
             _iter, pixbuf, model = params
             model.set(_iter, self.__status_column, True, self.__pixbuf_column, pixbuf)
+
+
+class MissingPixbuf(Exception):
+    pass
 
 
 class ThumbnailTreeView(Gtk.TreeView, ThumbnailViewBase):
