@@ -17,10 +17,11 @@ class BookmarksDialog(Gtk.Dialog):
     def __init__(self, window, bookmarks_store):
         super().__init__(title='Edit Bookmarks', destroy_with_parent=True)
 
-        self.__SORT_TYPE = 100
-        self.__SORT_NAME = 101
-        self.__SORT_PAGE = 102
-        self.__SORT_ADDED = 103
+        self.__SORT_ICON = 0
+        self.__SORT_NAME = 1
+        self.__SORT_PAGE = 2
+        self.__SORT_PATH = 3
+        self.__SORT_DATE = 4
 
         self.set_transient_for(window)
 
@@ -59,38 +60,38 @@ class BookmarksDialog(Gtk.Dialog):
         self.__icon_col = Gtk.TreeViewColumn('Type', cellrenderer_pbuf)
         self.__name_col = Gtk.TreeViewColumn('Name', cellrenderer_text)
         self.__page_col = Gtk.TreeViewColumn('Pages', cellrenderer_text)
-        self.__path_col = Gtk.TreeViewColumn('Location', cellrenderer_text)
-        self.__date_add_col = Gtk.TreeViewColumn('Added', cellrenderer_text)
+        self.__path_col = Gtk.TreeViewColumn('Path', cellrenderer_text)
+        self.__date_col = Gtk.TreeViewColumn('Added', cellrenderer_text)
 
         self.__treeview.append_column(self.__icon_col)
         self.__treeview.append_column(self.__name_col)
         self.__treeview.append_column(self.__page_col)
         self.__treeview.append_column(self.__path_col)
-        self.__treeview.append_column(self.__date_add_col)
+        self.__treeview.append_column(self.__date_col)
 
-        self.__icon_col.set_attributes(cellrenderer_pbuf, pixbuf=0)
-        self.__name_col.set_attributes(cellrenderer_text, text=1)
-        self.__page_col.set_attributes(cellrenderer_text, text=2)
-        self.__path_col.set_attributes(cellrenderer_text, text=3)
-        self.__date_add_col.set_attributes(cellrenderer_text, text=4)
+        self.__icon_col.set_attributes(cellrenderer_pbuf, pixbuf=self.__SORT_ICON)
+        self.__name_col.set_attributes(cellrenderer_text, text=self.__SORT_NAME)
+        self.__page_col.set_attributes(cellrenderer_text, text=self.__SORT_PAGE)
+        self.__path_col.set_attributes(cellrenderer_text, text=self.__SORT_PATH)
+        self.__date_col.set_attributes(cellrenderer_text, text=self.__SORT_DATE)
         self.__name_col.set_expand(True)
 
-        self.__liststore.set_sort_func(self.__SORT_TYPE, self._sort_model, ('_archive_type', '_name', '_page'))
+        self.__liststore.set_sort_func(self.__SORT_ICON, self._sort_model, ('_archive_type', '_name', '_page'))
         self.__liststore.set_sort_func(self.__SORT_NAME, self._sort_model, ('_name', '_page', '_path'))
         self.__liststore.set_sort_func(self.__SORT_PAGE, self._sort_model, ('_numpages', '_page', '_name'))
-        self.__liststore.set_sort_func(self.__SORT_ADDED, self._sort_model, ('_date_added',))
+        self.__liststore.set_sort_func(self.__SORT_DATE, self._sort_model, ('_date_added',))
 
-        self.__icon_col.set_sort_column_id(self.__SORT_TYPE)
+        self.__icon_col.set_sort_column_id(self.__SORT_ICON)
         self.__name_col.set_sort_column_id(self.__SORT_NAME)
         self.__page_col.set_sort_column_id(self.__SORT_PAGE)
-        self.__path_col.set_sort_column_id(3)
-        self.__date_add_col.set_sort_column_id(self.__SORT_ADDED)
+        self.__path_col.set_sort_column_id(self.__SORT_PATH)
+        self.__date_col.set_sort_column_id(self.__SORT_DATE)
 
         self.__icon_col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         self.__name_col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         self.__page_col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         self.__path_col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
-        self.__date_add_col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
+        self.__date_col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
         if not config['BOOKMARK_SHOW_PATH']:
             self.__path_col.set_visible(False)
