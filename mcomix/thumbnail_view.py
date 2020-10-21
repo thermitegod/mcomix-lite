@@ -81,8 +81,8 @@ class ThumbnailViewBase:
                 self.__taskid = taskid
                 self.__done.add(uid)
                 self.__threadpool.apply_async(
-                        self._pixbuf_worker, args=(uid, _iter, model),
-                        callback=functools.partial(self._pixbuf_finished, taskid=taskid))
+                    self._pixbuf_worker, args=(uid, _iter, model),
+                    callback=functools.partial(self._pixbuf_finished, taskid=taskid))
         finally:
             self.__lock.release()
 

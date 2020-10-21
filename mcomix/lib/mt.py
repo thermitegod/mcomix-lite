@@ -10,7 +10,6 @@ from mcomix.preferences import config
 
 class NamedPool(mpThreadPool):
     def __init__(self, *args, name: str = None, **kwargs):
-
         self.__name = name
         super().__init__(*args, **kwargs)
 
@@ -79,8 +78,8 @@ class ThreadPool:
         if kwargs is None:
             kwargs = {}
         return self.__pool.apply_async(
-                self._caller, (func, args, kwargs, None, error_callback, True),
-                callback=callback)
+            self._caller, (func, args, kwargs, None, error_callback, True),
+            callback=callback)
 
     def close(self):
         # same as Pool.close

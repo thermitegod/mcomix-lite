@@ -244,6 +244,3 @@ class _KeybindingManager:
 
 # Singleton instance
 KeybindingManager = _KeybindingManager()
-
-
-

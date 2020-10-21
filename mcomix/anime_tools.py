@@ -39,8 +39,8 @@ class AnimeFrameBuffer:
             self.__height = height
         if config['ANIMATION_BACKGROUND'] and background:
             pixbuf = pixbuf.composite_color_simple(
-                    width, height, GdkPixbuf.InterpType.NEAREST,
-                    255, 1024, background, background
+                width, height, GdkPixbuf.InterpType.NEAREST,
+                255, 1024, background, background
             )
         self.__framelist[index] = (pixbuf, duration)
         self.__duration = math.gcd(duration, self.__duration)

@@ -236,9 +236,9 @@ class MagnifyingLens:
 
         subpixbuf = source_pixbuf.new_subpixbuf(int(src_x), int(src_y), int(width), int(height))
         subpixbuf = subpixbuf.scale_simple(
-                int(math.ceil(source_mag * subpixbuf.get_width())),
-                int(math.ceil(source_mag * subpixbuf.get_height())),
-                config['SCALING_QUALITY'])
+            int(math.ceil(source_mag * subpixbuf.get_width())),
+            int(math.ceil(source_mag * subpixbuf.get_height())),
+            config['SCALING_QUALITY'])
 
         if rotation == 90:
             subpixbuf = subpixbuf.rotate_simple(Gdk.PIXBUF_ROTATE_CLOCKWISE)

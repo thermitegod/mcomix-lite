@@ -57,8 +57,8 @@ class Extractor:
         self.__dst = self.__archive.get_destdir()
         self.__condition = threading.Condition()
         self.__threadpool.apply_async(
-                self._list_contents, callback=self._list_contents_cb,
-                error_callback=self._list_contents_errcb)
+            self._list_contents, callback=self._list_contents_cb,
+            error_callback=self._list_contents_errcb)
 
         return self.__condition
 

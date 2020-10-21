@@ -244,4 +244,3 @@ class _EnhanceDialog:
 
 # Singleton instance
 EnhanceDialog = _EnhanceDialog()
-

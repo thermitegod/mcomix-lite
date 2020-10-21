@@ -90,14 +90,14 @@ class Bookmark(Gtk.ImageMenuItem):
         """
 
         return Bookmark(
-                self.__window,
-                self._file_handler,
-                self._name,
-                self._path,
-                self._page,
-                self._numpages,
-                self.__archive_type,
-                self._date_added.timestamp())
+            self.__window,
+            self._file_handler,
+            self._name,
+            self._path,
+            self._page,
+            self._numpages,
+            self.__archive_type,
+            self._date_added.timestamp())
 
     def __eq__(self, other):
         """

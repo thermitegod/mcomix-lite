@@ -7,9 +7,9 @@ from tempfile import TemporaryDirectory
 
 from loguru import logger
 
-from mcomix.constants import Constants
 from mcomix.archive.archive_base import BaseArchive
 from mcomix.archive_tools import ArchiveTools
+from mcomix.constants import Constants
 
 
 class RecursiveArchive(BaseArchive):
@@ -72,8 +72,8 @@ class RecursiveArchive(BaseArchive):
                 logger.warning(f'Non-supported archive format: {Path(sub_archive_path).name}')
                 continue
             sub_tempdir = TemporaryDirectory(
-                    prefix=f'sub_archive.{len(self.__archive_list):04}.',
-                    dir=self.__destdir)
+                prefix=f'sub_archive.{len(self.__archive_list):04}.',
+                dir=self.__destdir)
             sub_root = sub_tempdir.name
             self.__sub_tempdirs.append(sub_tempdir)
             for name in self._iter_contents(sub_archive, sub_root):

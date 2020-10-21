@@ -32,15 +32,13 @@ class _ImageTools:
         for ext, name in Image.EXTENSION.items():
             fmt = self.__supported_image_formats.setdefault(name, (set(), set()))
             fmt[1].add(ext.lower())
-            mime = Image.MIME.get(
-                name, Gio.content_type_guess(filename=f'file{ext}')[0]).lower()
+            mime = Image.MIME.get(name, Gio.content_type_guess(filename=f'file{ext}')[0]).lower()
             if mime and mime != 'application/octet-stream':
                 fmt[0].add(mime)
 
         # formats supported by gdk-pixbuf
         for gdkfmt in GdkPixbuf.Pixbuf.get_formats():
-            fmt = self.__supported_image_formats.setdefault(
-                gdkfmt.get_name().upper(), (set(), set()))
+            fmt = self.__supported_image_formats.setdefault(gdkfmt.get_name().upper(), (set(), set()))
             for m in map(lambda s: s.lower(), gdkfmt.get_mime_types()):
                 fmt[0].add(m)
             # get_extensions() return extensions without '.'

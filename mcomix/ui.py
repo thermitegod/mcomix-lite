@@ -118,7 +118,7 @@ class MainUI(Gtk.UIManager):
              None, None, Constants.AUTOROTATE_HEIGHT_90),
             ('rotate_270_height', 'mcomix-rotate-270', 'Rotat_e 90 degrees CCW',
              None, None, Constants.AUTOROTATE_HEIGHT_270)],
-                config['AUTO_ROTATE_DEPENDING_ON_SIZE'], self.__window.change_autorotation)
+            config['AUTO_ROTATE_DEPENDING_ON_SIZE'], self.__window.change_autorotation)
 
         self.__actiongroup.add_actions([
             ('about', Gtk.STOCK_ABOUT, '_About',

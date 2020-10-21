@@ -123,8 +123,8 @@ class Pageselector(Gtk.Dialog):
         height = self.__image_preview.get_allocation().height
         self.__thumbnail_page = page
         self.__threadpool.apply_async(
-                self._generate_thumbnail, args=(page, width, height),
-                callback=self._generate_thumbnail_cb)
+            self._generate_thumbnail, args=(page, width, height),
+            callback=self._generate_thumbnail_cb)
 
     def _generate_thumbnail(self, page: int, width: int, height: int):
         """

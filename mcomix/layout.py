@@ -74,7 +74,7 @@ class FiniteLayout:  # 2D only
                 index = len(self.__content_boxes) - 1
             current_box = self.__wrapper_boxes[index]
         self.set_viewport_position(self._scroll_to_predefined(
-                current_box, self.__viewport_box, self.__orientation, destination))
+            current_box, self.__viewport_box, self.__orientation, destination))
 
     @staticmethod
     def _scroll_to_predefined(content_box, viewport_box, orientation: tuple, destination: tuple):

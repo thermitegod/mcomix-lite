@@ -150,4 +150,3 @@ class _SevenzipExecutable:
 
 # Singleton instance
 SevenzipExecutable = _SevenzipExecutable()
-

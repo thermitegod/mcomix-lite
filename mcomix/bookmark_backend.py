@@ -113,7 +113,7 @@ class _BookmarksStore:
                 return
 
         bookmark = Bookmark(self.__window, self.__file_handler,
-                                               name, path, page, numpages, archive_type, epoch)
+                            name, path, page, numpages, archive_type, epoch)
         self.add_bookmark(bookmark)
 
     def get_bookmarks(self):
@@ -200,21 +200,21 @@ class _BookmarksStore:
         """
 
         dialog = MessageDialog(
-                self.__window,
-                flags=Gtk.DialogFlags.MODAL,
-                message_type=Gtk.MessageType.INFO,
-                buttons=Gtk.ButtonsType.NONE)
+            self.__window,
+            flags=Gtk.DialogFlags.MODAL,
+            message_type=Gtk.MessageType.INFO,
+            buttons=Gtk.ButtonsType.NONE)
         dialog.add_buttons(
-                Gtk.STOCK_YES, Gtk.ResponseType.YES,
-                Gtk.STOCK_NO, Gtk.ResponseType.NO,
-                Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+            Gtk.STOCK_YES, Gtk.ResponseType.YES,
+            Gtk.STOCK_NO, Gtk.ResponseType.NO,
+            Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
         dialog.set_default_response(Gtk.ResponseType.YES)
         dialog.set_should_remember_choice('replace-existing-bookmark', (Gtk.ResponseType.YES, Gtk.ResponseType.NO))
 
         dialog.set_text(
-                'The current book already contains marked pages.'
-                f'Do you want to replace them with a new bookmark on page {new_page}? \n\n '
-                'Selecting "No" will create a new bookmark.')
+            'The current book already contains marked pages.'
+            f'Do you want to replace them with a new bookmark on page {new_page}? \n\n '
+            'Selecting "No" will create a new bookmark.')
 
         return dialog.run()
 

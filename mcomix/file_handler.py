@@ -11,7 +11,7 @@ from loguru import logger
 from mcomix.archive_extractor import Extractor
 from mcomix.archive_tools import ArchiveTools
 from mcomix.constants import Constants
-from mcomix.file_provider import FileProvider, GetFileProvider, SortAlphanumeric
+from mcomix.file_provider import GetFileProvider, SortAlphanumeric
 from mcomix.image_tools import ImageTools
 from mcomix.lib.callback import Callback
 from mcomix.preferences import config

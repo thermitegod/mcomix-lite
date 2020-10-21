@@ -40,10 +40,10 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
 
         # view - responsible for laying out the columns
         self.__treeview = ThumbnailTreeView(
-                self.__thumbnail_liststore,
-                0,  # UID
-                1,  # pixbuf
-                2,  # status
+            self.__thumbnail_liststore,
+            0,  # UID
+            1,  # pixbuf
+            2,  # status
         )
         self.__treeview.set_headers_visible(False)
         self.__treeview.generate_thumbnail = self._generate_thumbnail

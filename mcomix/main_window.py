@@ -7,13 +7,13 @@ from pathlib import Path
 from gi.repository import GLib, Gdk, Gtk
 from send2trash import send2trash
 
-from mcomix.icons import Icons
 from mcomix.bookmark_backend import BookmarksStore
 from mcomix.constants import Constants
 from mcomix.cursor_handler import CursorHandler
 from mcomix.enhance_backend import ImageEnhancer
 from mcomix.event import EventHandler
 from mcomix.file_handler import FileHandler
+from mcomix.icons import Icons
 from mcomix.image_handler import ImageHandler
 from mcomix.image_tools import ImageTools
 from mcomix.keybindings import KeybindingManager
@@ -22,8 +22,8 @@ from mcomix.lens import MagnifyingLens
 from mcomix.lib.callback import Callback
 from mcomix.message_dialog import MessageDialog
 from mcomix.pageselect import Pageselector
-from mcomix.preferences_manager import PreferenceManager
 from mcomix.preferences import config
+from mcomix.preferences_manager import PreferenceManager
 from mcomix.statusbar import Statusbar
 from mcomix.thumbbar import ThumbnailSidebar
 from mcomix.ui import MainUI
@@ -106,7 +106,8 @@ class MainWindow(Gtk.Window):
 
         table.attach(self.__event_box, 1, 2, 2, 3, Gtk.AttachOptions.FILL | Gtk.AttachOptions.EXPAND,
                      Gtk.AttachOptions.FILL | Gtk.AttachOptions.EXPAND, 0, 0)
-        table.attach(self.__scroll[Constants.AXIS_HEIGHT], 2, 3, 2, 3, Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
+        table.attach(self.__scroll[Constants.AXIS_HEIGHT], 2, 3, 2, 3,
+                     Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
                      Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK, 0, 0)
         table.attach(self.__scroll[Constants.AXIS_WIDTH], 1, 2, 4, 5, Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
                      Gtk.AttachOptions.FILL, 0, 0)
@@ -368,13 +369,13 @@ class MainWindow(Gtk.Window):
                                                          distribution_axis, do_not_transform)
 
                 self.__layout = FiniteLayout(
-                        scaled_sizes, viewport_size, orientation, self.__spacing,
-                        expand_area, distribution_axis, alignment_axis)
+                    scaled_sizes, viewport_size, orientation, self.__spacing,
+                    expand_area, distribution_axis, alignment_axis)
 
                 union_scaled_size = self.__layout.get_union_box().get_size()
 
                 scrollbar_requests = [(old or new) for old, new in zip(
-                        scrollbar_requests, map(operator.lt, viewport_size, union_scaled_size))]
+                    scrollbar_requests, map(operator.lt, viewport_size, union_scaled_size))]
 
                 if len(tuple(filter(None, scrollbar_requests))) > 1 and not expand_area:
                     expand_area = True
@@ -382,13 +383,13 @@ class MainWindow(Gtk.Window):
 
             for i in range(pixbuf_count):
                 pixbuf_list[i] = ImageTools.fit_pixbuf_to_rectangle(
-                        pixbuf_list[i], scaled_sizes[i], rotation_list[i])
+                    pixbuf_list[i], scaled_sizes[i], rotation_list[i])
 
             for i in range(pixbuf_count):
                 pixbuf_list[i] = ImageTools.trans_pixbuf(
-                        pixbuf_list[i],
-                        flip=config['VERTICAL_FLIP'],
-                        flop=config['HORIZONTAL_FLIP'])
+                    pixbuf_list[i],
+                    flip=config['VERTICAL_FLIP'],
+                    flop=config['HORIZONTAL_FLIP'])
                 pixbuf_list[i] = self.enhancer.enhance(pixbuf_list[i])
 
             for i in range(pixbuf_count):
@@ -885,17 +886,17 @@ class MainWindow(Gtk.Window):
 
         else:
             dialog = MessageDialog(
-                    parent=self,
-                    flags=Gtk.DialogFlags.MODAL,
-                    message_type=Gtk.MessageType.QUESTION,
-                    buttons=Gtk.ButtonsType.NONE)
+                parent=self,
+                flags=Gtk.DialogFlags.MODAL,
+                message_type=Gtk.MessageType.QUESTION,
+                buttons=Gtk.ButtonsType.NONE)
             dialog.add_buttons(
-                    Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                    Gtk.STOCK_DELETE, Gtk.ResponseType.OK)
+                Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                Gtk.STOCK_DELETE, Gtk.ResponseType.OK)
             dialog.set_default_response(Gtk.ResponseType.OK)
             dialog.set_should_remember_choice(
-                    'delete-opend-file',
-                    (Gtk.ResponseType.OK,))
+                'delete-opend-file',
+                (Gtk.ResponseType.OK,))
             dialog.set_text(f'Trash Selected File: "{current_file.name}"?')
             result = dialog.run()
             if result != Gtk.ResponseType.OK:

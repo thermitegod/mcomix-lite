@@ -2,11 +2,7 @@
 
 """archive_tools.py - Archive tool functions"""
 
-import os
-import zipfile
 from pathlib import Path
-
-from loguru import logger
 
 from mcomix.archive.format_rar import RarArchive
 from mcomix.archive.format_sevenzip import SevenZipArchive
