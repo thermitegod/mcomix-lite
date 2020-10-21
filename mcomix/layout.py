@@ -27,14 +27,14 @@ class FiniteLayout:  # 2D only
 
         super().__init__()
 
+        self.__viewport_box = None
+        self.__dirty_current_index = None
+        self.__orientation = None
+
         self.__current_index = -1
         self.__wrap_individually = wrap_individually
         self._reset(content_sizes, viewport_size, orientation, spacing,
                     wrap_individually, distribution_axis, alignment_axis)
-
-        self.__dirty_current_index = None
-        self.__orientation = None
-        self.__viewport_box = self.__viewport_box
 
     def set_viewport_position(self, viewport_position: list):
         """

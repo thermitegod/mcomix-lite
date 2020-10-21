@@ -116,9 +116,9 @@ class OrderedFileProvider(FileProvider):
 
         super().__init__()
 
-        self.set_directory(file_or_directory)
+        self.__base_dir = None
 
-        self.__base_dir = self.__base_dir
+        self.set_directory(file_or_directory)
 
     def set_directory(self, file_or_directory: str):
         """
