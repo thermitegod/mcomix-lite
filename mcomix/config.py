@@ -43,8 +43,9 @@ class _ConfigManager:
         try:
             with Path.open(config, mode='rt', encoding='utf8') as fd:
                 saved_prefs.update(json.load(fd))
-        except Exception:
+        except Exception as ex:
             logger.error('Loading config failed, exiting')
+            logger.error(f'Exception: {ex}')
             raise SystemExit
 
     def write_config(self, config: dict, path: Path):

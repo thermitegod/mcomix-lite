@@ -145,8 +145,9 @@ class _BookmarksStore:
             try:
                 with Path.open(self.__bookmark_path, mode='rt', encoding='utf8') as fd:
                     version, packs = json.load(fd)
-            except Exception:
+            except Exception as ex:
                 logger.error(f'Could not parse bookmarks file: \'{self.__bookmark_path}\'')
+                logger.error(f'Exception: {ex}')
             else:
                 for pack in packs:
                     bookmarks.append(Bookmark(self.__window, self.__file_handler, *pack))

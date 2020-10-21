@@ -127,8 +127,9 @@ class ImageHandler:
             logger.debug(f'Caching page: \'{index + 1}\'')
             try:
                 pixbuf = ImageTools.load_pixbuf(self.__image_files[index])
-            except Exception:
+            except Exception as ex:
                 logger.error(f'Could not load pixbuf for page: \'{index + 1}\'')
+                logger.error(f'Exception: {ex}')
                 pixbuf = None
             self.__raw_pixbufs[index] = pixbuf
 
@@ -459,8 +460,9 @@ class ImageHandler:
         try:
             thumbnailer = Thumbnailer(size=size)
             return thumbnailer.thumbnail(path)
-        except Exception:
+        except Exception as ex:
             logger.error(f'Failed to create thumbnail for image: \'{path}\'')
+            logger.error(f'Exception: {ex}')
             return None
 
     def _wait_on_page(self, page: int, check_only: bool = False):

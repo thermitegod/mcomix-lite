@@ -80,8 +80,9 @@ class CallbackList:
             if callback:
                 try:
                     callback(*args, **kwargs)
-                except Exception:
+                except Exception as ex:
                     logger.error(f'Callback failed: {callback}')
+                    logger.error(f'Exception: {ex}')
 
     def __callback_deleted(self, obj_ref):
         """Called whenever one of the callback objects is collected by gc.

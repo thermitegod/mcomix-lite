@@ -113,9 +113,8 @@ class FileHandler:
             try:
                 self._open_archive(self.__current_file)
             except Exception as ex:
-                ex = str(ex)
-                logger.error(ex)
-                self.__window.statusbar.set_message(ex)
+                logger.error(f'Exception: {ex}')
+                self.__window.statusbar.set_message(str(ex))
                 self.file_opened()
                 return False
             self.__file_loading = True
@@ -270,8 +269,9 @@ class FileHandler:
         self.__base_path = path
         try:
             self.__condition = self.__extractor.setup(self.__base_path, self.__archive_type)
-        except Exception:
+        except Exception as ex:
             logger.error(f'failed to open archive: {self.__base_path}')
+            logger.error(f'Exception: {ex}')
             self.__condition = None
             raise
         self.__tmp_dir = self.__extractor.get_directory()
@@ -514,8 +514,9 @@ class FileHandler:
             with self.__condition:
                 while not self.__extractor.is_ready(name) and not self.__stop_waiting:
                     self.__condition.wait()
-        except Exception:
+        except Exception as ex:
             logger.error(f'Waiting on extraction failed: \'{path}\'')
+            logger.error(f'Exception: {ex}')
             return
 
     def ask_for_files(self, files: list):
