@@ -207,6 +207,12 @@ class _PreferencesDialog(Gtk.Dialog):
         page.add_row(Gtk.Label(label='Charactor to use as statusbar separator'),
                      self._create_pref_text_box('STATUSBAR_SEPARATOR'))
 
+        page.new_section('Bookmarks')
+
+        page.add_row(self._create_pref_check_button(
+            'Show bookmark path in bookmark menu',
+            'BOOKMARK_SHOW_PATH'))
+
         page.new_section('Cursor')
 
         page.add_row(self._create_pref_check_button(

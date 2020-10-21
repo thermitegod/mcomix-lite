@@ -92,8 +92,8 @@ class BookmarksDialog(Gtk.Dialog):
         self.__path_col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         self.__date_add_col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
-        # FIXME Hide extra columns. Needs UI controls to enable these.
-        self.__path_col.set_visible(False)
+        if not config['BOOKMARK_SHOW_PATH']:
+            self.__path_col.set_visible(False)
 
         self.resize(config['BOOKMARK_WIDTH'], config['BOOKMARK_HEIGHT'])
 
