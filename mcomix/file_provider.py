@@ -4,7 +4,6 @@
 switching to the next/previous directory"""
 
 import functools
-import locale
 import re
 from pathlib import Path
 
@@ -94,9 +93,6 @@ class FileProvider(SortAlphanumeric):
         elif config['SORT_BY'] == Constants.SORT_SIZE:
             # Smallest file first
             files.sort(key=lambda filename: Path.stat(filename).st_size)
-        elif config['SORT_BY'] == Constants.SORT_LOCALE:
-            # Use the user's local to match ordering in most applications.
-            sorted(str(files), key=locale.strxfrm)
         else:
             # don't sort at all: use arbitrary ordering.
             pass

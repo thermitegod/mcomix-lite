@@ -46,10 +46,9 @@ class _Constants:
 
         self.SORT_NONE = 0
         self.SORT_NAME = 1
-        self.SORT_LOCALE = 2
-        self.SORT_SIZE = 3
-        self.SORT_LAST_MODIFIED = 4
-        self.SORT_NAME_LITERAL = 5
+        self.SORT_SIZE = 2
+        self.SORT_LAST_MODIFIED = 3
+        self.SORT_NAME_LITERAL = 4
 
         self.SORT_DESCENDING = 0
         self.SORT_ASCENDING = 1

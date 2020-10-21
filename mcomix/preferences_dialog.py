@@ -438,7 +438,6 @@ class _PreferencesDialog(Gtk.Dialog):
         sortkey_items = (
             ('No sorting', Constants.SORT_NONE),
             ('File name', Constants.SORT_NAME),
-            ('File name (locale)', Constants.SORT_LOCALE),
             ('File size', Constants.SORT_SIZE),
             ('Last modified', Constants.SORT_LAST_MODIFIED))
 
