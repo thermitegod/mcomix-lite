@@ -301,7 +301,7 @@ class MainWindow(Gtk.Window):
         if not self.filehandler.get_file_loaded():
             self._clear_main_area()
             self.__waiting_for_redraw = False
-            return False
+            return
 
         if self.imagehandler.page_is_available():
             distribution_axis = Constants.AXIS_DISTRIBUTION
@@ -439,8 +439,6 @@ class MainWindow(Gtk.Window):
             self._show_scrollbars([False] * len(self.__scroll))
 
         self.__waiting_for_redraw = False
-
-        return False
 
     def _update_page_information(self):
         """Updates the window with information that can be gathered
