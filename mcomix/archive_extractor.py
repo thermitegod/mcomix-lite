@@ -211,7 +211,7 @@ class Extractor:
         logger.debug(f'Traceback:\n{"".join(traceback.format_tb(tb)).strip()}')
 
 
-class ArchiveException(BaseException):
+class ArchiveException(Exception):
     """
     Indicate error during extraction operations
     """

@@ -272,7 +272,7 @@ class RarArchive(BaseArchive):
         self.__handle = None
 
 
-class UnrarException(BaseException):
+class UnrarException(Exception):
     """
     Exception class for RarArchive
     """

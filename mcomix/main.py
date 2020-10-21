@@ -9,7 +9,7 @@ from pathlib import Path
 from mcomix.constants import Constants
 
 
-class VersionError(BaseException):
+class VersionError(Exception):
     pass
 
 
