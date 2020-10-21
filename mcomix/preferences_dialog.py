@@ -334,10 +334,10 @@ class _PreferencesDialog(Gtk.Dialog):
 
         page.new_section('Extraction And Cache')
 
-        page.add_row(Gtk.Label(label='Maximum number of pages to store in the cache (-1 caches everything):'),
+        page.add_row(Gtk.Label(label='Maximum number of pages to store in the cache:'),
                      self._create_pref_spinner(
                          'MAX_PAGES_TO_CACHE',
-                         1, -1, 500, 1, 3, 0))
+                         1, 2, 10000, 1, 3, 0))
 
         page.new_section('Magnifying Lens')
 

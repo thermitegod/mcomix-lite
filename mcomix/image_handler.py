@@ -103,11 +103,13 @@ class ImageHandler:
 
             # Get list of wanted pixbufs.
             wanted_pixbufs = self._ask_for_pages(self.get_current_page())
-            if -1 != self.__cache_pages:
-                # We're not caching everything, remove old pixbufs.
-                for index in set(self.__raw_pixbufs) - set(wanted_pixbufs):
-                    del self.__raw_pixbufs[index]
+
+            # remove old pixbufs.
+            for index in set(self.__raw_pixbufs) - set(wanted_pixbufs):
+                del self.__raw_pixbufs[index]
+
             logger.debug(f'Caching page(s): \'{" ".join([str(index + 1) for index in wanted_pixbufs])}\'')
+
             self.__wanted_pixbufs = wanted_pixbufs.copy()
             # Start caching available images not already in cache.
             wanted_pixbufs = [index for index in wanted_pixbufs
@@ -266,8 +268,9 @@ class ImageHandler:
 
         self.__cache_lock[index] = Lock()
         self.__available_images.add(index)
+
         # Check if we need to cache it.
-        if index in self.__wanted_pixbufs or -1 == self.__cache_pages:
+        if index in self.__wanted_pixbufs:
             self.__threadpool.apply_async(self._cache_pixbuf, (index,))
 
     @staticmethod
@@ -495,18 +498,14 @@ class ImageHandler:
 
         total_pages = self.get_number_of_pages()
 
-        num_pages = self.__cache_pages
-        if num_pages < 0:
-            # default to 10 pages
-            num_pages = min(10, total_pages)
-
         page -= 1
-        harf = num_pages // 2 - 1
+        harf = self.__cache_pages // 2 - 1
         start = max(0, page - harf)
-        end = start + num_pages
+        end = start + self.__cache_pages
         page_list = list(range(total_pages)[start:end])
+
         if end > total_pages:
-            start = page_list[0] - (num_pages - len(page_list))
+            start = page_list[0] - (self.__cache_pages - len(page_list))
             page_list.extend(range(max(0, start), page_list[0]))
         page_list.sort()
 
