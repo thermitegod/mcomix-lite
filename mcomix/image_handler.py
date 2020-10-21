@@ -328,9 +328,9 @@ class ImageHandler:
             index = page - 1
 
         if isinstance(index, int) and 0 <= index < len(self.__image_files):
-            return self.__image_files[index]
+            return Path(self.__image_files[index])
 
-        return None
+        return Path('')
 
     def get_page_filename(self, page: int = None, double: bool = False, manga: bool = False):
         """
@@ -346,8 +346,8 @@ class ImageHandler:
             return ''
 
         def get_fname(fname):
-            path = Path() / self.get_path_to_page(fname)
-            if not Path.exists(path):
+            path = self.get_path_to_page(fname)
+            if not Path.is_file(path):
                 return ''
             return path.name
 
@@ -378,7 +378,7 @@ class ImageHandler:
             return '-1'
 
         def get_fsize(fsize):
-            path = Path() / self.get_path_to_page(fsize)
+            path = self.get_path_to_page(fsize)
             try:
                 if Path.exists(path):
                     fsize = Path.stat(path).st_size
@@ -421,7 +421,7 @@ class ImageHandler:
         self._wait_on_page(page)
 
         page_path = self.get_path_to_page(page)
-        if page_path is None:
+        if not Path.is_file(page_path):
             return 0, 0
 
         return ImageTools.get_image_size(page_path)
@@ -435,7 +435,7 @@ class ImageHandler:
         self._wait_on_page(page)
 
         page_path = self.get_path_to_page(page)
-        if page_path is None:
+        if not Path.is_file(page_path):
             return None
 
         return ImageTools.get_image_mime(page_path)
@@ -453,7 +453,7 @@ class ImageHandler:
             return None
 
         path = self.get_path_to_page(page)
-        if path is None:
+        if not Path.is_file(path):
             return None
 
         try:

@@ -71,7 +71,7 @@ class PropertiesDialog(Gtk.Dialog):
         # In case it's not ready yet, bump the cover extraction
         # in front of the queue.
         path = window.imagehandler.get_path_to_page(1)
-        if path is not None:
+        if Path.is_file(path):
             window.filehandler.ask_for_files([path])
         self._update_page_image(page, 1)
         page.set_filename(window.filehandler.get_current_filename())
@@ -91,7 +91,7 @@ class PropertiesDialog(Gtk.Dialog):
         if not window.imagehandler.page_is_available():
             return
         self._update_page_image(page)
-        path = Path() / window.imagehandler.get_path_to_page()
+        path = window.imagehandler.get_path_to_page()
         page.set_filename(path.name)
         width, height = window.imagehandler.get_size()
         main_info = (f'{width}x{height} px', window.imagehandler.get_mime_name(),)

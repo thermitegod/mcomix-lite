@@ -868,7 +868,7 @@ class MainWindow(Gtk.Window):
         The currently opened file/archive will be trashed after showing a confirmation dialog
         """
 
-        current_file = Path() / self.imagehandler.get_real_path()
+        current_file = self.imagehandler.get_real_path()
 
         def file_action(move: bool = True):
             if move:

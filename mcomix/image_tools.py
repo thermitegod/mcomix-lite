@@ -59,7 +59,6 @@ class _ImageTools:
         # if check_mimetype is True,
         # read starting bytes and using Gio.content_type_guess
         # to guess if path is supported, ignoring file extension.
-        path = Path() / path
         if config['CHECK_IMAGE_MIMETYPE'] and check_mimetype and Path.is_file(path):
             with Path.open(path, mode='rb') as fd:
                 magic = fd.read(10)
@@ -308,7 +307,7 @@ class _ImageTools:
                             background=background)
         return anime.create_animation()
 
-    def load_pixbuf(self, path: str):
+    def load_pixbuf(self, path: Path):
         """
         Loads a pixbuf from a given image file
         """
@@ -334,7 +333,7 @@ class _ImageTools:
 
         return GdkPixbuf.Pixbuf.new_from_file(path)
 
-    def load_pixbuf_size(self, path: str, width: int, height: int):
+    def load_pixbuf_size(self, path: Path, width: int, height: int):
         """
         Loads a pixbuf from a given image file and scale it to fit inside (width, height)
         """
@@ -414,7 +413,7 @@ class _ImageTools:
         return 0
 
     @staticmethod
-    def get_image_size(path: str):
+    def get_image_size(path: Path):
         """
         Return image informations: (format, width, height)
         """
@@ -424,7 +423,7 @@ class _ImageTools:
                 return im.size
 
     @staticmethod
-    def get_image_mime(path: str):
+    def get_image_mime(path: Path):
         """
         Return image informations: (format, width, height)
         """

@@ -283,7 +283,7 @@ class FileHandler:
 
         files = self.__extractor.get_files()
         archive_images = [image for image in files
-                          if ImageTools.is_image_file(image)
+                          if ImageTools.is_image_file(Path(image))
                           # Remove MacOS meta files from image list
                           and '__MACOSX' not in image.split('/')]
 
@@ -529,7 +529,7 @@ class FileHandler:
         with self.__condition:
             extractor_files = self.__extractor.get_files()
             for path in reversed(files):
-                name = self.__name_table[path]
+                name = self.__name_table[str(path)]
                 if not self.__extractor.is_ready(name):
                     extractor_files.remove(name)
                     extractor_files.insert(0, name)
