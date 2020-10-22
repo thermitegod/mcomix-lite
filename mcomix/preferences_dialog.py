@@ -334,6 +334,10 @@ class _PreferencesDialog(Gtk.Dialog):
             'Detect image file(s) by mimetypes',
             'CHECK_IMAGE_MIMETYPE'))
 
+        page.add_row(self._create_pref_check_button(
+            'Support esoteric image mimetypes',
+            'SUPPORT_ESOTERIC_MIMETYPES'))
+
         page.new_section('Moving Files')
 
         page.add_row(Gtk.Label(label='Move file location (must be relative)'),

@@ -65,6 +65,7 @@ config = {
     'ANIMATION_TRANSFORM': True,
     'MOVE_FILE': 'keep',
     'CHECK_IMAGE_MIMETYPE': False,
+    'SUPPORT_ESOTERIC_MIMETYPES': False,
     'HIDE_CURSOR': False,
     'STATUSBAR_SPACING': 5,
     'OPEN_FIRST_PAGE': True,
