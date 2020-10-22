@@ -35,27 +35,34 @@ class _PreferencesDialog(Gtk.Dialog):
 
         self.connect('response', self._response)
 
-        notebook = self.notebook = Gtk.Notebook()
-        self.vbox.pack_start(notebook, True, True, 0)
-        self.set_border_width(4)
-        notebook.set_border_width(6)
+        self.__notebook = Gtk.Notebook()
+        self.vbox.pack_start(self.__notebook, True, True, 0)
+        self.set_border_width(2)
+        self.__notebook.set_border_width(2)
 
-        appearance = self._init_appearance_tab()
-        notebook.append_page(appearance, Gtk.Label(label='Appearance'))
-        behaviour = self._init_behaviour_tab()
-        notebook.append_page(behaviour, Gtk.Label(label='Behaviour'))
-        display = self._init_display_tab()
-        notebook.append_page(display, Gtk.Label(label='Display'))
-        display = self._init_dialog_tab()
-        notebook.append_page(display, Gtk.Label(label='Dialog'))
-        animation = self._init_animation_tab()
-        notebook.append_page(animation, Gtk.Label(label='Animation'))
-        advanced = self._init_advanced_tab()
-        notebook.append_page(advanced, Gtk.Label(label='Advanced'))
-        shortcuts = self.shortcuts = self._init_shortcuts_tab()
-        notebook.append_page(shortcuts, Gtk.Label(label='Shortcuts'))
+        self.__notebook.append_page(self._init_appearance_tab(),
+                                    Gtk.Label(label='Appearance'))
 
-        notebook.connect('switch-page', self._tab_page_changed)
+        self.__notebook.append_page(self._init_behaviour_tab(),
+                                    Gtk.Label(label='Behaviour'))
+
+        self.__notebook.append_page(self._init_display_tab(),
+                                    Gtk.Label(label='Display'))
+
+        self.__notebook.append_page(self._init_dialog_tab(),
+                                    Gtk.Label(label='Dialog'))
+
+        self.__notebook.append_page(self._init_animation_tab(),
+                                    Gtk.Label(label='Animation'))
+
+        self.__notebook.append_page(self._init_advanced_tab(),
+                                    Gtk.Label(label='Advanced'))
+
+        self.__shortcuts = self._init_shortcuts_tab()
+        self.__notebook.append_page(self.__shortcuts,
+                                    Gtk.Label(label='Shortcuts'))
+
+        self.__notebook.connect('switch-page', self._tab_page_changed)
 
         self.show_all()
 
@@ -380,7 +387,7 @@ class _PreferencesDialog(Gtk.Dialog):
         depending on the currently selected tab page
         """
 
-        if notebook.get_nth_page(page_num) == self.shortcuts:
+        if notebook.get_nth_page(page_num) == self.__shortcuts:
             self.__reset_button.set_label('_Reset keys')
             self.__reset_button.set_sensitive(True)
         else:
@@ -392,12 +399,12 @@ class _PreferencesDialog(Gtk.Dialog):
             PreferenceDialog.close_dialog()
 
         elif response == Constants.RESPONSE_REVERT_TO_DEFAULT:
-            if self.notebook.get_nth_page(self.notebook.get_current_page()) == self.shortcuts:
+            if self.__notebook.get_nth_page(self.__notebook.get_current_page()) == self.__shortcuts:
                 # "Shortcuts" page is active, reset all keys to their default value
                 self.__manager.clear_all()
                 self.__window.get_event_handler().register_key_events()
                 self.__manager.save()
-                self.shortcuts.refresh_model()
+                self.__shortcuts.refresh_model()
             else:
                 # Reset stored choices
                 config['STORED_DIALOG_CHOICES'] = {}
