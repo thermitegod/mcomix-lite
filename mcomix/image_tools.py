@@ -19,8 +19,8 @@ class _ImageTools:
     def __init__(self):
         super().__init__()
 
-        self.__supported_image_exts = set()
-        self.__supported_image_mimes = set()
+        self.__supported_image_exts = tuple()
+        self.__supported_image_mimes = tuple()
         self.__supported_image_formats = {}
 
         self.init_supported_formats()
@@ -55,9 +55,14 @@ class _ImageTools:
                         fmt[0].add(mime)
 
         # cache a supported extensions list
+        supported_image_exts = set()
+        supported_image_mimes = set()
         for mimes, exts in self.__supported_image_formats.values():
-            self.__supported_image_exts.update(exts)
-            self.__supported_image_mimes.update(mimes)
+            supported_image_exts.update(exts)
+            supported_image_mimes.update(mimes)
+
+        self.__supported_image_exts = tuple(supported_image_exts)
+        self.__supported_image_mimes = tuple(supported_image_mimes)
 
     def is_image_file(self, path: Path, check_mimetype: bool = False):
         # if check_mimetype is True,
@@ -68,7 +73,7 @@ class _ImageTools:
                 magic = fd.read(10)
             mime, uncertain = Gio.content_type_guess(data=magic)
             return mime.lower() in self.__supported_image_mimes
-        return str(path).lower().endswith(tuple(self.__supported_image_exts))
+        return str(path).lower().endswith(self.__supported_image_exts)
 
     @staticmethod
     def rotate_pixbuf(src, rotation: int):
