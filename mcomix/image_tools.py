@@ -26,14 +26,19 @@ class _ImageTools:
         self.init_supported_formats()
 
     def init_supported_formats(self):
-        # formats supported by PIL
         # Make sure all supported formats are registered.
+
+        blacklist_mime = ('application/gzip', 'application/octet-stream', 'application/pdf',
+                          'application/postscript', 'application/x-hdf', 'application/x-navi-animation',
+                          'application/x-qw', 'video/mpeg')
+
+        # formats supported by PIL
         Image.init()
         for ext, name in Image.EXTENSION.items():
             fmt = self.__supported_image_formats.setdefault(name, (set(), set()))
             fmt[1].add(ext.lower())
             mime = Image.MIME.get(name, Gio.content_type_guess(filename=f'file{ext}')[0]).lower()
-            if mime and mime != 'application/octet-stream':
+            if mime and mime not in blacklist_mime:
                 fmt[0].add(mime)
 
         # formats supported by gdk-pixbuf
@@ -44,9 +49,9 @@ class _ImageTools:
             # get_extensions() return extensions without '.'
             for e in map(lambda s: f'.{s.lower()}', gdkfmt.get_extensions()):
                 fmt[1].add(e)
-                m = Gio.content_type_guess(filename=f'file{e}')[0].lower()
-                if m and m != 'application/octet-stream':
-                    fmt[0].add(m)
+                mime = Gio.content_type_guess(filename=f'file{e}')[0].lower()
+                if mime and mime not in blacklist_mime:
+                    fmt[0].add(mime)
 
         # cache a supported extensions list
         for mimes, exts in self.__supported_image_formats.values():
