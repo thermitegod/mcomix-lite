@@ -6,6 +6,7 @@ from pathlib import Path
 
 from mcomix.archive.format_rar import RarArchive
 from mcomix.archive.format_sevenzip import SevenZipArchive
+from mcomix.archive.format_tar import TarArchive
 from mcomix.archive.format_zip import ZipArchive
 from mcomix.constants import Constants
 
@@ -19,12 +20,15 @@ class _ArchiveTools:
         self.__zip_ext = ()
         self.__sevenzip_ext = ()
         self.__rar_ext = ()
+        self.__tar_ext = ()
 
         # Handlers for each archive type.
         self.__handlers = {
             Constants.ZIP: (ZipArchive,),
             Constants.SEVENZIP: (SevenZipArchive,),
             Constants.RAR: (RarArchive,),
+            # tarfile supported formats
+            Constants.TAR: (TarArchive,),
         }
 
         self.init_supported_formats()
@@ -40,8 +44,10 @@ class _ArchiveTools:
             self.__sevenzip_ext = self._create_ext_tuple(Constants.SZIP_FORMATS)
         if RarArchive.is_available():
             self.__rar_ext = self._create_ext_tuple(Constants.RAR_FORMATS)
+        if TarArchive.is_available():
+            self.__tar_ext = self._create_ext_tuple(Constants.TAR_FORMATS)
 
-        self.__supported_archive_ext = self.__zip_ext + self.__sevenzip_ext + self.__rar_ext
+        self.__supported_archive_ext = self.__zip_ext + self.__sevenzip_ext + self.__rar_ext + self.__tar_ext
 
     def is_archive_file(self, path: Path):
         return str(path).lower().endswith(self.__supported_archive_ext)
@@ -59,6 +65,8 @@ class _ArchiveTools:
                 return Constants.SEVENZIP
             elif filename.endswith(self.__rar_ext):
                 return Constants.RAR
+            elif filename.endswith(self.__tar_ext):
+                return Constants.TAR
 
         return None
 

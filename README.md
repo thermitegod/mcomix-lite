@@ -12,7 +12,8 @@ The main focus is **ONLY** on the reader and all other features, i.e. library, h
 
 ### Supported Archive Formats
 
-Currently supports formats are 7z, zip, and rar. There is also support for alternative extension names such as cb7, cbz, and cbr. Loose image files are also supported.
+
+Currently supports formats are ZIP, 7Z, RAR, and TAR. There is also support for alternative extension names such as CBZ, CB7, CBR, and, CBT. Loose image files are also supported.
 
 
 ### Installing

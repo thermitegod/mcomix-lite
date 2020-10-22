@@ -73,6 +73,7 @@ class _Constants:
         self.ZIP = 0
         self.SEVENZIP = 1
         self.RAR = 2
+        self.TAR = 3
 
         # Constants for determining which files to list.
         self.IMAGES = 1
@@ -124,10 +125,20 @@ class _Constants:
             ('.cb7', 'application/x-cb7'),
         )
 
+        self.TAR_FORMATS = (
+            ('.tar', 'application/x-tar'),
+            ('.cbt', 'application/x-cbt'),
+            ('.tar.gz', 'application/x-compressed-tar'),
+            ('.tar.bz2', 'application/x-bzip-compressed-tar'),
+            ('.tar.lzma', 'application/x-lzma-compressed-tar'),
+            ('.tar.xz', 'application/x-xz-compressed-tar'),
+        )
+
         self.ARCHIVE_DESCRIPTIONS = {
             self.ZIP: 'ZIP archive',
             self.SEVENZIP: '7z archive',
             self.RAR: 'RAR archive',
+            self.TAR: 'TAR archive',
         }
 
 
