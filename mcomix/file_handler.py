@@ -281,7 +281,6 @@ class FileHandler:
             return
         self.__file_loading = False
 
-        files = self.__extractor.get_files()
         archive_images = [image for image in files
                           if ImageTools.is_image_file(Path(image))
                           # Remove MacOS meta files from image list
