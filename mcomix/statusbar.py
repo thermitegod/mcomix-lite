@@ -157,7 +157,7 @@ class Statusbar(Gtk.EventBox):
         Set the statusbar to display the current state
         """
 
-        s = f'{self.__sep:^{self.__spacing + 2}}'
+        s = f'{self.__sep:^{self.__spacing}}'
         text = s.join(self._get_status_text())
         self.__status.pop(0)
         self.__status.push(0, f'{"":>{self.__spacing}}{text}')
