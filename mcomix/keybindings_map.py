@@ -42,10 +42,10 @@ class _KeyBindingsInfo:
             'flip_vert': {'title': 'Flip vertically', 'group': 'Transformation'},
             'no_autorotation': {'title': 'Never autorotate', 'group': 'Transformation'},
 
-            'rotate_90_width': {'title': 'Rotate 90 degrees CW', 'group': 'Autorotate by width'},
-            'rotate_270_width': {'title': 'Rotate 90 degrees CCW', 'group': 'Autorotate by width'},
-            'rotate_90_height': {'title': 'Rotate 90 degrees CW', 'group': 'Autorotate by height'},
-            'rotate_270_height': {'title': 'Rotate 90 degrees CCW', 'group': 'Autorotate by height'},
+            'rotate_90_width': {'title': 'Rotate width 90 degrees CW', 'group': 'Autorotate by width'},
+            'rotate_270_width': {'title': 'Rotate width 90 degrees CCW', 'group': 'Autorotate by width'},
+            'rotate_90_height': {'title': 'Rotate height 90 degrees CW', 'group': 'Autorotate by height'},
+            'rotate_270_height': {'title': 'Rotate height 90 degrees CCW', 'group': 'Autorotate by height'},
 
             'double_page': {'title': 'Double page mode', 'group': 'View mode'},
             'manga_mode': {'title': 'Manga mode', 'group': 'View mode'},

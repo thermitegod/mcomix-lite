@@ -110,13 +110,13 @@ class MainUI(Gtk.UIManager):
         self.__actiongroup.add_radio_actions([
             ('no_autorotation', None, 'Never',
              None, None, Constants.AUTOROTATE_NEVER),
-            ('rotate_90_width', 'mcomix-rotate-90', '_Rotate 90 degrees CW',
+            ('rotate_90_width', 'mcomix-rotate-90', '_Rotate width 90 degrees CW',
              None, None, Constants.AUTOROTATE_WIDTH_90),
-            ('rotate_270_width', 'mcomix-rotate-270', 'Rotat_e 90 degrees CCW',
+            ('rotate_270_width', 'mcomix-rotate-270', 'Rotat_e width 90 degrees CCW',
              None, None, Constants.AUTOROTATE_WIDTH_270),
-            ('rotate_90_height', 'mcomix-rotate-90', '_Rotate 90 degrees CW',
+            ('rotate_90_height', 'mcomix-rotate-90', '_Rotate height 90 degrees CW',
              None, None, Constants.AUTOROTATE_HEIGHT_90),
-            ('rotate_270_height', 'mcomix-rotate-270', 'Rotat_e 90 degrees CCW',
+            ('rotate_270_height', 'mcomix-rotate-270', 'Rotat_e height 90 degrees CCW',
              None, None, Constants.AUTOROTATE_HEIGHT_270)],
             config['AUTO_ROTATE_DEPENDING_ON_SIZE'], self.__window.change_autorotation)
 
