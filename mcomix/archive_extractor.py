@@ -58,7 +58,7 @@ class Extractor:
         self.__condition = threading.Condition()
         self.__threadpool.apply_async(
             self._list_contents, callback=self._list_contents_cb,
-            error_callback=self._list_contents_errcb)
+            error_callback=self._error_cb)
 
         return self.__condition
 
@@ -136,7 +136,7 @@ class Extractor:
 
             self.__threadpool.apply_async(
                 self._extract_all_files,
-                error_callback=self._extract_files_errcb)
+                error_callback=self._error_cb)
 
     @Callback
     def contents_listed(self, extractor, files: list):
@@ -187,15 +187,6 @@ class Extractor:
             if self._extraction_finished(name):
                 return
 
-    @staticmethod
-    def _extract_files_errcb(name, etype, value, tb):
-        # Better to ignore any failed extractions (e.g. from a corrupt
-        # archive) than to crash here and leave the main thread in a
-        # possible infinite block. Damaged or missing files *should* be
-        # handled gracefully by the main program anyway.
-        logger.error(f'Extraction error: {value}')
-        logger.debug(f'Traceback:\n{"".join(traceback.format_tb(tb)).strip()}')
-
     def _list_contents(self):
         return [filename for filename in self.__archive.iter_contents()]
 
@@ -206,7 +197,12 @@ class Extractor:
         self.contents_listed(self, files)
 
     @staticmethod
-    def _list_contents_errcb(name, etype, value, tb):
+    def _error_cb(name, etype, value, tb):
+        # Better to ignore any failed extractions (e.g. from a corrupt
+        # archive) than to crash here and leave the main thread in a
+        # possible infinite block. Damaged or missing files *should* be
+        # handled gracefully by the main program anyway.
+
         logger.error(f'Extraction error: {value}')
         logger.debug(f'Traceback:\n{"".join(traceback.format_tb(tb)).strip()}')
 
