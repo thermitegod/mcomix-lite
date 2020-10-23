@@ -102,7 +102,8 @@ class _Constants:
         self.STATUS_FILENAME = 8
         self.STATUS_FILENUMBER = 16
         self.STATUS_FILESIZE = 32
-        self.STATUS_MODE = 62
+        self.STATUS_FILESIZE_ARCHIVE = 64
+        self.STATUS_MODE = 128
 
         self.ORIENTATION_MANGA = (-1, 1)
         self.ORIENTATION_WESTERN = (1, 1)

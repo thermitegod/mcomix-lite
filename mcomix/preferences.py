@@ -50,7 +50,9 @@ config = {
     'SHARPNESS': 1.0,
     'AUTO_CONTRAST': False,
     'MAX_PAGES_TO_CACHE': 16,
-    'STATUSBAR_FIELDS': Constants.STATUS_PAGE | Constants.STATUS_RESOLUTION | Constants.STATUS_PATH | Constants.STATUS_FILENAME | Constants.STATUS_FILESIZE | Constants.STATUS_MODE,
+    'STATUSBAR_FIELDS': Constants.STATUS_PAGE | Constants.STATUS_RESOLUTION | Constants.STATUS_PATH |
+                        Constants.STATUS_FILENAME | Constants.STATUS_FILENUMBER | Constants.STATUS_FILESIZE |
+                        Constants.STATUS_FILESIZE_ARCHIVE | Constants.STATUS_MODE,
     'STATUSBAR_FULLPATH': True,
     'STATUSBAR_SEPARATOR': '|',
     'BOOKMARK_SHOW_PATH': False,

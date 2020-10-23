@@ -2,9 +2,12 @@
 
 """status.py - Statusbar for main window"""
 
+from pathlib import Path
+
 from gi.repository import Gdk, Gtk
 
 from mcomix.constants import Constants
+from mcomix.image_handler import ImageHandler
 from mcomix.preferences import config
 
 
@@ -32,7 +35,8 @@ class Statusbar(Gtk.EventBox):
                 <menuitem action="rootpath"/>
                 <menuitem action="filename"/>
                 <menuitem action="filesize"/>
-                <menuitem action="view mode"/>
+                <menuitem action="filesize_archive"/>
+                <menuitem action="viewmode"/>
             </popup>
         </ui>
         """
@@ -46,7 +50,8 @@ class Statusbar(Gtk.EventBox):
             ('rootpath', None, 'Show path', None, None, self.toggle_status_visibility),
             ('filename', None, 'Show filename', None, None, self.toggle_status_visibility),
             ('filesize', None, 'Show filesize', None, None, self.toggle_status_visibility),
-            ('view mode', None, 'Show current mode', None, None, self.toggle_status_visibility)])
+            ('filesize_archive', None, 'Show archive filesize', None, None, self.toggle_status_visibility),
+            ('viewmode', None, 'Show current mode', None, None, self.toggle_status_visibility)])
         self.__ui_manager.insert_action_group(actiongroup, 0)
 
         # Hook mouse release event
@@ -60,6 +65,7 @@ class Statusbar(Gtk.EventBox):
         self.__root = ''
         self.__filename = ''
         self.__filesize = ''
+        self.__filesize_archive = ''
         self.__view_mode = ''
         self._update_sensitivity()
         self.show_all()
@@ -152,6 +158,13 @@ class Statusbar(Gtk.EventBox):
             size = ''
         self.__filesize = size
 
+    def set_filesize_archive(self, path: Path):
+        """
+        Update the filesize
+        """
+
+        self.__filesize_archive = ImageHandler.format_byte_size(Path.stat(path).st_size)
+
     def update(self):
         """
         Set the statusbar to display the current state
@@ -174,6 +187,7 @@ class Statusbar(Gtk.EventBox):
             (Constants.STATUS_PATH, self.__root),
             (Constants.STATUS_FILENAME, self.__filename),
             (Constants.STATUS_FILESIZE, self.__filesize),
+            (Constants.STATUS_FILESIZE_ARCHIVE, self.__filesize_archive),
             (Constants.STATUS_MODE, self.__view_mode),
         ]
         p = config['STATUSBAR_FIELDS']
@@ -196,7 +210,8 @@ class Statusbar(Gtk.EventBox):
             'filename': Constants.STATUS_FILENAME,
             'filenumber': Constants.STATUS_FILENUMBER,
             'filesize': Constants.STATUS_FILESIZE,
-            'view mode': Constants.STATUS_MODE,
+            'filesize_archive': Constants.STATUS_FILESIZE_ARCHIVE,
+            'viewmode': Constants.STATUS_MODE,
         }
 
         bit = names[action.get_name()]
@@ -230,7 +245,8 @@ class Statusbar(Gtk.EventBox):
             'rootpath': p & Constants.STATUS_PATH,
             'filename': p & Constants.STATUS_FILENAME,
             'filesize': p & Constants.STATUS_FILESIZE,
-            'view mode': p & Constants.STATUS_MODE,
+            'filesize_archive': p & Constants.STATUS_FILESIZE_ARCHIVE,
+            'viewmode': p & Constants.STATUS_MODE,
         }
 
         for n, v in names.items():

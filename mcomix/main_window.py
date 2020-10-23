@@ -472,6 +472,7 @@ class MainWindow(Gtk.Window):
             self.statusbar.set_root(self.filehandler.get_base_filename())
         self.statusbar.set_mode()
         self.statusbar.set_filesize(filesize)
+        self.statusbar.set_filesize_archive(self.filehandler.get_path_to_base())
         self.statusbar.update()
         self.update_title()
 
