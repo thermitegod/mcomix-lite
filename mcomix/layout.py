@@ -115,9 +115,18 @@ class FiniteLayout:  # 2D only
             c = content_size[idx]
             v = viewport_size[idx]
             invisible_size = c - v
-            result[idx] = content_position[idx] + (Box.box_to_center_offset_1d(invisible_size, o)
-                                                   if d == Constants.SCROLL_TO_CENTER
-                                                   else invisible_size if d == 1 else 0)  # if d == -1
+
+            if d == Constants.SCROLL_TO_CENTER:
+                offset = Box.box_to_center_offset_1d(invisible_size, o)
+            else:
+                if d == 1:
+                    offset = invisible_size
+                else:
+                    # if d == -1
+                    offset = 0
+
+            result[idx] = content_position[idx] + offset
+
         return result
 
     def get_content_boxes(self):

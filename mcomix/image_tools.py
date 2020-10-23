@@ -38,7 +38,7 @@ class _ImageTools:
             fmt = self.__supported_image_formats.setdefault(name, (set(), set()))
             fmt[1].add(ext.lower())
             mime = Image.MIME.get(name, Gio.content_type_guess(filename=f'file{ext}')[0]).lower()
-            if mime and mime not in blacklist_mime:
+            if mime not in blacklist_mime:
                 fmt[0].add(mime)
 
         if config['SUPPORT_ESOTERIC_MIMETYPES']:
@@ -51,7 +51,7 @@ class _ImageTools:
                 for e in map(lambda s: f'.{s.lower()}', gdkfmt.get_extensions()):
                     fmt[1].add(e)
                     mime = Gio.content_type_guess(filename=f'file{e}')[0].lower()
-                    if mime and mime not in blacklist_mime:
+                    if mime not in blacklist_mime:
                         fmt[0].add(mime)
 
         # cache a supported extensions list
