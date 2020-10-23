@@ -224,12 +224,11 @@ class ImageHandler:
         while self.__cache_lock:
             index, lock = self.__cache_lock.popitem()
             with lock:
-                pass
-        self.__base_path = None
-        self.__image_files.clear()
-        self.__current_image_index = None
-        self.__available_images.clear()
-        self.__raw_pixbufs.clear()
+                self.__base_path = None
+                self.__image_files.clear()
+                self.__current_image_index = None
+                self.__available_images.clear()
+                self.__raw_pixbufs.clear()
 
     def page_is_available(self, page: int = None):
         """
