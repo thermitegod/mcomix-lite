@@ -304,140 +304,147 @@ class MainWindow(Gtk.Window):
             self.__waiting_for_redraw = False
             return
 
-        if self.imagehandler.page_is_available():
-            distribution_axis = Constants.AXIS_DISTRIBUTION
-            alignment_axis = Constants.AXIS_ALIGNMENT
-            pixbuf_count = 2 if self.displayed_double() else 1  # XXX limited to at most 2 pages
-            pixbuf_list = list(self.imagehandler.get_pixbufs(pixbuf_count))
-            do_not_transform = [ImageTools.disable_transform(x) for x in pixbuf_list]
-            size_list = [[pixbuf.get_width(), pixbuf.get_height()] for pixbuf in pixbuf_list]
-
-            if self.is_manga_mode:
-                orientation = Constants.ORIENTATION_MANGA
-            else:
-                orientation = Constants.ORIENTATION_WESTERN
-
-            # Rotation handling:
-            # - apply Exif rotation on individual images
-            # - apply automatic rotation (size based) on whole page
-            # - apply manual rotation on whole page
-            if config['AUTO_ROTATE_FROM_EXIF']:
-                rotation_list = [ImageTools.get_implied_rotation(pixbuf) for pixbuf in pixbuf_list]
-            else:
-                rotation_list = [0] * len(pixbuf_list)
-            virtual_size = [0, 0]
-            for i in range(pixbuf_count):
-                if rotation_list[i] in (90, 270):
-                    size_list[i].reverse()
-                size = size_list[i]
-                virtual_size[distribution_axis] += size[distribution_axis]
-                virtual_size[alignment_axis] = max(virtual_size[alignment_axis], size[alignment_axis])
-            rotation = (self._get_size_rotation(*virtual_size) + config['ROTATION']) % 360
-            if rotation in (90, 270):
-                distribution_axis, alignment_axis = alignment_axis, distribution_axis
-                orientation = list(orientation)
-                orientation.reverse()
-                for i in range(pixbuf_count):
-                    size_list[i].reverse()
-            elif rotation in (180, 270):
-                orientation = vector_opposite(orientation)
-            for i in range(pixbuf_count):
-                rotation_list[i] = (rotation_list[i] + rotation) % 360
-            if config['VERTICAL_FLIP']:
-                orientation = vector_opposite(orientation)
-            if config['HORIZONTAL_FLIP']:
-                orientation = vector_opposite(orientation)
-
-            viewport_size = ()  # dummy
-            expand_area = False
-            scrollbar_requests = [False] * len(self.__scroll)
-            scaled_sizes = [(0, 0)]
-            union_scaled_size = (0, 0)
-            # Visible area size is recomputed depending on scrollbar visibility
-            while 1:
-                self._show_scrollbars(scrollbar_requests)
-                new_viewport_size = self.get_visible_area_size()
-                if new_viewport_size == viewport_size:
-                    break
-                viewport_size = new_viewport_size
-                zoom_dummy_size = list(viewport_size)
-                dasize = zoom_dummy_size[distribution_axis] - self.__spacing * (pixbuf_count - 1)
-                if dasize <= 0:
-                    dasize = 1
-                zoom_dummy_size[distribution_axis] = dasize
-                scaled_sizes = self.zoom.get_zoomed_size(size_list, zoom_dummy_size,
-                                                         distribution_axis, do_not_transform)
-
-                self.__layout = FiniteLayout(
-                    scaled_sizes, viewport_size, orientation, self.__spacing,
-                    expand_area, distribution_axis, alignment_axis)
-
-                union_scaled_size = self.__layout.get_union_box().get_size()
-
-                scrollbar_requests = [(old or new) for old, new in zip(
-                    scrollbar_requests, map(operator.lt, viewport_size, union_scaled_size))]
-
-                if len(tuple(filter(None, scrollbar_requests))) > 1 and not expand_area:
-                    expand_area = True
-                    viewport_size = ()  # start anew
-
-            for i in range(pixbuf_count):
-                pixbuf_list[i] = ImageTools.fit_pixbuf_to_rectangle(
-                    pixbuf_list[i], scaled_sizes[i], rotation_list[i])
-
-            for i in range(pixbuf_count):
-                pixbuf_list[i] = ImageTools.trans_pixbuf(
-                    pixbuf_list[i],
-                    flip=config['VERTICAL_FLIP'],
-                    flop=config['HORIZONTAL_FLIP'])
-                pixbuf_list[i] = self.enhancer.enhance(pixbuf_list[i])
-
-            for i in range(pixbuf_count):
-                ImageTools.set_from_pixbuf(self.images[i], pixbuf_list[i])
-
-            resolutions = [(*size, scaled_size[0] / size[0])
-                           for scaled_size, size in zip(scaled_sizes, size_list)]
-
-            if self.is_manga_mode:
-                resolutions.reverse()
-            self.statusbar.set_resolution(resolutions)
-            self.statusbar.update()
-
-            self.__main_layout.get_bin_window().freeze_updates()
-
-            self.__main_layout.set_size(*union_scaled_size)
-            content_boxes = self.__layout.get_content_boxes()
-            for i in range(pixbuf_count):
-                self.__main_layout.move(self.images[i], *content_boxes[i].get_position())
-
-            for i in range(pixbuf_count):
-                self.images[i].show()
-            for i in range(pixbuf_count, len(self.images)):
-                self.images[i].hide()
-
-            # Reset orientation so scrolling behaviour is sane.
-            if self.is_manga_mode:
-                self.__layout.set_orientation(Constants.ORIENTATION_MANGA)
-            else:
-                self.__layout.set_orientation(Constants.ORIENTATION_WESTERN)
-
-            if scroll_to is not None:
-                if Constants.SCROLL_TO_START == scroll_to:
-                    index = Constants.INDEX_FIRST
-                elif Constants.SCROLL_TO_END == scroll_to:
-                    index = Constants.INDEX_LAST
-                else:
-                    index = None
-                destination = (scroll_to,) * 2
-                self.scroll_to_predefined(destination, index)
-
-            self.__main_layout.get_bin_window().thaw_updates()
-        else:
+        if not self.imagehandler.page_is_available():
             # Save scroll destination for when the page becomes available.
             self.__last_scroll_destination = scroll_to
             # If the pixbuf for the current page(s) isn't available clear old pixbufs.
             self._clear_main_area()
             self._show_scrollbars([False] * len(self.__scroll))
+            self.__waiting_for_redraw = False
+            return
+
+        distribution_axis = Constants.AXIS_DISTRIBUTION
+        alignment_axis = Constants.AXIS_ALIGNMENT
+        pixbuf_count = 2 if self.displayed_double() else 1  # XXX limited to at most 2 pages
+        pixbuf_list = list(self.imagehandler.get_pixbufs(pixbuf_count))
+        do_not_transform = [ImageTools.disable_transform(x) for x in pixbuf_list]
+        size_list = [[pixbuf.get_width(), pixbuf.get_height()] for pixbuf in pixbuf_list]
+
+        if self.is_manga_mode:
+            orientation = Constants.ORIENTATION_MANGA
+        else:
+            orientation = Constants.ORIENTATION_WESTERN
+
+        # Rotation handling:
+        # - apply Exif rotation on individual images
+        # - apply automatic rotation (size based) on whole page
+        # - apply manual rotation on whole page
+        if config['AUTO_ROTATE_FROM_EXIF']:
+            rotation_list = [ImageTools.get_implied_rotation(pixbuf) for pixbuf in pixbuf_list]
+        else:
+            rotation_list = [0] * len(pixbuf_list)
+
+        virtual_size = [0, 0]
+        for i in range(pixbuf_count):
+            if rotation_list[i] in (90, 270):
+                size_list[i].reverse()
+            size = size_list[i]
+            virtual_size[distribution_axis] += size[distribution_axis]
+            virtual_size[alignment_axis] = max(virtual_size[alignment_axis], size[alignment_axis])
+        rotation = (self._get_size_rotation(*virtual_size) + config['ROTATION']) % 360
+
+        if rotation in (90, 270):
+            distribution_axis, alignment_axis = alignment_axis, distribution_axis
+            orientation = list(orientation)
+            orientation.reverse()
+            for i in range(pixbuf_count):
+                size_list[i].reverse()
+        elif rotation in (180, 270):
+            orientation = vector_opposite(orientation)
+
+        for i in range(pixbuf_count):
+            rotation_list[i] = (rotation_list[i] + rotation) % 360
+
+        if config['VERTICAL_FLIP']:
+            orientation = vector_opposite(orientation)
+        if config['HORIZONTAL_FLIP']:
+            orientation = vector_opposite(orientation)
+
+        viewport_size = ()  # dummy
+        expand_area = False
+        scrollbar_requests = [False] * len(self.__scroll)
+        scaled_sizes = [(0, 0)]
+        union_scaled_size = (0, 0)
+        # Visible area size is recomputed depending on scrollbar visibility
+        while 1:
+            self._show_scrollbars(scrollbar_requests)
+            new_viewport_size = self.get_visible_area_size()
+            if new_viewport_size == viewport_size:
+                break
+            viewport_size = new_viewport_size
+            zoom_dummy_size = list(viewport_size)
+            dasize = zoom_dummy_size[distribution_axis] - self.__spacing * (pixbuf_count - 1)
+            if dasize <= 0:
+                dasize = 1
+            zoom_dummy_size[distribution_axis] = dasize
+            scaled_sizes = self.zoom.get_zoomed_size(size_list, zoom_dummy_size,
+                                                     distribution_axis, do_not_transform)
+
+            self.__layout = FiniteLayout(
+                scaled_sizes, viewport_size, orientation, self.__spacing,
+                expand_area, distribution_axis, alignment_axis)
+
+            union_scaled_size = self.__layout.get_union_box().get_size()
+
+            scrollbar_requests = [(old or new) for old, new in zip(
+                scrollbar_requests, map(operator.lt, viewport_size, union_scaled_size))]
+
+            if len(tuple(filter(None, scrollbar_requests))) > 1 and not expand_area:
+                expand_area = True
+                viewport_size = ()  # start anew
+
+        for i in range(pixbuf_count):
+            pixbuf_list[i] = ImageTools.fit_pixbuf_to_rectangle(
+                pixbuf_list[i], scaled_sizes[i], rotation_list[i])
+
+        for i in range(pixbuf_count):
+            pixbuf_list[i] = ImageTools.trans_pixbuf(
+                pixbuf_list[i],
+                flip=config['VERTICAL_FLIP'],
+                flop=config['HORIZONTAL_FLIP'])
+            pixbuf_list[i] = self.enhancer.enhance(pixbuf_list[i])
+
+        for i in range(pixbuf_count):
+            ImageTools.set_from_pixbuf(self.images[i], pixbuf_list[i])
+
+        resolutions = [(*size, scaled_size[0] / size[0])
+                       for scaled_size, size in zip(scaled_sizes, size_list)]
+
+        if self.is_manga_mode:
+            resolutions.reverse()
+
+        self.statusbar.set_resolution(resolutions)
+        self.statusbar.update()
+
+        self.__main_layout.get_bin_window().freeze_updates()
+
+        self.__main_layout.set_size(*union_scaled_size)
+        content_boxes = self.__layout.get_content_boxes()
+        for i in range(pixbuf_count):
+            self.__main_layout.move(self.images[i], *content_boxes[i].get_position())
+
+        for i in range(pixbuf_count):
+            self.images[i].show()
+        for i in range(pixbuf_count, len(self.images)):
+            self.images[i].hide()
+
+        # Reset orientation so scrolling behaviour is sane.
+        if self.is_manga_mode:
+            self.__layout.set_orientation(Constants.ORIENTATION_MANGA)
+        else:
+            self.__layout.set_orientation(Constants.ORIENTATION_WESTERN)
+
+        if scroll_to is not None:
+            if Constants.SCROLL_TO_START == scroll_to:
+                index = Constants.INDEX_FIRST
+            elif Constants.SCROLL_TO_END == scroll_to:
+                index = Constants.INDEX_LAST
+            else:
+                index = None
+            destination = (scroll_to,) * 2
+            self.scroll_to_predefined(destination, index)
+
+        self.__main_layout.get_bin_window().thaw_updates()
 
         self.__waiting_for_redraw = False
 

@@ -104,14 +104,16 @@ class FiniteLayout:  # 2D only
         for idx, item in enumerate(content_size):
             o = orientation[idx]
             d = destination[idx]
+
             if not d:
                 continue
-            if d < Constants.SCROLL_TO_END or d > 1:
+            elif d < Constants.SCROLL_TO_END or d > 1:
                 raise ValueError(f'invalid destination {d} at index {i}')
-            if d == Constants.SCROLL_TO_END:
+            elif d == Constants.SCROLL_TO_END:
                 d = o
-            if d == Constants.SCROLL_TO_START:
+            elif d == Constants.SCROLL_TO_START:
                 d = -o
+
             c = content_size[idx]
             v = viewport_size[idx]
             invisible_size = c - v

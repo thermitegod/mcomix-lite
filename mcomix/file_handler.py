@@ -137,31 +137,33 @@ class FileHandler:
             msg = f'No images in "{self.__current_file.name}"'
             logger.error(msg)
             self.__window.statusbar.set_message(msg)
+            return
 
-        else:
-            if self.__archive_type is None:
-                # If no extraction is required, mark all files as available.
-                self.file_available(self.__filelist)
-                # Set current page to current file.
-                if self.__current_file in self.__filelist:
-                    current_image_index = self.__filelist.index(self.__current_file)
-                else:
-                    current_image_index = 0
+        if self.__archive_type is None:
+            # If no extraction is required, mark all files as available.
+            self.file_available(self.__filelist)
+
+            # Set current page to current file.
+            if self.__current_file in self.__filelist:
+                current_image_index = self.__filelist.index(self.__current_file)
             else:
-                self.__extractor.extract()
-                last_image_index = self._get_index_for_page(self.__start_page,
-                                                            len(image_files))
-                if self.__start_page:
-                    current_image_index = last_image_index
-                else:
-                    # Don't switch to last page yet; since we have not asked
-                    # the user for confirmation yet.
-                    current_image_index = 0
-                if last_image_index != current_image_index:
-                    # Bump last page closer to the front of the extractor queue.
-                    self.__window.set_page(last_image_index + 1)
+                current_image_index = 0
+        else:
+            self.__extractor.extract()
+            last_image_index = self._get_index_for_page(self.__start_page, len(image_files))
 
-            self.__window.set_page(current_image_index + 1)
+            if self.__start_page:
+                current_image_index = last_image_index
+            else:
+                # Don't switch to last page yet; since we have not asked
+                # the user for confirmation yet.
+                current_image_index = 0
+
+            if last_image_index != current_image_index:
+                # Bump last page closer to the front of the extractor queue.
+                self.__window.set_page(last_image_index + 1)
+
+        self.__window.set_page(current_image_index + 1)
 
     @Callback
     def file_opened(self):
@@ -417,28 +419,28 @@ class FileHandler:
         :returns True if a new archive was opened, False otherwise
         """
 
-        if self.__archive_type is not None:
-            files = self._get_file_list()
-            base_path = str(self.__base_path)
-            if base_path not in files:
-                return
+        if self.__archive_type is None:
+            return False
 
-            current_index = files.index(base_path)
+        files = self._get_file_list()
+        base_path = str(self.__base_path)
+        if base_path not in files:
+            return
 
-            if forward:
-                for path in files[current_index + 1:]:
-                    if ArchiveTools.is_archive_file(path=path):
-                        self._close()
-                        self.open_file(path, keep_fileprovider=True)
-                        return True
-            else:
-                for path in reversed(files[:current_index]):
-                    if ArchiveTools.is_archive_file(path=path):
-                        self._close()
-                        self.open_file(path, self.__open_first_page, keep_fileprovider=True)
-                        return True
+        current_index = files.index(base_path)
 
-        return False
+        if forward:
+            next_file = files[current_index + 1:]
+            next_page = 0
+        else:
+            next_file = reversed(files[:current_index])
+            next_page = self.__open_first_page
+
+        for path in next_file:
+            if ArchiveTools.is_archive_file(path=path):
+                self._close()
+                self.open_file(path, next_page, keep_fileprovider=True)
+                return True
 
     def open_directory_direction(self, forward: bool, *args):
         """
