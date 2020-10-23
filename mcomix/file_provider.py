@@ -67,8 +67,21 @@ class FileProvider(SortAlphanumeric):
     def __init__(self):
         super().__init__()
 
-    def set_directory(self, file_or_directory):
-        pass
+    def set_directory(self, file_or_directory: str):
+        """
+        Sets the base directory
+        """
+
+        file_or_directory = Path() / file_or_directory
+        if Path.is_dir(file_or_directory):
+            directory = file_or_directory
+        elif Path.is_file(file_or_directory):
+            directory = file_or_directory.parent
+        else:
+            # Passed file doesn't exist
+            raise ValueError(f'Invalid path: "{file_or_directory}"')
+
+        return Path.resolve(directory)
 
     def get_directory(self):
         return Path.cwd()
@@ -116,25 +129,7 @@ class OrderedFileProvider(FileProvider):
 
         super().__init__()
 
-        self.__base_dir = None
-
-        self.set_directory(file_or_directory)
-
-    def set_directory(self, file_or_directory: str):
-        """
-        Sets the base directory
-        """
-
-        file_or_directory = Path() / file_or_directory
-        if Path.is_dir(file_or_directory):
-            directory = file_or_directory
-        elif Path.is_file(file_or_directory):
-            directory = file_or_directory.parent
-        else:
-            # Passed file doesn't exist
-            raise ValueError(f'Invalid path: "{file_or_directory}"')
-
-        self.__base_dir = Path.resolve(directory)
+        self.__base_dir = self.set_directory(file_or_directory)
 
     def get_directory(self):
         return self.__base_dir
