@@ -5,6 +5,7 @@ Base class for unified handling of various archive formats. Used for simplifying
 extraction and adding new archive formats
 """
 
+import threading
 from pathlib import Path
 
 
@@ -19,6 +20,8 @@ class BaseArchive:
         super().__init__()
 
         self.archive = archive
+
+        self.lock = threading.Lock()
 
     def iter_contents(self):
         """

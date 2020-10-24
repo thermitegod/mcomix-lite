@@ -56,8 +56,10 @@ class RarArchive(BaseArchiveExecutable):
 
         destination_path = Path() / destination_dir / filename
 
-        with self._create_file(destination_path) as output:
-            Process.call(self._get_extract_arguments(), stdout=output)
+        with self.lock:
+            with self._create_file(destination_path) as output:
+                Process.call(self._get_extract_arguments(), stdout=output)
+
         return destination_path
 
 

@@ -52,30 +52,33 @@ class BaseArchiveExecutable(BaseArchive):
         self.state = self.STATE_HEADER
         #: Current path while listing contents.
         self.path = None
-        with Process.popen(self._get_list_arguments(),
-                           stderr=Process.STDOUT,
-                           universal_newlines=True) as proc:
-            for line in proc.stdout:
-                filename = self._parse_list_output_line(line.rstrip('\n'))
-                if filename is not None:
-                    yield filename
+
+        with self.lock:
+            with Process.popen(self._get_list_arguments(),
+                               stderr=Process.STDOUT,
+                               universal_newlines=True) as proc:
+                for line in proc.stdout:
+                    filename = self._parse_list_output_line(line.rstrip('\n'))
+                    if filename is not None:
+                        yield filename
 
     def iter_extract(self, entries, destination_dir: Path):
-        with Process.popen(self._get_extract_arguments()) as proc:
-            wanted = dict([(unicode_name, unicode_name) for unicode_name in entries])
+        with self.lock:
+            with Process.popen(self._get_extract_arguments()) as proc:
+                wanted = dict([(unicode_name, unicode_name) for unicode_name in entries])
 
-            for filename, filesize in self.contents:
-                data = proc.stdout.read(filesize)
-                if filename not in wanted:
-                    continue
-                unicode_name = wanted.get(filename, None)
-                if unicode_name is None:
-                    continue
+                for filename, filesize in self.contents:
+                    data = proc.stdout.read(filesize)
+                    if filename not in wanted:
+                        continue
+                    unicode_name = wanted.get(filename, None)
+                    if unicode_name is None:
+                        continue
 
-                destination_path = Path() / destination_dir / unicode_name
-                with self._create_file(destination_path) as new:
-                    new.write(data)
-                yield unicode_name
-                del wanted[filename]
-                if not wanted:
-                    break
+                    destination_path = Path() / destination_dir / unicode_name
+                    with self._create_file(destination_path) as new:
+                        new.write(data)
+                    yield unicode_name
+                    del wanted[filename]
+                    if not wanted:
+                        break

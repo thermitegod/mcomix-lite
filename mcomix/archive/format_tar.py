@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import collections
-import threading
 import tarfile
 from pathlib import Path
 
@@ -15,7 +14,6 @@ class TarArchive(BaseArchive):
         super().__init__(archive)
 
         self.__tar = tarfile.open(archive, mode='r')
-        self.__lock = threading.Lock()
 
         # tarfile is not thread-safe
         # so use OrderedDict to save TarInfo in order
@@ -43,7 +41,7 @@ class TarArchive(BaseArchive):
         :rtype: Path
         """
 
-        with self.__lock:
+        with self.lock:
             info = self.__contents_info[filename]
             try:
                 with self.__tar.extractfile(info) as fp:

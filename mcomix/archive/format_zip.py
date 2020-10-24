@@ -3,7 +3,6 @@
 """Unicode-aware wrapper for zipfile.ZipFile"""
 
 import collections
-import threading
 import zipfile
 from pathlib import Path
 
@@ -15,8 +14,8 @@ from mcomix.archive.archive_base import BaseArchive
 class ZipArchive(BaseArchive):
     def __init__(self, archive: Path):
         super().__init__(archive)
+
         self.__zip = zipfile.ZipFile(archive, 'r')
-        self.__lock = threading.Lock()
 
         # zipfile is usually not thread-safe
         # so use OrderedDict to save ZipInfo in order
@@ -44,7 +43,7 @@ class ZipArchive(BaseArchive):
         :rtype: Path
         """
 
-        with self.__lock:
+        with self.lock:
             info = self.__contents_info[filename]
             data = self.__zip.read(info)
 

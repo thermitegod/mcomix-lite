@@ -72,11 +72,14 @@ class SevenZipArchive(BaseArchiveExecutable):
         """
 
         destination_path = Path() / destination_dir / filename
-        with NamedTemporaryFile(mode='wt', prefix='mcomix.7z.') as tmplistfile:
-            tmplistfile.write('filename\n')
-            tmplistfile.flush()
-            with self._create_file(destination_path) as output:
-                Process.call(self._get_extract_arguments(list_file=tmplistfile.name), stdout=output)
+
+        with self.lock:
+            with NamedTemporaryFile(mode='wt', prefix='mcomix.7z.') as tmplistfile:
+                tmplistfile.write('filename\n')
+                tmplistfile.flush()
+                with self._create_file(destination_path) as output:
+                    Process.call(self._get_extract_arguments(list_file=tmplistfile.name), stdout=output)
+
         return destination_path
 
 
