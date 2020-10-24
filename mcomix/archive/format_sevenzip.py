@@ -1,15 +1,10 @@
 # -*- coding: utf-8 -*-
 
-"""7z archive extractor"""
-
-import shutil
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
-from loguru import logger
-
 from mcomix.archive.archive_executable import BaseArchiveExecutable
-from mcomix.lib.process import Process
+from mcomix.lib.process import Process, GetExecutable
 
 
 class SevenZipArchive(BaseArchiveExecutable):
@@ -20,19 +15,19 @@ class SevenZipArchive(BaseArchiveExecutable):
     def __init__(self, archive: Path):
         super().__init__(archive)
 
-        self.__sevenzip = SevenzipExecutable.sevenzip_executable
+        self.__executable = Executable.executable
 
     @staticmethod
     def is_available():
-        return bool(SevenzipExecutable.sevenzip_executable)
+        return bool(Executable.executable)
 
     def _get_list_arguments(self):
-        return [self.__sevenzip, 'l', '-slt', '--', self.archive]
+        return [self.__executable, 'l', '-slt', '--', self.archive]
 
     def _get_extract_arguments(self, list_file=None):
         if list_file is None:
-            return [self.__sevenzip, 'x', '-so', '--', self.archive]
-        return [self.__sevenzip, 'x', '-so', '-i@' + list_file, '--', self.archive]
+            return [self.__executable, 'x', '-so', '--', self.archive]
+        return [self.__executable, 'x', '-so', '-i@' + list_file, '--', self.archive]
 
     def _parse_list_output_line(self, line: str):
         """
@@ -85,28 +80,11 @@ class SevenZipArchive(BaseArchiveExecutable):
         return destination_path
 
 
-class _SevenzipExecutable:
+class _Executable:
     def __init__(self):
         super().__init__()
 
-        self.sevenzip_executable = self.find_sevenzip()
-
-    @staticmethod
-    def find_sevenzip():
-        """
-        Tries to start 7z, and returns either '7z' if
-        it was started successfully or None otherwise
-
-        :returns: path to 7z
-        :rtype: str
-        """
-
-        sevenzip = shutil.which('7z')
-        if sevenzip is None:
-            logger.error(f'failed to find 7z executable')
-
-        return sevenzip
+        self.executable = GetExecutable('7za').executable
 
 
-# Singleton instance
-SevenzipExecutable = _SevenzipExecutable()
+Executable = _Executable()

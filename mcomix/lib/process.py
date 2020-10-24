@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import shutil
 import subprocess
+
+from loguru import logger
 
 
 class _Process:
@@ -23,3 +26,17 @@ class _Process:
 
 
 Process = _Process()
+
+
+class GetExecutable:
+    def __init__(self, find_executable):
+        super().__init__()
+
+        self.__find_executable = find_executable
+        self.executable = self.get_executable()
+
+    def get_executable(self):
+        executable = shutil.which(self.__find_executable)
+        if executable is None:
+            logger.error(f'failed to find {self.__find_executable} executable')
+        return executable

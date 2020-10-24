@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import shutil
 from pathlib import Path
 
-from loguru import logger
-
 from mcomix.archive.archive_executable import BaseArchiveExecutable
-from mcomix.lib.process import Process
+from mcomix.lib.process import Process, GetExecutable
 
 
 class RarArchive(BaseArchiveExecutable):
@@ -17,17 +14,17 @@ class RarArchive(BaseArchiveExecutable):
     def __init__(self, archive):
         super().__init__(archive)
 
-        self.__unrar = RarExecutable.unrar_executable
+        self.__executable = Executable.executable
 
     @staticmethod
     def is_available():
-        return bool(RarExecutable.unrar_executable)
+        return bool(Executable.executable)
 
     def _get_list_arguments(self):
-        return [self.__unrar, 'vt', '--', self.archive]
+        return [self.__executable, 'vt', '--', self.archive]
 
     def _get_extract_arguments(self):
-        return [self.__unrar, 'p', '-inul', '-@', '--', self.archive]
+        return [self.__executable, 'p', '-inul', '-@', '--', self.archive]
 
     def _parse_list_output_line(self, line):
         if self.state == self.STATE_HEADER:
@@ -64,27 +61,11 @@ class RarArchive(BaseArchiveExecutable):
         return destination_path
 
 
-class _RarExecutable:
+class _Executable:
     def __init__(self):
         super().__init__()
 
-        self.unrar_executable = self.find_unrar()
-
-    @staticmethod
-    def find_unrar():
-        """
-        Tries to load libunrar and will return a handle of it.
-        Returns None if an error occured or the library couldn't be found
-
-        :returns: loaded unrar library
-        """
-
-        unrar = shutil.which('unrar')
-        if unrar is None:
-            logger.error(f'failed to find unrar executable')
-
-        return unrar
+        self.executable = GetExecutable('unrar').executable
 
 
-# Singleton instance
-RarExecutable = _RarExecutable()
+Executable = _Executable()
