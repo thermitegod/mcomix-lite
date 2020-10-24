@@ -9,7 +9,7 @@ from tempfile import NamedTemporaryFile
 from loguru import logger
 
 from mcomix.archive.archive_base import BaseArchive
-from mcomix.lib import process
+from mcomix.lib.process import Process
 
 
 class SevenZipArchive(BaseArchive):
@@ -72,8 +72,8 @@ class SevenZipArchive(BaseArchive):
         self.__state = self.STATE_HEADER
         #: Current path while listing contents.
         self.__path = None
-        with process.popen(self._get_list_arguments(),
-                           stderr=process.STDOUT,
+        with Process.popen(self._get_list_arguments(),
+                           stderr=Process.STDOUT,
                            universal_newlines=True) as proc:
             for line in proc.stdout:
                 filename = self._parse_list_output_line(line.rstrip('\n'))
@@ -97,11 +97,11 @@ class SevenZipArchive(BaseArchive):
             tmplistfile.write('filename\n')
             tmplistfile.flush()
             with self._create_file(destination_path) as output:
-                process.call(self._get_extract_arguments(list_file=tmplistfile.name), stdout=output)
+                Process.call(self._get_extract_arguments(list_file=tmplistfile.name), stdout=output)
         return destination_path
 
     def iter_extract(self, entries, destination_dir: Path):
-        with process.popen(self._get_extract_arguments()) as proc:
+        with Process.popen(self._get_extract_arguments()) as proc:
             wanted = dict([(unicode_name, unicode_name) for unicode_name in entries])
 
             for filename, filesize in self.__contents:
