@@ -8,26 +8,23 @@ from tempfile import NamedTemporaryFile
 
 from loguru import logger
 
-from mcomix.archive.archive_base import BaseArchive
+from mcomix.archive.archive_executable import BaseArchiveExecutable
 from mcomix.lib.process import Process
 
 
-class SevenZipArchive(BaseArchive):
+class SevenZipArchive(BaseArchiveExecutable):
     """
     7z file extractor using the 7z executable
     """
-
-    STATE_HEADER, STATE_LISTING, STATE_FOOTER = 1, 2, 3
 
     def __init__(self, archive: Path):
         super().__init__(archive)
 
         self.__sevenzip = SevenzipExecutable.sevenzip_executable
 
-        self.__contents = []
-
-        self.__state = None
-        self.__path = None
+    @staticmethod
+    def is_available():
+        return bool(SevenzipExecutable.sevenzip_executable)
 
     def _get_list_arguments(self):
         return [self.__sevenzip, 'l', '-slt', '--', self.archive]
@@ -45,40 +42,27 @@ class SevenZipArchive(BaseArchive):
         """
 
         if line.startswith('----------'):
-            if self.__state == self.STATE_HEADER:
+            if self.state == self.STATE_HEADER:
                 # First delimiter reached, start reading from next line.
-                self.__state = self.STATE_LISTING
-            elif self.__state == self.STATE_LISTING:
+                self.state = self.STATE_LISTING
+            elif self.state == self.STATE_LISTING:
                 # Last delimiter read, stop reading from now on.
-                self.__state = self.STATE_FOOTER
+                self.state = self.STATE_FOOTER
 
             return None
 
-        if self.__state == self.STATE_HEADER:
+        if self.state == self.STATE_HEADER:
             pass
-        elif self.__state == self.STATE_LISTING:
+        elif self.state == self.STATE_LISTING:
             if line.startswith('Path = '):
-                self.__path = line[7:]
-                return self.__path
+                self.path = line[7:]
+                return self.path
             elif line.startswith('Size = '):
                 filesize = int(line[7:])
                 if filesize > 0:
-                    self.__contents.append((self.__path, filesize))
+                    self.contents.append((self.path, filesize))
 
         return None
-
-    def iter_contents(self):
-        #: Indicates which part of the file listing has been read.
-        self.__state = self.STATE_HEADER
-        #: Current path while listing contents.
-        self.__path = None
-        with Process.popen(self._get_list_arguments(),
-                           stderr=Process.STDOUT,
-                           universal_newlines=True) as proc:
-            for line in proc.stdout:
-                filename = self._parse_list_output_line(line.rstrip('\n'))
-                if filename is not None:
-                    yield filename
 
     def extract(self, filename: str, destination_dir: Path):
         """
@@ -99,30 +83,6 @@ class SevenZipArchive(BaseArchive):
             with self._create_file(destination_path) as output:
                 Process.call(self._get_extract_arguments(list_file=tmplistfile.name), stdout=output)
         return destination_path
-
-    def iter_extract(self, entries, destination_dir: Path):
-        with Process.popen(self._get_extract_arguments()) as proc:
-            wanted = dict([(unicode_name, unicode_name) for unicode_name in entries])
-
-            for filename, filesize in self.__contents:
-                data = proc.stdout.read(filesize)
-                if filename not in wanted:
-                    continue
-                unicode_name = wanted.get(filename, None)
-                if unicode_name is None:
-                    continue
-
-                destination_path = Path() / destination_dir / unicode_name
-                with self._create_file(destination_path) as new:
-                    new.write(data)
-                yield unicode_name
-                del wanted[filename]
-                if not wanted:
-                    break
-
-    @staticmethod
-    def is_available():
-        return bool(SevenzipExecutable.sevenzip_executable)
 
 
 class _SevenzipExecutable:
