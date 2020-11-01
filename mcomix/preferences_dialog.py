@@ -368,6 +368,12 @@ class _PreferencesDialog(Gtk.Dialog):
             'Show extra info on enhance dialog',
             'ENHANCE_EXTRA'))
 
+        page.new_section('Unit Size')
+
+        page.add_row(self._create_pref_check_button(
+            'Use SI unit size 10^3 instead of 2^10',
+            'SI_UNITS'))
+
         page.new_section('Threads')
 
         page.add_row(Gtk.Label(label='Maximum number of threads:'),

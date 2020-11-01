@@ -56,6 +56,7 @@ config = {
     'STATUSBAR_FULLPATH': True,
     'STATUSBAR_SEPARATOR': '|',
     'BOOKMARK_SHOW_PATH': False,
+    'SI_UNITS': False,
     'MAX_THREADS': 16,
     'SCALING_QUALITY': 2,  # GdkPixbuf.InterpType.BILINEAR
     'PIL_SCALING_FILTER': 1,  # Use a PIL filter (just lanczos for now) in main viewing area. -1 to just use GdkPixbuf
