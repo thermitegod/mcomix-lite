@@ -30,14 +30,14 @@ class Statusbar(Gtk.EventBox):
         ui_description = """
         <ui>
             <popup name="Statusbar">
-                <menuitem action="pagenumber"/>
-                <menuitem action="filenumber"/>
-                <menuitem action="resolution"/>
-                <menuitem action="rootpath"/>
-                <menuitem action="filename"/>
-                <menuitem action="filesize"/>
-                <menuitem action="filesize_archive"/>
-                <menuitem action="viewmode"/>
+                <menuitem action="total_page_numbers"/>
+                <menuitem action="total_file_numbers"/>
+                <menuitem action="page_resolution"/>
+                <menuitem action="archive_filename"/>
+                <menuitem action="page_filename"/>
+                <menuitem action="page_filesize"/>
+                <menuitem action="archive_filesize"/>
+                <menuitem action="current_view_mode"/>
             </popup>
         </ui>
         """
@@ -45,14 +45,14 @@ class Statusbar(Gtk.EventBox):
 
         actiongroup = Gtk.ActionGroup(name='mcomix-statusbar')
         actiongroup.add_toggle_actions([
-            ('pagenumber', None, 'Show page numbers', None, None, self.toggle_status_visibility),
-            ('filenumber', None, 'Show file numbers', None, None, self.toggle_status_visibility),
-            ('resolution', None, 'Show resolution', None, None, self.toggle_status_visibility),
-            ('rootpath', None, 'Show path', None, None, self.toggle_status_visibility),
-            ('filename', None, 'Show filename', None, None, self.toggle_status_visibility),
-            ('filesize', None, 'Show filesize', None, None, self.toggle_status_visibility),
-            ('filesize_archive', None, 'Show archive filesize', None, None, self.toggle_status_visibility),
-            ('viewmode', None, 'Show current mode', None, None, self.toggle_status_visibility)])
+            ('total_page_numbers', None, 'Show page numbers', None, None, self.toggle_status_visibility),
+            ('total_file_numbers', None, 'Show file numbers', None, None, self.toggle_status_visibility),
+            ('page_resolution', None, 'Show page resolution', None, None, self.toggle_status_visibility),
+            ('archive_filename', None, 'Show archive name', None, None, self.toggle_status_visibility),
+            ('page_filename', None, 'Show page filename', None, None, self.toggle_status_visibility),
+            ('page_filesize', None, 'Show page filesize', None, None, self.toggle_status_visibility),
+            ('archive_filesize', None, 'Show archive filesize', None, None, self.toggle_status_visibility),
+            ('current_view_mode', None, 'Show current mode', None, None, self.toggle_status_visibility)])
         self.__ui_manager.insert_action_group(actiongroup, 0)
 
         # Hook mouse release event
@@ -60,14 +60,14 @@ class Statusbar(Gtk.EventBox):
         self.set_events(Gdk.EventMask.BUTTON_PRESS_MASK | Gdk.EventMask.BUTTON_RELEASE_MASK)
 
         # Default status information
-        self.__page_info = ''
-        self.__file_info = ''
-        self.__resolution = ''
-        self.__root = ''
-        self.__filename = ''
-        self.__filesize = ''
-        self.__filesize_archive = ''
-        self.__view_mode = ''
+        self.__total_page_numbers = ''
+        self.__total_file_numbers = ''
+        self.__page_resolution = ''
+        self.__archive_filename = ''
+        self.__page_filename = ''
+        self.__page_filesize = ''
+        self.__archive_filesize = ''
+        self.__current_view_mode = ''
         self._update_sensitivity()
         self.show_all()
 
@@ -88,17 +88,17 @@ class Statusbar(Gtk.EventBox):
         """
 
         p = ', '.join(str(page + i) for i in range(this_screen))
-        self.__page_info = f'{p} / {total}'
+        self.__total_page_numbers = f'{p} / {total}'
 
     def get_page_number(self):
         """
         :returns: the bar's page information
         """
 
-        return self.__page_info
+        return self.__total_page_numbers
 
     def get_mode(self):
-        return self.__view_mode
+        return self.__current_view_mode
 
     def set_mode(self):
         """
@@ -106,9 +106,9 @@ class Statusbar(Gtk.EventBox):
         """
 
         if config['DEFAULT_MANGA_MODE']:
-            self.__view_mode = 'Manga Mode'
+            self.__current_view_mode = 'Manga Mode'
         else:
-            self.__view_mode = 'Western Mode'
+            self.__current_view_mode = 'Western Mode'
 
     def set_file_number(self, fileno: int, total: int):
         """
@@ -116,16 +116,16 @@ class Statusbar(Gtk.EventBox):
         """
 
         if total > 0:
-            self.__file_info = f'({fileno} / {total})'
+            self.__total_file_numbers = f'({fileno} / {total})'
         else:
-            self.__file_info = ''
+            self.__total_file_numbers = ''
 
     def get_file_number(self):
         """
         Returns the bar's file information
         """
 
-        return self.__file_info
+        return self.__total_file_numbers
 
     def set_resolution(self, dimensions: list):  # 2D only
         """
@@ -134,21 +134,21 @@ class Statusbar(Gtk.EventBox):
         resolution of an image as well as the currently displayed scale
         """
 
-        self.__resolution = ', '.join(f'{d[0]}x{d[1]} ({d[2]:.2%})' for d in dimensions)
+        self.__page_resolution = ', '.join(f'{d[0]}x{d[1]} ({d[2]:.2%})' for d in dimensions)
 
     def set_root(self, root: str):
         """
         Set the name of the root (directory or archive)
         """
 
-        self.__root = str(root)
+        self.__archive_filename = str(root)
 
     def set_filename(self, filename: str):
         """
         Update the filename
         """
 
-        self.__filename = filename
+        self.__page_filename = filename
 
     def set_filesize(self, size: str):
         """
@@ -157,14 +157,14 @@ class Statusbar(Gtk.EventBox):
 
         if size is None:
             size = ''
-        self.__filesize = size
+        self.__page_filesize = size
 
     def set_filesize_archive(self, path: Path):
         """
         Update the filesize
         """
 
-        self.__filesize_archive = ImageHandler.format_byte_size(Path.stat(path).st_size)
+        self.__archive_filesize = ImageHandler.format_byte_size(Path.stat(path).st_size)
 
     def update(self):
         """
@@ -184,14 +184,14 @@ class Statusbar(Gtk.EventBox):
         """
 
         fields = [
-            (Constants.STATUS_PAGE, self.__page_info),
-            (Constants.STATUS_FILENUMBER, self.__file_info),
-            (Constants.STATUS_RESOLUTION, self.__resolution),
-            (Constants.STATUS_PATH, self.__root),
-            (Constants.STATUS_FILENAME, self.__filename),
-            (Constants.STATUS_FILESIZE, self.__filesize),
-            (Constants.STATUS_FILESIZE_ARCHIVE, self.__filesize_archive),
-            (Constants.STATUS_MODE, self.__view_mode),
+            (Constants.STATUS_PAGE_NUMBERS, self.__total_page_numbers),
+            (Constants.STATUS_FILE_NUMBERS, self.__total_file_numbers),
+            (Constants.STATUS_PAGE_RESOLUTION, self.__page_resolution),
+            (Constants.STATUS_ARCHIVE_NAME, self.__archive_filename),
+            (Constants.STATUS_PAGE_FILENAME, self.__page_filename),
+            (Constants.STATUS_PAGE_FILESIZE, self.__page_filesize),
+            (Constants.STATUS_ARCHIVE_FILESIZE, self.__archive_filesize),
+            (Constants.STATUS_VIEW_MODE, self.__current_view_mode),
         ]
         p = config['STATUSBAR_FIELDS']
 
@@ -207,14 +207,14 @@ class Statusbar(Gtk.EventBox):
             return
 
         names = {
-            'pagenumber': Constants.STATUS_PAGE,
-            'resolution': Constants.STATUS_RESOLUTION,
-            'rootpath': Constants.STATUS_PATH,
-            'filename': Constants.STATUS_FILENAME,
-            'filenumber': Constants.STATUS_FILENUMBER,
-            'filesize': Constants.STATUS_FILESIZE,
-            'filesize_archive': Constants.STATUS_FILESIZE_ARCHIVE,
-            'viewmode': Constants.STATUS_MODE,
+            'total_page_numbers': Constants.STATUS_PAGE_NUMBERS,
+            'total_file_numbers': Constants.STATUS_FILE_NUMBERS,
+            'page_resolution': Constants.STATUS_PAGE_RESOLUTION,
+            'archive_filename': Constants.STATUS_ARCHIVE_NAME,
+            'page_filename': Constants.STATUS_PAGE_FILENAME,
+            'page_filesize': Constants.STATUS_PAGE_FILESIZE,
+            'archive_filesize': Constants.STATUS_ARCHIVE_FILESIZE,
+            'current_view_mode': Constants.STATUS_VIEW_MODE,
         }
 
         bit = names[action.get_name()]
@@ -242,14 +242,14 @@ class Statusbar(Gtk.EventBox):
 
         p = config['STATUSBAR_FIELDS']
         names = {
-            'pagenumber': p & Constants.STATUS_PAGE,
-            'filenumber': p & Constants.STATUS_FILENUMBER,
-            'resolution': p & Constants.STATUS_RESOLUTION,
-            'rootpath': p & Constants.STATUS_PATH,
-            'filename': p & Constants.STATUS_FILENAME,
-            'filesize': p & Constants.STATUS_FILESIZE,
-            'filesize_archive': p & Constants.STATUS_FILESIZE_ARCHIVE,
-            'viewmode': p & Constants.STATUS_MODE,
+            'total_page_numbers': p & Constants.STATUS_PAGE_NUMBERS,
+            'total_file_numbers': p & Constants.STATUS_FILE_NUMBERS,
+            'page_resolution': p & Constants.STATUS_PAGE_RESOLUTION,
+            'archive_filename': p & Constants.STATUS_ARCHIVE_NAME,
+            'page_filename': p & Constants.STATUS_PAGE_FILENAME,
+            'page_filesize': p & Constants.STATUS_PAGE_FILESIZE,
+            'archive_filesize': p & Constants.STATUS_ARCHIVE_FILESIZE,
+            'current_view_mode': p & Constants.STATUS_VIEW_MODE,
         }
 
         for n, v in names.items():

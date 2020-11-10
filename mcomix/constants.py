@@ -96,14 +96,14 @@ class _Constants:
         self.RESPONSE_REMOVE = 4
 
         # These are bit field values, so only use powers of two.
-        self.STATUS_PAGE = 1
-        self.STATUS_RESOLUTION = 2
-        self.STATUS_PATH = 4
-        self.STATUS_FILENAME = 8
-        self.STATUS_FILENUMBER = 16
-        self.STATUS_FILESIZE = 32
-        self.STATUS_FILESIZE_ARCHIVE = 64
-        self.STATUS_MODE = 128
+        self.STATUS_PAGE_NUMBERS = 1
+        self.STATUS_FILE_NUMBERS = 2
+        self.STATUS_PAGE_RESOLUTION = 4
+        self.STATUS_ARCHIVE_NAME = 8
+        self.STATUS_PAGE_FILENAME = 16
+        self.STATUS_PAGE_FILESIZE = 32
+        self.STATUS_ARCHIVE_FILESIZE = 64
+        self.STATUS_VIEW_MODE = 128
 
         self.ORIENTATION_MANGA = (-1, 1)
         self.ORIENTATION_WESTERN = (1, 1)
