@@ -206,11 +206,6 @@ class _PreferencesDialog(Gtk.Dialog):
             'Show full path of current file in statusbar',
             'STATUSBAR_FULLPATH'))
 
-        page.add_row(Gtk.Label(label='Statusbar Spacing:'),
-                     self._create_pref_spinner(
-                         'STATUSBAR_SPACING',
-                         1, 1, 20, 1, 10, 0))
-
         page.add_row(Gtk.Label(label='Charactor to use as statusbar separator'),
                      self._create_pref_text_box('STATUSBAR_SEPARATOR'))
 

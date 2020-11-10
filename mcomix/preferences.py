@@ -70,7 +70,6 @@ config = {
     'CHECK_IMAGE_MIMETYPE': False,
     'SUPPORT_ESOTERIC_MIMETYPES': False,
     'HIDE_CURSOR': False,
-    'STATUSBAR_SPACING': 5,
     'OPEN_FIRST_PAGE': True,
     'WINDOW_SAVE': True,
     'WINDOW_X': 0,

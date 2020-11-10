@@ -15,12 +15,13 @@ class Statusbar(Gtk.EventBox):
     def __init__(self):
         super().__init__()
 
-        self.__spacing = config['STATUSBAR_SPACING']
-        self.__sep = config['STATUSBAR_SEPARATOR']
+        self.__spacing = 5
 
         self.__loading = True
 
-        # Status text, page number, file number, resolution, path, filename, filesize
+        # Status text layout
+        # page number, file number, page resolution, archive filename,
+        # page filename, page filesize, archive filesize, view mode
         self.__status = Gtk.Statusbar()
         self.add(self.__status)
 
@@ -79,7 +80,7 @@ class Statusbar(Gtk.EventBox):
         """
 
         self.__status.pop(0)
-        self.__status.push(0, ' ' * self.__spacing + message)
+        self.__status.push(0, f'    {message}')
 
     def set_page_number(self, page: int, total: int, this_screen: int):
         """
@@ -170,10 +171,12 @@ class Statusbar(Gtk.EventBox):
         Set the statusbar to display the current state
         """
 
-        s = f'{self.__sep:^{self.__spacing}}'
+        sep = config['STATUSBAR_SEPARATOR']
+
+        s = f'{sep:^{self.__spacing}}'
         text = s.join(self._get_status_text())
         self.__status.pop(0)
-        self.__status.push(0, f'{"":>{self.__spacing}}{text}')
+        self.__status.push(0, f'    {text}')
 
     def _get_status_text(self):
         """
