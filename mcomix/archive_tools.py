@@ -24,11 +24,11 @@ class _ArchiveTools:
 
         # Handlers for each archive type.
         self.__handlers = {
-            Constants.ZIP: (ZipArchive,),
-            Constants.SEVENZIP: (SevenZipArchive,),
-            Constants.RAR: (RarArchive,),
+            Constants.FORMAT_ZIP: (ZipArchive,),
+            Constants.FORMAT_SEVENZIP: (SevenZipArchive,),
+            Constants.FORMAT_RAR: (RarArchive,),
             # tarfile supported formats
-            Constants.TAR: (TarArchive,),
+            Constants.FORMAT_TAR: (TarArchive,),
         }
 
         self.init_supported_formats()
@@ -39,13 +39,13 @@ class _ArchiveTools:
 
     def init_supported_formats(self):
         if ZipArchive.is_available():
-            self.__zip_ext = self._create_ext_tuple(Constants.ZIP_FORMATS)
+            self.__zip_ext = self._create_ext_tuple(Constants.MIME_FORMAT_ZIP)
         if SevenZipArchive.is_available():
-            self.__sevenzip_ext = self._create_ext_tuple(Constants.SZIP_FORMATS)
+            self.__sevenzip_ext = self._create_ext_tuple(Constants.MIME_FORMAT_SEVENZIP)
         if RarArchive.is_available():
-            self.__rar_ext = self._create_ext_tuple(Constants.RAR_FORMATS)
+            self.__rar_ext = self._create_ext_tuple(Constants.MIME_FORMAT_RAR)
         if TarArchive.is_available():
-            self.__tar_ext = self._create_ext_tuple(Constants.TAR_FORMATS)
+            self.__tar_ext = self._create_ext_tuple(Constants.MIME_FORMAT_TAR)
 
         self.__supported_archive_ext = self.__zip_ext + self.__sevenzip_ext + self.__rar_ext + self.__tar_ext
 
@@ -60,13 +60,13 @@ class _ArchiveTools:
         if self.is_archive_file(path=path):
             filename = str(path).lower()
             if filename.endswith(self.__zip_ext):
-                return Constants.ZIP
+                return Constants.FORMAT_ZIP
             elif filename.endswith(self.__sevenzip_ext):
-                return Constants.SEVENZIP
+                return Constants.FORMAT_SEVENZIP
             elif filename.endswith(self.__rar_ext):
-                return Constants.RAR
+                return Constants.FORMAT_RAR
             elif filename.endswith(self.__tar_ext):
-                return Constants.TAR
+                return Constants.FORMAT_TAR
 
         return None
 

@@ -70,10 +70,10 @@ class _Constants:
         self.ZOOM_MODE_MANUAL = 3
         self.ZOOM_MODE_SIZE = 4
 
-        self.ZIP = 0
-        self.SEVENZIP = 1
-        self.RAR = 2
-        self.TAR = 3
+        self.FORMAT_ZIP = 0
+        self.FORMAT_SEVENZIP = 1
+        self.FORMAT_RAR = 2
+        self.FORMAT_TAR = 3
 
         # Constants for determining which files to list.
         self.IMAGES = 1
@@ -111,22 +111,22 @@ class _Constants:
         # see https://www.freedesktop.org/wiki/Software/shared-mime-info/
         # for mimetypes not registed to IANA
 
-        self.ZIP_FORMATS = (
+        self.MIME_FORMAT_ZIP = (
             ('.zip', 'application/zip'),
             ('.cbz', 'application/vnd.comicbook+zip'),
         )
 
-        self.RAR_FORMATS = (
+        self.MIME_FORMAT_RAR = (
             ('.rar', 'application/vnd.rar'),
             ('.cbr', 'application/vnd.comicbook-rar'),
         )
 
-        self.SZIP_FORMATS = (
+        self.MIME_FORMAT_SEVENZIP = (
             ('.7z', 'application/x-7z-compressed'),
             ('.cb7', 'application/x-cb7'),
         )
 
-        self.TAR_FORMATS = (
+        self.MIME_FORMAT_TAR = (
             ('.tar', 'application/x-tar'),
             ('.cbt', 'application/x-cbt'),
             ('.tar.gz', 'application/x-compressed-tar'),
@@ -136,10 +136,10 @@ class _Constants:
         )
 
         self.ARCHIVE_DESCRIPTIONS = {
-            self.ZIP: 'ZIP archive',
-            self.SEVENZIP: '7z archive',
-            self.RAR: 'RAR archive',
-            self.TAR: 'TAR archive',
+            self.FORMAT_ZIP: 'ZIP archive',
+            self.FORMAT_SEVENZIP: '7z archive',
+            self.FORMAT_RAR: 'RAR archive',
+            self.FORMAT_TAR: 'TAR archive',
         }
 
 
