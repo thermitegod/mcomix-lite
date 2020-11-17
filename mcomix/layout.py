@@ -66,11 +66,11 @@ class FiniteLayout:  # 2D only
         if index is None:
             index = self.get_current_index()
         if not self.__wrap_individually:
-            index = Constants.INDEX_UNION
-        if index == Constants.INDEX_UNION:
+            index = Constants.INDEX['UNION']
+        if index == Constants.INDEX['UNION']:
             current_box = self.__union_box
         else:
-            if index == Constants.INDEX_LAST:
+            if index == Constants.INDEX['LAST']:
                 index = len(self.__content_boxes) - 1
             current_box = self.__wrapper_boxes[index]
         self.set_viewport_position(self._scroll_to_predefined(
@@ -107,18 +107,18 @@ class FiniteLayout:  # 2D only
 
             if not d:
                 continue
-            elif d < Constants.SCROLL_TO_END or d > 1:
+            elif d < Constants.SCROLL_TO['END'] or d > 1:
                 raise ValueError(f'invalid destination {d} at index {i}')
-            elif d == Constants.SCROLL_TO_END:
+            elif d == Constants.SCROLL_TO['END']:
                 d = o
-            elif d == Constants.SCROLL_TO_START:
+            elif d == Constants.SCROLL_TO['START']:
                 d = -o
 
             c = content_size[idx]
             v = viewport_size[idx]
             invisible_size = c - v
 
-            if d == Constants.SCROLL_TO_CENTER:
+            if d == Constants.SCROLL_TO['CENTER']:
                 offset = Box.box_to_center_offset_1d(invisible_size, o)
             else:
                 if d == 1:

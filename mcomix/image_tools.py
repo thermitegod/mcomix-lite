@@ -321,7 +321,7 @@ class _ImageTools:
         Loads a pixbuf from a given image file
         """
 
-        enable_anime = config['ANIMATION_MODE'] != Constants.ANIMATION_DISABLED
+        enable_anime = config['ANIMATION_MODE'] != Constants.ANIMATION['DISABLED']
         try:
             with LockedFileIO(path) as fio:
                 with Image.open(fio) as im:

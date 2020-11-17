@@ -15,7 +15,7 @@ class _PreferenceManager:
     def __init__(self):
         super().__init__()
 
-        self.__preference_path = Constants.PREFERENCE_PATH
+        self.__preference_path = Constants.CONFIG_FILES['CONFIG']
 
     def load_preferences_file(self):
         saved_prefs = {}

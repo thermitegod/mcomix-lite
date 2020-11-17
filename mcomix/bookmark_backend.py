@@ -29,7 +29,7 @@ class _BookmarksStore:
         self.__file_handler = None
         self.__image_handler = None
 
-        self.__bookmark_path = Constants.BOOKMARK_PATH
+        self.__bookmark_path = Constants.CONFIG_FILES['BOOKMARK']
         self.__bookmark_state = {'dirty': False}
 
         #: List of bookmarks

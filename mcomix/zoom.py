@@ -29,11 +29,11 @@ class ZoomModel:
         self.__user_zoom_log = self.__identity_zoom_log
         #: Image fit mode. Determines the base zoom level for an image by
         #: calculating its maximum size.
-        self.__fitmode = Constants.ZOOM_MODE_MANUAL
+        self.__fitmode = Constants.ZOOM['MANUAL']
         self.__scale_up = False
 
     def set_fit_mode(self, fitmode: int):
-        if fitmode < Constants.ZOOM_MODE_BEST or fitmode > Constants.ZOOM_MODE_SIZE:
+        if fitmode < Constants.ZOOM['BEST'] or fitmode > Constants.ZOOM['SIZE']:
             raise ValueError(f'No fit mode for id {fitmode}')
         self.__fitmode = fitmode
 
@@ -127,20 +127,20 @@ class ZoomModel:
         preference for this axis
         """
 
-        manual = fitmode == Constants.ZOOM_MODE_MANUAL
-        if fitmode == Constants.ZOOM_MODE_BEST or \
+        manual = fitmode == Constants.ZOOM['MANUAL']
+        if fitmode == Constants.ZOOM['BEST'] or \
                 (manual and allow_upscaling and all(map(operator.lt, union_size, screen_size))):
             return screen_size
         result = [None] * len(screen_size)
         if not manual:
             fixed_size = None
-            if fitmode == Constants.ZOOM_MODE_SIZE:
+            if fitmode == Constants.ZOOM['SIZE']:
                 fitmode = config['FIT_TO_SIZE_MODE']  # reassigning fitmode
                 fixed_size = config['FIT_TO_SIZE_PX']
-            if fitmode == Constants.ZOOM_MODE_WIDTH:
-                axis = Constants.AXIS_WIDTH
-            elif fitmode == Constants.ZOOM_MODE_HEIGHT:
-                axis = Constants.AXIS_HEIGHT
+            if fitmode == Constants.ZOOM['WIDTH']:
+                axis = Constants.AXIS['WIDTH']
+            elif fitmode == Constants.ZOOM['HEIGHT']:
+                axis = Constants.AXIS['HEIGHT']
             else:
                 logger.error('Cannot map fitmode to axis')
             result[axis] = fixed_size if fixed_size is not None else screen_size[axis]

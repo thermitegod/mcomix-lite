@@ -49,7 +49,7 @@ class MainWindow(Gtk.Window):
         #: Used to remember if changing to fullscreen enabled 'HIDE_ALL'
         self.__hide_all_forced = False
         # Remember last scroll destination.
-        self.__last_scroll_destination = Constants.SCROLL_TO_START
+        self.__last_scroll_destination = Constants.SCROLL_TO['START']
 
         self.__dummy_layout = FiniteLayout(((1, 1),), (1, 1), (1, 1), 0, False, 0, 0)
         self.__layout = self.__dummy_layout
@@ -106,10 +106,10 @@ class MainWindow(Gtk.Window):
 
         table.attach(self.__event_box, 1, 2, 2, 3, Gtk.AttachOptions.FILL | Gtk.AttachOptions.EXPAND,
                      Gtk.AttachOptions.FILL | Gtk.AttachOptions.EXPAND, 0, 0)
-        table.attach(self.__scroll[Constants.AXIS_HEIGHT], 2, 3, 2, 3,
+        table.attach(self.__scroll[Constants.AXIS['HEIGHT']], 2, 3, 2, 3,
                      Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
                      Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK, 0, 0)
-        table.attach(self.__scroll[Constants.AXIS_WIDTH], 1, 2, 4, 5, Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
+        table.attach(self.__scroll[Constants.AXIS['WIDTH']], 1, 2, 4, 5, Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
                      Gtk.AttachOptions.FILL, 0, 0)
         table.attach(self.menubar, 0, 3, 0, 1, Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
                      Gtk.AttachOptions.FILL, 0, 0)
@@ -124,11 +124,11 @@ class MainWindow(Gtk.Window):
 
         # Determine zoom mode. If zoom_mode is passed, it overrides
         # the zoom mode preference.
-        zoom_actions = {Constants.ZOOM_MODE_BEST: 'best_fit_mode',
-                        Constants.ZOOM_MODE_WIDTH: 'fit_width_mode',
-                        Constants.ZOOM_MODE_HEIGHT: 'fit_height_mode',
-                        Constants.ZOOM_MODE_SIZE: 'fit_size_mode',
-                        Constants.ZOOM_MODE_MANUAL: 'fit_manual_mode'}
+        zoom_actions = {Constants.ZOOM['BEST']: 'best_fit_mode',
+                        Constants.ZOOM['WIDTH']: 'fit_width_mode',
+                        Constants.ZOOM['HEIGHT']: 'fit_height_mode',
+                        Constants.ZOOM['SIZE']: 'fit_size_mode',
+                        Constants.ZOOM['MANUAL']: 'fit_manual_mode'}
 
         if zoom_mode is not None:
             zoom_action = zoom_actions[zoom_mode]
@@ -159,11 +159,11 @@ class MainWindow(Gtk.Window):
 
         # Each "toggle" widget "eats" part of the main layout visible area.
         self.__toggle_axis = {
-            self.thumbnailsidebar: Constants.AXIS_WIDTH,
-            self.__scroll[Constants.AXIS_HEIGHT]: Constants.AXIS_WIDTH,
-            self.__scroll[Constants.AXIS_WIDTH]: Constants.AXIS_HEIGHT,
-            self.statusbar: Constants.AXIS_HEIGHT,
-            self.menubar: Constants.AXIS_HEIGHT,
+            self.thumbnailsidebar: Constants.AXIS['WIDTH'],
+            self.__scroll[Constants.AXIS['HEIGHT']]: Constants.AXIS['WIDTH'],
+            self.__scroll[Constants.AXIS['WIDTH']]: Constants.AXIS['HEIGHT'],
+            self.statusbar: Constants.AXIS['HEIGHT'],
+            self.menubar: Constants.AXIS['HEIGHT'],
         }
 
         self.actiongroup.get_action('menu_autorotate_width').set_sensitive(False)
@@ -313,17 +313,17 @@ class MainWindow(Gtk.Window):
             self.__waiting_for_redraw = False
             return
 
-        distribution_axis = Constants.AXIS_DISTRIBUTION
-        alignment_axis = Constants.AXIS_ALIGNMENT
+        distribution_axis = Constants.AXIS['DISTRIBUTION']
+        alignment_axis = Constants.AXIS['ALIGNMENT']
         pixbuf_count = 2 if self.displayed_double() else 1  # XXX limited to at most 2 pages
         pixbuf_list = list(self.imagehandler.get_pixbufs(pixbuf_count))
         do_not_transform = [ImageTools.disable_transform(x) for x in pixbuf_list]
         size_list = [[pixbuf.get_width(), pixbuf.get_height()] for pixbuf in pixbuf_list]
 
         if self.is_manga_mode:
-            orientation = Constants.ORIENTATION_MANGA
+            orientation = Constants.ORIENTATION['MANGA']
         else:
-            orientation = Constants.ORIENTATION_WESTERN
+            orientation = Constants.ORIENTATION['WESTERN']
 
         # Rotation handling:
         # - apply Exif rotation on individual images
@@ -430,15 +430,15 @@ class MainWindow(Gtk.Window):
 
         # Reset orientation so scrolling behaviour is sane.
         if self.is_manga_mode:
-            self.__layout.set_orientation(Constants.ORIENTATION_MANGA)
+            self.__layout.set_orientation(Constants.ORIENTATION['MANGA'])
         else:
-            self.__layout.set_orientation(Constants.ORIENTATION_WESTERN)
+            self.__layout.set_orientation(Constants.ORIENTATION['WESTERN'])
 
         if scroll_to is not None:
-            if Constants.SCROLL_TO_START == scroll_to:
-                index = Constants.INDEX_FIRST
-            elif Constants.SCROLL_TO_END == scroll_to:
-                index = Constants.INDEX_LAST
+            if Constants.SCROLL_TO['START'] == scroll_to:
+                index = Constants.INDEX['FIRST']
+            elif Constants.SCROLL_TO['END'] == scroll_to:
+                index = Constants.INDEX['LAST']
             else:
                 index = None
             destination = (scroll_to,) * 2
@@ -486,15 +486,15 @@ class MainWindow(Gtk.Window):
 
         if (height > width and
                 config['AUTO_ROTATE_DEPENDING_ON_SIZE'] in
-                (Constants.AUTOROTATE_HEIGHT_90, Constants.AUTOROTATE_HEIGHT_270)):
-            if config['AUTO_ROTATE_DEPENDING_ON_SIZE'] == Constants.AUTOROTATE_HEIGHT_90:
+                (Constants.AUTOROTATE['HEIGHT_90'], Constants.AUTOROTATE['HEIGHT_270'])):
+            if config['AUTO_ROTATE_DEPENDING_ON_SIZE'] == Constants.AUTOROTATE['HEIGHT_90']:
                 size_rotation = 90
             else:
                 size_rotation = 270
         elif (width > height and
               config['AUTO_ROTATE_DEPENDING_ON_SIZE'] in
-              (Constants.AUTOROTATE_WIDTH_90, Constants.AUTOROTATE_WIDTH_270)):
-            if config['AUTO_ROTATE_DEPENDING_ON_SIZE'] == Constants.AUTOROTATE_WIDTH_90:
+              (Constants.AUTOROTATE['WIDTH_90'], Constants.AUTOROTATE['WIDTH_270'])):
+            if config['AUTO_ROTATE_DEPENDING_ON_SIZE'] == Constants.AUTOROTATE['WIDTH_90']:
                 size_rotation = 90
             else:
                 size_rotation = 270
@@ -542,9 +542,9 @@ class MainWindow(Gtk.Window):
             config['VERTICAL_FLIP'] = False
 
         if at_bottom:
-            scroll_to = Constants.SCROLL_TO_END
+            scroll_to = Constants.SCROLL_TO['END']
         else:
-            scroll_to = Constants.SCROLL_TO_START
+            scroll_to = Constants.SCROLL_TO['START']
 
         self.draw_image(scroll_to=scroll_to)
 
@@ -828,9 +828,9 @@ class MainWindow(Gtk.Window):
                 if widget.get_visible():
                     axis = self.__toggle_axis[widget]
                     requisition = widget.size_request()
-                    if Constants.AXIS_WIDTH == axis:
+                    if Constants.AXIS['WIDTH'] == axis:
                         size = requisition.width
-                    elif Constants.AXIS_HEIGHT == axis:
+                    elif Constants.AXIS['HEIGHT'] == axis:
                         size = requisition.height
                     dimensions[axis] -= size
 

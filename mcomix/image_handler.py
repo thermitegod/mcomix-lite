@@ -181,12 +181,12 @@ class ImageHandler:
             page = self.get_current_page()
 
         if (page == 1 and
-                config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & Constants.SHOW_DOUBLE_AS_ONE_TITLE and
+                config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & Constants.DOUBLE_PAGE['AS_ONE_TITLE'] and
                 self.__window.filehandler.get_archive_type() is not None):
             return True
 
         if (not config['DEFAULT_DOUBLE_PAGE'] or
-                not config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & Constants.SHOW_DOUBLE_AS_ONE_WIDE or
+                not config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & Constants.DOUBLE_PAGE['AS_ONE_WIDE'] or
                 page == self.get_number_of_pages()):
             return False
 

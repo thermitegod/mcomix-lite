@@ -184,14 +184,14 @@ class Statusbar(Gtk.EventBox):
         """
 
         fields = [
-            (Constants.STATUS_PAGE_NUMBERS, self.__total_page_numbers),
-            (Constants.STATUS_FILE_NUMBERS, self.__total_file_numbers),
-            (Constants.STATUS_PAGE_RESOLUTION, self.__page_resolution),
-            (Constants.STATUS_ARCHIVE_NAME, self.__archive_filename),
-            (Constants.STATUS_PAGE_FILENAME, self.__page_filename),
-            (Constants.STATUS_PAGE_FILESIZE, self.__page_filesize),
-            (Constants.STATUS_ARCHIVE_FILESIZE, self.__archive_filesize),
-            (Constants.STATUS_VIEW_MODE, self.__current_view_mode),
+            (Constants.STATUSBAR['PAGE_NUMBERS'], self.__total_page_numbers),
+            (Constants.STATUSBAR['FILE_NUMBERS'], self.__total_file_numbers),
+            (Constants.STATUSBAR['PAGE_RESOLUTION'], self.__page_resolution),
+            (Constants.STATUSBAR['ARCHIVE_NAME'], self.__archive_filename),
+            (Constants.STATUSBAR['PAGE_FILENAME'], self.__page_filename),
+            (Constants.STATUSBAR['PAGE_FILESIZE'], self.__page_filesize),
+            (Constants.STATUSBAR['ARCHIVE_FILESIZE'], self.__archive_filesize),
+            (Constants.STATUSBAR['VIEW_MODE'], self.__current_view_mode),
         ]
         p = config['STATUSBAR_FIELDS']
 
@@ -207,14 +207,14 @@ class Statusbar(Gtk.EventBox):
             return
 
         names = {
-            'total_page_numbers': Constants.STATUS_PAGE_NUMBERS,
-            'total_file_numbers': Constants.STATUS_FILE_NUMBERS,
-            'page_resolution': Constants.STATUS_PAGE_RESOLUTION,
-            'archive_filename': Constants.STATUS_ARCHIVE_NAME,
-            'page_filename': Constants.STATUS_PAGE_FILENAME,
-            'page_filesize': Constants.STATUS_PAGE_FILESIZE,
-            'archive_filesize': Constants.STATUS_ARCHIVE_FILESIZE,
-            'current_view_mode': Constants.STATUS_VIEW_MODE,
+            'total_page_numbers': Constants.STATUSBAR['PAGE_NUMBERS'],
+            'total_file_numbers': Constants.STATUSBAR['FILE_NUMBERS'],
+            'page_resolution': Constants.STATUSBAR['PAGE_RESOLUTION'],
+            'archive_filename': Constants.STATUSBAR['ARCHIVE_NAME'],
+            'page_filename': Constants.STATUSBAR['PAGE_FILENAME'],
+            'page_filesize': Constants.STATUSBAR['PAGE_FILESIZE'],
+            'archive_filesize': Constants.STATUSBAR['ARCHIVE_FILESIZE'],
+            'current_view_mode': Constants.STATUSBAR['VIEW_MODE'],
         }
 
         bit = names[action.get_name()]
@@ -242,14 +242,14 @@ class Statusbar(Gtk.EventBox):
 
         p = config['STATUSBAR_FIELDS']
         names = {
-            'total_page_numbers': p & Constants.STATUS_PAGE_NUMBERS,
-            'total_file_numbers': p & Constants.STATUS_FILE_NUMBERS,
-            'page_resolution': p & Constants.STATUS_PAGE_RESOLUTION,
-            'archive_filename': p & Constants.STATUS_ARCHIVE_NAME,
-            'page_filename': p & Constants.STATUS_PAGE_FILENAME,
-            'page_filesize': p & Constants.STATUS_PAGE_FILESIZE,
-            'archive_filesize': p & Constants.STATUS_ARCHIVE_FILESIZE,
-            'current_view_mode': p & Constants.STATUS_VIEW_MODE,
+            'total_page_numbers': p & Constants.STATUSBAR['PAGE_NUMBERS'],
+            'total_file_numbers': p & Constants.STATUSBAR['FILE_NUMBERS'],
+            'page_resolution': p & Constants.STATUSBAR['PAGE_RESOLUTION'],
+            'archive_filename': p & Constants.STATUSBAR['ARCHIVE_NAME'],
+            'page_filename': p & Constants.STATUSBAR['PAGE_FILENAME'],
+            'page_filesize': p & Constants.STATUSBAR['PAGE_FILESIZE'],
+            'archive_filesize': p & Constants.STATUSBAR['ARCHIVE_FILESIZE'],
+            'current_view_mode': p & Constants.STATUSBAR['VIEW_MODE'],
         }
 
         for n, v in names.items():

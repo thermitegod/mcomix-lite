@@ -15,9 +15,9 @@ class AnimeFrameBuffer:
         self.__n_frames = n_frames
         self.__width = 0
         self.__height = 0
-        if config['ANIMATION_MODE'] == Constants.ANIMATION_INF:
+        if config['ANIMATION_MODE'] == Constants.ANIMATION['INF']:
             self.__loop = 0
-        elif config['ANIMATION_MODE'] == Constants.ANIMATION_ONCE:
+        elif config['ANIMATION_MODE'] == Constants.ANIMATION['ONCE']:
             self.__loop = 1
         else:
             self.__loop = 0 if loop > 10 else loop  # loop over 10 is infinitely

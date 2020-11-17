@@ -110,12 +110,12 @@ class FileProvider(SortAlphanumeric):
         Sorts a list of C{files} depending on the current preferences. The list is sorted in-place
         """
 
-        if config['SORT_BY'] == Constants.SORT_NAME:
+        if config['SORT_BY'] == Constants.FILE_SORT_TYPE['NAME']:
             SortAlphanumeric.alphanumeric_sort(files)
-        elif config['SORT_BY'] == Constants.SORT_LAST_MODIFIED:
+        elif config['SORT_BY'] == Constants.FILE_SORT_TYPE['LAST_MODIFIED']:
             # Most recently modified file first
             files.sort(key=lambda filename: Path.stat(filename).st_mtime * -1)
-        elif config['SORT_BY'] == Constants.SORT_SIZE:
+        elif config['SORT_BY'] == Constants.FILE_SORT_TYPE['SIZE']:
             # Smallest file first
             files.sort(key=lambda filename: Path.stat(filename).st_size)
         else:
@@ -123,7 +123,7 @@ class FileProvider(SortAlphanumeric):
             pass
 
         # Default is ascending.
-        if config['SORT_ORDER'] == Constants.SORT_DESCENDING:
+        if config['SORT_ORDER'] == Constants.FILE_SORT_DIRECTION['DESCENDING']:
             files.reverse()
 
 
@@ -151,9 +151,9 @@ class OrderedFileProvider(FileProvider):
         Lists all files in the current directory. Returns a list of absolute paths, already sorted
         """
 
-        if mode == Constants.IMAGES:
+        if mode == Constants.FILE_TYPE['IMAGES']:
             should_accept = functools.partial(ImageTools.is_image_file, check_mimetype=True)
-        elif mode == Constants.ARCHIVES:
+        elif mode == Constants.FILE_TYPE['ARCHIVES']:
             should_accept = ArchiveTools.is_archive_file
         else:
             should_accept = lambda file: True
@@ -233,7 +233,7 @@ class PreDefinedFileProvider(FileProvider):
         for file in files:
             if Path.is_dir(Path(file)):
                 provider = OrderedFileProvider(file)
-                self.__files.extend(provider.list_files(mode=Constants.IMAGES))
+                self.__files.extend(provider.list_files(mode=Constants.FILE_TYPE['IMAGES']))
 
             elif should_accept(file):
                 self.__files.append(str(file))

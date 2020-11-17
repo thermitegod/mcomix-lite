@@ -22,13 +22,13 @@ class _ConfigManager:
 
     @staticmethod
     def config_dir_check():
-        if not Path.exists(Constants.CONFIG_DIR):
-            logger.info(f'Creating missing config dir: {Constants.CONFIG_DIR}')
-            Constants.CONFIG_DIR.mkdir()
+        if not Path.exists(Constants.PATHS['CONFIG']):
+            logger.info(f'Creating missing config dir')
+            Constants.PATHS['CONFIG'].mkdir()
 
-        if not Path.exists(Constants.DATA_DIR):
-            logger.info(f'Creating missing data dir: {Constants.DATA_DIR}')
-            Constants.DATA_DIR.mkdir()
+        if not Path.exists(Constants.PATHS['DATA']):
+            logger.info(f'Creating missing data dir')
+            Constants.PATHS['DATA'].mkdir()
 
     def hash_config(self, config: dict):
         config_json = self.dump_config(config)

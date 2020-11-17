@@ -18,10 +18,10 @@ class RecursiveArchive(BaseArchive):
 
         self.__main_archive = archive
 
-        if not Path.exists(Constants.CACHE_DIR):
-            Constants.CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        if not Path.exists(Constants.PATHS['CACHE']):
+            Constants.PATHS['CACHE'].mkdir(parents=True, exist_ok=True)
 
-        self.__tempdir = TemporaryDirectory(dir=Constants.CACHE_DIR)
+        self.__tempdir = TemporaryDirectory(dir=Constants.PATHS['CACHE'])
         self.__sub_tempdirs = []
         self.__destdir = self.__tempdir.name
         self.__archive_list = []

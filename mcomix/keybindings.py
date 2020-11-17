@@ -44,7 +44,7 @@ class _KeybindingInterface:
         self.__action_to_bindings = defaultdict(list)  # action name => [ (key code, key modifier), ]
         self.__binding_to_action = {}  # (key code, key modifier) => action name
 
-        self.__keybindings_path = Constants.KEYBINDINGS_PATH
+        self.__keybindings_path = Constants.CONFIG_FILES['KEYBINDINGS']
 
         self.load_keybindings_file()
 

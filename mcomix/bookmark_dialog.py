@@ -25,7 +25,7 @@ class BookmarksDialog(Gtk.Dialog):
 
         self.set_transient_for(window)
 
-        self.add_buttons(Gtk.STOCK_REMOVE, Constants.RESPONSE_REMOVE, Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
+        self.add_buttons(Gtk.STOCK_REMOVE, Constants.RESPONSE['REMOVE'], Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
 
         self.__bookmarks_store = bookmarks_store
 
@@ -160,7 +160,7 @@ class BookmarksDialog(Gtk.Dialog):
     def _response(self, dialog, response):
         if response == Gtk.ResponseType.CLOSE:
             self._close()
-        elif response == Constants.RESPONSE_REMOVE:
+        elif response == Constants.RESPONSE['REMOVE']:
             self._remove_selected()
         else:
             self.destroy()

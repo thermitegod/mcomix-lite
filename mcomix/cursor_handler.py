@@ -14,7 +14,7 @@ class CursorHandler:
         self.__window = window
         self.__timer_id = None
         self.__auto_hide = False
-        self.__current_cursor = Constants.CURSOR_NORMAL
+        self.__current_cursor = Constants.CURSOR['NORMAL']
 
     def set_cursor_type(self, cursor: int):
         """
@@ -23,13 +23,13 @@ class CursorHandler:
         cursor constants above, it must be a Gdk.Cursor
         """
 
-        if cursor == Constants.CURSOR_NORMAL:
+        if cursor == Constants.CURSOR['NORMAL']:
             mode = None
-        elif cursor == Constants.CURSOR_GRAB:
+        elif cursor == Constants.CURSOR['GRAB']:
             mode = Gdk.Cursor.new(Gdk.CursorType.FLEUR)
-        elif cursor == Constants.CURSOR_WAIT:
+        elif cursor == Constants.CURSOR['WAIT']:
             mode = Gdk.Cursor.new(Gdk.CursorType.WATCH)
-        elif cursor == Constants.CURSOR_NONE:
+        elif cursor == Constants.CURSOR['NONE']:
             mode = self._get_hidden_cursor()
         else:
             mode = cursor
@@ -39,7 +39,7 @@ class CursorHandler:
         self.__current_cursor = cursor
 
         if self.__auto_hide:
-            if cursor == Constants.CURSOR_NORMAL:
+            if cursor == Constants.CURSOR['NORMAL']:
                 self._set_hide_timer()
             else:
                 self._kill_timer()
@@ -50,7 +50,7 @@ class CursorHandler:
         """
 
         self.__auto_hide = True
-        if self.__current_cursor == Constants.CURSOR_NORMAL:
+        if self.__current_cursor == Constants.CURSOR['NORMAL']:
             self._set_hide_timer()
 
     def refresh(self):

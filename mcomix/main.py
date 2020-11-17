@@ -39,17 +39,17 @@ def parse_args():
     fitmodes.add_argument('-b', '--zoom-best',
                           dest='zoommode',
                           action='store_const',
-                          const=Constants.ZOOM_MODE_BEST,
+                          const=Constants.ZOOM['BEST'],
                           help='Start the application with zoom set to best fit mode.')
     fitmodes.add_argument('-zw', '--zoom-width',
                           dest='zoommode',
                           action='store_const',
-                          const=Constants.ZOOM_MODE_WIDTH,
+                          const=Constants.ZOOM['WIDTH'],
                           help='Start the application with zoom set to fit width.')
     fitmodes.add_argument('-zh', '--zoom-height',
                           dest='zoommode',
                           action='store_const',
-                          const=Constants.ZOOM_MODE_HEIGHT,
+                          const=Constants.ZOOM['HEIGHT'],
                           help='Start the application with zoom set to fit height.')
     debugopts = parser.add_argument_group('Debug options')
     debugopts.add_argument('-L', '--loglevel',

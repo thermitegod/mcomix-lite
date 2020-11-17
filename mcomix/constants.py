@@ -21,125 +21,162 @@ class _Constants:
 
         self.PROG_NAME = self.APPNAME.lower()
         try:
-            self.CONFIG_DIR = Path() / os.environ['XDG_CONFIG_HOME'] / self.PROG_NAME
-            self.DATA_DIR = Path() / os.environ['XDG_DATA_HOME'] / self.PROG_NAME
-            self.CACHE_DIR = Path() / os.environ['XDG_CACHE_HOME'] / self.PROG_NAME
+            self.PATHS = {
+                'CONFIG': Path() / os.environ['XDG_CONFIG_HOME'] / self.PROG_NAME,
+                'DATA': Path() / os.environ['XDG_DATA_HOME'] / self.PROG_NAME,
+                'CACHE': Path() / os.environ['XDG_CACHE_HOME'] / self.PROG_NAME,
+            }
         except KeyError:
             logger.warning('Not using XDG dirs, falling back to hardcoded paths')
-            self.CONFIG_DIR = Path.home() / '.config' / self.PROG_NAME
-            self.DATA_DIR = Path.home() / '.local/share' / self.PROG_NAME
-            self.CACHE_DIR = Path() / '/tmp' / self.PROG_NAME
+            self.PATHS = {
+                'CONFIG': Path.home() / '.config' / self.PROG_NAME,
+                'DATA': Path.home() / '.local/share' / self.PROG_NAME,
+                'CACHE': Path() / '/tmp' / self.PROG_NAME,
+            }
 
-        self.PREFERENCE_PATH = Path() / self.CONFIG_DIR / 'preferences.conf'
-        self.KEYBINDINGS_PATH = Path() / self.CONFIG_DIR / 'keybindings.conf'
-        self.BOOKMARK_PATH = Path() / self.DATA_DIR / 'bookmarks.json'
+        self.CONFIG_FILES = {
+            'CONFIG': Path() / self.PATHS['CONFIG'] / 'preferences.conf',
+            'KEYBINDINGS': Path() / self.PATHS['CONFIG'] / 'keybindings.conf',
+            'BOOKMARK': Path() / self.PATHS['DATA'] / self.PROG_NAME / 'bookmarks.json',
+        }
 
-        self.AXIS_DISTRIBUTION = 0
-        self.AXIS_ALIGNMENT = 1
+        self.AXIS = {
+            'DISTRIBUTION': 0,
+            'ALIGNMENT': 1,
+            'WIDTH': 0,
+            'HEIGHT': 1,
+        }
 
-        self.AXIS_WIDTH = 0
-        self.AXIS_HEIGHT = 1
+        self.DOUBLE_PAGE = {
+            'NEVER': 0,
+            'AS_ONE_TITLE': 1,
+            'AS_ONE_WIDE': 2,
+        }
 
-        self.SHOW_DOUBLE_NEVER = 0
-        self.SHOW_DOUBLE_AS_ONE_TITLE = 1
-        self.SHOW_DOUBLE_AS_ONE_WIDE = 2
+        self.FILE_SORT_TYPE = {
+            'NONE': 0,
+            'NAME': 1,
+            'SIZE': 2,
+            'LAST_MODIFIED': 3,
+            'NAME_LITERAL': 4,
+        }
 
-        self.SORT_NONE = 0
-        self.SORT_NAME = 1
-        self.SORT_SIZE = 2
-        self.SORT_LAST_MODIFIED = 3
-        self.SORT_NAME_LITERAL = 4
+        self.FILE_SORT_DIRECTION = {
+            'DESCENDING': 0,
+            'ASCENDING': 1,
+        }
 
-        self.SORT_DESCENDING = 0
-        self.SORT_ASCENDING = 1
+        self.CURSOR = {
+            'NORMAL': 0,
+            'GRAB': 1,
+            'WAIT': 2,
+            'NONE': 3,
+        }
 
-        self.CURSOR_NORMAL = 0
-        self.CURSOR_GRAB = 1
-        self.CURSOR_WAIT = 2
-        self.CURSOR_NONE = 3
+        self.AUTOROTATE = {
+            'NEVER': 0,
+            'WIDTH_90': 1,
+            'WIDTH_270': 2,
+            'HEIGHT_90': 3,
+            'HEIGHT_270': 4,
+        }
 
-        self.AUTOROTATE_NEVER = 0
-        self.AUTOROTATE_WIDTH_90 = 1
-        self.AUTOROTATE_WIDTH_270 = 2
-        self.AUTOROTATE_HEIGHT_90 = 3
-        self.AUTOROTATE_HEIGHT_270 = 4
+        self.ZOOM = {
+            'BEST': 0,
+            'WIDTH': 1,
+            'HEIGHT': 2,
+            'MANUAL': 3,
+            'SIZE': 4,
+        }
 
-        self.ZOOM_MODE_BEST = 0
-        self.ZOOM_MODE_WIDTH = 1
-        self.ZOOM_MODE_HEIGHT = 2
-        self.ZOOM_MODE_MANUAL = 3
-        self.ZOOM_MODE_SIZE = 4
-
-        self.FORMAT_ZIP = 0
-        self.FORMAT_SEVENZIP = 1
-        self.FORMAT_RAR = 2
-        self.FORMAT_TAR = 3
+        self.ARCHIVE_FORMATS = {
+            'ZIP': 0,
+            'SEVENZIP': 1,
+            'RAR': 2,
+            'TAR': 3,
+        }
 
         # Constants for determining which files to list.
-        self.IMAGES = 1
-        self.ARCHIVES = 2
+        self.FILE_TYPE = {
+            'IMAGES': 1,
+            'ARCHIVES': 2,
+        }
 
-        self.SCROLL_TO_END = -4
-        self.SCROLL_TO_START = -3
-        self.SCROLL_TO_CENTER = -2
+        self.SCROLL_TO = {
+            'END': -4,
+            'START': -3,
+            'CENTER': -2,
+        }
 
-        self.INDEX_UNION = -2
-        self.INDEX_LAST = -1
-        self.INDEX_FIRST = 0
+        self.INDEX = {
+            'UNION': -2,
+            'LAST': -1,
+            'FIRST': 0,
+        }
 
-        self.ANIMATION_DISABLED = 0
-        self.ANIMATION_NORMAL = 1
-        self.ANIMATION_ONCE = 2
-        self.ANIMATION_INF = 3
+        self.ANIMATION = {
+            'DISABLED': 0,
+            'NORMAL': 1,
+            'ONCE': 2,
+            'INF': 3,
+        }
 
-        self.RESPONSE_REVERT_TO_DEFAULT = 3
-        self.RESPONSE_REMOVE = 4
+        self.RESPONSE = {
+            'REVERT_TO_DEFAULT': 3,
+            'REMOVE': 4,
+        }
 
         # These are bit field values, so only use powers of two.
-        self.STATUS_PAGE_NUMBERS = 1
-        self.STATUS_FILE_NUMBERS = 2
-        self.STATUS_PAGE_RESOLUTION = 4
-        self.STATUS_ARCHIVE_NAME = 8
-        self.STATUS_PAGE_FILENAME = 16
-        self.STATUS_PAGE_FILESIZE = 32
-        self.STATUS_ARCHIVE_FILESIZE = 64
-        self.STATUS_VIEW_MODE = 128
+        self.STATUSBAR = {
+            'PAGE_NUMBERS': 1,
+            'FILE_NUMBERS': 2,
+            'PAGE_RESOLUTION': 4,
+            'ARCHIVE_NAME': 8,
+            'PAGE_FILENAME': 16,
+            'PAGE_FILESIZE': 32,
+            'ARCHIVE_FILESIZE': 64,
+            'VIEW_MODE': 128,
+        }
 
-        self.ORIENTATION_MANGA = (-1, 1)
-        self.ORIENTATION_WESTERN = (1, 1)
+        self.ORIENTATION = {
+            'MANGA': (-1, 1),
+            'WESTERN': (1, 1),
+        }
 
         # see https://www.freedesktop.org/wiki/Software/shared-mime-info/
         # for mimetypes not registed to IANA
 
-        self.MIME_FORMAT_ZIP = (
-            ('.zip', 'application/zip'),
-            ('.cbz', 'application/vnd.comicbook+zip'),
-        )
+        self.MIME_FORMAT = {
+            'ZIP': (
+                ('.zip', 'application/zip'),
+                ('.cbz', 'application/vnd.comicbook+zip'),
+            ),
 
-        self.MIME_FORMAT_RAR = (
-            ('.rar', 'application/vnd.rar'),
-            ('.cbr', 'application/vnd.comicbook-rar'),
-        )
+            'RAR': (
+                ('.rar', 'application/vnd.rar'),
+                ('.cbr', 'application/vnd.comicbook-rar'),
+            ),
 
-        self.MIME_FORMAT_SEVENZIP = (
-            ('.7z', 'application/x-7z-compressed'),
-            ('.cb7', 'application/x-cb7'),
-        )
+            'SEVENZIP': (
+                ('.7z', 'application/x-7z-compressed'),
+                ('.cb7', 'application/x-cb7'),
+            ),
 
-        self.MIME_FORMAT_TAR = (
-            ('.tar', 'application/x-tar'),
-            ('.cbt', 'application/x-cbt'),
-            ('.tar.gz', 'application/x-compressed-tar'),
-            ('.tar.bz2', 'application/x-bzip-compressed-tar'),
-            ('.tar.lzma', 'application/x-lzma-compressed-tar'),
-            ('.tar.xz', 'application/x-xz-compressed-tar'),
-        )
+            'TAR': (
+                ('.tar', 'application/x-tar'),
+                ('.cbt', 'application/x-cbt'),
+                ('.tar.gz', 'application/x-compressed-tar'),
+                ('.tar.bz2', 'application/x-bzip-compressed-tar'),
+                ('.tar.lzma', 'application/x-lzma-compressed-tar'),
+                ('.tar.xz', 'application/x-xz-compressed-tar'),
+            ),
+        }
 
         self.ARCHIVE_DESCRIPTIONS = {
-            self.FORMAT_ZIP: 'ZIP archive',
-            self.FORMAT_SEVENZIP: '7z archive',
-            self.FORMAT_RAR: 'RAR archive',
-            self.FORMAT_TAR: 'TAR archive',
+            self.ARCHIVE_FORMATS['ZIP']: 'ZIP archive',
+            self.ARCHIVE_FORMATS['SEVENZIP']: '7z archive',
+            self.ARCHIVE_FORMATS['RAR']: 'RAR archive',
+            self.ARCHIVE_FORMATS['TAR']: 'TAR archive',
         }
 
 

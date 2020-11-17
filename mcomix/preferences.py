@@ -8,22 +8,23 @@ from mcomix.constants import Constants
 config = {
     'AUTO_OPEN_NEXT_ARCHIVE': True,
     'AUTO_OPEN_NEXT_DIRECTORY': False,
-    'SORT_BY': Constants.SORT_NAME,  # Normal files obtained by directory listing
-    'SORT_ORDER': Constants.SORT_ASCENDING,
-    'SORT_ARCHIVE_BY': Constants.SORT_NAME,  # Files in archives
-    'SORT_ARCHIVE_ORDER': Constants.SORT_ASCENDING,
+    'SORT_BY': Constants.FILE_SORT_TYPE['NAME'],  # Normal files obtained by directory listing
+    'SORT_ORDER': Constants.FILE_SORT_DIRECTION['ASCENDING'],
+    'SORT_ARCHIVE_BY': Constants.FILE_SORT_TYPE['NAME'],  # Files in archives
+    'SORT_ARCHIVE_ORDER': Constants.FILE_SORT_DIRECTION['ASCENDING'],
     'CHECKERED_BG_FOR_TRANSPARENT_IMAGES': True,
     'STRETCH': True,
     'DEFAULT_DOUBLE_PAGE': True,
     'DEFAULT_FULLSCREEN': False,
-    'ZOOM_MODE': Constants.ZOOM_MODE_BEST,
+    'ZOOM_MODE': Constants.ZOOM['BEST'],
     'DEFAULT_MANGA_MODE': True,
     'MANGA_FLIP_RIGHT': False,
     'WESTERN_FLIP_LEFT': False,
     'LENS_MAGNIFICATION': 2,
     'LENS_SIZE': 200,
     'ENHANCE_EXTRA': True,
-    'VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES': Constants.SHOW_DOUBLE_AS_ONE_TITLE | Constants.SHOW_DOUBLE_AS_ONE_WIDE,
+    'VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES': Constants.DOUBLE_PAGE['AS_ONE_TITLE'] |
+                                              Constants.DOUBLE_PAGE['AS_ONE_WIDE'],
     'DOUBLE_STEP_IN_DOUBLE_PAGE_MODE': True,
     'SHOW_PAGE_NUMBERS_ON_THUMBNAILS': True,
     'THUMBNAIL_SIZE': 80,
@@ -39,7 +40,7 @@ config = {
     'SHOW_THUMBNAILS': True,
     'ROTATION': 0,
     'AUTO_ROTATE_FROM_EXIF': True,
-    'AUTO_ROTATE_DEPENDING_ON_SIZE': Constants.AUTOROTATE_NEVER,
+    'AUTO_ROTATE_DEPENDING_ON_SIZE': Constants.AUTOROTATE['NEVER'],
     'VERTICAL_FLIP': False,
     'HORIZONTAL_FLIP': False,
     'KEEP_TRANSFORMATION': False,
@@ -50,10 +51,10 @@ config = {
     'SHARPNESS': 1.0,
     'AUTO_CONTRAST': False,
     'MAX_PAGES_TO_CACHE': 16,
-    'STATUSBAR_FIELDS': Constants.STATUS_PAGE_NUMBERS | Constants.STATUS_PAGE_RESOLUTION |
-                        Constants.STATUS_ARCHIVE_NAME | Constants.STATUS_PAGE_FILENAME |
-                        Constants.STATUS_FILE_NUMBERS | Constants.STATUS_PAGE_FILESIZE |
-                        Constants.STATUS_ARCHIVE_FILESIZE | Constants.STATUS_VIEW_MODE,
+    'STATUSBAR_FIELDS': Constants.STATUSBAR['PAGE_NUMBERS'] | Constants.STATUSBAR['PAGE_RESOLUTION'] |
+                        Constants.STATUSBAR['ARCHIVE_NAME'] | Constants.STATUSBAR['PAGE_FILENAME'] |
+                        Constants.STATUSBAR['FILE_NUMBERS'] | Constants.STATUSBAR['PAGE_FILESIZE'] |
+                        Constants.STATUSBAR['ARCHIVE_FILESIZE'] | Constants.STATUSBAR['VIEW_MODE'],
     'STATUSBAR_FULLPATH': True,
     'STATUSBAR_SEPARATOR': '|',
     'BOOKMARK_SHOW_PATH': False,
@@ -62,9 +63,9 @@ config = {
     'SCALING_QUALITY': 2,  # GdkPixbuf.InterpType.BILINEAR
     'PIL_SCALING_FILTER': 1,  # Use a PIL filter (just lanczos for now) in main viewing area. -1 to just use GdkPixbuf
     'ESCAPE_QUITS': True,
-    'FIT_TO_SIZE_MODE': Constants.ZOOM_MODE_HEIGHT,
+    'FIT_TO_SIZE_MODE': Constants.ZOOM['HEIGHT'],
     'FIT_TO_SIZE_PX': 1800,
-    'ANIMATION_MODE': Constants.ANIMATION_INF,
+    'ANIMATION_MODE': Constants.ANIMATION['INF'],
     'ANIMATION_BACKGROUND': True,
     'ANIMATION_TRANSFORM': True,
     'MOVE_FILE': 'keep',

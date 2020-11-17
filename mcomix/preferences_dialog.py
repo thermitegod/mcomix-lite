@@ -24,7 +24,7 @@ class _PreferencesDialog(Gtk.Dialog):
         self.set_transient_for(window)
 
         # Button text is set later depending on active tab
-        self.__reset_button = self.add_button('', Constants.RESPONSE_REVERT_TO_DEFAULT)
+        self.__reset_button = self.add_button('', Constants.RESPONSE['REVERT_TO_DEFAULT'])
         self.add_button(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
 
         self.__window = window
@@ -403,7 +403,7 @@ class _PreferencesDialog(Gtk.Dialog):
         if response == Gtk.ResponseType.CLOSE:
             PreferenceDialog.close_dialog()
 
-        elif response == Constants.RESPONSE_REVERT_TO_DEFAULT:
+        elif response == Constants.RESPONSE['REVERT_TO_DEFAULT']:
             if self.__notebook.get_nth_page(self.__notebook.get_current_page()) == self.__shortcuts:
                 # "Shortcuts" page is active, reset all keys to their default value
                 self.__manager.clear_all()
@@ -425,10 +425,11 @@ class _PreferencesDialog(Gtk.Dialog):
         """
 
         items = (
-            ('Never', Constants.SHOW_DOUBLE_NEVER),
-            ('Only for title pages', Constants.SHOW_DOUBLE_AS_ONE_TITLE),
-            ('Only for wide images', Constants.SHOW_DOUBLE_AS_ONE_WIDE),
-            ('Always', Constants.SHOW_DOUBLE_AS_ONE_TITLE | Constants.SHOW_DOUBLE_AS_ONE_WIDE))
+            ('Never', Constants.DOUBLE_PAGE['NEVER']),
+            ('Only for title pages', Constants.DOUBLE_PAGE['AS_ONE_TITLE']),
+            ('Only for wide images', Constants.DOUBLE_PAGE['AS_ONE_WIDE']),
+            ('Always', Constants.DOUBLE_PAGE['AS_ONE_TITLE'] |
+             Constants.DOUBLE_PAGE['AS_ONE_WIDE']))
 
         box = self._create_combobox(items,
                                     'VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES',
@@ -439,8 +440,8 @@ class _PreferencesDialog(Gtk.Dialog):
     def _create_fitmode_control(self):
         """Combobox for fit to size mode"""
         items = (
-            ('Fit to width', Constants.ZOOM_MODE_WIDTH),
-            ('Fit to height', Constants.ZOOM_MODE_HEIGHT))
+            ('Fit to width', Constants.ZOOM['WIDTH']),
+            ('Fit to height', Constants.ZOOM['HEIGHT']))
 
         box = self._create_combobox(items,
                                     'FIT_TO_SIZE_MODE',
@@ -454,18 +455,18 @@ class _PreferencesDialog(Gtk.Dialog):
         """
 
         sortkey_items = (
-            ('No sorting', Constants.SORT_NONE),
-            ('File name', Constants.SORT_NAME),
-            ('File size', Constants.SORT_SIZE),
-            ('Last modified', Constants.SORT_LAST_MODIFIED))
+            ('No sorting', Constants.FILE_SORT_TYPE['NONE']),
+            ('File name', Constants.FILE_SORT_TYPE['NAME']),
+            ('File size', Constants.FILE_SORT_TYPE['SIZE']),
+            ('Last modified', Constants.FILE_SORT_TYPE['LAST_MODIFIED']))
 
         sortkey_box = self._create_combobox(sortkey_items,
                                             'SORT_BY',
                                             self._changed_cb)
 
         sortorder_items = (
-            ('Ascending', Constants.SORT_ASCENDING),
-            ('Descending', Constants.SORT_DESCENDING))
+            ('Ascending', Constants.FILE_SORT_DIRECTION['ASCENDING']),
+            ('Descending', Constants.FILE_SORT_DIRECTION['DESCENDING']))
 
         sortorder_box = self._create_combobox(sortorder_items,
                                               'SORT_ORDER',
@@ -483,17 +484,17 @@ class _PreferencesDialog(Gtk.Dialog):
         """
 
         sortkey_items = (
-            ('No sorting', Constants.SORT_NONE),
-            ('Natural order', Constants.SORT_NAME),
-            ('Literal order', Constants.SORT_NAME_LITERAL))
+            ('No sorting', Constants.FILE_SORT_TYPE['NONE']),
+            ('Natural order', Constants.FILE_SORT_TYPE['NAME']),
+            ('Literal order', Constants.FILE_SORT_TYPE['NAME_LITERAL']))
 
         sortkey_box = self._create_combobox(sortkey_items,
                                             'SORT_ARCHIVE_BY',
                                             self._changed_cb)
 
         sortorder_items = (
-            ('Ascending', Constants.SORT_ASCENDING),
-            ('Descending', Constants.SORT_DESCENDING))
+            ('Ascending', Constants.FILE_SORT_DIRECTION['ASCENDING']),
+            ('Descending', Constants.FILE_SORT_DIRECTION['DESCENDING']))
 
         sortorder_box = self._create_combobox(sortorder_items,
                                               'SORT_ARCHIVE_ORDER',
@@ -546,10 +547,10 @@ class _PreferencesDialog(Gtk.Dialog):
         """
 
         items = (
-            ('Never', Constants.ANIMATION_DISABLED),
-            ('Normal', Constants.ANIMATION_NORMAL),
-            ('Once', Constants.ANIMATION_ONCE),
-            ('Infinity', Constants.ANIMATION_INF),
+            ('Never', Constants.ANIMATION['DISABLED']),
+            ('Normal', Constants.ANIMATION['NORMAL']),
+            ('Once', Constants.ANIMATION['ONCE']),
+            ('Infinity', Constants.ANIMATION['INF']),
         )
 
         box = self._create_combobox(items,
