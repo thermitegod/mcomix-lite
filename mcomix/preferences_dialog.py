@@ -8,7 +8,6 @@ from gi.repository import GObject, GdkPixbuf, Gtk
 from mcomix.constants import Constants
 from mcomix.keybindings import KeybindingManager
 from mcomix.keybindings_editor import KeybindingEditorWindow
-from mcomix.labels import BoldLabel
 from mcomix.preferences import config
 
 
@@ -727,7 +726,8 @@ class _PreferenceSection(Gtk.VBox):
 
         self.__right_column_width = right_column_width
         self.__contentbox = Gtk.VBox(homogeneous=False, spacing=6)
-        label = BoldLabel(header)
+        label = Gtk.Label()
+        label.set_markup(f'<b>{header}</b>')
         label.set_alignment(0, 0.5)
         hbox = Gtk.HBox(homogeneous=False, spacing=0)
         hbox.pack_start(Gtk.HBox(homogeneous=True, spacing=0), False, False, 6)

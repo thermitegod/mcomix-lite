@@ -5,7 +5,6 @@
 from gi.repository import Gtk
 
 from mcomix.image_tools import ImageTools
-from mcomix.labels import BoldLabel
 
 
 class PropertiesPage(Gtk.ScrolledWindow):
@@ -60,7 +59,8 @@ class PropertiesPage(Gtk.ScrolledWindow):
         Set the filename to be displayed to <filename>. Call this before set_main_info()
         """
 
-        label = BoldLabel(filename)
+        label = Gtk.Label()
+        label.set_markup(f'<b>{filename}</b>')
         label.set_alignment(0, 0.5)
         label.set_selectable(True)
         label.set_line_wrap(True)
@@ -89,7 +89,8 @@ class PropertiesPage(Gtk.ScrolledWindow):
         self.__extrabox.pack_start(left_box, False, False, 0)
         self.__extrabox.pack_start(right_box, False, False, 0)
         for desc, value in info:
-            desc_label = BoldLabel(f'{desc}:')
+            desc_label = Gtk.Label()
+            desc_label.set_markup(f'<b>{desc}:</b>')
             desc_label.set_alignment(1.0, 1.0)
             left_box.pack_start(desc_label, True, True, 0)
             value_label = Gtk.Label(label=value)
