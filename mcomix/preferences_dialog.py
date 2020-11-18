@@ -374,7 +374,7 @@ class _PreferencesDialog(Gtk.Dialog):
         page.add_row(Gtk.Label(label='Maximum number of threads:'),
                      self._create_pref_spinner(
                          'MAX_THREADS',
-                         1, 1, Constants.MAX_THREADS, 1, 4, 0))
+                         1, 1, 128, 1, 4, 0))
 
         return page
 

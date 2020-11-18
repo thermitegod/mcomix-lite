@@ -17,8 +17,6 @@ class _Constants:
 
         self.REQUIRED_PIL_VERSION = '6.0.0'
 
-        self.MAX_THREADS = 128
-
         self.PROG_NAME = self.APPNAME.lower()
         try:
             self.PATHS = {
