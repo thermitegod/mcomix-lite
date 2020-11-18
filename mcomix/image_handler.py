@@ -13,6 +13,7 @@ from mcomix.lib.callback import Callback
 from mcomix.lib.mt import GlobalThreadPool, Lock
 from mcomix.preferences import config
 from mcomix.thumbnail_tools import Thumbnailer
+from mcomix.utils import Utils
 
 
 class ImageHandler:
@@ -52,22 +53,6 @@ class ImageHandler:
         self.__cache_pages = config['MAX_PAGES_TO_CACHE']
 
         self.__window.filehandler.file_available += self._file_available
-
-    @staticmethod
-    def format_byte_size(n: int):
-        if config['SI_UNITS']:
-            unit_size = 1000
-            unit_symbols = ('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB')
-        else:
-            unit_size = 1024
-            unit_symbols = ('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB')
-
-        s = 0
-        while n >= unit_size:
-            s += 1
-            n /= float(unit_size)
-
-        return f'{n:.3f} {unit_symbols[s]}'
 
     def _get_pixbuf(self, index: int):
         """
@@ -394,7 +379,7 @@ class ImageHandler:
             except OSError:
                 logger.warning(f'failed to get file size for: {path}')
                 fsize = 0
-            return self.format_byte_size(fsize)
+            return Utils.format_byte_size(fsize)
 
         if page is None:
             page = self.get_current_page()
