@@ -2,7 +2,6 @@
 
 """thumbbar.py - Thumbnail sidebar for main window"""
 
-import math
 from urllib.request import pathname2url
 
 import cairo
@@ -86,26 +85,18 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         self.__window.page_changed += self._on_page_change
         self.__window.imagehandler.page_available += self._on_page_available
 
-    @staticmethod
-    def number_of_digits(n: int):
-        if not n:
-            return 1
-
-        return int(math.log10(abs(n))) + 1
-
     def toggle_page_numbers_visible(self):
         """
         Enables or disables page numbers on the thumbnail bar
         """
 
-        visible = config['SHOW_PAGE_NUMBERS_ON_THUMBNAILS']
-        if visible:
-            number_of_pages = self.__window.imagehandler.get_number_of_pages()
-            number_of_digits = self.number_of_digits(number_of_pages)
-            self.__text_cellrenderer.set_property('width-chars', number_of_digits + 1)
+        if config['SHOW_PAGE_NUMBERS_ON_THUMBNAILS']:
+            number_of_pages = len(str(self.__window.imagehandler.get_number_of_pages()))
+            self.__text_cellrenderer.set_property('width-chars', number_of_pages + 1)
             w = self.__text_cellrenderer.get_preferred_size(self.__treeview)[1].width
             self.__thumbnail_page_treeviewcolumn.set_fixed_width(w)
-        self.__thumbnail_page_treeviewcolumn.set_visible(visible)
+
+        self.__thumbnail_page_treeviewcolumn.set_visible(config['SHOW_PAGE_NUMBERS_ON_THUMBNAILS'])
 
     def get_width(self):
         """
