@@ -4,7 +4,6 @@
 
 from urllib.request import pathname2url
 
-import cairo
 from gi.repository import Gdk, GdkPixbuf, Gtk
 
 from mcomix.image_tools import ImageTools
@@ -240,12 +239,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
 
         path = treeview.get_cursor()[0]
         surface = treeview.create_row_drag_icon(path)
-        # Because of course a cairo.Win32Surface does not have
-        # get_width/get_height, that would be to easy...
-        cr = cairo.Context(surface)
-        x1, y1, x2, y2 = cr.clip_extents()
-        width, height = x2 - x1, y2 - y1
-        pixbuf = Gdk.pixbuf_get_from_surface(surface, 0, 0, width, height)
+        pixbuf = Gdk.pixbuf_get_from_surface(surface, 0, 0, surface.get_width(), surface.get_height())
         Gtk.drag_set_icon_pixbuf(context, pixbuf, -5, -5)
 
     def _get_empty_thumbnail(self):
