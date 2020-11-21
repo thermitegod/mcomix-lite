@@ -210,6 +210,7 @@ class MagnifyingLens:
             y = source_pixbuf.get_height() - y
         elif rotation == 270:
             x, y = source_pixbuf.get_width() - y, x
+
         if config['HORIZONTAL_FLIP']:
             if rotation in (90, 270):
                 y = source_pixbuf.get_height() - y
@@ -246,6 +247,7 @@ class MagnifyingLens:
             subpixbuf = subpixbuf.rotate_simple(Gdk.PIXBUF_ROTATE_UPSIDEDOWN)
         elif rotation == 270:
             subpixbuf = subpixbuf.rotate_simple(Gdk.PIXBUF_ROTATE_COUNTERCLOCKWISE)
+
         if config['HORIZONTAL_FLIP']:
             subpixbuf = subpixbuf.flip(horizontal=True)
         if config['VERTICAL_FLIP']:

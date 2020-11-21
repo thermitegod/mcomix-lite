@@ -77,16 +77,16 @@ class _ImageTools:
 
     @staticmethod
     def rotate_pixbuf(src, rotation: int):
-        rotation %= 360
         if rotation == 0:
             return src
-        if rotation == 90:
+        elif rotation == 90:
             return src.rotate_simple(GdkPixbuf.PixbufRotation.CLOCKWISE)
-        if rotation == 180:
+        elif rotation == 180:
             return src.rotate_simple(GdkPixbuf.PixbufRotation.UPSIDEDOWN)
-        if rotation == 270:
+        elif rotation == 270:
             return src.rotate_simple(GdkPixbuf.PixbufRotation.COUNTERCLOCKWISE)
-        raise ValueError(f'unsupported rotation: {rotation}')
+        else:
+            raise ValueError(f'unsupported rotation: {rotation}')
 
     @staticmethod
     def get_fitting_size(source_size: tuple, target_size: tuple, keep_ratio: bool = True, scale_up: bool = False):
@@ -165,8 +165,10 @@ class _ImageTools:
         height = max(height, 1)
 
         rotation %= 360
+
         if rotation not in (0, 90, 180, 270):
             raise ValueError(f'unsupported rotation: {rotation}')
+
         if rotation in (90, 270):
             width, height = height, width
 
