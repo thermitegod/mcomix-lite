@@ -2,7 +2,8 @@
 
 """event.py - Event handling (keyboard, mouse, etc.) for the main window"""
 
-import urllib
+import urllib.parse
+import urllib.request
 
 from gi.repository import Gdk, Gtk
 

@@ -2,7 +2,7 @@
 
 """thumbbar.py - Thumbnail sidebar for main window"""
 
-from urllib.request import pathname2url
+import urllib.request
 
 from gi.repository import Gdk, GdkPixbuf, Gtk
 
@@ -226,7 +226,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
 
         selected = self._get_selected_row()
         path = self.__window.imagehandler.get_path_to_page(selected + 1)
-        uri = f'file://localhost{pathname2url(str(path))}'
+        uri = f'file://localhost{urllib.request.pathname2url(str(path))}'
         selection.set_uris([uri])
 
     @staticmethod
