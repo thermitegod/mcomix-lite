@@ -2,7 +2,6 @@
 
 """Unicode-aware wrapper for zipfile.ZipFile"""
 
-import collections
 import zipfile
 from pathlib import Path
 
@@ -20,7 +19,7 @@ class ZipArchive(BaseArchive):
         # zipfile is usually not thread-safe
         # so use OrderedDict to save ZipInfo in order
         # {unicode_name: ZipInfo}
-        self.__contents_info = collections.OrderedDict()
+        self.__contents_info = {}
         for info in self.__zip.infolist():
             self.__contents_info[info.filename] = info
 

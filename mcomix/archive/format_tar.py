@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import collections
 import tarfile
 from pathlib import Path
 
@@ -18,7 +17,7 @@ class TarArchive(BaseArchive):
         # tarfile is not thread-safe
         # so use OrderedDict to save TarInfo in order
         # {unicode_name: TarInfo}
-        self.__contents_info = collections.OrderedDict()
+        self.__contents_info = {}
         for member in self.__tar.getmembers():
             self.__contents_info[member.name] = member
 
