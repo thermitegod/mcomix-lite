@@ -35,7 +35,7 @@ class _Constants:
         self.CONFIG_FILES = {
             'CONFIG': Path() / self.PATHS['CONFIG'] / 'preferences.conf',
             'KEYBINDINGS': Path() / self.PATHS['CONFIG'] / 'keybindings.conf',
-            'BOOKMARK': Path() / self.PATHS['DATA'] / self.PROG_NAME / 'bookmarks.json',
+            'BOOKMARK': Path() / self.PATHS['DATA'] / 'bookmarks.json',
         }
 
         self.AXIS = {
