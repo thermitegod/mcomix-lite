@@ -199,11 +199,11 @@ class _EnhanceImageDialog(Gtk.Dialog):
 
         elif response == Gtk.ResponseType.APPLY:
             self._change_values(self)
-            config['BRIGHTNESS'] = self.__enhancer.brightness()
-            config['CONTRAST'] = self.__enhancer.contrast()
-            config['SATURATION'] = self.__enhancer.saturation()
-            config['SHARPNESS'] = self.__enhancer.sharpness()
-            config['AUTO_CONTRAST'] = self.__enhancer.autocontrast()
+            config['BRIGHTNESS'] = self.__enhancer.brightness
+            config['CONTRAST'] = self.__enhancer.contrast
+            config['SATURATION'] = self.__enhancer.saturation
+            config['SHARPNESS'] = self.__enhancer.sharpness
+            config['AUTO_CONTRAST'] = self.__enhancer.autocontrast
 
         elif response == Gtk.ResponseType.REJECT:
             self.__block = True

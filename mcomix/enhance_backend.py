@@ -17,11 +17,52 @@ class ImageEnhancer:
         super().__init__()
 
         self.__window = window
-        self.brightness = config['BRIGHTNESS']
-        self.contrast = config['CONTRAST']
-        self.saturation = config['SATURATION']
-        self.sharpness = config['SHARPNESS']
-        self.autocontrast = config['AUTO_CONTRAST']
+
+        self.__brightness = config['BRIGHTNESS']
+        self.__contrast = config['CONTRAST']
+        self.__saturation = config['SATURATION']
+        self.__sharpness = config['SHARPNESS']
+        self.__autocontrast = config['AUTO_CONTRAST']
+
+    @property
+    def brightness(self):
+        return self.__brightness
+
+    @brightness.setter
+    def brightness(self, value: float):
+        self.__brightness = value
+
+    @property
+    def contrast(self):
+        return self.__contrast
+
+    @contrast.setter
+    def contrast(self, value: float):
+        self.__contrast = value
+
+    @property
+    def saturation(self):
+        return self.__saturation
+
+    @saturation.setter
+    def saturation(self, value: float):
+        self.__saturation = value
+
+    @property
+    def sharpness(self):
+        return self.__sharpness
+
+    @sharpness.setter
+    def sharpness(self, value: float):
+        self.__sharpness = value
+
+    @property
+    def autocontrast(self):
+        return self.__autocontrast
+
+    @autocontrast.setter
+    def autocontrast(self, value: bool):
+        self.__autocontrast = value
 
     def enhance(self, pixbuf):
         """
@@ -29,8 +70,7 @@ class ImageEnhancer:
         """
 
         if (self.brightness != 1.0 or self.contrast != 1.0 or
-                self.saturation != 1.0 or self.sharpness != 1.0 or
-                self.autocontrast):
+                self.saturation != 1.0 or self.sharpness != 1.0 or self.autocontrast):
             return ImageTools.enhance(pixbuf, self.brightness, self.contrast,
                                       self.saturation, self.sharpness, self.autocontrast)
 
