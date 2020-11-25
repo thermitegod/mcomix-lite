@@ -69,11 +69,9 @@ class ImageEnhancer:
         Return an "enhanced" version of <pixbuf>
         """
 
-        if (self.brightness != 1.0 or self.contrast != 1.0 or
-                self.saturation != 1.0 or self.sharpness != 1.0 or self.autocontrast):
+        if (self.brightness or self.contrast or self.saturation or self.sharpness or self.autocontrast) != 1.0:
             return ImageTools.enhance(pixbuf, self.brightness, self.contrast,
                                       self.saturation, self.sharpness, self.autocontrast)
-
         return pixbuf
 
     def signal_update(self):
