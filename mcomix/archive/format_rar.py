@@ -14,11 +14,11 @@ class RarArchive(BaseArchiveExecutable):
     def __init__(self, archive):
         super().__init__(archive)
 
-        self.__executable = Executable.executable
+        self.__executable = Executable.get_executable()
 
     @staticmethod
     def is_available():
-        return bool(Executable.executable)
+        return Executable.found_executable()
 
     def _get_list_arguments(self):
         return [self.__executable, 'vt', '--', self.archive]
@@ -67,7 +67,14 @@ class _Executable:
     def __init__(self):
         super().__init__()
 
-        self.executable = GetExecutable('unrar').executable
+        self.__executable = GetExecutable('unrar').get_executable()
+        self.__found = bool(self.__executable)
+
+    def get_executable(self):
+        return self.__executable
+
+    def found_executable(self):
+        return self.__found
 
 
 Executable = _Executable()

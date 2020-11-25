@@ -32,11 +32,9 @@ class GetExecutable:
     def __init__(self, find_executable):
         super().__init__()
 
-        self.__find_executable = find_executable
-        self.executable = self.get_executable()
+        self.__find_executable = shutil.which(find_executable)
+        if self.__find_executable is None:
+            logger.error(f'failed to find {find_executable} executable')
 
     def get_executable(self):
-        executable = shutil.which(self.__find_executable)
-        if executable is None:
-            logger.error(f'failed to find {self.__find_executable} executable')
-        return executable
+        return self.__find_executable
