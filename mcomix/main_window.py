@@ -260,7 +260,7 @@ class MainWindow(Gtk.Window):
         Return <True> if "toggle" widget for <preference> should be visible
         """
 
-        if self.is_fullscreen:
+        if self.is_fullscreen():
             visible = not config['HIDE_ALL_IN_FULLSCREEN'] and not config['HIDE_ALL']
         else:
             visible = not config['HIDE_ALL']
@@ -276,7 +276,7 @@ class MainWindow(Gtk.Window):
         """
 
         sensitive = True
-        if config['HIDE_ALL'] or (config['HIDE_ALL_IN_FULLSCREEN'] and self.is_fullscreen):
+        if config['HIDE_ALL'] or (config['HIDE_ALL_IN_FULLSCREEN'] and self.is_fullscreen()):
             sensitive = False
         for preference, action, widget_list in self.__toggle_list:
             self.actiongroup.get_action(action).set_sensitive(sensitive)
@@ -656,7 +656,6 @@ class MainWindow(Gtk.Window):
         self._update_page_information()
         self.draw_image()
 
-    @property
     def is_fullscreen(self):
         window_state = self.get_window().get_state()
         return (window_state & Gdk.WindowState.FULLSCREEN) != 0
@@ -969,7 +968,7 @@ class MainWindow(Gtk.Window):
         Run clean-up tasks and exit the program
         """
 
-        if not self.is_fullscreen:
+        if not self.is_fullscreen():
             self.save_window_geometry()
 
         self.hide()

@@ -40,7 +40,7 @@ class EventHandler:
             self.__window.draw_image()
 
     def window_state_event(self, widget, event):
-        is_fullscreen = self.__window.is_fullscreen
+        is_fullscreen = self.__window.is_fullscreen()
         if self.__window.was_fullscreen != is_fullscreen:
             # Fullscreen state changed.
             self.__window.was_fullscreen = is_fullscreen
