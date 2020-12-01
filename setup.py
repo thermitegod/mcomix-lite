@@ -53,7 +53,7 @@ setup(
                       'setuptools.installation': ['eggsecutable=mcomix.main:main'], },
         test_suite='test',
         requires=['Gtk (>=3.24.0)'],
-        install_requires=['setuptools', 'pillow', 'loguru', 'send2trash', 'xxhash'],
+        install_requires=['setuptools', 'pillow', 'urllib3', 'pygobject', 'loguru', 'send2trash', 'xxhash'],
         zip_safe=False,
 
         # Various MIME files that need to be copied to certain system locations on Linux.
@@ -77,7 +77,7 @@ setup(
         url='https://github.com/thermitegod/mcomix-lite',
         description='GTK comic book viewer',
         long_description='MComix-Lite is a manga/comic reader.'
-                         'Supports archive formats are 7Z, ZIP, RAR, CBR, CBZ, CB7, LHA, and PDF. '
+                         'Supports archive formats are 7Z, ZIP, RAR, TAR, CBR, CBZ, CB7, CBT. '
                          'MComix-Lite is a fork of MComix3 which is a fork of MComix which is a fork of Comix.',
         license="License :: OSI Approved :: GNU General Public License (GPL)",
         platforms=['Operating System :: POSIX :: Linux',
