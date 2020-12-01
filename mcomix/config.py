@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import hashlib
 import json
 from pathlib import Path
 
+import xxhash
 from loguru import logger
 
 from mcomix.constants import Constants
@@ -31,8 +31,7 @@ class _ConfigManager:
             Constants.PATHS['DATA'].mkdir()
 
     def hash_config(self, config: dict):
-        config_json = self.dump_config(config)
-        return hashlib.blake2b(config_json.encode('utf8')).hexdigest()
+        return xxhash.xxh3_64(self.dump_config(config).encode('utf8')).hexdigest()
 
     @staticmethod
     def dump_config(config: dict):
