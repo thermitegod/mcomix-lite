@@ -301,9 +301,6 @@ class MainWindow(Gtk.Window):
                     (widget.show if should_be_visible else widget.hide)()
 
     def _draw_image(self, scroll_to: int):
-        def vector_opposite(a: int):
-            return tuple(map(operator.neg, a))
-
         self._update_toggles_visibility()
 
         if not self.filehandler.get_file_loaded():
@@ -349,20 +346,19 @@ class MainWindow(Gtk.Window):
 
         if rotation in (90, 270):
             distribution_axis, alignment_axis = alignment_axis, distribution_axis
-            orientation = list(orientation)
-            orientation.reverse()
+            orientation = orientation[::1]
             for i in range(pixbuf_count):
                 size_list[i].reverse()
         elif rotation in (180, 270):
-            orientation = vector_opposite(orientation)
+            orientation = orientation[::1]
 
         for i in range(pixbuf_count):
             rotation_list[i] = (rotation_list[i] + rotation) % 360
 
         if config['VERTICAL_FLIP']:
-            orientation = vector_opposite(orientation)
+            orientation = orientation[::1]
         if config['HORIZONTAL_FLIP']:
-            orientation = vector_opposite(orientation)
+            orientation = orientation[::1]
 
         viewport_size = ()  # dummy
         expand_area = False
