@@ -44,7 +44,8 @@ class MainWindow(Gtk.Window):
         # ----------------------------------------------------------------
         # Used to detect window fullscreen state transitions.
         self.was_fullscreen = False
-        self.is_manga_mode = False
+        self.is_manga_mode = config['DEFAULT_MANGA_MODE']
+        self.__page_orientation = self.page_orientation()
         self.previous_size = (None, None)
         #: Used to remember if changing to fullscreen enabled 'HIDE_ALL'
         self.__hide_all_forced = False
@@ -231,6 +232,12 @@ class MainWindow(Gtk.Window):
     def get_event_handler(self):
         return self.__event_handler
 
+    def page_orientation(self):
+        if self.is_manga_mode:
+            return Constants.ORIENTATION['MANGA']
+        else:
+            return Constants.ORIENTATION['WESTERN']
+
     def draw_image(self, scroll_to=None):
         """
         Draw the current pages and update the titlebar and statusbar
@@ -320,10 +327,7 @@ class MainWindow(Gtk.Window):
         do_not_transform = [ImageTools.disable_transform(x) for x in pixbuf_list]
         size_list = [[pixbuf.get_width(), pixbuf.get_height()] for pixbuf in pixbuf_list]
 
-        if self.is_manga_mode:
-            orientation = Constants.ORIENTATION['MANGA']
-        else:
-            orientation = Constants.ORIENTATION['WESTERN']
+        orientation = self.__page_orientation
 
         # Rotation handling:
         # - apply Exif rotation on individual images
@@ -429,10 +433,7 @@ class MainWindow(Gtk.Window):
             self.images[i].hide()
 
         # Reset orientation so scrolling behaviour is sane.
-        if self.is_manga_mode:
-            self.__layout.set_orientation(Constants.ORIENTATION['MANGA'])
-        else:
-            self.__layout.set_orientation(Constants.ORIENTATION['WESTERN'])
+        self.__layout.set_orientation(self.__page_orientation)
 
         if scroll_to is not None:
             if Constants.SCROLL_TO['START'] == scroll_to:
@@ -653,6 +654,7 @@ class MainWindow(Gtk.Window):
     def change_manga_mode(self, toggleaction):
         config['DEFAULT_MANGA_MODE'] = toggleaction.get_active()
         self.is_manga_mode = toggleaction.get_active()
+        self.__page_orientation = self.page_orientation()
         self._update_page_information()
         self.draw_image()
 
