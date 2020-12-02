@@ -111,20 +111,17 @@ def main():
     Icons.load_icons()
 
     open_path = args.path
+    for idx, item in enumerate(open_path):
+        p = Path(item)
+        if not Path.exists(p):
+            logger.warning(f'File does not exist: \'{p}\'')
+            open_path.pop(idx)
+            continue
+        logger.info(f'Loading file from command line: \'{p}\'')
+        open_path[idx] = p
 
-    if isinstance(open_path, list):
-        n = 0
-        while n < len(open_path):
-            p = Path() / open_path[n]
-            if not Path.exists(p):
-                logger.warning(f'File does not exist: \'{p}\'')
-                open_path.pop(n)
-                continue
-            logger.info(f'Loading file from command line: \'{p}\'')
-            open_path[n] = p
-            n += 1
-        if not open_path:
-            open_path = None
+    if not open_path:
+        open_path = None
 
     Gdk.set_program_class(Constants.APPNAME)
 
