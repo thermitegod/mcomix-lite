@@ -110,15 +110,14 @@ def main():
     from mcomix.icons import Icons
     Icons.load_icons()
 
-    open_path = args.path
-    for idx, item in enumerate(open_path):
-        p = Path(item)
+    open_path = []
+    for idx, item in enumerate(args.path):
+        p = Path(item).resolve()
         if not Path.exists(p):
             logger.warning(f'File does not exist: \'{p}\'')
-            open_path.pop(idx)
             continue
         logger.info(f'Loading file from command line: \'{p}\'')
-        open_path[idx] = p
+        open_path.append(p)
 
     if not open_path:
         open_path = None
