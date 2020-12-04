@@ -1,10 +1,21 @@
 # -*- coding: utf-8 -*-
 
-# Do not run this script directly, use mcomixstarter.py
-
 import argparse
 import sys
 from pathlib import Path
+
+import PIL
+from loguru import logger
+
+try:
+    import gi
+    gi.require_version('PangoCairo', '1.0')
+    gi.require_version('Gtk', '3.0')
+    gi.require_version('Gdk', '3.0')
+    from gi.repository import GLib, Gdk, GdkPixbuf, Gtk
+except (ValueError, ImportError):
+    logger.critical('GTK+ 3.0 import error')
+    raise SystemExit(1)
 
 from mcomix.constants import Constants
 
@@ -36,39 +47,10 @@ def main():
         raise SystemExit
 
     # start logger
-    from loguru import logger
     logger.remove()
     logger.add(sys.stdout, level=args.loglevel, colorize=True)
 
-    # Check for PyGTK and PIL dependencies.
-    try:
-        from gi import version_info, require_version
-
-        if version_info < (3, 24, 0):
-            raise ImportError
-
-        require_version('PangoCairo', '1.0')
-        require_version('Gtk', '3.0')
-        require_version('Gdk', '3.0')
-
-        from gi.repository import GLib, Gdk, GdkPixbuf, Gtk
-
-    except (ValueError, ImportError):
-        logger.critical('GTK+ 3.0 import error')
-        raise SystemExit(1)
-
-    try:
-        import PIL
-        pil_version = PIL.__version__
-
-        if pil_version < Constants.REQUIRED_PIL_VERSION:
-            raise ImportError
-
-    except (AttributeError, ImportError):
-        logger.critical(f'Required Pillow version is at least {Constants.REQUIRED_PIL_VERSION}')
-        raise SystemExit(1)
-
-    logger.info(f'Image loaders: Pillow [{pil_version}], GDK [{GdkPixbuf.PIXBUF_VERSION}]')
+    logger.info(f'Image loaders: Pillow [{PIL.__version__}], GDK [{GdkPixbuf.PIXBUF_VERSION}]')
 
     # Load configuration.
     from mcomix.preferences_manager import PreferenceManager

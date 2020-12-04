@@ -15,8 +15,6 @@ class _Constants:
         self.APPNAME = 'MComix-Lite'
         self.VERSION = '3.1.0.dev0'
 
-        self.REQUIRED_PIL_VERSION = '6.0.0'
-
         self.PROG_NAME = self.APPNAME.lower()
         try:
             self.PATHS = {
