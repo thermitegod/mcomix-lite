@@ -35,8 +35,7 @@ class MainWindow(Gtk.Window):
     The main window, is created at start and terminates the program when closed
     """
 
-    def __init__(self, fullscreen: bool = False, manga_mode: bool = False, double_page: bool = False,
-                 zoom_mode: int = None, open_path: list = None):
+    def __init__(self, open_path: list = None):
         super().__init__(type=Gtk.WindowType.TOPLEVEL)
 
         # ----------------------------------------------------------------
@@ -117,24 +116,19 @@ class MainWindow(Gtk.Window):
         table.attach(self.statusbar, 0, 3, 5, 6, Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
                      Gtk.AttachOptions.FILL, 0, 0)
 
-        if config['DEFAULT_DOUBLE_PAGE'] or double_page:
+        if config['DEFAULT_DOUBLE_PAGE']:
             self.actiongroup.get_action('double_page').activate()
 
-        if config['DEFAULT_MANGA_MODE'] or manga_mode:
+        if config['DEFAULT_MANGA_MODE']:
             self.actiongroup.get_action('manga_mode').activate()
 
-        # Determine zoom mode. If zoom_mode is passed, it overrides
-        # the zoom mode preference.
         zoom_actions = {Constants.ZOOM['BEST']: 'best_fit_mode',
                         Constants.ZOOM['WIDTH']: 'fit_width_mode',
                         Constants.ZOOM['HEIGHT']: 'fit_height_mode',
                         Constants.ZOOM['SIZE']: 'fit_size_mode',
                         Constants.ZOOM['MANUAL']: 'fit_manual_mode'}
 
-        if zoom_mode is not None:
-            zoom_action = zoom_actions[zoom_mode]
-        else:
-            zoom_action = zoom_actions[config['ZOOM_MODE']]
+        zoom_action = zoom_actions[config['ZOOM_MODE']]
 
         self.actiongroup.get_action(zoom_action).activate()
 
@@ -198,7 +192,7 @@ class MainWindow(Gtk.Window):
 
         self.show()
 
-        if config['DEFAULT_FULLSCREEN'] or fullscreen:
+        if config['DEFAULT_FULLSCREEN']:
             toggleaction = self.actiongroup.get_action('fullscreen')
             toggleaction.set_active(True)
 
