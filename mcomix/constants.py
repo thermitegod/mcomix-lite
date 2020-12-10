@@ -12,6 +12,8 @@ from loguru import logger
 
 class _Constants:
     def __init__(self):
+        super().__init__()
+
         self.APPNAME = 'MComix-Lite'
         self.VERSION = '3.1.0.dev0'
 

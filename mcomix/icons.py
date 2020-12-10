@@ -11,6 +11,9 @@ from mcomix.image_tools import ImageTools
 
 
 class _Icons:
+    def __init__(self):
+        super().__init__()
+
     @staticmethod
     def mcomix_icons():
         """

@@ -682,6 +682,8 @@ class _PreferencesDialog(Gtk.Dialog):
 
 class _PreferenceDialog:
     def __init__(self):
+        super().__init__()
+
         self.__dialog = None
 
         self.__window = None

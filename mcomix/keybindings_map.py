@@ -5,6 +5,8 @@
 
 class _KeyBindingsInfo:
     def __init__(self):
+        super().__init__()
+
         self.BINDING_INFO = {
             # Navigation between pages, archives, directories
             'previous_page': {'title': 'Previous page', 'group': 'Navigation'},
@@ -88,6 +90,8 @@ class _KeyBindingsInfo:
 
 class _KeyBindingsDefault:
     def __init__(self):
+        super().__init__()
+
         self.DEFAULT_BINDINGS = {
             # Navigation between pages, archives, directories
             'previous_page': ['Page_Up', 'KP_Page_Up', 'BackSpace'],
