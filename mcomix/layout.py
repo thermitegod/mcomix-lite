@@ -2,7 +2,7 @@
 
 """Layout"""
 
-from mcomix.box import Box
+from mcomix.hyperrectangles import Box
 from mcomix.constants import Constants
 
 
