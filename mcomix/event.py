@@ -8,20 +8,18 @@ import urllib.request
 from gi.repository import Gdk, Gtk
 
 from mcomix.constants import Constants
-from mcomix.keybindings import KeybindingManager
 from mcomix.preferences import config
 
 
 class EventHandler:
-    def __init__(self, window):
+    def __init__(self, window, keybindings):
         super().__init__()
 
         self.__window = window
+        self.__keybindings = keybindings
 
         self.__last_pointer_pos_x = 0
         self.__last_pointer_pos_y = 0
-
-        self.__manager = KeybindingManager.keybinding_manager(self.__window)
 
     def get_manga_flip_direction(self):
         if (self.__window.is_manga_mode and not config['MANGA_FLIP_RIGHT']) or \
@@ -64,141 +62,141 @@ class EventHandler:
         """
 
         # Navigation keys
-        self.__manager.register('previous_page',
-                                self.__window.flip_page, kwargs={'number_of_pages': -1})
-        self.__manager.register('next_page',
-                                self.__window.flip_page, kwargs={'number_of_pages': +1})
-        self.__manager.register('previous_page_singlestep',
-                                self.__window.flip_page, kwargs={'number_of_pages': -1, 'single_step': True})
-        self.__manager.register('next_page_singlestep',
-                                self.__window.flip_page, kwargs={'number_of_pages': +1, 'single_step': True})
-        self.__manager.register('previous_page_ff',
-                                self.__window.flip_page, kwargs={'number_of_pages': -10})
-        self.__manager.register('next_page_ff',
-                                self.__window.flip_page, kwargs={'number_of_pages': +10})
-        self.__manager.register('first_page',
-                                self.__window.first_page)
-        self.__manager.register('last_page',
-                                self.__window.last_page)
-        self.__manager.register('go_to',
-                                self.__window.page_select)
+        self.__keybindings.register('previous_page',
+                                    self.__window.flip_page, kwargs={'number_of_pages': -1})
+        self.__keybindings.register('next_page',
+                                    self.__window.flip_page, kwargs={'number_of_pages': +1})
+        self.__keybindings.register('previous_page_singlestep',
+                                    self.__window.flip_page, kwargs={'number_of_pages': -1, 'single_step': True})
+        self.__keybindings.register('next_page_singlestep',
+                                    self.__window.flip_page, kwargs={'number_of_pages': +1, 'single_step': True})
+        self.__keybindings.register('previous_page_ff',
+                                    self.__window.flip_page, kwargs={'number_of_pages': -10})
+        self.__keybindings.register('next_page_ff',
+                                    self.__window.flip_page, kwargs={'number_of_pages': +10})
+        self.__keybindings.register('first_page',
+                                    self.__window.first_page)
+        self.__keybindings.register('last_page',
+                                    self.__window.last_page)
+        self.__keybindings.register('go_to',
+                                    self.__window.page_select)
 
         # Enter/exit fullscreen.
-        self.__manager.register('exit_fullscreen',
-                                self.escape_event)
+        self.__keybindings.register('exit_fullscreen',
+                                    self.escape_event)
 
         # View modes
-        self.__manager.register('double_page',
-                                self.__window.actiongroup.get_action('double_page').activate)
-        self.__manager.register('best_fit_mode',
-                                self.__window.actiongroup.get_action('best_fit_mode').activate)
-        self.__manager.register('fit_width_mode',
-                                self.__window.actiongroup.get_action('fit_width_mode').activate)
-        self.__manager.register('fit_height_mode',
-                                self.__window.actiongroup.get_action('fit_height_mode').activate)
-        self.__manager.register('fit_size_mode',
-                                self.__window.actiongroup.get_action('fit_size_mode').activate)
-        self.__manager.register('fit_manual_mode',
-                                self.__window.actiongroup.get_action('fit_manual_mode').activate)
-        self.__manager.register('manga_mode',
-                                self.__window.actiongroup.get_action('manga_mode').activate)
-        self.__manager.register('keep_transformation',
-                                self.__window.actiongroup.get_action('keep_transformation').activate)
-        self.__manager.register('lens',
-                                self.__window.actiongroup.get_action('lens').activate)
-        self.__manager.register('stretch',
-                                self.__window.actiongroup.get_action('stretch').activate)
+        self.__keybindings.register('double_page',
+                                    self.__window.actiongroup.get_action('double_page').activate)
+        self.__keybindings.register('best_fit_mode',
+                                    self.__window.actiongroup.get_action('best_fit_mode').activate)
+        self.__keybindings.register('fit_width_mode',
+                                    self.__window.actiongroup.get_action('fit_width_mode').activate)
+        self.__keybindings.register('fit_height_mode',
+                                    self.__window.actiongroup.get_action('fit_height_mode').activate)
+        self.__keybindings.register('fit_size_mode',
+                                    self.__window.actiongroup.get_action('fit_size_mode').activate)
+        self.__keybindings.register('fit_manual_mode',
+                                    self.__window.actiongroup.get_action('fit_manual_mode').activate)
+        self.__keybindings.register('manga_mode',
+                                    self.__window.actiongroup.get_action('manga_mode').activate)
+        self.__keybindings.register('keep_transformation',
+                                    self.__window.actiongroup.get_action('keep_transformation').activate)
+        self.__keybindings.register('lens',
+                                    self.__window.actiongroup.get_action('lens').activate)
+        self.__keybindings.register('stretch',
+                                    self.__window.actiongroup.get_action('stretch').activate)
 
         # Zooming commands for manual zoom mode
-        self.__manager.register('zoom_in',
-                                self.__window.actiongroup.get_action('zoom_in').activate)
-        self.__manager.register('zoom_out',
-                                self.__window.actiongroup.get_action('zoom_out').activate)
+        self.__keybindings.register('zoom_in',
+                                    self.__window.actiongroup.get_action('zoom_in').activate)
+        self.__keybindings.register('zoom_out',
+                                    self.__window.actiongroup.get_action('zoom_out').activate)
 
         # Zoom out is already defined as GTK menu hotkey
-        self.__manager.register('zoom_original',
-                                self.__window.actiongroup.get_action('zoom_original').activate)
-        self.__manager.register('rotate_90',
-                                self.__window.rotate_x,
-                                kwargs={'rotation': 90})
-        self.__manager.register('rotate_270',
-                                self.__window.rotate_x,
-                                kwargs={'rotation': 270})
-        self.__manager.register('rotate_180',
-                                self.__window.rotate_x,
-                                kwargs={'rotation': 180})
-        self.__manager.register('flip_horiz',
-                                self.__window.flip_horizontally)
-        self.__manager.register('flip_vert',
-                                self.__window.flip_vertically)
-        self.__manager.register('no_autorotation',
-                                self.__window.actiongroup.get_action('no_autorotation').activate)
-        self.__manager.register('rotate_90_width',
-                                self.__window.actiongroup.get_action('rotate_90_width').activate)
-        self.__manager.register('rotate_270_width',
-                                self.__window.actiongroup.get_action('rotate_270_width').activate)
-        self.__manager.register('rotate_90_height',
-                                self.__window.actiongroup.get_action('rotate_90_height').activate)
-        self.__manager.register('rotate_270_height',
-                                self.__window.actiongroup.get_action('rotate_270_height').activate)
+        self.__keybindings.register('zoom_original',
+                                    self.__window.actiongroup.get_action('zoom_original').activate)
+        self.__keybindings.register('rotate_90',
+                                    self.__window.rotate_x,
+                                    kwargs={'rotation': 90})
+        self.__keybindings.register('rotate_270',
+                                    self.__window.rotate_x,
+                                    kwargs={'rotation': 270})
+        self.__keybindings.register('rotate_180',
+                                    self.__window.rotate_x,
+                                    kwargs={'rotation': 180})
+        self.__keybindings.register('flip_horiz',
+                                    self.__window.flip_horizontally)
+        self.__keybindings.register('flip_vert',
+                                    self.__window.flip_vertically)
+        self.__keybindings.register('no_autorotation',
+                                    self.__window.actiongroup.get_action('no_autorotation').activate)
+        self.__keybindings.register('rotate_90_width',
+                                    self.__window.actiongroup.get_action('rotate_90_width').activate)
+        self.__keybindings.register('rotate_270_width',
+                                    self.__window.actiongroup.get_action('rotate_270_width').activate)
+        self.__keybindings.register('rotate_90_height',
+                                    self.__window.actiongroup.get_action('rotate_90_height').activate)
+        self.__keybindings.register('rotate_270_height',
+                                    self.__window.actiongroup.get_action('rotate_270_height').activate)
 
         # Arrow keys scroll the image
-        self.__manager.register('scroll_down',
-                                self._scroll_with_flipping,
-                                kwargs={'x': 0, 'y': config['PIXELS_TO_SCROLL_PER_KEY_EVENT']})
-        self.__manager.register('scroll_up',
-                                self._scroll_with_flipping,
-                                kwargs={'x': 0, 'y': -config['PIXELS_TO_SCROLL_PER_KEY_EVENT']})
-        self.__manager.register('scroll_right',
-                                self._scroll_with_flipping,
-                                kwargs={'x': config['PIXELS_TO_SCROLL_PER_KEY_EVENT'], 'y': 0})
-        self.__manager.register('scroll_left',
-                                self._scroll_with_flipping,
-                                kwargs={'x': -config['PIXELS_TO_SCROLL_PER_KEY_EVENT'], 'y': 0})
+        self.__keybindings.register('scroll_down',
+                                    self._scroll_with_flipping,
+                                    kwargs={'x': 0, 'y': config['PIXELS_TO_SCROLL_PER_KEY_EVENT']})
+        self.__keybindings.register('scroll_up',
+                                    self._scroll_with_flipping,
+                                    kwargs={'x': 0, 'y': -config['PIXELS_TO_SCROLL_PER_KEY_EVENT']})
+        self.__keybindings.register('scroll_right',
+                                    self._scroll_with_flipping,
+                                    kwargs={'x': config['PIXELS_TO_SCROLL_PER_KEY_EVENT'], 'y': 0})
+        self.__keybindings.register('scroll_left',
+                                    self._scroll_with_flipping,
+                                    kwargs={'x': -config['PIXELS_TO_SCROLL_PER_KEY_EVENT'], 'y': 0})
 
         # File operations
-        self.__manager.register('close',
-                                self.__window.filehandler.close_file)
-        self.__manager.register('quit',
-                                self.__window.terminate_program)
-        self.__manager.register('delete',
-                                self.__window.move_file, kwargs={'move_else_delete': False})
-        self.__manager.register('move_file',
-                                self.__window.move_file, kwargs={'move_else_delete': True})
-        self.__manager.register('extract_page',
-                                self.__window.extract_page)
-        self.__manager.register('refresh_archive',
-                                self.__window.filehandler.refresh_file)
-        self.__manager.register('next_archive',
-                                self.__window.filehandler.open_archive_direction, kwargs={'forward': True})
-        self.__manager.register('previous_archive',
-                                self.__window.filehandler.open_archive_direction, kwargs={'forward': False})
-        self.__manager.register('next_directory',
-                                self.__window.filehandler.open_directory_direction, kwargs={'forward': True})
-        self.__manager.register('previous_directory',
-                                self.__window.filehandler.open_directory_direction, kwargs={'forward': False})
-        self.__manager.register('properties',
-                                self.__window.actiongroup.get_action('properties').activate)
-        self.__manager.register('preferences',
-                                self.__window.actiongroup.get_action('preferences').activate)
-        self.__manager.register('enhance_image',
-                                self.__window.actiongroup.get_action('enhance_image').activate)
+        self.__keybindings.register('close',
+                                    self.__window.filehandler.close_file)
+        self.__keybindings.register('quit',
+                                    self.__window.terminate_program)
+        self.__keybindings.register('delete',
+                                    self.__window.move_file, kwargs={'move_else_delete': False})
+        self.__keybindings.register('move_file',
+                                    self.__window.move_file, kwargs={'move_else_delete': True})
+        self.__keybindings.register('extract_page',
+                                    self.__window.extract_page)
+        self.__keybindings.register('refresh_archive',
+                                    self.__window.filehandler.refresh_file)
+        self.__keybindings.register('next_archive',
+                                    self.__window.filehandler.open_archive_direction, kwargs={'forward': True})
+        self.__keybindings.register('previous_archive',
+                                    self.__window.filehandler.open_archive_direction, kwargs={'forward': False})
+        self.__keybindings.register('next_directory',
+                                    self.__window.filehandler.open_directory_direction, kwargs={'forward': True})
+        self.__keybindings.register('previous_directory',
+                                    self.__window.filehandler.open_directory_direction, kwargs={'forward': False})
+        self.__keybindings.register('properties',
+                                    self.__window.actiongroup.get_action('properties').activate)
+        self.__keybindings.register('preferences',
+                                    self.__window.actiongroup.get_action('preferences').activate)
+        self.__keybindings.register('enhance_image',
+                                    self.__window.actiongroup.get_action('enhance_image').activate)
 
         # User interface
-        self.__manager.register('minimize',
-                                self.__window.minimize)
-        self.__manager.register('fullscreen',
-                                self.__window.actiongroup.get_action('fullscreen').activate)
-        self.__manager.register('menubar',
-                                self.__window.actiongroup.get_action('menubar').activate)
-        self.__manager.register('statusbar',
-                                self.__window.actiongroup.get_action('statusbar').activate)
-        self.__manager.register('scrollbar',
-                                self.__window.actiongroup.get_action('scrollbar').activate)
-        self.__manager.register('thumbnails',
-                                self.__window.actiongroup.get_action('thumbnails').activate)
-        self.__manager.register('hide_all',
-                                self.__window.actiongroup.get_action('hide_all').activate)
+        self.__keybindings.register('minimize',
+                                    self.__window.minimize)
+        self.__keybindings.register('fullscreen',
+                                    self.__window.actiongroup.get_action('fullscreen').activate)
+        self.__keybindings.register('menubar',
+                                    self.__window.actiongroup.get_action('menubar').activate)
+        self.__keybindings.register('statusbar',
+                                    self.__window.actiongroup.get_action('statusbar').activate)
+        self.__keybindings.register('scrollbar',
+                                    self.__window.actiongroup.get_action('scrollbar').activate)
+        self.__keybindings.register('thumbnails',
+                                    self.__window.actiongroup.get_action('thumbnails').activate)
+        self.__keybindings.register('hide_all',
+                                    self.__window.actiongroup.get_action('hide_all').activate)
 
     def key_press_event(self, widget, event, *args):
         """
@@ -224,7 +222,7 @@ class EventHandler:
                 consumed &= ~Gdk.ModifierType.SHIFT_MASK
 
             # 'consumed' is the modifier that was necessary to type the key
-            self.__manager.execute((keyval, event.get_state() & ~consumed & ALL_ACCELS_MASK))
+            self.__keybindings.execute((keyval, event.get_state() & ~consumed & ALL_ACCELS_MASK))
 
     def escape_event(self):
         """

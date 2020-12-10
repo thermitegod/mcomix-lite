@@ -13,10 +13,11 @@ from mcomix.preferences_dialog import PreferenceDialog
 
 
 class MainUI(Gtk.UIManager):
-    def __init__(self, window):
+    def __init__(self, window, keybindings):
         super().__init__()
 
         self.__window = window
+        self.__keybindings = keybindings
 
         def _action_lambda(fn, *args):
             return lambda *_: fn(*args)
@@ -130,7 +131,7 @@ class MainUI(Gtk.UIManager):
 
         self.__actiongroup.add_actions([
             ('preferences', Gtk.STOCK_PREFERENCES, 'Pr_eferences',
-             None, None, PreferenceDialog.open_dialog)], self.__window)
+             None, None, PreferenceDialog.open_dialog)], (self.__window, self.__keybindings))
 
         # Some actions added separately since they need extra arguments.
         self.__actiongroup.add_actions([

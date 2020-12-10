@@ -6,7 +6,6 @@ import PIL.Image  # for PIL interpolation prefs
 from gi.repository import GObject, GdkPixbuf, Gtk
 
 from mcomix.constants import Constants
-from mcomix.keybindings import KeybindingManager
 from mcomix.keybindings_editor import KeybindingEditorWindow
 from mcomix.preferences import config
 
@@ -17,7 +16,7 @@ class _PreferencesDialog(Gtk.Dialog):
     saved between sessions are presented to the user
     """
 
-    def __init__(self, window):
+    def __init__(self, window, keybindings):
         super().__init__(title='Preferences')
 
         self.set_transient_for(window)
@@ -30,7 +29,7 @@ class _PreferencesDialog(Gtk.Dialog):
         self.set_resizable(True)
         self.set_default_response(Gtk.ResponseType.CLOSE)
 
-        self.__manager = KeybindingManager.keybinding_manager(self.__window)
+        self.__keybindings = keybindings
 
         self.connect('response', self._response)
 
@@ -381,7 +380,7 @@ class _PreferencesDialog(Gtk.Dialog):
         # ----------------------------------------------------------------
         # The "Shortcuts" tab.
         # ----------------------------------------------------------------
-        page = KeybindingEditorWindow(self.__manager)
+        page = KeybindingEditorWindow(self.__keybindings)
 
         return page
 
@@ -405,9 +404,9 @@ class _PreferencesDialog(Gtk.Dialog):
         elif response == Constants.RESPONSE['REVERT_TO_DEFAULT']:
             if self.__notebook.get_nth_page(self.__notebook.get_current_page()) == self.__shortcuts:
                 # "Shortcuts" page is active, reset all keys to their default value
-                self.__manager.clear_all()
+                self.__keybindings.clear_all()
                 self.__window.get_event_handler().register_key_events()
-                self.__manager.write_keybindings_file()
+                self.__keybindings.write_keybindings_file()
                 self.__shortcuts.refresh_model()
             else:
                 # Reset stored choices
@@ -685,14 +684,20 @@ class _PreferenceDialog:
     def __init__(self):
         self.__dialog = None
 
-    def open_dialog(self, event, window):
+        self.__window = None
+        self.__keybindings = None
+
+    def open_dialog(self, event, data):
         """
         Create and display the preference dialog
         """
 
+        self.__window = data[0]
+        self.__keybindings = data[1]
+
         # if the dialog window is not created then create the window
         if self.__dialog is None:
-            self.__dialog = _PreferencesDialog(window)
+            self.__dialog = _PreferencesDialog(self.__window, self.__keybindings)
         else:
             # if the dialog window already exists bring it to the forefront of the screen
             self.__dialog.present()

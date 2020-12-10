@@ -16,6 +16,7 @@ from mcomix.file_handler import FileHandler
 from mcomix.icons import Icons
 from mcomix.image_handler import ImageHandler
 from mcomix.image_tools import ImageTools
+from mcomix.keybindings import KeybindingManager
 from mcomix.keybindings_config import KeybindingConfig
 from mcomix.layout import FiniteLayout
 from mcomix.lens import MagnifyingLens
@@ -57,11 +58,12 @@ class MainWindow(Gtk.Window):
         self.__waiting_for_redraw = False
 
         self.__main_layout = Gtk.Layout()
+        self.__keybindings = KeybindingManager(self)
         # Wrap main layout into an event box so
         # we  can change its background color.
         self.__event_box = Gtk.EventBox()
         self.__event_box.add(self.__main_layout)
-        self.__event_handler = EventHandler(self)
+        self.__event_handler = EventHandler(self, self.__keybindings)
         self.__vadjust = self.__main_layout.get_vadjustment()
         self.__hadjust = self.__main_layout.get_hadjustment()
         self.__scroll = (
@@ -81,7 +83,7 @@ class MainWindow(Gtk.Window):
         self.enhancer = ImageEnhancer(self)
         self.lens = MagnifyingLens(self)
         self.zoom = ZoomModel()
-        self.uimanager = MainUI(self)
+        self.uimanager = MainUI(self, self.__keybindings)
         self.menubar = self.uimanager.get_widget('/Menu')
         self.popup = self.uimanager.get_widget('/Popup')
         self.actiongroup = self.uimanager.get_action_groups()[0]

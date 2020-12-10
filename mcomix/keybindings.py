@@ -27,11 +27,11 @@ from collections import defaultdict
 from gi.repository import Gtk
 from loguru import logger
 
-from mcomix.keybindings_map import KeyBindingsInfo
 from mcomix.keybindings_config import KeybindingConfig
+from mcomix.keybindings_map import KeyBindingsInfo
 
 
-class _KeybindingInterface:
+class KeybindingManager:
     def __init__(self, window):
         super().__init__()
 
@@ -188,19 +188,3 @@ class _KeybindingInterface:
         """
 
         return self.__action_to_bindings[name]
-
-
-class _KeybindingManager:
-    def __init__(self):
-        super().__init__()
-
-        self.__manager = None
-
-    def keybinding_manager(self, window):
-        if self.__manager is None:
-            self.__manager = _KeybindingInterface(window)
-        return self.__manager
-
-
-# Singleton instance
-KeybindingManager = _KeybindingManager()
