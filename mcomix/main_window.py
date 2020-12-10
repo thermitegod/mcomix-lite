@@ -198,7 +198,7 @@ class MainWindow(Gtk.Window):
             toggleaction = self.actiongroup.get_action('fullscreen')
             toggleaction.set_active(True)
 
-        if open_path is not None:
+        if open_path:
             self.filehandler.open_file(open_path)
 
         if config['HIDE_CURSOR']:

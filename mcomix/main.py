@@ -68,9 +68,6 @@ def main():
         logger.info(f'Loading file from command line: \'{p}\'')
         open_path.append(p)
 
-    if not open_path:
-        open_path = None
-
     Gdk.set_program_class(Constants.APPNAME)
 
     settings = Gtk.Settings.get_default()
