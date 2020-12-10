@@ -9,7 +9,7 @@ from loguru import logger
 from mcomix.constants import Constants
 
 
-class _ConfigManager:
+class _ConfigBackend:
     def __init__(self):
         super().__init__()
 
@@ -59,4 +59,4 @@ class _ConfigManager:
         config_path.write_text(self._dump_config(config))
 
 
-ConfigManager = _ConfigManager()
+ConfigBackend = _ConfigBackend()

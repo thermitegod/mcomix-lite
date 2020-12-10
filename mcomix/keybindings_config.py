@@ -5,7 +5,7 @@ from pathlib import Path
 
 from gi.repository import Gtk
 
-from mcomix.config import ConfigManager
+from mcomix.config_backend import ConfigBackend
 from mcomix.constants import Constants
 from mcomix.keybindings_map import KeyBindingsInfo, KeyBindingsDefault
 
@@ -19,7 +19,7 @@ class _KeybindingConfig:
         # (key code, key modifier) => action name
         self.__binding_to_action = {}
 
-        self.__config_manager = ConfigManager
+        self.__config_manager = ConfigBackend
         self.__keybindings_path = Constants.CONFIG_FILES['KEYBINDINGS']
 
     @property

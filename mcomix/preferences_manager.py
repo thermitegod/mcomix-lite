@@ -6,7 +6,7 @@ from pathlib import Path
 
 from loguru import logger
 
-from mcomix.config import ConfigManager
+from mcomix.config_backend import ConfigBackend
 from mcomix.constants import Constants
 from mcomix.preferences import config
 
@@ -15,7 +15,7 @@ class _PreferenceManager:
     def __init__(self):
         super().__init__()
 
-        self.__config_manager = ConfigManager
+        self.__config_manager = ConfigBackend
         self.__config_path = Constants.CONFIG_FILES['CONFIG']
 
     def load_preferences_file(self):
