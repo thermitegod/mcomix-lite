@@ -13,7 +13,7 @@ class _ConfigManager:
     def __init__(self):
         super().__init__()
 
-        self.stored_config_hash = {
+        self.__stored_config_hash = {
             'preferences': None,
             'keybindings': None,
         }
@@ -30,11 +30,14 @@ class _ConfigManager:
             logger.info(f'Creating missing data dir')
             Constants.PATHS['DATA'].mkdir()
 
-    def hash_config(self, config: dict):
-        return xxhash.xxh3_64(self.dump_config(config).encode('utf8')).hexdigest()
+    def update_config_hash(self, config: dict, module: str):
+        self.__stored_config_hash[module] = self._hash_config(config=config)
+
+    def _hash_config(self, config: dict):
+        return xxhash.xxh3_64(self._dump_config(config).encode('utf8')).hexdigest()
 
     @staticmethod
-    def dump_config(config: dict):
+    def _dump_config(config: dict):
         return json.dumps(config, ensure_ascii=False, indent=2)
 
     @staticmethod
@@ -47,9 +50,13 @@ class _ConfigManager:
             logger.error(f'Exception: {ex}')
             raise SystemExit
 
-    def write_config(self, config: dict, path: Path):
-        config_json = self.dump_config(config)
-        path.write_text(config_json)
+    def write_config(self, config: dict, config_path: Path, module: str):
+        if self._hash_config(config=config) == self.__stored_config_hash[module]:
+            logger.info(f'No changes to write for {module}')
+            return
+
+        logger.info(f'Writing changes to {module}')
+        config_path.write_text(self._dump_config(config))
 
 
 ConfigManager = _ConfigManager()

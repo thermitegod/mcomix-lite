@@ -44,6 +44,7 @@ class _KeybindingInterface:
         self.__action_to_bindings = defaultdict(list)  # action name => [ (key code, key modifier), ]
         self.__binding_to_action = {}  # (key code, key modifier) => action name
 
+        self.__config_manager = ConfigManager
         self.__keybindings_path = Constants.CONFIG_FILES['KEYBINDINGS']
 
         self.load_keybindings_file()
@@ -192,20 +193,13 @@ class _KeybindingInterface:
                     (keyval, modifiers) in bindings
                 ]
 
-        config_hash = ConfigManager.hash_config(config=action_to_keys)
-        if config_hash == ConfigManager.stored_config_hash['keybindings']:
-            logger.info('No changes to write for keybindings')
-            return
-
-        logger.info('Writing changes to keybindings')
-
-        ConfigManager.stored_config_hash['keybindings'] = config_hash
-        ConfigManager.write_config(config=action_to_keys, path=self.__keybindings_path)
+        self.__config_manager.write_config(config=action_to_keys, config_path=self.__keybindings_path,
+                                           module='keybindings')
 
     def load_keybindings_file(self):
         stored_action_bindings = {}
         if Path.is_file(self.__keybindings_path):
-            ConfigManager.load_config(config=self.__keybindings_path, saved_prefs=stored_action_bindings)
+            self.__config_manager.load_config(config=self.__keybindings_path, saved_prefs=stored_action_bindings)
         else:
             stored_action_bindings = KeyBindingsDefault.DEFAULT_BINDINGS.copy()
 
@@ -220,7 +214,7 @@ class _KeybindingInterface:
             else:
                 self.__action_to_bindings[action] = []
 
-        ConfigManager.stored_config_hash['keybindings'] = ConfigManager.hash_config(config=stored_action_bindings)
+        self.__config_manager.update_config_hash(config=stored_action_bindings, module='keybindings')
 
     def get_bindings_for_action(self, name):
         """

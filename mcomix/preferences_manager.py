@@ -15,27 +15,20 @@ class _PreferenceManager:
     def __init__(self):
         super().__init__()
 
-        self.__preference_path = Constants.CONFIG_FILES['CONFIG']
+        self.__config_manager = ConfigManager
+        self.__config_path = Constants.CONFIG_FILES['CONFIG']
 
     def load_preferences_file(self):
         saved_prefs = {}
-        if Path.is_file(self.__preference_path):
-            ConfigManager.load_config(config=self.__preference_path, saved_prefs=saved_prefs)
+        if Path.is_file(self.__config_path):
+            self.__config_manager.load_config(config=self.__config_path, saved_prefs=saved_prefs)
 
         config.update(filter(lambda i: i[0] in config, saved_prefs.items()))
 
-        ConfigManager.stored_config_hash['preferences'] = ConfigManager.hash_config(config)
+        self.__config_manager.update_config_hash(config=config, module='preferences')
 
     def write_preferences_file(self):
-        config_hash = ConfigManager.hash_config(config=config)
-        if config_hash == ConfigManager.stored_config_hash['preferences']:
-            logger.info('No changes to write for preferences')
-            return
-
-        logger.info('Writing changes to preferences')
-
-        ConfigManager.stored_config_hash['preferences'] = config_hash
-        ConfigManager.write_config(config=config, path=self.__preference_path)
+        self.__config_manager.write_config(config=config, config_path=self.__config_path, module='preferences')
 
 
 PreferenceManager = _PreferenceManager()
