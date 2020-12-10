@@ -226,21 +226,16 @@ class FileHandler:
         :returns: If C{path} was a list, returns the first list element. Otherwise, C{path} is not modified
         """
 
-        if isinstance(path, list) and not path:
-            logger.error('Tried to open an empty list of files.')
-
-        elif isinstance(path, list) and len(path) > 0:
+        if isinstance(path, list):
             # A list of files was passed - open only these files.
             if self.__file_provider is None or not keep_fileprovider:
                 self.__file_provider = GetFileProvider.get_file_provider(path)
-
             return path[0]
         else:
             # A single file was passed - use Comix' classic open mode
             # and open all files in its directory.
             if self.__file_provider is None or not keep_fileprovider:
                 self.__file_provider = GetFileProvider.get_file_provider([path])
-
             return path
 
     @staticmethod
