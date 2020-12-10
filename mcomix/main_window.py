@@ -16,7 +16,7 @@ from mcomix.file_handler import FileHandler
 from mcomix.icons import Icons
 from mcomix.image_handler import ImageHandler
 from mcomix.image_tools import ImageTools
-from mcomix.keybindings import KeybindingManager
+from mcomix.keybindings_config import KeybindingConfig
 from mcomix.layout import FiniteLayout
 from mcomix.lens import MagnifyingLens
 from mcomix.lib.callback import Callback
@@ -973,7 +973,7 @@ class MainWindow(Gtk.Window):
 
         # write config file
         PreferenceManager.write_preferences_file()
-        KeybindingManager.keybinding_manager(self).write_keybindings_file()
+        KeybindingConfig.write_keybindings_file()
         BookmarksStore.write_bookmarks_file()
 
         self.filehandler.close_file()

@@ -407,7 +407,7 @@ class _PreferencesDialog(Gtk.Dialog):
                 # "Shortcuts" page is active, reset all keys to their default value
                 self.__manager.clear_all()
                 self.__window.get_event_handler().register_key_events()
-                self.__manager.save()
+                self.__manager.write_keybindings_file()
                 self.__shortcuts.refresh_model()
             else:
                 # Reset stored choices
