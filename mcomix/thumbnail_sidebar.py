@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""thumbbar.py - Thumbnail sidebar for main window"""
+"""thumbnail_sidebar.py - Thumbnail sidebar for main window"""
 
 import urllib.request
 
