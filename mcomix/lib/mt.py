@@ -8,7 +8,7 @@ from threading import Lock
 from mcomix.preferences import config
 
 
-class NamedPool(mpThreadPool):
+class _NamedPool(mpThreadPool):
     def __init__(self, *args, name: str = None, **kwargs):
         self.__name = name
         super().__init__(*args, **kwargs)
@@ -19,14 +19,14 @@ class NamedPool(mpThreadPool):
         return mpThreadPool.Process(*args, **kwargs)
 
 
-class ThreadPool:
+class _ThreadPool:
     # multiprocessing.dummy.Pool with exc_info in error_callback
     def __init__(self, name: str = None, processes: int = None):
         super().__init__()
 
         self.__name = name
         self.__processes = processes
-        self.__pool = NamedPool(self.__processes, name=self.__name)
+        self.__pool = _NamedPool(self.__processes, name=self.__name)
         self.__lock = Lock()  # lock for self
         self.__cblock = Lock()  # lock for callback
         self.__errcblock = Lock()  # lock for error_callback
@@ -108,8 +108,8 @@ class _GlobalThreadPool:
     def __init__(self):
         super().__init__()
 
-        self.threadpool = ThreadPool(name='GlobalThreadPool',
-                                     processes=config['MAX_THREADS'])
+        self.threadpool = _ThreadPool(name='GlobalThreadPool',
+                                      processes=config['MAX_THREADS'])
 
 
 GlobalThreadPool = _GlobalThreadPool()
