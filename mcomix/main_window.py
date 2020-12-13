@@ -11,7 +11,7 @@ from mcomix.bookmark_backend import BookmarksStore
 from mcomix.constants import Constants
 from mcomix.cursor_handler import CursorHandler
 from mcomix.enhance_backend import ImageEnhancer
-from mcomix.event import EventHandler
+from mcomix.event_handler import EventHandler
 from mcomix.file_handler import FileHandler
 from mcomix.icons import Icons
 from mcomix.image_handler import ImageHandler

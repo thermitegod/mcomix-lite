@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""event.py - Event handling (keyboard, mouse, etc.) for the main window"""
+"""event_handler.py - Event handling (keyboard, mouse, etc.) for the main window"""
 
 import urllib.parse
 import urllib.request
