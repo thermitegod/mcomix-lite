@@ -9,7 +9,8 @@ from PIL import Image, ImageEnhance, ImageOps, ImageSequence
 from gi.repository import GLib, GdkPixbuf, Gio
 from loguru import logger
 
-from mcomix.anime_tools import AnimeFrameBuffer, AnimeFrameExecutor
+from mcomix.anime_executor import AnimeFrameExecutor
+from mcomix.anime_framebuffer import AnimeFrameBuffer
 from mcomix.constants import Constants
 from mcomix.lib.reader import LockedFileIO
 from mcomix.preferences import config

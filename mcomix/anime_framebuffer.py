@@ -82,26 +82,3 @@ class AnimeFrameBuffer:
         anime.framebuffer = self
 
         return anime
-
-
-class AnimeFrameExecutor:
-    @staticmethod
-    def frame_executor(animation, function, args=(), kwargs=None):
-        if kwargs is None:
-            kwargs = {}
-        if not config['ANIMATION_TRANSFORM']:
-            # transform disabled, do nothing
-            return animation
-        if not callable(function):
-            # function is not a function, do nothing
-            return animation
-        framebuffer = getattr(animation, 'framebuffer', None)
-        if not framebuffer:
-            # animation does not have AnimeFrameBuffer, do nothing
-            return animation
-        # call function on every frame
-        anime = AnimeFrameBuffer(framebuffer.n_frames, loop=framebuffer.loop)
-        for n, frame in enumerate(framebuffer.framelist):
-            pixbuf, duration = frame
-            anime.add_frame(n, function(pixbuf, *args, **kwargs), duration)
-        return anime.create_animation()
