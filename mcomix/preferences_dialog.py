@@ -711,7 +711,6 @@ class _PreferenceDialog:
             self.__dialog = None
 
 
-# Singleton instance
 PreferenceDialog = _PreferenceDialog()
 
 

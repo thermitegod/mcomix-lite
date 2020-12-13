@@ -220,5 +220,4 @@ class _BookmarksStore:
         return dialog.run()
 
 
-# Singleton instance of the bookmarks store.
 BookmarksStore = _BookmarksStore()

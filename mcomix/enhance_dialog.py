@@ -242,5 +242,4 @@ class _EnhanceDialog:
             self.__dialog = None
 
 
-# Singleton instance
 EnhanceDialog = _EnhanceDialog()
