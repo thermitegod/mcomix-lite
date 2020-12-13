@@ -16,8 +16,8 @@ from mcomix.file_handler import FileHandler
 from mcomix.icons import Icons
 from mcomix.image_handler import ImageHandler
 from mcomix.image_tools import ImageTools
-from mcomix.keybindings import KeybindingManager
 from mcomix.keybindings_config import KeybindingConfig
+from mcomix.keybindings_manager import KeybindingManager
 from mcomix.layout import FiniteLayout
 from mcomix.lens import MagnifyingLens
 from mcomix.lib.callback import Callback
