@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from typing import Callable
+
 import sys
 from multiprocessing.dummy import Pool
 from multiprocessing.pool import ThreadPool as mpThreadPool
@@ -38,27 +40,31 @@ class _ThreadPool:
     def __exit__(self, etype, value, tb):
         self.terminate()
 
-    def map_async(self, *args, **kwargs):
+    def map_async(self, *args: tuple, **kwargs: dict):
         return self.__pool.map_async(*args, **kwargs)
 
     def join(self):
         return self.__pool.join()
 
     @staticmethod
-    def _trycall(func, args=(), kwargs=None, lock=None):
+    def _trycall(function: Callable, args: tuple = None, kwargs: dict = None, lock: Lock = None):
+        if function is None:
+            return
+
+        if args is None:
+            args = ()
         if kwargs is None:
             kwargs = {}
-        if not callable(func):
-            return
+
         with lock:
             try:
-                return func(*args, **kwargs)
+                return function(*args, **kwargs)
             except Exception:
                 pass
 
-    def _caller(self, func, args, kwargs, callback, error_callback, exc_raise):
+    def _caller(self, function: Callable, args: tuple, kwargs: dict, callback, error_callback, exc_raise: bool):
         try:
-            result = func(*args, **kwargs)
+            result = function(*args, **kwargs)
         except Exception:
             etype, value, tb = sys.exc_info()
             self._trycall(error_callback, args=(self.__name, etype, value, tb),
@@ -70,15 +76,18 @@ class _ThreadPool:
                           lock=self.__cblock)
             return result
 
-    def apply_async(self, func, args=(), kwargs=None,
+    def apply_async(self, function: Callable, args: tuple = None, kwargs: dict = None,
                     callback=None, error_callback=None):
-        # run error_callback with ThreadPool.name and exc_info if func failed,
+        # run error_callback with ThreadPool.name and exc_info if function failed,
         # callback and error_callback will *not* run in multi thread.
         # other arguments is same as Pool.apply_async
+        if args is None:
+            args = ()
         if kwargs is None:
             kwargs = {}
+
         return self.__pool.apply_async(
-            self._caller, (func, args, kwargs, None, error_callback, True),
+            self._caller, (function, args, kwargs, None, error_callback, True),
             callback=callback)
 
     def close(self):
