@@ -330,7 +330,7 @@ class _ImageTools:
                 with Image.open(fio) as im:
                     # make sure n_frames loaded
                     im.load()
-                    if enable_anime and getattr(im, 'is_animated', False):
+                    if enable_anime and im.is_animated:
                         return self.load_animation(im)
                     return self.pil_to_pixbuf(im, keep_orientation=True)
         except Exception as ex:
@@ -401,7 +401,8 @@ class _ImageTools:
             im = ImageEnhance.Sharpness(im).enhance(sharpness)
         return self.pil_to_pixbuf(im)
 
-    def get_implied_rotation(self, pixbuf):
+    @staticmethod
+    def get_implied_rotation(pixbuf):
         """
         Return the implied rotation in degrees: 0, 90, 180, or 270.
         The implied rotation is the angle (in degrees) that the raw pixbuf should
@@ -410,18 +411,13 @@ class _ImageTools:
         and the pixbuf loader will set the orientation option correspondingly
         """
 
-        pixbuf = self.static_image(pixbuf)
-        orientation = getattr(pixbuf, 'orientation', None)
-        if orientation is None:
-            orientation = pixbuf.get_option('orientation')
-
+        orientation = pixbuf.orientation
         if orientation == '3':
             return 180
         elif orientation == '6':
             return 90
         elif orientation == '8':
             return 270
-
         return 0
 
     @staticmethod

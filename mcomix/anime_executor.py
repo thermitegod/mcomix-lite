@@ -24,8 +24,9 @@ class AnimeFrameExecutor:
             # transform disabled, do nothing
             return animation
 
-        framebuffer = getattr(animation, 'framebuffer', None)
-        if not framebuffer:
+        try:
+            framebuffer = animation.framebuffer
+        except AttributeError:
             # animation does not have AnimeFrameBuffer, do nothing
             return animation
 
