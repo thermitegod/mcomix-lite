@@ -20,6 +20,9 @@ class _ImageTools:
     def __init__(self):
         super().__init__()
 
+        # disable PIL DecompressionBombWarning
+        Image.MAX_IMAGE_PIXELS = None
+
         self.__supported_image_exts = tuple()
         self.__supported_image_mimes = tuple()
         self.__supported_image_formats = {}
