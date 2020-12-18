@@ -13,6 +13,7 @@ config = {
     'SORT_ARCHIVE_BY': Constants.FILE_SORT_TYPE['NAME'],  # Files in archives
     'SORT_ARCHIVE_ORDER': Constants.FILE_SORT_DIRECTION['ASCENDING'],
     'CHECKERED_BG_FOR_TRANSPARENT_IMAGES': True,
+    'CHECKERED_BG_SIZE': 16,
     'STRETCH': True,
     'DEFAULT_DOUBLE_PAGE': True,
     'DEFAULT_FULLSCREEN': False,

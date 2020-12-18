@@ -97,6 +97,9 @@ class _PreferencesDialog(Gtk.Dialog):
             'Use a checkered background for transparent images',
             'CHECKERED_BG_FOR_TRANSPARENT_IMAGES'))
 
+        page.add_row(Gtk.Label(label='Checkered background size:'),
+                     self._create_checkered_bg_size_combobox())
+
         return page
 
     def _init_behaviour_tab(self):
@@ -417,6 +420,29 @@ class _PreferencesDialog(Gtk.Dialog):
             # Other responses close the dialog, e.g. clicking the X icon on the dialog.
             PreferenceDialog.close_dialog()
 
+    def _create_checkered_bg_size_combobox(self):
+        """
+        Creates combo box to set box size for alpha images
+        """
+
+        items = (
+            ('2', 2),
+            ('4', 4),
+            ('8', 8),
+            ('16', 16),
+            ('32', 32),
+            ('64', 64),
+            ('128', 128),
+            ('256', 256),
+            ('512', 512),
+        )
+
+        box = self._create_combobox(items,
+                                    'CHECKERED_BG_SIZE',
+                                    self._changed_cb)
+
+        return box
+
     def _create_doublepage_as_one_control(self):
         """
         Creates the ComboBox control for selecting virtual double page options
@@ -587,6 +613,8 @@ class _PreferencesDialog(Gtk.Dialog):
                     self.__window.draw_image()
                 elif preference in ('FIT_TO_SIZE_MODE',):
                     self.__window.change_zoom_mode()
+                elif preference in ('CHECKERED_BG_SIZE',):
+                    self.__window.draw_image()
 
     @staticmethod
     def _create_combobox(options: tuple, preference: str, change_callback):

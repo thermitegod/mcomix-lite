@@ -199,7 +199,7 @@ class _ImageTools:
 
         if src.get_has_alpha():
             if config['CHECKERED_BG_FOR_TRANSPARENT_IMAGES']:
-                check_size, color1, color2 = 8, 0x777777, 0x999999
+                check_size, color1, color2 = config['CHECKERED_BG_SIZE'], 0x777777, 0x999999
             else:
                 check_size, color1, color2 = 1024, 0xFFFFFF, 0xFFFFFF
             if (width, height) == (src_width, src_height):
