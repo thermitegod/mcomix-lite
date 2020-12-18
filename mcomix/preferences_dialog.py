@@ -529,8 +529,18 @@ class _PreferencesDialog(Gtk.Dialog):
         items = (
             # -1 defers to 'scaling quality'
             ('None', -1),
-            # PIL type 1.
-            ('Lanczos', int(PIL.Image.LANCZOS)),
+            # PIL 0
+            ('Nearest', PIL.Image.NEAREST),
+            # PIL 1
+            ('Lanczos', PIL.Image.LANCZOS),
+            # PIL 2
+            ('Bilinear', PIL.Image.BILINEAR),
+            # PIL 3
+            ('Bicubic', PIL.Image.BICUBIC),
+            # PIL 4
+            ('Box', PIL.Image.BOX),
+            # PIL 5
+            ('Hamming', PIL.Image.HAMMING),
         )
 
         box = self._create_combobox(items,
