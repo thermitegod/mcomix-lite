@@ -31,7 +31,7 @@ class AnimeFrameExecutor:
             return animation
 
         # call function on every frame
-        anime = AnimeFrameBuffer(framebuffer.n_frames, loop=framebuffer.loop)
+        anime = AnimeFrameBuffer(n_frames=framebuffer.n_frames, loop=framebuffer.loop)
         for n, frame in enumerate(framebuffer.framelist):
             pixbuf, duration = frame
             anime.add_frame(n, function(pixbuf, *args, **kwargs), duration)

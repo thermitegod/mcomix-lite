@@ -46,10 +46,10 @@ class AnimeFrameBuffer:
         self.__duration = math.gcd(duration, self.__duration)
 
     def copy(self):
-        newbuffer = AnimeFrameBuffer(self.__n_frames, loop=self.__loop)
+        newbuffer = AnimeFrameBuffer(n_frames=self.__n_frames, loop=self.__loop)
         for n, frame in enumerate(self.__framelist):
             pixbuf, duration = frame
-            newbuffer.add_frame(n, pixbuf, duration)
+            newbuffer.add_frame(index=n, pixbuf=pixbuf, duration=duration)
         return newbuffer
 
     def create_animation(self):
