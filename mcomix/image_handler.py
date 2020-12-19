@@ -319,7 +319,7 @@ class ImageHandler:
         else:
             index = page - 1
 
-        if isinstance(index, int) and 0 <= index < len(self.__image_files):
+        if 0 <= index < len(self.__image_files):
             return Path(self.__image_files[index])
 
         return None
