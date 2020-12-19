@@ -322,7 +322,7 @@ class ImageHandler:
         if isinstance(index, int) and 0 <= index < len(self.__image_files):
             return Path(self.__image_files[index])
 
-        return Path('')
+        return None
 
     def get_page_filename(self, page: int = None, double: bool = False, manga: bool = False):
         """
@@ -372,11 +372,8 @@ class ImageHandler:
         def get_fsize(fsize):
             path = self.get_path_to_page(fsize)
             try:
-                if Path.exists(path):
-                    fsize = Path.stat(path).st_size
-                else:
-                    fsize = 0
-            except OSError:
+                fsize = Path.stat(path).st_size
+            except (AttributeError, FileNotFoundError):
                 logger.warning(f'failed to get file size for: {path}')
                 fsize = 0
             return FileSize(fsize).size
