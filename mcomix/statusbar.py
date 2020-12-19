@@ -106,9 +106,9 @@ class Statusbar(Gtk.EventBox):
         """
 
         if config['DEFAULT_MANGA_MODE']:
-            self.__current_view_mode = 'Manga Mode'
+            self.__current_view_mode = 'Manga'
         else:
-            self.__current_view_mode = 'Western Mode'
+            self.__current_view_mode = 'Western'
 
     def set_file_number(self, fileno: int, total: int):
         """
