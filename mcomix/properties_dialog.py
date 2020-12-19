@@ -9,9 +9,9 @@ from pathlib import Path
 from gi.repository import Gtk
 
 from mcomix.constants import Constants
+from mcomix.file_size import FileSize
 from mcomix.preferences import config
 from mcomix.properties_page import PropertiesPage
-from mcomix.utils import Utils
 
 
 class PropertiesDialog(Gtk.Dialog):
@@ -114,7 +114,7 @@ class PropertiesDialog(Gtk.Dialog):
         gid = Path.group(path)
         secondary_info = [
             ('Location', Path.resolve(path).parent),
-            ('Size', Utils.format_byte_size(stats.st_size)),
+            ('Size', FileSize(stats.st_size).size),
             ('Modified', time.strftime('%Y-%m-%d, %H:%M:%S', time.localtime(stats.st_mtime))),
             ('Accessed', time.strftime('%Y-%m-%d, %H:%M:%S', time.localtime(stats.st_atime))),
             ('Permissions', oct(stat.S_IMODE(stats.st_mode))),

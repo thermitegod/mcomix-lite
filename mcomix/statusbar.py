@@ -7,8 +7,8 @@ from pathlib import Path
 from gi.repository import Gdk, Gtk
 
 from mcomix.constants import Constants
+from mcomix.file_size import FileSize
 from mcomix.preferences import config
-from mcomix.utils import Utils
 
 
 class Statusbar(Gtk.EventBox):
@@ -164,7 +164,7 @@ class Statusbar(Gtk.EventBox):
         Update the filesize
         """
 
-        self.__archive_filesize = Utils.format_byte_size(Path.stat(path).st_size)
+        self.__archive_filesize = FileSize(Path.stat(path).st_size).size
 
     def update(self):
         """

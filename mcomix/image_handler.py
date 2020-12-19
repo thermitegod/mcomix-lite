@@ -8,12 +8,12 @@ from pathlib import Path
 from loguru import logger
 
 from mcomix.constants import Constants
+from mcomix.file_size import FileSize
 from mcomix.image_tools import ImageTools
 from mcomix.lib.callback import Callback
 from mcomix.lib.mt import GlobalThreadPool, Lock
 from mcomix.preferences import config
 from mcomix.thumbnail_tools import Thumbnailer
-from mcomix.utils import Utils
 
 
 class ImageHandler:
@@ -379,7 +379,7 @@ class ImageHandler:
             except OSError:
                 logger.warning(f'failed to get file size for: {path}')
                 fsize = 0
-            return Utils.format_byte_size(fsize)
+            return FileSize(fsize).size
 
         if page is None:
             page = self.get_current_page()
