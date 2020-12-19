@@ -414,13 +414,17 @@ class _ImageTools:
         and the pixbuf loader will set the orientation option correspondingly
         """
 
-        orientation = pixbuf.orientation
-        if orientation == '3':
-            return 180
-        elif orientation == '6':
-            return 90
-        elif orientation == '8':
-            return 270
+        try:
+            orientation = pixbuf.orientation
+            if orientation == '3':
+                return 180
+            elif orientation == '6':
+                return 90
+            elif orientation == '8':
+                return 270
+        except AttributeError:
+            pass
+
         return 0
 
     @staticmethod
