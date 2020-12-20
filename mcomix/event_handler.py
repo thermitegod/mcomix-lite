@@ -2,9 +2,6 @@
 
 """event_handler.py - Event handling (keyboard, mouse, etc.) for the main window"""
 
-import urllib.parse
-import urllib.request
-
 from gi.repository import Gdk, Gtk
 
 from mcomix.constants import Constants
@@ -345,7 +342,7 @@ class EventHandler:
         if not uris:
             return
 
-        paths = [urllib.request.url2pathname(urllib.parse.urlparse(uri).path) for uri in uris]
+        paths = [uri.removeprefix('file://') for uri in uris]
         self.__window.filehandler.open_file(paths)
 
     def _scroll_with_flipping(self, x: int, y: int):

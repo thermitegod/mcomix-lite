@@ -53,7 +53,7 @@ setup(
                       'setuptools.installation': ['eggsecutable=mcomix.main:main'], },
         test_suite='test',
         requires=['Gtk (>=3.24.0)'],
-        install_requires=['setuptools', 'pillow', 'urllib3', 'pygobject', 'loguru', 'send2trash', 'xxhash'],
+        install_requires=['setuptools', 'pillow', 'pygobject', 'loguru', 'send2trash', 'xxhash'],
         zip_safe=False,
 
         # Various MIME files that need to be copied to certain system locations on Linux.
