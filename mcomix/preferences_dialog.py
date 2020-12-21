@@ -437,9 +437,7 @@ class _PreferencesDialog(Gtk.Dialog):
             ('512', 512),
         )
 
-        box = self._create_combobox(items,
-                                    'CHECKERED_BG_SIZE',
-                                    self._changed_cb)
+        box = self._create_combobox(items, 'CHECKERED_BG_SIZE')
 
         return box
 
@@ -455,9 +453,7 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Always', Constants.DOUBLE_PAGE['AS_ONE_TITLE'] |
              Constants.DOUBLE_PAGE['AS_ONE_WIDE']))
 
-        box = self._create_combobox(items,
-                                    'VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES',
-                                    self._changed_cb)
+        box = self._create_combobox(items, 'VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES')
 
         return box
 
@@ -467,9 +463,7 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Fit to width', Constants.ZOOM['WIDTH']),
             ('Fit to height', Constants.ZOOM['HEIGHT']))
 
-        box = self._create_combobox(items,
-                                    'FIT_TO_SIZE_MODE',
-                                    self._changed_cb)
+        box = self._create_combobox(items, 'FIT_TO_SIZE_MODE')
 
         return box
 
@@ -484,17 +478,13 @@ class _PreferencesDialog(Gtk.Dialog):
             ('File size', Constants.FILE_SORT_TYPE['SIZE']),
             ('Last modified', Constants.FILE_SORT_TYPE['LAST_MODIFIED']))
 
-        sortkey_box = self._create_combobox(sortkey_items,
-                                            'SORT_BY',
-                                            self._changed_cb)
+        sortkey_box = self._create_combobox(sortkey_items, 'SORT_BY')
 
         sortorder_items = (
             ('Ascending', Constants.FILE_SORT_DIRECTION['ASCENDING']),
             ('Descending', Constants.FILE_SORT_DIRECTION['DESCENDING']))
 
-        sortorder_box = self._create_combobox(sortorder_items,
-                                              'SORT_ORDER',
-                                              self._changed_cb)
+        sortorder_box = self._create_combobox(sortorder_items, 'SORT_ORDER')
 
         box = Gtk.HBox()
         box.pack_start(sortkey_box, True, True, 0)
@@ -512,17 +502,13 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Natural order', Constants.FILE_SORT_TYPE['NAME']),
             ('Literal order', Constants.FILE_SORT_TYPE['NAME_LITERAL']))
 
-        sortkey_box = self._create_combobox(sortkey_items,
-                                            'SORT_ARCHIVE_BY',
-                                            self._changed_cb)
+        sortkey_box = self._create_combobox(sortkey_items, 'SORT_ARCHIVE_BY')
 
         sortorder_items = (
             ('Ascending', Constants.FILE_SORT_DIRECTION['ASCENDING']),
             ('Descending', Constants.FILE_SORT_DIRECTION['DESCENDING']))
 
-        sortorder_box = self._create_combobox(sortorder_items,
-                                              'SORT_ARCHIVE_ORDER',
-                                              self._changed_cb)
+        sortorder_box = self._create_combobox(sortorder_items, 'SORT_ARCHIVE_ORDER')
 
         box = Gtk.HBox()
         box.pack_start(sortkey_box, True, True, 0)
@@ -541,9 +527,7 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Bilinear (normal)', int(GdkPixbuf.InterpType.BILINEAR))
         )
 
-        box = self._create_combobox(items,
-                                    'SCALING_QUALITY',
-                                    self._changed_cb)
+        box = self._create_combobox(items, 'SCALING_QUALITY')
 
         return box
 
@@ -569,9 +553,7 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Hamming', PIL.Image.HAMMING),
         )
 
-        box = self._create_combobox(items,
-                                    'PIL_SCALING_FILTER',
-                                    self._changed_cb)
+        box = self._create_combobox(items, 'PIL_SCALING_FILTER')
 
         return box
 
@@ -587,9 +569,7 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Infinity', Constants.ANIMATION['INF']),
         )
 
-        box = self._create_combobox(items,
-                                    'ANIMATION_MODE',
-                                    self._changed_cb)
+        box = self._create_combobox(items, 'ANIMATION_MODE')
 
         return box
 
@@ -616,15 +596,13 @@ class _PreferencesDialog(Gtk.Dialog):
                 elif preference in ('CHECKERED_BG_SIZE',):
                     self.__window.draw_image()
 
-    @staticmethod
-    def _create_combobox(options: tuple, preference: str, change_callback):
+    def _create_combobox(self, options: tuple, preference: str):
         """
         Creates a new dropdown combobox and populates it with the items passed in C{options}.
 
         :param options: List of tuples: (Option display text, option value)
         :param preference: One of the values passed in C{options} that will
             be pre-selected when the control is created.
-        :param change_callback: Function that will be called when the 'changed' event is triggered.
         :returns: Gtk.ComboBox
         """
 
@@ -648,8 +626,7 @@ class _PreferencesDialog(Gtk.Dialog):
             else:
                 _iter = model.iter_next(_iter)
 
-        if change_callback:
-            box.connect('changed', change_callback, preference)
+        box.connect('changed', self._changed_cb, preference)
 
         return box
 
