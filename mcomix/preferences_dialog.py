@@ -437,9 +437,7 @@ class _PreferencesDialog(Gtk.Dialog):
             ('512', 512),
         )
 
-        box = self._create_combobox(items, 'CHECKERED_BG_SIZE')
-
-        return box
+        return self._create_combobox(items, 'CHECKERED_BG_SIZE')
 
     def _create_combobox_doublepage_as_one(self):
         """
@@ -453,9 +451,7 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Always', Constants.DOUBLE_PAGE['AS_ONE_TITLE'] |
              Constants.DOUBLE_PAGE['AS_ONE_WIDE']))
 
-        box = self._create_combobox(items, 'VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES')
-
-        return box
+        return self._create_combobox(items, 'VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES')
 
     def _create_combobox_fitmode(self):
         """Combobox for fit to size mode"""
@@ -463,9 +459,7 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Fit to width', Constants.ZOOM['WIDTH']),
             ('Fit to height', Constants.ZOOM['HEIGHT']))
 
-        box = self._create_combobox(items, 'FIT_TO_SIZE_MODE')
-
-        return box
+        return self._create_combobox(items, 'FIT_TO_SIZE_MODE')
 
     def _create_combobox_sort_by(self):
         """
@@ -527,9 +521,7 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Bilinear (normal)', int(GdkPixbuf.InterpType.BILINEAR))
         )
 
-        box = self._create_combobox(items, 'SCALING_QUALITY')
-
-        return box
+        return self._create_combobox(items, 'SCALING_QUALITY')
 
     def _create_combobox_pil_scaling_filter(self):
         """
@@ -553,9 +545,7 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Hamming', PIL.Image.HAMMING),
         )
 
-        box = self._create_combobox(items, 'PIL_SCALING_FILTER')
-
-        return box
+        return self._create_combobox(items, 'PIL_SCALING_FILTER')
 
     def _create_combobox_animation_mode(self):
         """
@@ -569,9 +559,7 @@ class _PreferencesDialog(Gtk.Dialog):
             ('Infinity', Constants.ANIMATION['INF']),
         )
 
-        box = self._create_combobox(items, 'ANIMATION_MODE')
-
-        return box
+        return self._create_combobox(items, 'ANIMATION_MODE')
 
     def _changed_cb(self, combobox, preference: str):
         """
