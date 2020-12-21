@@ -98,7 +98,7 @@ class _PreferencesDialog(Gtk.Dialog):
             'CHECKERED_BG_FOR_TRANSPARENT_IMAGES'))
 
         page.add_row(Gtk.Label(label='Checkered background size:'),
-                     self._create_checkered_bg_size_combobox())
+                     self._create_combobox_checkered_bg_size())
 
         return page
 
@@ -149,7 +149,7 @@ class _PreferencesDialog(Gtk.Dialog):
             'DOUBLE_STEP_IN_DOUBLE_PAGE_MODE'))
 
         page.add_row(Gtk.Label(label='Show only one page where appropriate:'),
-                     self._create_doublepage_as_one_control())
+                     self._create_combobox_doublepage_as_one())
 
         page.new_section('Page Selection')
 
@@ -178,7 +178,7 @@ class _PreferencesDialog(Gtk.Dialog):
         page.new_section('Fit To Size Mode')
 
         page.add_row(Gtk.Label(label='Fit to width or height:'),
-                     self._create_fitmode_control())
+                     self._create_combobox_fitmode())
 
         page.add_row(Gtk.Label(label='Fixed size for this mode:'),
                      self._create_pref_spinner(
@@ -194,12 +194,12 @@ class _PreferencesDialog(Gtk.Dialog):
         page.new_section('Image Quality')
 
         page.add_row(Gtk.Label(label='Scaling mode'),
-                     self._create_scaling_quality_combobox())
+                     self._create_combobox_scaling_quality())
 
         page.new_section('Advanced filters')
 
         page.add_row(Gtk.Label(label='High-quality scaling for main area'),
-                     self._create_pil_scaling_filter_combobox())
+                     self._create_combobox_pil_scaling_filter())
 
         page.new_section('Statusbar')
 
@@ -298,7 +298,7 @@ class _PreferencesDialog(Gtk.Dialog):
         page.new_section('Animated Images')
 
         page.add_row(Gtk.Label(label='Animation Mode'),
-                     self._create_animation_mode_combobox())
+                     self._create_combobox_animation_mode())
 
         page.add_row(self._create_pref_check_button(
             'Use animation background (otherwise uses Appearance -> Background)',
@@ -319,10 +319,10 @@ class _PreferencesDialog(Gtk.Dialog):
         page.new_section('File Order')
 
         page.add_row(Gtk.Label(label='Sort files and directories by:'),
-                     self._create_sort_by_control())
+                     self._create_combobox_sort_by())
 
         page.add_row(Gtk.Label(label='Sort archives by:'),
-                     self._create_archive_sort_by_control())
+                     self._create_combobox_archive_sort_by())
 
         page.new_section('File Detection')
 
@@ -420,7 +420,7 @@ class _PreferencesDialog(Gtk.Dialog):
             # Other responses close the dialog, e.g. clicking the X icon on the dialog.
             PreferenceDialog.close_dialog()
 
-    def _create_checkered_bg_size_combobox(self):
+    def _create_combobox_checkered_bg_size(self):
         """
         Creates combo box to set box size for alpha images
         """
@@ -443,7 +443,7 @@ class _PreferencesDialog(Gtk.Dialog):
 
         return box
 
-    def _create_doublepage_as_one_control(self):
+    def _create_combobox_doublepage_as_one(self):
         """
         Creates the ComboBox control for selecting virtual double page options
         """
@@ -461,7 +461,7 @@ class _PreferencesDialog(Gtk.Dialog):
 
         return box
 
-    def _create_fitmode_control(self):
+    def _create_combobox_fitmode(self):
         """Combobox for fit to size mode"""
         items = (
             ('Fit to width', Constants.ZOOM['WIDTH']),
@@ -473,7 +473,7 @@ class _PreferencesDialog(Gtk.Dialog):
 
         return box
 
-    def _create_sort_by_control(self):
+    def _create_combobox_sort_by(self):
         """
         Creates the ComboBox control for selecting file sort by options
         """
@@ -502,7 +502,7 @@ class _PreferencesDialog(Gtk.Dialog):
 
         return box
 
-    def _create_archive_sort_by_control(self):
+    def _create_combobox_archive_sort_by(self):
         """
         Creates the ComboBox control for selecting archive sort by options
         """
@@ -530,7 +530,7 @@ class _PreferencesDialog(Gtk.Dialog):
 
         return box
 
-    def _create_scaling_quality_combobox(self):
+    def _create_combobox_scaling_quality(self):
         """
         Creates combo box for image scaling quality
         """
@@ -547,7 +547,7 @@ class _PreferencesDialog(Gtk.Dialog):
 
         return box
 
-    def _create_pil_scaling_filter_combobox(self):
+    def _create_combobox_pil_scaling_filter(self):
         """
         Creates combo box for PIL filter to scale with in main view
         """
@@ -575,7 +575,7 @@ class _PreferencesDialog(Gtk.Dialog):
 
         return box
 
-    def _create_animation_mode_combobox(self):
+    def _create_combobox_animation_mode(self):
         """
         Creates combo box for animation mode
         """
