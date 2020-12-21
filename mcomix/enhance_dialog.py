@@ -23,9 +23,9 @@ class _EnhanceImageDialog(Gtk.Dialog):
 
         self.__window = window
 
-        reset = Gtk.Button.new_from_stock(Gtk.STOCK_REVERT_TO_SAVED)
+        reset = Gtk.Button.new_with_label('Reset')
         self.add_action_widget(reset, Gtk.ResponseType.REJECT)
-        save = Gtk.Button.new_from_stock(Gtk.STOCK_SAVE)
+        save = Gtk.Button.new_with_label('Save')
         self.add_action_widget(save, Gtk.ResponseType.APPLY)
         self.add_button(Gtk.STOCK_OK, Gtk.ResponseType.OK)
 
