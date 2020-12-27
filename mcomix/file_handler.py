@@ -59,7 +59,14 @@ class FileHandler:
         self.__filelist = None
         self.__start_page = 0
 
+        self.__open_first_page = None
+        self.__open_first_archive = None
+
+        self.update_opening_behavior()
+
+    def update_opening_behavior(self):
         self.__open_first_page = 0 if config['OPEN_FIRST_PAGE'] else -1
+        self.__open_first_archive = 0 if config['OPEN_FIRST_ARCHIVE'] else -1
 
     def refresh_file(self, *args, **kwargs):
         """
@@ -473,7 +480,7 @@ class FileHandler:
         if forward:
             self.open_file(path, keep_fileprovider=True)
         else:
-            self.open_file(path, self.__open_first_page, keep_fileprovider=True)
+            self.open_file(path, self.__open_first_archive, keep_fileprovider=True)
         return True
 
     @Callback

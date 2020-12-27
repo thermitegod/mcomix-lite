@@ -74,6 +74,7 @@ config = {
     'SUPPORT_ESOTERIC_MIMETYPES': False,
     'HIDE_CURSOR': False,
     'OPEN_FIRST_PAGE': True,
+    'OPEN_FIRST_ARCHIVE': False,
     'WINDOW_SAVE': True,
     'WINDOW_X': 0,
     'WINDOW_Y': 0,

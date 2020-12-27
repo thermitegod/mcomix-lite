@@ -154,8 +154,12 @@ class _PreferencesDialog(Gtk.Dialog):
         page.new_section('Page Selection')
 
         page.add_row(self._create_pref_check_button(
-            'Goto the first page when opening previous archive (restart required)',
+            'Open the first file when navigating to previous archive',
             'OPEN_FIRST_PAGE'))
+
+        page.add_row(self._create_pref_check_button(
+            'Open the first file when navigating to previous directory',
+            'OPEN_FIRST_ARCHIVE'))
 
         return page
 
@@ -640,6 +644,9 @@ class _PreferencesDialog(Gtk.Dialog):
 
         elif preference in ('ANIMATION_BACKGROUND', 'ANIMATION_TRANSFORM', 'CHECK_IMAGE_MIMETYPE'):
             self.__window.filehandler.refresh_file()
+
+        elif preference in ('OPEN_FIRST_PAGE', 'OPEN_FIRST_ARCHIVE'):
+            self.__window.filehandler.update_opening_behavior()
 
     def _create_pref_spinner(self, prefkey: str, scale: float, lower: float, upper: float,
                              step_incr: float, page_incr: float, digits: float):
