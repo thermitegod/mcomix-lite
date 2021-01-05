@@ -8,6 +8,7 @@ from gi.repository import GObject, GdkPixbuf, Gtk
 from mcomix.constants import Constants
 from mcomix.keybindings_editor import KeybindingEditorWindow
 from mcomix.preferences import config
+from mcomix.preferences_page import PreferencePage
 
 
 class _PreferencesDialog(Gtk.Dialog):
@@ -68,7 +69,7 @@ class _PreferencesDialog(Gtk.Dialog):
         # ----------------------------------------------------------------
         # The "Appearance" tab.
         # ----------------------------------------------------------------
-        page = _PreferencePage(None)
+        page = PreferencePage(None)
 
         page.new_section('User Interface')
 
@@ -106,7 +107,7 @@ class _PreferencesDialog(Gtk.Dialog):
         # ----------------------------------------------------------------
         # The "Behaviour" tab.
         # ----------------------------------------------------------------
-        page = _PreferencePage(None)
+        page = PreferencePage(None)
 
         page.new_section('Page Flipping')
 
@@ -167,7 +168,7 @@ class _PreferencesDialog(Gtk.Dialog):
         # ----------------------------------------------------------------
         # The "Display" tab.
         # ----------------------------------------------------------------
-        page = _PreferencePage(None)
+        page = PreferencePage(None)
 
         page.new_section('Fullscreen')
 
@@ -232,7 +233,7 @@ class _PreferencesDialog(Gtk.Dialog):
         # ----------------------------------------------------------------
         # The "Display" tab.
         # ----------------------------------------------------------------
-        page = _PreferencePage(None)
+        page = PreferencePage(None)
 
         page.new_section('Bookmark')
 
@@ -297,7 +298,7 @@ class _PreferencesDialog(Gtk.Dialog):
         # ----------------------------------------------------------------
         # The "Animation" tab.
         # ----------------------------------------------------------------
-        page = _PreferencePage(None)
+        page = PreferencePage(None)
 
         page.new_section('Animated Images')
 
@@ -318,7 +319,7 @@ class _PreferencesDialog(Gtk.Dialog):
         # ----------------------------------------------------------------
         # The "Advanced" tab.
         # ----------------------------------------------------------------
-        page = _PreferencePage(None)
+        page = PreferencePage(None)
 
         page.new_section('File Order')
 
@@ -724,95 +725,3 @@ class _PreferenceDialog:
 PreferenceDialog = _PreferenceDialog()
 
 
-class _PreferenceSection(Gtk.VBox):
-    """
-    The _PreferenceSection is a convenience class for making one
-    "section" of a preference-style dialog, e.g. it has a bold header
-    and a number of rows which are indented with respect to that header
-    """
-
-    def __init__(self, header, right_column_width):
-        """
-        Contruct a new section with the header set to the text in
-        <header>, and the width request of the (possible) right columns
-        set to that of <right_column_width>
-        """
-
-        super().__init__(homogeneous=False, spacing=0)
-
-        self.__right_column_width = right_column_width
-        self.__contentbox = Gtk.VBox(homogeneous=False, spacing=6)
-        label = Gtk.Label()
-        label.set_markup(f'<b>{header}</b>')
-        label.set_alignment(0, 0.5)
-        hbox = Gtk.HBox(homogeneous=False, spacing=0)
-        hbox.pack_start(Gtk.HBox(homogeneous=True, spacing=0), False, False, 6)
-        hbox.pack_start(self.__contentbox, True, True, 0)
-        self.pack_start(label, False, False, 0)
-        self.pack_start(hbox, False, False, 6)
-
-    def new_split_vboxes(self):
-        """
-        Return two new VBoxes that are automatically put in the section
-        after the previously added items. The right one has a width request
-        equal to the right_column_width value passed to the class contructor,
-        in order to make it easy for  all "right column items" in a page to
-        line up nicely
-        """
-
-        left_box = Gtk.VBox(homogeneous=False, spacing=6)
-        right_box = Gtk.VBox(homogeneous=False, spacing=6)
-
-        if self.__right_column_width is not None:
-            right_box.set_size_request(self.__right_column_width, -1)
-
-        hbox = Gtk.HBox(homogeneous=False, spacing=12)
-        hbox.pack_start(left_box, True, True, 0)
-        hbox.pack_start(right_box, False, False, 0)
-        self.__contentbox.pack_start(hbox, True, True, 0)
-        return left_box, right_box
-
-    def get_contentbox(self):
-        return self.__contentbox
-
-
-class _PreferencePage(Gtk.VBox):
-    """
-    The _PreferencePage is a conveniece class for making one "page"
-    in a preferences-style dialog that contains one or more _PreferenceSections
-    """
-
-    def __init__(self, right_column_width):
-        """
-        Create a new page where any possible right columns have the width request <right_column_width>
-        """
-
-        super().__init__(homogeneous=False, spacing=12)
-        self.set_border_width(12)
-        self.__right_column_width = right_column_width
-        self.__section = None
-
-    def new_section(self, header):
-        """
-        Start a new section in the page, with the header text from <header>
-        """
-
-        self.__section = _PreferenceSection(header, self.__right_column_width)
-        self.pack_start(self.__section, False, False, 0)
-
-    def add_row(self, left_item, right_item=None):
-        """
-        Add a row to the page (in the latest section), containing one
-        or two items. If the left item is a label it is automatically
-        aligned properly
-        """
-
-        if isinstance(left_item, Gtk.Label):
-            left_item.set_alignment(0, 0.5)
-
-        if right_item is None:
-            self.__section.get_contentbox().pack_start(left_item, True, True, 0)
-        else:
-            left_box, right_box = self.__section.new_split_vboxes()
-            left_box.pack_start(left_item, True, True, 0)
-            right_box.pack_start(right_item, True, True, 0)
