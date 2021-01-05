@@ -5,13 +5,34 @@ import shutil
 from loguru import logger
 
 
-class GetExecutable:
-    def __init__(self, find_executable):
+class _GetExecutable:
+    def __init__(self):
         super().__init__()
 
-        self.__find_executable = shutil.which(find_executable)
-        if self.__find_executable is None:
-            logger.error(f'failed to find {find_executable} executable')
+        self.__executables = {
+            'SZIP':
+                {
+                    'BINARY': '7za',
+                    'PATH': None,
+                    'FOUND': False
+                },
+            'UNRAR':
+                {
+                    'BINARY': 'unrar',
+                    'PATH': None,
+                    'FOUND': False
+                },
+        }
 
-    def get_executable(self):
-        return self.__find_executable
+        for idx, item in enumerate(self.__executables):
+            self.__executables[item]['PATH'] = shutil.which(self.__executables[item]['BINARY'])
+            self.__executables[item]['FOUND'] = bool(self.__executables[item]['PATH'])
+            if self.__executables[item]['PATH'] is None:
+                logger.error(f'failed to find {self.__executables[item]["BINARY"]} executable')
+
+    @property
+    def executables(self):
+        return self.__executables
+
+
+GetExecutable = _GetExecutable()

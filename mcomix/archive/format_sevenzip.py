@@ -16,11 +16,11 @@ class SevenZipArchive(BaseArchiveExecutable):
     def __init__(self, archive: Path):
         super().__init__(archive)
 
-        self.__executable = Executable.get_executable()
+        self.__executable = GetExecutable.executables['SZIP']['PATH']
 
     @staticmethod
     def is_available():
-        return Executable.found_executable()
+        return GetExecutable.executables['SZIP']['FOUND']
 
     def _get_list_arguments(self):
         return [self.__executable, 'l', '-slt', '--', self.archive]
@@ -82,20 +82,3 @@ class SevenZipArchive(BaseArchiveExecutable):
                     Process.call(self._get_extract_arguments(list_file=tmplistfile.name), stdout=output)
 
         return destination_path
-
-
-class _Executable:
-    def __init__(self):
-        super().__init__()
-
-        self.__executable = GetExecutable('7za').get_executable()
-        self.__found = bool(self.__executable)
-
-    def get_executable(self):
-        return self.__executable
-
-    def found_executable(self):
-        return self.__found
-
-
-Executable = _Executable()
