@@ -23,7 +23,7 @@ class AboutDialog(Gtk.AboutDialog):
         self.set_license_type(Gtk.License.GPL_2_0)
         self.set_website('https://github.com/thermitegod/mcomix-lite')
         self.set_website_label('Github')
-        self.set_copyright('Copyright (C) 2005-2020')
+        self.set_copyright('Copyright (C) 2005-2021')
 
         self.set_logo(Icons.load_icons())
 
