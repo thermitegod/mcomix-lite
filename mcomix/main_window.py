@@ -7,7 +7,7 @@ from pathlib import Path
 from gi.repository import GLib, Gdk, Gtk
 from send2trash import send2trash
 
-from mcomix.bookmark_backend import BookmarksStore
+from mcomix.bookmark_backend import BookmarkBackend
 from mcomix.constants import Constants
 from mcomix.cursor_handler import CursorHandler
 from mcomix.enhance_backend import ImageEnhancer
@@ -976,6 +976,6 @@ class MainWindow(Gtk.Window):
         # write config file
         PreferenceManager.write_preferences_file()
         KeybindingConfig.write_keybindings_file()
-        BookmarksStore.write_bookmarks_file()
+        BookmarkBackend.write_bookmarks_file()
 
         self.filehandler.close_file()

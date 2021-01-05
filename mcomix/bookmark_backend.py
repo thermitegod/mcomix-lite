@@ -15,10 +15,10 @@ from mcomix.lib.callback import Callback
 from mcomix.message_dialog import MessageDialog
 
 
-class _BookmarksStore:
+class _BookmarkBackend:
     """
-    The _BookmarksStore is a backend for both the bookmarks menu and dialog.
-    Changes in the _BookmarksStore are mirrored in both
+    The _BookmarkBackend is a backend for both the bookmarks menu and dialog.
+    Changes in the _BookmarkBackend are mirrored in both
     """
 
     def __init__(self):
@@ -220,4 +220,4 @@ class _BookmarksStore:
         return dialog.run()
 
 
-BookmarksStore = _BookmarksStore()
+BookmarkBackend = _BookmarkBackend()

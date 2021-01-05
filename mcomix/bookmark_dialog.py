@@ -171,7 +171,7 @@ class BookmarksDialog(Gtk.Dialog):
 
     def _close(self, *args):
         """
-        Close the dialog and update the _BookmarksStore with the new ordering
+        Close the dialog and update the _BookmarkBackend with the new ordering
         """
 
         ordering = []
