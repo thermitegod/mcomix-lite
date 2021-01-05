@@ -4,7 +4,8 @@ from pathlib import Path
 from tempfile import NamedTemporaryFile
 
 from mcomix.archive.archive_executable import BaseArchiveExecutable
-from mcomix.lib.process import Process, GetExecutable
+from mcomix.lib.executable import GetExecutable
+from mcomix.lib.process import Process
 
 
 class SevenZipArchive(BaseArchiveExecutable):
