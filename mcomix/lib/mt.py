@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from typing import Callable
-
 import sys
 from multiprocessing.dummy import Pool
 from multiprocessing.pool import ThreadPool as mpThreadPool
 from threading import Lock
+from typing import Callable
 
 from mcomix.preferences import config
 
