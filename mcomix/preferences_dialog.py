@@ -69,7 +69,7 @@ class _PreferencesDialog(Gtk.Dialog):
         # ----------------------------------------------------------------
         # The "Appearance" tab.
         # ----------------------------------------------------------------
-        page = PreferencePage(None)
+        page = PreferencePage()
 
         page.new_section('User Interface')
 
@@ -107,7 +107,7 @@ class _PreferencesDialog(Gtk.Dialog):
         # ----------------------------------------------------------------
         # The "Behaviour" tab.
         # ----------------------------------------------------------------
-        page = PreferencePage(None)
+        page = PreferencePage()
 
         page.new_section('Page Flipping')
 
@@ -168,7 +168,7 @@ class _PreferencesDialog(Gtk.Dialog):
         # ----------------------------------------------------------------
         # The "Display" tab.
         # ----------------------------------------------------------------
-        page = PreferencePage(None)
+        page = PreferencePage()
 
         page.new_section('Fullscreen')
 
@@ -233,7 +233,7 @@ class _PreferencesDialog(Gtk.Dialog):
         # ----------------------------------------------------------------
         # The "Display" tab.
         # ----------------------------------------------------------------
-        page = PreferencePage(None)
+        page = PreferencePage()
 
         page.new_section('Bookmark')
 
@@ -298,7 +298,7 @@ class _PreferencesDialog(Gtk.Dialog):
         # ----------------------------------------------------------------
         # The "Animation" tab.
         # ----------------------------------------------------------------
-        page = PreferencePage(None)
+        page = PreferencePage()
 
         page.new_section('Animated Images')
 
@@ -319,7 +319,7 @@ class _PreferencesDialog(Gtk.Dialog):
         # ----------------------------------------------------------------
         # The "Advanced" tab.
         # ----------------------------------------------------------------
-        page = PreferencePage(None)
+        page = PreferencePage()
 
         page.new_section('File Order')
 
