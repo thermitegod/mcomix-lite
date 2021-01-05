@@ -10,6 +10,7 @@ from loguru import logger
 
 from mcomix.archive_tools import ArchiveTools
 from mcomix.lib.callback import Callback
+from mcomix.lib.exceptions import ArchiveException
 from mcomix.lib.mt import GlobalThreadPool
 
 
@@ -205,11 +206,3 @@ class Extractor:
 
         logger.error(f'Extraction error: {value}')
         logger.debug(f'Traceback:\n{"".join(traceback.format_tb(tb)).strip()}')
-
-
-class ArchiveException(Exception):
-    """
-    Indicate error during extraction operations
-    """
-
-    pass

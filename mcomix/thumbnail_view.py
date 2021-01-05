@@ -7,6 +7,7 @@ import uuid
 
 from gi.repository import Gtk
 
+from mcomix.lib.exceptions import MissingPixbuf
 from mcomix.lib.mt import GlobalThreadPool, Lock
 
 
@@ -108,10 +109,6 @@ class ThumbnailViewBase:
                 return
             _iter, pixbuf, model = params
             model.set(_iter, self.__status_column, True, self.__pixbuf_column, pixbuf)
-
-
-class MissingPixbuf(Exception):
-    pass
 
 
 class ThumbnailTreeView(Gtk.TreeView, ThumbnailViewBase):
