@@ -45,7 +45,11 @@ class BaseArchiveExecutable(BaseArchive):
         :rtype: Path
         """
 
-        raise NotImplementedError('Subclasses must override extract.')
+        destination_path = Path() / destination_dir / filename
+
+        with self.lock:
+            with self._create_file(destination_path) as output:
+                Process.call(self._get_extract_arguments(), stdout=output)
 
     def iter_contents(self):
         #: Indicates which part of the file listing has been read.

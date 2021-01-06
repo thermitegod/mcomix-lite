@@ -4,7 +4,6 @@ from pathlib import Path
 
 from mcomix.archive.archive_executable import BaseArchiveExecutable
 from mcomix.lib.executable import GetExecutable
-from mcomix.lib.process import Process
 
 
 class RarArchive(BaseArchiveExecutable):
@@ -12,7 +11,7 @@ class RarArchive(BaseArchiveExecutable):
     RAR file extractor using the unrar executable
     """
 
-    def __init__(self, archive):
+    def __init__(self, archive: Path):
         super().__init__(archive)
 
         self.__executable = GetExecutable.executables['UNRAR']['PATH']
@@ -42,23 +41,3 @@ class RarArchive(BaseArchiveExecutable):
                 if filesize > 0:
                     self.contents.append((self.path, filesize))
         return None
-
-    def extract(self, filename: str, destination_dir: Path):
-        """
-        Extract <filename> from the archive to <destination_dir>
-
-        :param filename: file to extract
-        :type filename: str
-        :param destination_dir: extraction path
-        :type destination_dir: Path
-        :returns: full path of the extracted file
-        :rtype: Path
-        """
-
-        destination_path = Path() / destination_dir / filename
-
-        with self.lock:
-            with self._create_file(destination_path) as output:
-                Process.call(self._get_extract_arguments(), stdout=output)
-
-        return destination_path

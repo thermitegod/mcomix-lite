@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from pathlib import Path
-from tempfile import NamedTemporaryFile
 
 from mcomix.archive.archive_executable import BaseArchiveExecutable
 from mcomix.lib.executable import GetExecutable
-from mcomix.lib.process import Process
 
 
 class SevenZipArchive(BaseArchiveExecutable):
@@ -25,10 +23,8 @@ class SevenZipArchive(BaseArchiveExecutable):
     def _get_list_arguments(self):
         return [self.__executable, 'l', '-slt', '--', self.archive]
 
-    def _get_extract_arguments(self, list_file=None):
-        if list_file is None:
-            return [self.__executable, 'x', '-so', '--', self.archive]
-        return [self.__executable, 'x', '-so', '-i@' + list_file, '--', self.archive]
+    def _get_extract_arguments(self):
+        return [self.__executable, 'x', '-so', '--', self.archive]
 
     def _parse_list_output_line(self, line: str):
         """
@@ -59,26 +55,3 @@ class SevenZipArchive(BaseArchiveExecutable):
                     self.contents.append((self.path, filesize))
 
         return None
-
-    def extract(self, filename: str, destination_dir: Path):
-        """
-        Extract <filename> from the archive to <destination_dir>
-
-        :param filename: file to extract
-        :type filename: str
-        :param destination_dir: extraction path
-        :type destination_dir: Path
-        :returns: full path of the extracted file
-        :rtype: Path
-        """
-
-        destination_path = Path() / destination_dir / filename
-
-        with self.lock:
-            with NamedTemporaryFile(mode='wt', prefix='mcomix.7z.') as tmplistfile:
-                tmplistfile.write('filename\n')
-                tmplistfile.flush()
-                with self._create_file(destination_path) as output:
-                    Process.call(self._get_extract_arguments(list_file=tmplistfile.name), stdout=output)
-
-        return destination_path
