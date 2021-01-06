@@ -26,7 +26,7 @@ class RarArchive(BaseArchiveExecutable):
     def _get_extract_arguments(self):
         return [self.__executable, 'p', '-inul', '-@', '--', self.archive]
 
-    def _parse_list_output_line(self, line):
+    def _parse_list_output_line(self, line: str):
         if self.state == self.STATE_HEADER:
             if line.startswith('Details: '):
                 self.state = self.STATE_LISTING

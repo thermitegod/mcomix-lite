@@ -31,6 +31,15 @@ class BaseArchiveExecutable(BaseArchive):
         self.path = None
         self.contents = []
 
+    def _get_list_arguments(self):
+        raise NotImplementedError('Subclasses must override _get_list_arguments()')
+
+    def _get_extract_arguments(self):
+        raise NotImplementedError('Subclasses must override _get_extract_arguments()')
+
+    def _parse_list_output_line(self, line: str):
+        raise NotImplementedError('Subclasses must override _parse_list_output_line()')
+
     def extract(self, filename: str, destination_dir: Path):
         """
         Extracts the file specified by <filename> and return the path of it.
