@@ -28,7 +28,7 @@ class _GetExecutable:
             self.__executables[item]['PATH'] = shutil.which(self.__executables[item]['BINARY'])
             self.__executables[item]['FOUND'] = bool(self.__executables[item]['PATH'])
             if self.__executables[item]['PATH'] is None:
-                logger.error(f'failed to find {self.__executables[item]["BINARY"]} executable')
+                logger.warning(f'failed to find executable for \'{self.__executables[item]}\'')
 
     @property
     def executables(self):
