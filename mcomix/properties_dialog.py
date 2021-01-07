@@ -111,7 +111,7 @@ class PropertiesDialog(Gtk.Dialog):
         stats = Path.stat(path)
         secondary_info = [
             ('Location', Path.resolve(path).parent),
-            ('Size', FileSize(stats.st_size).size),
+            ('Size', FileSize(path).size),
             ('Modified', time.strftime('%Y-%m-%d, %H:%M:%S', time.localtime(stats.st_mtime))),
             ('Accessed', time.strftime('%Y-%m-%d, %H:%M:%S', time.localtime(stats.st_atime))),
             ('Permissions', oct(stat.S_IMODE(stats.st_mode))),

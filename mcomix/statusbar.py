@@ -164,7 +164,7 @@ class Statusbar(Gtk.EventBox):
         Update the filesize
         """
 
-        self.__archive_filesize = FileSize(Path.stat(path).st_size).size
+        self.__archive_filesize = FileSize(path).size
 
     def update(self):
         """

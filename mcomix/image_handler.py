@@ -369,22 +369,13 @@ class ImageHandler:
                 return '-1', '-1'
             return '-1'
 
-        def get_fsize(fsize):
-            path = self.get_path_to_page(fsize)
-            try:
-                fsize = Path.stat(path).st_size
-            except (AttributeError, FileNotFoundError):
-                logger.warning(f'failed to get file size for: {path}')
-                fsize = 0
-            return FileSize(fsize).size
-
         if page is None:
             page = self.get_current_page()
 
-        first = get_fsize(page)
+        first = FileSize(self.get_path_to_page(page)).size
 
         if double:
-            second = get_fsize(page + 1)
+            second = FileSize(self.get_path_to_page(page + 1)).size
             if manga:
                 return second, first
             return first, second
