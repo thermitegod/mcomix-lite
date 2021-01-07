@@ -108,17 +108,14 @@ class PropertiesDialog(Gtk.Dialog):
 
     @staticmethod
     def _update_page_secondary_info(page, path: Path):
-        path = Path() / path
         stats = Path.stat(path)
-        uid = Path.owner(path)
-        gid = Path.group(path)
         secondary_info = [
             ('Location', Path.resolve(path).parent),
             ('Size', FileSize(stats.st_size).size),
             ('Modified', time.strftime('%Y-%m-%d, %H:%M:%S', time.localtime(stats.st_mtime))),
             ('Accessed', time.strftime('%Y-%m-%d, %H:%M:%S', time.localtime(stats.st_atime))),
             ('Permissions', oct(stat.S_IMODE(stats.st_mode))),
-            ('Owner', uid),
-            ('Group', gid)
+            ('Owner', path.owner()),
+            ('Group', path.group())
         ]
         page.set_secondary_info(secondary_info)
