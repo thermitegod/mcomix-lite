@@ -18,14 +18,14 @@ class BaseArchiveExecutable(BaseArchive):
     Unicode with some guess-work
     """
 
-    STATE_HEADER = 1
-    STATE_LISTING = 2
-    STATE_FOOTER = 3
-
     def __init__(self, archive):
         super().__init__(archive)
 
         self.archive = archive
+
+        self.STATE_HEADER = 1
+        self.STATE_LISTING = 2
+        self.STATE_FOOTER = 3
 
         self.state = None
         self.path = None
