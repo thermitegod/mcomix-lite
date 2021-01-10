@@ -62,13 +62,12 @@ class GetFileProvider:
         if "Auto Open last file" is set. Otherwise, no provider is constructed
         """
 
-        if len(filelist) > 0:
-            if len(filelist) == 1:
-                if Path(filelist[0]).exists:
-                    return OrderedFileProvider(filelist[0])
-                return None
+        if not filelist:
+            return None
+        elif len(filelist) == 1:
+            return OrderedFileProvider(filelist[0])
+        else:
             return PreDefinedFileProvider(filelist)
-        return None
 
 
 class FileProvider(SortAlphanumeric):
