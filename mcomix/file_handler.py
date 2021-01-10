@@ -304,7 +304,7 @@ class FileHandler:
         """
 
         if config['SORT_ARCHIVE_BY'] == Constants.FILE_SORT_TYPE['NAME']:
-            SortAlphanumeric.alphanumeric_sort(filelist)
+            SortAlphanumeric(filelist)
         elif config['SORT_ARCHIVE_BY'] == Constants.FILE_SORT_TYPE['NAME_LITERAL']:
             filelist.sort()
         else:

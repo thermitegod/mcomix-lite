@@ -19,31 +19,30 @@ NUMERIC_REGEXP = re.compile(r'\d+[.]\d+|\d+|\D+')
 
 
 class SortAlphanumeric:
-    def __int__(self):
-        super().__init__()
-
-    @staticmethod
-    def alphanumeric_sort(filenames: list):
+    def __init__(self, filenames: list):
         """
         Do an in-place alphanumeric sort of the strings in <filenames>,
         such that for an example "1.jpg", "2.jpg", "10.jpg" is a sorted ordering
         """
 
-        def isfloat(p):
-            try:
-                return 0, float(p)
-            except ValueError:
-                return 1, p.lower()
+        super().__init__()
 
-        def keyfunc(s):
-            x, y, z = str(s).rpartition('.')
-            if z.isdigit():
-                # extension with only digital is not extension
-                x = f'{x}{y}{z}'
-                z = ''
-            return [isfloat(p) for p in (*NUMERIC_REGEXP.findall(x), z)]
+        filenames.sort(key=self._keyfunc)
 
-        filenames.sort(key=keyfunc)
+    @staticmethod
+    def _isfloat(p):
+        try:
+            return 0, float(p)
+        except ValueError:
+            return 1, p.lower()
+
+    def _keyfunc(self, s):
+        x, y, z = str(s).rpartition('.')
+        if z.isdigit():
+            # extension with only digital is not extension
+            x = f'{x}{y}{z}'
+            z = ''
+        return [self._isfloat(p) for p in (*NUMERIC_REGEXP.findall(x), z)]
 
 
 class GetFileProvider:
@@ -70,7 +69,7 @@ class GetFileProvider:
             return PreDefinedFileProvider(filelist)
 
 
-class FileProvider(SortAlphanumeric):
+class FileProvider:
     """
     Base class for various file listing strategies
     """
@@ -108,7 +107,7 @@ class FileProvider(SortAlphanumeric):
         """
 
         if config['SORT_BY'] == Constants.FILE_SORT_TYPE['NAME']:
-            SortAlphanumeric.alphanumeric_sort(files)
+            SortAlphanumeric(files)
         elif config['SORT_BY'] == Constants.FILE_SORT_TYPE['LAST_MODIFIED']:
             # Most recently modified file first
             files.sort(key=lambda filename: Path.stat(filename).st_mtime * -1)
@@ -191,7 +190,7 @@ class OrderedFileProvider(FileProvider):
                 if Path.is_dir(directory):
                     dirs.append(str(directory))
 
-            SortAlphanumeric.alphanumeric_sort(dirs)
+            SortAlphanumeric(dirs)
             return directories
 
         directories = __get_sibling_directories(self.__base_dir)
