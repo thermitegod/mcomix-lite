@@ -341,12 +341,12 @@ class _ImageTools:
             logger.debug(f'failed to load pixbuf: {ex}')
 
         if enable_anime:
-            pixbuf = GdkPixbuf.PixbufAnimation.new_from_file(path)
+            pixbuf = GdkPixbuf.PixbufAnimation.new_from_file(str(path))
             if pixbuf.is_static_image():
                 return pixbuf.get_static_image()
             return pixbuf
 
-        return GdkPixbuf.Pixbuf.new_from_file(path)
+        return GdkPixbuf.Pixbuf.new_from_file(str(path))
 
     def load_pixbuf_size(self, path: Path, width: int, height: int):
         """

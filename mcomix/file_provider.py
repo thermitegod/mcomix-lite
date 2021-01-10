@@ -163,7 +163,7 @@ class OrderedFileProvider(FileProvider):
                 fpath = Path(fn)
                 if should_accept(fpath):
                     files.append(fpath)
-                    fname_map[fpath] = str(fn)
+                    fname_map[fpath] = fn
         except OSError:
             logger.warning(f'Permission denied, Could not open: \'{self.__base_dir}\'')
             return []
@@ -228,12 +228,12 @@ class PreDefinedFileProvider(FileProvider):
         self.__files = []
 
         for file in files:
-            if Path.is_dir(Path(file)):
+            if Path.is_dir(file):
                 provider = OrderedFileProvider(file)
                 self.__files.extend(provider.list_files(mode=Constants.FILE_TYPE['IMAGES']))
 
             elif should_accept(file):
-                self.__files.append(str(file))
+                self.__files.append(file)
 
     def list_files(self, mode: int):
         """
@@ -251,7 +251,7 @@ class PreDefinedFileProvider(FileProvider):
         """
 
         for file in files:
-            if Path.is_file(Path(file)):
+            if Path.is_file(file):
                 if ImageTools.is_image_file(file):
                     return ImageTools.is_image_file
                 if ArchiveTools.is_archive_file(file):

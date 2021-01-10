@@ -372,9 +372,8 @@ class FileHandler:
             return 0, 0
 
         file_list = self._get_file_list()
-        current_file = str(self.__current_file)
-        if current_file in file_list:
-            current_index = file_list.index(current_file)
+        if self.__current_file in file_list:
+            current_index = file_list.index(self.__current_file)
         else:
             current_index = 0
         return current_index + 1, len(file_list)
@@ -425,11 +424,10 @@ class FileHandler:
             return False
 
         files = self._get_file_list()
-        base_path = str(self.__base_path)
-        if base_path not in files:
+        if self.__base_path not in files:
             return
 
-        current_index = files.index(base_path)
+        current_index = files.index(self.__base_path)
 
         if forward:
             next_file = files[current_index + 1:]
