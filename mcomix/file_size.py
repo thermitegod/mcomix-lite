@@ -2,6 +2,8 @@
 
 from pathlib import Path
 
+from loguru import logger
+
 from mcomix.preferences import config
 
 

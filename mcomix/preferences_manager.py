@@ -4,8 +4,6 @@
 
 from pathlib import Path
 
-from loguru import logger
-
 from mcomix.config_backend import ConfigBackend
 from mcomix.constants import Constants
 from mcomix.preferences import config

@@ -2,8 +2,8 @@
 
 """Layout"""
 
-from mcomix.hyperrectangles import Box
 from mcomix.constants import Constants
+from mcomix.hyperrectangles import Box
 
 
 class FiniteLayout:  # 2D only

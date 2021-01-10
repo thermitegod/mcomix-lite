@@ -3,6 +3,7 @@
 """thumbnail_sidebar.py - Thumbnail sidebar for main window"""
 
 from gi.repository import Gdk, GdkPixbuf, Gtk
+from loguru import logger
 
 from mcomix.image_tools import ImageTools
 from mcomix.preferences import config
