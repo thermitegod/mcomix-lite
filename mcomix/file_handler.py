@@ -2,7 +2,6 @@
 
 """file_handler.py - File handler that takes care of opening archives and images"""
 
-import os
 from pathlib import Path
 
 from gi.repository import Gtk
@@ -101,13 +100,6 @@ class FileHandler:
             ex = str(ex)
             logger.error(ex)
             self.__window.statusbar.set_message(ex)
-            return False
-
-        error_message = self._check_access(path=file_path)
-        if error_message:
-            logger.error(error_message)
-            self.__window.statusbar.set_message(error_message)
-            self.file_opened()
             return False
 
         self.__filelist = self.__file_provider.list_files(mode=Constants.FILE_TYPE['IMAGES'])
@@ -245,22 +237,6 @@ class FileHandler:
             if self.__file_provider is None or not keep_fileprovider:
                 self.__file_provider = GetFileProvider.get_file_provider([path])
             return path
-
-    @staticmethod
-    def _check_access(path: Path):
-        """
-        Checks for various error that could occur when opening C{path}.
-
-        :param path: Path to file that should be opened.
-        :return: An appropriate error string, or C{None} if no error was found.
-        """
-
-        if not Path.exists(path):
-            return f'Could not open {path}: No such file.'
-        elif not os.access(path, os.R_OK):
-            return f'Could not open {path}: Permission denied.'
-
-        return None
 
     def _open_archive(self, path: Path):
         """
