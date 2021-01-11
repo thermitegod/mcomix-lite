@@ -3,6 +3,7 @@
 """bookmark_menu_item.py - A signle bookmark item"""
 
 from datetime import datetime
+from pathlib import Path
 
 from gi.repository import Gtk
 
@@ -20,7 +21,7 @@ class Bookmark(Gtk.ImageMenuItem):
         self._file_handler = file_handler
 
         self._name = name
-        self._path = str(path)
+        self._path = path
         self._page = page
         self._numpages = numpages
         self._date_added = datetime.fromtimestamp(epoch)
@@ -44,7 +45,7 @@ class Bookmark(Gtk.ImageMenuItem):
         """
 
         if self._file_handler.get_base_path() != self._path:
-            self._file_handler.open_file(self._path, self._page)
+            self._file_handler.open_file(Path(self._path), self._page)
         else:
             self.__window.set_page(self._page)
 
@@ -53,7 +54,7 @@ class Bookmark(Gtk.ImageMenuItem):
         Return True if the bookmark is for the file <path>
         """
 
-        return path == self._path
+        return Path(path) == Path(self._path)
 
     def same_page(self, page):
         """
@@ -80,7 +81,8 @@ class Bookmark(Gtk.ImageMenuItem):
         re-created using the values in the tuple
         """
 
-        return self._name, self._path, self._page, self._numpages, self.__archive_type, self._date_added.timestamp()
+        return self._name, str(self._path), self._page, self._numpages, \
+               self.__archive_type, self._date_added.timestamp()
 
     def clone(self):
         """
