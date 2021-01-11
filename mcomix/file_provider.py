@@ -23,6 +23,9 @@ class GetFileProvider:
         if not filelist:
             return None
         elif len(filelist) == 1:
+            # A single file was passed - use Comix' classic open mode
+            # and open all files in its directory.
             return OrderedFileProvider(filelist[0])
         else:
+            # A list of files was passed - open only these files.
             return PreDefinedFileProvider(filelist)

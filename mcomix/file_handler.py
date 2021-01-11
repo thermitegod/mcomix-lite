@@ -79,9 +79,9 @@ class FileHandler:
                 start_page = self.__window.imagehandler.get_current_page()
             else:
                 start_page = 0
-            self.open_file(current_file, start_page, keep_fileprovider=True)
+            self.open_file(current_file, start_page)
 
-    def open_file(self, path: list, start_page: int = 0, keep_fileprovider: bool = False):
+    def open_file(self, path: Path, start_page: int = 0):
         """
         Open the file pointed to by <path>.
         If <start_page> is not set we set the current
@@ -94,12 +94,10 @@ class FileHandler:
 
         self._close()
 
-        file_path = self._initialize_fileprovider(path=path, keep_fileprovider=keep_fileprovider)
-
         self.__filelist = self.__file_provider.list_files(mode=Constants.FILE_TYPE['IMAGES'])
-        self.__archive_type = ArchiveTools.archive_mime_type(file_path)
+        self.__archive_type = ArchiveTools.archive_mime_type(path)
         self.__start_page = start_page
-        self.__current_file = file_path
+        self.__current_file = path
         self.__stop_waiting = False
 
         # Actually open the file(s)/archive passed in path.
@@ -202,7 +200,7 @@ class FileHandler:
         if self.__tmp_dir is not None:
             self.__tmp_dir = None
 
-    def _initialize_fileprovider(self, path: list, keep_fileprovider: bool):
+    def initialize_fileprovider(self, path: list):
         """
         Creates the L{file_provider.FileProvider} for C{path}.
         If C{path} is a list, assumes that only the files in the list
@@ -210,21 +208,9 @@ class FileHandler:
         either a directory or an image file, and all files in that directory should be opened.
 
         :param path: List of file names, or single file/directory as string.
-        :param keep_fileprovider: If C{True}, no new provider is constructed.
-        :returns: If C{path} was a list, returns the first list element. Otherwise, C{path} is not modified
         """
 
-        if isinstance(path, list):
-            # A list of files was passed - open only these files.
-            if self.__file_provider is None or not keep_fileprovider:
-                self.__file_provider = GetFileProvider.get_file_provider(path)
-            return path[0]
-        else:
-            # A single file was passed - use Comix' classic open mode
-            # and open all files in its directory.
-            if self.__file_provider is None or not keep_fileprovider:
-                self.__file_provider = GetFileProvider.get_file_provider([path])
-            return path
+        self.__file_provider = GetFileProvider.get_file_provider(path)
 
     def _open_archive(self, path: Path):
         """
@@ -404,7 +390,7 @@ class FileHandler:
         for path in next_file:
             if ArchiveTools.is_archive_file(path=path):
                 self._close()
-                self.open_file(path, next_page, keep_fileprovider=True)
+                self.open_file(path, next_page)
                 return True
 
     def open_directory_direction(self, forward: bool, *args):
@@ -441,9 +427,9 @@ class FileHandler:
         else:
             path = self.__file_provider.get_directory()
         if forward:
-            self.open_file(path, keep_fileprovider=True)
+            self.open_file(path)
         else:
-            self.open_file(path, self.__open_first_archive, keep_fileprovider=True)
+            self.open_file(path, start_page=self.__open_first_archive)
         return True
 
     @Callback

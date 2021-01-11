@@ -45,7 +45,8 @@ class Bookmark(Gtk.ImageMenuItem):
         """
 
         if self._file_handler.get_base_path() != self._path:
-            self._file_handler.open_file(Path(self._path), self._page)
+            self._file_handler.initialize_fileprovider(path=[Path(self._path)])
+            self._file_handler.open_file(path=Path(self._path), start_page=self._page)
         else:
             self.__window.set_page(self._page)
 

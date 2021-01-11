@@ -199,7 +199,8 @@ class MainWindow(Gtk.Window):
             toggleaction.set_active(True)
 
         if open_path:
-            self.filehandler.open_file(open_path)
+            self.filehandler.initialize_fileprovider(path=open_path)
+            self.filehandler.open_file(Path(open_path[0]))
 
         if config['HIDE_CURSOR']:
             self.cursor_handler.auto_hide_on()
