@@ -94,13 +94,7 @@ class FileHandler:
 
         self._close()
 
-        try:
-            file_path = Path() / self._initialize_fileprovider(path=path, keep_fileprovider=keep_fileprovider)
-        except ValueError as ex:
-            ex = str(ex)
-            logger.error(ex)
-            self.__window.statusbar.set_message(ex)
-            return False
+        file_path = self._initialize_fileprovider(path=path, keep_fileprovider=keep_fileprovider)
 
         self.__filelist = self.__file_provider.list_files(mode=Constants.FILE_TYPE['IMAGES'])
         self.__archive_type = ArchiveTools.archive_mime_type(file_path)
@@ -110,13 +104,7 @@ class FileHandler:
 
         # Actually open the file(s)/archive passed in path.
         if self.__archive_type is not None:
-            try:
-                self._open_archive(self.__current_file)
-            except Exception as ex:
-                logger.error(f'Exception: {ex}')
-                self.__window.statusbar.set_message(str(ex))
-                self.file_opened()
-                return False
+            self._open_archive(self.__current_file)
             self.__file_loading = True
         else:
             image_files, current_image_index = self._open_image_files(self.__filelist, self.__current_file)
