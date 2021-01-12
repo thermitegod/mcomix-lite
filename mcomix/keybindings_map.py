@@ -22,8 +22,6 @@ class _KeyBindingsInfo:
 
             'next_archive': {'title': 'Next archive', 'group': 'Navigation'},
             'previous_archive': {'title': 'Previous archive', 'group': 'Navigation'},
-            'next_directory': {'title': 'Next directory', 'group': 'Navigation'},
-            'previous_directory': {'title': 'Previous directory', 'group': 'Navigation'},
 
             # Scrolling
             'scroll_down': {'title': 'Scroll down', 'group': 'Scroll'},
@@ -107,8 +105,6 @@ class _KeyBindingsDefault:
 
             'next_archive': ['<Primary>Right'],
             'previous_archive': ['<Primary>Left'],
-            'next_directory': ['<control>N'],
-            'previous_directory': ['<control>P'],
 
             # Scrolling
             # Arrow keys scroll the image

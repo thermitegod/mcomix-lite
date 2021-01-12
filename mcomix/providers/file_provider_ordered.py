@@ -60,42 +60,6 @@ class OrderedFileProvider(FileProvider):
         self._sort_files(files)
         return [fname_map[fpath] for fpath in files]
 
-    def directory_direction(self, forward: bool):
-        """
-        If forward=True switches to the next sibling directory,
-        else Switches to the previous sibling directory. Next call to
-        list_file() returns files in the new directory.
-        Returns True if the directory was changed, otherwise False
-        """
-
-        def __get_sibling_directories(current_dir: Path):
-            """
-            Returns a list of all sibling directories of <dir>, already sorted
-            """
-
-            parent_dir = current_dir.parent
-
-            dirs = []
-            for directory in parent_dir.iterdir():
-                if Path.is_dir(directory):
-                    dirs.append(str(directory))
-
-            SortAlphanumeric(dirs)
-            return directories
-
-        directories = __get_sibling_directories(self.__base_dir)
-        current_index = directories.index(str(self.__base_dir))
-        if forward:
-            if len(directories) - 1 > current_index:
-                self.__base_dir = directories[current_index + 1]
-                return True
-        else:
-            if current_index > 0:
-                self.__base_dir = directories[current_index - 1]
-                return True
-
-        return False
-
     @staticmethod
     def _sort_files(files: list):
         """

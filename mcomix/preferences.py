@@ -7,7 +7,6 @@ from mcomix.constants import Constants
 # All preferences are stored here.
 config = {
     'AUTO_OPEN_NEXT_ARCHIVE': True,
-    'AUTO_OPEN_NEXT_DIRECTORY': False,
     'SORT_BY': Constants.FILE_SORT_TYPE['NAME'],  # Normal files obtained by directory listing
     'SORT_ORDER': Constants.FILE_SORT_DIRECTION['ASCENDING'],
     'SORT_ARCHIVE_BY': Constants.FILE_SORT_TYPE['NAME'],  # Files in archives
@@ -74,7 +73,6 @@ config = {
     'SUPPORT_ESOTERIC_MIMETYPES': False,
     'HIDE_CURSOR': False,
     'OPEN_FIRST_PAGE': True,
-    'OPEN_FIRST_ARCHIVE': False,
     'WINDOW_SAVE': True,
     'WINDOW_X': 0,
     'WINDOW_Y': 0,

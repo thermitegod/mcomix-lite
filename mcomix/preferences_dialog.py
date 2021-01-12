@@ -129,10 +129,6 @@ class _PreferencesDialog(Gtk.Dialog):
             'Automatically open the next archive',
             'AUTO_OPEN_NEXT_ARCHIVE'))
 
-        page.add_row(self._create_pref_check_button(
-            'Automatically open next directory',
-            'AUTO_OPEN_NEXT_DIRECTORY'))
-
         page.add_row(Gtk.Label(label='Number of pixels to scroll a page per arrow key press:'),
                      self._create_pref_spinner(
                          'PIXELS_TO_SCROLL_PER_KEY_EVENT',
@@ -157,10 +153,6 @@ class _PreferencesDialog(Gtk.Dialog):
         page.add_row(self._create_pref_check_button(
             'Open the first file when navigating to previous archive',
             'OPEN_FIRST_PAGE'))
-
-        page.add_row(self._create_pref_check_button(
-            'Open the first file when navigating to previous directory',
-            'OPEN_FIRST_ARCHIVE'))
 
         return page
 
@@ -646,7 +638,7 @@ class _PreferencesDialog(Gtk.Dialog):
         elif preference in ('ANIMATION_BACKGROUND', 'ANIMATION_TRANSFORM', 'CHECK_IMAGE_MIMETYPE'):
             self.__window.filehandler.refresh_file()
 
-        elif preference in ('OPEN_FIRST_PAGE', 'OPEN_FIRST_ARCHIVE'):
+        elif preference in ('OPEN_FIRST_PAGE'):
             self.__window.filehandler.update_opening_behavior()
 
     def _create_pref_spinner(self, prefkey: str, scale: float, lower: float, upper: float,

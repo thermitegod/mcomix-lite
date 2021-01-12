@@ -556,32 +556,6 @@ class MainWindow(Gtk.Window):
         self.page_changed()
         self.new_page(at_bottom=at_bottom)
 
-    def next_book(self):
-        archive_open = self.filehandler.get_archive_type() is not None
-        next_archive_opened = False
-        if config['AUTO_OPEN_NEXT_ARCHIVE']:
-            next_archive_opened = self.filehandler.open_archive_direction(forward=True)
-
-        # If "Auto open next archive" is disabled, do not go to the next
-        # directory if current file was an archive.
-        if not next_archive_opened and \
-                config['AUTO_OPEN_NEXT_DIRECTORY'] and \
-                (not archive_open or config['AUTO_OPEN_NEXT_ARCHIVE']):
-            self.filehandler.open_directory_direction(forward=True)
-
-    def previous_book(self):
-        archive_open = self.filehandler.get_archive_type() is not None
-        previous_archive_opened = False
-        if config['AUTO_OPEN_NEXT_ARCHIVE']:
-            previous_archive_opened = self.filehandler.open_archive_direction(forward=False)
-
-        # If "Auto open next archive" is disabled, do not go to the previous
-        # directory if current file was an archive.
-        if not previous_archive_opened and \
-                config['AUTO_OPEN_NEXT_DIRECTORY'] and \
-                (not archive_open or config['AUTO_OPEN_NEXT_ARCHIVE']):
-            self.filehandler.open_directory_direction(forward=False)
-
     def flip_page(self, number_of_pages: int, single_step: bool = False):
         if not self.filehandler.get_file_loaded():
             return
@@ -604,12 +578,12 @@ class MainWindow(Gtk.Window):
             # first one. (Note: check for (page number <= 1) to handle empty
             # archive case).
             if number_of_pages == -1 and current_page <= +1:
-                return self.previous_book()
+                return self.filehandler.open_archive_direction(forward=False)
             # Handle empty archive case.
             new_page = min(+1, current_number_of_pages)
         elif new_page > current_number_of_pages:
             if number_of_pages == +1:
-                return self.next_book()
+                return self.filehandler.open_archive_direction(forward=True)
             new_page = current_number_of_pages
 
         if new_page != current_page:

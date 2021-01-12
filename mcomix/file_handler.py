@@ -60,13 +60,11 @@ class FileHandler:
         self.__start_page = 0
 
         self.__open_first_page = None
-        self.__open_first_archive = None
 
         self.update_opening_behavior()
 
     def update_opening_behavior(self):
         self.__open_first_page = 0 if config['OPEN_FIRST_PAGE'] else -1
-        self.__open_first_archive = 0 if config['OPEN_FIRST_ARCHIVE'] else -1
 
     def refresh_file(self, *args, **kwargs):
         """
@@ -392,45 +390,6 @@ class FileHandler:
                 self._close()
                 self.open_file(path, next_page)
                 return True
-
-    def open_directory_direction(self, forward: bool, *args):
-        """
-        Opens the next sibling directory of the current file if forward=True, else
-        opens the previous sibling directory of the current file as specified by file
-        provider. Returns True if a new directory was opened and files found
-
-        :param forward: Which direction to open the next archive
-        :type forward: bool
-        """
-
-        if self.__file_provider is None:
-            return
-
-        if self.__archive_type is not None:
-            listmode = Constants.FILE_TYPE['ARCHIVES']
-        else:
-            listmode = Constants.FILE_TYPE['IMAGES']
-
-        current_dir = self.__file_provider.get_directory()
-        if not self.__file_provider.directory_direction(forward=forward):
-            # Restore current directory if no files were found
-            self.__file_provider.set_directory(current_dir)
-            return False
-
-        self._close()
-        files = self.__file_provider.list_files(mode=listmode)
-        if len(files) > 0:
-            if forward:
-                path = files[0]
-            else:
-                path = files[-1]
-        else:
-            path = self.__file_provider.get_directory()
-        if forward:
-            self.open_file(path)
-        else:
-            self.open_file(path, start_page=self.__open_first_archive)
-        return True
 
     @Callback
     def file_available(self, filepaths: list):

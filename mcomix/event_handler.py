@@ -168,10 +168,6 @@ class EventHandler:
                                     self.__window.filehandler.open_archive_direction, kwargs={'forward': True})
         self.__keybindings.register('previous_archive',
                                     self.__window.filehandler.open_archive_direction, kwargs={'forward': False})
-        self.__keybindings.register('next_directory',
-                                    self.__window.filehandler.open_directory_direction, kwargs={'forward': True})
-        self.__keybindings.register('previous_directory',
-                                    self.__window.filehandler.open_directory_direction, kwargs={'forward': False})
         self.__keybindings.register('properties',
                                     self.__window.actiongroup.get_action('properties').activate)
         self.__keybindings.register('preferences',

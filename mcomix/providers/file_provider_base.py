@@ -34,6 +34,3 @@ class FileProvider:
 
     def list_files(self, mode: int):
         return []
-
-    def directory_direction(self, forward: bool):
-        return False
