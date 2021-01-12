@@ -20,18 +20,17 @@ class FileProvider:
     def __init__(self):
         super().__init__()
 
-    def set_directory(self, path: str):
+    def set_directory(self, path: Path):
         """
         Sets the base directory
         """
 
-        file_or_directory = Path(path).resolve()
-        if Path.is_dir(file_or_directory):
-            return file_or_directory
-        elif Path.is_file(file_or_directory):
-            return file_or_directory.parent
+        if Path.is_dir(path):
+            return path
+        elif Path.is_file(path):
+            return path.parent
         else:
-            logger.error(f'Invalid path: \'{file_or_directory}\'')
+            logger.error(f'Invalid path: \'{path}\'')
             raise ValueError
 
     def get_directory(self):

@@ -17,7 +17,7 @@ class OrderedFileProvider(FileProvider):
     This provider will list all files in the same directory as the one passed to the constructor
     """
 
-    def __init__(self, file_or_directory: str):
+    def __init__(self, path: Path):
         """
         Initializes the file listing. If <file_or_directory> is a file,
         directory will be used as base path. If it is a directory, that
@@ -26,7 +26,7 @@ class OrderedFileProvider(FileProvider):
 
         super().__init__()
 
-        self.__base_dir = self.set_directory(file_or_directory)
+        self.__base_dir = self.set_directory(path)
 
     def get_directory(self):
         return self.__base_dir
