@@ -3,8 +3,6 @@
 import functools
 from pathlib import Path
 
-from loguru import logger
-
 from mcomix.archive_tools import ArchiveTools
 from mcomix.constants import Constants
 from mcomix.image_tools import ImageTools
@@ -42,23 +40,16 @@ class OrderedFileProvider(FileProvider):
         elif mode == Constants.FILE_TYPE['ARCHIVES']:
             should_accept = ArchiveTools.is_archive_file
         else:
-            should_accept = lambda file: True
+            raise ValueError
 
         files = []
-        fname_map = {}
-        try:
-            # listdir() return list of bytes only if path is bytes
-            for fn in Path(self.__base_dir).iterdir():
-                fpath = Path(fn)
-                if should_accept(fpath):
-                    files.append(fpath)
-                    fname_map[fpath] = fn
-        except OSError:
-            logger.warning(f'Permission denied, Could not open: \'{self.__base_dir}\'')
-            return []
+        for fn in Path(self.__base_dir).iterdir():
+            if should_accept(fn):
+                files.append(fn)
 
         self._sort_files(files)
-        return [fname_map[fpath] for fpath in files]
+
+        return files
 
     @staticmethod
     def _sort_files(files: list):
