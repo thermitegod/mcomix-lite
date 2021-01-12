@@ -8,6 +8,7 @@ from loguru import logger
 from mcomix.archive_tools import ArchiveTools
 from mcomix.constants import Constants
 from mcomix.image_tools import ImageTools
+from mcomix.preferences import config
 from mcomix.providers.file_provider_base import FileProvider
 from mcomix.sort_alphanumeric import SortAlphanumeric
 
@@ -56,7 +57,7 @@ class OrderedFileProvider(FileProvider):
             logger.warning(f'Permission denied, Could not open: \'{self.__base_dir}\'')
             return []
 
-        FileProvider.sort_files(files)
+        self._sort_files(files)
         return [fname_map[fpath] for fpath in files]
 
     def directory_direction(self, forward: bool):
@@ -94,3 +95,25 @@ class OrderedFileProvider(FileProvider):
                 return True
 
         return False
+
+    @staticmethod
+    def _sort_files(files: list):
+        """
+        Sorts a list of C{files} depending on the current preferences. The list is sorted in-place
+        """
+
+        if config['SORT_BY'] == Constants.FILE_SORT_TYPE['NAME']:
+            SortAlphanumeric(files)
+        elif config['SORT_BY'] == Constants.FILE_SORT_TYPE['LAST_MODIFIED']:
+            # Most recently modified file first
+            files.sort(key=lambda filename: Path.stat(filename).st_mtime * -1)
+        elif config['SORT_BY'] == Constants.FILE_SORT_TYPE['SIZE']:
+            # Smallest file first
+            files.sort(key=lambda filename: Path.stat(filename).st_size)
+        else:
+            # don't sort at all: use arbitrary ordering.
+            pass
+
+        # Default is ascending.
+        if config['SORT_ORDER'] == Constants.FILE_SORT_DIRECTION['DESCENDING']:
+            files.reverse()
