@@ -33,4 +33,4 @@ class FileProvider:
         return Path.cwd()
 
     def list_files(self, mode: int):
-        return []
+        raise NotImplementedError
