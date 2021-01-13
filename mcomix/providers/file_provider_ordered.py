@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import functools
 from pathlib import Path
 
 from mcomix.archive_tools import ArchiveTools
@@ -36,7 +35,7 @@ class OrderedFileProvider(FileProvider):
         """
 
         if mode == Constants.FILE_TYPE['IMAGES']:
-            should_accept = functools.partial(ImageTools.is_image_file, check_mimetype=True)
+            should_accept = ImageTools.is_image_file
         elif mode == Constants.FILE_TYPE['ARCHIVES']:
             should_accept = ArchiveTools.is_archive_file
         else:

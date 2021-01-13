@@ -324,10 +324,6 @@ class _PreferencesDialog(Gtk.Dialog):
         page.new_section('File Detection')
 
         page.add_row(self._create_pref_check_button(
-            'Detect image file(s) by mimetypes',
-            'CHECK_IMAGE_MIMETYPE'))
-
-        page.add_row(self._create_pref_check_button(
             'Support esoteric image mimetypes',
             'SUPPORT_ESOTERIC_MIMETYPES'))
 
@@ -634,11 +630,9 @@ class _PreferencesDialog(Gtk.Dialog):
 
         elif preference in ('ANIMATION_BACKGROUND', 'ANIMATION_TRANSFORM'):
             self.__window.thumbnailsidebar.toggle_page_numbers_visible()
-
-        elif preference in ('ANIMATION_BACKGROUND', 'ANIMATION_TRANSFORM', 'CHECK_IMAGE_MIMETYPE'):
             self.__window.filehandler.refresh_file()
 
-        elif preference in ('OPEN_FIRST_PAGE'):
+        elif preference in ('OPEN_FIRST_PAGE', ):
             self.__window.filehandler.update_opening_behavior()
 
     def _create_pref_spinner(self, prefkey: str, scale: float, lower: float, upper: float,

@@ -67,7 +67,7 @@ class Thumbnailer:
         tuple: (pixbuf)
         """
 
-        if ImageTools.is_image_file(filepath, check_mimetype=True):
+        if ImageTools.is_image_file(filepath):
             pixbuf = ImageTools.load_pixbuf_size(filepath, self.__width, self.__height)
             return pixbuf
 

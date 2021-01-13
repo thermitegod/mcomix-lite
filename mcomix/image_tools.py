@@ -24,7 +24,6 @@ class _ImageTools:
         Image.MAX_IMAGE_PIXELS = None
 
         self.__supported_image_exts = tuple()
-        self.__supported_image_mimes = tuple()
         self.__supported_image_formats = {}
 
         self.init_supported_formats()
@@ -60,23 +59,12 @@ class _ImageTools:
 
         # cache a supported extensions list
         supported_image_exts = set()
-        supported_image_mimes = set()
         for mimes, exts in self.__supported_image_formats.values():
             supported_image_exts.update(exts)
-            supported_image_mimes.update(mimes)
 
         self.__supported_image_exts = tuple(supported_image_exts)
-        self.__supported_image_mimes = tuple(supported_image_mimes)
 
-    def is_image_file(self, path: Path, check_mimetype: bool = False):
-        # if check_mimetype is True,
-        # read starting bytes and using Gio.content_type_guess
-        # to guess if path is supported, ignoring file extension.
-        if config['CHECK_IMAGE_MIMETYPE'] and check_mimetype and Path.is_file(path):
-            with Path.open(path, mode='rb') as fd:
-                magic = fd.read(10)
-            mime, uncertain = Gio.content_type_guess(data=magic)
-            return mime.lower() in self.__supported_image_mimes
+    def is_image_file(self, path: Path):
         return str(path).lower().endswith(self.__supported_image_exts)
 
     @staticmethod
