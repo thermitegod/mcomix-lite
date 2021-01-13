@@ -320,10 +320,10 @@ class ImageHandler:
         else:
             index = page - 1
 
-        if 0 <= index < len(self.__image_files):
+        try:
             return Path(self.__image_files[index])
-
-        return None
+        except IndexError:
+            return None
 
     def get_page_filename(self, page: int = None, double: bool = False, manga: bool = False):
         """
