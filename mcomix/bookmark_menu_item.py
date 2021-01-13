@@ -50,12 +50,12 @@ class Bookmark(Gtk.ImageMenuItem):
         else:
             self.__window.set_page(self._page)
 
-    def same_path(self, path):
+    def same_path(self, path: Path):
         """
         Return True if the bookmark is for the file <path>
         """
 
-        return Path(path) == Path(self._path)
+        return path == Path(self._path)
 
     def same_page(self, page):
         """
@@ -78,12 +78,19 @@ class Bookmark(Gtk.ImageMenuItem):
 
     def pack(self):
         """
-        Return a tuple suitable for pickling. The bookmark can be fully
-        re-created using the values in the tuple
+        Returns a dict. The bookmark can be fully
+        re-created using the values in the dict
         """
 
-        return self._name, str(self._path), self._page, self._numpages, \
-               self.__archive_type, self._date_added.timestamp()
+        return {
+            self._name: {
+                'path': str(Path(self._path).parent),
+                'current_page': self._page,
+                'total_pages': self._numpages,
+                'archive_type': self.__archive_type,
+                'created': self._date_added.timestamp()
+            }
+        }
 
     def clone(self):
         """

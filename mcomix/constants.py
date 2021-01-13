@@ -35,7 +35,7 @@ class _Constants:
         self.CONFIG_FILES = {
             'CONFIG': Path() / self.PATHS['CONFIG'] / 'mcomix.conf',
             'KEYBINDINGS': Path() / self.PATHS['CONFIG'] / 'input.conf',
-            'BOOKMARK': Path() / self.PATHS['DATA'] / 'bookmarks.json',
+            'BOOKMARK': Path() / self.PATHS['DATA'] / 'bookmarks.yml',
         }
 
         self.AXIS = {

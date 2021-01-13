@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import json
 from pathlib import Path
 
 import xxhash
+import yaml
 from loguru import logger
 
 from mcomix.constants import Constants
@@ -38,13 +38,13 @@ class _ConfigBackend:
 
     @staticmethod
     def _dump_config(config: dict):
-        return json.dumps(config, ensure_ascii=False, indent=2)
+        return yaml.dump(config, Dumper=yaml.CSafeDumper, sort_keys=False)
 
     @staticmethod
     def load_config(config: Path, saved_prefs: dict):
         try:
             with Path.open(config, mode='rt', encoding='utf8') as fd:
-                saved_prefs.update(json.load(fd))
+                saved_prefs.update(yaml.safe_load(fd))
         except Exception as ex:
             logger.error('Loading config failed, exiting')
             logger.error(f'Exception: {ex}')

@@ -2,10 +2,10 @@
 
 """bookmark_backend.py - Bookmarks handler"""
 
-import json
 import time
 from pathlib import Path
 
+import yaml
 from gi.repository import Gtk
 from loguru import logger
 
@@ -144,10 +144,20 @@ class _BookmarkBackend:
         if Path.is_file(self.__bookmark_path):
             try:
                 with Path.open(self.__bookmark_path, mode='rt', encoding='utf8') as fd:
-                    version, packs = json.load(fd)
+                    packs = yaml.safe_load(fd)
 
-                    for pack in packs:
-                        bookmarks.append(Bookmark(self.__window, self.__file_handler, *pack))
+                    for bookmark in packs:
+                        for idx, item in enumerate(bookmark):
+                            path = str(Path(bookmark[item]['path'], item))
+                            current_page = bookmark[item]['current_page']
+                            total_pages = bookmark[item]['total_pages']
+                            archive_type = bookmark[item]['archive_type']
+                            created = bookmark[item]['created']
+
+                            bookmarks.append(Bookmark(self.__window, self.__file_handler,
+                                                      name=item, path=path, page=current_page,
+                                                      numpages=total_pages, archive_type=archive_type,
+                                                      epoch=created))
             except Exception as ex:
                 logger.error(f'Could not parse bookmarks file: \'{self.__bookmark_path}\'')
                 logger.error(f'Exception: {ex}')
@@ -183,7 +193,8 @@ class _BookmarkBackend:
             self.__bookmarks = list(set(self.__bookmarks + new_bookmarks))
 
         packs = [bookmark.pack() for bookmark in self.__bookmarks]
-        bookmarks = json.dumps((Constants.VERSION, packs), ensure_ascii=False, indent=2)
+        bookmarks = yaml.dump(packs, Dumper=yaml.CSafeDumper, sort_keys=False,
+                              allow_unicode=True, width=2147483647)
         self.__bookmark_path.write_text(bookmarks)
         self.__bookmarks_mtime = time.time()
 
