@@ -65,11 +65,11 @@ class ThumbnailViewBase:
         # 'draw' event called too frequently
         if not self.__lock.acquire(blocking=False):
             return
-        try:
-            taskid = self.__taskid
-            if not taskid:
-                taskid = uuid.uuid4().int
 
+        if self.__taskid == 0:
+            self.__taskid = uuid.uuid4().int
+
+        try:
             model = self.get_model()
             for idx, item in enumerate(model):
                 _iter = model.get_iter(idx)
@@ -79,11 +79,10 @@ class ThumbnailViewBase:
                     continue
                 if uid in self.__done:
                     continue
-                self.__taskid = taskid
                 self.__done.add(uid)
                 self.__threadpool.apply_async(
                     self._pixbuf_worker, args=(uid, _iter, model),
-                    callback=functools.partial(self._pixbuf_finished, taskid=taskid))
+                    callback=functools.partial(self._pixbuf_finished, taskid=self.__taskid))
         finally:
             self.__lock.release()
 
