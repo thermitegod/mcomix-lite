@@ -338,19 +338,13 @@ class ImageHandler:
                 return '', ''
             return ''
 
-        def get_fname(fname):
-            path = self.get_path_to_page(fname)
-            if not Path.is_file(path):
-                return ''
-            return path.name
-
         if page is None:
             page = self.get_current_page()
 
-        first = get_fname(page)
+        first = self.get_path_to_page(page).name
 
         if double:
-            second = get_fname(page + 1)
+            second = self.get_path_to_page(page + 1).name
             if manga:
                 return second, first
             return first, second
