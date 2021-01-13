@@ -125,10 +125,6 @@ class _PreferencesDialog(Gtk.Dialog):
             'Flip pages with mouse wheel',
             'FLIP_WITH_WHEEL'))
 
-        page.add_row(self._create_pref_check_button(
-            'Automatically open the next archive',
-            'AUTO_OPEN_NEXT_ARCHIVE'))
-
         page.add_row(Gtk.Label(label='Number of pixels to scroll a page per arrow key press:'),
                      self._create_pref_spinner(
                          'PIXELS_TO_SCROLL_PER_KEY_EVENT',
@@ -138,6 +134,12 @@ class _PreferencesDialog(Gtk.Dialog):
                      self._create_pref_spinner(
                          'PIXELS_TO_SCROLL_PER_MOUSE_WHEEL_EVENT',
                          1, 1, 500, 1, 3, 0))
+
+        page.new_section('File Opening')
+
+        page.add_row(self._create_pref_check_button(
+            'Automatically open the next archive',
+            'AUTO_OPEN_NEXT_ARCHIVE'))
 
         page.new_section('Double Page Mode')
 
