@@ -13,8 +13,7 @@ try:
     gi.require_version('Gdk', '3.0')
     from gi.repository import GLib, Gdk, Gtk
 except (ValueError, ImportError):
-    logger.critical('GTK+ 3.0 import error')
-    raise SystemExit(1)
+    raise SystemExit('GTK+ 3.0 import error')
 
 from mcomix.constants import Constants
 
