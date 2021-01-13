@@ -84,12 +84,13 @@ class ImageHandler:
         collected directly in order to save memory
         """
 
+        if not self.__window.filehandler.get_file_loaded():
+            return
+
         if not self.__lock.acquire(blocking=False):
             return
-        try:
-            if not self.__window.filehandler.get_file_loaded():
-                return
 
+        try:
             # Get list of wanted pixbufs.
             wanted_pixbufs = self._ask_for_pages(self.get_current_page())
 

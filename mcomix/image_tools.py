@@ -411,9 +411,7 @@ class _ImageTools:
             elif orientation == '8':
                 return 270
         except AttributeError:
-            pass
-
-        return 0
+            return 0
 
     @staticmethod
     def get_image_size(path: Path):

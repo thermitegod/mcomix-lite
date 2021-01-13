@@ -145,12 +145,12 @@ class _BookmarkBackend:
             try:
                 with Path.open(self.__bookmark_path, mode='rt', encoding='utf8') as fd:
                     version, packs = json.load(fd)
+
+                    for pack in packs:
+                        bookmarks.append(Bookmark(self.__window, self.__file_handler, *pack))
             except Exception as ex:
                 logger.error(f'Could not parse bookmarks file: \'{self.__bookmark_path}\'')
                 logger.error(f'Exception: {ex}')
-            else:
-                for pack in packs:
-                    bookmarks.append(Bookmark(self.__window, self.__file_handler, *pack))
 
         return bookmarks
 
@@ -161,13 +161,9 @@ class _BookmarkBackend:
         """
 
         if Path.is_file(self.__bookmark_path):
-            try:
-                if Path.stat(self.__bookmark_path).st_mtime > self.__bookmarks_mtime:
-                    return True
-                return False
-            except IOError:
-                logger.error('failed to get bookmark file last modification time')
-                return False
+            if Path.stat(self.__bookmark_path).st_mtime > self.__bookmarks_mtime:
+                return True
+            return False
 
         return True
 
