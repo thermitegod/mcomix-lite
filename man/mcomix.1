@@ -1,4 +1,4 @@
-.TH MComix 1 "October 2020"
+.TH MComix 1 "January 2021"
 
 .SH NAME
 .B MComix-Lite
@@ -21,31 +21,6 @@ Display the help text and exit.
 .BR -v , " --version"
 Show the version number and exit.
 .PP
-.B Viewing modes
-.TP
-.BR -f , " --fullscreen"
-Start the application in fullscreen mode.
-.TP
-.BR -m , " --manga"
-Start the application in manga mode.
-.TP
-.BR -d , " --double-page"
-Start the application in double page mode.
-.PP
-.B Zoom modes
-.TP
-.BR -b , " --zoom-best"
-Start the application with zoom set to best fit mode.
-.TP
-.BR -zw , " --zoom-width"
-Start the application with zoom set to fit width.
-.TP
-.BR -zh , " --zoom-height"
-Start the application with zoom set to fit height.
-.PP
-The zoom modes are mutually exclusive, and if more than one is specified,
-the first will be used.
-.PP
 .B Debug
 .TP
 .BR -L , " --loglevel"
@@ -58,19 +33,7 @@ Levels: 'NONE', 'CRITICAL', 'ERROR', 'WARNING', 'INFO', 'VERBOSE', 'DEBUG', 'TRA
 The path to one or more files or directories to be opened.
 
 .SH DEPENDENCIES
-.SS Required:
-.B Python
-3.8 or later
-.PP
-.B PyGObject
-3.24 or later.
-.PP
-.B GTK+3
-3.24 or later.
-.PP
-.B Pillow
-Pillow 6.0.0 or later.
-.SS Recommended:
+.SS Recommended External Programs:
 .BR unrar
 to extract RAR archives.
 .PP
