@@ -235,9 +235,7 @@ class FileHandler:
         self.__file_loading = False
 
         archive_images = [image for image in files
-                          if ImageTools.is_image_file(Path(image))
-                          # Remove MacOS meta files from image list
-                          and '__MACOSX' not in image.split('/')]
+                          if ImageTools.is_image_file(Path(image))]
 
         self._sort_archive_images(archive_images)
 
