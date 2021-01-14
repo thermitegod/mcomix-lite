@@ -295,7 +295,9 @@ class _ImageTools:
         if im.format == 'GIF' and im.mode == 'P':
             # TODO: Pillow has bug with gif animation
             # https://github.com/python-pillow/Pillow/labels/GIF
-            raise NotImplementedError('Pillow has bug with gif animation, fallback to GdkPixbuf')
+            #
+            # Pillow has bug with gif animation, fallback to GdkPixbuf
+            raise NotImplementedError
         anime = AnimeFrameBuffer(im.n_frames, loop=im.info['loop'])
         background = im.info.get('background', None)
         if isinstance(background, tuple):

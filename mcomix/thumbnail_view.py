@@ -45,7 +45,7 @@ class ThumbnailViewBase:
         This function must return the thumbnail for C{uid}
         """
 
-        raise NotImplementedError('Subclasses must override generate_thumbnail.')
+        raise NotImplementedError
 
     def stop_update(self):
         """
@@ -123,4 +123,4 @@ class ThumbnailTreeView(Gtk.TreeView, ThumbnailViewBase):
         return Gtk.TreeView.get_visible_range(self)
 
     def generate_thumbnail(self, uid):
-        raise NotImplementedError('Subclasses must override generate_thumbnail.')
+        raise NotImplementedError

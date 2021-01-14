@@ -44,7 +44,7 @@ class BaseArchive:
         :rtype: Path
         """
 
-        raise NotImplementedError('Subclasses must override extract.')
+        raise NotImplementedError
 
     def iter_extract(self, entries, destination_dir: Path):
         """
