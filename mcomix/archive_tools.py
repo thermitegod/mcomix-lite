@@ -4,6 +4,7 @@
 
 from pathlib import Path
 
+from mcomix.archive.archive_interface import ArchiveInterface
 from mcomix.archive.format_rar import RarArchive
 from mcomix.archive.format_sevenzip import SevenZipArchive
 from mcomix.archive.format_tar import TarArchive
@@ -87,19 +88,12 @@ class _ArchiveTools:
 
         return None
 
-    def get_recursive_archive_handler(self, path: Path, archive_type=None, **kwargs):
-        """
-        Same as <get_archive_handler> but the handler will transparently handle
-        archives within archives
-        """
-
+    def get_archive_interface_handler(self, path: Path, archive_type=None):
         archive = self.get_archive_handler(path=path, archive_type=archive_type)
         if archive is None:
             return None
 
-        # XXX: Deferred import to avoid circular dependency
-        from mcomix.archive.archive_recursive import ArchiveRecursive
-        return ArchiveRecursive(archive, **kwargs)
+        return ArchiveInterface(archive)
 
 
 ArchiveTools = _ArchiveTools()

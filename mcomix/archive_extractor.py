@@ -3,7 +3,6 @@
 """archive_extractor.py - Archive extraction class"""
 
 import threading
-import traceback
 from pathlib import Path
 
 from loguru import logger
@@ -36,7 +35,6 @@ class Extractor:
         self.__extracted = None
         self.__archive = None
 
-        self.__dst = None
         self.__contents_listed = False
         self.__condition = None
 
@@ -50,12 +48,11 @@ class Extractor:
         self.__src = src
         self.__files = []
         self.__extracted = set()
-        self.__archive = ArchiveTools.get_recursive_archive_handler(path=self.__src, archive_type=archive_type)
+        self.__archive = ArchiveTools.get_archive_interface_handler(path=self.__src, archive_type=archive_type)
         if self.__archive is None:
             logger.warning(f'Non-supported archive format: \'{self.__src.name}\'')
             raise ArchiveException
 
-        self.__dst = self.__archive.get_destdir()
         self.__condition = threading.Condition()
         self.__threadpool.apply_async(
             self._list_contents, callback=self._list_contents_cb,
@@ -81,7 +78,7 @@ class Extractor:
         Returns the root extraction directory of this extractor
         """
 
-        return self.__dst
+        return self.__archive.get_destdir()
 
     def set_files(self, files: list):
         """
@@ -163,7 +160,6 @@ class Extractor:
 
         self.stop()
         if self.__archive:
-            logger.debug(f'Cache directory removed: \'{self.__dst}\'')
             self.__archive.close()
 
     def _extraction_finished(self, name: str):
@@ -181,10 +177,7 @@ class Extractor:
         with self.__condition:
             files = list(set(self.__files) - self.__extracted)
 
-        logger.debug(f'Extracting from \'{self.__src}\' to \'{self.__dst}\'')
-        logger.trace(f'{", ".join(files)}')
-
-        for name in self.__archive.iter_extract(files, self.__dst):
+        for name in self.__archive.iter_extract(files):
             if self._extraction_finished(name):
                 return
 
@@ -205,4 +198,6 @@ class Extractor:
         # handled gracefully by the main program anyway.
 
         logger.error(f'Extraction error: {value}')
-        logger.debug(f'Traceback:\n{"".join(traceback.format_tb(tb)).strip()}')
+
+        # import traceback
+        # logger.debug(f'Traceback:\n{"".join(traceback.format_tb(tb)).strip()}')
