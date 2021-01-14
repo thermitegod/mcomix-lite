@@ -2,11 +2,11 @@
 
 from pathlib import Path
 
-from mcomix.archive.archive_executable import BaseArchiveExecutable
+from mcomix.archive.archive_external import ArchiveExternal
 from mcomix.lib.executable import GetExecutable
 
 
-class RarArchive(BaseArchiveExecutable):
+class RarArchive(ArchiveExternal):
     """
     RAR file extractor using the unrar executable
     """

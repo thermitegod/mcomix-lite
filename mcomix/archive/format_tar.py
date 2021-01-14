@@ -5,10 +5,10 @@ from pathlib import Path
 
 from loguru import logger
 
-from mcomix.archive.archive_base import BaseArchive
+from mcomix.archive.archive_builtin import ArchiveBuiltin
 
 
-class TarArchive(BaseArchive):
+class TarArchive(ArchiveBuiltin):
     def __init__(self, archive: Path):
         super().__init__(archive)
 
@@ -17,16 +17,8 @@ class TarArchive(BaseArchive):
         # tarfile is not thread-safe
         # so use OrderedDict to save TarInfo in order
         # {unicode_name: TarInfo}
-        self.__contents_info = {}
         for member in self.__tar.getmembers():
-            self.__contents_info[member.name] = member
-
-    @staticmethod
-    def is_available():
-        return True
-
-    def iter_contents(self):
-        yield from self.__contents_info.keys()
+            self.contents_info[member.name] = member
 
     def extract(self, filename: str, destination_dir: Path):
         """
@@ -41,7 +33,7 @@ class TarArchive(BaseArchive):
         """
 
         with self.lock:
-            info = self.__contents_info[filename]
+            info = self.contents_info[filename]
             try:
                 with self.__tar.extractfile(info) as fp:
                     data = fp.read()

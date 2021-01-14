@@ -11,13 +11,7 @@ from mcomix.archive.archive_base import BaseArchive
 from mcomix.lib.process import Process
 
 
-class BaseArchiveExecutable(BaseArchive):
-    """
-    Base archive interface. All filenames passed from and into archives
-    are expected to be Unicode objects. Archive files are converted to
-    Unicode with some guess-work
-    """
-
+class ArchiveExternal(BaseArchive):
     def __init__(self, archive):
         super().__init__(archive)
 
@@ -95,3 +89,10 @@ class BaseArchiveExecutable(BaseArchive):
                     del wanted[filename]
                     if not wanted:
                         break
+
+    def close(self):
+        """
+        Closes the archive and releases held resources
+        """
+
+        pass

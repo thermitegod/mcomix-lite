@@ -5,28 +5,23 @@ Base class for unified handling of various archive formats. Used for simplifying
 extraction and adding new archive formats
 """
 
-import threading
 from pathlib import Path
 
+from mcomix.archive.archive_base import BaseArchive
 
-class BaseArchive:
-    """
-    Base archive interface.
-    """
 
+class ArchiveBuiltin(BaseArchive):
     def __init__(self, archive):
-        super().__init__()
+        super().__init__(archive)
 
-        self.archive = archive
+        self.contents_info = {}
 
-        self.lock = threading.Lock()
+    @staticmethod
+    def is_available():
+        return True
 
     def iter_contents(self):
-        """
-        Generator for listing the archive contents
-        """
-
-        raise NotImplementedError
+        yield from self.contents_info.keys()
 
     def extract(self, filename: str, destination_dir: Path):
         """
@@ -52,7 +47,15 @@ class BaseArchive:
         :param destination_dir: Path
         """
 
-        raise NotImplementedError
+        wanted = set(entries)
+        for filename in self.iter_contents():
+            if filename not in wanted:
+                continue
+            self.extract(filename, destination_dir)
+            yield filename
+            wanted.remove(filename)
+            if not wanted:
+                break
 
     def close(self):
         """
@@ -60,20 +63,3 @@ class BaseArchive:
         """
 
         raise NotImplementedError
-
-    @staticmethod
-    def _create_file(dst_path: Path):
-        """
-        Open <dst_path> for writing, making sure base directory exists
-
-        :returns: created image path
-        :rtype: buffer
-        """
-
-        dst_dir = dst_path.parent
-
-        # Create directory if it doesn't exist
-        if not Path.exists(dst_dir):
-            dst_dir.mkdir(parents=True, exist_ok=True)
-
-        return Path.open(dst_path, mode='wb')

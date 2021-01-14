@@ -12,7 +12,7 @@ from mcomix.archive_tools import ArchiveTools
 from mcomix.constants import Constants
 
 
-class RecursiveArchive(BaseArchive):
+class ArchiveRecursive(BaseArchive):
     def __init__(self, archive):
         super().__init__(archive.archive)
 

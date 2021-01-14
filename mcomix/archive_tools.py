@@ -98,8 +98,8 @@ class _ArchiveTools:
             return None
 
         # XXX: Deferred import to avoid circular dependency
-        from mcomix.archive.archive_recursive import RecursiveArchive
-        return RecursiveArchive(archive, **kwargs)
+        from mcomix.archive.archive_recursive import ArchiveRecursive
+        return ArchiveRecursive(archive, **kwargs)
 
 
 ArchiveTools = _ArchiveTools()

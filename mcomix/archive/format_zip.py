@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 
-"""Unicode-aware wrapper for zipfile.ZipFile"""
-
 import zipfile
 from pathlib import Path
 
 from loguru import logger
 
-from mcomix.archive.archive_base import BaseArchive
+from mcomix.archive.archive_builtin import ArchiveBuiltin
 
 
-class ZipArchive(BaseArchive):
+class ZipArchive(ArchiveBuiltin):
     def __init__(self, archive: Path):
         super().__init__(archive)
 
@@ -19,16 +17,8 @@ class ZipArchive(BaseArchive):
         # zipfile is usually not thread-safe
         # so use OrderedDict to save ZipInfo in order
         # {unicode_name: ZipInfo}
-        self.__contents_info = {}
         for info in self.__zip.infolist():
-            self.__contents_info[info.filename] = info
-
-    @staticmethod
-    def is_available():
-        return True
-
-    def iter_contents(self):
-        yield from self.__contents_info.keys()
+            self.contents_info[info.filename] = info
 
     def extract(self, filename: str, destination_dir: Path):
         """
@@ -43,7 +33,7 @@ class ZipArchive(BaseArchive):
         """
 
         with self.lock:
-            info = self.__contents_info[filename]
+            info = self.contents_info[filename]
             data = self.__zip.read(info)
 
         destination_path = Path() / destination_dir / filename
