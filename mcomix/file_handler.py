@@ -271,7 +271,6 @@ class FileHandler:
         :param num_of_pages: Page count.
         :param path: Archive path
         :returns: page index
-        :rtype: int
         """
 
         if start_page < 0 and config['DEFAULT_DOUBLE_PAGE']:

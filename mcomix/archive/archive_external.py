@@ -41,11 +41,8 @@ class ArchiveExternal(BaseArchive):
         The file is saved to <destination_dir>
 
         :param filename: file to extract
-        :type filename: str
         :param destination_dir: extraction path
-        :type destination_dir: Path
         :returns: full path of the extracted file
-        :rtype: Path
         """
 
         destination_path = Path() / destination_dir / filename
@@ -55,6 +52,10 @@ class ArchiveExternal(BaseArchive):
                 Process.call(self._get_extract_arguments(), stdout=output)
 
     def iter_contents(self):
+        """
+        Generator for listing the archive contents
+        """
+
         #: Indicates which part of the file listing has been read.
         self.state = self.STATE_HEADER
         #: Current path while listing contents.
@@ -70,6 +71,13 @@ class ArchiveExternal(BaseArchive):
                         yield filename
 
     def iter_extract(self, entries: set, destination_dir: Path):
+        """
+        Generator to extract <entries> from archive to <destination_dir>
+
+        :param entries: files to extract
+        :param destination_dir: extraction path
+        """
+
         with self.lock:
             with Process.popen(self._get_extract_arguments()) as proc:
                 wanted = dict([(unicode_name, unicode_name) for unicode_name in entries])

@@ -35,11 +35,8 @@ class BaseArchive:
         The file is saved to <destination_dir>
 
         :param filename: file to extract
-        :type filename: str
         :param destination_dir: extraction path
-        :type destination_dir: Path
         :returns: full path of the extracted file
-        :rtype: Path
         """
 
         raise NotImplementedError
@@ -48,8 +45,8 @@ class BaseArchive:
         """
         Generator to extract <entries> from archive to <destination_dir>
 
-        :type entries
-        :param destination_dir: Path
+        :param entries: files to extract
+        :param destination_dir: extraction path
         """
 
         raise NotImplementedError
@@ -67,7 +64,6 @@ class BaseArchive:
         Open <dst_path> for writing, making sure base directory exists
 
         :returns: created image path
-        :rtype: buffer
         """
 
         dst_dir = dst_path.parent

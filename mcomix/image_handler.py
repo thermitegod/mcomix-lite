@@ -160,7 +160,6 @@ class ImageHandler:
         on the first page
 
         :returns: True if the current state warrants use of virtual double page mode
-        :rtype: bool
         """
 
         if page is None:

@@ -13,8 +13,6 @@ class FiniteLayout:  # 2D only
         Lays out a finite number of Boxes along the first axis.
 
         :param content_sizes: The sizes of the Boxes to lay out.
-        :type content_sizes tuple
-        :type content_sizes list
         :param viewport_size: The size of the viewport.
         :param orientation: The orientation to use.
         :param spacing: Number of additional pixels between Boxes.

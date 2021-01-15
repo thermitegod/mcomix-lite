@@ -31,7 +31,6 @@ class ArchiveInterface:
         Get the directry that the archive will be extracted to
 
         :return: path to extraction dir
-        :rtype: str
         """
 
         return self.__destdir

@@ -21,6 +21,10 @@ class ArchiveBuiltin(BaseArchive):
         return True
 
     def iter_contents(self):
+        """
+        Generator for listing the archive contents
+        """
+
         yield from self.contents_info.keys()
 
     def extract(self, filename: str, destination_dir: Path):
@@ -30,11 +34,8 @@ class ArchiveBuiltin(BaseArchive):
         The file is saved to <destination_dir>
 
         :param filename: file to extract
-        :type filename: str
         :param destination_dir: extraction path
-        :type destination_dir: Path
         :returns: full path of the extracted file
-        :rtype: Path
         """
 
         raise NotImplementedError
@@ -43,8 +44,8 @@ class ArchiveBuiltin(BaseArchive):
         """
         Generator to extract <entries> from archive to <destination_dir>
 
-        :type entries
-        :param destination_dir: Path
+        :param entries: files to extract
+        :param destination_dir: extraction path
         """
 
         for filename in self.iter_contents():

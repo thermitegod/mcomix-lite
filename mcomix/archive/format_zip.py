@@ -25,11 +25,8 @@ class ZipArchive(ArchiveBuiltin):
         Extract <filename> from the archive to <destination_dir>
 
         :param filename: file to extract
-        :type filename: str
         :param destination_dir: extraction path
-        :type destination_dir: Path
         :returns: full path of the extracted file
-        :rtype: Path
         """
 
         with self.lock:
