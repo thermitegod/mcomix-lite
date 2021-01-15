@@ -69,7 +69,7 @@ class ArchiveExternal(BaseArchive):
                     if filename is not None:
                         yield filename
 
-    def iter_extract(self, entries, destination_dir: Path):
+    def iter_extract(self, entries: set, destination_dir: Path):
         with self.lock:
             with Process.popen(self._get_extract_arguments()) as proc:
                 wanted = dict([(unicode_name, unicode_name) for unicode_name in entries])

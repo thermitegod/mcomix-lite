@@ -71,7 +71,7 @@ class ArchiveInterface:
                      f'{self.__archive_destination_dir}: '
                      f'{" ".join(archive_wanted.keys())}')
 
-        for f in self.__main_archive.iter_extract(archive_wanted.keys(), self.__archive_destination_dir):
+        for f in self.__main_archive.iter_extract(set(archive_wanted.keys()), self.__archive_destination_dir):
             yield archive_wanted[f]
 
     def close(self):

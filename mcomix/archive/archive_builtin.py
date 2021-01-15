@@ -39,7 +39,7 @@ class ArchiveBuiltin(BaseArchive):
 
         raise NotImplementedError
 
-    def iter_extract(self, entries, destination_dir: Path):
+    def iter_extract(self, entries: set, destination_dir: Path):
         """
         Generator to extract <entries> from archive to <destination_dir>
 
@@ -47,14 +47,13 @@ class ArchiveBuiltin(BaseArchive):
         :param destination_dir: Path
         """
 
-        wanted = set(entries)
         for filename in self.iter_contents():
-            if filename not in wanted:
+            if filename not in entries:
                 continue
             self.extract(filename, destination_dir)
             yield filename
-            wanted.remove(filename)
-            if not wanted:
+            entries.remove(filename)
+            if not entries:
                 break
 
     def close(self):
