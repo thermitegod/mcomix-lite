@@ -23,44 +23,19 @@ class _ImageTools:
         # disable PIL DecompressionBombWarning
         Image.MAX_IMAGE_PIXELS = None
 
-        self.__supported_image_exts = tuple()
-        self.__supported_image_formats = {}
+        self.__supported_image_exts = None
 
         self.init_supported_formats()
 
     def init_supported_formats(self):
         # Make sure all supported formats are registered.
 
-        blacklist_mime = ('application/gzip', 'application/octet-stream', 'application/pdf',
-                          'application/postscript', 'application/x-hdf', 'application/x-navi-animation',
-                          'application/x-qw', 'video/mpeg')
-
         # formats supported by PIL
         Image.init()
-        for ext, name in Image.EXTENSION.items():
-            fmt = self.__supported_image_formats.setdefault(name, (set(), set()))
-            fmt[1].add(ext.lower())
-            mime = Image.MIME.get(name, Gio.content_type_guess(filename=f'file{ext}')[0]).lower()
-            if mime not in blacklist_mime:
-                fmt[0].add(mime)
 
-        if config['SUPPORT_ESOTERIC_MIMETYPES']:
-            # formats supported by gdk-pixbuf
-            for gdkfmt in GdkPixbuf.Pixbuf.get_formats():
-                fmt = self.__supported_image_formats.setdefault(gdkfmt.get_name().upper(), (set(), set()))
-                for m in map(lambda s: s.lower(), gdkfmt.get_mime_types()):
-                    fmt[0].add(m)
-                # get_extensions() return extensions without '.'
-                for e in map(lambda s: f'.{s.lower()}', gdkfmt.get_extensions()):
-                    fmt[1].add(e)
-                    mime = Gio.content_type_guess(filename=f'file{e}')[0].lower()
-                    if mime not in blacklist_mime:
-                        fmt[0].add(mime)
-
-        # cache a supported extensions list
-        supported_image_exts = set()
-        for mimes, exts in self.__supported_image_formats.values():
-            supported_image_exts.update(exts)
+        supported_image_exts = []
+        for idx, item in enumerate(Image.EXTENSION):
+            supported_image_exts.append(item)
 
         self.__supported_image_exts = tuple(supported_image_exts)
 

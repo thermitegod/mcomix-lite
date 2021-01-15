@@ -69,7 +69,6 @@ config = {
     'ANIMATION_BACKGROUND': True,
     'ANIMATION_TRANSFORM': True,
     'MOVE_FILE': 'keep',
-    'SUPPORT_ESOTERIC_MIMETYPES': False,
     'HIDE_CURSOR': False,
     'OPEN_FIRST_PAGE': True,
     'WINDOW_SAVE': True,

@@ -323,12 +323,6 @@ class _PreferencesDialog(Gtk.Dialog):
         page.add_row(Gtk.Label(label='Sort archives by:'),
                      self._create_combobox_archive_sort_by())
 
-        page.new_section('File Detection')
-
-        page.add_row(self._create_pref_check_button(
-            'Support esoteric image mimetypes',
-            'SUPPORT_ESOTERIC_MIMETYPES'))
-
         page.new_section('Moving Files')
 
         page.add_row(Gtk.Label(label='Move file location (must be relative)'),
