@@ -16,12 +16,12 @@ class _ArchiveTools:
     def __init__(self):
         super().__init__()
 
-        self.__supported_archive_ext = ()
+        self.__supported_archive_ext = []
 
-        self.__zip_ext = ()
-        self.__sevenzip_ext = ()
-        self.__rar_ext = ()
-        self.__tar_ext = ()
+        self.__ext_zip = []
+        self.__ext_sevenzip = []
+        self.__ext_rar = []
+        self.__ext_tar = []
 
         # Handlers for each archive type.
         self.__handlers = {
@@ -35,41 +35,42 @@ class _ArchiveTools:
         self.init_supported_formats()
 
     @staticmethod
-    def _create_ext_tuple(archive_format):
-        return tuple([ext[0] for ext in archive_format])
+    def _create_ext_list(archive_format: tuple):
+        return [ext[0] for ext in archive_format]
 
     def init_supported_formats(self):
         if ZipArchive.is_available():
-            self.__zip_ext = self._create_ext_tuple(Constants.MIME_FORMAT['ZIP'])
+            self.__ext_zip = self._create_ext_list(Constants.MIME_FORMAT['ZIP'])
+            self.__supported_archive_ext += self.__ext_zip
         if SevenZipArchive.is_available():
-            self.__sevenzip_ext = self._create_ext_tuple(Constants.MIME_FORMAT['SEVENZIP'])
+            self.__ext_sevenzip = self._create_ext_list(Constants.MIME_FORMAT['SEVENZIP'])
+            self.__supported_archive_ext += self.__ext_sevenzip
         if RarArchive.is_available():
-            self.__rar_ext = self._create_ext_tuple(Constants.MIME_FORMAT['RAR'])
+            self.__ext_rar = self._create_ext_list(Constants.MIME_FORMAT['RAR'])
+            self.__supported_archive_ext += self.__ext_rar
         if TarArchive.is_available():
-            self.__tar_ext = self._create_ext_tuple(Constants.MIME_FORMAT['TAR'])
-
-        self.__supported_archive_ext = self.__zip_ext + self.__sevenzip_ext + self.__rar_ext + self.__tar_ext
+            self.__ext_tar = self._create_ext_list(Constants.MIME_FORMAT['TAR'])
+            self.__supported_archive_ext += self.__ext_tar
 
     def is_archive_file(self, path: Path):
-        return str(path).lower().endswith(self.__supported_archive_ext)
+        return path.suffix.lower() in self.__supported_archive_ext
 
     def archive_mime_type(self, path: Path):
         """
         Return the archive type of <path> or None for non-archives
         """
 
-        if self.is_archive_file(path=path):
-            filename = str(path).lower()
-            if filename.endswith(self.__zip_ext):
-                return Constants.ARCHIVE_FORMATS['ZIP']
-            elif filename.endswith(self.__sevenzip_ext):
-                return Constants.ARCHIVE_FORMATS['SEVENZIP']
-            elif filename.endswith(self.__rar_ext):
-                return Constants.ARCHIVE_FORMATS['RAR']
-            elif filename.endswith(self.__tar_ext):
-                return Constants.ARCHIVE_FORMATS['TAR']
+        if not self.is_archive_file(path=path):
+            return None
 
-        return None
+        if path.suffix in self.__ext_zip:
+            return Constants.ARCHIVE_FORMATS['ZIP']
+        elif path.suffix in self.__ext_sevenzip:
+            return Constants.ARCHIVE_FORMATS['SEVENZIP']
+        elif path.suffix in self.__ext_rar:
+            return Constants.ARCHIVE_FORMATS['RAR']
+        elif path.suffix in self.__ext_tar:
+            return Constants.ARCHIVE_FORMATS['TAR']
 
     def get_archive_handler(self, path: Path, archive_type=None):
         """

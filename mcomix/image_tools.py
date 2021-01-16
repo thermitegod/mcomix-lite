@@ -23,24 +23,18 @@ class _ImageTools:
         # disable PIL DecompressionBombWarning
         Image.MAX_IMAGE_PIXELS = None
 
-        self.__supported_image_exts = None
+        self.__supported_image_exts = []
 
         self.init_supported_formats()
 
     def init_supported_formats(self):
-        # Make sure all supported formats are registered.
-
         # formats supported by PIL
         Image.init()
-
-        supported_image_exts = []
         for idx, item in enumerate(Image.EXTENSION):
-            supported_image_exts.append(item)
-
-        self.__supported_image_exts = tuple(supported_image_exts)
+            self.__supported_image_exts.append(item)
 
     def is_image_file(self, path: Path):
-        return str(path).lower().endswith(self.__supported_image_exts)
+        return path.suffix.lower() in self.__supported_image_exts
 
     @staticmethod
     def rotate_pixbuf(src, rotation: int):
