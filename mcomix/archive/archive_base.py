@@ -22,6 +22,10 @@ class BaseArchive:
 
         self.lock = Lock()
 
+    @staticmethod
+    def is_available():
+        raise NotImplementedError
+
     def iter_contents(self):
         """
         Generator for listing the archive contents

@@ -25,6 +25,10 @@ class ArchiveExternal(BaseArchive):
         self.path = None
         self.contents = []
 
+    @staticmethod
+    def is_available():
+        raise NotImplementedError
+
     def _get_list_arguments(self):
         raise NotImplementedError
 
