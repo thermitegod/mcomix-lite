@@ -5,8 +5,9 @@ Base class for unified handling of various archive formats. Used for simplifying
 extraction and adding new archive formats
 """
 
-import threading
 from pathlib import Path
+
+from mcomix.lib.mt import Lock
 
 
 class BaseArchive:
@@ -19,7 +20,7 @@ class BaseArchive:
 
         self.archive = archive
 
-        self.lock = threading.Lock()
+        self.lock = Lock()
 
     def iter_contents(self):
         """
