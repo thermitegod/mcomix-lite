@@ -25,11 +25,10 @@ class _ArchiveTools:
 
         # Handlers for each archive type.
         self.__handlers = {
-            Constants.ARCHIVE_FORMATS['ZIP']: (ZipArchive,),
-            Constants.ARCHIVE_FORMATS['SEVENZIP']: (SevenZipArchive,),
-            Constants.ARCHIVE_FORMATS['RAR']: (RarArchive,),
-            # tarfile supported formats
-            Constants.ARCHIVE_FORMATS['TAR']: (TarArchive,),
+            Constants.ARCHIVE_FORMATS['ZIP']: ZipArchive,
+            Constants.ARCHIVE_FORMATS['SEVENZIP']: SevenZipArchive,
+            Constants.ARCHIVE_FORMATS['RAR']: RarArchive,
+            Constants.ARCHIVE_FORMATS['TAR']: TarArchive,
         }
 
         self.init_supported_formats()
@@ -83,9 +82,8 @@ class _ArchiveTools:
             if archive_type is None:
                 return None
 
-        for handler in self.__handlers[archive_type]:
-            if handler.is_available():
-                return handler(path)
+        if self.__handlers[archive_type].is_available():
+            return self.__handlers[archive_type](path)
 
         return None
 
