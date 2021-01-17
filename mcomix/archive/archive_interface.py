@@ -22,9 +22,11 @@ class ArchiveInterface:
         # Map entry name to its archive+name.
         self.__entry_mapping = {}
         # Map archive to its root.
-        self.__archive_destination_dir = None
         self.__contents_listed = False
         self.__contents = []
+
+        self.__archive_destination_dir = Path() / self.__destdir / 'main_archive'
+        self.__archive_destination_dir.mkdir(parents=True, exist_ok=True)
 
     def get_destdir(self):
         """
@@ -36,8 +38,6 @@ class ArchiveInterface:
         return self.__destdir
 
     def _iter_contents(self):
-        self.__archive_destination_dir = Path() / self.__destdir / 'main_archive'
-
         for f in self.__main_archive.iter_contents():
             name = str(Path(self.__archive_destination_dir, f))
             self.__entry_mapping[name] = f

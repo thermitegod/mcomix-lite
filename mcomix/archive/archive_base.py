@@ -64,17 +64,17 @@ class BaseArchive:
         raise NotImplementedError
 
     @staticmethod
-    def _create_file(dst_path: Path):
+    def _create_file(path: Path):
         """
         Open <dst_path> for writing, making sure base directory exists
 
         :returns: created image path
         """
 
-        dst_dir = dst_path.parent
-
-        # Create directory if it doesn't exist
+        # recreate the archives directory structure,
+        # needed for archives that are not flat
+        dst_dir = path.parent
         if not Path.exists(dst_dir):
             dst_dir.mkdir(parents=True, exist_ok=True)
 
-        return Path.open(dst_path, mode='wb')
+        return Path.open(path, mode='wb')
