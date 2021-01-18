@@ -67,7 +67,7 @@ class ArchiveExternal(BaseArchive):
                                stderr=Process.STDOUT,
                                universal_newlines=True) as proc:
                 for line in proc.stdout:
-                    filename = self._parse_list_output_line(line.rstrip('\n'))
+                    filename = self._parse_list_output_line(line.removesuffix('\n'))
                     if filename is not None:
                         yield filename
 
