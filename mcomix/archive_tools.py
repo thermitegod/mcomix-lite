@@ -69,6 +69,8 @@ class _ArchiveTools:
             return Constants.ARCHIVE_FORMATS['RAR']
         elif ext in self.__ext_tar:
             return Constants.ARCHIVE_FORMATS['TAR']
+        else:
+            raise ValueError
 
     def get_archive_handler(self, path: Path, archive_type=None):
         """
