@@ -163,10 +163,6 @@ class _Constants:
             'TAR': (
                 ('.tar', 'application/x-tar'),
                 ('.cbt', 'application/x-cbt'),
-                ('.tar.gz', 'application/x-compressed-tar'),
-                ('.tar.bz2', 'application/x-bzip-compressed-tar'),
-                ('.tar.lzma', 'application/x-lzma-compressed-tar'),
-                ('.tar.xz', 'application/x-xz-compressed-tar'),
             ),
         }
 
