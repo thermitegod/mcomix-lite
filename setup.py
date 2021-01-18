@@ -6,8 +6,6 @@ import os
 
 from setuptools import setup
 
-from mcomix.constants import Constants
-
 """ MComix installation routines.
 Example usage:
     Normal installation (all files are copied into a directory in python/lib/site-packages/mcomix)
@@ -19,6 +17,8 @@ Example usage:
 
 
 BASE_PATH = os.path.dirname(os.path.realpath(__file__))
+APPNAME = 'MComix-Lite'
+VERSION = '3.1.0.dev0'
 
 
 def get_data_patterns(directory, *patterns):
@@ -44,8 +44,8 @@ images.extend([os.path.basename(img)
                for img in glob.glob(os.path.join(BASE_PATH, 'mcomix/images', '*.png'))])
 
 setup(
-        name=Constants.APPNAME.lower(),
-        version=Constants.VERSION,
+        name=APPNAME.lower(),
+        version=VERSION,
         python_requires='>=3.8',
         packages=['mcomix', 'mcomix.archive', 'mcomix.images', 'mcomix.lib', 'mcomix.providers'],
         package_data={'mcomix.images': images},
