@@ -60,13 +60,14 @@ class _ArchiveTools:
         if not self.is_archive_file(path=path):
             return None
 
-        if path.suffix in self.__ext_zip:
+        ext = path.suffix.lower()
+        if ext in self.__ext_zip:
             return Constants.ARCHIVE_FORMATS['ZIP']
-        elif path.suffix in self.__ext_sevenzip:
+        elif ext in self.__ext_sevenzip:
             return Constants.ARCHIVE_FORMATS['SEVENZIP']
-        elif path.suffix in self.__ext_rar:
+        elif ext in self.__ext_rar:
             return Constants.ARCHIVE_FORMATS['RAR']
-        elif path.suffix in self.__ext_tar:
+        elif ext in self.__ext_tar:
             return Constants.ARCHIVE_FORMATS['TAR']
 
     def get_archive_handler(self, path: Path, archive_type=None):
