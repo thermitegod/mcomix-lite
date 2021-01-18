@@ -26,7 +26,6 @@ class TarArchive(ArchiveBuiltin):
 
         :param filename: file to extract
         :param destination_dir: extraction path
-        :returns: full path of the extracted file
         """
 
         with self.lock:
@@ -40,8 +39,6 @@ class TarArchive(ArchiveBuiltin):
         destination_path = Path() / destination_dir / filename
         with self._create_file(destination_path) as new:
             new.write(data)
-
-        return destination_path
 
     def close(self):
         self.__tar.close()

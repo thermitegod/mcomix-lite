@@ -35,7 +35,6 @@ class ArchiveBuiltin(BaseArchive):
 
         :param filename: file to extract
         :param destination_dir: extraction path
-        :returns: full path of the extracted file
         """
 
         raise NotImplementedError

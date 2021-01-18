@@ -46,7 +46,6 @@ class ArchiveExternal(BaseArchive):
 
         :param filename: file to extract
         :param destination_dir: extraction path
-        :returns: full path of the extracted file
         """
 
         destination_path = Path() / destination_dir / filename

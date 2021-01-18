@@ -26,7 +26,6 @@ class ZipArchive(ArchiveBuiltin):
 
         :param filename: file to extract
         :param destination_dir: extraction path
-        :returns: full path of the extracted file
         """
 
         with self.lock:
@@ -39,8 +38,6 @@ class ZipArchive(ArchiveBuiltin):
 
         if filelen != info.file_size:
             logger.warning(f'{filename}: extracted size is {filelen} bytes, but should be {info.file_size} bytes')
-
-        return destination_path
 
     def close(self):
         self.__zip.close()
