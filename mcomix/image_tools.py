@@ -23,15 +23,9 @@ class _ImageTools:
         # disable PIL DecompressionBombWarning
         Image.MAX_IMAGE_PIXELS = None
 
-        self.__supported_image_exts = []
-
-        self.init_supported_formats()
-
-    def init_supported_formats(self):
         # formats supported by PIL
         Image.init()
-        for idx, item in enumerate(Image.EXTENSION):
-            self.__supported_image_exts.append(item)
+        self.__supported_image_exts = [ext for ext in Image.EXTENSION]
 
     def is_image_file(self, path: Path):
         return path.suffix.lower() in self.__supported_image_exts

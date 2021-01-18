@@ -16,13 +16,6 @@ class _ArchiveTools:
     def __init__(self):
         super().__init__()
 
-        self.__supported_archive_ext = []
-
-        self.__ext_zip = []
-        self.__ext_sevenzip = []
-        self.__ext_rar = []
-        self.__ext_tar = []
-
         # Handlers for each archive type.
         self.__handlers = {
             Constants.ARCHIVE_FORMATS['ZIP']: ZipArchive,
@@ -31,25 +24,30 @@ class _ArchiveTools:
             Constants.ARCHIVE_FORMATS['TAR']: TarArchive,
         }
 
-        self.init_supported_formats()
-
-    @staticmethod
-    def _create_ext_list(archive_format: tuple):
-        return [ext[0] for ext in archive_format]
-
-    def init_supported_formats(self):
+        self.__supported_archive_ext = []
         if ZipArchive.is_available():
-            self.__ext_zip = self._create_ext_list(Constants.MIME_FORMAT['ZIP'])
+            self.__ext_zip = [ext[0] for ext in Constants.MIME_FORMAT['ZIP']]
             self.__supported_archive_ext += self.__ext_zip
+        else:
+            self.__ext_zip = []
+
         if SevenZipArchive.is_available():
-            self.__ext_sevenzip = self._create_ext_list(Constants.MIME_FORMAT['SEVENZIP'])
+            self.__ext_sevenzip = [ext[0] for ext in Constants.MIME_FORMAT['SEVENZIP']]
             self.__supported_archive_ext += self.__ext_sevenzip
+        else:
+            self.__ext_sevenzip = []
+
         if RarArchive.is_available():
-            self.__ext_rar = self._create_ext_list(Constants.MIME_FORMAT['RAR'])
+            self.__ext_rar = [ext[0] for ext in Constants.MIME_FORMAT['RAR']]
             self.__supported_archive_ext += self.__ext_rar
+        else:
+            self.__ext_rar = []
+
         if TarArchive.is_available():
-            self.__ext_tar = self._create_ext_list(Constants.MIME_FORMAT['TAR'])
+            self.__ext_tar = [ext[0] for ext in Constants.MIME_FORMAT['TAR']]
             self.__supported_archive_ext += self.__ext_tar
+        else:
+            self.__ext_tar = []
 
     def is_archive_file(self, path: Path):
         return path.suffix.lower() in self.__supported_archive_ext
