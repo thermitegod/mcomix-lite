@@ -15,8 +15,6 @@ class ArchiveExternal(BaseArchive):
     def __init__(self, archive):
         super().__init__(archive)
 
-        self.archive = archive
-
         self.STATE_HEADER = 1
         self.STATE_LISTING = 2
         self.STATE_FOOTER = 3
