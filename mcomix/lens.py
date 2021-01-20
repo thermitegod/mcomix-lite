@@ -40,10 +40,12 @@ class MagnifyingLens:
         return self.__enabled
 
     def set_enabled(self, enabled):
+        if self.__window.imagehandler.get_number_of_pages() == 0:
+            return
+
         self.__enabled = enabled
 
-        if enabled:
-            # FIXME: If no file is currently loaded, the cursor will still be hidden.
+        if self.__enabled:
             self.__window.cursor_handler.set_cursor_type(Constants.CURSOR['NONE'])
 
             if self.__point:
