@@ -72,28 +72,17 @@ class _ArchiveTools:
         else:
             raise ValueError
 
-    def get_archive_handler(self, path: Path, archive_type=None):
+    def get_archive_interface_handler(self, path: Path, archive_type: int):
         """
         Returns a fitting extractor handler for the archive passed in <path>
         (with optional mime type <type>. Returns None if no matching extractor was found
         """
 
-        if archive_type is None:
-            archive_type = self.archive_mime_type(path=path)
-            if archive_type is None:
-                return None
-
-        if self.__handlers[archive_type].is_available():
-            return self.__handlers[archive_type](path)
+        archive_handler = self.__handlers[archive_type]
+        if archive_handler.is_available():
+            return ArchiveInterface(archive_handler(path))
 
         return None
-
-    def get_archive_interface_handler(self, path: Path, archive_type=None):
-        archive = self.get_archive_handler(path=path, archive_type=archive_type)
-        if archive is None:
-            return None
-
-        return ArchiveInterface(archive)
 
 
 ArchiveTools = _ArchiveTools()
