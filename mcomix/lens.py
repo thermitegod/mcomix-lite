@@ -36,10 +36,12 @@ class MagnifyingLens:
         #: Stores the last rectangle that was used to render the lens
         self.__last_lens_rect = None
 
-    def get_enabled(self):
+    @property
+    def enabled(self):
         return self.__enabled
 
-    def set_enabled(self, enabled):
+    @enabled.setter
+    def enabled(self, enabled):
         if self.__window.imagehandler.get_number_of_pages() == 0:
             return
 
@@ -54,8 +56,6 @@ class MagnifyingLens:
             self.__window.cursor_handler.set_cursor_type(Constants.CURSOR['NORMAL'])
             self._clear_lens()
             self.__last_lens_rect = None
-
-    enabled = property(get_enabled, set_enabled)
 
     def _draw_lens(self, x: int, y: int):
         """
