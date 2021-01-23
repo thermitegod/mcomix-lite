@@ -10,7 +10,7 @@ from mcomix.constants import Constants
 from mcomix.keybindings_map import KeyBindingsInfo, KeyBindingsDefault
 
 
-class _KeybindingConfig:
+class KeybindingConfig:
     def __init__(self):
         super().__init__()
 
@@ -66,6 +66,3 @@ class _KeybindingConfig:
 
         self.__config_manager.write_config(config=action_to_keys, config_path=self.__keybindings_path,
                                            module='keybindings')
-
-
-KeybindingConfig = _KeybindingConfig()
