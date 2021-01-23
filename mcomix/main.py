@@ -52,9 +52,6 @@ def main():
     from mcomix.preferences_manager import PreferenceManager
     PreferenceManager.load_preferences_file()
 
-    from mcomix.icons import Icons
-    Icons.load_icons()
-
     open_path = []
     for idx, item in enumerate(args.path):
         p = Path(item).resolve()

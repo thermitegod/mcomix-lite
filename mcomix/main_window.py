@@ -71,6 +71,9 @@ class MainWindow(Gtk.Window):
             Gtk.Scrollbar.new(Gtk.Orientation.VERTICAL, self.__vadjust),
         )
 
+        self.icons = Icons()
+        self.icons.load_icons()
+
         self.filehandler = FileHandler(self)
         self.filehandler.file_closed += self._on_file_closed
         self.filehandler.file_opened += self._on_file_opened
@@ -521,7 +524,7 @@ class MainWindow(Gtk.Window):
         self.clear()
         self.thumbnailsidebar.hide()
         self.thumbnailsidebar.clear()
-        self.set_icon_list(Icons.mcomix_icons())
+        self.set_icon_list(self.icons.mcomix_icons())
 
     def new_page(self, at_bottom: bool = False):
         """

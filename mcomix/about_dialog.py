@@ -7,14 +7,15 @@ import webbrowser
 from gi.repository import Gtk
 
 from mcomix.constants import Constants
-from mcomix.icons import Icons
 
 
 class AboutDialog(Gtk.AboutDialog):
     def __init__(self, window):
         super().__init__()
 
-        self.set_transient_for(window)
+        self.__window = window
+
+        self.set_transient_for(self.__window)
         # self.add_buttons(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
 
         self.set_name(Constants.APPNAME)
@@ -25,7 +26,7 @@ class AboutDialog(Gtk.AboutDialog):
         self.set_website_label('Github')
         self.set_copyright('Copyright (C) 2005-2021')
 
-        self.set_logo(Icons.load_icons())
+        self.set_logo(self.__window.icons.load_icons())
 
         self.set_comments(f'{Constants.APPNAME} is an image viewer specifically designed '
                           f'to handle manga, comics, and image files.')

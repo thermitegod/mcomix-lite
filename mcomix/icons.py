@@ -10,7 +10,7 @@ from loguru import logger
 from mcomix.image_tools import ImageTools
 
 
-class _Icons:
+class Icons:
     def __init__(self):
         super().__init__()
 
@@ -51,6 +51,3 @@ class _Icons:
             except FileNotFoundError:
                 logger.warning(f'Could not load icon: \'{filename}\'')
         factory.add_default()
-
-
-Icons = _Icons()
