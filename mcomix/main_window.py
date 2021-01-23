@@ -47,6 +47,8 @@ class MainWindow(Gtk.Window):
         self.__preference_manager = PreferenceManager()
         self.__preference_manager.load_config_file()
 
+        self.bookmark_backend = BookmarkBackend()
+
         # Used to detect window fullscreen state transitions.
         self.was_fullscreen = False
         self.is_manga_mode = config['DEFAULT_MANGA_MODE']
@@ -959,6 +961,6 @@ class MainWindow(Gtk.Window):
         # write config file
         self.__preference_manager.write_config_file()
         KeybindingConfig.write_keybindings_file()
-        BookmarkBackend.write_bookmarks_file()
+        self.bookmark_backend.write_bookmarks_file()
 
         self.filehandler.close_file()

@@ -15,7 +15,7 @@ from mcomix.lib.callback import Callback
 from mcomix.message_dialog import MessageDialog
 
 
-class _BookmarkBackend:
+class BookmarkBackend:
     """
     The _BookmarkBackend is a backend for both the bookmarks menu and dialog.
     Changes in the _BookmarkBackend are mirrored in both
@@ -225,6 +225,3 @@ class _BookmarkBackend:
             'Selecting "No" will create a new bookmark.')
 
         return dialog.run()
-
-
-BookmarkBackend = _BookmarkBackend()

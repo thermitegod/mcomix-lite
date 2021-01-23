@@ -5,7 +5,6 @@
 from gi.repository import Gtk
 from loguru import logger
 
-from mcomix.bookmark_backend import BookmarkBackend
 from mcomix.bookmark_dialog import BookmarksDialog
 
 
@@ -20,8 +19,8 @@ class BookmarksMenu(Gtk.Menu):
         super().__init__()
 
         self.__window = window
-        self.__bookmark_backend = BookmarkBackend
-        self.__bookmark_backend.initialize(window)
+
+        self.__window.bookmark_backend.initialize(window)
 
         self.__actiongroup = Gtk.ActionGroup(name='mcomix-bookmarks')
         self.__actiongroup.add_actions([
@@ -42,8 +41,8 @@ class BookmarksMenu(Gtk.Menu):
 
         # Re-create the bookmarks menu if one was added/removed
         self._create_bookmark_menuitems()
-        self.__bookmark_backend.add_bookmark += lambda bookmark: self._create_bookmark_menuitems()
-        self.__bookmark_backend.remove_bookmark += lambda bookmark: self._create_bookmark_menuitems()
+        self.__window.bookmark_backend.add_bookmark += lambda bookmark: self._create_bookmark_menuitems()
+        self.__window.bookmark_backend.remove_bookmark += lambda bookmark: self._create_bookmark_menuitems()
 
         self.show_all()
 
@@ -54,7 +53,7 @@ class BookmarksMenu(Gtk.Menu):
                 self.remove(item)
 
         # Add separator
-        bookmarks = self.__bookmark_backend.get_bookmarks()
+        bookmarks = self.__window.bookmark_backend.get_bookmarks()
         if bookmarks:
             separator = Gtk.SeparatorMenuItem()
             separator.show()
@@ -79,7 +78,7 @@ class BookmarksMenu(Gtk.Menu):
         """
 
         try:
-            self.__bookmark_backend.add_current_to_bookmarks()
+            self.__window.bookmark_backend.add_current_to_bookmarks()
         except TypeError:
             logger.warning('No file to add to bookmarks')
 
@@ -88,7 +87,7 @@ class BookmarksMenu(Gtk.Menu):
         Open the bookmarks dialog
         """
 
-        BookmarksDialog(self.__window, self.__bookmark_backend)
+        BookmarksDialog(self.__window, self.__window.bookmark_backend)
 
     def set_sensitive(self, loaded):
         """
