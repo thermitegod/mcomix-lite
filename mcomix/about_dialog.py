@@ -27,8 +27,8 @@ class AboutDialog(Gtk.AboutDialog):
 
         self.set_logo(Icons.load_icons())
 
-        self.set_comments(f'{Constants.APPNAME} is an image viewer specifically designed to handle manga/comics. '
-                          'It supports ZIP, 7Z, RAR, CBZ, CB7, CBR, and image files.')
+        self.set_comments(f'{Constants.APPNAME} is an image viewer specifically designed '
+                          f'to handle manga, comics, and image files.')
 
         self.connect('activate-link', self._on_activate_link)
 
