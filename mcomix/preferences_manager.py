@@ -9,14 +9,14 @@ from mcomix.constants import Constants
 from mcomix.preferences import config
 
 
-class _PreferenceManager:
+class PreferenceManager:
     def __init__(self):
         super().__init__()
 
         self.__config_manager = ConfigBackend
         self.__config_path = Constants.CONFIG_FILES['CONFIG']
 
-    def load_preferences_file(self):
+    def load_config_file(self):
         saved_prefs = {}
         if Path.is_file(self.__config_path):
             self.__config_manager.load_config(config=self.__config_path, saved_prefs=saved_prefs)
@@ -25,8 +25,5 @@ class _PreferenceManager:
 
         self.__config_manager.update_config_hash(config=config, module='preferences')
 
-    def write_preferences_file(self):
+    def write_config_file(self):
         self.__config_manager.write_config(config=config, config_path=self.__config_path, module='preferences')
-
-
-PreferenceManager = _PreferenceManager()

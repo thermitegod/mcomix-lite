@@ -48,10 +48,6 @@ def main():
     logger.remove()
     logger.add(sys.stdout, level=args.loglevel, colorize=True)
 
-    # Load configuration.
-    from mcomix.preferences_manager import PreferenceManager
-    PreferenceManager.load_preferences_file()
-
     open_path = []
     for idx, item in enumerate(args.path):
         p = Path(item).resolve()
