@@ -35,6 +35,5 @@ class AboutDialog(Gtk.AboutDialog):
         self.show_all()
 
     @staticmethod
-    def _on_activate_link(uri):
-        webbrowser.open(uri)
-        return True
+    def _on_activate_link(obj, url):
+        webbrowser.open(url)
