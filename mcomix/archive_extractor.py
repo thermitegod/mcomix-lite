@@ -198,6 +198,3 @@ class Extractor:
         # handled gracefully by the main program anyway.
 
         logger.error(f'Extraction error: {value}')
-
-        # import traceback
-        # logger.debug(f'Traceback:\n{"".join(traceback.format_tb(tb)).strip()}')
