@@ -27,8 +27,6 @@ from collections import defaultdict
 from gi.repository import Gtk
 from loguru import logger
 
-from mcomix.keybindings_map import KeyBindingsInfo
-
 
 class KeybindingManager:
     def __init__(self, window):
@@ -49,11 +47,6 @@ class KeybindingManager:
     def write_keybindings_file(self):
         self.__window.keybinding_config.write_keybindings_file()
 
-    @staticmethod
-    def keybinding_check(name):
-        if name not in KeyBindingsInfo.BINDING_INFO:
-            logger.error(f'"{name}" is not a valid keyboard action.')
-
     def register(self, name: str, callback, args: list = None, kwargs: dict = None, bindings: list = None):
         """
         Registers an action for a predefined keybinding name.
@@ -73,8 +66,6 @@ class KeybindingManager:
             kwargs = {}
         if bindings is None:
             bindings = []
-
-        self.keybinding_check(name=name)
 
         # Load stored keybindings, or fall back to passed arguments
         keycodes = self.__action_to_bindings[name]
@@ -107,8 +98,6 @@ class KeybindingManager:
         :returns: None: new_binding wasn't in any action action name: where new_binding was before
         """
 
-        self.keybinding_check(name=name)
-
         nb = Gtk.accelerator_parse(new_binding)
         old_action_with_nb = self.__binding_to_action.get(nb)
         if old_action_with_nb is not None:
@@ -139,8 +128,6 @@ class KeybindingManager:
         """
         Remove binding for an action
         """
-
-        self.keybinding_check(name=name)
 
         ob = Gtk.accelerator_parse(binding)
         self.__action_to_bindings[name].remove(ob)
