@@ -3,173 +3,316 @@
 #: Bindings defined in this dictionary will appear in the configuration dialog.
 #: If 'group' is None, the binding cannot be modified from the preferences dialog.
 
-class _KeyBindingsInfo:
+from collections import namedtuple
+
+
+class _KeyBindingsMap:
     def __init__(self):
         super().__init__()
 
-        self.BINDING_INFO = {
-            # Navigation between pages, archives, directories
-            'previous_page': {'title': 'Previous page', 'group': 'Navigation'},
-            'next_page': {'title': 'Next page', 'group': 'Navigation'},
-            'previous_page_ff': {'title': 'Back ten pages', 'group': 'Navigation'},
-            'next_page_ff': {'title': 'Forward ten pages', 'group': 'Navigation'},
-            'previous_page_singlestep': {'title': 'Previous page (always one page)', 'group': 'Navigation'},
-            'next_page_singlestep': {'title': 'Next page (always one page)', 'group': 'Navigation'},
+        MAP = namedtuple('MAP', ['info', 'keybindings'])
+        INFO = namedtuple('INFO', ['group', 'title'])
 
-            'first_page': {'title': 'First page', 'group': 'Navigation'},
-            'last_page': {'title': 'Last page', 'group': 'Navigation'},
-            'go_to': {'title': 'Go to page', 'group': 'Navigation'},
-
-            'next_archive': {'title': 'Next archive', 'group': 'Navigation'},
-            'previous_archive': {'title': 'Previous archive', 'group': 'Navigation'},
-
-            # Scrolling
-            'scroll_down': {'title': 'Scroll down', 'group': 'Scroll'},
-            'scroll_up': {'title': 'Scroll up', 'group': 'Scroll'},
-            'scroll_right': {'title': 'Scroll right', 'group': 'Scroll'},
-            'scroll_left': {'title': 'Scroll left', 'group': 'Scroll'},
-
-            # View
-            'zoom_in': {'title': 'Zoom in', 'group': 'Zoom'},
-            'zoom_out': {'title': 'Zoom out', 'group': 'Zoom'},
-            'zoom_original': {'title': 'Normal size', 'group': 'Zoom'},
-
-            'keep_transformation': {'title': 'Keep transformation', 'group': 'Transformation'},
-            'rotate_90': {'title': 'Rotate 90 degrees CW', 'group': 'Transformation'},
-            'rotate_180': {'title': 'Rotate 180 degrees', 'group': 'Transformation'},
-            'rotate_270': {'title': 'Rotate 90 degrees CCW', 'group': 'Transformation'},
-            'flip_horiz': {'title': 'Flip horizontally', 'group': 'Transformation'},
-            'flip_vert': {'title': 'Flip vertically', 'group': 'Transformation'},
-            'no_autorotation': {'title': 'Never autorotate', 'group': 'Transformation'},
-
-            'rotate_90_width': {'title': 'Rotate width 90 degrees CW', 'group': 'Autorotate by width'},
-            'rotate_270_width': {'title': 'Rotate width 90 degrees CCW', 'group': 'Autorotate by width'},
-            'rotate_90_height': {'title': 'Rotate height 90 degrees CW', 'group': 'Autorotate by height'},
-            'rotate_270_height': {'title': 'Rotate height 90 degrees CCW', 'group': 'Autorotate by height'},
-
-            'double_page': {'title': 'Double page mode', 'group': 'View mode'},
-            'manga_mode': {'title': 'Manga mode', 'group': 'View mode'},
-
-            'lens': {'title': 'Magnifying lens', 'group': 'View mode'},
-            'stretch': {'title': 'Stretch small images', 'group': 'View mode'},
-
-            'best_fit_mode': {'title': 'Best fit mode', 'group': 'View mode'},
-            'fit_width_mode': {'title': 'Fit width mode', 'group': 'View mode'},
-            'fit_height_mode': {'title': 'Fit height mode', 'group': 'View mode'},
-            'fit_size_mode': {'title': 'Fit size mode', 'group': 'View mode'},
-            'fit_manual_mode': {'title': 'Manual zoom mode', 'group': 'View mode'},
-
-            # General UI
-            'exit_fullscreen': {'title': 'Exit from fullscreen', 'group': 'User interface'},
-
-            'minimize': {'title': 'Minimize', 'group': 'User interface'},
-            'fullscreen': {'title': 'Fullscreen', 'group': 'User interface'},
-            'menubar': {'title': 'Show/hide menubar', 'group': 'User interface'},
-            'statusbar': {'title': 'Show/hide statusbar', 'group': 'User interface'},
-            'scrollbar': {'title': 'Show/hide scrollbars', 'group': 'User interface'},
-            'thumbnails': {'title': 'Thumbnails', 'group': 'User interface'},
-            'hide_all': {'title': 'Show/hide all', 'group': 'User interface'},
-
-            # File operations
-            'move_file': {'title': 'Move to subdirectory', 'group': 'File'},
-            'delete': {'title': 'Delete', 'group': 'File'},
-            'refresh_archive': {'title': 'Refresh', 'group': 'File'},
-            'close': {'title': 'Close', 'group': 'File'},
-            'quit': {'title': 'Quit', 'group': 'File'},
-            'extract_page': {'title': 'Save As', 'group': 'File'},
-
-            'properties': {'title': 'Properties', 'group': 'File'},
-            'preferences': {'title': 'Preferences', 'group': 'File'},
-
-            'open': {'title': 'Open', 'group': 'File'},
-            'enhance_image': {'title': 'Enhance image', 'group': 'File'},
-        }
-
-
-class _KeyBindingsDefault:
-    def __init__(self):
-        super().__init__()
-
-        self.DEFAULT_BINDINGS = {
-            # Navigation between pages, archives, directories
-            'previous_page': ['Page_Up', 'KP_Page_Up', 'BackSpace'],
-            'next_page': ['Page_Down', 'KP_Page_Down'],
-            'previous_page_singlestep': ['<Primary>Up', '<Primary>Page_Up', '<Primary>KP_Page_Up'],
-            'next_page_singlestep': ['<Primary>Down', '<Primary>Page_Down', '<Primary>KP_Page_Down'],
-            'previous_page_ff': ['<Shift>Page_Up', '<Shift>KP_Page_Up', '<Shift>BackSpace', '<Shift><Mod1>Left'],
-            'next_page_ff': ['<Shift>Page_Down', '<Shift>KP_Page_Down', '<Shift><Mod1>Right'],
-
-            'first_page': ['Home', 'KP_Home'],
-            'last_page': ['End', 'KP_End'],
-            'go_to': ['G'],
-
-            'next_archive': ['<Primary>Right'],
-            'previous_archive': ['<Primary>Left'],
+        self.BINDINGS = {
+            # Navigation
+            'previous_page':
+                MAP(
+                    INFO('Navigation', 'Previous page'),
+                    ['Page_Up', 'KP_Page_Up', 'BackSpace']
+                ),
+            'next_page':
+                MAP(
+                    INFO('Navigation', 'Next page'),
+                    ['Page_Down', 'KP_Page_Down']
+                ),
+            'previous_page_singlestep':
+                MAP(
+                    INFO('Navigation', 'Previous page (always one page)'),
+                    ['<Primary>Up', '<Primary>Page_Up', '<Primary>KP_Page_Up']
+                ),
+            'next_page_singlestep':
+                MAP(
+                    INFO('Navigation', 'Next page (always one page)'),
+                    ['<Primary>Down', '<Primary>Page_Down', '<Primary>KP_Page_Down']
+                ),
+            'previous_page_ff':
+                MAP(
+                    INFO('Navigation', 'Back ten pages'),
+                    ['<Shift>Page_Up', '<Shift>KP_Page_Up', '<Shift>BackSpace', '<Shift><Mod1>Left']
+                ),
+            'next_page_ff':
+                MAP(
+                    INFO('Navigation', 'Forward ten pages'),
+                    ['<Shift>Page_Down', '<Shift>KP_Page_Down', '<Shift><Mod1>Right']
+                ),
+            'first_page':
+                MAP(
+                    INFO('Navigation', 'First page'),
+                    ['Home', 'KP_Home']
+                ),
+            'last_page':
+                MAP(
+                    INFO('Navigation', 'Last page'),
+                    ['End', 'KP_End']
+                ),
+            'go_to':
+                MAP(
+                    INFO('Navigation', 'Go to page'),
+                    ['G']
+                ),
+            'next_archive':
+                MAP(
+                    INFO('Navigation', 'Next archive'),
+                    ['<Primary>Right']
+                ),
+            'previous_archive':
+                MAP(
+                    INFO('Navigation', 'Previous archive'),
+                    ['<Primary>Left']
+                ),
 
             # Scrolling
             # Arrow keys scroll the image
-            'scroll_down': ['Down', 'KP_Down'],
-            'scroll_up': ['Up', 'KP_Up'],
-            'scroll_right': ['Right', 'KP_Right'],
-            'scroll_left': ['Left', 'KP_Left'],
+            'scroll_down':
+                MAP(
+                    INFO('Scrolling', 'Scroll down'),
+                    ['Down', 'KP_Down']
+                ),
+            'scroll_left':
+                MAP(
+                    INFO('Scrolling', 'Scroll left'),
+                    ['Left', 'KP_Left']
+                ),
+            'scroll_right':
+                MAP(
+                    INFO('Scrolling', 'Scroll right'),
+                    ['Right', 'KP_Right']
+                ),
+            'scroll_up':
+                MAP(
+                    INFO('Scrolling', 'Scroll up'),
+                    ['Up', 'KP_Up']
+                ),
 
             # View
-            'zoom_in': ['plus', 'KP_Add', 'equal'],
-            'zoom_out': ['minus', 'KP_Subtract'],
-            'zoom_original': ['<Control>0', 'KP_0'],
+            'zoom_original':
+                MAP(
+                    INFO('Zoom', 'Normal size'),
+                    ['<Control>0', 'KP_0']
+                ),
+            'zoom_in':
+                MAP(
+                    INFO('Zoom', 'Zoom in'),
+                    ['plus', 'KP_Add', 'equal']
+                ),
+            'zoom_out':
+                MAP(
+                    INFO('Zoom', 'Zoom out'),
+                    ['minus', 'KP_Subtract']
+                ),
 
             # Zoom out is already defined as GTK menu hotkey
-            'keep_transformation': ['k'],
-            'rotate_90': ['r'],
-            'rotate_270': ['<Shift>r'],
-            'rotate_180': [],
-            'flip_horiz': [],
-            'flip_vert': [],
-            'no_autorotation': [],
+            'keep_transformation':
+                MAP(
+                    INFO('Transformation', 'Keep transformation'),
+                    ['k']
+                ),
+            'rotate_90':
+                MAP(
+                    INFO('Transformation', 'Rotate 90 degrees'),
+                    ['r']
+                ),
+            'rotate_180':
+                MAP(
+                    INFO('Transformation', 'Rotate 180 degrees'),
+                    []
+                ),
+            'rotate_270':
+                MAP(
+                    INFO('Transformation', 'Rotate 270 degrees'),
+                    ['<Shift>r']
+                ),
+            'flip_horiz':
+                MAP(
+                    INFO('Transformation', 'Flip horizontally'),
+                    []
+                ),
+            'flip_vert':
+                MAP(
+                    INFO('Transformation', 'Flip vertically'),
+                    []
+                ),
+            'no_autorotation':
+                MAP(
+                    INFO('Transformation', 'Never autorotate'),
+                    []
+                ),
 
-            'rotate_90_width': [],
-            'rotate_270_width': [],
-            'rotate_90_height': [],
-            'rotate_270_height': [],
+            # Autorotate
+            'rotate_90_width':
+                MAP(
+                    INFO('Autorotate', 'Rotate width 90 degrees'),
+                    []
+                ),
+            'rotate_270_width':
+                MAP(
+                    INFO('Autorotate', 'Rotate width 270 degrees'),
+                    []
+                ),
+            'rotate_90_height':
+                MAP(
+                    INFO('Autorotate', 'Rotate height 90 degrees'),
+                    []
+                ),
+            'rotate_270_height':
+                MAP(
+                    INFO('Autorotate', 'Rotate height 270 degrees'),
+                    []
+                ),
 
-            'double_page': ['d'],
-            'manga_mode': ['m'],
+            # View mode
+            'double_page':
+                MAP(
+                    INFO('View mode', 'Double page mode'),
+                    ['d']
+                ),
+            'manga_mode':
+                MAP(
+                    INFO('View mode', 'ToManga mode'),
+                    ['m']
+                ),
+            'lens':
+                MAP(
+                    INFO('View mode', 'Magnifying lens'),
+                    ['l']
+                ),
+            'stretch':
+                MAP(
+                    INFO('View mode', 'Stretch small images'),
+                    ['y']
+                ),
 
-            'lens': ['l'],
-            'stretch': ['y'],
-
-            'best_fit_mode': ['b'],
-            'fit_width_mode': ['w'],
-            'fit_height_mode': ['h'],
-            'fit_size_mode': ['s'],
-            'fit_manual_mode': ['a'],
+            # Fit mode
+            'best_fit_mode':
+                MAP(
+                    INFO('Page fit mode', 'Best fit mode'),
+                    ['b']
+                ),
+            'fit_width_mode':
+                MAP(
+                    INFO('Page fit mode', 'Fit width mode'),
+                    ['w']
+                ),
+            'fit_height_mode':
+                MAP(
+                    INFO('Page fit mode', 'Fit height mode'),
+                    ['h']
+                ),
+            'fit_size_mode':
+                MAP(
+                    INFO('Page fit mode', 'Fit size mode'),
+                    ['s']
+                ),
+            'fit_manual_mode':
+                MAP(
+                    INFO('Page fit mode', 'Manual zoom mode'),
+                    ['a']
+                ),
 
             # General UI
-            'exit_fullscreen': ['Escape'],
-
-            'minimize': ['n'],
-            'fullscreen': ['f', 'F11'],
-            'menubar': ['<Control>M'],
-            'statusbar': [],
-            'scrollbar': [],
-            'thumbnails': ['F9'],
-            'hide_all': ['i'],
+            'exit_fullscreen':
+                MAP(
+                    INFO('User interface', 'Exit from fullscreen'),
+                    ['Escape']
+                ),
+            'fullscreen':
+                MAP(
+                    INFO('User interface', 'Fullscreen'),
+                    ['f', 'F11']
+                ),
+            'minimize':
+                MAP(
+                    INFO('User interface', 'Minimize'),
+                    ['n']
+                ),
+            'hide_all':
+                MAP(
+                    INFO('User interface', 'Show/hide all'),
+                    ['i']
+                ),
+            'menubar':
+                MAP(
+                    INFO('User interface', 'Show/hide menubar'),
+                    ['<Control>M']
+                ),
+            'scrollbar':
+                MAP(
+                    INFO('User interface', 'Show/hide scrollbars'),
+                    []
+                ),
+            'statusbar':
+                MAP(
+                    INFO('User interface', 'Show/hide statusbar'),
+                    []
+                ),
+            'thumbnails':
+                MAP(
+                    INFO('User interface', 'Thumbnails'),
+                    ['F9']
+                ),
 
             # File operations
-            'delete': ['Delete'],
-            'refresh_archive': ['<control><shift>R'],
-            'close': ['<Control>W'],
-            'quit': ['<Control>Q'],
-            'extract_page': ['<Control><Shift>s'],
-            'move_file': ['Insert', 'grave'],
-
-            'properties': ['<Alt>Return'],
-            'preferences': ['F12'],
-
-            'open': ['<Control>O'],
-            'enhance_image': ['e'],
+            'close':
+                MAP(
+                    INFO('File', 'Close'),
+                    ['<Control>W']
+                ),
+            'delete':
+                MAP(
+                    INFO('File', 'Delete'),
+                    ['Delete']
+                ),
+            'enhance_image':
+                MAP(
+                    INFO('File', 'Enhance image'),
+                    ['e']
+                ),
+            'extract_page':
+                MAP(
+                    INFO('File', 'Extract Page'),
+                    ['<Control><Shift>s']
+                ),
+            'move_file':
+                MAP(
+                    INFO('File', 'Move to subdirectory'),
+                    ['Insert', 'grave']
+                ),
+            'open':
+                MAP(
+                    INFO('File', 'Open'),
+                    ['<Control>O']
+                ),
+            'preferences':
+                MAP(
+                    INFO('File', 'Preferences'),
+                    ['F12']
+                ),
+            'properties':
+                MAP(
+                    INFO('File', 'Properties'),
+                    ['<Alt>Return']
+                ),
+            'quit':
+                MAP(
+                    INFO('File', 'Quit'),
+                    ['<Control>Q']
+                ),
+            'refresh_archive':
+                MAP(
+                    INFO('File', 'Refresh'),
+                    ['<control><shift>R']
+                ),
         }
 
 
-KeyBindingsInfo = _KeyBindingsInfo()
-KeyBindingsDefault = _KeyBindingsDefault()
+KeyBindingsMap = _KeyBindingsMap()

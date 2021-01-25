@@ -4,7 +4,7 @@
 
 from gi.repository import Gtk
 
-from mcomix.keybindings_map import KeyBindingsInfo
+from mcomix.keybindings_map import KeyBindingsMap
 
 
 class KeybindingEditorWindow(Gtk.ScrolledWindow):
@@ -61,7 +61,7 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
         """
 
         self.__treestore.clear()
-        section_order = list(set(d['group'] for d in KeyBindingsInfo.BINDING_INFO.values()))
+        section_order = list(set(d.info.group for d in KeyBindingsMap.BINDINGS.values()))
         section_order.sort()
         section_parent_map = {}
         for section_name in section_order:
@@ -70,11 +70,10 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
             section_parent_map[section_name] = self.__treestore.append(None, row)
 
         action_treeiter_map = self.__action_treeiter_map = {}
-        # Sort actions by action name
-        actions = sorted(KeyBindingsInfo.BINDING_INFO.items(), key=lambda item: item[1]['title'])
-        for action_name, action_data in actions:
-            title = action_data['title']
-            group_name = action_data['group']
+
+        for action_name, action_data in KeyBindingsMap.BINDINGS.items():
+            title = action_data.info.title
+            group_name = action_data.info.group
             old_bindings = self.__keymanager.get_bindings_for_action(action_name)
             acc_list = ['', ] * self.__accel_column_num
             for idx in range(self.__accel_column_num):

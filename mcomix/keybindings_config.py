@@ -7,7 +7,7 @@ from gi.repository import Gtk
 
 from mcomix.config_backend import ConfigBackend
 from mcomix.constants import Constants
-from mcomix.keybindings_map import KeyBindingsInfo, KeyBindingsDefault
+from mcomix.keybindings_map import KeyBindingsMap
 
 
 class KeybindingConfig:
@@ -35,9 +35,11 @@ class KeybindingConfig:
         if Path.is_file(self.__keybindings_path):
             self.__config_manager.load_config(config=self.__keybindings_path, saved_prefs=stored_action_bindings)
         else:
-            stored_action_bindings = KeyBindingsDefault.DEFAULT_BINDINGS.copy()
+            stored_action_bindings = {}
+            for action_name, action_data in KeyBindingsMap.BINDINGS.items():
+                stored_action_bindings[action_name] = action_data.keybindings
 
-        for action in KeyBindingsInfo.BINDING_INFO.keys():
+        for action in KeyBindingsMap.BINDINGS.keys():
             if action in stored_action_bindings:
                 bindings = [
                     Gtk.accelerator_parse(keyname)
