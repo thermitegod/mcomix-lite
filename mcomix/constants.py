@@ -133,7 +133,8 @@ class _Constants:
             'PAGE_FILENAME': 16,
             'PAGE_FILESIZE': 32,
             'ARCHIVE_FILESIZE': 64,
-            'VIEW_MODE': 128,
+            'PAGE_SCALING': 128,
+            'VIEW_MODE': 256,
         }
 
         self.ORIENTATION = {

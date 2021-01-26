@@ -37,6 +37,7 @@ class Statusbar(Gtk.EventBox):
                 <menuitem action="page_filename"/>
                 <menuitem action="page_filesize"/>
                 <menuitem action="archive_filesize"/>
+                <menuitem action="page_scaling"/>
                 <menuitem action="current_view_mode"/>
             </popup>
         </ui>
@@ -44,15 +45,19 @@ class Statusbar(Gtk.EventBox):
         self.__ui_manager.add_ui_from_string(ui_description)
 
         actiongroup = Gtk.ActionGroup(name='mcomix-statusbar')
-        actiongroup.add_toggle_actions([
-            ('total_page_numbers', None, 'Show page numbers', None, None, self.toggle_status_visibility),
-            ('total_file_numbers', None, 'Show file numbers', None, None, self.toggle_status_visibility),
-            ('page_resolution', None, 'Show page resolution', None, None, self.toggle_status_visibility),
-            ('archive_filename', None, 'Show archive name', None, None, self.toggle_status_visibility),
-            ('page_filename', None, 'Show page filename', None, None, self.toggle_status_visibility),
-            ('page_filesize', None, 'Show page filesize', None, None, self.toggle_status_visibility),
-            ('archive_filesize', None, 'Show archive filesize', None, None, self.toggle_status_visibility),
-            ('current_view_mode', None, 'Show current mode', None, None, self.toggle_status_visibility)])
+        actiongroup.add_toggle_actions(
+            [
+                ('total_page_numbers', None, 'Show page numbers', None, None, self.toggle_status_visibility),
+                ('total_file_numbers', None, 'Show file numbers', None, None, self.toggle_status_visibility),
+                ('page_resolution', None, 'Show page resolution', None, None, self.toggle_status_visibility),
+                ('archive_filename', None, 'Show archive name', None, None, self.toggle_status_visibility),
+                ('page_filename', None, 'Show page filename', None, None, self.toggle_status_visibility),
+                ('page_filesize', None, 'Show page filesize', None, None, self.toggle_status_visibility),
+                ('archive_filesize', None, 'Show archive filesize', None, None, self.toggle_status_visibility),
+                ('page_scaling', None, 'Show page scaling', None, None, self.toggle_status_visibility),
+                ('current_view_mode', None, 'Show current mode', None, None, self.toggle_status_visibility)
+            ]
+        )
         self.__ui_manager.insert_action_group(actiongroup, 0)
 
         # Hook mouse release event
@@ -67,11 +72,36 @@ class Statusbar(Gtk.EventBox):
         self.__page_filename = ''
         self.__page_filesize = ''
         self.__archive_filesize = ''
+        self.__image_scaling = ''
         self.__current_view_mode = ''
         self._update_sensitivity()
         self.show_all()
 
         self.__loading = False
+
+        self.update_image_scaling()
+
+    def update_image_scaling(self):
+        # is initalized here and only updated if the
+        # scaling algos get changed
+
+        scale_main = (
+            'Nearest',
+            'Tiles',
+            'Bilinear'
+        )[config['SCALING_QUALITY']]
+
+        scale_sub = (
+            'None',
+            'Nearest',
+            'Lanczos',
+            'Bilinear',
+            'Bicubic',
+            'Box',
+            'Hamming',
+        )[config['PIL_SCALING_FILTER'] + 1]
+
+        self.__image_scaling = f'{scale_main}, {scale_sub}'
 
     def set_message(self, message: str):
         """
@@ -126,6 +156,13 @@ class Statusbar(Gtk.EventBox):
         """
 
         return self.__total_file_numbers
+
+    def get_image_filters(self):
+        """
+        Returns the image scaling being used
+        """
+
+        return self.__image_scaling
 
     def set_resolution(self, dimensions: list):  # 2D only
         """
@@ -194,6 +231,7 @@ class Statusbar(Gtk.EventBox):
             (Constants.STATUSBAR['PAGE_FILENAME'], self.__page_filename),
             (Constants.STATUSBAR['PAGE_FILESIZE'], self.__page_filesize),
             (Constants.STATUSBAR['ARCHIVE_FILESIZE'], self.__archive_filesize),
+            (Constants.STATUSBAR['PAGE_SCALING'], self.__image_scaling),
             (Constants.STATUSBAR['VIEW_MODE'], self.__current_view_mode),
         ]
         p = config['STATUSBAR_FIELDS']
@@ -217,6 +255,7 @@ class Statusbar(Gtk.EventBox):
             'page_filename': Constants.STATUSBAR['PAGE_FILENAME'],
             'page_filesize': Constants.STATUSBAR['PAGE_FILESIZE'],
             'archive_filesize': Constants.STATUSBAR['ARCHIVE_FILESIZE'],
+            'page_scaling': Constants.STATUSBAR['PAGE_SCALING'],
             'current_view_mode': Constants.STATUSBAR['VIEW_MODE'],
         }
 
@@ -252,6 +291,7 @@ class Statusbar(Gtk.EventBox):
             'page_filename': p & Constants.STATUSBAR['PAGE_FILENAME'],
             'page_filesize': p & Constants.STATUSBAR['PAGE_FILESIZE'],
             'archive_filesize': p & Constants.STATUSBAR['ARCHIVE_FILESIZE'],
+            'page_scaling': p & Constants.STATUSBAR['PAGE_SCALING'],
             'current_view_mode': p & Constants.STATUSBAR['VIEW_MODE'],
         }
 

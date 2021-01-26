@@ -571,6 +571,8 @@ class _PreferencesDialog(Gtk.Dialog):
                     self.__window.filehandler.refresh_file()
                 elif preference in ('PIL_SCALING_FILTER', 'SCALING_QUALITY',
                                     'VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'):
+                    if preference in ('PIL_SCALING_FILTER', 'SCALING_QUALITY'):
+                        self.__window.statusbar.update_image_scaling()
                     self.__window.draw_image()
                 elif preference in ('FIT_TO_SIZE_MODE',):
                     self.__window.change_zoom_mode()
