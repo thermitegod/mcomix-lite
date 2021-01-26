@@ -96,14 +96,13 @@ class _EnhanceImageDialog(Gtk.Dialog):
 
         self.show_all()
 
-    def draw_histogram(self, height: int = 170, fill: int = 170, text: bool = False):
+    def draw_histogram(self, height: int = 170, fill: int = 170):
         """
         Draw a histogram (RGB) from self.__pixbuf and return it as another pixbuf.
 
         :param height: height of the returned pixbuf
         :param fill: determines the color intensity of the filled graphs,
                valid values are between 0 and 255.
-        :param text: if True a label with the maximum pixel value will be added to one corner
         :returns: modified pixbuf, the returned prixbuf will be 262x<height> px.
         """
 
@@ -144,7 +143,8 @@ class _EnhanceImageDialog(Gtk.Dialog):
             for y in list(range(b[x] + 1, b[x - 1] + 1)):
                 r_px, g_px, b_px = im_data.getpixel((x, height - 5 - y))
                 im_data.putpixel((x, height - 5 - y), (r_px, g_px, 255))
-        if text:
+        if config['ENHANCE_EXTRA']:
+            # if True a label with the maximum pixel value will be added to one corner
             maxstr = f'max pixel value: {maximum}'
             draw = ImageDraw.Draw(im)
             draw.rectangle((0, 0, len(maxstr) * 6 + 2, 10), fill=(30, 30, 30))
@@ -164,7 +164,7 @@ class _EnhanceImageDialog(Gtk.Dialog):
             return
         # XXX transitional(double page limitation)
         self.__pixbuf = self.__window.imagehandler.get_pixbufs(1)[0]
-        self.draw_histogram(text=config['ENHANCE_EXTRA'])
+        self.draw_histogram()
 
     def _on_page_available(self, page_number):
         current_page_number = self.__window.imagehandler.get_current_page()
