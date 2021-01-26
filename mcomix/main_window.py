@@ -461,14 +461,14 @@ class MainWindow(Gtk.Window):
             return
         if self.displayed_double():
             number_of_pages = 2
-            filenames = self.imagehandler.get_page_filename(double=True, manga=self.is_manga_mode)
-            filesizes = self.imagehandler.get_page_filesize(double=True, manga=self.is_manga_mode)
+            filenames = self.imagehandler.get_page_data(double=True, manga=self.is_manga_mode, filename=True)
+            filesizes = self.imagehandler.get_page_data(double=True, manga=self.is_manga_mode, filesize=True)
             filename = ', '.join(filenames)
             filesize = ', '.join(filesizes)
         else:
             number_of_pages = 1
-            filename = self.imagehandler.get_page_filename()
-            filesize = self.imagehandler.get_page_filesize()
+            filename = self.imagehandler.get_page_data(filename=True)
+            filesize = self.imagehandler.get_page_data(filesize=True)
         self.statusbar.set_page_number(page_number, self.imagehandler.get_number_of_pages(), number_of_pages)
         self.statusbar.set_filename(filename)
         if config['STATUSBAR_FULLPATH']:
@@ -840,7 +840,7 @@ class MainWindow(Gtk.Window):
         save_dialog.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT, Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT)
         save_dialog.set_transient_for(self)
         save_dialog.set_do_overwrite_confirmation(True)
-        save_dialog.set_current_name(self.imagehandler.get_page_filename())
+        save_dialog.set_current_name(self.imagehandler.get_page_data(filename=True))
 
         if save_dialog.run() == Gtk.ResponseType.ACCEPT and save_dialog.get_filename():
             shutil.copy(self.imagehandler.get_path_to_page(), save_dialog.get_filename())

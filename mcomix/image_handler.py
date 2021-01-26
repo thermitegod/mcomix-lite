@@ -324,52 +324,44 @@ class ImageHandler:
         except IndexError:
             return None
 
-    def get_page_filename(self, page: int = None, double: bool = False, manga: bool = False):
+    def get_page_data(self, page: int = None, double: bool = False, manga: bool = False,
+                      filename: bool = False, filesize: bool = False):
         """
-        Return the filename of the <page>, or the filename of the
-        currently viewed page if <page> is None. If <double> is True, return
-        a tuple (p, p') where p is the filename of <page> (or the current
-        page) and p' is the filename of the page after
-        """
-
-        if not self.page_is_available():
-            if double:
-                return '', ''
-            return ''
-
-        if page is None:
-            page = self.get_current_page()
-
-        first = self.get_path_to_page(page).name
-
-        if double:
-            second = self.get_path_to_page(page + 1).name
-            if manga:
-                return second, first
-            return first, second
-
-        return first
-
-    def get_page_filesize(self, page: int = None, double: bool = False, manga: bool = False):
-        """
-        Return the filesize of the <page>, or the filesize of the
-        currently viewed page if <page> is None. If <double> is True, return
-        a tuple (s, s') where s is the filesize of <page> (or the current
-        page) and s' is the filesize of the page after
+        :param page
+            A page number or if None the current page
+        :param double
+            if True, return (page, page + 1), else return (page)
+        :param manga
+            if True, sets info to manga layout
+        :param filename
+            if True returns filename
+        :param filesize
+            if True returns filesize
         """
 
         if not self.page_is_available():
             if double:
-                return '-1', '-1'
-            return '-1'
+                return 'unknown', 'unknown'
+            return 'unknown'
 
         if page is None:
             page = self.get_current_page()
 
-        first = FileSize(self.get_path_to_page(page)).size
+        if filename:
+            first = self.get_path_to_page(page).name
+        elif filesize:
+            first = FileSize(self.get_path_to_page(page)).size
+        else:
+            raise ValueError
 
         if double:
-            second = FileSize(self.get_path_to_page(page + 1)).size
+            if filename:
+                second = self.get_path_to_page(page + 1).name
+            elif filesize:
+                second = FileSize(self.get_path_to_page(page + 1)).size
+            else:
+                raise ValueError
+
             if manga:
                 return second, first
             return first, second
