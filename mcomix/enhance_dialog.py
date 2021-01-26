@@ -65,8 +65,6 @@ class _EnhanceImageDialog(Gtk.Dialog):
             scale.set_digits(2)
             scale.set_value_pos(Gtk.PositionType.RIGHT)
             scale.connect('value-changed', self._change_values)
-            # FIXME
-            # scale.set_update_policy(Gtk.UPDATE_DELAYED)
             label.set_mnemonic_widget(scale)
             vbox_right.pack_start(scale, True, False, 2)
             return scale
