@@ -19,6 +19,7 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
         self.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.ALWAYS)
 
         self.__keymanager = keymanager
+        self.__keybindings_map = KeyBindingsMap.BINDINGS
 
         # max number of keybindings for a single action
         self.__accel_column_num = 5
@@ -61,7 +62,7 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
         """
 
         self.__treestore.clear()
-        section_order = list(set(d.info.group for d in KeyBindingsMap.BINDINGS.values()))
+        section_order = list(set(d.info.group for d in self.__keybindings_map.values()))
         section_order.sort()
         section_parent_map = {}
         for section_name in section_order:
@@ -71,7 +72,7 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
 
         action_treeiter_map = self.__action_treeiter_map = {}
 
-        for action_name, action_data in KeyBindingsMap.BINDINGS.items():
+        for action_name, action_data in self.__keybindings_map.items():
             title = action_data.info.title
             group_name = action_data.info.group
             old_bindings = self.__keymanager.get_bindings_for_action(action_name)

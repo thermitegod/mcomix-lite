@@ -19,6 +19,8 @@ class KeybindingConfig:
         # (key code, key modifier) => action name
         self.__binding_to_action = {}
 
+        self.__keybindings_map = KeyBindingsMap.BINDINGS
+
         self.__config_manager = ConfigBackend
         self.__keybindings_path = Constants.CONFIG_FILES['KEYBINDINGS']
 
@@ -35,10 +37,10 @@ class KeybindingConfig:
         if Path.is_file(self.__keybindings_path):
             self.__config_manager.load_config(config=self.__keybindings_path, saved_prefs=stored_action_bindings)
         else:
-            for action_name, action_data in KeyBindingsMap.BINDINGS.items():
+            for action_name, action_data in self.__keybindings_map.items():
                 stored_action_bindings[action_name] = action_data.keybindings
 
-        for action in KeyBindingsMap.BINDINGS.keys():
+        for action in self.__keybindings_map.keys():
             if action in stored_action_bindings:
                 bindings = [
                     Gtk.accelerator_parse(keyname)
