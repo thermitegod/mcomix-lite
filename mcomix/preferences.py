@@ -57,6 +57,7 @@ config = {
                         Constants.STATUSBAR['ARCHIVE_FILESIZE'] | Constants.STATUSBAR['VIEW_MODE'],
     'STATUSBAR_FULLPATH': True,
     'STATUSBAR_SEPARATOR': '|',
+    'STATUSBAR_SHOW_SCALE': True,
     'BOOKMARK_SHOW_PATH': False,
     'SI_UNITS': False,
     'MAX_THREADS': 16,

@@ -206,6 +206,10 @@ class _PreferencesDialog(Gtk.Dialog):
             'Show full path of current file in statusbar',
             'STATUSBAR_FULLPATH'))
 
+        page.add_row(self._create_pref_check_button(
+            'Show page scaling percent',
+            'STATUSBAR_SHOW_SCALE'))
+
         page.add_row(Gtk.Label(label='Charactor to use as statusbar separator'),
                      self._create_pref_text_box('STATUSBAR_SEPARATOR'))
 

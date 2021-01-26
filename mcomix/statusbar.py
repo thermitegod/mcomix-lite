@@ -134,7 +134,10 @@ class Statusbar(Gtk.EventBox):
         resolution of an image as well as the currently displayed scale
         """
 
-        self.__page_resolution = ', '.join(f'{d[0]}x{d[1]} ({d[2]:.2%})' for d in dimensions)
+        if config['STATUSBAR_SHOW_SCALE']:
+            self.__page_resolution = ', '.join(f'{d[0]}x{d[1]} ({d[2]:.2%})' for d in dimensions)
+        else:
+            self.__page_resolution = ', '.join(f'{d[0]}x{d[1]}' for d in dimensions)
 
     def set_root(self, root: str):
         """
