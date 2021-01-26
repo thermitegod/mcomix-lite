@@ -35,7 +35,6 @@ class KeybindingConfig:
         if Path.is_file(self.__keybindings_path):
             self.__config_manager.load_config(config=self.__keybindings_path, saved_prefs=stored_action_bindings)
         else:
-            stored_action_bindings = {}
             for action_name, action_data in KeyBindingsMap.BINDINGS.items():
                 stored_action_bindings[action_name] = action_data.keybindings
 
