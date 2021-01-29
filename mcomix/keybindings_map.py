@@ -178,7 +178,7 @@ class _KeyBindingsMap:
                 ),
             'manga_mode':
                 MAP(
-                    INFO('View mode', 'ToManga mode'),
+                    INFO('View mode', 'Manga mode'),
                     ['m']
                 ),
             'lens':
