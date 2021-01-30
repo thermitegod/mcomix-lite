@@ -84,7 +84,7 @@ class KeybindingManager:
         # Add gtk accelerator for labels in menu
         if len(self.__action_to_bindings[name]) > 0:
             key, mod = self.__action_to_bindings[name][0]
-            Gtk.AccelMap.change_entry(f'<Actions>/mcomix-main/{name}', key, mod, True)
+            Gtk.AccelMap.change_entry(f'<Actions>/mcomix-master/{name}', key, mod, True)
 
         self.__action_to_callback[name] = (callback, args, kwargs)
 

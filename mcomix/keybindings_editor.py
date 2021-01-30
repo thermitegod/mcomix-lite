@@ -109,7 +109,7 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
 
             # updating gtk accelerator for label in menu
             if self.__keymanager.get_bindings_for_action(action_name)[0] == (accel_key, accel_mods):
-                Gtk.AccelMap.change_entry(f'<Actions>/mcomix-main/{action_name}', accel_key, accel_mods, True)
+                Gtk.AccelMap.change_entry(f'<Actions>/mcomix-master/{action_name}', accel_key, accel_mods, True)
 
         return on_accel_edited
 
@@ -124,10 +124,10 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
 
                 # updating gtk accelerator for label in menu
                 if not self.__keymanager.get_bindings_for_action(action_name):
-                    Gtk.AccelMap.change_entry(f'<Actions>/mcomix-main/{action_name}, 0, 0, True')
+                    Gtk.AccelMap.change_entry(f'<Actions>/mcomix-master/{action_name}, 0, 0, True')
                 else:
                     key, mods = self.__keymanager.get_bindings_for_action(action_name)[0]
-                    Gtk.AccelMap.change_entry(f'<Actions>/mcomix-main/{action_name}', key, mods, True)
+                    Gtk.AccelMap.change_entry(f'<Actions>/mcomix-master/{action_name}', key, mods, True)
 
             self.__treestore.set_value(_iter, col, "")
 

@@ -25,7 +25,7 @@ class MainUI(Gtk.UIManager):
         # ----------------------------------------------------------------
         # Create actions for the menus.
         # ----------------------------------------------------------------
-        self.__actiongroup = Gtk.ActionGroup(name='mcomix-main')
+        self.__actiongroup = Gtk.ActionGroup(name='mcomix-master')
         self.__actiongroup.add_actions([
             ('delete', Gtk.STOCK_DELETE, '_Delete',
              None, None, _action_lambda(self.__window.move_file, False)),
@@ -139,7 +139,7 @@ class MainUI(Gtk.UIManager):
              None, None, EnhanceDialog.open_dialog)], self.__window)
 
         # fix some gtk magic: removing unreqired accelerators
-        Gtk.AccelMap.change_entry('<Actions>/mcomix-main/close', 0, 0, True)
+        Gtk.AccelMap.change_entry('<Actions>/mcomix-master/close', 0, 0, True)
 
         ui_description = """
         <ui>
