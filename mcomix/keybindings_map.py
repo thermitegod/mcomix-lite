@@ -37,12 +37,12 @@ class _KeyBindingsMap:
                 ),
             'previous_page_ff':
                 MAP(
-                    INFO('Navigation', 'Back ten pages'),
+                    INFO('Navigation', 'Rewind by X pages'),
                     ['<Shift>Page_Up', '<Shift>KP_Page_Up', '<Shift>BackSpace', '<Shift><Mod1>Left']
                 ),
             'next_page_ff':
                 MAP(
-                    INFO('Navigation', 'Forward ten pages'),
+                    INFO('Navigation', 'Forward by X pages'),
                     ['<Shift>Page_Down', '<Shift>KP_Page_Down', '<Shift><Mod1>Right']
                 ),
             'first_page':

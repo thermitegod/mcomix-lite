@@ -68,9 +68,9 @@ class EventHandler:
         self.__keybindings.register('next_page_singlestep',
                                     self.__window.flip_page, kwargs={'number_of_pages': +1, 'single_step': True})
         self.__keybindings.register('previous_page_ff',
-                                    self.__window.flip_page, kwargs={'number_of_pages': -10})
+                                    self.__window.flip_page, kwargs={'number_of_pages': -config['PAGE_FF_STEP']})
         self.__keybindings.register('next_page_ff',
-                                    self.__window.flip_page, kwargs={'number_of_pages': +10})
+                                    self.__window.flip_page, kwargs={'number_of_pages': +config['PAGE_FF_STEP']})
         self.__keybindings.register('first_page',
                                     self.__window.first_page)
         self.__keybindings.register('last_page',

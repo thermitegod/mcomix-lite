@@ -156,6 +156,13 @@ class _PreferencesDialog(Gtk.Dialog):
             'Start at the first page when opening a previous archive',
             'OPEN_FIRST_PAGE'))
 
+        page.new_section('Page Selection')
+
+        page.add_row(Gtk.Label(label='Total pages to change when using ff:'),
+                     self._create_pref_spinner(
+                         'PAGE_FF_STEP',
+                         1, 1, 100, 1, 3, 0))
+
         return page
 
     def _init_display_tab(self):
