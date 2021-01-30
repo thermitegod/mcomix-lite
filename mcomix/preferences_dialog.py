@@ -153,7 +153,7 @@ class _PreferencesDialog(Gtk.Dialog):
         page.new_section('Page Selection')
 
         page.add_row(self._create_pref_check_button(
-            'Open the first file when navigating to previous archive',
+            'Start at the first page when opening a previous archive',
             'OPEN_FIRST_PAGE'))
 
         return page
