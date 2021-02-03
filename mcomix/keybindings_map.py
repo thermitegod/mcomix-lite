@@ -119,17 +119,17 @@ class _KeyBindingsMap:
                 ),
             'rotate_90':
                 MAP(
-                    INFO('Transformation', 'Rotate 90 degrees'),
+                    INFO('Transformation', 'Rotate 90°'),
                     ['r']
                 ),
             'rotate_180':
                 MAP(
-                    INFO('Transformation', 'Rotate 180 degrees'),
+                    INFO('Transformation', 'Rotate 180°'),
                     []
                 ),
             'rotate_270':
                 MAP(
-                    INFO('Transformation', 'Rotate 270 degrees'),
+                    INFO('Transformation', 'Rotate 270°'),
                     ['<Shift>r']
                 ),
             'flip_horiz':
@@ -151,22 +151,22 @@ class _KeyBindingsMap:
             # Autorotate
             'rotate_90_width':
                 MAP(
-                    INFO('Autorotate', 'Rotate width 90 degrees'),
+                    INFO('Autorotate', 'Rotate width 90°'),
                     []
                 ),
             'rotate_270_width':
                 MAP(
-                    INFO('Autorotate', 'Rotate width 270 degrees'),
+                    INFO('Autorotate', 'Rotate width 270°'),
                     []
                 ),
             'rotate_90_height':
                 MAP(
-                    INFO('Autorotate', 'Rotate height 90 degrees'),
+                    INFO('Autorotate', 'Rotate height 90°'),
                     []
                 ),
             'rotate_270_height':
                 MAP(
-                    INFO('Autorotate', 'Rotate height 270 degrees'),
+                    INFO('Autorotate', 'Rotate height 270°'),
                     []
                 ),
 
