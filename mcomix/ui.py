@@ -27,68 +27,68 @@ class MainUI(Gtk.UIManager):
         # ----------------------------------------------------------------
         self.__actiongroup = Gtk.ActionGroup(name='mcomix-master')
         self.__actiongroup.add_actions([
-            ('delete', Gtk.STOCK_DELETE, '_Delete',
+            ('delete', Gtk.STOCK_DELETE, 'Delete',
              None, None, _action_lambda(self.__window.move_file, False)),
-            ('refresh_archive', Gtk.STOCK_REFRESH, 'Re_fresh',
+            ('refresh_archive', Gtk.STOCK_REFRESH, 'Refresh',
              None, None, self.__window.filehandler.refresh_file),
-            ('zoom_in', Gtk.STOCK_ZOOM_IN, 'Zoom _In',
+            ('zoom_in', Gtk.STOCK_ZOOM_IN, 'Zoom In',
              None, None, self.__window.manual_zoom_in),
-            ('zoom_out', Gtk.STOCK_ZOOM_OUT, 'Zoom _Out',
+            ('zoom_out', Gtk.STOCK_ZOOM_OUT, 'Zoom Out',
              None, None, self.__window.manual_zoom_out),
-            ('zoom_original', Gtk.STOCK_ZOOM_100, '_Normal Size',
+            ('zoom_original', Gtk.STOCK_ZOOM_100, 'Normal Size',
              None, None, self.__window.manual_zoom_original),
-            ('minimize', Gtk.STOCK_LEAVE_FULLSCREEN, 'Mi_nimize',
+            ('minimize', Gtk.STOCK_LEAVE_FULLSCREEN, 'Minimize',
              None, None, self.__window.minimize),
-            ('close', Gtk.STOCK_CLOSE, '_Close',
+            ('close', Gtk.STOCK_CLOSE, 'Close',
              None, None, _action_lambda(self.__window.filehandler.close_file)),
-            ('quit', Gtk.STOCK_QUIT, '_Quit',
+            ('quit', Gtk.STOCK_QUIT, 'Quit',
              None, None, self.__window.terminate_program),
-            ('rotate_90', 'mcomix-rotate-90', '_Rotate 90°',
+            ('rotate_90', 'mcomix-rotate-90', 'Rotate 90°',
              None, None, _action_lambda(self.__window.rotate_x, 90)),
             ('rotate_180', 'mcomix-rotate-180', 'Rotate 180°',
              None, None, _action_lambda(self.__window.rotate_x, 180)),
             ('rotate_270', 'mcomix-rotate-270', 'Rotate 270°',
              None, None, _action_lambda(self.__window.rotate_x, 270)),
-            ('flip_horiz', 'mcomix-flip-horizontal', 'Fli_p horizontally',
+            ('flip_horiz', 'mcomix-flip-horizontal', 'Flip horizontally',
              None, None, self.__window.flip_horizontally),
-            ('flip_vert', 'mcomix-flip-vertical', 'Flip _vertically',
+            ('flip_vert', 'mcomix-flip-vertical', 'Flip vertically',
              None, None, self.__window.flip_vertically),
-            ('extract_page', Gtk.STOCK_SAVE_AS, 'Save Page _As',
+            ('extract_page', Gtk.STOCK_SAVE_AS, 'Save Page As',
              None, None, self.__window.extract_page),
-            ('menu_zoom', 'mcomix-zoom', '_Zoom'),
-            ('menu_bookmarks', None, '_Bookmarks'),
-            ('menu_toolbars', None, 'T_oolbars'),
-            ('menu_edit', None, '_Edit'),
-            ('menu_file', None, '_File'),
-            ('menu_view', None, '_View'),
-            ('menu_tools', None, '_Tools'),
-            ('menu_help', None, '_Help'),
-            ('menu_transform', 'mcomix-transform', '_Transform image'),
-            ('menu_autorotate', None, '_Auto-rotate image'),
+            ('menu_zoom', 'mcomix-zoom', 'Zoom'),
+            ('menu_bookmarks', None, 'Bookmarks'),
+            ('menu_toolbars', None, 'Toolbars'),
+            ('menu_edit', None, 'Edit'),
+            ('menu_file', None, 'File'),
+            ('menu_view', None, 'View'),
+            ('menu_tools', None, 'Tools'),
+            ('menu_help', None, 'Help'),
+            ('menu_transform', 'mcomix-transform', 'Transform image'),
+            ('menu_autorotate', None, 'Auto-rotate image'),
             ('menu_autorotate_width', None, '...when width exceeds height'),
             ('menu_autorotate_height', None, '...when height exceeds width'),
             ('expander', None, None, None, None, None)])
 
         self.__actiongroup.add_toggle_actions([
-            ('fullscreen', Gtk.STOCK_FULLSCREEN, '_Fullscreen',
+            ('fullscreen', Gtk.STOCK_FULLSCREEN, 'Fullscreen',
              None, None, self.__window.change_fullscreen),
-            ('double_page', 'mcomix-double-page', '_Double page mode',
+            ('double_page', 'mcomix-double-page', 'Double page mode',
              None, None, self.__window.change_double_page),
-            ('menubar', None, '_Menubar',
+            ('menubar', None, 'Menubar',
              None, None, self.__window.change_menubar_visibility),
-            ('statusbar', None, 'St_atusbar',
+            ('statusbar', None, 'Statusbar',
              None, None, self.__window.change_statusbar_visibility),
-            ('scrollbar', None, 'S_crollbars',
+            ('scrollbar', None, 'Scrollbars',
              None, None, self.__window.change_scrollbar_visibility),
-            ('thumbnails', None, 'Th_umbnails',
+            ('thumbnails', None, 'Thumbnails',
              None, None, self.__window.change_thumbnails_visibility),
-            ('hide_all', None, 'H_ide all',
+            ('hide_all', None, 'Hide all',
              None, None, self.__window.change_hide_all),
-            ('manga_mode', 'mcomix-manga', '_Manga mode',
+            ('manga_mode', 'mcomix-manga', 'Manga mode',
              None, None, self.__window.change_manga_mode),
-            ('keep_transformation', None, '_Keep transformation',
+            ('keep_transformation', None, 'Keep transformation',
              None, None, self.__window.change_keep_transformation),
-            ('lens', 'mcomix-lens', 'Magnifying _lens',
+            ('lens', 'mcomix-lens', 'Magnifying lens',
              None, None, self.__window.lens.toggle),
             ('stretch', None, 'Stretch small images',
              None, None, self.__window.change_stretch)])
@@ -96,46 +96,46 @@ class MainUI(Gtk.UIManager):
         # Note: Don't change the default value for the radio buttons unless
         # also fixing the code for setting the correct one on start-up in main.py.
         self.__actiongroup.add_radio_actions([
-            ('best_fit_mode', 'mcomix-fitbest', '_Best fit mode',
+            ('best_fit_mode', 'mcomix-fitbest', 'Best fit mode',
              None, None, Constants.ZOOM['BEST']),
-            ('fit_width_mode', 'mcomix-fitwidth', 'Fit _width mode',
+            ('fit_width_mode', 'mcomix-fitwidth', 'Fit width mode',
              None, None, Constants.ZOOM['WIDTH']),
-            ('fit_height_mode', 'mcomix-fitheight', 'Fit _height mode',
+            ('fit_height_mode', 'mcomix-fitheight', 'Fit height mode',
              None, None, Constants.ZOOM['HEIGHT']),
-            ('fit_size_mode', 'mcomix-fitsize', 'Fit _size mode',
+            ('fit_size_mode', 'mcomix-fitsize', 'Fit size mode',
              None, None, Constants.ZOOM['SIZE']),
-            ('fit_manual_mode', 'mcomix-fitmanual', 'M_anual zoom mode',
+            ('fit_manual_mode', 'mcomix-fitmanual', 'Manual zoom mode',
              None, None, Constants.ZOOM['MANUAL'])], 3, self.__window.change_zoom_mode)
 
         # Automatically rotate image if width>height or height>width
         self.__actiongroup.add_radio_actions([
             ('no_autorotation', None, 'Never',
              None, None, Constants.AUTOROTATE['NEVER']),
-            ('rotate_90_width', 'mcomix-rotate-90', '_Rotate width 90°',
+            ('rotate_90_width', 'mcomix-rotate-90', 'Rotate width 90°',
              None, None, Constants.AUTOROTATE['WIDTH_90']),
-            ('rotate_270_width', 'mcomix-rotate-270', 'Rotat_e width 270°',
+            ('rotate_270_width', 'mcomix-rotate-270', 'Rotate width 270°',
              None, None, Constants.AUTOROTATE['WIDTH_270']),
-            ('rotate_90_height', 'mcomix-rotate-90', '_Rotate height 90°',
+            ('rotate_90_height', 'mcomix-rotate-90', 'Rotate height 90°',
              None, None, Constants.AUTOROTATE['HEIGHT_90']),
-            ('rotate_270_height', 'mcomix-rotate-270', 'Rotat_e height 270°',
+            ('rotate_270_height', 'mcomix-rotate-270', 'Rotate height 270°',
              None, None, Constants.AUTOROTATE['HEIGHT_270'])],
             config['AUTO_ROTATE_DEPENDING_ON_SIZE'], self.__window.change_autorotation)
 
         self.__actiongroup.add_actions([
-            ('about', Gtk.STOCK_ABOUT, '_About',
+            ('about', Gtk.STOCK_ABOUT, 'About',
              None, None, DialogHandler.open_dialog)], (self.__window, 'about-dialog'))
 
         self.__actiongroup.add_actions([
-            ('properties', Gtk.STOCK_PROPERTIES, 'Proper_ties',
+            ('properties', Gtk.STOCK_PROPERTIES, 'Properties',
              None, None, DialogHandler.open_dialog)], (self.__window, 'properties-dialog'))
 
         self.__actiongroup.add_actions([
-            ('preferences', Gtk.STOCK_PREFERENCES, 'Pr_eferences',
+            ('preferences', Gtk.STOCK_PREFERENCES, 'Preferences',
              None, None, PreferenceDialog.open_dialog)], (self.__window, self.__keybindings))
 
         # Some actions added separately since they need extra arguments.
         self.__actiongroup.add_actions([
-            ('enhance_image', 'mcomix-enhance-image', 'En_hance image...',
+            ('enhance_image', 'mcomix-enhance-image', 'Enhance image...',
              None, None, EnhanceDialog.open_dialog)], self.__window)
 
         # fix some gtk magic: removing unreqired accelerators
