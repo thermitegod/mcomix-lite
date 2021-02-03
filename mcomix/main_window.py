@@ -60,7 +60,7 @@ class MainWindow(Gtk.Window):
         # Remember last scroll destination.
         self.__last_scroll_destination = Constants.SCROLL_TO['START']
 
-        self.__dummy_layout = FiniteLayout(((1, 1),), (1, 1), (1, 1), 0, False, 0, 0)
+        self.__dummy_layout = FiniteLayout(((1, 1),), (1, 1), [1, 1], 0, False, 0, 0)
         self.__layout = self.__dummy_layout
         self.__spacing = 2
         self.__waiting_for_redraw = False
@@ -354,19 +354,19 @@ class MainWindow(Gtk.Window):
 
         if rotation in (90, 270):
             distribution_axis, alignment_axis = alignment_axis, distribution_axis
-            orientation = orientation[::1]
+            orientation.reverse()
             for i in range(pixbuf_count):
                 size_list[i].reverse()
         elif rotation in (180, 270):
-            orientation = orientation[::1]
+            orientation.reverse()
 
         for i in range(pixbuf_count):
             rotation_list[i] = (rotation_list[i] + rotation) % 360
 
         if config['VERTICAL_FLIP']:
-            orientation = orientation[::1]
+            orientation.reverse()
         if config['HORIZONTAL_FLIP']:
-            orientation = orientation[::1]
+            orientation.reverse()
 
         viewport_size = ()  # dummy
         expand_area = False

@@ -138,8 +138,8 @@ class _Constants:
         }
 
         self.ORIENTATION = {
-            'MANGA': (-1, 1),
-            'WESTERN': (1, 1),
+            'MANGA': [-1, 1],
+            'WESTERN': [1, 1],
         }
 
         # see https://www.freedesktop.org/wiki/Software/shared-mime-info/

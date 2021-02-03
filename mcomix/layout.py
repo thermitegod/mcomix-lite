@@ -7,7 +7,7 @@ from mcomix.hyperrectangles import Box
 
 
 class FiniteLayout:  # 2D only
-    def __init__(self, content_sizes, viewport_size: tuple, orientation: tuple, spacing: int,
+    def __init__(self, content_sizes, viewport_size: tuple, orientation: list, spacing: int,
                  wrap_individually: bool, distribution_axis: int, alignment_axis: int):
         """
         Lays out a finite number of Boxes along the first axis.
@@ -171,7 +171,7 @@ class FiniteLayout:  # 2D only
     def set_orientation(self, orientation: tuple):
         self.__orientation = orientation
 
-    def _reset(self, content_sizes, viewport_size: tuple, orientation: tuple, spacing: int,
+    def _reset(self, content_sizes, viewport_size: tuple, orientation: list, spacing: int,
                wrap_individually: bool, distribution_axis: int, alignment_axis: int):
         # reverse order if necessary
         if orientation[distribution_axis] == -1:
@@ -205,7 +205,7 @@ class FiniteLayout:  # 2D only
         self.__dirty_current_index = True
 
     @staticmethod
-    def _wrap_individually(temp_cb_list: list, viewport_size: tuple, orientation: tuple):
+    def _wrap_individually(temp_cb_list: list, viewport_size: tuple, orientation: list):
         # calculate (potentially oversized) wrapper Boxes
         temp_wb_list = [None] * len(temp_cb_list)
         for idx, item in enumerate(temp_cb_list):
@@ -215,7 +215,7 @@ class FiniteLayout:  # 2D only
         return temp_wb_list, temp_bb
 
     @staticmethod
-    def _wrap_union(temp_cb_list: list, viewport_size: tuple, orientation: tuple):
+    def _wrap_union(temp_cb_list: list, viewport_size: tuple, orientation: list):
         # calculate bounding Box
         temp_wb_list = [Box.bounding_box(temp_cb_list).wrapper_box(viewport_size, orientation)]
         return temp_wb_list, temp_wb_list[0]

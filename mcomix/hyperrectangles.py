@@ -308,7 +308,7 @@ class Box:
             result[bi] = Box(p, s)
         return result
 
-    def wrapper_box(self, viewport_size: tuple, orientation: tuple):
+    def wrapper_box(self, viewport_size: tuple, orientation: list):
         """
         Returns a Box that covers the same area that is covered by a
         scrollable viewport showing this Box.
