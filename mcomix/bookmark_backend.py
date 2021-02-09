@@ -35,7 +35,7 @@ class BookmarkBackend:
         #: List of bookmarks
         self.__bookmarks = self.load_bookmarks_file()
         #: Modification date of bookmarks file
-        self.__bookmarks_mtime = self.get_bookmarks_file_mtime()
+        self.__bookmarks_size = self.get_bookmarks_file_size()
 
     def initialize(self, window):
         """
@@ -127,9 +127,9 @@ class BookmarkBackend:
         self.__bookmarks = self.load_bookmarks_file()
         return self.__bookmarks
 
-    def get_bookmarks_file_mtime(self):
+    def get_bookmarks_file_size(self):
         if Path.is_file(self.__bookmark_path):
-            return Path.stat(self.__bookmark_path).st_mtime
+            return Path.stat(self.__bookmark_path).st_size
         return 0
 
     def load_bookmarks_file(self):
@@ -171,7 +171,7 @@ class BookmarkBackend:
         """
 
         if Path.is_file(self.__bookmark_path):
-            if Path.stat(self.__bookmark_path).st_mtime > self.__bookmarks_mtime:
+            if self.get_bookmarks_file_size() != self.__bookmarks_size:
                 return True
             return False
 
@@ -196,7 +196,7 @@ class BookmarkBackend:
         bookmarks = yaml.dump(packs, Dumper=yaml.CSafeDumper, sort_keys=False,
                               allow_unicode=True, width=2147483647)
         self.__bookmark_path.write_text(bookmarks)
-        self.__bookmarks_mtime = time.time()
+        self.__bookmarks_size = self.get_bookmarks_file_size()
 
     def show_replace_bookmark_dialog(self, new_page):
         """
