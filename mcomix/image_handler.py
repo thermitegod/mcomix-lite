@@ -211,9 +211,8 @@ class ImageHandler:
         self.__threadpool.renew()
         self.__wanted_pixbufs.clear()
         while self.__cache_lock:
-            index, lock = self.__cache_lock.popitem()
-            with lock:
-                pass
+            self.__cache_lock.popitem()
+
         self.__base_path = None
         self.__image_files.clear()
         self.__current_image_index = None
