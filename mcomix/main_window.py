@@ -60,7 +60,7 @@ class MainWindow(Gtk.Window):
         # Remember last scroll destination.
         self.__last_scroll_destination = Constants.SCROLL_TO['START']
 
-        self.__dummy_layout = FiniteLayout(((1, 1),), (1, 1), [1, 1], 0, False, 0, 0)
+        self.__dummy_layout = FiniteLayout([(1, 1)], (1, 1), [1, 1], 0, False, 0, 0)
         self.__layout = self.__dummy_layout
         self.__spacing = 2
         self.__waiting_for_redraw = False

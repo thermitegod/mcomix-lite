@@ -7,7 +7,7 @@ from mcomix.hyperrectangles import Box
 
 
 class FiniteLayout:  # 2D only
-    def __init__(self, content_sizes, viewport_size: tuple, orientation: list, spacing: int,
+    def __init__(self, content_sizes: list[tuple], viewport_size: tuple, orientation: list, spacing: int,
                  wrap_individually: bool, distribution_axis: int, alignment_axis: int):
         """
         Lays out a finite number of Boxes along the first axis.
@@ -171,7 +171,7 @@ class FiniteLayout:  # 2D only
     def set_orientation(self, orientation: tuple):
         self.__orientation = orientation
 
-    def _reset(self, content_sizes, viewport_size: tuple, orientation: list, spacing: int,
+    def _reset(self, content_sizes: list[tuple], viewport_size: tuple, orientation: list, spacing: int,
                wrap_individually: bool, distribution_axis: int, alignment_axis: int):
         # reverse order if necessary
         if orientation[distribution_axis] == -1:
