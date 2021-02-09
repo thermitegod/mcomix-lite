@@ -157,13 +157,6 @@ class Statusbar(Gtk.EventBox):
 
         return self.__total_file_numbers
 
-    def get_image_filters(self):
-        """
-        Returns the image scaling being used
-        """
-
-        return self.__image_scaling
-
     def set_resolution(self, dimensions: list):  # 2D only
         """
         Update the resolution data.
