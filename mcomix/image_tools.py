@@ -6,7 +6,7 @@ from io import BytesIO
 from pathlib import Path
 
 from PIL import Image, ImageEnhance, ImageOps, ImageSequence
-from gi.repository import GLib, GdkPixbuf, Gio
+from gi.repository import GLib, GdkPixbuf
 from loguru import logger
 
 from mcomix.anime_executor import AnimeFrameExecutor
