@@ -6,7 +6,6 @@ import fnmatch
 from pathlib import Path
 
 from gi.repository import Gtk
-from loguru import logger
 
 from mcomix.archive_tools import ArchiveTools
 from mcomix.image_tools import ImageTools
@@ -25,13 +24,14 @@ class BaseFileChooserDialog(Gtk.Dialog):
     If the dialog was closed or Cancel was pressed, <paths> is the empty list
     """
 
-    def __init__(self, parent):
+    def __init__(self, window):
+        self.__window = window
         self.__action = Gtk.FileChooserAction.OPEN
         self.__last_activated_file = None
 
         super().__init__(title='Open')
 
-        self.set_transient_for(parent)
+        self.set_transient_for(self.__window)
         self.add_buttons(*(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
         self.set_default_response(Gtk.ResponseType.OK)
 
@@ -45,19 +45,16 @@ class BaseFileChooserDialog(Gtk.Dialog):
 
         self.add_filter('All files', [])
 
-        try:
-            current_file = self._current_file()
-            if current_file:
-                # If a file is currently open, use its path
-                self.filechooser.set_current_folder(Path(current_file).parent)
-            elif self.__last_activated_file:
-                # If no file is open, use the last stored file
-                self.filechooser.set_filename(self.__last_activated_file)
-            else:
-                # If no file was stored yet, fall back to preferences
-                self.filechooser.set_current_folder(config['FILECHOOSER_LAST_BROWSED_PATH'])
-        except Exception:
-            logger.error('probably broken prefs values')
+        current_file = self.__window.filehandler.get_path_to_base()
+        if current_file:
+            # If a file is currently open, use its path
+            self.filechooser.set_current_folder(str(current_file.parent))
+        elif self.__last_activated_file:
+            # If no file is open, use the last stored file
+            self.filechooser.set_filename(self.__last_activated_file)
+        else:
+            # If no file was stored yet, fall back to preferences
+            self.filechooser.set_current_folder(config['FILECHOOSER_LAST_BROWSED_PATH'])
 
         self.show_all()
 
@@ -138,10 +135,3 @@ class BaseFileChooserDialog(Gtk.Dialog):
             config['FILECHOOSER_LAST_BROWSED_PATH'] = self.filechooser.get_current_folder()
         else:
             self.files_chosen([])
-
-    @staticmethod
-    def _current_file():
-        return None
-        # XXX: This method defers the import of main to avoid cyclic imports during startup.
-        # from mcomix import main
-        # return main.main_window().filehandler.get_path_to_base()
