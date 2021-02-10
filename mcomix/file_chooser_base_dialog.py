@@ -9,10 +9,8 @@ from gi.repository import Gtk
 from loguru import logger
 
 from mcomix.archive_tools import ArchiveTools
-from mcomix.file_size import FileSize
 from mcomix.image_tools import ImageTools
 from mcomix.preferences import config
-from mcomix.thumbnail_tools import Thumbnailer
 
 
 class BaseFileChooserDialog(Gtk.Dialog):
@@ -29,7 +27,6 @@ class BaseFileChooserDialog(Gtk.Dialog):
 
     def __init__(self, parent):
         self.__action = Gtk.FileChooserAction.OPEN
-        self.__destroyed = False
         self.__last_activated_file = None
 
         super().__init__(title='Open')
@@ -46,24 +43,7 @@ class BaseFileChooserDialog(Gtk.Dialog):
         self.connect('response', self._response)
         self.filechooser.connect('file_activated', self._response, Gtk.ResponseType.OK)
 
-        preview_box = Gtk.VBox(homogeneous=False, spacing=10)
-        preview_box.set_size_request(130, 0)
-        self.__preview_image = Gtk.Image()
-        self.__preview_image.set_size_request(130, 130)
-        preview_box.pack_start(self.__preview_image, False, False, 0)
-        self.filechooser.set_preview_widget(preview_box)
-
-        self.__namelabel = Gtk.Label()
-        preview_box.pack_start(self.__namelabel, False, False, 0)
-
-        self.__sizelabel = Gtk.Label()
-        preview_box.pack_start(self.__sizelabel, False, False, 0)
-
-        self.filechooser.set_use_preview_label(False)
-        preview_box.show_all()
-        self.filechooser.connect('update-preview', self._update_preview)
-
-        self.__all_files_filter = self.add_filter('All files', [])
+        self.add_filter('All files', [])
 
         try:
             current_file = self._current_file()
@@ -158,39 +138,6 @@ class BaseFileChooserDialog(Gtk.Dialog):
             config['FILECHOOSER_LAST_BROWSED_PATH'] = self.filechooser.get_current_folder()
         else:
             self.files_chosen([])
-
-        self.__destroyed = True
-
-    def _update_preview(self, *args):
-        path = self.filechooser.get_preview_filename()
-        if path and Path.is_file(Path(path)):
-            thumbnailer = Thumbnailer(size=(128, 128))
-            thumbnailer.thumbnail_finished += self._preview_thumbnail_finished
-            thumbnailer.thumbnail(path)
-        else:
-            self.__preview_image.clear()
-            self.__namelabel.set_text('')
-            self.__sizelabel.set_text('')
-
-    def _preview_thumbnail_finished(self, filepath, pixbuf):
-        """
-        Called when the thumbnailer has finished creating the thumbnail for <filepath>
-        """
-
-        if self.__destroyed:
-            return
-
-        current_path = Path(self.filechooser.get_preview_filename())
-        if current_path and current_path == filepath:
-            if pixbuf is None:
-                self.__preview_image.clear()
-                self.__namelabel.set_text('')
-                self.__sizelabel.set_text('')
-            else:
-                pixbuf = ImageTools.add_border(pixbuf, 1)
-                self.__preview_image.set_from_pixbuf(pixbuf)
-                self.__namelabel.set_text(Path(filepath).name)
-                self.__sizelabel.set_text(FileSize(filepath).size)
 
     @staticmethod
     def _current_file():
