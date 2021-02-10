@@ -2,16 +2,18 @@
 
 """ui.py - UI definitions for main window"""
 
+from collections import namedtuple
+
 from gi.repository import Gtk
 
 from mcomix.bookmark_menu import BookmarksMenu
 from mcomix.constants import Constants
-from mcomix.dialog_handler import DialogHandler
-from mcomix.enhance_dialog import EnhanceDialog
+from mcomix.dialog.dialog_about import DialogAbout
+from mcomix.dialog.dialog_enhance import DialogEnhance
+from mcomix.dialog.dialog_file_chooser import DialogFileChooser
+from mcomix.dialog.dialog_preferences import DialogPreference
+from mcomix.dialog.dialog_properties import DialogProperties
 from mcomix.preferences import config
-from mcomix.preferences_dialog import PreferenceDialog
-
-from mcomix.file_chooser_main_dialog import FileChooser
 
 
 class MainUI(Gtk.UIManager):
@@ -123,25 +125,27 @@ class MainUI(Gtk.UIManager):
              None, None, Constants.AUTOROTATE['HEIGHT_270'])],
             config['AUTO_ROTATE_DEPENDING_ON_SIZE'], self.__window.change_autorotation)
 
+        Dialog = namedtuple('Dialog', ['window', 'keybindings'])
+
         self.__actiongroup.add_actions([
             ('about', Gtk.STOCK_ABOUT, 'About',
-             None, None, DialogHandler.open_dialog)], (self.__window, 'about-dialog'))
+             None, None, DialogAbout().open_dialog)], Dialog(self.__window, None))
 
         self.__actiongroup.add_actions([
             ('properties', Gtk.STOCK_PROPERTIES, 'Properties',
-             None, None, DialogHandler.open_dialog)], (self.__window, 'properties-dialog'))
+             None, None, DialogProperties().open_dialog)], Dialog(self.__window, None))
 
         self.__actiongroup.add_actions([
             ('preferences', Gtk.STOCK_PREFERENCES, 'Preferences',
-             None, None, PreferenceDialog.open_dialog)], (self.__window, self.__keybindings))
+             None, None, DialogPreference().open_dialog)], Dialog(self.__window, self.__keybindings))
 
         self.__actiongroup.add_actions([
             ('open', Gtk.STOCK_PREFERENCES, 'Open...',
-             None, None, FileChooser.open_dialog)], self.__window)
+             None, None, DialogFileChooser().open_dialog)], Dialog(self.__window, None))
 
         self.__actiongroup.add_actions([
             ('enhance_image', 'mcomix-enhance-image', 'Enhance image...',
-             None, None, EnhanceDialog.open_dialog)], self.__window)
+             None, None, DialogEnhance().open_dialog)], Dialog(self.__window, None))
 
         # fix some gtk magic: removing unreqired accelerators
         Gtk.AccelMap.change_entry('<Actions>/mcomix-master/close', 0, 0, True)

@@ -11,7 +11,7 @@ from mcomix.preferences import config
 from mcomix.preferences_page import PreferencePage
 
 
-class _PreferencesDialog(Gtk.Dialog):
+class PreferencesDialog(Gtk.Dialog):
     """
     The preferences dialog where most (but not all) settings that are
     saved between sessions are presented to the user
@@ -401,10 +401,7 @@ class _PreferencesDialog(Gtk.Dialog):
             self.__reset_button.set_sensitive(len(config['STORED_DIALOG_CHOICES']) > 0)
 
     def _response(self, dialog, response):
-        if response == Gtk.ResponseType.CLOSE:
-            PreferenceDialog.close_dialog()
-
-        elif response == Constants.RESPONSE['REVERT_TO_DEFAULT']:
+        if response == Constants.RESPONSE['REVERT_TO_DEFAULT']:
             if self.__notebook.get_nth_page(self.__notebook.get_current_page()) == self.__shortcuts:
                 # "Shortcuts" page is active, reset all keys to their default value
                 self.__keybindings.clear_all()
@@ -418,7 +415,7 @@ class _PreferencesDialog(Gtk.Dialog):
 
         else:
             # Other responses close the dialog, e.g. clicking the X icon on the dialog.
-            PreferenceDialog.close_dialog()
+            self.destroy()
 
     def _create_combobox_checkered_bg_size(self):
         """
@@ -684,39 +681,3 @@ class _PreferencesDialog(Gtk.Dialog):
         box.set_text(config[preference])
         box.connect('changed', save_pref_text_box)
         return box
-
-
-class _PreferenceDialog:
-    def __init__(self):
-        super().__init__()
-
-        self.__dialog = None
-
-        self.__window = None
-        self.__keybindings = None
-
-    def open_dialog(self, event, data):
-        """
-        Create and display the preference dialog
-        """
-
-        self.__window = data[0]
-        self.__keybindings = data[1]
-
-        # if the dialog window is not created then create the window
-        if self.__dialog is None:
-            self.__dialog = _PreferencesDialog(self.__window, self.__keybindings)
-        else:
-            # if the dialog window already exists bring it to the forefront of the screen
-            self.__dialog.present()
-
-    def close_dialog(self):
-        # if the dialog window exists then destroy it
-        if self.__dialog is not None:
-            self.__dialog.destroy()
-            self.__dialog = None
-
-
-PreferenceDialog = _PreferenceDialog()
-
-

@@ -11,7 +11,7 @@ from mcomix.image_tools import ImageTools
 from mcomix.preferences import config
 
 
-class _EnhanceImageDialog(Gtk.Dialog):
+class EnhanceImageDialog(Gtk.Dialog):
     """
     A Gtk.Dialog which allows modification of the values belonging to an ImageEnhancer
     """
@@ -193,7 +193,7 @@ class _EnhanceImageDialog(Gtk.Dialog):
 
     def _response(self, dialog, response: int):
         if response in [Gtk.ResponseType.OK, Gtk.ResponseType.DELETE_EVENT]:
-            EnhanceDialog.close_dialog()
+            self.destroy()
 
         elif response == Gtk.ResponseType.APPLY:
             self._change_values(self)
@@ -212,32 +212,3 @@ class _EnhanceImageDialog(Gtk.Dialog):
             self.__autocontrast_button.set_active(config['AUTO_CONTRAST'])
             self.__block = False
             self._change_values(self)
-
-
-class _EnhanceDialog:
-    def __init__(self):
-        super().__init__()
-
-        self.__dialog = None
-
-    def open_dialog(self, event, window):
-        """
-        Create and display the (singleton) image enhancement dialog
-        """
-
-        if self.__dialog is None:
-            self.__dialog = _EnhanceImageDialog(window)
-        else:
-            self.__dialog.present()
-
-    def close_dialog(self):
-        """
-        Destroy the image enhancement dialog
-        """
-
-        if self.__dialog is not None:
-            self.__dialog.destroy()
-            self.__dialog = None
-
-
-EnhanceDialog = _EnhanceDialog()

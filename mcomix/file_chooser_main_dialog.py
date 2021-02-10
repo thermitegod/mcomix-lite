@@ -11,7 +11,8 @@ class _MainFileChooserDialog(BaseFileChooserDialog):
     """The normal filechooser dialog used with the "Open" menu item"""
 
     def __init__(self, window):
-        super(_MainFileChooserDialog, self).__init__(window)
+        super().__init__(window)
+
         self.__window = window
         self.filechooser.set_select_multiple(True)
         self.add_archive_filters()
@@ -28,36 +29,4 @@ class _MainFileChooserDialog(BaseFileChooserDialog):
             self.__window.filehandler.initialize_fileprovider(files)
             self.__window.filehandler.open_file(Path(files[0]))
 
-        FileChooser.close_dialog()
-
-
-class _FileChooser:
-    def __init__(self):
-        super().__init__()
-
-        self.__dialog = None
-
-        self.__window = None
-
-    def open_dialog(self, event, window):
-        """
-        Create and display the preference dialog
-        """
-
-        self.__window = window
-
-        # if the dialog window is not created then create the window
-        if self.__dialog is None:
-            self.__dialog = _MainFileChooserDialog(self.__window)
-        else:
-            # if the dialog window already exists bring it to the forefront of the screen
-            self.__dialog.present()
-
-    def close_dialog(self):
-        # if the dialog window exists then destroy it
-        if self.__dialog is not None:
-            self.__dialog.destroy()
-            self.__dialog = None
-
-
-FileChooser = _FileChooser()
+        self.destroy()
