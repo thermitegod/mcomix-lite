@@ -35,6 +35,8 @@ config = {
     'FLIP_WITH_WHEEL': True,
     'HIDE_ALL': False,
     'HIDE_ALL_IN_FULLSCREEN': True,
+    'FILECHOOSER_LAST_BROWSED_PATH': Constants.HOME,
+    'FILECHOOSER_LAST_FILTER': 0,
     'SHOW_MENUBAR': True,
     'SHOW_SCROLLBAR': True,
     'SHOW_STATUSBAR': True,

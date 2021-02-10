@@ -27,6 +27,10 @@ class _ImageTools:
         Image.init()
         self.__supported_image_exts = [ext for ext in Image.EXTENSION]
 
+    @property
+    def supported_image_exts(self):
+        return self.__supported_image_exts
+
     def is_image_file(self, path: Path):
         return path.suffix.lower() in self.__supported_image_exts
 

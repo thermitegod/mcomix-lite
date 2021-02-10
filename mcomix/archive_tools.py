@@ -49,6 +49,10 @@ class _ArchiveTools:
         else:
             self.__ext_tar = []
 
+    @property
+    def supported_archive_ext(self):
+        return self.__supported_archive_ext
+
     def is_archive_file(self, path: Path):
         return path.suffix.lower() in self.__supported_archive_ext
 

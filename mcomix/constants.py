@@ -18,6 +18,7 @@ class _Constants:
         self.VERSION = '3.2.0-dev'
 
         self.PROG_NAME = self.APPNAME.lower()
+        self.HOME = str(Path.home())
         try:
             self.PATHS = {
                 'CONFIG': Path() / os.environ['XDG_CONFIG_HOME'] / self.PROG_NAME,
@@ -27,8 +28,8 @@ class _Constants:
         except KeyError:
             logger.warning('Not using XDG dirs, falling back to hardcoded paths')
             self.PATHS = {
-                'CONFIG': Path.home() / '.config' / self.PROG_NAME,
-                'DATA': Path.home() / '.local/share' / self.PROG_NAME,
+                'CONFIG': self.HOME / '.config' / self.PROG_NAME,
+                'DATA': self.HOME / '.local/share' / self.PROG_NAME,
                 'CACHE': Path() / '/tmp' / self.PROG_NAME,
             }
 

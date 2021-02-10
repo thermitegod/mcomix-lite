@@ -11,6 +11,8 @@ from mcomix.enhance_dialog import EnhanceDialog
 from mcomix.preferences import config
 from mcomix.preferences_dialog import PreferenceDialog
 
+from mcomix.file_chooser_main_dialog import FileChooser
+
 
 class MainUI(Gtk.UIManager):
     def __init__(self, window, keybindings):
@@ -133,7 +135,10 @@ class MainUI(Gtk.UIManager):
             ('preferences', Gtk.STOCK_PREFERENCES, 'Preferences',
              None, None, PreferenceDialog.open_dialog)], (self.__window, self.__keybindings))
 
-        # Some actions added separately since they need extra arguments.
+        self.__actiongroup.add_actions([
+            ('open', Gtk.STOCK_PREFERENCES, 'Open...',
+             None, None, FileChooser.open_dialog)], self.__window)
+
         self.__actiongroup.add_actions([
             ('enhance_image', 'mcomix-enhance-image', 'Enhance image...',
              None, None, EnhanceDialog.open_dialog)], self.__window)
@@ -145,6 +150,8 @@ class MainUI(Gtk.UIManager):
         <ui>
             <menubar name="Menu">
                 <menu action="menu_file">
+                    <menuitem action="open"/>
+                    <separator/>
                     <menuitem action="extract_page"/>
                     <menuitem action="refresh_archive"/>
                     <menuitem action="properties"/>

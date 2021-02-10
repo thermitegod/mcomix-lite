@@ -172,6 +172,8 @@ class EventHandler:
                                     self.__window.actiongroup.get_action('properties').activate)
         self.__keybindings.register('preferences',
                                     self.__window.actiongroup.get_action('preferences').activate)
+        self.__keybindings.register('open',
+                                    self.__window.actiongroup.get_action('open').activate)
         self.__keybindings.register('enhance_image',
                                     self.__window.actiongroup.get_action('enhance_image').activate)
 
