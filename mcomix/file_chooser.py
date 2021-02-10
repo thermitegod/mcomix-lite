@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""filechooser_chooser_base_dialog.py - Custom FileChooserDialog implementations"""
+"""filechooser_chooser.py - Custom FileChooserDialog implementations"""
 
 import fnmatch
 from pathlib import Path
@@ -12,16 +12,12 @@ from mcomix.image_tools import ImageTools
 from mcomix.preferences import config
 
 
-class BaseFileChooserDialog(Gtk.Dialog):
+class FileChooser(Gtk.Dialog):
     """
     We roll our own FileChooserDialog because the one in GTK seems
     buggy with the preview widget. The <action> argument dictates what type
     of filechooser dialog we want (i.e. it is Gtk.FileChooserAction.OPEN
     or Gtk.FileChooserAction.SAVE).
-
-    Subclasses should implement a method files_chosen(paths) that will be
-    called once the filechooser has done its job and selected some files.
-    If the dialog was closed or Cancel was pressed, <paths> is the empty list
     """
 
     def __init__(self, window):
@@ -36,6 +32,7 @@ class BaseFileChooserDialog(Gtk.Dialog):
         self.set_default_response(Gtk.ResponseType.OK)
 
         self.filechooser = Gtk.FileChooserWidget(action=self.__action)
+        self.filechooser.set_select_multiple(True)
         self.filechooser.set_size_request(1280, 720)
         self.vbox.pack_start(self.filechooser, True, True, 0)
         self.set_border_width(4)
@@ -44,6 +41,11 @@ class BaseFileChooserDialog(Gtk.Dialog):
         self.filechooser.connect('file_activated', self._response, Gtk.ResponseType.OK)
 
         self.add_filter('All files', [])
+        self.add_archive_filters()
+        self.add_image_filters()
+
+        filters = self.filechooser.list_filters()
+        self.filechooser.set_filter(filters[config['FILECHOOSER_LAST_FILTER']])
 
         current_file = self.__window.filehandler.get_path_to_base()
         if current_file:
@@ -98,6 +100,17 @@ class BaseFileChooserDialog(Gtk.Dialog):
 
         for ext in ImageTools.supported_image_exts:
             ffilter.add_pattern(f'*{ext}')
+
+    def files_chosen(self, paths: list):
+        if paths:
+            filter_index = self.filechooser.list_filters().index(self.filechooser.get_filter())
+            config['FILECHOOSER_LAST_FILTER'] = filter_index
+
+            files = [Path(path) for path in paths]
+            self.__window.filehandler.initialize_fileprovider(files)
+            self.__window.filehandler.open_file(Path(files[0]))
+
+        self.destroy()
 
     @staticmethod
     def _filter(filter_info, pattern):

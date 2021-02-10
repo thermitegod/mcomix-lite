@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from mcomix.dialog.dialog_base import DialogBase
-from mcomix.file_chooser_main_dialog import _MainFileChooserDialog
+from mcomix.file_chooser import FileChooser
 
 
 class DialogFileChooser(DialogBase):
@@ -13,5 +13,5 @@ class DialogFileChooser(DialogBase):
         Create and display the preference dialog
         """
 
-        self.dialog = _MainFileChooserDialog(data.window)
+        self.dialog = FileChooser(data.window)
         self.dialog.connect('response', self.close_dialog)
