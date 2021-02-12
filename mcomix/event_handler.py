@@ -177,6 +177,10 @@ class EventHandler:
         self.__keybindings.register('enhance_image',
                                     self.__window.actiongroup.get_action('enhance_image').activate)
 
+        # Info
+        self.__keybindings.register('about',
+                                    self.__window.actiongroup.get_action('about').activate)
+
         # User interface
         self.__keybindings.register('minimize',
                                     self.__window.minimize)

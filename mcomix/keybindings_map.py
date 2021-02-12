@@ -261,6 +261,13 @@ class _KeyBindingsMap:
                     ['F9']
                 ),
 
+            # Info
+            'about':
+                MAP(
+                    INFO('Info', 'About'),
+                    ['F1']
+                ),
+
             # File operations
             'close':
                 MAP(
