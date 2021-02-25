@@ -804,11 +804,11 @@ class MainWindow(Gtk.Window):
             for widget in widget_list:
                 if widget.get_visible():
                     axis = self.__toggle_axis[widget]
-                    requisition = widget.size_request()
+                    minimum_size, natural_size = widget.get_preferred_size()
                     if Constants.AXIS['WIDTH'] == axis:
-                        size = requisition.width
+                        size = natural_size.width
                     elif Constants.AXIS['HEIGHT'] == axis:
-                        size = requisition.height
+                        size = natural_size.height
                     dimensions[axis] -= size
 
         return tuple(dimensions)
