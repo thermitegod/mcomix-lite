@@ -19,6 +19,14 @@ class EventHandler:
         self.__window = window
         self.__keybindings = keybindings
 
+        # Dispatch keyboard input handling
+        # Some keys require modifiers that are irrelevant to the hotkey. Find out and ignore them.
+        self.__all_accels_mask = (Gdk.ModifierType.CONTROL_MASK |
+                                  Gdk.ModifierType.SHIFT_MASK |
+                                  Gdk.ModifierType.MOD1_MASK)
+
+        self.__keymap = Gdk.Keymap.get_for_display(Gdk.Display.get_default())
+
         self.__last_pointer_pos_x = 0
         self.__last_pointer_pos_y = 0
 
@@ -206,26 +214,22 @@ class EventHandler:
         Handle key press events on the main window
         """
 
-        # Dispatch keyboard input handling
-        # Some keys require modifiers that are irrelevant to the hotkey. Find out and ignore them.
-        ALL_ACCELS_MASK = (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.MOD1_MASK)
+        code = self.__keymap.translate_keyboard_state(event.hardware_keycode,
+                                                      event.get_state(), event.group)
 
-        keymap = Gdk.Keymap.get_default()
-
-        code = keymap.translate_keyboard_state(event.hardware_keycode, event.get_state(), event.group)
         if code[0]:
-            keyval = code[1]
-            consumed = code[4]
+            keyval = code.keyval
+            consumed_modifiers = code.consumed_modifiers
 
             # If the resulting key is upper case (i.e. SHIFT + key),
             # convert it to lower case and remove SHIFT from the consumed flags
             # to match how keys are registered (<Shift> + lowercase)
             if event.get_state() & Gdk.ModifierType.SHIFT_MASK and keyval != Gdk.keyval_to_lower(keyval):
                 keyval = Gdk.keyval_to_lower(keyval)
-                consumed &= ~Gdk.ModifierType.SHIFT_MASK
+                consumed_modifiers &= ~Gdk.ModifierType.SHIFT_MASK
 
-            # 'consumed' is the modifier that was necessary to type the key
-            self.__keybindings.execute((keyval, event.get_state() & ~consumed & ALL_ACCELS_MASK))
+            # 'consumed_modifiers' is the modifier that was necessary to type the key
+            self.__keybindings.execute((keyval, event.get_state() & ~consumed_modifiers & self.__all_accels_mask))
 
     def escape_event(self):
         """
