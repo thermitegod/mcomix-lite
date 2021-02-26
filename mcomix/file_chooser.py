@@ -131,23 +131,17 @@ class FileChooser(Gtk.Dialog):
         event only changed the current directory
         """
 
-        if response == Gtk.ResponseType.OK:
-            if not self.__filechooser.get_filenames():
-                return
-
-            # Collect files, if necessary also from subdirectories
-            paths = []
-            for path in self.__filechooser.get_filenames():
-                if Path.is_dir(Path(path)):
-                    for file in Path(path).iterdir():
-                        if ArchiveTools.is_archive_file(file) or ImageTools.is_image_file(file):
-                            paths.extend(str(file))
-                else:
-                    paths.append(path)
-
-            self.__last_activated_file = self.__filechooser.get_filenames()[0]
-            self.files_chosen(paths)
-
-            config['FILECHOOSER_LAST_BROWSED_PATH'] = self.__filechooser.get_current_folder()
-        else:
+        if not response == Gtk.ResponseType.OK:
             self.files_chosen([])
+            return
+
+        filenames = self.__filechooser.get_filenames()
+        if not filenames:
+            return
+
+        paths = [path for path in filenames if Path.is_file(Path(path))]
+
+        self.__last_activated_file = paths[0]
+        self.files_chosen(paths)
+
+        config['FILECHOOSER_LAST_BROWSED_PATH'] = self.__filechooser.get_current_folder()
