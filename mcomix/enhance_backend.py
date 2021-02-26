@@ -18,51 +18,11 @@ class ImageEnhancer:
 
         self.__window = window
 
-        self.__brightness = config['BRIGHTNESS']
-        self.__contrast = config['CONTRAST']
-        self.__saturation = config['SATURATION']
-        self.__sharpness = config['SHARPNESS']
-        self.__autocontrast = config['AUTO_CONTRAST']
-
-    @property
-    def brightness(self):
-        return self.__brightness
-
-    @brightness.setter
-    def brightness(self, value: float):
-        self.__brightness = value
-
-    @property
-    def contrast(self):
-        return self.__contrast
-
-    @contrast.setter
-    def contrast(self, value: float):
-        self.__contrast = value
-
-    @property
-    def saturation(self):
-        return self.__saturation
-
-    @saturation.setter
-    def saturation(self, value: float):
-        self.__saturation = value
-
-    @property
-    def sharpness(self):
-        return self.__sharpness
-
-    @sharpness.setter
-    def sharpness(self, value: float):
-        self.__sharpness = value
-
-    @property
-    def autocontrast(self):
-        return self.__autocontrast
-
-    @autocontrast.setter
-    def autocontrast(self, value: bool):
-        self.__autocontrast = value
+        self.brightness: float = config['BRIGHTNESS']
+        self.contrast: float = config['CONTRAST']
+        self.saturation: float = config['SATURATION']
+        self.sharpness: float = config['SHARPNESS']
+        self.autocontrast: bool = config['AUTO_CONTRAST']
 
     def enhance(self, pixbuf):
         """
