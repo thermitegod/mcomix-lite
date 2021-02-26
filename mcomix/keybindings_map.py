@@ -10,6 +10,17 @@ class _KeyBindingsMap:
     def __init__(self):
         super().__init__()
 
+        nav = 'Navigation'
+        scroll = 'Scrolling'
+        zoom = 'Zoom'
+        trans = 'Transformation'
+        rotate = 'Autorotate'
+        view = 'View mode'
+        pagefit = 'Page fit mode'
+        ui = 'User interface'
+        info = 'Info'
+        file = 'File'
+
         MAP = namedtuple('MAP', ['info', 'keybindings'])
         INFO = namedtuple('INFO', ['group', 'title'])
 
@@ -17,57 +28,57 @@ class _KeyBindingsMap:
             # Navigation
             'previous_page':
                 MAP(
-                    INFO('Navigation', 'Previous page'),
+                    INFO(nav, 'Previous page'),
                     ['Page_Up', 'KP_Page_Up', 'BackSpace']
                 ),
             'next_page':
                 MAP(
-                    INFO('Navigation', 'Next page'),
+                    INFO(nav, 'Next page'),
                     ['Page_Down', 'KP_Page_Down']
                 ),
             'previous_page_singlestep':
                 MAP(
-                    INFO('Navigation', 'Previous page (always one page)'),
+                    INFO(nav, 'Previous page (always one page)'),
                     ['<Primary>Up', '<Primary>Page_Up', '<Primary>KP_Page_Up']
                 ),
             'next_page_singlestep':
                 MAP(
-                    INFO('Navigation', 'Next page (always one page)'),
+                    INFO(nav, 'Next page (always one page)'),
                     ['<Primary>Down', '<Primary>Page_Down', '<Primary>KP_Page_Down']
                 ),
             'previous_page_ff':
                 MAP(
-                    INFO('Navigation', 'Rewind by X pages'),
+                    INFO(nav, 'Rewind by X pages'),
                     ['<Shift>Page_Up', '<Shift>KP_Page_Up', '<Shift>BackSpace', '<Shift><Mod1>Left']
                 ),
             'next_page_ff':
                 MAP(
-                    INFO('Navigation', 'Forward by X pages'),
+                    INFO(nav, 'Forward by X pages'),
                     ['<Shift>Page_Down', '<Shift>KP_Page_Down', '<Shift><Mod1>Right']
                 ),
             'first_page':
                 MAP(
-                    INFO('Navigation', 'First page'),
+                    INFO(nav, 'First page'),
                     ['Home', 'KP_Home']
                 ),
             'last_page':
                 MAP(
-                    INFO('Navigation', 'Last page'),
+                    INFO(nav, 'Last page'),
                     ['End', 'KP_End']
                 ),
             'go_to':
                 MAP(
-                    INFO('Navigation', 'Go to page'),
+                    INFO(nav, 'Go to page'),
                     ['G']
                 ),
             'next_archive':
                 MAP(
-                    INFO('Navigation', 'Next archive'),
+                    INFO(nav, 'Next archive'),
                     ['<Primary>Right']
                 ),
             'previous_archive':
                 MAP(
-                    INFO('Navigation', 'Previous archive'),
+                    INFO(nav, 'Previous archive'),
                     ['<Primary>Left']
                 ),
 
@@ -75,248 +86,248 @@ class _KeyBindingsMap:
             # Arrow keys scroll the image
             'scroll_down':
                 MAP(
-                    INFO('Scrolling', 'Scroll down'),
+                    INFO(scroll, 'Scroll down'),
                     ['Down', 'KP_Down']
                 ),
             'scroll_left':
                 MAP(
-                    INFO('Scrolling', 'Scroll left'),
+                    INFO(scroll, 'Scroll left'),
                     ['Left', 'KP_Left']
                 ),
             'scroll_right':
                 MAP(
-                    INFO('Scrolling', 'Scroll right'),
+                    INFO(scroll, 'Scroll right'),
                     ['Right', 'KP_Right']
                 ),
             'scroll_up':
                 MAP(
-                    INFO('Scrolling', 'Scroll up'),
+                    INFO(scroll, 'Scroll up'),
                     ['Up', 'KP_Up']
                 ),
 
             # View
             'zoom_original':
                 MAP(
-                    INFO('Zoom', 'Normal size'),
+                    INFO(zoom, 'Normal size'),
                     ['<Control>0', 'KP_0']
                 ),
             'zoom_in':
                 MAP(
-                    INFO('Zoom', 'Zoom in'),
+                    INFO(zoom, 'Zoom in'),
                     ['plus', 'KP_Add', 'equal']
                 ),
             'zoom_out':
                 MAP(
-                    INFO('Zoom', 'Zoom out'),
+                    INFO(zoom, 'Zoom out'),
                     ['minus', 'KP_Subtract']
                 ),
 
             # Zoom out is already defined as GTK menu hotkey
             'keep_transformation':
                 MAP(
-                    INFO('Transformation', 'Keep transformation'),
+                    INFO(trans, 'Keep transformation'),
                     ['k']
                 ),
             'rotate_90':
                 MAP(
-                    INFO('Transformation', 'Rotate 90°'),
+                    INFO(trans, 'Rotate 90°'),
                     ['r']
                 ),
             'rotate_180':
                 MAP(
-                    INFO('Transformation', 'Rotate 180°'),
+                    INFO(trans, 'Rotate 180°'),
                     []
                 ),
             'rotate_270':
                 MAP(
-                    INFO('Transformation', 'Rotate 270°'),
+                    INFO(trans, 'Rotate 270°'),
                     ['<Shift>r']
                 ),
             'flip_horiz':
                 MAP(
-                    INFO('Transformation', 'Flip horizontally'),
+                    INFO(trans, 'Flip horizontally'),
                     []
                 ),
             'flip_vert':
                 MAP(
-                    INFO('Transformation', 'Flip vertically'),
+                    INFO(trans, 'Flip vertically'),
                     []
                 ),
             'no_autorotation':
                 MAP(
-                    INFO('Transformation', 'Never autorotate'),
+                    INFO(trans, 'Never autorotate'),
                     []
                 ),
 
             # Autorotate
             'rotate_90_width':
                 MAP(
-                    INFO('Autorotate', 'Rotate width 90°'),
+                    INFO(rotate, 'Rotate width 90°'),
                     []
                 ),
             'rotate_270_width':
                 MAP(
-                    INFO('Autorotate', 'Rotate width 270°'),
+                    INFO(rotate, 'Rotate width 270°'),
                     []
                 ),
             'rotate_90_height':
                 MAP(
-                    INFO('Autorotate', 'Rotate height 90°'),
+                    INFO(rotate, 'Rotate height 90°'),
                     []
                 ),
             'rotate_270_height':
                 MAP(
-                    INFO('Autorotate', 'Rotate height 270°'),
+                    INFO(rotate, 'Rotate height 270°'),
                     []
                 ),
 
             # View mode
             'double_page':
                 MAP(
-                    INFO('View mode', 'Double page mode'),
+                    INFO(view, 'Double page mode'),
                     ['d']
                 ),
             'manga_mode':
                 MAP(
-                    INFO('View mode', 'Manga mode'),
+                    INFO(view, 'Manga mode'),
                     ['m']
                 ),
             'lens':
                 MAP(
-                    INFO('View mode', 'Magnifying lens'),
+                    INFO(view, 'Magnifying lens'),
                     ['l']
                 ),
             'stretch':
                 MAP(
-                    INFO('View mode', 'Stretch small images'),
+                    INFO(view, 'Stretch small images'),
                     ['y']
                 ),
 
             # Fit mode
             'best_fit_mode':
                 MAP(
-                    INFO('Page fit mode', 'Best fit mode'),
+                    INFO(pagefit, 'Best fit mode'),
                     ['b']
                 ),
             'fit_width_mode':
                 MAP(
-                    INFO('Page fit mode', 'Fit width mode'),
+                    INFO(pagefit, 'Fit width mode'),
                     ['w']
                 ),
             'fit_height_mode':
                 MAP(
-                    INFO('Page fit mode', 'Fit height mode'),
+                    INFO(pagefit, 'Fit height mode'),
                     ['h']
                 ),
             'fit_size_mode':
                 MAP(
-                    INFO('Page fit mode', 'Fit size mode'),
+                    INFO(pagefit, 'Fit size mode'),
                     ['s']
                 ),
             'fit_manual_mode':
                 MAP(
-                    INFO('Page fit mode', 'Manual zoom mode'),
+                    INFO(pagefit, 'Manual zoom mode'),
                     ['a']
                 ),
 
             # General UI
             'exit_fullscreen':
                 MAP(
-                    INFO('User interface', 'Exit from fullscreen'),
+                    INFO(ui, 'Exit from fullscreen'),
                     ['Escape']
                 ),
             'fullscreen':
                 MAP(
-                    INFO('User interface', 'Fullscreen'),
+                    INFO(ui, 'Fullscreen'),
                     ['f', 'F11']
                 ),
             'minimize':
                 MAP(
-                    INFO('User interface', 'Minimize'),
+                    INFO(ui, 'Minimize'),
                     ['n']
                 ),
             'hide_all':
                 MAP(
-                    INFO('User interface', 'Show/hide all'),
+                    INFO(ui, 'Show/hide all'),
                     ['i']
                 ),
             'menubar':
                 MAP(
-                    INFO('User interface', 'Show/hide menubar'),
+                    INFO(ui, 'Show/hide menubar'),
                     ['<Control>M']
                 ),
             'scrollbar':
                 MAP(
-                    INFO('User interface', 'Show/hide scrollbars'),
+                    INFO(ui, 'Show/hide scrollbars'),
                     []
                 ),
             'statusbar':
                 MAP(
-                    INFO('User interface', 'Show/hide statusbar'),
+                    INFO(ui, 'Show/hide statusbar'),
                     []
                 ),
             'thumbnails':
                 MAP(
-                    INFO('User interface', 'Thumbnails'),
+                    INFO(ui, 'Thumbnails'),
                     ['F9']
                 ),
 
             # Info
             'about':
                 MAP(
-                    INFO('Info', 'About'),
+                    INFO(info, 'About'),
                     ['F1']
                 ),
 
             # File operations
             'close':
                 MAP(
-                    INFO('File', 'Close'),
+                    INFO(file, 'Close'),
                     ['<Control>W']
                 ),
             'delete':
                 MAP(
-                    INFO('File', 'Delete'),
+                    INFO(file, 'Delete'),
                     ['Delete']
                 ),
             'enhance_image':
                 MAP(
-                    INFO('File', 'Enhance image'),
+                    INFO(file, 'Enhance image'),
                     ['e']
                 ),
             'extract_page':
                 MAP(
-                    INFO('File', 'Extract Page'),
+                    INFO(file, 'Extract Page'),
                     ['<Control><Shift>s']
                 ),
             'move_file':
                 MAP(
-                    INFO('File', 'Move to subdirectory'),
+                    INFO(file, 'Move to subdirectory'),
                     ['Insert', 'grave']
                 ),
             'open':
                 MAP(
-                    INFO('File', 'Open'),
+                    INFO(file, 'Open'),
                     ['<Control>O']
                 ),
             'preferences':
                 MAP(
-                    INFO('File', 'Preferences'),
+                    INFO(file, 'Preferences'),
                     ['F12']
                 ),
             'properties':
                 MAP(
-                    INFO('File', 'Properties'),
+                    INFO(file, 'Properties'),
                     ['<Alt>Return']
                 ),
             'quit':
                 MAP(
-                    INFO('File', 'Quit'),
+                    INFO(file, 'Quit'),
                     ['<Control>Q']
                 ),
             'refresh_archive':
                 MAP(
-                    INFO('File', 'Refresh'),
+                    INFO(file, 'Refresh'),
                     ['<control><shift>R']
                 ),
         }
