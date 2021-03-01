@@ -16,7 +16,6 @@ from mcomix.file_handler import FileHandler
 from mcomix.icons import Icons
 from mcomix.image_handler import ImageHandler
 from mcomix.image_tools import ImageTools
-from mcomix.keybindings_config import KeybindingConfig
 from mcomix.keybindings_manager import KeybindingManager
 from mcomix.layout import FiniteLayout
 from mcomix.lens import MagnifyingLens
@@ -48,7 +47,6 @@ class MainWindow(Gtk.Window):
         self.__preference_manager.load_config_file()
 
         self.bookmark_backend = BookmarkBackend()
-        self.keybinding_config = KeybindingConfig()
 
         # Used to detect window fullscreen state transitions.
         self.was_fullscreen = False
@@ -961,7 +959,7 @@ class MainWindow(Gtk.Window):
 
         # write config file
         self.__preference_manager.write_config_file()
-        self.keybinding_config.write_keybindings_file()
+        self.__keybindings.write_keybindings_file()
         self.bookmark_backend.write_bookmarks_file()
 
         self.filehandler.close_file()

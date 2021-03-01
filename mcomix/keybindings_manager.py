@@ -23,10 +23,15 @@ action-name: string => [keycodes: list]
 Each action_name can have multiple keybindings"""
 
 from collections import defaultdict
+from pathlib import Path
 from typing import Callable
 
 from gi.repository import Gtk
 from loguru import logger
+
+from mcomix.config_backend import ConfigBackend
+from mcomix.constants import Constants
+from mcomix.keybindings_map import KeyBindingsMap
 
 
 class KeybindingManager:
@@ -36,19 +41,69 @@ class KeybindingManager:
         #: Main window instance
         self.__window = window
 
-        self.__keybinding_config = self.__window.keybinding_config
-
-        self.__keybinding_config.load_keybindings_file()
-
-        # action name => (func, args, kwargs)
+        # action name => (func, kwargs)
         self.__action_to_callback = {}
         # action name => [ (key code, key modifier), ]
-        self.__action_to_bindings = self.__keybinding_config.action_to_bindings.copy()
+        self.__action_to_bindings = defaultdict(list)
         # (key code, key modifier) => action name
-        self.__binding_to_action = self.__keybinding_config.binding_to_action.copy()
+        self.__binding_to_action = {}
+
+        self.__stored_action_bindings = {}
+
+        self.__keybindings_map = KeyBindingsMap.BINDINGS
+
+        self.__config_manager = ConfigBackend
+        self.__keybindings_path = Constants.CONFIG_FILES['KEYBINDINGS']
+
+        self.load_keybindings_file()
+
+    def load_keybindings_file(self):
+        if Path.is_file(self.__keybindings_path):
+            self.__config_manager.load_config(config=self.__keybindings_path,
+                                              saved_prefs=self.__stored_action_bindings)
+
+            self.__config_manager.update_config_hash(config=self.__stored_action_bindings,
+                                                     module='keybindings')
+        else:
+            # dont need to update config hash if missing input.conf
+            for action_name, action_data in self.__keybindings_map.items():
+                self.__stored_action_bindings[action_name] = action_data.keybindings
+
+        self.register_keybindings()
 
     def write_keybindings_file(self):
-        self.__window.keybinding_config.write_keybindings_file()
+        """
+        Stores the keybindings that have been set to disk
+        """
+
+        # Collect keybindings for all registered actions
+        action_to_keys = {}
+        for action, bindings in self.__action_to_bindings.items():
+            if bindings is not None:
+                action_to_keys[action] = [
+                    Gtk.accelerator_name(keyval, modifiers) for
+                    (keyval, modifiers) in bindings
+                ]
+
+        self.__config_manager.write_config(config=action_to_keys,
+                                           config_path=self.__keybindings_path,
+                                           module='keybindings')
+
+    def register_keybindings(self):
+        """
+        inits self.__binding_to_action and self.__action_to_bindings
+        """
+
+        for action in self.__keybindings_map.keys():
+            if action in self.__stored_action_bindings:
+                bindings = [
+                    Gtk.accelerator_parse(keyname)
+                    for keyname in self.__stored_action_bindings[action]]
+                self.__action_to_bindings[action] = bindings
+                for binding in bindings:
+                    self.__binding_to_action[binding] = action
+            else:
+                self.__action_to_bindings[action] = []
 
     def register(self, name: str, callback: Callable, kwargs: dict = None):
         """
