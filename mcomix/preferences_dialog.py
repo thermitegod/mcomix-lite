@@ -658,9 +658,7 @@ class PreferencesDialog(Gtk.Dialog):
 
         value = spinbutton.get_value()
 
-        if preference in ('LENS_MAGNIFICATION',):
-            config[preference] = float(value)
-        else:
+        if preference not in ('LENS_MAGNIFICATION',):
             config[preference] = int(value)
 
         #  now apply new pref
