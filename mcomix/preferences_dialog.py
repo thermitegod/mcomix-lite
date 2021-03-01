@@ -404,7 +404,7 @@ class PreferencesDialog(Gtk.Dialog):
         if response == Constants.RESPONSE['REVERT_TO_DEFAULT']:
             if self.__notebook.get_nth_page(self.__notebook.get_current_page()) == self.__shortcuts:
                 # "Shortcuts" page is active, reset all keys to their default value
-                self.__keybindings.clear_all()
+                self.__keybindings.reset_keybindings()
                 self.__window.get_event_handler().register_key_events()
                 self.__keybindings.write_keybindings_file()
                 self.__shortcuts.refresh_model()

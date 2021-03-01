@@ -57,6 +57,14 @@ class KeybindingManager:
 
         self.load_keybindings_file()
 
+    def load_keybindings_default(self):
+        """
+        default keybindings set in keybindings_map.py
+        """
+
+        for action_name, action_data in self.__keybindings_map.items():
+            self.__stored_action_bindings[action_name] = action_data.keybindings
+
     def load_keybindings_file(self):
         if Path.is_file(self.__keybindings_path):
             self.__config_manager.load_config(config=self.__keybindings_path,
@@ -66,8 +74,7 @@ class KeybindingManager:
                                                      module='keybindings')
         else:
             # dont need to update config hash if missing input.conf
-            for action_name, action_data in self.__keybindings_map.items():
-                self.__stored_action_bindings[action_name] = action_data.keybindings
+            self.load_keybindings_default()
 
         self.register_keybindings()
 
@@ -173,14 +180,19 @@ class KeybindingManager:
         self.__action_to_bindings[name].remove(ob)
         self.__binding_to_action.pop(ob)
 
-    def clear_all(self):
+    def reset_keybindings(self):
         """
-        Removes all keybindings. The changes are only persisted if save() is called afterwards
+        Reset all keybindings. Changes will persisted since the keybinding
+        hashes will no longer match
         """
 
         self.__action_to_callback = {}
         self.__action_to_bindings = defaultdict(list)
         self.__binding_to_action = {}
+        self.__stored_action_bindings = {}
+
+        self.load_keybindings_default()
+        self.register_keybindings()
 
     def execute(self, keybinding: tuple):
         """
