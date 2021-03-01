@@ -120,7 +120,7 @@ class EnhanceImageDialog(Gtk.Dialog):
         im = Image.new('RGB', (258, height - 4), (30, 30, 30))
         hist_data = ImageTools.pixbuf_to_pil(self.__pixbuf).histogram()
         maximum = max(hist_data[:768] + [1])
-        y_scale = float(height - 6) / maximum
+        y_scale = (height - 6) / maximum
         r = [int(hist_data[n] * y_scale) for n in range(256)]
         g = [int(hist_data[n] * y_scale) for n in range(256, 512)]
         b = [int(hist_data[n] * y_scale) for n in range(512, 768)]

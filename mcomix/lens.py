@@ -186,9 +186,9 @@ class MagnifyingLens:
             rotation %= 360
 
         if rotation in [90, 270]:
-            scale = float(source_pixbuf.get_height()) / image_size[0]
+            scale = source_pixbuf.get_height() / image_size[0]
         else:
-            scale = float(source_pixbuf.get_width()) / image_size[0]
+            scale = source_pixbuf.get_width() / image_size[0]
 
         x *= scale
         y *= scale

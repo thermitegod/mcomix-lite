@@ -65,10 +65,10 @@ class _ImageTools:
             width, height = src_width, src_height
         else:
             if keep_ratio:
-                if float(src_width) / width > float(src_height) / height:
-                    height = int(max(src_height * width / src_width, 1))
+                if (src_width / width) > (src_height / height):
+                    height = max(src_height * width // src_width, 1)
                 else:
-                    width = int(max(src_width * height / src_height, 1))
+                    width = max(src_width * height // src_height, 1)
         return width, height
 
     def trans_pixbuf(self, src, flip: bool = False, flop: bool = False):
