@@ -8,9 +8,9 @@ class DialogPreference(DialogBase):
     def __init__(self):
         super().__init__()
 
-    def open_dialog(self, event, data: tuple):
+    def open_dialog(self, event, window):
         """
         Create and display the preference dialog
         """
 
-        self.dialog = PreferencesDialog(data.window, data.keybindings)
+        self.dialog = PreferencesDialog(window)

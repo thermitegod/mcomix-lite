@@ -8,10 +8,10 @@ class DialogFileChooser(DialogBase):
     def __init__(self):
         super().__init__()
 
-    def open_dialog(self, event, data: tuple):
+    def open_dialog(self, event, window):
         """
         Create and display the preference dialog
         """
 
-        self.dialog = FileChooser(data.window)
+        self.dialog = FileChooser(window)
         self.dialog.connect('response', self.close_dialog)

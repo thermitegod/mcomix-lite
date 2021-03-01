@@ -17,6 +17,7 @@ from mcomix.icons import Icons
 from mcomix.image_handler import ImageHandler
 from mcomix.image_tools import ImageTools
 from mcomix.keybindings_manager import KeybindingManager
+from mcomix.keybindings_map import KeyBindingsMap
 from mcomix.layout import FiniteLayout
 from mcomix.lens import MagnifyingLens
 from mcomix.lib.callback import Callback
@@ -64,18 +65,18 @@ class MainWindow(Gtk.Window):
         self.__waiting_for_redraw = False
 
         self.__main_layout = Gtk.Layout()
-        self.__keybindings = KeybindingManager(self)
+
         # Wrap main layout into an event box so
         # we  can change its background color.
         self.__event_box = Gtk.EventBox()
         self.__event_box.add(self.__main_layout)
-        self.__event_handler = EventHandler(self, self.__keybindings)
+        self.event_handler = EventHandler(self)
         self.__vadjust = self.__main_layout.get_vadjustment()
         self.__hadjust = self.__main_layout.get_hadjustment()
         self.__scroll = (
-            Gtk.Scrollbar.new(Gtk.Orientation.HORIZONTAL, self.__hadjust),
-            Gtk.Scrollbar.new(Gtk.Orientation.VERTICAL, self.__vadjust),
-        )
+                Gtk.Scrollbar.new(Gtk.Orientation.HORIZONTAL, self.__hadjust),
+                Gtk.Scrollbar.new(Gtk.Orientation.VERTICAL, self.__vadjust),
+            )
 
         self.icons = Icons()
         self.icons.load_icons()
@@ -92,10 +93,14 @@ class MainWindow(Gtk.Window):
         self.enhancer = ImageEnhancer(self)
         self.lens = MagnifyingLens(self)
         self.zoom = ZoomModel()
-        self.uimanager = MainUI(self, self.__keybindings)
+        self.uimanager = MainUI(self)
+
         self.menubar = self.uimanager.get_widget('/Menu')
         self.popup = self.uimanager.get_widget('/Popup')
         self.actiongroup = self.uimanager.get_action_groups()[0]
+
+        self.keybindings_map = KeyBindingsMap(self).BINDINGS
+        self.keybindings = KeybindingManager(self)
 
         self.images = [Gtk.Image(), Gtk.Image()]  # XXX limited to at most 2 pages
 
@@ -106,7 +111,8 @@ class MainWindow(Gtk.Window):
         self.restore_window_geometry()
 
         # Hook up keyboard shortcuts
-        self.__event_handler.register_key_events()
+        self.event_handler.event_handler_init()
+        self.event_handler.register_key_events()
 
         for img in self.images:
             self.__main_layout.put(img, 0, 0)
@@ -191,15 +197,15 @@ class MainWindow(Gtk.Window):
                                          Gdk.DragAction.MOVE)
 
         self.connect('delete_event', self.terminate_program)
-        self.connect('key_press_event', self.__event_handler.key_press_event)
-        self.connect('configure_event', self.__event_handler.resize_event)
-        self.connect('window-state-event', self.__event_handler.window_state_event)
+        self.connect('key_press_event', self.event_handler.key_press_event)
+        self.connect('configure_event', self.event_handler.resize_event)
+        self.connect('window-state-event', self.event_handler.window_state_event)
 
-        self.__main_layout.connect('button_release_event', self.__event_handler.mouse_release_event)
-        self.__main_layout.connect('scroll_event', self.__event_handler.scroll_wheel_event)
-        self.__main_layout.connect('button_press_event', self.__event_handler.mouse_press_event)
-        self.__main_layout.connect('motion_notify_event', self.__event_handler.mouse_move_event)
-        self.__main_layout.connect('drag_data_received', self.__event_handler.drag_n_drop_event)
+        self.__main_layout.connect('button_release_event', self.event_handler.mouse_release_event)
+        self.__main_layout.connect('scroll_event', self.event_handler.scroll_wheel_event)
+        self.__main_layout.connect('button_press_event', self.event_handler.mouse_press_event)
+        self.__main_layout.connect('motion_notify_event', self.event_handler.mouse_move_event)
+        self.__main_layout.connect('drag_data_received', self.event_handler.drag_n_drop_event)
 
         self.show()
 
@@ -236,7 +242,7 @@ class MainWindow(Gtk.Window):
         return self.__vadjust
 
     def get_event_handler(self):
-        return self.__event_handler
+        return self.event_handler
 
     def page_orientation(self):
         if self.is_manga_mode:
@@ -959,7 +965,7 @@ class MainWindow(Gtk.Window):
 
         # write config file
         self.__preference_manager.write_config_file()
-        self.__keybindings.write_keybindings_file()
+        self.keybindings.write_keybindings_file()
         self.bookmark_backend.write_bookmarks_file()
 
         self.filehandler.close_file()

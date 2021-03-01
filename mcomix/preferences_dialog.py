@@ -17,7 +17,7 @@ class PreferencesDialog(Gtk.Dialog):
     saved between sessions are presented to the user
     """
 
-    def __init__(self, window, keybindings):
+    def __init__(self, window):
         super().__init__(title='Preferences')
 
         self.set_transient_for(window)
@@ -30,7 +30,7 @@ class PreferencesDialog(Gtk.Dialog):
         self.set_resizable(True)
         self.set_default_response(Gtk.ResponseType.CLOSE)
 
-        self.__keybindings = keybindings
+        self.__keybindings = self.__window.keybindings
 
         self.connect('response', self._response)
 
@@ -383,7 +383,7 @@ class PreferencesDialog(Gtk.Dialog):
         # ----------------------------------------------------------------
         # The "Shortcuts" tab.
         # ----------------------------------------------------------------
-        page = KeybindingEditorWindow(self.__keybindings)
+        page = KeybindingEditorWindow(self.__window)
 
         return page
 

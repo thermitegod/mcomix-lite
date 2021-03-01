@@ -13,11 +13,12 @@ from mcomix.preferences import config
 
 
 class EventHandler:
-    def __init__(self, window, keybindings):
+    def __init__(self, window):
         super().__init__()
 
         self.__window = window
-        self.__keybindings = keybindings
+        self.__keybindings = None
+        self.__keybindings_map = None
 
         # Dispatch keyboard input handling
         # Some keys require modifiers that are irrelevant to the hotkey. Find out and ignore them.
@@ -29,6 +30,14 @@ class EventHandler:
 
         self.__last_pointer_pos_x = 0
         self.__last_pointer_pos_y = 0
+
+    def event_handler_init(self):
+        """
+        lazy init to avoid circular deps
+        """
+
+        self.__keybindings = self.__window.keybindings
+        self.__keybindings_map = self.__window.keybindings_map
 
     def get_manga_flip_direction(self):
         if (self.__window.is_manga_mode and not config['MANGA_FLIP_RIGHT']) or \
@@ -70,269 +79,12 @@ class EventHandler:
         them up with their respective callback functions
         """
 
-        # Navigation keys
-        self.__keybindings.register(
-            name='previous_page',
-            callback=self.__window.flip_page,
-            kwargs={'number_of_pages': -1}
-        )
-        self.__keybindings.register(
-            name='next_page',
-            callback=self.__window.flip_page,
-            kwargs={'number_of_pages': +1}
-        )
-        self.__keybindings.register(
-            name='previous_page_singlestep',
-            callback=self.__window.flip_page,
-            kwargs={'number_of_pages': -1, 'single_step': True}
-        )
-        self.__keybindings.register(
-            name='next_page_singlestep',
-            callback=self.__window.flip_page,
-            kwargs={'number_of_pages': +1, 'single_step': True}
-        )
-        self.__keybindings.register(
-            name='previous_page_ff',
-            callback=self.__window.flip_page,
-            kwargs={'number_of_pages': -config['PAGE_FF_STEP']}
-        )
-        self.__keybindings.register(
-            name='next_page_ff',
-            callback=self.__window.flip_page,
-            kwargs={'number_of_pages': +config['PAGE_FF_STEP']}
-        )
-        self.__keybindings.register(
-            name='first_page',
-            callback=self.__window.first_page
-        )
-        self.__keybindings.register(
-            name='last_page',
-            callback=self.__window.last_page
-        )
-        self.__keybindings.register(
-            name='go_to',
-            callback=self.__window.page_select
-        )
-
-        # Enter/exit fullscreen.
-        self.__keybindings.register(
-            name='exit_fullscreen',
-            callback=self.escape_event
-        )
-
-        # View modes
-        self.__keybindings.register(
-            name='double_page',
-            callback=self.__window.actiongroup.get_action('double_page').activate
-        )
-        self.__keybindings.register(
-            name='best_fit_mode',
-            callback=self.__window.actiongroup.get_action('best_fit_mode').activate
-        )
-        self.__keybindings.register(
-            name='fit_width_mode',
-            callback=self.__window.actiongroup.get_action('fit_width_mode').activate
-        )
-        self.__keybindings.register(
-            name='fit_height_mode',
-            callback=self.__window.actiongroup.get_action('fit_height_mode').activate
-        )
-
-        self.__keybindings.register(
-            name='fit_size_mode',
-            callback=self.__window.actiongroup.get_action('fit_size_mode').activate
-        )
-        self.__keybindings.register(
-            name='fit_manual_mode',
-            callback=self.__window.actiongroup.get_action('fit_manual_mode').activate
-        )
-        self.__keybindings.register(
-            name='manga_mode',
-            callback=self.__window.actiongroup.get_action('manga_mode').activate
-        )
-        self.__keybindings.register(
-            name='keep_transformation',
-            callback=self.__window.actiongroup.get_action('keep_transformation').activate
-        )
-        self.__keybindings.register(
-            name='lens',
-            callback=self.__window.actiongroup.get_action('lens').activate
-        )
-        self.__keybindings.register(
-            name='stretch',
-            callback=self.__window.actiongroup.get_action('stretch').activate
-        )
-
-        # Zooming commands for manual zoom mode
-        self.__keybindings.register(
-            name='zoom_in',
-            callback=self.__window.actiongroup.get_action('zoom_in').activate
-        )
-        self.__keybindings.register(
-            name='zoom_out',
-            callback=self.__window.actiongroup.get_action('zoom_out').activate
-        )
-
-        # Zoom out is already defined as GTK menu hotkey
-        self.__keybindings.register(
-            name='zoom_original',
-            callback=self.__window.actiongroup.get_action('zoom_original').activate
-        )
-        self.__keybindings.register(
-            name='rotate_90',
-            callback=self.__window.rotate_x,
-            kwargs={'rotation': 90}
-        )
-        self.__keybindings.register(
-            name='rotate_270',
-            callback=self.__window.rotate_x,
-            kwargs={'rotation': 270}
-        )
-        self.__keybindings.register(
-            name='rotate_180',
-            callback=self.__window.rotate_x,
-            kwargs={'rotation': 180}
-        )
-        self.__keybindings.register(
-            name='flip_horiz',
-            callback=self.__window.flip_horizontally
-        )
-        self.__keybindings.register(
-            name='flip_vert',
-            callback=self.__window.flip_vertically
-        )
-        self.__keybindings.register(
-            name='no_autorotation',
-            callback=self.__window.actiongroup.get_action('no_autorotation').activate
-        )
-        self.__keybindings.register(
-            name='rotate_90_width',
-            callback=self.__window.actiongroup.get_action('rotate_90_width').activate
-        )
-        self.__keybindings.register(
-            name='rotate_270_width',
-            callback=self.__window.actiongroup.get_action('rotate_270_width').activate
-        )
-        self.__keybindings.register(
-            name='rotate_90_height',
-            callback=self.__window.actiongroup.get_action('rotate_90_height').activate
-        )
-        self.__keybindings.register(
-            name='rotate_270_height',
-            callback=self.__window.actiongroup.get_action('rotate_270_height').activate
-        )
-
-        # Arrow keys scroll the image
-        self.__keybindings.register(
-            name='scroll_down',
-            callback=self._scroll_with_flipping,
-            kwargs={'x': 0, 'y': config['PIXELS_TO_SCROLL_PER_KEY_EVENT']}
-        )
-        self.__keybindings.register(
-            name='scroll_up',
-            callback=self._scroll_with_flipping,
-            kwargs={'x': 0, 'y': -config['PIXELS_TO_SCROLL_PER_KEY_EVENT']}
-        )
-        self.__keybindings.register(
-            name='scroll_right',
-            callback=self._scroll_with_flipping,
-            kwargs={'x': config['PIXELS_TO_SCROLL_PER_KEY_EVENT'], 'y': 0}
-        )
-        self.__keybindings.register(
-            name='scroll_left',
-            callback=self._scroll_with_flipping,
-            kwargs={'x': -config['PIXELS_TO_SCROLL_PER_KEY_EVENT'], 'y': 0}
-        )
-
-        # File operations
-        self.__keybindings.register(
-            name='close',
-            callback=self.__window.filehandler.close_file
-        )
-        self.__keybindings.register(
-            name='quit',
-            callback=self.__window.terminate_program
-        )
-        self.__keybindings.register(
-            name='delete',
-            callback=self.__window.move_file,
-            kwargs={'move_else_delete': False}
-        )
-        self.__keybindings.register(
-            name='move_file',
-            callback=self.__window.move_file,
-            kwargs={'move_else_delete': True}
-        )
-        self.__keybindings.register(
-            name='extract_page',
-            callback=self.__window.extract_page
-        )
-        self.__keybindings.register(
-            name='refresh_archive',
-            callback=self.__window.filehandler.refresh_file
-        )
-        self.__keybindings.register(
-            name='next_archive',
-            callback=self.__window.filehandler.open_archive_direction,
-            kwargs={'forward': True}
-        )
-        self.__keybindings.register(
-            name='previous_archive',
-            callback=self.__window.filehandler.open_archive_direction,
-            kwargs={'forward': False}
-        )
-        self.__keybindings.register(
-            name='properties',
-            callback=self.__window.actiongroup.get_action('properties').activate
-        )
-        self.__keybindings.register(
-            name='preferences',
-            callback=self.__window.actiongroup.get_action('preferences').activate
-        )
-        self.__keybindings.register(
-            name='open',
-            callback=self.__window.actiongroup.get_action('open').activate
-        )
-        self.__keybindings.register(
-            name='enhance_image',
-            callback=self.__window.actiongroup.get_action('enhance_image').activate
-        )
-
-        # Info
-        self.__keybindings.register(
-            name='about',
-            callback=self.__window.actiongroup.get_action('about').activate
-        )
-
-        # User interface
-        self.__keybindings.register(
-            name='minimize',
-            callback=self.__window.minimize
-        )
-        self.__keybindings.register(
-            name='fullscreen',
-            callback=self.__window.actiongroup.get_action('fullscreen').activate
-        )
-        self.__keybindings.register(
-            name='menubar',
-            callback=self.__window.actiongroup.get_action('menubar').activate
-        )
-        self.__keybindings.register(
-            name='statusbar',
-            callback=self.__window.actiongroup.get_action('statusbar').activate
-        )
-        self.__keybindings.register(
-            name='scrollbar',
-            callback=self.__window.actiongroup.get_action('scrollbar').activate
-        )
-        self.__keybindings.register(
-            name='thumbnails',
-            callback=self.__window.actiongroup.get_action('thumbnails').activate
-        )
-        self.__keybindings.register(
-            name='hide_all',
-            callback=self.__window.actiongroup.get_action('hide_all').activate
-        )
+        for action in self.__keybindings_map.keys():
+            self.__keybindings.register(
+                name=action,
+                callback=self.__keybindings_map[action].key_event.callback,
+                callback_kwargs=self.__keybindings_map[action].key_event.callback_kwargs,
+            )
 
     def key_press_event(self, widget, event, *args):
         """
@@ -385,13 +137,13 @@ class EventHandler:
             if event.get_state() & Gdk.ModifierType.CONTROL_MASK:
                 self.__window.manual_zoom_in()
             else:
-                self._scroll_with_flipping(0, -config['PIXELS_TO_SCROLL_PER_MOUSE_WHEEL_EVENT'])
+                self.scroll_with_flipping(0, -config['PIXELS_TO_SCROLL_PER_MOUSE_WHEEL_EVENT'])
         elif delta_y > 0:
             # Gdk.ScrollDirection.DOWN
             if event.get_state() & Gdk.ModifierType.CONTROL_MASK:
                 self.__window.manual_zoom_out()
             else:
-                self._scroll_with_flipping(0, config['PIXELS_TO_SCROLL_PER_MOUSE_WHEEL_EVENT'])
+                self.scroll_with_flipping(0, config['PIXELS_TO_SCROLL_PER_MOUSE_WHEEL_EVENT'])
         elif delta_x > 0:
             # Gdk.ScrollDirection.RIGHT
             if self.get_manga_flip_direction():
@@ -471,7 +223,7 @@ class EventHandler:
         self.__window.filehandler.initialize_fileprovider(path=paths)
         self.__window.filehandler.open_file(paths[0])
 
-    def _scroll_with_flipping(self, x: int, y: int):
+    def scroll_with_flipping(self, x: int, y: int):
         """
         Handle scrolling with the scroll wheel or the arrow keys, for which
         the pages might be flipped depending on the preferences.  Returns True
