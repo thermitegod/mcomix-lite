@@ -23,6 +23,7 @@ action-name: string => [keycodes: list]
 Each action_name can have multiple keybindings"""
 
 from collections import defaultdict
+from typing import Callable
 
 from gi.repository import Gtk
 from loguru import logger
@@ -35,44 +36,33 @@ class KeybindingManager:
         #: Main window instance
         self.__window = window
 
-        self.__window.keybinding_config.load_keybindings_file()
+        self.__keybinding_config = self.__window.keybinding_config
+
+        self.__keybinding_config.load_keybindings_file()
 
         # action name => (func, args, kwargs)
         self.__action_to_callback = {}
         # action name => [ (key code, key modifier), ]
-        self.__action_to_bindings = self.__window.keybinding_config.action_to_bindings.copy()
+        self.__action_to_bindings = self.__keybinding_config.action_to_bindings.copy()
         # (key code, key modifier) => action name
-        self.__binding_to_action = self.__window.keybinding_config.binding_to_action.copy()
+        self.__binding_to_action = self.__keybinding_config.binding_to_action.copy()
 
     def write_keybindings_file(self):
         self.__window.keybinding_config.write_keybindings_file()
 
-    def register(self, name: str, callback, args: list = None, kwargs: dict = None, bindings: list = None):
+    def register(self, name: str, callback: Callable, kwargs: dict = None):
         """
         Registers an action for a predefined keybinding name.
 
         :param name: Action name, defined in L{keybindings_map.BINDING_INFO}.
-        :param bindings: List of keybinding strings, as understood
-                         by L{Gtk.accelerator_parse}. Only used if no
-                         bindings were loaded for this action.
         :param callback: Function callback
-        :param args: List of arguments to pass to the callback
         :param kwargs: List of keyword arguments to pass to the callback
         """
 
-        if args is None:
-            args = []
         if kwargs is None:
             kwargs = {}
-        if bindings is None:
-            bindings = []
 
-        # Load stored keybindings, or fall back to passed arguments
-        keycodes = self.__action_to_bindings[name]
-        if not keycodes:
-            keycodes = [Gtk.accelerator_parse(binding) for binding in bindings]
-
-        for keycode in keycodes:
+        for keycode in self.__action_to_bindings[name]:
             if keycode in self.__binding_to_action.keys():
                 if self.__binding_to_action[keycode] != name:
                     logger.warning(f'Keybinding for \'{name}\' overrides hotkey for another action.\n'
@@ -81,12 +71,7 @@ class KeybindingManager:
                 self.__binding_to_action[keycode] = name
                 self.__action_to_bindings[name].append(keycode)
 
-        # Add gtk accelerator for labels in menu
-        if len(self.__action_to_bindings[name]) > 0:
-            key, mod = self.__action_to_bindings[name][0]
-            Gtk.AccelMap.change_entry(f'<Actions>/mcomix-master/{name}', key, mod, True)
-
-        self.__action_to_callback[name] = (callback, args, kwargs)
+        self.__action_to_callback[name] = (callback, kwargs)
 
     def edit_accel(self, name: str, new_binding: str, old_binding: str):
         """
@@ -151,9 +136,9 @@ class KeybindingManager:
 
         if keybinding in self.__binding_to_action:
             action = self.__binding_to_action[keybinding]
-            func, args, kwargs = self.__action_to_callback[action]
+            func, kwargs = self.__action_to_callback[action]
             self.__window.stop_emission_by_name('key_press_event')
-            return func(*args, **kwargs)
+            return func(**kwargs)
 
         # Some keys enable additional modifiers (NumLock enables GDK_MOD2_MASK),
         # which prevent direct lookup simply by being pressed.
@@ -162,9 +147,9 @@ class KeybindingManager:
         for stored_binding, action in self.__binding_to_action.items():
             stored_keycode, stored_flags = stored_binding
             if stored_keycode == keybinding[0] and stored_flags & keybinding[1]:
-                func, args, kwargs = self.__action_to_callback[action]
+                func, kwargs = self.__action_to_callback[action]
                 self.__window.stop_emission_by_name('key_press_event')
-                return func(*args, **kwargs)
+                return func(**kwargs)
 
     def get_bindings_for_action(self, name):
         """
