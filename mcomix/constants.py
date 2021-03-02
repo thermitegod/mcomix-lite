@@ -107,12 +107,6 @@ class _Constants:
             'CENTER': -2,
         }
 
-        self.INDEX = {
-            'UNION': -2,
-            'LAST': -1,
-            'FIRST': 0,
-        }
-
         self.ANIMATION = {
             'DISABLED': 0,
             'NORMAL': 1,

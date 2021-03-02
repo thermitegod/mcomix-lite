@@ -1,6 +1,5 @@
 """main.py - Main window"""
 
-import operator
 import shutil
 from pathlib import Path
 
@@ -59,7 +58,7 @@ class MainWindow(Gtk.Window):
         # Remember last scroll destination.
         self.__last_scroll_destination = Constants.SCROLL_TO['START']
 
-        self.__dummy_layout = FiniteLayout([(1, 1)], (1, 1), [1, 1], 0, False, 0, 0)
+        self.__dummy_layout = FiniteLayout([(1, 1)], (1, 1), [1, 1], 0, 0, 0)
         self.__layout = self.__dummy_layout
         self.__spacing = 2
         self.__waiting_for_redraw = False
@@ -394,7 +393,7 @@ class MainWindow(Gtk.Window):
 
             self.__layout = FiniteLayout(
                 scaled_sizes, viewport_size, orientation, self.__spacing,
-                expand_area, distribution_axis, alignment_axis)
+                distribution_axis, alignment_axis)
 
             union_scaled_size = self.__layout.get_union_box().get_size()
 
@@ -444,14 +443,8 @@ class MainWindow(Gtk.Window):
         self.__layout.set_orientation(self.__page_orientation)
 
         if scroll_to is not None:
-            if Constants.SCROLL_TO['START'] == scroll_to:
-                index = Constants.INDEX['FIRST']
-            elif Constants.SCROLL_TO['END'] == scroll_to:
-                index = Constants.INDEX['LAST']
-            else:
-                index = None
             destination = (scroll_to,) * 2
-            self.scroll_to_predefined(destination, index)
+            self.scroll_to_predefined(destination)
 
         self.__main_layout.get_bin_window().thaw_updates()
 
@@ -761,8 +754,8 @@ class MainWindow(Gtk.Window):
 
         return old_vadjust != new_vadjust or old_hadjust != new_hadjust
 
-    def scroll_to_predefined(self, destination: tuple, index: int = None):
-        self.__layout.scroll_to_predefined(destination, index)
+    def scroll_to_predefined(self, destination: tuple):
+        self.__layout.scroll_to_predefined(destination)
         viewport_position = self.__layout.get_viewport_box().get_position()
         self.__hadjust.set_value(viewport_position[0])  # 2D only
         self.__vadjust.set_value(viewport_position[1])  # 2D only
