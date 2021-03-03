@@ -61,7 +61,8 @@ class PropertiesPage(Gtk.ScrolledWindow):
 
         label = Gtk.Label()
         label.set_markup(f'<b>{filename}</b>')
-        label.set_alignment(0, 0.5)
+        label.set_xalign(0.0)
+        label.set_yalign(0.5)
         label.set_selectable(True)
         label.set_line_wrap(True)
         self.__mainbox.pack_start(label, False, False, 0)
@@ -74,7 +75,8 @@ class PropertiesPage(Gtk.ScrolledWindow):
 
         for text in info:
             label = Gtk.Label(label=text)
-            label.set_alignment(0, 0.5)
+            label.set_xalign(0.0)
+            label.set_yalign(0.5)
             label.set_selectable(True)
             self.__mainbox.pack_start(label, False, False, 0)
 
@@ -91,9 +93,11 @@ class PropertiesPage(Gtk.ScrolledWindow):
         for desc, value in info:
             desc_label = Gtk.Label()
             desc_label.set_markup(f'<b>{desc}:</b>')
-            desc_label.set_alignment(1.0, 1.0)
+            desc_label.set_xalign(1.0)
+            desc_label.set_yalign(1.0)
             left_box.pack_start(desc_label, True, True, 0)
             value_label = Gtk.Label(label=value)
-            value_label.set_alignment(0, 1.0)
+            value_label.set_xalign(0.0)
+            value_label.set_yalign(1.0)
             value_label.set_selectable(True)
             right_box.pack_start(value_label, True, True, 0)

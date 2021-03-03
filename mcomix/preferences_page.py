@@ -38,7 +38,8 @@ class PreferencePage(Gtk.VBox):
         """
 
         if isinstance(left_item, Gtk.Label):
-            left_item.set_alignment(0, 0.5)
+            left_item.set_xalign(0.0)
+            left_item.set_yalign(0.5)
 
         if right_item is None:
             self.__section.get_contentbox().pack_start(left_item, True, True, 0)

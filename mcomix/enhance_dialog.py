@@ -57,7 +57,8 @@ class EnhanceImageDialog(Gtk.Dialog):
 
         def _create_scale(label_text: str):
             label = Gtk.Label(label=label_text)
-            label.set_alignment(1, 0.5)
+            label.set_xalign(1.0)
+            label.set_yalign(0.5)
             label.set_use_underline(True)
             vbox_left.pack_start(label, True, False, 2)
             adj = Gtk.Adjustment(value=0.0, lower=-1.0, upper=1.0, step_increment=0.01, page_increment=0.1)
