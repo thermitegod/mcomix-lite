@@ -111,16 +111,13 @@ class MainWindow(Gtk.Window):
         for img in self.images:
             self.__main_layout.put(img, 0, 0)
 
-        table = Gtk.Table(n_rows=2, n_columns=2, homogeneous=False)
-        table.attach(self.thumbnailsidebar, 0, 1, 2, 5, Gtk.AttachOptions.FILL,
-                     Gtk.AttachOptions.FILL | Gtk.AttachOptions.EXPAND, 0, 0)
-
-        table.attach(self.__main_scrolled_window, 1, 2, 2, 3, Gtk.AttachOptions.FILL | Gtk.AttachOptions.EXPAND,
-                     Gtk.AttachOptions.FILL | Gtk.AttachOptions.EXPAND, 0, 0)
-        table.attach(self.menubar, 0, 3, 0, 1, Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
-                     Gtk.AttachOptions.FILL, 0, 0)
-        table.attach(self.statusbar, 0, 3, 5, 6, Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
-                     Gtk.AttachOptions.FILL, 0, 0)
+        grid = Gtk.Grid()
+        grid.attach(self.menubar, 0, 0, 2, 1)
+        grid.attach(self.thumbnailsidebar, 0, 1, 1, 1)
+        grid.attach_next_to(self.__main_scrolled_window, self.thumbnailsidebar, Gtk.PositionType.RIGHT, 1, 1)
+        self.__main_scrolled_window.set_hexpand(True)
+        self.__main_scrolled_window.set_vexpand(True)
+        grid.attach(self.statusbar, 0, 2, 2, 1)
 
         if config['DEFAULT_DOUBLE_PAGE']:
             self.actiongroup.get_action('double_page').activate()
@@ -167,8 +164,8 @@ class MainWindow(Gtk.Window):
         self.actiongroup.get_action('menu_autorotate_width').set_sensitive(False)
         self.actiongroup.get_action('menu_autorotate_height').set_sensitive(False)
 
-        self.add(table)
-        table.show()
+        self.add(grid)
+        grid.show()
         self.__main_scrolled_window.show_all()
 
         self.__main_scrolled_window.set_events(Gdk.EventMask.BUTTON1_MOTION_MASK |
