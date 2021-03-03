@@ -32,7 +32,7 @@ class Pageselector(Gtk.Dialog):
                                                     lower=1, upper=self.__number_of_pages,
                                                     step_increment=1, page_increment=1)
 
-        self.__page_selector = Gtk.VScale.new(self.__selector_adjustment)
+        self.__page_selector = Gtk.Scale.new(Gtk.Orientation.VERTICAL, self.__selector_adjustment)
         self.__page_selector.set_draw_value(False)
         self.__page_selector.set_digits(0)
 
