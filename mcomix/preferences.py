@@ -38,7 +38,6 @@ config = {
     'FILECHOOSER_LAST_BROWSED_PATH': Constants.HOME,
     'FILECHOOSER_LAST_FILTER': 0,
     'SHOW_MENUBAR': True,
-    'SHOW_SCROLLBAR': True,
     'SHOW_STATUSBAR': True,
     'SHOW_THUMBNAILS': True,
     'ROTATION': 0,

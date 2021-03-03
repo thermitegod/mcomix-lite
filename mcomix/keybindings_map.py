@@ -433,15 +433,6 @@ class KeyBindingsMap:
                         None,
                     ),
                 ),
-            'scrollbar':
-                MAP(
-                    INFO(ui, 'Show/hide scrollbars'),
-                    [],
-                    KEY_EVENT(
-                        self.__window.actiongroup.get_action('scrollbar').activate,
-                        None,
-                    ),
-                ),
             'statusbar':
                 MAP(
                     INFO(ui, 'Show/hide statusbar'),

@@ -79,8 +79,6 @@ class MainUI(Gtk.UIManager):
              None, None, self.__window.change_menubar_visibility),
             ('statusbar', None, 'Statusbar',
              None, None, self.__window.change_statusbar_visibility),
-            ('scrollbar', None, 'Scrollbars',
-             None, None, self.__window.change_scrollbar_visibility),
             ('thumbnails', None, 'Thumbnails',
              None, None, self.__window.change_thumbnails_visibility),
             ('hide_all', None, 'Hide all',
@@ -186,7 +184,6 @@ class MainUI(Gtk.UIManager):
                     <menu action="menu_toolbars">
                         <menuitem action="menubar"/>
                         <menuitem action="statusbar"/>
-                        <menuitem action="scrollbar"/>
                         <menuitem action="thumbnails"/>
                         <separator/>
                         <menuitem action="hide_all"/>
