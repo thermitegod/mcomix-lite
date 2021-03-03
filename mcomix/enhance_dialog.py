@@ -61,7 +61,7 @@ class EnhanceImageDialog(Gtk.Dialog):
             label.set_use_underline(True)
             vbox_left.pack_start(label, True, False, 2)
             adj = Gtk.Adjustment(value=0.0, lower=-1.0, upper=1.0, step_increment=0.01, page_increment=0.1)
-            scale = Gtk.HScale.new(adj)
+            scale = Gtk.Scale.new(Gtk.Orientation.HORIZONTAL, adj)
             scale.set_digits(2)
             scale.set_value_pos(Gtk.PositionType.RIGHT)
             scale.connect('value-changed', self._change_values)
