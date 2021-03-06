@@ -146,7 +146,7 @@ class Statusbar(Gtk.EventBox):
         """
 
         if total > 0:
-            self.__total_file_numbers = f'({fileno} / {total})'
+            self.__total_file_numbers = f'{fileno} / {total}'
         else:
             self.__total_file_numbers = ''
 
