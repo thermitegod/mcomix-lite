@@ -2,11 +2,12 @@
 
 """status.py - Statusbar for main window"""
 
+from collections import namedtuple
 from pathlib import Path
+from typing import Callable
 
 from gi.repository import Gdk, Gtk
 
-from mcomix.constants import Constants
 from mcomix.file_size import FileSize
 from mcomix.preferences import config
 
@@ -25,40 +26,41 @@ class Statusbar(Gtk.EventBox):
         self.__status = Gtk.Statusbar()
         self.add(self.__status)
 
-        # Create popup menu for enabling/disabling status boxes.
-        self.__ui_manager = Gtk.UIManager()
-        ui_description = """
-        <ui>
-            <popup name="Statusbar">
-                <menuitem action="total_page_numbers"/>
-                <menuitem action="total_file_numbers"/>
-                <menuitem action="page_resolution"/>
-                <menuitem action="archive_filename"/>
-                <menuitem action="page_filename"/>
-                <menuitem action="page_filesize"/>
-                <menuitem action="archive_filesize"/>
-                <menuitem action="page_scaling"/>
-                <menuitem action="current_view_mode"/>
-            </popup>
-        </ui>
-        """
-        self.__ui_manager.add_ui_from_string(ui_description)
+        self.__context_menu = Gtk.Menu()
 
-        actiongroup = Gtk.ActionGroup(name='mcomix-statusbar')
-        actiongroup.add_toggle_actions(
-            [
-                ('total_page_numbers', None, 'Show page numbers', None, None, self.toggle_status_visibility),
-                ('total_file_numbers', None, 'Show file numbers', None, None, self.toggle_status_visibility),
-                ('page_resolution', None, 'Show page resolution', None, None, self.toggle_status_visibility),
-                ('archive_filename', None, 'Show archive name', None, None, self.toggle_status_visibility),
-                ('page_filename', None, 'Show page filename', None, None, self.toggle_status_visibility),
-                ('page_filesize', None, 'Show page filesize', None, None, self.toggle_status_visibility),
-                ('archive_filesize', None, 'Show archive filesize', None, None, self.toggle_status_visibility),
-                ('page_scaling', None, 'Show page scaling', None, None, self.toggle_status_visibility),
-                ('current_view_mode', None, 'Show current mode', None, None, self.toggle_status_visibility)
-            ]
+        STATUSBAR = namedtuple('STATUSBAR', ['label', 'config_key', 'callback'])
+        self.__context_menu_items = (
+            STATUSBAR('Show page numbers',
+                      'STATUSBAR_FIELD_PAGE_NUMBERS',
+                      self._toggle_status_page_numbers),
+            STATUSBAR('Show file numbers',
+                      'STATUSBAR_FIELD_FILE_NUMBERS',
+                      self._toggle_status_file_numbers),
+            STATUSBAR('Show page resolution',
+                      'STATUSBAR_FIELD_PAGE_RESOLUTION',
+                      self._toggle_status_page_resolution),
+            STATUSBAR('Show archive filename',
+                      'STATUSBAR_FIELD_ARCHIVE_NAME',
+                      self._toggle_status_archive_name),
+            STATUSBAR('Show page filename',
+                      'STATUSBAR_FIELD_PAGE_FILENAME',
+                      self._toggle_status_page_filename),
+            STATUSBAR('Show page filesize',
+                      'STATUSBAR_FIELD_PAGE_FILESIZE',
+                      self._toggle_status_page_filesize),
+            STATUSBAR('Show archive filesize',
+                      'STATUSBAR_FIELD_ARCHIVE_FILESIZE',
+                      self._toggle_status_archive_filesize),
+            STATUSBAR('Show page scaling',
+                      'STATUSBAR_FIELD_PAGE_SCALING',
+                      self._toggle_status_page_scale),
+            STATUSBAR('Show current mode',
+                      'STATUSBAR_FIELD_VIEW_MODE',
+                      self._toggle_status_view_mode),
         )
-        self.__ui_manager.insert_action_group(actiongroup, 0)
+
+        for item in self.__context_menu_items:
+            self._populate_context_menu(label=item.label, config_key=item.config_key, callback=item.callback)
 
         # Hook mouse release event
         self.connect('button-release-event', self._button_released)
@@ -74,7 +76,7 @@ class Statusbar(Gtk.EventBox):
         self.__archive_filesize = ''
         self.__image_scaling = ''
         self.__current_view_mode = ''
-        self._update_sensitivity()
+
         self.show_all()
 
         self.__loading = False
@@ -205,33 +207,66 @@ class Statusbar(Gtk.EventBox):
         """
 
         sep = config['STATUSBAR_SEPARATOR']
-
         s = f'{sep:^{self.__spacing}}'
-        text = s.join(self._get_status_text())
+        text = ''
+
+        if config['STATUSBAR_FIELD_PAGE_NUMBERS']:
+            text += f'{self.__total_page_numbers}{s}'
+        if config['STATUSBAR_FIELD_FILE_NUMBERS']:
+            text += f'{self.__total_file_numbers}{s}'
+        if config['STATUSBAR_FIELD_PAGE_RESOLUTION']:
+            text += f'{self.__page_resolution}{s}'
+        if config['STATUSBAR_FIELD_ARCHIVE_NAME']:
+            text += f'{self.__archive_filename}{s}'
+        if config['STATUSBAR_FIELD_PAGE_FILENAME']:
+            text += f'{self.__page_filename}{s}'
+        if config['STATUSBAR_FIELD_PAGE_FILESIZE']:
+            text += f'{self.__page_filesize}{s}'
+        if config['STATUSBAR_FIELD_ARCHIVE_FILESIZE']:
+            text += f'{self.__archive_filesize}{s}'
+        if config['STATUSBAR_FIELD_PAGE_SCALING']:
+            text += f'{self.__image_scaling}{s}'
+        if config['STATUSBAR_FIELD_VIEW_MODE']:
+            text += f'{self.__current_view_mode}{s}'
+
         self.__status.pop(0)
         self.__status.push(0, f'    {text}')
 
-    def _get_status_text(self):
-        """
-        Returns an array of text fields that should be displayed
-        """
+    def _populate_context_menu(self, label: str, config_key: str, callback: Callable):
+        item = Gtk.CheckMenuItem(label)
+        item.set_active(config[config_key])
+        item.connect('activate', callback)
+        item.show_all()
+        self.__context_menu.append(item)
 
-        fields = [
-            (Constants.STATUSBAR['PAGE_NUMBERS'], self.__total_page_numbers),
-            (Constants.STATUSBAR['FILE_NUMBERS'], self.__total_file_numbers),
-            (Constants.STATUSBAR['PAGE_RESOLUTION'], self.__page_resolution),
-            (Constants.STATUSBAR['ARCHIVE_NAME'], self.__archive_filename),
-            (Constants.STATUSBAR['PAGE_FILENAME'], self.__page_filename),
-            (Constants.STATUSBAR['PAGE_FILESIZE'], self.__page_filesize),
-            (Constants.STATUSBAR['ARCHIVE_FILESIZE'], self.__archive_filesize),
-            (Constants.STATUSBAR['PAGE_SCALING'], self.__image_scaling),
-            (Constants.STATUSBAR['VIEW_MODE'], self.__current_view_mode),
-        ]
-        p = config['STATUSBAR_FIELDS']
+    def _toggle_status_page_numbers(self, *args):
+        self._toggle_status_visibility('STATUSBAR_FIELD_PAGE_NUMBERS')
 
-        return [s for c, s in filter(lambda f: f[0] & p, fields)]
+    def _toggle_status_file_numbers(self, *args):
+        self._toggle_status_visibility('STATUSBAR_FIELD_FILE_NUMBERS')
 
-    def toggle_status_visibility(self, action, *args):
+    def _toggle_status_page_resolution(self, *args):
+        self._toggle_status_visibility('STATUSBAR_FIELD_PAGE_RESOLUTION')
+
+    def _toggle_status_archive_name(self, *args):
+        self._toggle_status_visibility('STATUSBAR_FIELD_ARCHIVE_NAME')
+
+    def _toggle_status_page_filename(self, *args):
+        self._toggle_status_visibility('STATUSBAR_FIELD_PAGE_FILENAME')
+
+    def _toggle_status_page_filesize(self, *args):
+        self._toggle_status_visibility('STATUSBAR_FIELD_PAGE_FILESIZE')
+
+    def _toggle_status_archive_filesize(self, *args):
+        self._toggle_status_visibility('STATUSBAR_FIELD_ARCHIVE_FILESIZE')
+
+    def _toggle_status_page_scale(self, *args):
+        self._toggle_status_visibility('STATUSBAR_FIELD_PAGE_SCALING')
+
+    def _toggle_status_view_mode(self, *args):
+        self._toggle_status_visibility('STATUSBAR_FIELD_VIEW_MODE')
+
+    def _toggle_status_visibility(self, config_statusbar):
         """
         Called when status entries visibility is to be changed
         """
@@ -240,54 +275,10 @@ class Statusbar(Gtk.EventBox):
         if self.__loading:
             return
 
-        names = {
-            'total_page_numbers': Constants.STATUSBAR['PAGE_NUMBERS'],
-            'total_file_numbers': Constants.STATUSBAR['FILE_NUMBERS'],
-            'page_resolution': Constants.STATUSBAR['PAGE_RESOLUTION'],
-            'archive_filename': Constants.STATUSBAR['ARCHIVE_NAME'],
-            'page_filename': Constants.STATUSBAR['PAGE_FILENAME'],
-            'page_filesize': Constants.STATUSBAR['PAGE_FILESIZE'],
-            'archive_filesize': Constants.STATUSBAR['ARCHIVE_FILESIZE'],
-            'page_scaling': Constants.STATUSBAR['PAGE_SCALING'],
-            'current_view_mode': Constants.STATUSBAR['VIEW_MODE'],
-        }
-
-        bit = names[action.get_name()]
-
-        if action.get_active():
-            config['STATUSBAR_FIELDS'] |= bit
-        else:
-            config['STATUSBAR_FIELDS'] &= ~bit
+        config[config_statusbar] = not config[config_statusbar]
 
         self.update()
-        self._update_sensitivity()
 
     def _button_released(self, widget, event, *args):
-        """
-        Triggered when a mouse button is released to open the context menu
-        """
-
         if event.button == 3:
-            self.__ui_manager.get_widget('/Statusbar').popup(None, None, None, None, event.button, event.time)
-
-    def _update_sensitivity(self):
-        """
-        Updates the action menu's sensitivity based on user preferences
-        """
-
-        p = config['STATUSBAR_FIELDS']
-        names = {
-            'total_page_numbers': p & Constants.STATUSBAR['PAGE_NUMBERS'],
-            'total_file_numbers': p & Constants.STATUSBAR['FILE_NUMBERS'],
-            'page_resolution': p & Constants.STATUSBAR['PAGE_RESOLUTION'],
-            'archive_filename': p & Constants.STATUSBAR['ARCHIVE_NAME'],
-            'page_filename': p & Constants.STATUSBAR['PAGE_FILENAME'],
-            'page_filesize': p & Constants.STATUSBAR['PAGE_FILESIZE'],
-            'archive_filesize': p & Constants.STATUSBAR['ARCHIVE_FILESIZE'],
-            'page_scaling': p & Constants.STATUSBAR['PAGE_SCALING'],
-            'current_view_mode': p & Constants.STATUSBAR['VIEW_MODE'],
-        }
-
-        for n, v in names.items():
-            action = self.__ui_manager.get_action(f'/Statusbar/{n}')
-            action.set_active(v)
+            self.__context_menu.popup(None, None, None, None, event.button, event.time)

@@ -119,19 +119,6 @@ class _Constants:
             'REMOVE': 4,
         }
 
-        # These are bit field values, so only use powers of two.
-        self.STATUSBAR = {
-            'PAGE_NUMBERS': 1,
-            'FILE_NUMBERS': 2,
-            'PAGE_RESOLUTION': 4,
-            'ARCHIVE_NAME': 8,
-            'PAGE_FILENAME': 16,
-            'PAGE_FILESIZE': 32,
-            'ARCHIVE_FILESIZE': 64,
-            'PAGE_SCALING': 128,
-            'VIEW_MODE': 256,
-        }
-
         self.ORIENTATION = {
             'MANGA': [-1, 1],
             'WESTERN': [1, 1],
