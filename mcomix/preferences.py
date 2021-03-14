@@ -60,7 +60,7 @@ config = {
     'STATUSBAR_FIELD_PAGE_FILENAME': True,
     'STATUSBAR_FIELD_PAGE_FILESIZE': True,
     'STATUSBAR_FIELD_ARCHIVE_FILESIZE': True,
-    'STATUSBAR_FIELD_PAGE_SCALING': False,
+    'STATUSBAR_FIELD_PAGE_SCALING': True,
     'STATUSBAR_FIELD_VIEW_MODE': True,
     'STATUSBAR_FULLPATH': True,
     'STATUSBAR_SEPARATOR': '|',
@@ -68,8 +68,9 @@ config = {
     'BOOKMARK_SHOW_PATH': False,
     'SI_UNITS': False,
     'MAX_THREADS': 16,
-    'SCALING_QUALITY': 2,  # GdkPixbuf.InterpType.BILINEAR
-    'PIL_SCALING_FILTER': 1,  # PIL filter in main viewing area. -1 to just use GdkPixbuf
+    'SCALING_QUALITY': Constants.SCALING_GDK[2],
+    'PIL_SCALING_FILTER': Constants.SCALING_PIL[0],
+    'ENABLE_PIL_SCALING': False,
     'ESCAPE_QUITS': True,
     'FIT_TO_SIZE_MODE': Constants.ZOOM['HEIGHT'],
     'FIT_TO_SIZE_PX': 1800,

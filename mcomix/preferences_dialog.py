@@ -2,8 +2,7 @@
 
 """preferences_dialog.py - Preferences dialog"""
 
-import PIL.Image  # for PIL interpolation prefs
-from gi.repository import GObject, GdkPixbuf, Gtk
+from gi.repository import GObject, Gtk
 
 from mcomix.constants import Constants
 from mcomix.keybindings_editor import KeybindingEditorWindow
@@ -512,11 +511,7 @@ class PreferencesDialog(Gtk.Dialog):
         Creates combo box for image scaling quality
         """
 
-        items = (
-            ('Nearest (very fast)', int(GdkPixbuf.InterpType.NEAREST)),
-            ('Tiles (fast)', int(GdkPixbuf.InterpType.TILES)),
-            ('Bilinear (normal)', int(GdkPixbuf.InterpType.BILINEAR))
-        )
+        items = Constants.SCALING_GDK
 
         return self._create_combobox(items, 'SCALING_QUALITY')
 
@@ -525,22 +520,7 @@ class PreferencesDialog(Gtk.Dialog):
         Creates combo box for PIL filter to scale with in main view
         """
 
-        items = (
-            # -1 defers to 'scaling quality'
-            ('None', -1),
-            # PIL 0
-            ('Nearest', PIL.Image.NEAREST),
-            # PIL 1
-            ('Lanczos', PIL.Image.LANCZOS),
-            # PIL 2
-            ('Bilinear', PIL.Image.BILINEAR),
-            # PIL 3
-            ('Bicubic', PIL.Image.BICUBIC),
-            # PIL 4
-            ('Box', PIL.Image.BOX),
-            # PIL 5
-            ('Hamming', PIL.Image.HAMMING),
-        )
+        items = Constants.SCALING_PIL
 
         return self._create_combobox(items, 'PIL_SCALING_FILTER')
 

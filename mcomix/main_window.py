@@ -640,6 +640,44 @@ class MainWindow(Gtk.Window):
             config['AUTO_ROTATE_DEPENDING_ON_SIZE'] = radioaction.get_current_value()
         self.draw_image()
 
+    def toggle_image_scaling_pil(self):
+        config['ENABLE_PIL_SCALING'] = not config['ENABLE_PIL_SCALING']
+        self.draw_image()
+        self.statusbar.update_image_scaling()
+        self.statusbar.update()
+
+    def change_image_scaling_gdk(self, step: int):
+        self._loop_img_scaling(config_key='SCALING_QUALITY', algos=Constants.SCALING_GDK, step=step)
+        self.draw_image()
+        self.statusbar.update_image_scaling()
+        self.statusbar.update()
+
+    def change_image_scaling_pil(self, step: int):
+        if not config['ENABLE_PIL_SCALING']:
+            # disable changing if not active
+            return
+
+        self._loop_img_scaling(config_key='PIL_SCALING_FILTER', algos=Constants.SCALING_PIL, step=step)
+        self.draw_image()
+        self.statusbar.update_image_scaling()
+        self.statusbar.update()
+
+    @staticmethod
+    def _loop_img_scaling(config_key: str, algos: tuple, step: int):
+        try:
+            scale = algos[config[config_key] + step].value
+        except IndexError:
+            if step == +1:
+                # overflow goto beginning
+                scale = algos[0].value
+            elif step == -1:
+                # underflow goto end
+                scale = algos[-1].value
+            else:
+                raise ValueError
+
+        config[config_key] = scale
+
     def change_stretch(self, toggleaction, *args):
         """
         Toggles stretching small images

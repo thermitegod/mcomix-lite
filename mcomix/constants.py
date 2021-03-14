@@ -5,8 +5,11 @@
 """constants.py - Miscellaneous constants"""
 
 import os
+from collections import namedtuple
 from pathlib import Path
 
+import PIL.Image
+from gi.repository import GdkPixbuf
 from loguru import logger
 
 
@@ -123,6 +126,22 @@ class _Constants:
             'MANGA': [-1, 1],
             'WESTERN': [1, 1],
         }
+
+        SCALING = namedtuple('SCALING', ['name', 'value'])
+        self.SCALING_GDK = (
+            SCALING('Nearest', int(GdkPixbuf.InterpType.NEAREST)),
+            SCALING('Tiles', int(GdkPixbuf.InterpType.TILES)),
+            SCALING('Bilinear', int(GdkPixbuf.InterpType.BILINEAR)),
+        )
+
+        self.SCALING_PIL = (
+            SCALING('Nearest', PIL.Image.NEAREST),
+            SCALING('Lanczos', PIL.Image.LANCZOS),
+            SCALING('Bilinear', PIL.Image.BILINEAR),
+            SCALING('Bicubic', PIL.Image.BICUBIC),
+            SCALING('Box', PIL.Image.BOX),
+            SCALING('Hamming', PIL.Image.HAMMING),
+        )
 
         # see https://www.freedesktop.org/wiki/Software/shared-mime-info/
         # for mimetypes not registed to IANA

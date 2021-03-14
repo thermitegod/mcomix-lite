@@ -24,6 +24,7 @@ class KeyBindingsMap:
         ui = 'User interface'
         info = 'Info'
         file = 'File'
+        scale = 'Image Scaling'
 
         MAP = namedtuple('MAP', ['info', 'keybindings', 'key_event'])
         INFO = namedtuple('INFO', ['group', 'title'])
@@ -552,6 +553,53 @@ class KeyBindingsMap:
                     KEY_EVENT(
                         self.__window.filehandler.refresh_file,
                         None,
+                    ),
+                ),
+
+            # Image Scaling
+            'toggle_scaling_pil':
+                MAP(
+                    INFO(scale, 'Toggle using PIL Image scaling'),
+                    ['c'],
+                    KEY_EVENT(
+                        self.__window.toggle_image_scaling_pil,
+                        None,
+                    ),
+                ),
+            'scaling_gdk_inc':
+                MAP(
+                    INFO(scale, 'Cycle GDK Image scaling forward'),
+                    ['z'],
+                    KEY_EVENT(
+                        self.__window.change_image_scaling_gdk,
+                        {'step': +1},
+                    ),
+                ),
+            'scaling_gdk_dec':
+                MAP(
+                    INFO(scale, 'Cycle GDK Image scaling backwards'),
+                    ['x'],
+                    KEY_EVENT(
+                        self.__window.change_image_scaling_gdk,
+                        {'step': -1},
+                    ),
+                ),
+            'scaling_pil_inc':
+                MAP(
+                    INFO(scale, 'Cycle PIL Image scaling forward'),
+                    ['<Shift>z'],
+                    KEY_EVENT(
+                        self.__window.change_image_scaling_pil,
+                        {'step': +1},
+                    ),
+                ),
+            'scaling_pil_dec':
+                MAP(
+                    INFO(scale, 'Cycle PIL Image scaling backwards'),
+                    ['<Shift>x'],
+                    KEY_EVENT(
+                        self.__window.change_image_scaling_pil,
+                        {'step': -1},
                     ),
                 ),
         }

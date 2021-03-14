@@ -95,8 +95,7 @@ class _ImageTools:
                                      scale_up=True)
 
     def fit_in_rectangle(self, src, width: int, height: int, keep_ratio: bool = True,
-                         scale_up: bool = False, rotation: int = 0, scaling_quality=None,
-                         pil_filter: int = None):
+                         scale_up: bool = False, rotation: int = 0, scaling_quality=None):
         """
         Scale (and return) a pixbuf so that it fits in a rectangle with
         dimensions <width> x <height>. A negative <width> or <height>
@@ -134,9 +133,6 @@ class _ImageTools:
         if scaling_quality is None:
             scaling_quality = config['SCALING_QUALITY']
 
-        if pil_filter is None:
-            pil_filter = config['PIL_SCALING_FILTER']
-
         src_width = src.get_width()
         src_height = src.get_height()
 
@@ -145,10 +141,10 @@ class _ImageTools:
                                               keep_ratio=keep_ratio,
                                               scale_up=scale_up)
 
-        if (width, height) != (src_width, src_height) and pil_filter > -1:
+        if (width, height) != (src_width, src_height) and config['ENABLE_PIL_SCALING']:
             # scale by PIL interpolation filter
             src = self.pil_to_pixbuf(self.pixbuf_to_pil(src).resize([width, height],
-                                                                    resample=pil_filter))
+                                                                    resample=config['PIL_SCALING_FILTER']))
             src_width = src.get_width()
             src_height = src.get_height()
 
