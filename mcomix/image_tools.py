@@ -113,15 +113,6 @@ class _ImageTools:
         If <src> has an alpha channel it gets a checkboard background
         """
 
-        # "Unbounded" really means "bounded to 100000 px" - for simplicity.
-        # MComix would probably choke on larger images anyway.
-        if width < 0:
-            width = 100000
-        elif height < 0:
-            height = 100000
-        width = max(width, 1)
-        height = max(height, 1)
-
         rotation %= 360
 
         if rotation not in (0, 90, 180, 270):
