@@ -87,10 +87,9 @@ class MainWindow(Gtk.Window):
         self.enhancer = ImageEnhancer(self)
         self.lens = MagnifyingLens(self)
         self.zoom = ZoomModel()
-        self.uimanager = MainUI(self)
 
+        self.uimanager = MainUI(self)
         self.menubar = self.uimanager.get_widget('/Menu')
-        self.popup = self.uimanager.get_widget('/Popup')
         self.actiongroup = self.uimanager.get_action_groups()[0]
 
         self.keybindings_map = KeyBindingsMap(self).BINDINGS
