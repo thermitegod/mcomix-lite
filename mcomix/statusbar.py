@@ -27,6 +27,8 @@ class Statusbar(Gtk.EventBox):
         self.__status = Gtk.Statusbar()
         self.add(self.__status)
 
+        self.__context_id = self.__status.get_context_id('statusbar')
+
         self.__context_menu = Gtk.Menu()
 
         STATUSBAR = namedtuple('STATUSBAR', ['label', 'config_key', 'callback'])
@@ -103,8 +105,8 @@ class Statusbar(Gtk.EventBox):
         replacing whatever was there earlier
         """
 
-        self.__status.pop(0)
-        self.__status.push(0, f'    {message}')
+        self.__status.pop(self.__context_id)
+        self.__status.push(self.__context_id, f'    {message}')
 
     def set_page_number(self, page: int, total: int, this_screen: int):
         """
@@ -221,8 +223,8 @@ class Statusbar(Gtk.EventBox):
         if config['STATUSBAR_FIELD_VIEW_MODE']:
             text += f'{self.__current_view_mode}{s}'
 
-        self.__status.pop(0)
-        self.__status.push(0, f'    {text}')
+        self.__status.pop(self.__context_id)
+        self.__status.push(self.__context_id, f'    {text}')
 
     def _populate_context_menu(self, label: str, config_key: str, callback: Callable):
         item = Gtk.CheckMenuItem(label)
