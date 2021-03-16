@@ -203,7 +203,11 @@ class PreferencesDialog(Gtk.Dialog):
 
         page.new_section('Advanced filters')
 
-        page.add_row(Gtk.Label(label='High-quality scaling for main area'),
+        page.add_row(self._create_pref_check_button(
+            'Enable PIL image scaling',
+            'ENABLE_PIL_SCALING'))
+
+        page.add_row(Gtk.Label(label='PIL image scaling mode'),
                      self._create_combobox_pil_scaling_filter())
 
         page.new_section('Statusbar')
