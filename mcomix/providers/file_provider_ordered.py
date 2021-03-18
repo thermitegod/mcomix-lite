@@ -7,7 +7,7 @@ from mcomix.constants import Constants
 from mcomix.image_tools import ImageTools
 from mcomix.preferences import config
 from mcomix.providers.file_provider_base import FileProvider
-from mcomix.sort_alphanumeric import SortAlphanumeric
+from mcomix.sort.sort_alphanumeric import SortAlphanumeric
 
 
 class OrderedFileProvider(FileProvider):

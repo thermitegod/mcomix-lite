@@ -14,7 +14,7 @@ from mcomix.file_provider import GetFileProvider
 from mcomix.image_tools import ImageTools
 from mcomix.lib.callback import Callback
 from mcomix.preferences import config
-from mcomix.sort_alphanumeric import SortAlphanumeric
+from mcomix.sort.sort_alphanumeric import SortAlphanumeric
 
 
 class FileHandler:
