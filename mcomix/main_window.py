@@ -73,7 +73,6 @@ class MainWindow(Gtk.Window):
         self.__hadjust = self.__main_scrolled_window.get_hadjustment()
 
         self.icons = Icons()
-        self.icons.load_icons()
 
         self.filehandler = FileHandler(self)
         self.filehandler.file_closed += self._on_file_closed
@@ -501,7 +500,7 @@ class MainWindow(Gtk.Window):
         self.clear()
         self.thumbnailsidebar.hide()
         self.thumbnailsidebar.clear()
-        self.set_icon_list(self.icons.mcomix_icons())
+        self.set_icon_list(self.icons.mcomix_icons)
 
     def new_page(self, at_bottom: bool = False):
         """

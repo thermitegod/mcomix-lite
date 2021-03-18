@@ -14,15 +14,22 @@ class Icons:
     def __init__(self):
         super().__init__()
 
-    @staticmethod
-    def mcomix_icons():
+        self.__mcomix_icons = None
+        self._mcomix_icons()
+        self._load_icons()
+
+    @property
+    def mcomix_icons(self):
+        return self.__mcomix_icons
+
+    def _mcomix_icons(self):
         """
         Returns a list of differently sized pixbufs for the application icon
         """
 
-        return [ImageTools.load_pixbuf_data(resources.read_binary('mcomix.images', 'mcomix.png'))]
+        self.__mcomix_icons = [ImageTools.load_pixbuf_data(resources.read_binary('mcomix.images', 'mcomix.png'))]
 
-    def load_icons(self):
+    def _load_icons(self):
         _icons = (('gimp-flip-horizontal.png', 'mcomix-flip-horizontal'),
                   ('gimp-flip-vertical.png', 'mcomix-flip-vertical'),
                   ('gimp-rotate-180.png', 'mcomix-rotate-180'),
@@ -37,8 +44,7 @@ class Icons:
                   ('lens.png', 'mcomix-lens'))
 
         # Load window title icons.
-        pixbufs = self.mcomix_icons()
-        Gtk.Window.set_default_icon_list(pixbufs)
+        Gtk.Window.set_default_icon_list(self.__mcomix_icons)
 
         # Load application icons.
         factory = Gtk.IconFactory()

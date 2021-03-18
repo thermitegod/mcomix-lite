@@ -23,8 +23,6 @@ class AboutDialog(Gtk.AboutDialog):
         self.set_version(f'Version {Constants.VERSION}')
         self.set_copyright('Copyright (C) 2005-2021')
 
-        self.set_logo(self.__window.icons.load_icons())
-
         self.set_license_type(Gtk.License.GPL_2_0)
 
         link = f'https://github.com/thermitegod/{Constants.PROG_NAME}'
