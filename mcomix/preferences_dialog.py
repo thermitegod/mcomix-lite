@@ -19,6 +19,7 @@ class PreferencesDialog(Gtk.Dialog):
     def __init__(self, window):
         super().__init__(title='Preferences')
 
+        self.set_modal(True)
         self.set_transient_for(window)
 
         # Button text is set later depending on active tab

@@ -27,6 +27,7 @@ class FileChooser(Gtk.Dialog):
 
         super().__init__(title='Open')
 
+        self.set_modal(True)
         self.set_transient_for(self.__window)
         self.add_buttons(*(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
         self.set_default_response(Gtk.ResponseType.OK)

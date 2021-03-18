@@ -19,6 +19,7 @@ class Pageselector(Gtk.Dialog):
 
         super().__init__(title='Go to page...', modal=True, destroy_with_parent=True)
 
+        self.set_modal(True)
         self.set_transient_for(window)
 
         self.add_buttons('_Go', Gtk.ResponseType.OK, '_Cancel', Gtk.ResponseType.CANCEL, )

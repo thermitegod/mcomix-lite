@@ -24,6 +24,7 @@ class MessageDialog(Gtk.MessageDialog):
             destroy_with_parent=flags & Gtk.DialogFlags.DESTROY_WITH_PARENT,
         )
 
+        self.set_modal(True)
         self.set_transient_for(parent)
 
         #: Unique dialog identifier (for storing 'Do not ask again')
