@@ -19,8 +19,6 @@ class Statusbar(Gtk.EventBox):
 
         self.__spacing = 5
 
-        self.__loading = True
-
         # Status text layout
         # page number, file number, page resolution, archive filename,
         # page filename, page filesize, archive filesize, view mode
@@ -81,8 +79,6 @@ class Statusbar(Gtk.EventBox):
         self.__current_view_mode = ''
 
         self.show_all()
-
-        self.__loading = False
 
         self.update_image_scaling()
 
@@ -264,10 +260,6 @@ class Statusbar(Gtk.EventBox):
         """
         Called when status entries visibility is to be changed
         """
-
-        # Ignore events as long as control is still loading.
-        if self.__loading:
-            return
 
         config[config_statusbar] = not config[config_statusbar]
 
