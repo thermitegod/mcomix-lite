@@ -82,10 +82,6 @@ class PreferencesDialog(Gtk.Dialog):
             'Show page numbers on thumbnails',
             'SHOW_PAGE_NUMBERS_ON_THUMBNAILS'))
 
-        page.add_row(self._create_pref_check_button(
-            'Use archive thumbnail as application icon',
-            'ARCHIVE_THUMBNAIL_AS_ICON'))
-
         page.add_row(Gtk.Label(label='Thumbnail size (pixels):'),
                      self._create_pref_spinner(
                          'THUMBNAIL_SIZE',

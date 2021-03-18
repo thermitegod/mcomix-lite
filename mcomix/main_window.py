@@ -484,13 +484,6 @@ class MainWindow(Gtk.Window):
             self.draw_image(scroll_to=self.__last_scroll_destination)
             self._update_page_information()
 
-        # Use first page as application icon when opening archives.
-        if (page == 1
-                and self.filehandler.get_archive_type() is not None
-                and config['ARCHIVE_THUMBNAIL_AS_ICON']):
-            pixbuf = self.imagehandler.get_thumbnail(page=page, size=(48, 48))
-            self.set_icon(pixbuf)
-
     def _on_file_opened(self):
         number, count = self.filehandler.get_file_number()
         self.statusbar.set_file_number(number, count)
