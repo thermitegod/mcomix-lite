@@ -122,21 +122,13 @@ class MainUI(Gtk.UIManager):
 
         self.__actiongroup.add_actions([
             ('about', Gtk.STOCK_ABOUT, 'About',
-             None, None, DialogAbout().open_dialog)], self.__window)
-
-        self.__actiongroup.add_actions([
+             None, None, DialogAbout().open_dialog),
             ('properties', Gtk.STOCK_PROPERTIES, 'Properties',
-             None, None, DialogProperties().open_dialog)], self.__window)
-
-        self.__actiongroup.add_actions([
+             None, None, DialogProperties().open_dialog),
             ('preferences', Gtk.STOCK_PREFERENCES, 'Preferences',
-             None, None, DialogPreference().open_dialog)], self.__window)
-
-        self.__actiongroup.add_actions([
+             None, None, DialogPreference().open_dialog),
             ('open', Gtk.STOCK_PREFERENCES, 'Open...',
-             None, None, DialogFileChooser().open_dialog)], self.__window)
-
-        self.__actiongroup.add_actions([
+             None, None, DialogFileChooser().open_dialog),
             ('enhance_image', 'mcomix-enhance-image', 'Enhance image...',
              None, None, DialogEnhance().open_dialog)], self.__window)
 
