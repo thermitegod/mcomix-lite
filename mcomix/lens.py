@@ -125,12 +125,12 @@ class MagnifyingLens:
         window.process_updates(True)
         self.__last_lens_rect = None
 
-    def toggle(self, action):
+    def toggle(self, value: bool):
         """
         Toggle on or off the lens depending on the state of <action>
         """
 
-        self.enabled = action.get_active()
+        self.enabled = value
 
     def _motion_event(self, widget, event):
         """

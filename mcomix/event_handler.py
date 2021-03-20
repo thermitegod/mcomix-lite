@@ -163,7 +163,7 @@ class EventHandler:
             pass
 
         elif event.button == 2:
-            self.__window.lens.toggle()
+            self.__window.lens.toggle(True)
 
         elif event.button == 3:
             pass
@@ -182,7 +182,7 @@ class EventHandler:
             pass
 
         elif event.button == 2:
-            self.__window.lens.toggle()
+            self.__window.lens.toggle(False)
 
         elif event.button == 3:
             pass

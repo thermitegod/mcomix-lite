@@ -135,27 +135,27 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.__main_scrolled_window.show_all()
 
-        self.__main_scrolled_window.set_events(Gdk.EventMask.BUTTON1_MOTION_MASK |
-                                               Gdk.EventMask.BUTTON2_MOTION_MASK |
-                                               Gdk.EventMask.BUTTON_PRESS_MASK |
-                                               Gdk.EventMask.BUTTON_RELEASE_MASK |
-                                               Gdk.EventMask.POINTER_MOTION_MASK)
+        self.__main_layout.set_events(Gdk.EventMask.BUTTON1_MOTION_MASK |
+                                      Gdk.EventMask.BUTTON2_MOTION_MASK |
+                                      Gdk.EventMask.BUTTON_PRESS_MASK |
+                                      Gdk.EventMask.BUTTON_RELEASE_MASK |
+                                      Gdk.EventMask.POINTER_MOTION_MASK)
 
-        self.__main_scrolled_window.drag_dest_set(Gtk.DestDefaults.ALL,
-                                                  [Gtk.TargetEntry.new('text/uri-list', 0, 0)],
-                                                  Gdk.DragAction.COPY |
-                                                  Gdk.DragAction.MOVE)
+        self.__main_layout.drag_dest_set(Gtk.DestDefaults.ALL,
+                                         [Gtk.TargetEntry.new('text/uri-list', 0, 0)],
+                                         Gdk.DragAction.COPY |
+                                         Gdk.DragAction.MOVE)
 
         self.connect('delete_event', self.terminate_program)
         self.connect('key_press_event', self.event_handler.key_press_event)
         self.connect('configure_event', self.event_handler.resize_event)
         self.connect('window-state-event', self.event_handler.window_state_event)
 
-        self.__main_scrolled_window.connect('button_release_event', self.event_handler.mouse_release_event)
-        self.__main_scrolled_window.connect('scroll_event', self.event_handler.scroll_wheel_event)
-        self.__main_scrolled_window.connect('button_press_event', self.event_handler.mouse_press_event)
-        self.__main_scrolled_window.connect('motion_notify_event', self.event_handler.mouse_move_event)
-        self.__main_scrolled_window.connect('drag_data_received', self.event_handler.drag_n_drop_event)
+        self.__main_layout.connect('button_release_event', self.event_handler.mouse_release_event)
+        self.__main_layout.connect('scroll_event', self.event_handler.scroll_wheel_event)
+        self.__main_layout.connect('button_press_event', self.event_handler.mouse_press_event)
+        self.__main_layout.connect('motion_notify_event', self.event_handler.mouse_move_event)
+        self.__main_layout.connect('drag_data_received', self.event_handler.drag_n_drop_event)
 
         self.show_all()
 
@@ -179,7 +179,7 @@ class MainWindow(Gtk.ApplicationWindow):
         return self.__layout
 
     def get_main_layout(self):
-        return self.__main_scrolled_window
+        return self.__main_layout
 
     def get_hadjust(self):
         return self.__hadjust
