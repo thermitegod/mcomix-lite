@@ -6,7 +6,7 @@
 from collections import namedtuple
 
 from mcomix.preferences import config
-
+from mcomix.constants import Constants
 
 class KeyBindingsMap:
     def __init__(self, window):
@@ -177,7 +177,7 @@ class KeyBindingsMap:
                     INFO(zoom, 'Normal size'),
                     ['<Control>0', 'KP_0'],
                     KEY_EVENT(
-                        self.__window.actiongroup.get_action('zoom_original').activate,
+                        self.__window.manual_zoom_original,
                         None,
                     ),
                 ),
@@ -186,7 +186,7 @@ class KeyBindingsMap:
                     INFO(zoom, 'Zoom in'),
                     ['plus', 'KP_Add', 'equal'],
                     KEY_EVENT(
-                        self.__window.actiongroup.get_action('zoom_in').activate,
+                        self.__window.manual_zoom_in,
                         None,
                     ),
                 ),
@@ -195,7 +195,7 @@ class KeyBindingsMap:
                     INFO(zoom, 'Zoom out'),
                     ['minus', 'KP_Subtract'],
                     KEY_EVENT(
-                        self.__window.actiongroup.get_action('zoom_out').activate,
+                        self.__window.manual_zoom_out,
                         None,
                     ),
                 ),
@@ -206,7 +206,7 @@ class KeyBindingsMap:
                     INFO(trans, 'Keep transformation'),
                     ['k'],
                     KEY_EVENT(
-                        self.__window.actiongroup.get_action('keep_transformation').activate,
+                        self.__window.change_keep_transformation,
                         None,
                     ),
                 ),
@@ -255,24 +255,24 @@ class KeyBindingsMap:
                         None,
                     ),
                 ),
-            'no_autorotation':
-                MAP(
-                    INFO(trans, 'Never autorotate'),
-                    [],
-                    KEY_EVENT(
-                        self.__window.actiongroup.get_action('no_autorotation').activate,
-                        None,
-                    ),
-                ),
 
             # Autorotate
+            'no_autorotation':
+                MAP(
+                    INFO(rotate, 'Never autorotate'),
+                    [],
+                    KEY_EVENT(
+                        self.__window.change_autorotation,
+                        {'value': Constants.AUTOROTATE['NEVER']},
+                    ),
+                ),
             'rotate_90_width':
                 MAP(
                     INFO(rotate, 'Rotate width 90°'),
                     [],
                     KEY_EVENT(
-                        self.__window.actiongroup.get_action('rotate_90_width').activate,
-                        None,
+                        self.__window.change_autorotation,
+                        {'value': Constants.AUTOROTATE['WIDTH_90']},
                     ),
                 ),
             'rotate_270_width':
@@ -280,8 +280,8 @@ class KeyBindingsMap:
                     INFO(rotate, 'Rotate width 270°'),
                     [],
                     KEY_EVENT(
-                        self.__window.actiongroup.get_action('rotate_270_width').activate,
-                        None,
+                        self.__window.change_autorotation,
+                        {'value': Constants.AUTOROTATE['WIDTH_270']},
                     ),
                 ),
             'rotate_90_height':
@@ -289,8 +289,8 @@ class KeyBindingsMap:
                     INFO(rotate, 'Rotate height 90°'),
                     [],
                     KEY_EVENT(
-                        self.__window.actiongroup.get_action('rotate_90_height').activate,
-                        None,
+                        self.__window.change_autorotation,
+                        {'value': Constants.AUTOROTATE['HEIGHT_90']},
                     ),
                 ),
             'rotate_270_height':
@@ -298,8 +298,8 @@ class KeyBindingsMap:
                     INFO(rotate, 'Rotate height 270°'),
                     [],
                     KEY_EVENT(
-                        self.__window.actiongroup.get_action('rotate_270_height').activate,
-                        None,
+                        self.__window.change_autorotation,
+                        {'value': Constants.AUTOROTATE['HEIGHT_270']},
                     ),
                 ),
 
@@ -309,7 +309,7 @@ class KeyBindingsMap:
                     INFO(view, 'Double page mode'),
                     ['d'],
                     KEY_EVENT(
-                        self.__window.actiongroup.get_action('double_page').activate,
+                        self.__window.change_double_page,
                         None,
                     ),
                 ),
@@ -318,37 +318,28 @@ class KeyBindingsMap:
                     INFO(view, 'Manga mode'),
                     ['m'],
                     KEY_EVENT(
-                        self.__window.actiongroup.get_action('manga_mode').activate,
-                        None,
-                    ),
-                ),
-            'lens':
-                MAP(
-                    INFO(view, 'Magnifying lens'),
-                    ['l'],
-                    KEY_EVENT(
-                        self.__window.actiongroup.get_action('lens').activate,
-                        None,
-                    ),
-                ),
-            'stretch':
-                MAP(
-                    INFO(view, 'Stretch small images'),
-                    ['y'],
-                    KEY_EVENT(
-                        self.__window.actiongroup.get_action('stretch').activate,
+                        self.__window.change_manga_mode,
                         None,
                     ),
                 ),
 
             # Fit mode
+            'stretch':
+                MAP(
+                    INFO(pagefit, 'Stretch small images'),
+                    ['y'],
+                    KEY_EVENT(
+                        self.__window.change_stretch,
+                        None,
+                    ),
+                ),
             'best_fit_mode':
                 MAP(
                     INFO(pagefit, 'Best fit mode'),
                     ['b'],
                     KEY_EVENT(
-                        self.__window.actiongroup.get_action('best_fit_mode').activate,
-                        None,
+                        self.__window.change_zoom_mode,
+                        {'value': Constants.ZOOM['BEST']},
                     ),
                 ),
             'fit_width_mode':
@@ -356,8 +347,8 @@ class KeyBindingsMap:
                     INFO(pagefit, 'Fit width mode'),
                     ['w'],
                     KEY_EVENT(
-                        self.__window.actiongroup.get_action('fit_width_mode').activate,
-                        None,
+                        self.__window.change_zoom_mode,
+                        {'value': Constants.ZOOM['WIDTH']},
                     ),
                 ),
             'fit_height_mode':
@@ -365,8 +356,8 @@ class KeyBindingsMap:
                     INFO(pagefit, 'Fit height mode'),
                     ['h'],
                     KEY_EVENT(
-                        self.__window.actiongroup.get_action('fit_height_mode').activate,
-                        None,
+                        self.__window.change_zoom_mode,
+                        {'value': Constants.ZOOM['HEIGHT']},
                     ),
                 ),
             'fit_size_mode':
@@ -374,8 +365,8 @@ class KeyBindingsMap:
                     INFO(pagefit, 'Fit size mode'),
                     ['s'],
                     KEY_EVENT(
-                        self.__window.actiongroup.get_action('fit_size_mode').activate,
-                        None,
+                        self.__window.change_zoom_mode,
+                        {'value': Constants.ZOOM['SIZE']},
                     ),
                 ),
             'fit_manual_mode':
@@ -383,8 +374,8 @@ class KeyBindingsMap:
                     INFO(pagefit, 'Manual zoom mode'),
                     ['a'],
                     KEY_EVENT(
-                        self.__window.actiongroup.get_action('fit_manual_mode').activate,
-                        None,
+                        self.__window.change_zoom_mode,
+                        {'value': Constants.ZOOM['MANUAL']},
                     ),
                 ),
 
@@ -403,7 +394,7 @@ class KeyBindingsMap:
                     INFO(ui, 'Fullscreen'),
                     ['f', 'F11'],
                     KEY_EVENT(
-                        self.__window.actiongroup.get_action('fullscreen').activate,
+                        self.__window.change_fullscreen,
                         None,
                     ),
                 ),
@@ -416,42 +407,6 @@ class KeyBindingsMap:
                         None,
                     ),
                 ),
-            'hide_all':
-                MAP(
-                    INFO(ui, 'Show/hide all'),
-                    ['i'],
-                    KEY_EVENT(
-                        self.__window.actiongroup.get_action('hide_all').activate,
-                        None,
-                    ),
-                ),
-            'menubar':
-                MAP(
-                    INFO(ui, 'Show/hide menubar'),
-                    ['<Control>M'],
-                    KEY_EVENT(
-                        self.__window.actiongroup.get_action('menubar').activate,
-                        None,
-                    ),
-                ),
-            'statusbar':
-                MAP(
-                    INFO(ui, 'Show/hide statusbar'),
-                    [],
-                    KEY_EVENT(
-                        self.__window.actiongroup.get_action('statusbar').activate,
-                        None,
-                    ),
-                ),
-            'thumbnails':
-                MAP(
-                    INFO(ui, 'Thumbnails'),
-                    ['F9'],
-                    KEY_EVENT(
-                        self.__window.actiongroup.get_action('thumbnails').activate,
-                        None,
-                    ),
-                ),
 
             # Info
             'about':
@@ -459,7 +414,7 @@ class KeyBindingsMap:
                     INFO(info, 'About'),
                     ['F1'],
                     KEY_EVENT(
-                        self.__window.actiongroup.get_action('about').activate,
+                        self.__window.open_dialog_about,
                         None,
                     ),
                 ),
@@ -479,8 +434,8 @@ class KeyBindingsMap:
                     INFO(file, 'Delete'),
                     ['Delete'],
                     KEY_EVENT(
-                        self.__window.move_file,
-                        {'move_else_delete': False},
+                        self.__window.trash_file,
+                        None,
                     ),
                 ),
             'enhance_image':
@@ -488,7 +443,7 @@ class KeyBindingsMap:
                     INFO(file, 'Enhance image'),
                     ['e'],
                     KEY_EVENT(
-                        self.__window.actiongroup.get_action('enhance_image').activate,
+                        self.__window.open_dialog_enhance,
                         None,
                     ),
                 ),
@@ -507,7 +462,7 @@ class KeyBindingsMap:
                     ['Insert', 'grave'],
                     KEY_EVENT(
                         self.__window.move_file,
-                        {'move_else_delete': True},
+                        None,
                     ),
                 ),
             'open':
@@ -515,7 +470,7 @@ class KeyBindingsMap:
                     INFO(file, 'Open'),
                     ['<Control>O'],
                     KEY_EVENT(
-                        self.__window.actiongroup.get_action('open').activate,
+                        self.__window.open_dialog_file_chooser,
                         None,
                     ),
                 ),
@@ -524,7 +479,7 @@ class KeyBindingsMap:
                     INFO(file, 'Preferences'),
                     ['F12'],
                     KEY_EVENT(
-                        self.__window.actiongroup.get_action('preferences').activate,
+                        self.__window.open_dialog_preference,
                         None,
                     ),
                 ),
@@ -533,7 +488,7 @@ class KeyBindingsMap:
                     INFO(file, 'Properties'),
                     ['<Alt>Return'],
                     KEY_EVENT(
-                        self.__window.actiongroup.get_action('properties').activate,
+                        self.__window.open_dialog_properties,
                         None,
                     ),
                 ),

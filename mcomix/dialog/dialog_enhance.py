@@ -8,7 +8,7 @@ class DialogEnhance(DialogBase):
     def __init__(self):
         super().__init__()
 
-    def open_dialog(self, event, window):
+    def open_dialog(self, window):
         """
         Create and display the (singleton) image enhancement dialog
         """

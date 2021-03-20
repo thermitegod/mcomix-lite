@@ -137,7 +137,17 @@ class PreferencesDialog(Gtk.Dialog):
             'Automatically open the next archive',
             'AUTO_OPEN_NEXT_ARCHIVE'))
 
+        page.new_section('Manga Mode')
+
+        page.add_row(self._create_pref_check_button(
+            'Default manga mode',
+            'DEFAULT_MANGA_MODE'))
+
         page.new_section('Double Page Mode')
+
+        page.add_row(self._create_pref_check_button(
+            'Default double page mode',
+            'DEFAULT_DOUBLE_PAGE'))
 
         page.add_row(self._create_pref_check_button(
             'Flip two pages in double page mode',
@@ -173,14 +183,17 @@ class PreferencesDialog(Gtk.Dialog):
             'Use fullscreen by default',
             'DEFAULT_FULLSCREEN'))
 
-        page.add_row(self._create_pref_check_button(
-            'Hide all toolbars in fullscreen',
-            'HIDE_ALL_IN_FULLSCREEN'))
-
         page.new_section('Fit To Size Mode')
+
+        page.add_row(Gtk.Label(label='Page zoom mode:'),
+                     self._create_combobox_zoom_mode())
 
         page.add_row(Gtk.Label(label='Fit to width or height:'),
                      self._create_combobox_fitmode())
+
+        page.add_row(self._create_pref_check_button(
+            'Stretch small images',
+            'STRETCH'))
 
         page.add_row(Gtk.Label(label='Fixed size for this mode:'),
                      self._create_pref_spinner(
@@ -436,6 +449,21 @@ class PreferencesDialog(Gtk.Dialog):
 
         return self._create_combobox(items, 'CHECKERED_BG_SIZE')
 
+    def _create_combobox_zoom_mode(self):
+        """
+        Creates combo box to set box size for alpha images
+        """
+
+        items = (
+            ('Best fit', Constants.ZOOM['BEST']),
+            ('Fit to width', Constants.ZOOM['WIDTH']),
+            ('Fit to height', Constants.ZOOM['HEIGHT']),
+            ('Fit to size', Constants.ZOOM['SIZE']),
+            ('Manual fit', Constants.ZOOM['MANUAL']),
+        )
+
+        return self._create_combobox(items, 'ZOOM_MODE')
+
     def _create_combobox_doublepage_as_one(self):
         """
         Creates the ComboBox control for selecting virtual double page options
@@ -559,7 +587,7 @@ class PreferencesDialog(Gtk.Dialog):
                     if preference in ('PIL_SCALING_FILTER', 'SCALING_QUALITY'):
                         self.__window.statusbar.update_image_scaling()
                     self.__window.draw_image()
-                elif preference in ('FIT_TO_SIZE_MODE',):
+                elif preference in ('FIT_TO_SIZE_MODE', 'ZOOM_MODE'):
                     self.__window.change_zoom_mode()
                 elif preference in ('CHECKERED_BG_SIZE',):
                     self.__window.draw_image()
@@ -611,8 +639,7 @@ class PreferencesDialog(Gtk.Dialog):
 
         config[preference] = button.get_active()
 
-        if (preference in ('CHECKERED_BG_FOR_TRANSPARENT_IMAGES', 'AUTO_ROTATE_FROM_EXIF')) or \
-                (preference in ('HIDE_ALL_IN_FULLSCREEN',) and self.__window.is_fullscreen):
+        if preference in ('CHECKERED_BG_FOR_TRANSPARENT_IMAGES', 'AUTO_ROTATE_FROM_EXIF'):
             self.__window.draw_image()
 
         elif preference in ('ANIMATION_BACKGROUND', 'ANIMATION_TRANSFORM'):

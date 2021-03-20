@@ -9,6 +9,11 @@ from send2trash import send2trash
 from mcomix.bookmark_backend import BookmarkBackend
 from mcomix.constants import Constants
 from mcomix.cursor_handler import CursorHandler
+from mcomix.dialog.dialog_about import DialogAbout
+from mcomix.dialog.dialog_enhance import DialogEnhance
+from mcomix.dialog.dialog_file_chooser import DialogFileChooser
+from mcomix.dialog.dialog_preferences import DialogPreference
+from mcomix.dialog.dialog_properties import DialogProperties
 from mcomix.enhance_backend import ImageEnhancer
 from mcomix.event_handler import EventHandler
 from mcomix.file_handler import FileHandler
@@ -20,13 +25,13 @@ from mcomix.keybindings_map import KeyBindingsMap
 from mcomix.layout import FiniteLayout
 from mcomix.lens import MagnifyingLens
 from mcomix.lib.callback import Callback
+from mcomix.menubar import Menubar
 from mcomix.message_dialog import MessageDialog
 from mcomix.pageselect import Pageselector
 from mcomix.preferences import config
 from mcomix.preferences_manager import PreferenceManager
 from mcomix.statusbar import Statusbar
 from mcomix.thumbnail_sidebar import ThumbnailSidebar
-from mcomix.ui import MainUI
 from mcomix.zoom import ZoomModel
 
 
@@ -53,8 +58,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.is_manga_mode = config['DEFAULT_MANGA_MODE']
         self.__page_orientation = self.page_orientation()
         self.previous_size = (None, None)
-        #: Used to remember if changing to fullscreen enabled 'HIDE_ALL'
-        self.__hide_all_forced = False
         # Remember last scroll destination.
         self.__last_scroll_destination = Constants.SCROLL_TO['START']
 
@@ -87,9 +90,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.lens = MagnifyingLens(self)
         self.zoom = ZoomModel()
 
-        self.uimanager = MainUI(self)
-        self.menubar = self.uimanager.get_widget('/Menu')
-        self.actiongroup = self.uimanager.get_action_groups()[0]
+        self.menubar = Menubar(self)
 
         self.keybindings_map = KeyBindingsMap(self).BINDINGS
         self.keybindings = KeybindingManager(self)
@@ -116,54 +117,22 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__main_scrolled_window.set_hexpand(True)
         self.__main_scrolled_window.set_vexpand(True)
         grid.attach(self.statusbar, 0, 2, 2, 1)
+        self.add(grid)
 
-        if config['DEFAULT_DOUBLE_PAGE']:
-            self.actiongroup.get_action('double_page').activate()
+        self.change_zoom_mode()
 
-        if config['DEFAULT_MANGA_MODE']:
-            self.actiongroup.get_action('manga_mode').activate()
-
-        zoom_actions = {Constants.ZOOM['BEST']: 'best_fit_mode',
-                        Constants.ZOOM['WIDTH']: 'fit_width_mode',
-                        Constants.ZOOM['HEIGHT']: 'fit_height_mode',
-                        Constants.ZOOM['SIZE']: 'fit_size_mode',
-                        Constants.ZOOM['MANUAL']: 'fit_manual_mode'}
-
-        zoom_action = zoom_actions[config['ZOOM_MODE']]
-
-        self.actiongroup.get_action(zoom_action).activate()
-
-        if config['STRETCH']:
-            self.actiongroup.get_action('stretch').activate()
-
-        if config['KEEP_TRANSFORMATION']:
-            config['KEEP_TRANSFORMATION'] = False
-            self.actiongroup.get_action('keep_transformation').activate()
-        else:
+        if not config['KEEP_TRANSFORMATION']:
             config['ROTATION'] = 0
             config['VERTICAL_FLIP'] = False
             config['HORIZONTAL_FLIP'] = False
 
-        # List of "toggles" than can be shown/hidden by the user.
-        self.__toggle_list = (
-            # Preference        Action        Widget(s)
-            ('SHOW_MENUBAR', 'menubar', (self.menubar,)),
-            ('SHOW_STATUSBAR', 'statusbar', (self.statusbar,)),
-            ('SHOW_THUMBNAILS', 'thumbnails', (self.thumbnailsidebar,)),
-        )
-
-        # Each "toggle" widget "eats" part of the main layout visible area.
+        # Each widget "eats" part of the main layout visible area.
         self.__toggle_axis = {
             self.thumbnailsidebar: Constants.AXIS['WIDTH'],
             self.statusbar: Constants.AXIS['HEIGHT'],
             self.menubar: Constants.AXIS['HEIGHT'],
         }
 
-        self.actiongroup.get_action('menu_autorotate_width').set_sensitive(False)
-        self.actiongroup.get_action('menu_autorotate_height').set_sensitive(False)
-
-        self.add(grid)
-        grid.show()
         self.__main_scrolled_window.show_all()
 
         self.__main_scrolled_window.set_events(Gdk.EventMask.BUTTON1_MOTION_MASK |
@@ -188,11 +157,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__main_scrolled_window.connect('motion_notify_event', self.event_handler.mouse_move_event)
         self.__main_scrolled_window.connect('drag_data_received', self.event_handler.drag_n_drop_event)
 
-        self.show()
-
-        if config['DEFAULT_FULLSCREEN']:
-            toggleaction = self.actiongroup.get_action('fullscreen')
-            toggleaction.set_active(True)
+        self.show_all()
 
         if open_path:
             self.filehandler.initialize_fileprovider(path=open_path)
@@ -241,61 +206,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.__waiting_for_redraw = True
             GLib.idle_add(self._draw_image, scroll_to, priority=GLib.PRIORITY_HIGH_IDLE)
 
-    def _update_toggle_preference(self, preference: str, toggleaction):
-        """
-        Update "toggle" widget corresponding <preference>.
-
-        Note: the widget visibily itself is left unchanged
-        """
-
-        config[preference] = toggleaction.get_active()
-        if preference == 'HIDE_ALL':
-            self.update_toggles_sensitivity()
-        # Since the size of the drawing area is dependent
-        # on the visible "toggles", redraw the page.
-        self.draw_image()
-
-    def _should_toggle_be_visible(self, preference: str):
-        """
-        Return <True> if "toggle" widget for <preference> should be visible
-        """
-
-        if self.is_fullscreen():
-            visible = not config['HIDE_ALL_IN_FULLSCREEN'] and not config['HIDE_ALL']
-        else:
-            visible = not config['HIDE_ALL']
-        visible &= config[preference]
-        if preference == 'SHOW_THUMBNAILS':
-            visible &= self.filehandler.get_file_loaded()
-            visible &= self.imagehandler.get_number_of_pages() > 0
-        return visible
-
-    def update_toggles_sensitivity(self):
-        """
-        Update each "toggle" widget sensitivity
-        """
-
-        sensitive = True
-        if config['HIDE_ALL'] or (config['HIDE_ALL_IN_FULLSCREEN'] and self.is_fullscreen()):
-            sensitive = False
-        for preference, action, widget_list in self.__toggle_list:
-            self.actiongroup.get_action(action).set_sensitive(sensitive)
-
-    def _update_toggles_visibility(self):
-        """
-        Update each "toggle" widget visibility
-        """
-
-        for preference, action, widget_list in self.__toggle_list:
-            should_be_visible = self._should_toggle_be_visible(preference)
-            for widget in widget_list:
-                # No change in visibility?
-                if should_be_visible != widget.get_visible():
-                    (widget.show if should_be_visible else widget.hide)()
-
     def _draw_image(self, scroll_to: int):
-        self._update_toggles_visibility()
-
         if not self.filehandler.get_file_loaded():
             self._clear_main_area()
             self.__waiting_for_redraw = False
@@ -485,6 +396,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self._update_page_information()
 
     def _on_file_opened(self):
+        self.thumbnailsidebar.show()
         number, count = self.filehandler.get_file_number()
         self.statusbar.set_file_number(number, count)
         self.statusbar.update()
@@ -573,6 +485,15 @@ class MainWindow(Gtk.ApplicationWindow):
     def page_select(self, *args):
         Pageselector(self)
 
+    def rotate_90(self, *args):
+        self.rotate_x(rotation=90)
+
+    def rotate_180(self, *args):
+        self.rotate_x(rotation=180)
+
+    def rotate_270(self, *args):
+        self.rotate_x(rotation=270)
+
     def rotate_x(self, rotation: int, *args):
         config['ROTATION'] = (config['ROTATION'] + rotation) % 360
         self.draw_image()
@@ -585,14 +506,14 @@ class MainWindow(Gtk.ApplicationWindow):
         config['VERTICAL_FLIP'] = not config['VERTICAL_FLIP']
         self.draw_image()
 
-    def change_double_page(self, toggleaction):
-        config['DEFAULT_DOUBLE_PAGE'] = toggleaction.get_active()
+    def change_double_page(self, *args):
+        config['DEFAULT_DOUBLE_PAGE'] = not config['DEFAULT_DOUBLE_PAGE']
         self._update_page_information()
         self.draw_image()
 
-    def change_manga_mode(self, toggleaction):
-        config['DEFAULT_MANGA_MODE'] = toggleaction.get_active()
-        self.is_manga_mode = toggleaction.get_active()
+    def change_manga_mode(self, *args):
+        config['DEFAULT_MANGA_MODE'] = not config['DEFAULT_MANGA_MODE']
+        self.is_manga_mode = config['DEFAULT_MANGA_MODE']
         self.__page_orientation = self.page_orientation()
         self._update_page_information()
         self.draw_image()
@@ -601,34 +522,35 @@ class MainWindow(Gtk.ApplicationWindow):
         window_state = self.get_window().get_state()
         return (window_state & Gdk.WindowState.FULLSCREEN) != 0
 
-    def change_fullscreen(self, toggleaction):
+    def change_fullscreen(self, *args):
         # Disable action until transition if complete.
-        toggleaction.set_sensitive(False)
-        if toggleaction.get_active():
+
+        if self.is_fullscreen():
+            self.unfullscreen()
+        else:
             self.save_window_geometry()
             self.fullscreen()
-        else:
-            self.unfullscreen()
+
         # No need to call draw_image explicitely,
         # as we'll be receiving a window state
         # change or resize event.
 
-    def change_zoom_mode(self, radioaction=None, *args):
-        if radioaction:
-            config['ZOOM_MODE'] = radioaction.get_current_value()
+    def change_zoom_mode(self, value=None, *args):
+        if value:
+            config['ZOOM_MODE'] = value
         self.zoom.set_fit_mode(config['ZOOM_MODE'])
         self.zoom.set_scale_up(config['STRETCH'])
         self.zoom.reset_user_zoom()
         self.draw_image()
 
-    def change_autorotation(self, radioaction=None, *args):
+    def change_autorotation(self, value=None, *args):
         """
         Switches between automatic rotation modes, depending on which
         radiobutton is currently activated
         """
 
-        if radioaction:
-            config['AUTO_ROTATE_DEPENDING_ON_SIZE'] = radioaction.get_current_value()
+        if value:
+            config['AUTO_ROTATE_DEPENDING_ON_SIZE'] = value
         self.draw_image()
 
     def toggle_image_scaling_pil(self):
@@ -669,26 +591,29 @@ class MainWindow(Gtk.ApplicationWindow):
 
         config[config_key] = scale
 
-    def change_stretch(self, toggleaction, *args):
+    def change_stretch(self, *args):
         """
         Toggles stretching small images
         """
 
-        config['STRETCH'] = toggleaction.get_active()
+        config['STRETCH'] = not config['STRETCH']
         self.zoom.set_scale_up(config['STRETCH'])
         self.draw_image()
 
-    def change_menubar_visibility(self, toggleaction):
-        self._update_toggle_preference('SHOW_MENUBAR', toggleaction)
+    def open_dialog_file_chooser(self, *args):
+        DialogFileChooser().open_dialog(self)
 
-    def change_statusbar_visibility(self, toggleaction):
-        self._update_toggle_preference('SHOW_STATUSBAR', toggleaction)
+    def open_dialog_properties(self, *args):
+        DialogProperties().open_dialog(self)
 
-    def change_thumbnails_visibility(self, toggleaction):
-        self._update_toggle_preference('SHOW_THUMBNAILS', toggleaction)
+    def open_dialog_preference(self, *args):
+        DialogPreference().open_dialog(self)
 
-    def change_hide_all(self, toggleaction):
-        self._update_toggle_preference('HIDE_ALL', toggleaction)
+    def open_dialog_enhance(self, *args):
+        DialogEnhance().open_dialog(self)
+
+    def open_dialog_about(self, *args):
+        DialogAbout().open_dialog(self)
 
     @staticmethod
     def change_keep_transformation(*args):
@@ -776,19 +701,17 @@ class MainWindow(Gtk.ApplicationWindow):
         """
         :returns: a 2-tuple with the width and height of the visible part of the main layout area
         """
+
         dimensions = list(self.get_size())
         size = 0
 
-        for preference, action, widget_list in self.__toggle_list:
-            for widget in widget_list:
-                if widget.get_visible():
-                    axis = self.__toggle_axis[widget]
-                    minimum_size, natural_size = widget.get_preferred_size()
-                    if Constants.AXIS['WIDTH'] == axis:
-                        size = natural_size.width
-                    elif Constants.AXIS['HEIGHT'] == axis:
-                        size = natural_size.height
-                    dimensions[axis] -= size
+        for widget, axis in self.__toggle_axis.items():
+            minimum_size, natural_size = widget.get_preferred_size()
+            if Constants.AXIS['WIDTH'] == axis:
+                size = natural_size.width
+            elif Constants.AXIS['HEIGHT'] == axis:
+                size = natural_size.height
+            dimensions[axis] -= size
 
         return tuple(dimensions)
 
@@ -827,7 +750,13 @@ class MainWindow(Gtk.ApplicationWindow):
 
         save_dialog.destroy()
 
-    def move_file(self, move_else_delete: bool = True, *args):
+    def move_file(self, *args):
+        self._move_file(move_else_delete=True)
+
+    def trash_file(self, *args):
+        self._move_file(move_else_delete=False)
+
+    def _move_file(self, move_else_delete: bool = True, *args):
         """
         The currently opened file/archive will be moved to prefs['MOVE_FILE']
         or
@@ -935,9 +864,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
         if Gtk.main_level() > 0:
             Gtk.main_quit()
-
-        if config['HIDE_ALL'] and self.__hide_all_forced and self.fullscreen:
-            config['HIDE_ALL'] = False
 
         # write config file
         self.__preference_manager.write_config_file()

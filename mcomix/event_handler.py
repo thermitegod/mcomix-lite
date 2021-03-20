@@ -61,14 +61,11 @@ class EventHandler:
             # Fullscreen state changed.
             self.__window.was_fullscreen = is_fullscreen
             # Re-enable control, now that transition is complete.
-            toggleaction = self.__window.actiongroup.get_action('fullscreen')
-            toggleaction.set_sensitive(True)
             if is_fullscreen:
                 redraw = True
             else:
                 # Only redraw if we don't need to restore geometry.
                 redraw = not self.__window.restore_window_geometry()
-            self.__window.update_toggles_sensitivity()
             if redraw:
                 self.__window.previous_size = self.__window.get_size()
                 self.__window.draw_image()
@@ -116,7 +113,7 @@ class EventHandler:
         if config['ESCAPE_QUITS']:
             self.__window.terminate_program()
         else:
-            self.__window.actiongroup.get_action('fullscreen').set_active(False)
+            self.__window.change_fullscreen()
 
     def scroll_wheel_event(self, widget, event, *args):
         """
@@ -166,7 +163,7 @@ class EventHandler:
             pass
 
         elif event.button == 2:
-            self.__window.actiongroup.get_action('lens').set_active(True)
+            self.__window.lens.toggle()
 
         elif event.button == 3:
             pass
@@ -185,7 +182,7 @@ class EventHandler:
             pass
 
         elif event.button == 2:
-            self.__window.actiongroup.get_action('lens').set_active(False)
+            self.__window.lens.toggle()
 
         elif event.button == 3:
             pass

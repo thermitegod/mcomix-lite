@@ -165,7 +165,7 @@ class FileHandler:
 
         pass
 
-    def close_file(self):
+    def close_file(self, *args):
         """
         Close the currently opened file and its provider
         """

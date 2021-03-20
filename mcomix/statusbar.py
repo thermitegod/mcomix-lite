@@ -223,7 +223,7 @@ class Statusbar(Gtk.EventBox):
         self.__status.push(self.__context_id, f'    {text}')
 
     def _populate_context_menu(self, label: str, config_key: str, callback: Callable):
-        item = Gtk.CheckMenuItem(label)
+        item = Gtk.CheckMenuItem(label=label)
         item.set_active(config[config_key])
         item.connect('activate', callback)
         item.show_all()

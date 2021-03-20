@@ -15,29 +15,25 @@ class BookmarksMenu(Gtk.Menu):
     as dynamic items corresponding to the current bookmarks
     """
 
-    def __init__(self, ui, window):
+    def __init__(self, window):
         super().__init__()
 
         self.__window = window
 
         self.__window.bookmark_backend.initialize(window)
 
-        self.__actiongroup = Gtk.ActionGroup(name='mcomix-bookmarks')
-        self.__actiongroup.add_actions([
-            ('add_bookmark', 'mcomix-add-bookmark', 'Add _Bookmark',
-             '<Control>D', None, self._add_current_to_bookmarks),
-            ('edit_bookmarks', None, '_Edit Bookmarks...',
-             '<Control>B', None, self._edit_bookmarks)])
+        item = Gtk.MenuItem()
+        item.set_label('Add Bookmark')
+        item.connect('activate', self._add_current_to_bookmarks)
+        self.append(item)
 
-        action = self.__actiongroup.get_action('add_bookmark')
-        action.set_accel_group(ui.get_accel_group())
-        self.__add_button = action.create_menu_item()
-        self.append(self.__add_button)
+        item = Gtk.MenuItem()
+        item.set_label('Edit Bookmarks')
+        item.connect('activate', self._edit_bookmarks)
+        self.append(item)
 
-        action = self.__actiongroup.get_action('edit_bookmarks')
-        action.set_accel_group(ui.get_accel_group())
-        self.__edit_button = action.create_menu_item()
-        self.append(self.__edit_button)
+        separator = Gtk.SeparatorMenuItem()
+        self.append(separator)
 
         # Re-create the bookmarks menu if one was added/removed
         self._create_bookmark_menuitems()
@@ -48,18 +44,13 @@ class BookmarksMenu(Gtk.Menu):
 
     def _create_bookmark_menuitems(self):
         # Delete all old menu entries
-        for item in self.get_children():
-            if item not in (self.__add_button, self.__edit_button):
+        for idx, item in enumerate(self.get_children()):
+            # do not remove add/edit/sep
+            if idx > 2:
                 self.remove(item)
 
-        # Add separator
-        bookmarks = self.__window.bookmark_backend.get_bookmarks()
-        if bookmarks:
-            separator = Gtk.SeparatorMenuItem()
-            separator.show()
-            self.append(separator)
-
         # Add new bookmarks
+        bookmarks = self.__window.bookmark_backend.get_bookmarks()
         for bookmark in bookmarks:
             self.add_bookmark(bookmark)
 
@@ -69,7 +60,6 @@ class BookmarksMenu(Gtk.Menu):
         """
 
         bookmark = bookmark.clone()
-        bookmark.show()
         self.insert(bookmark, 3)
 
     def _add_current_to_bookmarks(self, *args):
@@ -88,11 +78,3 @@ class BookmarksMenu(Gtk.Menu):
         """
 
         BookmarksDialog(self.__window, self.__window.bookmark_backend)
-
-    def set_sensitive(self, loaded):
-        """
-        Set the sensitivities of menu items as appropriate if <loaded>
-        represents whether a file is currently loaded in the main program or not
-        """
-
-        self.__actiongroup.get_action('add_bookmark').set_sensitive(loaded)

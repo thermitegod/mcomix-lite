@@ -7,7 +7,7 @@ class DialogBase:
 
         self.dialog = None
 
-    def open_dialog(self, event, window):
+    def open_dialog(self, window):
         """
         Create and display the given dialog
         """
