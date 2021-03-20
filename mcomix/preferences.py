@@ -59,6 +59,7 @@ config = {
     'STATUSBAR_FULLPATH': True,
     'STATUSBAR_SEPARATOR': '|',
     'STATUSBAR_SHOW_SCALE': True,
+    'STATUSBAR_MARGIN_PADDING': 2,
     'BOOKMARK_SHOW_PATH': False,
     'SI_UNITS': False,
     'MAX_THREADS': 16,

@@ -25,6 +25,10 @@ class Statusbar(Gtk.EventBox):
         # page number, file number, page resolution, archive filename,
         # page filename, page filesize, archive filesize, view mode
         self.__status = Gtk.Statusbar()
+
+        self.__status.set_margin_top(config['STATUSBAR_MARGIN_PADDING'])
+        self.__status.set_margin_bottom(config['STATUSBAR_MARGIN_PADDING'])
+
         self.add(self.__status)
 
         self.__context_id = self.__status.get_context_id('statusbar')
