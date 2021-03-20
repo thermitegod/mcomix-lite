@@ -17,7 +17,9 @@ class Statusbar(Gtk.EventBox):
     def __init__(self):
         super().__init__()
 
-        self.__spacing = 5
+        spacing = 5
+        sep = config['STATUSBAR_SEPARATOR']
+        self.__sep = f'{sep:^{spacing}}'
 
         # Status text layout
         # page number, file number, page resolution, archive filename,
@@ -196,28 +198,26 @@ class Statusbar(Gtk.EventBox):
         Set the statusbar to display the current state
         """
 
-        sep = config['STATUSBAR_SEPARATOR']
-        s = f'{sep:^{self.__spacing}}'
         text = ''
 
         if config['STATUSBAR_FIELD_PAGE_NUMBERS']:
-            text += f'{self.__total_page_numbers}{s}'
+            text += f'{self.__total_page_numbers}{self.__sep}'
         if config['STATUSBAR_FIELD_FILE_NUMBERS']:
-            text += f'{self.__total_file_numbers}{s}'
+            text += f'{self.__total_file_numbers}{self.__sep}'
         if config['STATUSBAR_FIELD_PAGE_RESOLUTION']:
-            text += f'{self.__page_resolution}{s}'
+            text += f'{self.__page_resolution}{self.__sep}'
         if config['STATUSBAR_FIELD_ARCHIVE_NAME']:
-            text += f'{self.__archive_filename}{s}'
+            text += f'{self.__archive_filename}{self.__sep}'
         if config['STATUSBAR_FIELD_PAGE_FILENAME']:
-            text += f'{self.__page_filename}{s}'
+            text += f'{self.__page_filename}{self.__sep}'
         if config['STATUSBAR_FIELD_PAGE_FILESIZE']:
-            text += f'{self.__page_filesize}{s}'
+            text += f'{self.__page_filesize}{self.__sep}'
         if config['STATUSBAR_FIELD_ARCHIVE_FILESIZE']:
-            text += f'{self.__archive_filesize}{s}'
+            text += f'{self.__archive_filesize}{self.__sep}'
         if config['STATUSBAR_FIELD_PAGE_SCALING']:
-            text += f'{self.__image_scaling}{s}'
+            text += f'{self.__image_scaling}{self.__sep}'
         if config['STATUSBAR_FIELD_VIEW_MODE']:
-            text += f'{self.__current_view_mode}{s}'
+            text += f'{self.__current_view_mode}{self.__sep}'
 
         self.__status.pop(self.__context_id)
         self.__status.push(self.__context_id, f'    {text}')
