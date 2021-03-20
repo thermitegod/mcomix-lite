@@ -31,7 +31,6 @@ class PropertiesPage(Gtk.ScrolledWindow):
         topbox.pack_start(borderbox, True, True, 0)
         insidebox = Gtk.EventBox()
         insidebox.set_border_width(1)
-        insidebox.set_state(Gtk.StateType.ACTIVE)
         borderbox.add(insidebox)
         self.__insidebox = insidebox
         self.__mainbox = None
