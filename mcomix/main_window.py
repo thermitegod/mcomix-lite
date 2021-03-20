@@ -30,7 +30,7 @@ from mcomix.ui import MainUI
 from mcomix.zoom import ZoomModel
 
 
-class MainWindow(Gtk.Window):
+class MainWindow(Gtk.ApplicationWindow):
     """
     The main window, is created at start and terminates the program when closed
     """
