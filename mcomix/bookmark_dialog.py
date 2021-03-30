@@ -44,7 +44,6 @@ class BookmarksDialog(Gtk.Dialog):
                                          GObject.TYPE_STRING, GObject.TYPE_STRING, Bookmark)
 
         self.__treeview = Gtk.TreeView(model=self.__liststore)
-        self.__treeview.set_rules_hint(True)
         self.__treeview.set_reorderable(True)
         # search by typing first few letters of name
         self.__treeview.set_search_column(1)
