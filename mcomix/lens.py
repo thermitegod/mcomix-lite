@@ -239,7 +239,9 @@ class MagnifyingLens:
             int(math.ceil(source_mag * subpixbuf.get_height())),
             config['SCALING_QUALITY'])
 
-        if rotation == 90:
+        if rotation == 0:
+            subpixbuf = subpixbuf.rotate_simple(GdkPixbuf.PixbufRotation.NONE)
+        elif rotation == 90:
             subpixbuf = subpixbuf.rotate_simple(GdkPixbuf.PixbufRotation.CLOCKWISE)
         elif rotation == 180:
             subpixbuf = subpixbuf.rotate_simple(GdkPixbuf.PixbufRotation.UPSIDEDOWN)

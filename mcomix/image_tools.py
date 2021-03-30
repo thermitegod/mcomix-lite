@@ -37,7 +37,7 @@ class _ImageTools:
     @staticmethod
     def rotate_pixbuf(src, rotation: int):
         if rotation == 0:
-            return src
+            return src.rotate_simple(GdkPixbuf.PixbufRotation.NONE)
         elif rotation == 90:
             return src.rotate_simple(GdkPixbuf.PixbufRotation.CLOCKWISE)
         elif rotation == 180:
