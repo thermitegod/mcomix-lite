@@ -133,8 +133,6 @@ class MainWindow(Gtk.ApplicationWindow):
             self.menubar: Constants.AXIS['HEIGHT'],
         }
 
-        self.__main_scrolled_window.show_all()
-
         self.__main_layout.set_events(Gdk.EventMask.BUTTON1_MOTION_MASK |
                                       Gdk.EventMask.BUTTON2_MOTION_MASK |
                                       Gdk.EventMask.BUTTON_PRESS_MASK |
