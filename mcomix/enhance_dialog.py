@@ -190,7 +190,7 @@ class EnhanceImageDialog(Gtk.Dialog):
         self.__enhancer.signal_update()
 
     def _response(self, dialog, response: int):
-        if response in [Gtk.ResponseType.OK, Gtk.ResponseType.DELETE_EVENT]:
+        if response in (Gtk.ResponseType.OK, Gtk.ResponseType.DELETE_EVENT):
             self.destroy()
 
         elif response == Gtk.ResponseType.APPLY:

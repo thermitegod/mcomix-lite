@@ -185,7 +185,7 @@ class MagnifyingLens:
             rotation += ImageTools.get_implied_rotation(source_pixbuf)
             rotation %= 360
 
-        if rotation in [90, 270]:
+        if rotation in (90, 270):
             scale = source_pixbuf.get_height() / image_size[0]
         else:
             scale = source_pixbuf.get_width() / image_size[0]
