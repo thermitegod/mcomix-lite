@@ -70,10 +70,7 @@ class ImageHandler:
         sure that number_of_bufs is as small as possible
         """
 
-        result = []
-        for i in range(number_of_bufs):
-            result.append(self._get_pixbuf(self.__current_image_index + i))
-        return result
+        return [self._get_pixbuf(self.__current_image_index + i) for i in range(number_of_bufs)]
 
     def do_cacheing(self):
         """
