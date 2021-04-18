@@ -121,33 +121,34 @@ class EventHandler:
         wheel flips pages in best fit mode and scrolls the scrollbars otherwise
         """
 
-        if not config['FLIP_WITH_WHEEL']:
-            return
-
         if event.get_state() & Gdk.ModifierType.BUTTON2_MASK:
             return
 
-        has_delta, delta_x, delta_y = event.get_scroll_deltas()
+        deltas = event.get_scroll_deltas()
 
-        if delta_y < 0:
+        if deltas.delta_y < 0:
             # Gdk.ScrollDirection.UP
             if event.get_state() & Gdk.ModifierType.CONTROL_MASK:
                 self.__window.manual_zoom_in()
             else:
-                self.scroll_with_flipping(0, -config['PIXELS_TO_SCROLL_PER_MOUSE_WHEEL_EVENT'])
-        elif delta_y > 0:
+                if config['FLIP_WITH_WHEEL']:
+                    self.scroll_with_flipping(0, -config['PIXELS_TO_SCROLL_PER_MOUSE_WHEEL_EVENT'])
+        elif deltas.delta_y > 0:
             # Gdk.ScrollDirection.DOWN
             if event.get_state() & Gdk.ModifierType.CONTROL_MASK:
                 self.__window.manual_zoom_out()
             else:
-                self.scroll_with_flipping(0, config['PIXELS_TO_SCROLL_PER_MOUSE_WHEEL_EVENT'])
-        elif delta_x > 0:
+                if config['FLIP_WITH_WHEEL']:
+                    self.scroll_with_flipping(0, config['PIXELS_TO_SCROLL_PER_MOUSE_WHEEL_EVENT'])
+        elif not config['FLIP_WITH_WHEEL']:
+            return
+        elif deltas.delta_x > 0:
             # Gdk.ScrollDirection.RIGHT
             if self.get_manga_flip_direction():
                 self.__window.flip_page(number_of_pages=-1)
             else:
                 self.__window.flip_page(number_of_pages=+1)
-        elif delta_x < 0:
+        elif deltas.delta_x < 0:
             # Gdk.ScrollDirection.LEFT
             if self.get_manga_flip_direction():
                 self.__window.flip_page(number_of_pages=+1)
