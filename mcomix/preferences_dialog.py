@@ -357,12 +357,17 @@ class PreferencesDialog(Gtk.Dialog):
         page.add_row(Gtk.Label(label='Move file location (must be relative)'),
                      self._create_pref_text_box('MOVE_FILE'))
 
-        page.new_section('Extraction And Cache')
+        page.new_section('Page Cache')
 
-        page.add_row(Gtk.Label(label='Maximum number of pages to store in the cache:'),
+        page.add_row(Gtk.Label(label='Pages to cache ahead of current page:'),
                      self._create_pref_spinner(
-                         'MAX_PAGES_TO_CACHE',
-                         1, 2, 10000, 1, 3, 0))
+                         'PAGE_CACHE_FORWARD',
+                         1, 2, 10, 2, 3, 0))
+
+        page.add_row(Gtk.Label(label='Pages to cache behind the current page:'),
+                     self._create_pref_spinner(
+                         'PAGE_CACHE_BEHIND',
+                         1, 2, 50, 2, 3, 0))
 
         page.new_section('Magnifying Lens')
 
@@ -678,7 +683,7 @@ class PreferencesDialog(Gtk.Dialog):
         if preference in ('THUMBNAIL_SIZE',):
             self.__window.thumbnailsidebar.resize()
             self.__window.draw_image()
-        elif preference in ('MAX_PAGES_TO_CACHE',):
+        elif preference in ('PAGE_CACHE_FORWARD', 'PAGE_CACHE_BEHIND'):
             self.__window.imagehandler.do_cacheing()
         elif preference in ('FIT_TO_SIZE_PX',):
             self.__window.change_zoom_mode()

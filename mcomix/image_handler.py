@@ -49,8 +49,6 @@ class ImageHandler:
         self.__wanted_pixbufs = []
         #: Pixbuf map from page > Pixbuf
         self.__raw_pixbufs = {}
-        #: How many pages to keep in cache
-        self.__cache_pages = config['MAX_PAGES_TO_CACHE']
 
         self.__window.filehandler.file_available += self._file_available
 
@@ -462,24 +460,16 @@ class ImageHandler:
         total_pages = self.get_number_of_pages()
 
         page -= 1
-        harf = self.__cache_pages // 2
-        start = max(0, page - harf)
-        end = start + self.__cache_pages
-        page_list = list(range(total_pages)[start:end])
 
-        if end > total_pages:
-            start = page_list[0] - (self.__cache_pages - len(page_list))
-            page_list.extend(range(max(0, start), page_list[0]))
-        page_list.sort()
+        cache_start = page - config['PAGE_CACHE_BEHIND']
+        if cache_start < 0:
+            cache_start = 0
 
-        # move page before now to the end
-        pos = page_list.index(page)
-        head = page_list[:pos]
-        page_list = page_list[pos:].copy()
-        page_list.extend(reversed(head))
+        cache_end = page + config['PAGE_CACHE_FORWARD']
+        if cache_end > total_pages:
+            cache_end = total_pages
 
-        logger.debug(f'Ask for priority extraction around page: \'{page + 1}\': '
-                     f'\'{" ".join([str(n + 1) for n in page_list])}\'')
+        page_list = list(range(total_pages)[cache_start:cache_end])
 
         files = [self.__image_files[index]
                  for index in page_list
