@@ -25,7 +25,7 @@ class BookmarksDialog(Gtk.Dialog):
 
         self.set_resizable(True)
         self.set_default_response(Gtk.ResponseType.CLOSE)
-        # scroll area fill to the edge (TODO window should not really be a dialog)
+        # scroll area fill to the edge
         self.set_border_width(0)
 
         scrolled = Gtk.ScrolledWindow()
