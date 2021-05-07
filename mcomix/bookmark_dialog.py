@@ -17,12 +17,6 @@ class BookmarksDialog(Gtk.Dialog):
     def __init__(self, window, bookmarks_store):
         super().__init__(title='Edit Bookmarks', destroy_with_parent=True)
 
-        self.__SORT_ICON = 0
-        self.__SORT_NAME = 1
-        self.__SORT_PAGE = 2
-        self.__SORT_PATH = 3
-        self.__SORT_DATE = 4
-
         self.set_transient_for(window)
 
         self.add_buttons(Gtk.STOCK_REMOVE, Constants.RESPONSE['REMOVE'], Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
@@ -43,65 +37,72 @@ class BookmarksDialog(Gtk.Dialog):
         self.__liststore = Gtk.ListStore(GdkPixbuf.Pixbuf, GObject.TYPE_STRING, GObject.TYPE_STRING,
                                          GObject.TYPE_STRING, GObject.TYPE_STRING, Bookmark)
 
-        self.__treeview = Gtk.TreeView(model=self.__liststore)
-        self.__treeview.set_reorderable(True)
+        treeview = Gtk.TreeView(model=self.__liststore)
+        treeview.set_reorderable(True)
         # search by typing first few letters of name
-        self.__treeview.set_search_column(1)
-        self.__treeview.set_enable_search(True)
-        self.__treeview.set_headers_clickable(True)
-        self._selection = self.__treeview.get_selection()
+        treeview.set_search_column(1)
+        treeview.set_enable_search(True)
+        treeview.set_headers_clickable(True)
 
-        scrolled.add(self.__treeview)
+        self.__selection = treeview.get_selection()
+
+        scrolled.add(treeview)
+
+        pos_sort_icon = 0
+        pos_sort_name = 1
+        pos_sort_page = 2
+        pos_sort_path = 3
+        pos_sort_date = 4
 
         cellrenderer_text = Gtk.CellRendererText()
         cellrenderer_pbuf = Gtk.CellRendererPixbuf()
 
-        self.__icon_col = Gtk.TreeViewColumn('Type', cellrenderer_pbuf)
-        self.__name_col = Gtk.TreeViewColumn('Name', cellrenderer_text)
-        self.__page_col = Gtk.TreeViewColumn('Pages', cellrenderer_text)
-        self.__path_col = Gtk.TreeViewColumn('Path', cellrenderer_text)
-        self.__date_col = Gtk.TreeViewColumn('Added', cellrenderer_text)
+        icon_col = Gtk.TreeViewColumn('Type', cellrenderer_pbuf)
+        name_col = Gtk.TreeViewColumn('Name', cellrenderer_text)
+        page_col = Gtk.TreeViewColumn('Pages', cellrenderer_text)
+        path_col = Gtk.TreeViewColumn('Path', cellrenderer_text)
+        date_col = Gtk.TreeViewColumn('Added', cellrenderer_text)
 
-        self.__treeview.append_column(self.__icon_col)
-        self.__treeview.append_column(self.__name_col)
-        self.__treeview.append_column(self.__page_col)
-        self.__treeview.append_column(self.__path_col)
-        self.__treeview.append_column(self.__date_col)
+        treeview.append_column(icon_col)
+        treeview.append_column(name_col)
+        treeview.append_column(page_col)
+        treeview.append_column(path_col)
+        treeview.append_column(date_col)
 
-        self.__icon_col.set_attributes(cellrenderer_pbuf, pixbuf=self.__SORT_ICON)
-        self.__name_col.set_attributes(cellrenderer_text, text=self.__SORT_NAME)
-        self.__page_col.set_attributes(cellrenderer_text, text=self.__SORT_PAGE)
-        self.__path_col.set_attributes(cellrenderer_text, text=self.__SORT_PATH)
-        self.__date_col.set_attributes(cellrenderer_text, text=self.__SORT_DATE)
-        self.__name_col.set_expand(True)
+        icon_col.set_attributes(cellrenderer_pbuf, pixbuf=pos_sort_icon)
+        name_col.set_attributes(cellrenderer_text, text=pos_sort_name)
+        page_col.set_attributes(cellrenderer_text, text=pos_sort_page)
+        path_col.set_attributes(cellrenderer_text, text=pos_sort_path)
+        date_col.set_attributes(cellrenderer_text, text=pos_sort_date)
+        name_col.set_expand(True)
 
-        self.__liststore.set_sort_func(self.__SORT_ICON, self._sort_model, ('_archive_type', '_name', '_page'))
-        self.__liststore.set_sort_func(self.__SORT_NAME, self._sort_model, ('_name', '_page', '_path'))
-        self.__liststore.set_sort_func(self.__SORT_PAGE, self._sort_model, ('_numpages', '_page', '_name'))
-        self.__liststore.set_sort_func(self.__SORT_DATE, self._sort_model, ('_date_added',))
+        icon_col.set_sort_column_id(pos_sort_icon)
+        name_col.set_sort_column_id(pos_sort_name)
+        page_col.set_sort_column_id(pos_sort_page)
+        path_col.set_sort_column_id(pos_sort_path)
+        date_col.set_sort_column_id(pos_sort_date)
 
-        self.__icon_col.set_sort_column_id(self.__SORT_ICON)
-        self.__name_col.set_sort_column_id(self.__SORT_NAME)
-        self.__page_col.set_sort_column_id(self.__SORT_PAGE)
-        self.__path_col.set_sort_column_id(self.__SORT_PATH)
-        self.__date_col.set_sort_column_id(self.__SORT_DATE)
-
-        self.__icon_col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
-        self.__name_col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
-        self.__page_col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
-        self.__path_col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
-        self.__date_col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
+        icon_col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
+        name_col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
+        page_col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
+        path_col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
+        date_col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
         if not config['BOOKMARK_SHOW_PATH']:
-            self.__path_col.set_visible(False)
+            path_col.set_visible(False)
+
+        self.__liststore.set_sort_func(pos_sort_icon, self._sort_model, ('_archive_type', '_name', '_page'))
+        self.__liststore.set_sort_func(pos_sort_name, self._sort_model, ('_name', '_page', '_path'))
+        self.__liststore.set_sort_func(pos_sort_page, self._sort_model, ('_numpages', '_page', '_name'))
+        self.__liststore.set_sort_func(pos_sort_date, self._sort_model, ('_date_added',))
 
         self.resize(config['BOOKMARK_WIDTH'], config['BOOKMARK_HEIGHT'])
 
         self.connect('response', self._response)
         self.connect('delete_event', self._close)
 
-        self.__treeview.connect('key_press_event', self._key_press_event)
-        self.__treeview.connect('row_activated', self._bookmark_activated)
+        treeview.connect('key_press_event', self._key_press_event)
+        treeview.connect('row_activated', self._bookmark_activated)
 
         for bookmark in self.__bookmarks_store.get_bookmarks():
             self._add_bookmark(bookmark)
@@ -120,7 +121,7 @@ class BookmarksDialog(Gtk.Dialog):
         Remove the currently selected bookmark from the dialog and from the store
         """
 
-        treeiter = self._selection.get_selected()[1]
+        treeiter = self.__selection.get_selected()[1]
         if treeiter is not None:
             bookmark = self.__liststore.get_value(treeiter, 5)
             self.__liststore.remove(treeiter)
