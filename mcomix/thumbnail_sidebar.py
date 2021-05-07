@@ -178,7 +178,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         """
 
         size = config['THUMBNAIL_SIZE']
-        pixbuf = self.__window.imagehandler.get_thumbnail(page=uid, size=(size, size), nowait=True)
+        pixbuf = self.__window.imagehandler.get_thumbnail(page=uid, size=(size, size))
         if pixbuf is not None:
             pixbuf = ImageTools.add_border(pixbuf, self.__border_size)
 

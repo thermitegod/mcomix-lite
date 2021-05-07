@@ -403,7 +403,7 @@ class ImageHandler:
 
         return ImageTools.get_image_mime(page_path)
 
-    def get_thumbnail(self, page: int = None, size: tuple = (128, 128), nowait: bool = False):
+    def get_thumbnail(self, page: int, size: tuple):
         """
         Return a thumbnail pixbuf of <page> that fit in a box with
         dimensions <width>x<height>. Return a thumbnail for the current
@@ -411,7 +411,7 @@ class ImageHandler:
         If <nowait> is True, don't wait for <page> to be available
         """
 
-        if not self._wait_on_page(page, check_only=nowait):
+        if not self._is_page_extracted(page=page):
             # Page is not available!
             return None
 
@@ -427,23 +427,26 @@ class ImageHandler:
             logger.error(f'Exception: {ex}')
             return None
 
-    def _wait_on_page(self, page: int, check_only: bool = False):
-        """
-        Block the running (main) thread until the file corresponding to
-        image <page> has been fully extracted.
-        If <check_only> is True, only check (and return status), don't wait
-        """
-
+    def _is_page_extracted(self, page: int):
         if page is None:
             index = self.__current_image_index
         else:
             index = page - 1
         if index in self.__available_images:
-            # Already extracted!
+            # page is extracted
             return True
-        if check_only:
-            # Asked for check only...
-            return False
+
+        # page is not extracted
+        return False
+
+    def _wait_on_page(self, page: int):
+        """
+        Block the running (main) thread until the file corresponding to
+        image <page> has been fully extracted.
+        """
+
+        if self._is_page_extracted(page=page):
+            return True
 
         logger.debug(f'Waiting for page: \'{page}\'')
         path = self.get_path_to_page(page)

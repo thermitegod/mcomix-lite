@@ -134,7 +134,7 @@ class Pageselector(Gtk.Dialog):
         A transparent image will be used if the page is not yet available
         """
 
-        return page, self.__window.imagehandler.get_thumbnail(page, size=(width, height), nowait=True)
+        return page, self.__window.imagehandler.get_thumbnail(page=page, size=(width, height))
 
     def _generate_thumbnail_cb(self, params):
         page, pixbuf = params
