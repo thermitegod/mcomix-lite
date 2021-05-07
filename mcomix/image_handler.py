@@ -60,7 +60,7 @@ class ImageHandler:
         Pixbufs not found in cache are fetched from disk first
         """
 
-        self._cache_pixbuf(index)
+        self._cache_pixbuf(index, force_return=False)
         return self.__raw_pixbufs[index]
 
     def get_pixbufs(self, number_of_bufs: int):
@@ -105,13 +105,14 @@ class ImageHandler:
         finally:
             self.__lock.release()
 
-    def _cache_pixbuf(self, index: int):
+    def _cache_pixbuf(self, index: int, force_return: bool = True):
         self._wait_on_page(index + 1)
         with self.__cache_lock[index]:
             if index in self.__raw_pixbufs:
                 return
             with self.__lock:
-                if index not in self.__wanted_pixbufs:
+                if index not in self.__wanted_pixbufs and force_return:
+                    print(1)
                     return
             logger.debug(f'Caching page: \'{index + 1}\'')
             try:
@@ -461,7 +462,7 @@ class ImageHandler:
         total_pages = self.get_number_of_pages()
 
         page -= 1
-        harf = self.__cache_pages // 2 - 1
+        harf = self.__cache_pages // 2
         start = max(0, page - harf)
         end = start + self.__cache_pages
         page_list = list(range(total_pages)[start:end])
