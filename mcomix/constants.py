@@ -31,8 +31,8 @@ class _Constants:
         except KeyError:
             logger.warning('Not using XDG dirs, falling back to hardcoded paths')
             self.PATHS = {
-                'CONFIG': self.HOME / '.config' / self.PROG_NAME,
-                'DATA': self.HOME / '.local/share' / self.PROG_NAME,
+                'CONFIG': Path(self.HOME) / '.config' / self.PROG_NAME,
+                'DATA': Path(self.HOME) / '.local/share' / self.PROG_NAME,
                 'CACHE': Path() / '/tmp' / self.PROG_NAME,
             }
 
