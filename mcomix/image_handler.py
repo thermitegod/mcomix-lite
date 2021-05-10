@@ -469,7 +469,7 @@ class ImageHandler:
         if cache_end > total_pages:
             cache_end = total_pages
 
-        page_list = list(range(total_pages)[cache_start:cache_end])
+        page_list = list(range(cache_start, cache_end))
 
         files = [self.__image_files[index]
                  for index in page_list
