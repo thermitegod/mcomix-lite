@@ -767,7 +767,7 @@ class MainWindow(Gtk.ApplicationWindow):
             if move:
                 Path.rename(current_file, target_file)
             else:
-                send2trash(current_file)
+                send2trash(bytes(current_file))
 
         if move_else_delete:
             target_dir = Path() / current_file.parent / config['MOVE_FILE']
