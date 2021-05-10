@@ -770,8 +770,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
             if page > self.imagehandler.get_number_of_pages():
                 page = self.imagehandler.get_number_of_pages()
-            elif page < 1:
-                page = 1
 
             page_name = self.imagehandler.get_page_data(page=page, filename=True)
             page_path = self.imagehandler.get_path_to_page(page=page)
