@@ -54,6 +54,8 @@ class BookmarksMenu(Gtk.Menu):
         for bookmark in bookmarks:
             self.add_bookmark(bookmark)
 
+        self.show_all()
+
     def add_bookmark(self, bookmark):
         """
         Add <bookmark> to the menu
