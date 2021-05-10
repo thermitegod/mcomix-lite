@@ -10,7 +10,7 @@ from loguru import logger
 from mcomix.archive_tools import ArchiveTools
 from mcomix.lib.callback import Callback
 from mcomix.lib.exceptions import ArchiveException
-from mcomix.lib.mt import GlobalThreadPool
+from mcomix.lib.threadpool import GlobalThreadPool
 
 
 class Extractor:

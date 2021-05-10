@@ -8,7 +8,7 @@ import uuid
 from gi.repository import Gtk
 
 from mcomix.lib.exceptions import MissingPixbuf
-from mcomix.lib.mt import GlobalThreadPool, Lock
+from mcomix.lib.threadpool import GlobalThreadPool, Lock
 
 
 class ThumbnailViewBase:

@@ -7,7 +7,7 @@ extraction and adding new archive formats
 
 from pathlib import Path
 
-from mcomix.lib.mt import Lock
+from mcomix.lib.threadpool import Lock
 
 
 class BaseArchive:

@@ -5,7 +5,7 @@
 from gi.repository import Gtk
 
 from mcomix.lib.callback import Callback
-from mcomix.lib.mt import GlobalThreadPool
+from mcomix.lib.threadpool import GlobalThreadPool
 from mcomix.preferences import config
 
 

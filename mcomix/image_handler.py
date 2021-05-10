@@ -11,7 +11,7 @@ from mcomix.constants import Constants
 from mcomix.file_size import FileSize
 from mcomix.image_tools import ImageTools
 from mcomix.lib.callback import Callback
-from mcomix.lib.mt import GlobalThreadPool, Lock
+from mcomix.lib.threadpool import GlobalThreadPool, Lock
 from mcomix.preferences import config
 from mcomix.thumbnail_tools import Thumbnailer
 
