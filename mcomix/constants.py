@@ -21,7 +21,7 @@ class _Constants:
         self.VERSION = '3.2.0-dev'
 
         self.PROG_NAME = self.APPNAME.lower()
-        self.HOME = str(Path.home())
+        self.HOME = Path.home()
         try:
             self.PATHS = {
                 'CONFIG': Path() / os.environ['XDG_CONFIG_HOME'] / self.PROG_NAME,
