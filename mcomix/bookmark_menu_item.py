@@ -21,7 +21,7 @@ class Bookmark(Gtk.ImageMenuItem):
         self._file_handler = file_handler
 
         self._name = name
-        self._path = path
+        self._path = str(path)
         self._page = page
         self._numpages = numpages
         self._date_added = datetime.fromtimestamp(epoch)
@@ -44,18 +44,18 @@ class Bookmark(Gtk.ImageMenuItem):
         Open the file and page the bookmark represents
         """
 
-        if self._file_handler.get_base_path() != self._path:
+        if self._file_handler.get_base_path() != Path(self._path):
             self._file_handler.initialize_fileprovider(path=[Path(self._path)])
             self._file_handler.open_file(path=Path(self._path), start_page=self._page)
         else:
             self.__window.set_page(self._page)
 
-    def same_path(self, path: Path):
+    def same_path(self, path: str):
         """
         Return True if the bookmark is for the file <path>
         """
 
-        return path == Path(self._path)
+        return Path(path) == Path(self._path)
 
     def same_page(self, page):
         """
