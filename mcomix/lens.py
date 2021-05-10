@@ -80,7 +80,7 @@ class MagnifyingLens:
         window = self.__window.get_main_layout().get_bin_window()
         window.begin_paint_rect(draw_region)
 
-        self._clear_lens()
+        self._clear_lens(rectangle)
 
         cr = window.cairo_create()
         surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 0, window)
@@ -110,7 +110,7 @@ class MagnifyingLens:
         # Don't forget 1 pixel border...
         return lens_x, lens_y, width + 2, height + 2
 
-    def _clear_lens(self):
+    def _clear_lens(self, current_lens_region=None):
         """
         Invalidates the area that was damaged by the last call to draw_lens
         """
@@ -119,9 +119,54 @@ class MagnifyingLens:
             return
 
         window = self.__window.get_main_layout().get_bin_window()
+
+        lrect = Gdk.Rectangle()
+        lrect.x, lrect.y, lrect.width, lrect.height = self.__last_lens_rect
+
+        if not current_lens_region:
+            window.invalidate_rect(lrect, True)
+            return
+
         crect = Gdk.Rectangle()
-        crect.x, crect.y, crect.width, crect.height = self.__last_lens_rect
-        window.invalidate_rect(crect, True)
+
+        crect.x, crect.y, crect.width, crect.height = current_lens_region
+        rwidth = crect.width
+        rheigt = crect.height
+
+        intersect_v = Gdk.Rectangle()
+
+        if crect.x - lrect.x > 0:
+            # movement to the right
+            intersect_v.x = lrect.x
+            intersect_v.y = lrect.y
+            intersect_v.width = crect.x - lrect.x
+            intersect_v.height = rheigt
+        else:
+            # movement to the left
+            intersect_v.x = crect.x + rwidth
+            intersect_v.y = crect.y
+            intersect_v.width = lrect.x - crect.x
+            intersect_v.height = rheigt
+
+        window.invalidate_rect(intersect_v, True)
+
+        intersect_h = Gdk.Rectangle()
+
+        if crect.y - lrect.y > 0:
+            # movement down
+            intersect_h.x = lrect.x
+            intersect_h.y = lrect.y
+            intersect_h.width = rwidth
+            intersect_h.height = crect.y - lrect.y
+        else:
+            # movement up
+            intersect_h.x = lrect.x
+            intersect_h.y = rheigt + crect.y
+            intersect_h.width = rwidth
+            intersect_h.height = lrect.y - crect.y
+
+        window.invalidate_rect(intersect_h, True)
+
         window.process_updates(True)
         self.__last_lens_rect = None
 
