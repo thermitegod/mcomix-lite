@@ -756,7 +756,7 @@ class MainWindow(Gtk.ApplicationWindow):
             dialog.set_text(f'Extract Left or Right page?')
             result = dialog.run()
 
-            if result == Gtk.ResponseType.CANCEL:
+            if result not in (response_left, response_right):
                 return None
 
             page = self.imagehandler.get_current_page()
