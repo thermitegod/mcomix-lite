@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import math
+from typing import Callable
 
 from gi.repository import GdkPixbuf
 
@@ -45,11 +46,11 @@ class AnimeFrameBuffer:
         self.__framelist[index] = (pixbuf, duration)
         self.__duration = math.gcd(duration, self.__duration)
 
-    def copy(self):
+    def copy(self, function: Callable[["GdkPixbuf"], "GdkPixbuf"] = None) -> "AnimeFrameBuffer":
         newbuffer = AnimeFrameBuffer(n_frames=self.__n_frames, loop=self.__loop)
         for n, frame in enumerate(self.__framelist):
             pixbuf, duration = frame
-            newbuffer.add_frame(index=n, pixbuf=pixbuf, duration=duration)
+            newbuffer.add_frame(index=n, pixbuf=function(pixbuf) if function else pixbuf, duration=duration)
         return newbuffer
 
     def create_animation(self):

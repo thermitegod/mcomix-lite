@@ -30,9 +30,4 @@ class AnimeFrameExecutor:
             # animation does not have AnimeFrameBuffer, do nothing
             return animation
 
-        # call function on every frame
-        anime = AnimeFrameBuffer(n_frames=framebuffer.n_frames, loop=framebuffer.loop)
-        for n, frame in enumerate(framebuffer.framelist):
-            pixbuf, duration = frame
-            anime.add_frame(n, function(pixbuf, *args, **kwargs), duration)
-        return anime.create_animation()
+        return framebuffer.copy(lambda pb: function(pb, *args, **kwargs)).create_animation()
