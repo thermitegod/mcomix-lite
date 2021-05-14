@@ -736,6 +736,8 @@ class MainWindow(Gtk.ApplicationWindow):
         the user the choice to save the current page with the selected name
         """
 
+        page = self.imagehandler.get_current_page()
+
         if config['DEFAULT_DOUBLE_PAGE'] and not self.imagehandler.get_virtual_double_page():
             # asks for left or right page if in double page mode
             # and not showing a single page
@@ -753,13 +755,11 @@ class MainWindow(Gtk.ApplicationWindow):
                 'Right', response_right,
                 Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
             dialog.set_default_response(Gtk.ResponseType.CANCEL)
-            dialog.set_text(f'Extract Left or Right page?')
+            dialog.set_text(f'Save Left or Right page?')
             result = dialog.run()
 
             if result not in (response_left, response_right):
                 return None
-
-            page = self.imagehandler.get_current_page()
 
             if result == response_left:
                 if self.is_manga_mode:
@@ -771,11 +771,8 @@ class MainWindow(Gtk.ApplicationWindow):
             if page > self.imagehandler.get_number_of_pages():
                 page = self.imagehandler.get_number_of_pages()
 
-            page_name = self.imagehandler.get_page_data(page=page, filename=True)
-            page_path = self.imagehandler.get_path_to_page(page=page)
-        else:
-            page_name = self.imagehandler.get_page_data(filename=True)
-            page_path = self.imagehandler.get_path_to_page()
+        page_name = self.imagehandler.get_page_data(page=page, filename=True)
+        page_path = self.imagehandler.get_path_to_page(page=page)
 
         save_dialog = Gtk.FileChooserDialog(title='Save page as', action=Gtk.FileChooserAction.SAVE)
         save_dialog.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT, Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT)
