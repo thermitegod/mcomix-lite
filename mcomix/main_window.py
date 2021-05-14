@@ -207,6 +207,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def _draw_image(self, scroll_to: int):
         if not self.filehandler.get_file_loaded():
+            self.thumbnailsidebar.hide()
             self._clear_main_area()
             self.__waiting_for_redraw = False
             return
