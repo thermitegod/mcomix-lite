@@ -2,6 +2,7 @@
 
 import shutil
 from pathlib import Path
+from html import escape
 
 from gi.repository import GLib, Gdk, Gtk
 from send2trash import send2trash
@@ -827,7 +828,7 @@ class MainWindow(Gtk.ApplicationWindow):
             dialog.set_should_remember_choice(
                 'delete-opend-file',
                 (Gtk.ResponseType.OK,))
-            dialog.set_text(f'Trash Selected File: "{current_file.name}"?')
+            dialog.set_text(f'Trash Selected File: "{escape(current_file.name)}"?')
             result = dialog.run()
             if result != Gtk.ResponseType.OK:
                 return None
