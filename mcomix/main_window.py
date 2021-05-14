@@ -738,7 +738,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         page = self.imagehandler.get_current_page()
 
-        if config['DEFAULT_DOUBLE_PAGE'] and not self.imagehandler.get_virtual_double_page():
+        if self.displayed_double():
             # asks for left or right page if in double page mode
             # and not showing a single page
 
