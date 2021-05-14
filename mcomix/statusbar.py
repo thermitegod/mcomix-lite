@@ -224,7 +224,7 @@ class Statusbar(Gtk.EventBox):
             text += f'{self.__current_view_mode}{self.__sep}'
 
         self.__status.pop(self.__context_id)
-        self.__status.push(self.__context_id, f'    {text}')
+        self.__status.push(self.__context_id, f'    {text.strip(self.__sep)}')
 
     def _populate_context_menu(self, label: str, config_key: str, callback: Callable):
         item = Gtk.CheckMenuItem(label=label)
