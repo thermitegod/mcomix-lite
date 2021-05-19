@@ -165,6 +165,11 @@ class _Constants:
             'TAR': (
                 ('.tar', 'application/x-tar'),
                 ('.cbt', 'application/x-cbt'),
+                # compressed tar
+                ('.gz', 'application/x-compressed-tar'),
+                ('.bz2', 'application/x-bzip-compressed-tar'),
+                ('.lzma', 'application/x-lzma-compressed-tar'),
+                ('.xz', 'application/x-xz-compressed-tar'),
             ),
         }
 
