@@ -110,7 +110,6 @@ class ImageHandler:
                 return
             with self.__lock:
                 if index not in self.__wanted_pixbufs and force_return:
-                    print(1)
                     return
             logger.debug(f'Caching page: \'{index + 1}\'')
             try:
