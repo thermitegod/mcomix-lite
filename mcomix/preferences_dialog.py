@@ -362,12 +362,12 @@ class PreferencesDialog(Gtk.Dialog):
         page.add_row(Gtk.Label(label='Pages to cache ahead of current page:'),
                      self._create_pref_spinner(
                          'PAGE_CACHE_FORWARD',
-                         1, 2, 10, 2, 3, 0))
+                         1, 1, 50, 1, 3, 0))
 
         page.add_row(Gtk.Label(label='Pages to cache behind the current page:'),
                      self._create_pref_spinner(
                          'PAGE_CACHE_BEHIND',
-                         1, 2, 50, 2, 3, 0))
+                         1, 1, 10, 1, 3, 0))
 
         page.new_section('Magnifying Lens')
 
