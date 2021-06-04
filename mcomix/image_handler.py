@@ -444,12 +444,11 @@ class ImageHandler:
         """
 
         if self._is_page_extracted(page=page):
-            return True
+            return
 
         logger.debug(f'Waiting for page: \'{page}\'')
         path = self.get_path_to_page(page)
         self.__window.filehandler.wait_on_file(path)
-        return True
 
     def _ask_for_pages(self, page: int):
         """
