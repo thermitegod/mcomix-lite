@@ -4,6 +4,7 @@
 
 import math
 
+import cairo
 from gi.repository import Gdk, GdkPixbuf, Gtk
 
 from mcomix.constants import Constants
@@ -68,28 +69,24 @@ class MagnifyingLens:
             return
 
         rectangle = self._calculate_lens_rect(x, y, config['LENS_SIZE'], config['LENS_SIZE'])
+        rectangle_alt = [rectangle.x, rectangle.y, rectangle.width, rectangle.height]
         pixbuf = self._get_lens_pixbuf(x, y)
 
-        draw_region = Gdk.Rectangle()
-        draw_region.x, draw_region.y, draw_region.width, draw_region.height = rectangle
-        if self.__last_lens_rect:
-            last_region = Gdk.Rectangle()
-            last_region.x, last_region.y, last_region.width, last_region.height = self.__last_lens_rect
-            draw_region = Gdk.rectangle_union(draw_region, last_region)
+        draw_region = cairo.Region(rectangle=rectangle)
 
         window = self.__window.get_main_layout().get_bin_window()
-        window.begin_paint_rect(draw_region)
+        window.end_draw_frame(window.begin_draw_frame(draw_region))
 
-        self._clear_lens(rectangle)
+        self._clear_lens(rectangle_alt)
 
         cr = window.cairo_create()
         surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 0, window)
-        cr.set_source_surface(surface, rectangle[0], rectangle[1])
+        cr.set_source_surface(surface, rectangle.x, rectangle.y)
         cr.paint()
 
         window.end_paint()
 
-        self.__last_lens_rect = rectangle
+        self.__last_lens_rect = rectangle_alt
 
     def _calculate_lens_rect(self, x: int, y: int, width: int, height: int):
         """
@@ -108,7 +105,7 @@ class MagnifyingLens:
         lens_y = min(lens_y, max_height - height)
 
         # Don't forget 1 pixel border...
-        return lens_x, lens_y, width + 2, height + 2
+        return cairo.RectangleInt(lens_x, lens_y, width + 2, height + 2)
 
     def _clear_lens(self, current_lens_region=None):
         """
@@ -167,7 +164,6 @@ class MagnifyingLens:
 
         window.invalidate_rect(intersect_h, True)
 
-        window.process_updates(True)
         self.__last_lens_rect = None
 
     def toggle(self, value: bool):
