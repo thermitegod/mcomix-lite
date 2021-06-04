@@ -45,8 +45,6 @@ class FileHandler:
         self.__tmp_dir = None
         #: If C{True}, no longer wait for files to get extracted.
         self.__stop_waiting = False
-        #: Mapping of absolute paths to archive path names.
-        self.__name_table = {}
         #: Archive extractor.
         self.__extractor = Extractor()
         self.__extractor.file_extracted += self._extracted_file
@@ -189,7 +187,6 @@ class FileHandler:
             self.__current_file = None
             self.__base_path = None
             self.__stop_waiting = True
-            self.__name_table.clear()
             self.file_closed()
         # Catch up on UI events, so we don't leave idle callbacks.
         while Gtk.events_pending():
@@ -239,11 +236,8 @@ class FileHandler:
                           and not image.endswith('.pdf')]
 
         self._sort_archive_images(archive_images)
-
-        image_files = archive_images
-        self.__name_table = dict(zip(image_files, archive_images))
         self.__extractor.set_files(archive_images)
-        self._archive_opened(image_files)
+        self._archive_opened(archive_images)
 
     @staticmethod
     def _sort_archive_images(filelist: list):
@@ -419,9 +413,8 @@ class FileHandler:
             return
 
         try:
-            name = self.__name_table[path]
             with self.__condition:
-                while not self.__extractor.is_ready(name) and not self.__stop_waiting:
+                while not self.__extractor.is_ready(path) and not self.__stop_waiting:
                     self.__condition.wait()
         except Exception as ex:
             logger.error(f'Waiting on extraction failed: \'{path}\'')
@@ -439,7 +432,7 @@ class FileHandler:
         with self.__condition:
             extractor_files = self.__extractor.get_files()
             for path in reversed(files):
-                name = self.__name_table[str(path)]
+                name = str(path)
                 if not self.__extractor.is_ready(name):
                     extractor_files.remove(name)
                     extractor_files.insert(0, name)
