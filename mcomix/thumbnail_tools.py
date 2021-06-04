@@ -35,7 +35,7 @@ class Thumbnailer:
             self.__width, self.__height = size
             self.__default_sizes = False
 
-    def thumbnail(self, filepath: str):
+    def thumbnail(self, filepath: Path):
         """
         Returns a thumbnail pixbuf for <filepath>, transparently handling
         both normal image files and archives. If a thumbnail file already exists,
@@ -49,7 +49,7 @@ class Thumbnailer:
             self.__width = config['THUMBNAIL_SIZE']
             self.__height = config['THUMBNAIL_SIZE']
 
-        return self._create_thumbnail(Path(filepath))
+        return self._create_thumbnail(filepath)
 
     @Callback
     def thumbnail_finished(self, filepath: Path, pixbuf):
