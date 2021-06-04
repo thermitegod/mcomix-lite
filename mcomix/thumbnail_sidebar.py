@@ -29,7 +29,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
 
         self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
         # Disable stupid overlay scrollbars...
-        self.props.overlay_scrolling = False
+        self.set_overlay_scrolling(False)
 
         # models - contains data
         self.__thumbnail_liststore = Gtk.ListStore(int, GdkPixbuf.Pixbuf, bool)
