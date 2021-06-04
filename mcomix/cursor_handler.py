@@ -79,4 +79,4 @@ class CursorHandler:
 
     @staticmethod
     def _get_hidden_cursor():
-        return Gdk.Cursor.new(Gdk.CursorType.BLANK_CURSOR)
+        return Gdk.Cursor.new_for_display(Gdk.Display.get_default(), Gdk.CursorType.BLANK_CURSOR)
