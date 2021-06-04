@@ -85,23 +85,22 @@ class ImageHandler:
         if not self.__lock.acquire(blocking=False):
             return
 
-        try:
-            # Get list of wanted pixbufs.
-            wanted_pixbufs = self._ask_for_pages(self.get_current_page())
+        # Get list of wanted pixbufs.
+        wanted_pixbufs = self._ask_for_pages(self.get_current_page())
 
-            # remove old pixbufs.
-            for index in set(self.__raw_pixbufs) - set(wanted_pixbufs):
-                del self.__raw_pixbufs[index]
+        # remove old pixbufs.
+        for index in set(self.__raw_pixbufs) - set(wanted_pixbufs):
+            del self.__raw_pixbufs[index]
 
-            logger.debug(f'Caching page(s): \'{" ".join([str(index + 1) for index in wanted_pixbufs])}\'')
+        logger.debug(f'Caching page(s): \'{" ".join([str(index + 1) for index in wanted_pixbufs])}\'')
 
-            self.__wanted_pixbufs = wanted_pixbufs.copy()
-            # Start caching available images not already in cache.
-            wanted_pixbufs = [index for index in wanted_pixbufs
-                              if index in self.__available_images]
-            self.__threadpool.map_async(self._cache_pixbuf, wanted_pixbufs)
-        finally:
-            self.__lock.release()
+        self.__wanted_pixbufs = wanted_pixbufs.copy()
+        # Start caching available images not already in cache.
+        wanted_pixbufs = [index for index in wanted_pixbufs
+                          if index in self.__available_images]
+        self.__threadpool.map_async(self._cache_pixbuf, wanted_pixbufs)
+
+        self.__lock.release()
 
     def _cache_pixbuf(self, index: int, force_return: bool = True):
         self._wait_on_page(index + 1)
