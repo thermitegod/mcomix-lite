@@ -43,8 +43,6 @@ class FileHandler:
         self.__base_path = None
         #: Temporary directory used for extracting archives.
         self.__tmp_dir = None
-        #: If C{True}, no longer wait for files to get extracted.
-        self.__stop_waiting = False
         #: Archive extractor.
         self.__extractor = Extractor()
         self.__extractor.file_extracted += self._extracted_file
@@ -94,7 +92,6 @@ class FileHandler:
         self.__archive_type = ArchiveTools.archive_mime_type(path)
         self.__start_page = start_page
         self.__current_file = path
-        self.__stop_waiting = False
 
         # Actually open the file(s)/archive passed in path.
         if self.__archive_type is not None:
@@ -186,7 +183,6 @@ class FileHandler:
             self.__archive_type = None
             self.__current_file = None
             self.__base_path = None
-            self.__stop_waiting = True
             self.file_closed()
         # Catch up on UI events, so we don't leave idle callbacks.
         while Gtk.events_pending():
@@ -402,21 +398,3 @@ class FileHandler:
         if not self.__file_loaded:
             return
         self.file_available([name])
-
-    def wait_on_file(self, path):
-        """
-        Block the running (main) thread if the file <path> is from an
-        archive and has not yet been extracted. Return when the file is ready
-        """
-
-        if self.__archive_type is None or path is None:
-            return
-
-        try:
-            with self.__condition:
-                while not self.__extractor.is_ready(path) and not self.__stop_waiting:
-                    self.__condition.wait()
-        except Exception as ex:
-            logger.error(f'Waiting on extraction failed: \'{path}\'')
-            logger.error(f'Exception: {ex}')
-            return

@@ -103,7 +103,6 @@ class ImageHandler:
         self.__lock.release()
 
     def _cache_pixbuf(self, index: int, force_return: bool = True):
-        self._wait_on_page(index + 1)
         with self.__cache_lock[index]:
             if index in self.__raw_pixbufs:
                 return
@@ -378,8 +377,6 @@ class ImageHandler:
         is None, return the size of the current page
         """
 
-        self._wait_on_page(page)
-
         page_path = self.get_path_to_page(page)
         if not Path.is_file(page_path):
             return 0, 0
@@ -391,8 +388,6 @@ class ImageHandler:
         Return a string with the name of the mime type of <page>. If
         <page> is None, return the mime type name of the current page
         """
-
-        self._wait_on_page(page)
 
         page_path = self.get_path_to_page(page)
         if not Path.is_file(page_path):
@@ -435,19 +430,6 @@ class ImageHandler:
 
         # page is not extracted
         return False
-
-    def _wait_on_page(self, page: int):
-        """
-        Block the running (main) thread until the file corresponding to
-        image <page> has been fully extracted.
-        """
-
-        if self._is_page_extracted(page=page):
-            return
-
-        logger.debug(f'Waiting for page: \'{page}\'')
-        path = self.get_path_to_page(page)
-        self.__window.filehandler.wait_on_file(path)
 
     def _ask_for_pages(self, page: int):
         """
