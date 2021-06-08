@@ -383,6 +383,48 @@ class MainWindow(Gtk.ApplicationWindow):
 
         return 0
 
+    def _get_virtual_double_page(self, page: int = None):
+        """
+        Return True if the current state warrants use of virtual
+        double page mode (i.e. if double page mode is on, the corresponding
+        preference is set, and one of the two images that should normally
+        be displayed has a width that exceeds its height), or if currently
+        on the first page
+
+        :returns: True if the current state warrants use of virtual double page mode
+        """
+
+        if page is None:
+            page = self.imagehandler.get_current_page()
+
+        if (page == 1 and
+                config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & Constants.DOUBLE_PAGE['AS_ONE_TITLE'] and
+                self.filehandler.get_archive_type() is not None):
+            return True
+
+        if (not config['DEFAULT_DOUBLE_PAGE'] or
+                not config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & Constants.DOUBLE_PAGE['AS_ONE_WIDE'] or
+                page == self.imagehandler.get_number_of_pages()):
+            return False
+
+        for page in (page, page + 1):
+            if not self.imagehandler.page_is_available(page):
+                return False
+            pixbuf = self.imagehandler.get_pixbuf(page - 1)
+            width, height = pixbuf.get_width(), pixbuf.get_height()
+            if config['AUTO_ROTATE_FROM_EXIF']:
+                rotation = ImageTools.get_implied_rotation(pixbuf)
+
+                # if rotation not in (0, 90, 180, 270):
+                #     return
+
+                if rotation in (90, 270):
+                    width, height = height, width
+            if width > height:
+                return True
+
+        return False
+
     def _page_available(self, page: int):
         """
         Called whenever a new page is ready for displaying
@@ -452,9 +494,9 @@ class MainWindow(Gtk.ApplicationWindow):
                 not single_step and
                 config['DEFAULT_DOUBLE_PAGE'] and
                 config['DOUBLE_STEP_IN_DOUBLE_PAGE_MODE']):
-            if number_of_pages == +1 and not self.imagehandler.get_virtual_double_page():
+            if number_of_pages == +1 and not self._get_virtual_double_page():
                 new_page += +1
-            elif number_of_pages == -1 and not self.imagehandler.get_virtual_double_page(new_page - 1):
+            elif number_of_pages == -1 and not self._get_virtual_double_page(new_page - 1):
                 new_page -= 1
 
         if new_page <= 0:
@@ -694,7 +736,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         return (self.imagehandler.get_current_page() and
                 config['DEFAULT_DOUBLE_PAGE'] and
-                not self.imagehandler.get_virtual_double_page() and
+                not self._get_virtual_double_page() and
                 self.imagehandler.get_current_page() != self.imagehandler.get_number_of_pages())
 
     def get_visible_area_size(self):
