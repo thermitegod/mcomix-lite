@@ -466,13 +466,4 @@ class ImageHandler:
         if cache_end > total_pages:
             cache_end = total_pages
 
-        page_list = list(range(cache_start, cache_end))
-
-        files = [self.__image_files[index]
-                 for index in page_list
-                 if index not in self.__available_images]
-
-        if files:
-            self.__window.filehandler.ask_for_files(files)
-
-        return page_list
+        return list(range(cache_start, cache_end))

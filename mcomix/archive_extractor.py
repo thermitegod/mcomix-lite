@@ -60,19 +60,6 @@ class Extractor:
 
         return self.__condition
 
-    def get_files(self):
-        """
-        Return a list of names of all the files the extractor is currently
-        set for extracting. After a call to setup() this is by default all
-        files found in the archive. The paths in the list are relative to
-        the archive root and are not absolute for the files once extracted
-        """
-
-        with self.__condition:
-            if not self.__contents_listed:
-                return
-            return self.__files.copy()
-
     def get_directory(self):
         """
         Returns the root extraction directory of this extractor
@@ -101,15 +88,6 @@ class Extractor:
             if not self.__files:
                 # Nothing to do!
                 return
-
-    def is_ready(self, name: str):
-        """
-        Return True if the file <name> in the extractor's file list
-        (as set by set_files()) is fully extracted
-        """
-
-        with self.__condition:
-            return name in self.__extracted
 
     def stop(self):
         """

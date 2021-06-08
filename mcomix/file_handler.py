@@ -420,20 +420,3 @@ class FileHandler:
             logger.error(f'Waiting on extraction failed: \'{path}\'')
             logger.error(f'Exception: {ex}')
             return
-
-    def ask_for_files(self, files: list):
-        """
-        Ask for <files> to be given priority for extraction
-        """
-
-        if self.__archive_type is None:
-            return
-
-        with self.__condition:
-            extractor_files = self.__extractor.get_files()
-            for path in reversed(files):
-                name = str(path)
-                if not self.__extractor.is_ready(name):
-                    extractor_files.remove(name)
-                    extractor_files.insert(0, name)
-            self.__extractor.set_files(extractor_files)

@@ -68,11 +68,6 @@ class PropertiesDialog(Gtk.Dialog):
             return
         if self.__notebook.get_n_pages() == 1:
             self.__notebook.insert_page(page, Gtk.Label(label='Archive'), 0)
-        # In case it's not ready yet, bump the cover extraction
-        # in front of the queue.
-        path = window.imagehandler.get_path_to_page(1)
-        if Path.is_file(path):
-            window.filehandler.ask_for_files([path])
         self._update_page_image(page, 1)
         page.set_filename(window.filehandler.get_current_filename())
         path = window.filehandler.get_path_to_base()
