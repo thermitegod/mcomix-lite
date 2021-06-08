@@ -35,6 +35,7 @@ class Extractor:
         self.__extracted = None
         self.__archive = None
 
+        self.__dst = None
         self.__contents_listed = False
         self.__condition = None
 
@@ -48,11 +49,12 @@ class Extractor:
         self.__src = src
         self.__files = []
         self.__extracted = set()
-        self.__archive = ArchiveTools.get_archive_interface_handler(path=self.__src, archive_type=archive_type)
+        self.__archive = ArchiveTools.get_recursive_archive_handler(path=self.__src, archive_type=archive_type)
         if self.__archive is None:
             logger.warning(f'Non-supported archive format: \'{self.__src.name}\'')
             raise ArchiveException
 
+        self.__dst = self.__archive.get_destdir()
         self.__condition = threading.Condition()
         self.__threadpool.apply_async(
             self._list_contents, callback=self._list_contents_cb,
@@ -65,7 +67,7 @@ class Extractor:
         Returns the root extraction directory of this extractor
         """
 
-        return self.__archive.get_destdir()
+        return self.__dst
 
     def set_files(self, files: list):
         """
@@ -84,7 +86,7 @@ class Extractor:
         with self.__condition:
             if not self.__contents_listed:
                 return
-            self.__files = [f for f in files.copy() if f not in self.__extracted]
+            self.__files = set(f for f in files.copy() if f not in self.__extracted)
             if not self.__files:
                 # Nothing to do!
                 return
@@ -138,6 +140,7 @@ class Extractor:
 
         self.stop()
         if self.__archive:
+            logger.debug(f'Cache directory removed: \'{self.__dst}\'')
             self.__archive.close()
 
     def _extraction_finished(self, name: str):
@@ -153,16 +156,16 @@ class Extractor:
         # With multiple extractions for each pass, some of the files might have
         # already been extracted.
         with self.__condition:
-            files = list(set(self.__files) - self.__extracted)
+            files = self.__files - self.__extracted
 
-        for name in self.__archive.iter_extract(files):
+        for name in self.__archive.iter_extract(wanted=files, destination_dir=self.__dst):
             if self._extraction_finished(name):
                 return
 
     def _list_contents(self):
-        return [filename for filename in self.__archive.iter_contents()]
+        return set(filename for filename in self.__archive.iter_contents())
 
-    def _list_contents_cb(self, files: list):
+    def _list_contents_cb(self, files: set):
         with self.__condition:
             self.__files = files.copy()
             self.__contents_listed = True

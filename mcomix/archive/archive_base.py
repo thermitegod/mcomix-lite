@@ -45,11 +45,11 @@ class BaseArchive:
 
         raise NotImplementedError
 
-    def iter_extract(self, entries: set, destination_dir: Path):
+    def iter_extract(self, wanted: set, destination_dir: Path):
         """
-        Generator to extract <entries> from archive to <destination_dir>
+        Generator to extract <wanted> from archive to <destination_dir>
 
-        :param entries: files to extract
+        :param wanted: files to extract
         :param destination_dir: extraction path
         """
 

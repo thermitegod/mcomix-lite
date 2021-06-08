@@ -44,6 +44,7 @@ class ArchiveExternal(BaseArchive):
 
         :param filename: file to extract
         :param destination_dir: extraction path
+        :returns: full path of the extracted file
         """
 
         destination_path = Path() / destination_dir / filename
@@ -51,6 +52,8 @@ class ArchiveExternal(BaseArchive):
         with self.lock:
             with self._create_file(destination_path) as output:
                 Process.call(self._get_extract_arguments(), stdout=output)
+
+        return destination_path
 
     def iter_contents(self):
         """
@@ -71,17 +74,17 @@ class ArchiveExternal(BaseArchive):
                     if filename is not None:
                         yield filename
 
-    def iter_extract(self, entries: set, destination_dir: Path):
+    def iter_extract(self, wanted: set, destination_dir: Path):
         """
-        Generator to extract <entries> from archive to <destination_dir>
+        Generator to extract <wanted> from archive to <destination_dir>
 
-        :param entries: files to extract
+        :param wanted: files to extract
         :param destination_dir: extraction path
         """
 
         with self.lock:
             with Process.popen(self._get_extract_arguments()) as proc:
-                wanted = dict([(unicode_name, unicode_name) for unicode_name in entries])
+                wanted = dict([(unicode_name, unicode_name) for unicode_name in wanted])
 
                 for filename, filesize in self.contents:
                     data = proc.stdout.read(filesize)
