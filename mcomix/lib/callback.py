@@ -26,7 +26,7 @@ class CallbackList:
         always executed in the main thread
         """
 
-        if threading.currentThread().getName() == 'MainThread':
+        if threading.current_thread().name == 'MainThread':
             # Assume that the Callback object is bound to a class method.
             self.__function(self.__object, *args, **kwargs)
             self.__run_callbacks(*args, **kwargs)
