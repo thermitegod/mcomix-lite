@@ -83,7 +83,9 @@ class MainWindow(Gtk.ApplicationWindow):
         self.filehandler.file_opened += self._on_file_opened
         self.imagehandler = ImageHandler(self)
         self.imagehandler.page_available += self._page_available
+
         self.thumbnailsidebar = ThumbnailSidebar(self)
+        self.thumbnailsidebar.hide()
 
         self.statusbar = Statusbar()
         self.cursor_handler = CursorHandler(self)
