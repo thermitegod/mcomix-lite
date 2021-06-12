@@ -333,11 +333,15 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__waiting_for_redraw = False
 
     def _update_page_information(self):
-        """Updates the window with information that can be gathered
-        even when the page pixbuf(s) aren't ready yet"""
+        """
+        Updates the window with information that can be gathered
+        even when the page pixbuf(s) aren't ready yet
+        """
+
         page_number = self.imagehandler.get_current_page()
         if not page_number:
             return
+
         if self.displayed_double():
             number_of_pages = 2
             filenames = self.imagehandler.get_page_data(double=True, manga=self.is_manga_mode, filename=True)
@@ -348,17 +352,12 @@ class MainWindow(Gtk.ApplicationWindow):
             number_of_pages = 1
             filename = self.imagehandler.get_page_data(filename=True)
             filesize = self.imagehandler.get_page_data(filesize=True)
+
         self.statusbar.set_page_number(page_number, self.imagehandler.get_number_of_pages(), number_of_pages)
         self.statusbar.set_filename(filename)
-        if config['STATUSBAR_FULLPATH']:
-            self.statusbar.set_root(self.filehandler.get_path_to_base())
-        else:
-            self.statusbar.set_root(self.filehandler.get_base_filename())
-        self.statusbar.set_mode()
         self.statusbar.set_filesize(filesize)
-        self.statusbar.set_filesize_archive(self.filehandler.get_path_to_base())
+
         self.statusbar.update()
-        self.update_title()
 
     @staticmethod
     def _get_size_rotation(width: int, height: int):
@@ -439,9 +438,17 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def _on_file_opened(self):
         self.thumbnailsidebar.show()
-        number, count = self.filehandler.get_file_number()
-        self.statusbar.set_file_number(number, count)
+
+        if config['STATUSBAR_FULLPATH']:
+            self.statusbar.set_archive_filename(self.filehandler.get_path_to_base())
+        else:
+            self.statusbar.set_archive_filename(self.filehandler.get_base_filename())
+        self.statusbar.set_view_mode()
+        self.statusbar.set_filesize_archive(self.filehandler.get_path_to_base())
+        self.statusbar.set_file_number(*self.filehandler.get_file_number())
         self.statusbar.update()
+
+        self._update_title()
 
     def _on_file_closed(self):
         self.clear()
@@ -550,6 +557,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def change_double_page(self, *args):
         config['DEFAULT_DOUBLE_PAGE'] = not config['DEFAULT_DOUBLE_PAGE']
+        self.statusbar.set_view_mode()
         self._update_page_information()
         self.draw_image()
 
@@ -557,6 +565,7 @@ class MainWindow(Gtk.ApplicationWindow):
         config['DEFAULT_MANGA_MODE'] = not config['DEFAULT_MANGA_MODE']
         self.is_manga_mode = config['DEFAULT_MANGA_MODE']
         self.__page_orientation = self.page_orientation()
+        self.statusbar.set_view_mode()
         self._update_page_information()
         self.draw_image()
 
@@ -765,14 +774,12 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.__main_layout.get_bin_window().set_cursor(mode)
 
-    def update_title(self):
+    def _update_title(self):
         """
         Set the title acording to current state
         """
 
-        self.set_title(f'[{self.statusbar.get_page_number()}] '
-                       f'{self.imagehandler.get_current_filename()} '
-                       f'[{self.statusbar.get_mode()}]')
+        self.set_title(f'{Constants.APPNAME} [{self.imagehandler.get_current_filename()}]')
 
     def extract_page(self, *args):
         """

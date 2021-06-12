@@ -118,17 +118,7 @@ class Statusbar(Gtk.EventBox):
         p = ', '.join(str(page + i) for i in range(this_screen))
         self.__total_page_numbers = f'{p} / {total}'
 
-    def get_page_number(self):
-        """
-        :returns: the bar's page information
-        """
-
-        return self.__total_page_numbers
-
-    def get_mode(self):
-        return self.__current_view_mode
-
-    def set_mode(self):
+    def set_view_mode(self):
         """
         Update the mode
         """
@@ -148,13 +138,6 @@ class Statusbar(Gtk.EventBox):
         else:
             self.__total_file_numbers = ''
 
-    def get_file_number(self):
-        """
-        Returns the bar's file information
-        """
-
-        return self.__total_file_numbers
-
     def set_resolution(self, dimensions: list):  # 2D only
         """
         Update the resolution data.
@@ -167,7 +150,7 @@ class Statusbar(Gtk.EventBox):
         else:
             self.__page_resolution = ', '.join(f'{d[0]}x{d[1]}' for d in dimensions)
 
-    def set_root(self, root: str):
+    def set_archive_filename(self, root: str):
         """
         Set the name of the root (directory or archive)
         """
