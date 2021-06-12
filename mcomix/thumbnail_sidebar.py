@@ -27,6 +27,8 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
 
         self.__border_size = 1
 
+        self.__empty_thumbnail = self._create_empty_thumbnail()
+
         self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
         # Disable stupid overlay scrollbars...
         self.set_overlay_scrolling(False)
@@ -160,7 +162,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         self.__treeview.set_model(None)
 
         # Create empty preview thumbnails.
-        filler = self._get_empty_thumbnail()
+        filler = self.__empty_thumbnail
         for row in range(self.__window.imagehandler.get_number_of_pages()):
             self.__thumbnail_liststore.append((row + 1, filler, False))
 
@@ -240,7 +242,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         pixbuf = Gdk.pixbuf_get_from_surface(surface, 0, 0, surface.get_width(), surface.get_height())
         Gtk.drag_set_icon_pixbuf(context, pixbuf, -5, -5)
 
-    def _get_empty_thumbnail(self):
+    def _create_empty_thumbnail(self):
         """
         Create an empty filler pixmap
         """
