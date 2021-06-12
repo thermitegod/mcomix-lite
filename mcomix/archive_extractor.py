@@ -3,6 +3,7 @@
 """archive_extractor.py - Archive extraction class"""
 
 import threading
+import traceback
 from pathlib import Path
 
 from loguru import logger
@@ -179,3 +180,4 @@ class Extractor:
         # handled gracefully by the main program anyway.
 
         logger.error(f'Extraction error: {value}')
+        logger.error(f'Traceback:\n{"".join(traceback.format_tb(tb)).strip()}')
