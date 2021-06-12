@@ -821,9 +821,6 @@ class MainWindow(Gtk.ApplicationWindow):
                 if not self.is_manga_mode:
                     page += 1
 
-            if page > self.imagehandler.get_number_of_pages():
-                page = self.imagehandler.get_number_of_pages()
-
         page_name = self.imagehandler.get_page_data(page=page, filename=True)
         page_path = self.imagehandler.get_path_to_page(page=page)
 
