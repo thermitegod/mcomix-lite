@@ -59,6 +59,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.is_manga_mode = config['DEFAULT_MANGA_MODE']
         self.__page_orientation = self.page_orientation()
         self.previous_size = (None, None)
+        self.displayed_double = False
+
         # Remember last scroll destination.
         self.__last_scroll_destination = Constants.SCROLL_TO['START']
 
@@ -224,7 +226,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         distribution_axis = Constants.AXIS['DISTRIBUTION']
         alignment_axis = Constants.AXIS['ALIGNMENT']
-        pixbuf_count = 2 if self.displayed_double() else 1  # XXX limited to at most 2 pages
+        pixbuf_count = 2 if self.displayed_double else 1  # XXX limited to at most 2 pages
         pixbuf_list = list(self.imagehandler.get_pixbufs(pixbuf_count))
         do_not_transform = [ImageTools.disable_transform(x) for x in pixbuf_list]
         size_list = [[pixbuf.get_width(), pixbuf.get_height()] for pixbuf in pixbuf_list]
@@ -344,7 +346,7 @@ class MainWindow(Gtk.ApplicationWindow):
         if not page_number:
             return
 
-        if self.displayed_double():
+        if self.displayed_double:
             number_of_pages = 2
             filenames = self.imagehandler.get_page_data(double=True, manga=self.is_manga_mode, filename=True)
             filesizes = self.imagehandler.get_page_data(double=True, manga=self.is_manga_mode, filesize=True)
@@ -433,12 +435,13 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # Refresh display when currently opened page becomes available.
         current_page = self.imagehandler.get_current_page()
-        nb_pages = 2 if self.displayed_double() else 1
+        nb_pages = 2 if self.displayed_double else 1
         if current_page <= page < (current_page + nb_pages):
             self.draw_image(scroll_to=self.__last_scroll_destination)
             self._update_page_information()
 
     def _on_file_opened(self):
+        self._displayed_double()
         self.thumbnailsidebar.show()
 
         if config['STATUSBAR_FULLPATH']:
@@ -481,6 +484,7 @@ class MainWindow(Gtk.ApplicationWindow):
         Called on page change
         """
 
+        self._displayed_double()
         self.thumbnailsidebar.load_thumbnails()
         self._update_page_information()
 
@@ -559,6 +563,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def change_double_page(self, *args):
         config['DEFAULT_DOUBLE_PAGE'] = not config['DEFAULT_DOUBLE_PAGE']
+        self._displayed_double()
         self.statusbar.set_view_mode()
         self._update_page_information()
         self.draw_image()
@@ -740,15 +745,15 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__layout = self.__dummy_layout
         self.__main_layout.set_size(*self.__layout.get_union_box().get_size())
 
-    def displayed_double(self):
+    def _displayed_double(self):
         """
-        :returns: True if two pages are currently displayed
+        sets True if two pages are currently displayed
         """
 
-        return (self.imagehandler.get_current_page() and
-                config['DEFAULT_DOUBLE_PAGE'] and
-                not self._get_virtual_double_page() and
-                self.imagehandler.get_current_page() != self.imagehandler.get_number_of_pages())
+        self.displayed_double = (self.imagehandler.get_current_page() and
+                                 config['DEFAULT_DOUBLE_PAGE'] and
+                                 not self._get_virtual_double_page() and
+                                 self.imagehandler.get_current_page() != self.imagehandler.get_number_of_pages())
 
     def get_visible_area_size(self):
         """
@@ -791,7 +796,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         page = self.imagehandler.get_current_page()
 
-        if self.displayed_double():
+        if self.displayed_double:
             # asks for left or right page if in double page mode
             # and not showing a single page
 

@@ -181,7 +181,7 @@ class ImageHandler:
                 # Current 'book' has no page.
                 return False
             index_list = [current_page - 1]
-            if self.__window.displayed_double() and current_page < len(self.__image_files):
+            if self.__window.displayed_double and current_page < len(self.__image_files):
                 index_list.append(current_page)
         else:
             index_list = [page - 1]
