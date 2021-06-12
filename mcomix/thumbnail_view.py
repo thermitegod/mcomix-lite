@@ -6,6 +6,7 @@ import functools
 import uuid
 
 from gi.repository import Gtk
+from gi.repository import GLib
 
 from mcomix.lib.exceptions import MissingPixbuf
 from mcomix.lib.threadpool import GlobalThreadPool, Lock
@@ -65,24 +66,40 @@ class ThumbnailViewBase:
         # 'draw' event called too frequently
         if not self.__lock.acquire(blocking=False):
             return
-
-        if self.__taskid == 0:
-            self.__taskid = uuid.uuid4().int
-
         try:
+            visible = self.get_visible_range()
+            if not visible:
+                # No valid paths available
+                return
+
+            start = visible[0][0]
+            end = visible[1][0]
+
+            # Currently invisible icons are always cached
+            # only after the visible icons completed.
+            mid = (start + end) // 2 + 1
+            harf = end - start + 1  # twice of current visible length
+            required = set(range(mid - harf, mid + harf))
+
+            taskid = self.__taskid
+            if not taskid:
+                taskid = uuid.uuid4().int
+
             model = self.get_model()
-            for idx, item in enumerate(model):
-                _iter = model.get_iter(idx)
+            required &= set(range(len(model)))  # filter invalid paths.
+            for path in required:
+                _iter = model.get_iter(path)
                 uid, generated = model.get(_iter, self.__uid_column, self.__status_column)
                 # Do not queue again if thumbnail was already created.
                 if generated:
                     continue
                 if uid in self.__done:
                     continue
+                self.__taskid = taskid
                 self.__done.add(uid)
                 self.__threadpool.apply_async(
                     self._pixbuf_worker, args=(uid, _iter, model),
-                    callback=functools.partial(self._pixbuf_finished, taskid=self.__taskid))
+                    callback=functools.partial(self._pixbuf_finished, taskid=taskid))
         finally:
             self.__lock.release()
 
@@ -107,7 +124,7 @@ class ThumbnailViewBase:
             if self.__taskid != taskid:
                 return
             _iter, pixbuf, model = params
-            model.set(_iter, self.__status_column, True, self.__pixbuf_column, pixbuf)
+            GLib.idle_add(model.set, _iter, self.__status_column, True, self.__pixbuf_column, pixbuf)
 
 
 class ThumbnailTreeView(Gtk.TreeView, ThumbnailViewBase):
