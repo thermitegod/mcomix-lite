@@ -92,14 +92,10 @@ class Statusbar(Gtk.EventBox):
         # is initalized here and only updated if the
         # scaling algos get changed
 
-        scale_gdk = Constants.SCALING_GDK[config['SCALING_QUALITY']].name
-
         if config['ENABLE_PIL_SCALING']:
-            scale_pil = Constants.SCALING_PIL[config['PIL_SCALING_FILTER']].name
+            self.__image_scaling = f'PIL: {Constants.SCALING_PIL[config["PIL_SCALING_FILTER"]].name}'
         else:
-            scale_pil = 'Disabled'
-
-        self.__image_scaling = f'{scale_gdk}, {scale_pil}'
+            self.__image_scaling = f'GDK: {Constants.SCALING_GDK[config["SCALING_QUALITY"]].name}'
 
     def set_message(self, message: str):
         """

@@ -618,6 +618,10 @@ class MainWindow(Gtk.ApplicationWindow):
         self.statusbar.update()
 
     def change_image_scaling_gdk(self, step: int):
+        if config['ENABLE_PIL_SCALING']:
+            # disable changing if not active
+            return
+
         self._loop_img_scaling(config_key='SCALING_QUALITY', algos=Constants.SCALING_GDK, step=step)
         self.draw_image()
         self.statusbar.update_image_scaling()
