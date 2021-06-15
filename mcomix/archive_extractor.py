@@ -61,8 +61,6 @@ class Extractor:
             self._list_contents, callback=self._list_contents_cb,
             error_callback=self._error_cb)
 
-        return self.__condition
-
     def get_directory(self):
         """
         Returns the root extraction directory of this extractor

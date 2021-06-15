@@ -47,8 +47,6 @@ class FileHandler:
         self.__extractor = Extractor()
         self.__extractor.file_extracted += self._extracted_file
         self.__extractor.contents_listed += self._listed_contents
-        #: Condition to wait on when extracting archives and waiting on files.
-        self.__condition = None
         #: Provides a list of available files/archives in the open directory.
         self.__file_provider = None
 
@@ -214,12 +212,12 @@ class FileHandler:
 
         self.__base_path = path
         try:
-            self.__condition = self.__extractor.setup(self.__base_path, self.__archive_type)
+            self.__extractor.setup(self.__base_path, self.__archive_type)
         except Exception as ex:
             logger.error(f'failed to open archive: {self.__base_path}')
             logger.error(f'Exception: {ex}')
-            self.__condition = None
             raise
+
         self.__tmp_dir = self.__extractor.get_directory()
 
     def _listed_contents(self, archive, files):
