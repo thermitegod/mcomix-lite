@@ -40,6 +40,8 @@ class ImageHandler:
         self.__base_path = None
         #: List of image file names, either from extraction or directory
         self.__image_files = []
+        #: Total number of pages
+        self.__image_files_total = 0
         #: Index of current page
         self.__current_image_index = None
         #: Set of images reading for decoding (i.e. already extracted)
@@ -131,6 +133,7 @@ class ImageHandler:
     def set_image_files(self, files: list):
         # Set list of image file names
         self.__image_files = files.copy()
+        self.__image_files_total = len(self.__image_files)
 
     def set_base_path(self, path: Path):
         self.__base_path = path
@@ -165,6 +168,7 @@ class ImageHandler:
 
         self.__base_path = None
         self.__image_files.clear()
+        self.__image_files_total = 0
         self.__current_image_index = None
         self.__available_images.clear()
         self.__raw_pixbufs.clear()
@@ -181,7 +185,7 @@ class ImageHandler:
                 # Current 'book' has no page.
                 return False
             index_list = [current_page - 1]
-            if self.__window.displayed_double and current_page < len(self.__image_files):
+            if self.__window.displayed_double and current_page < self.__image_files_total:
                 index_list.append(current_page)
         else:
             index_list = [page - 1]
@@ -247,7 +251,7 @@ class ImageHandler:
         Return the number of pages in the current archive/directory
         """
 
-        return len(self.__image_files)
+        return self.__image_files_total
 
     def get_current_page(self):
         """
