@@ -2,7 +2,6 @@
 
 """image_handler.py - Image handler that takes care of cacheing and giving out images"""
 
-import bisect
 from pathlib import Path
 
 from loguru import logger
@@ -215,23 +214,6 @@ class ImageHandler:
         if index in self.__wanted_pixbufs:
             self.__threadpool.apply_async(self._cache_pixbuf, (index,))
 
-    @staticmethod
-    def bin_search(lst: list, value: str):
-        """
-        Binary search for sorted list C{lst}, looking for C{value}.
-
-        :returns: List index on success. On failure, it returns the 1's
-        complement of the index where C{value} would be inserted.
-        This implies that the return value is non-negative if and only if
-        C{value} is contained in C{lst}
-        """
-
-        index = bisect.bisect_left(lst, value)
-        if index != len(lst) and lst[index] == value:
-            return index
-
-        return ~index
-
     def _file_available(self, filepaths: list):
         """
         Called by the filehandler when a new file becomes available
@@ -241,9 +223,8 @@ class ImageHandler:
         if not self.__image_files:
             return
 
-        available = sorted(filepaths)
         for i, imgpath in enumerate(self.__image_files):
-            if self.bin_search(available, imgpath) >= 0:
+            if imgpath in filepaths:
                 self.page_available(i + 1)
 
     def get_number_of_pages(self):
