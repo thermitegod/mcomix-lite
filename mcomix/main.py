@@ -41,8 +41,7 @@ def main():
     args = parser.parse_args()
 
     if args.version:
-        print(Constants.APPNAME, Constants.VERSION)
-        raise SystemExit
+        raise SystemExit(f'{Constants.APPNAME} {Constants.VERSION}')
 
     # start logger
     logger.remove()
