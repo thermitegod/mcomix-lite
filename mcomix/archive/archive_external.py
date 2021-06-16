@@ -87,7 +87,6 @@ class ArchiveExternal(BaseArchive):
                 wanted = dict([(unicode_name, unicode_name) for unicode_name in wanted])
 
                 for filename, filesize in self.contents:
-                    data = proc.stdout.read(filesize)
                     if filename not in wanted:
                         continue
                     unicode_name = wanted.get(filename, None)
@@ -96,6 +95,7 @@ class ArchiveExternal(BaseArchive):
 
                     destination_path = Path() / destination_dir / unicode_name
                     with self._create_file(destination_path) as new:
+                        data = proc.stdout.read(filesize)
                         new.write(data)
                     yield unicode_name
                     del wanted[filename]
