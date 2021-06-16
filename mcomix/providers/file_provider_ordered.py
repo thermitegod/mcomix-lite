@@ -41,10 +41,8 @@ class OrderedFileProvider(FileProvider):
         else:
             raise ValueError
 
-        files = []
-        for fn in Path(self.__base_dir).iterdir():
-            if should_accept(fn):
-                files.append(fn)
+        files = [fn for fn in Path(self.__base_dir).iterdir()
+                 if should_accept(fn)]
 
         self._sort_files(files)
 
