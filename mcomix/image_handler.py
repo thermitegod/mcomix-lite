@@ -39,6 +39,8 @@ class ImageHandler:
         self.__base_path = None
         #: List of image file names, either from extraction or directory
         self.__image_files = []
+        #: Dict of image file names with and index
+        self.__image_files_index = {}
         #: Total number of pages
         self.__image_files_total = 0
         #: Index of current page
@@ -133,6 +135,7 @@ class ImageHandler:
         # Set list of image file names
         self.__image_files = files.copy()
         self.__image_files_total = len(self.__image_files)
+        self.__image_files_index = dict(zip(self.__image_files, range(self.__image_files_total)))
 
     def set_base_path(self, path: Path):
         self.__base_path = path
@@ -169,6 +172,7 @@ class ImageHandler:
         self.__image_files.clear()
         self.__image_files_total = 0
         self.__current_image_index = None
+        self.__image_files_index.clear()
         self.__available_images.clear()
         self.__raw_pixbufs.clear()
 
@@ -214,18 +218,13 @@ class ImageHandler:
         if index in self.__wanted_pixbufs:
             self.__threadpool.apply_async(self._cache_pixbuf, (index,))
 
-    def _file_available(self, filepaths: list):
+    def _file_available(self, filepath: str):
         """
         Called by the filehandler when a new file becomes available
         """
 
         # Find the page that corresponds to <filepath>
-        if not self.__image_files:
-            return
-
-        for i, imgpath in enumerate(self.__image_files):
-            if imgpath in filepaths:
-                self.page_available(i + 1)
+        self.page_available(self.__image_files_index[filepath] + 1)
 
     def get_number_of_pages(self):
         """

@@ -118,7 +118,8 @@ class FileHandler:
 
         if self.__archive_type is None:
             # If no extraction is required, mark all files as available.
-            self.file_available(self.__filelist)
+            for img in self.__filelist:
+                self.file_available(img)
 
             # Set current page to current file.
             if self.__current_file in self.__filelist:
@@ -378,7 +379,7 @@ class FileHandler:
                 return True
 
     @Callback
-    def file_available(self, filepaths: list):
+    def file_available(self, filepath: str):
         """
         Called every time a new file from the Filehandler's opened
         files becomes available. C{filepaths} is a list of now available files
@@ -395,4 +396,4 @@ class FileHandler:
 
         if not self.__file_loaded:
             return
-        self.file_available([name])
+        self.file_available(name)
