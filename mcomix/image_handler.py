@@ -143,7 +143,10 @@ class ImageHandler:
     def get_current_path(self):
         # Get current image path
         try:
-            return self.__image_files[self.__current_image_index]
+            try:
+                return self.__image_files[self.__current_image_index]
+            except TypeError:
+                return self.__image_files[0]
         except IndexError:
             logger.warning(f'failed to get current image path')
             return ''
@@ -238,10 +241,10 @@ class ImageHandler:
         Return the current page number (starting from 1), or 0 if no file is loaded
         """
 
-        if self.__current_image_index is not None:
-            return self.__current_image_index + 1
+        if self.__current_image_index is None:
+            return 0
 
-        return 0
+        return self.__current_image_index + 1
 
     def get_path_to_page(self, page: int = None):
         """
