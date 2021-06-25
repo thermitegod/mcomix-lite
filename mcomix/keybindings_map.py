@@ -515,46 +515,28 @@ class KeyBindingsMap:
             # Image Scaling
             'toggle_scaling_pil':
                 MAP(
-                    INFO(group_scale, 'Toggle using PIL Image scaling'),
+                    INFO(group_scale, 'Toggle GDK/PIL Image scaling'),
                     ['c'],
                     KEY_EVENT(
-                        self.__window.toggle_image_scaling_pil,
+                        self.__window.toggle_image_scaling,
                         None,
                     ),
                 ),
-            'scaling_gdk_inc':
+            'scaling_inc':
                 MAP(
-                    INFO(group_scale, 'Cycle GDK Image scaling forward'),
+                    INFO(group_scale, 'Cycle GDK/PIL Image scaling forward'),
                     ['z'],
                     KEY_EVENT(
-                        self.__window.change_image_scaling_gdk,
+                        self.__window.change_image_scaling,
                         {'step': +1},
                     ),
                 ),
-            'scaling_gdk_dec':
+            'scaling_dec':
                 MAP(
-                    INFO(group_scale, 'Cycle GDK Image scaling backwards'),
+                    INFO(group_scale, 'Cycle GDK/PIL Image scaling backwards'),
                     ['x'],
                     KEY_EVENT(
-                        self.__window.change_image_scaling_gdk,
-                        {'step': -1},
-                    ),
-                ),
-            'scaling_pil_inc':
-                MAP(
-                    INFO(group_scale, 'Cycle PIL Image scaling forward'),
-                    ['<Shift>z'],
-                    KEY_EVENT(
-                        self.__window.change_image_scaling_pil,
-                        {'step': +1},
-                    ),
-                ),
-            'scaling_pil_dec':
-                MAP(
-                    INFO(group_scale, 'Cycle PIL Image scaling backwards'),
-                    ['<Shift>x'],
-                    KEY_EVENT(
-                        self.__window.change_image_scaling_pil,
+                        self.__window.change_image_scaling,
                         {'step': -1},
                     ),
                 ),

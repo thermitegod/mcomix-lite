@@ -611,28 +611,18 @@ class MainWindow(Gtk.ApplicationWindow):
             config['AUTO_ROTATE_DEPENDING_ON_SIZE'] = value
         self.draw_image()
 
-    def toggle_image_scaling_pil(self):
+    def toggle_image_scaling(self):
         config['ENABLE_PIL_SCALING'] = not config['ENABLE_PIL_SCALING']
         self.draw_image()
         self.statusbar.update_image_scaling()
         self.statusbar.update()
 
-    def change_image_scaling_gdk(self, step: int):
+    def change_image_scaling(self, step: int):
         if config['ENABLE_PIL_SCALING']:
-            # disable changing if not active
-            return
+            self._loop_img_scaling(config_key='PIL_SCALING_FILTER', algos=Constants.SCALING_PIL, step=step)
+        else:
+            self._loop_img_scaling(config_key='SCALING_QUALITY', algos=Constants.SCALING_GDK, step=step)
 
-        self._loop_img_scaling(config_key='SCALING_QUALITY', algos=Constants.SCALING_GDK, step=step)
-        self.draw_image()
-        self.statusbar.update_image_scaling()
-        self.statusbar.update()
-
-    def change_image_scaling_pil(self, step: int):
-        if not config['ENABLE_PIL_SCALING']:
-            # disable changing if not active
-            return
-
-        self._loop_img_scaling(config_key='PIL_SCALING_FILTER', algos=Constants.SCALING_PIL, step=step)
         self.draw_image()
         self.statusbar.update_image_scaling()
         self.statusbar.update()
