@@ -41,13 +41,6 @@ class ThumbnailViewBase:
         self.__done = set()
         self.__taskid = 0
 
-    def generate_thumbnail(self, uid: int):
-        """
-        This function must return the thumbnail for C{uid}
-        """
-
-        raise NotImplementedError
-
     def stop_update(self):
         """
         Stops generation of pixbufs
@@ -138,6 +131,3 @@ class ThumbnailTreeView(Gtk.TreeView, ThumbnailViewBase):
 
     def get_visible_range(self):
         return Gtk.TreeView.get_visible_range(self)
-
-    def generate_thumbnail(self, uid):
-        raise NotImplementedError
