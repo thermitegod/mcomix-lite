@@ -160,9 +160,8 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         self.__treeview.set_model(None)
 
         # Create empty preview thumbnails.
-        filler = self.__empty_thumbnail
         for row in range(self.__window.imagehandler.get_number_of_pages()):
-            self.__thumbnail_liststore.append((row + 1, filler, False))
+            self.__thumbnail_liststore.append((row + 1, self.__empty_thumbnail, False))
 
         self.__loaded = True
 
