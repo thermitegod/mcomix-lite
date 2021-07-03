@@ -25,6 +25,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         #: Selected row in treeview
         self.__currently_selected_row = 0
 
+        self.__thumbnail_size = config['THUMBNAIL_SIZE'] + 2  # plus border
         self.__empty_thumbnail = self._create_empty_thumbnail()
 
         self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
@@ -69,7 +70,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         self.__treeview.append_column(self.__thumbnail_image_treeviewcolumn)
         self.__pixbuf_cellrenderer = Gtk.CellRendererPixbuf()
         self.__thumbnail_image_treeviewcolumn.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
-        self.__thumbnail_image_treeviewcolumn.set_fixed_width(self._pixbuf_size)
+        self.__thumbnail_image_treeviewcolumn.set_fixed_width(self.__thumbnail_size)
         self.__thumbnail_image_treeviewcolumn.pack_start(self.__pixbuf_cellrenderer, True)
         self.__thumbnail_image_treeviewcolumn.add_attribute(self.__pixbuf_cellrenderer, 'pixbuf', 1)
 
@@ -135,13 +136,9 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         """
 
         self.clear()
-        self.__thumbnail_image_treeviewcolumn.set_fixed_width(self._pixbuf_size)
+        self.__thumbnail_size = config['THUMBNAIL_SIZE'] + 2  # plus border
+        self.__thumbnail_image_treeviewcolumn.set_fixed_width(self.__thumbnail_size)
         self.load_thumbnails()
-
-    @property
-    def _pixbuf_size(self):
-        # Don't forget the extra pixels for the border!
-        return config['THUMBNAIL_SIZE'] + 2
 
     def load_thumbnails(self):
         """
@@ -247,8 +244,8 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         pixbuf = GdkPixbuf.Pixbuf.new(colorspace=GdkPixbuf.Colorspace.RGB,
                                       has_alpha=True,
                                       bits_per_sample=8,
-                                      width=self._pixbuf_size,
-                                      height=self._pixbuf_size)
+                                      width=self.__thumbnail_size,
+                                      height=self.__thumbnail_size)
 
         # Make the pixbuf transparent.
         pixbuf.fill(0)
