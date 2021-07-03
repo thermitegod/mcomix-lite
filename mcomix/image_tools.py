@@ -157,18 +157,21 @@ class _ImageTools:
         return self.rotate_pixbuf(src, rotation)
 
     @staticmethod
-    def add_border(pixbuf, thickness: int, color: int = 0x000000FF):
+    def add_border(pixbuf):
         """
-        Return a pixbuf from <pixbuf> with a <thickness> px border of
-        <color> added.
+        Return a pixbuf from <pixbuf> with a black, 1 px border
         """
 
-        canvas = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8,
-                                      pixbuf.get_width() + thickness * 2,
-                                      pixbuf.get_height() + thickness * 2)
-        canvas.fill(color)
-        pixbuf.copy_area(0, 0, pixbuf.get_width(), pixbuf.get_height(),
-                         canvas, thickness, thickness)
+        width = pixbuf.get_width()
+        height = pixbuf.get_height()
+
+        canvas = GdkPixbuf.Pixbuf.new(colorspace=GdkPixbuf.Colorspace.RGB,
+                                      has_alpha=True, bits_per_sample=8,
+                                      width=width + 2, height=height + 2)
+        canvas.fill(0x000000FF)  # black
+
+        pixbuf.copy_area(src_x=0, src_y=0, width=width, height=height,
+                         dest_pixbuf=canvas, dest_x=1, dest_y=1)
         return canvas
 
     @staticmethod

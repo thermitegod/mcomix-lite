@@ -25,8 +25,6 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         #: Selected row in treeview
         self.__currently_selected_row = 0
 
-        self.__border_size = 1
-
         self.__empty_thumbnail = self._create_empty_thumbnail()
 
         self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
@@ -143,7 +141,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
     @property
     def _pixbuf_size(self):
         # Don't forget the extra pixels for the border!
-        return config['THUMBNAIL_SIZE'] + 2 * self.__border_size
+        return config['THUMBNAIL_SIZE'] + 2
 
     def load_thumbnails(self):
         """
@@ -182,7 +180,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         size = config['THUMBNAIL_SIZE']
         pixbuf = self.__window.imagehandler.get_thumbnail(page=uid, size=(size, size))
         if pixbuf is not None:
-            pixbuf = ImageTools.add_border(pixbuf, self.__border_size)
+            pixbuf = ImageTools.add_border(pixbuf)
 
         return pixbuf
 

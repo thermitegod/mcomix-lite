@@ -201,7 +201,7 @@ class MagnifyingLens:
             cpos = cb[idx].get_position()
             self._add_subpixbuf(canvas, x - cpos[0], y - cpos[1], cb[idx].get_size(), source_pixbufs[idx])
 
-        return ImageTools.add_border(canvas, 1)
+        return ImageTools.add_border(canvas)
 
     def _add_subpixbuf(self, canvas, x: int, y: int, image_size: tuple, source_pixbuf):
         """
