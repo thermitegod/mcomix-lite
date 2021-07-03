@@ -12,23 +12,27 @@ from mcomix.lib.exceptions import MissingPixbuf
 from mcomix.lib.threadpool import GlobalThreadPool, Lock
 
 
-class ThumbnailViewBase:
-    """T
-    his class provides shared functionality for Gtk.TreeView and
+class ThumbnailTreeView(Gtk.TreeView):
+    """
+    This class provides shared functionality for Gtk.TreeView and
     Gtk.IconView. Instantiating this class directly is *impossible*,
     as it depends on methods provided by the view classes
     """
 
-    def __init__(self, uid_column: int, pixbuf_column: int, status_column: int):
+    def __init__(self, model, uid_column: int, pixbuf_column: int, status_column: int):
         """
         Constructs a new ThumbnailView.
 
+        :param model: a Gtk.ListStore object
         :param uid_column: index of unique identifer column.
         :param pixbuf_column: index of pixbuf column.
         :param status_column: index of status boolean column (True if pixbuf is not temporary filler)
         """
 
-        super().__init__()
+        super().__init__(model=model)
+
+        # Connect events
+        self.connect('draw', self.draw_thumbnails_on_screen)
 
         #: Keep track of already generated thumbnails.
         self.__uid_column = uid_column
@@ -118,16 +122,3 @@ class ThumbnailViewBase:
                 return
             _iter, pixbuf, model = params
             GLib.idle_add(model.set, _iter, self.__status_column, True, self.__pixbuf_column, pixbuf)
-
-
-class ThumbnailTreeView(Gtk.TreeView, ThumbnailViewBase):
-    def __init__(self, model, uid_column: int, pixbuf_column: int, status_column: int):
-        super().__init__(model=model)
-
-        ThumbnailViewBase.__init__(self, uid_column, pixbuf_column, status_column)
-
-        # Connect events
-        self.connect('draw', self.draw_thumbnails_on_screen)
-
-    def get_visible_range(self):
-        return Gtk.TreeView.get_visible_range(self)
