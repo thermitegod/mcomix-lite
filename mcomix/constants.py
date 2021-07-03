@@ -18,7 +18,7 @@ class _Constants:
         super().__init__()
 
         self.APPNAME = 'MComix-Lite'
-        self.VERSION = '3.2.0'
+        self.VERSION = '3.3.0-dev'
 
         self.PROG_NAME = self.APPNAME.lower()
         self.HOME = Path.home()

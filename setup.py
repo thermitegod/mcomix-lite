@@ -18,7 +18,7 @@ Example usage:
 
 BASE_PATH = os.path.dirname(os.path.realpath(__file__))
 APPNAME = 'MComix-Lite'
-VERSION = '3.2.0'
+VERSION = '3.3.0.dev0'
 
 
 def get_data_patterns(directory, *patterns):
