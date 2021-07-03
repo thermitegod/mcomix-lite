@@ -26,6 +26,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         self.__currently_selected_row = 0
 
         self.__thumbnail_size = config['THUMBNAIL_SIZE'] + 2  # plus border
+        self.__width_padding = self.__thumbnail_size + 10
         self.__empty_thumbnail = self._create_empty_thumbnail()
 
         self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
@@ -70,7 +71,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         self.__treeview.append_column(self.__thumbnail_image_treeviewcolumn)
         self.__pixbuf_cellrenderer = Gtk.CellRendererPixbuf()
         self.__thumbnail_image_treeviewcolumn.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
-        self.__thumbnail_image_treeviewcolumn.set_fixed_width(self.__thumbnail_size)
+        self.__thumbnail_image_treeviewcolumn.set_fixed_width(self.__width_padding)
         self.__thumbnail_image_treeviewcolumn.pack_start(self.__pixbuf_cellrenderer, True)
         self.__thumbnail_image_treeviewcolumn.add_attribute(self.__pixbuf_cellrenderer, 'pixbuf', 1)
 
@@ -137,7 +138,8 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
 
         self.clear()
         self.__thumbnail_size = config['THUMBNAIL_SIZE'] + 2  # plus border
-        self.__thumbnail_image_treeviewcolumn.set_fixed_width(self.__thumbnail_size)
+        self.__width_padding = self.__thumbnail_size + 10
+        self.__thumbnail_image_treeviewcolumn.set_fixed_width(self.__width_padding)
         self.load_thumbnails()
 
     def load_thumbnails(self):
