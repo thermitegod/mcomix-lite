@@ -177,10 +177,10 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
 
         size = config['THUMBNAIL_SIZE']
         pixbuf = self.__window.imagehandler.get_thumbnail(page=uid, size=(size, size))
-        if pixbuf is not None:
-            pixbuf = ImageTools.add_border(pixbuf)
+        if pixbuf is None:
+            return None
 
-        return pixbuf
+        return ImageTools.add_border(pixbuf)
 
     def _set_selected_row(self, row: int, scroll: bool = True):
         """
