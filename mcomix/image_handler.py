@@ -356,8 +356,7 @@ class ImageHandler:
             return None
 
         try:
-            thumbnailer = Thumbnailer(size=size)
-            return thumbnailer.thumbnail(path)
+            return Thumbnailer(size=size).thumbnail(path)
         except Exception as ex:
             logger.error(f'Failed to create thumbnail for image: \'{path}\'')
             logger.error(f'Exception: {ex}')

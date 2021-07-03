@@ -295,19 +295,6 @@ class _ImageTools:
 
         return GdkPixbuf.Pixbuf.new_from_file(str(path))
 
-    def load_pixbuf_size(self, path: Path, width: int, height: int):
-        """
-        Loads a pixbuf from a given image file and scale it to fit inside (width, height)
-        """
-
-        try:
-            with LockedFileIO(path) as fio:
-                with Image.open(fio) as im:
-                    im.thumbnail((width, height), resample=Image.BOX)
-                    return self.pil_to_pixbuf(im, keep_orientation=True)
-        except Exception as ex:
-            logger.error(f'failed to load pixbuf: {ex}')
-
     def load_pixbuf_data(self, imgdata):
         """
         Loads a pixbuf from the data passed in <imgdata>
