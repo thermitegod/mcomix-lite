@@ -216,6 +216,8 @@ class MainWindow(Gtk.ApplicationWindow):
             self.__waiting_for_redraw = False
             return
 
+        self.thumbnailsidebar.show()
+
         if not self.imagehandler.page_is_available():
             # Save scroll destination for when the page becomes available.
             self.__last_scroll_destination = scroll_to
@@ -485,6 +487,7 @@ class MainWindow(Gtk.ApplicationWindow):
         """
 
         self._displayed_double()
+        self.thumbnailsidebar.hide()
         self.thumbnailsidebar.load_thumbnails()
         self._update_page_information()
 
