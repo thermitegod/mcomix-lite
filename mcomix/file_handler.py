@@ -373,6 +373,9 @@ class FileHandler:
             next_page = self.__open_first_page
 
         for path in next_file:
+            if not path.is_file():
+                return False
+
             if ArchiveTools.is_archive_file(path=path):
                 self._close()
                 self.open_file(path, next_page)
