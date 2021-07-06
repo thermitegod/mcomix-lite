@@ -2,7 +2,6 @@
 
 """Gtk.IconView subclass for dynamically generated thumbnails"""
 
-import functools
 import uuid
 
 from gi.repository import Gtk
@@ -63,44 +62,44 @@ class ThumbnailTreeView(Gtk.TreeView):
         # 'draw' event called too frequently
         if not self.__lock.acquire(blocking=False):
             return
-        try:
-            visible = self.get_visible_range()
-            if not visible:
-                # No valid paths available
-                return
 
-            start = visible[0][0]
-            end = visible[1][0]
+        visible = self.get_visible_range()
+        if not visible:
+            # No valid paths available
+            return
 
-            # Currently invisible icons are always cached
-            # only after the visible icons completed.
-            mid = (start + end) // 2 + 1
-            harf = end - start + 1  # twice of current visible length
-            required = set(range(mid - harf, mid + harf))
+        start = visible[0][0]
+        end = visible[1][0]
 
-            taskid = self.__taskid
-            if not taskid:
-                taskid = uuid.uuid4().int
+        # Currently invisible icons are always cached
+        # only after the visible icons completed.
+        mid = (start + end) // 2 + 1
+        harf = end - start + 1  # twice of current visible length
+        required = set(range(mid - harf, mid + harf))
 
-            model = self.get_model()
-            required &= set(range(len(model)))  # filter invalid paths.
-            for path in required:
-                _iter = model.get_iter(path)
-                uid, generated = model.get(_iter, self.__uid_column, self.__status_column)
-                # Do not queue again if thumbnail was already created.
-                if generated:
-                    continue
-                if uid in self.__done:
-                    continue
-                self.__taskid = taskid
-                self.__done.add(uid)
-                self.__threadpool.apply_async(
-                    self._pixbuf_worker, args=(uid, _iter, model),
-                    callback=functools.partial(self._pixbuf_finished, taskid=taskid))
-        finally:
-            self.__lock.release()
+        taskid = self.__taskid
+        if not taskid:
+            taskid = uuid.uuid4().int
 
-    def _pixbuf_worker(self, uid: int, _iter, model):
+        model = self.get_model()
+        required &= set(range(len(model)))  # filter invalid paths.
+        for path in required:
+            _iter = model.get_iter(path)
+            uid, generated = model.get(_iter, self.__uid_column, self.__status_column)
+            # Do not queue again if thumbnail was already created.
+            if generated:
+                continue
+
+            if uid in self.__done:
+                continue
+
+            self.__taskid = taskid
+            self.__done.add(uid)
+            self.__threadpool.apply_async(self._pixbuf_worker, args=(uid, _iter, model, taskid))
+
+        self.__lock.release()
+
+    def _pixbuf_worker(self, uid: int, _iter, model, taskid):
         """
         Run by a worker thread to generate the thumbnail for a path
         """
@@ -109,16 +108,8 @@ class ThumbnailTreeView(Gtk.TreeView):
         if pixbuf is None:
             self.__done.discard(uid)
             raise MissingPixbuf
-        return _iter, pixbuf, model
-
-    def _pixbuf_finished(self, params: tuple, taskid: int = -1):
-        """
-        Executed when a pixbuf was created, to actually insert the pixbuf
-        into the view store. C{params} is a tuple containing (index, pixbuf, model)
-        """
 
         with self.__lock:
             if self.__taskid != taskid:
                 return
-            _iter, pixbuf, model = params
             GLib.idle_add(model.set, _iter, self.__status_column, True, self.__pixbuf_column, pixbuf)
