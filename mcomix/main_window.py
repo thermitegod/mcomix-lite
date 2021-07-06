@@ -840,50 +840,56 @@ class MainWindow(Gtk.ApplicationWindow):
         save_dialog.destroy()
 
     def move_file(self, *args):
-        self._move_file(move_else_delete=True)
-
-    def trash_file(self, *args):
-        self._move_file(move_else_delete=False)
-
-    def _move_file(self, move_else_delete: bool = True, *args):
         """
         The currently opened file/archive will be moved to prefs['MOVE_FILE']
-        or
+        """
+
+        current_file = self.imagehandler.get_real_path()
+
+        target_dir = Path() / current_file.parent / config['MOVE_FILE']
+        target_file = Path() / target_dir / current_file.name
+
+        if not Path.exists(target_dir):
+            target_dir.mkdir()
+
+        self._move_file(move_else_delete=True, current_file=current_file, target_file=target_file)
+
+    def trash_file(self, *args):
+        """
         The currently opened file/archive will be trashed after showing a confirmation dialog
         """
 
         current_file = self.imagehandler.get_real_path()
 
-        def file_action(move: bool = True):
-            if move:
+        dialog = MessageDialog(
+            parent=self,
+            flags=Gtk.DialogFlags.MODAL,
+            message_type=Gtk.MessageType.QUESTION,
+            buttons=Gtk.ButtonsType.NONE)
+        dialog.add_buttons(
+            Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+            Gtk.STOCK_DELETE, Gtk.ResponseType.OK)
+        dialog.set_default_response(Gtk.ResponseType.OK)
+        dialog.set_should_remember_choice(
+            'delete-opend-file',
+            (Gtk.ResponseType.OK,))
+        dialog.set_text(f'Trash Selected File: "{escape(current_file.name)}"?')
+        result = dialog.run()
+        if result != Gtk.ResponseType.OK:
+            return None
+
+        self._move_file(move_else_delete=False, current_file=current_file)
+
+    def _move_file(self, move_else_delete: bool, current_file: Path = None, target_file: Path = None):
+        """
+        Shared logic for move_file() and trash_file()
+        """
+
+        def file_action():
+            if move_else_delete:
                 Path.rename(current_file, target_file)
             else:
                 send2trash(bytes(current_file))
-
-        if move_else_delete:
-            target_dir = Path() / current_file.parent / config['MOVE_FILE']
-            target_file = Path() / target_dir / current_file.name
-
-            if not Path.exists(target_dir):
-                target_dir.mkdir()
-
-        else:
-            dialog = MessageDialog(
-                parent=self,
-                flags=Gtk.DialogFlags.MODAL,
-                message_type=Gtk.MessageType.QUESTION,
-                buttons=Gtk.ButtonsType.NONE)
-            dialog.add_buttons(
-                Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                Gtk.STOCK_DELETE, Gtk.ResponseType.OK)
-            dialog.set_default_response(Gtk.ResponseType.OK)
-            dialog.set_should_remember_choice(
-                'delete-opend-file',
-                (Gtk.ResponseType.OK,))
-            dialog.set_text(f'Trash Selected File: "{escape(current_file.name)}"?')
-            result = dialog.run()
-            if result != Gtk.ResponseType.OK:
-                return None
 
         if self.filehandler.get_archive_type() is not None:
             next_opened = self.filehandler.open_archive_direction(forward=True)
@@ -893,7 +899,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 self.filehandler.close_file()
 
             if Path.is_file(current_file):
-                file_action(move_else_delete)
+                file_action()
         else:
             if self.imagehandler.get_number_of_pages() > 1:
                 # Open the next/previous file
@@ -903,14 +909,14 @@ class MainWindow(Gtk.ApplicationWindow):
                     self.flip_page(number_of_pages=+1)
                 # Move the desired file
                 if Path.is_file(current_file):
-                    file_action(move_else_delete)
+                    file_action()
 
                 # Refresh the directory
                 self.filehandler.refresh_file()
             else:
                 self.filehandler.close_file()
                 if Path.is_file(current_file):
-                    file_action(move_else_delete)
+                    file_action()
 
     def minimize(self, *args):
         """
