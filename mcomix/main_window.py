@@ -344,22 +344,23 @@ class MainWindow(Gtk.ApplicationWindow):
         even when the page pixbuf(s) aren't ready yet
         """
 
-        page_number = self.imagehandler.get_current_page()
-        if not page_number:
+        page = self.imagehandler.get_current_page()
+        if not page:
             return
 
         if self.displayed_double:
             number_of_pages = 2
-            filenames = self.imagehandler.get_page_data(double=True, manga=self.is_manga_mode, filename=True)
-            filesizes = self.imagehandler.get_page_data(double=True, manga=self.is_manga_mode, filesize=True)
-            filename = ', '.join(filenames)
-            filesize = ', '.join(filesizes)
+            filenames = self.imagehandler.get_page_filename(page=page, double=True, manga=self.is_manga_mode)
+            filesizes = self.imagehandler.get_page_filesize(page=page, double=True, manga=self.is_manga_mode)
         else:
             number_of_pages = 1
-            filename = self.imagehandler.get_page_data(filename=True)
-            filesize = self.imagehandler.get_page_data(filesize=True)
+            filenames = self.imagehandler.get_page_filename(page=page)
+            filesizes = self.imagehandler.get_page_filesize(page=page)
 
-        self.statusbar.set_page_number(page_number, self.imagehandler.get_number_of_pages(), number_of_pages)
+        filename = ', '.join(filenames)
+        filesize = ', '.join(filesizes)
+
+        self.statusbar.set_page_number(page, self.imagehandler.get_number_of_pages(), number_of_pages)
         self.statusbar.set_filename(filename)
         self.statusbar.set_filesize(filesize)
 
@@ -823,7 +824,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 if not self.is_manga_mode:
                     page += 1
 
-        page_name = self.imagehandler.get_page_data(page=page, filename=True)
+        page_name = self.imagehandler.get_page_filename(page=page)[0]
         page_path = self.imagehandler.get_path_to_page(page=page)
 
         save_dialog = Gtk.FileChooserDialog(title='Save page as', action=Gtk.FileChooserAction.SAVE)

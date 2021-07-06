@@ -261,49 +261,63 @@ class ImageHandler:
         except IndexError:
             return None
 
-    def get_page_data(self, page: int = None, double: bool = False, manga: bool = False,
-                      filename: bool = False, filesize: bool = False):
+    @staticmethod
+    def _get_page_unknown(double: bool):
+        if double:
+            return ['unknown', 'unknown']
+        return ['unknown']
+
+    def get_page_filename(self, page: int = None, double: bool = False, manga: bool = False):
         """
         :param page
             A page number or if None the current page
         :param double
-            if True, return (page, page + 1), else return (page)
+            if True, return [page, page + 1], else return [page]
         :param manga
             if True, sets info to manga layout
-        :param filename
-            if True returns filename
-        :param filesize
-            if True returns filesize
         """
 
         if not self.page_is_available():
-            if double:
-                return 'unknown', 'unknown'
-            return 'unknown'
+            return self._get_page_unknown(double)
 
         if page is None:
             page = self.get_current_page()
 
-        if filename:
-            first = self.get_path_to_page(page).name
-        elif filesize:
-            first = FileSize(self.get_path_to_page(page)).size
-        else:
-            raise ValueError
+        page_data = [self.get_path_to_page(page).name]
 
         if double:
-            if filename:
-                second = self.get_path_to_page(page + 1).name
-            elif filesize:
-                second = FileSize(self.get_path_to_page(page + 1)).size
-            else:
-                raise ValueError
+            page_data.append(self.get_path_to_page(page + 1).name)
 
             if manga:
-                return second, first
-            return first, second
+                page_data.reverse()
 
-        return first
+        return page_data
+
+    def get_page_filesize(self, page: int = None, double: bool = False, manga: bool = False):
+        """
+        :param page
+            A page number or if None the current page
+        :param double
+            if True, return [page, page + 1], else return [page]
+        :param manga
+            if True, sets info to manga layout
+        """
+
+        if not self.page_is_available():
+            return self._get_page_unknown(double)
+
+        if page is None:
+            page = self.get_current_page()
+
+        page_data = [FileSize(self.get_path_to_page(page)).size]
+
+        if double:
+            page_data.append(FileSize(self.get_path_to_page(page + 1)).size)
+
+            if manga:
+                page_data.reverse()
+
+        return page_data
 
     def get_current_filename(self):
         """
