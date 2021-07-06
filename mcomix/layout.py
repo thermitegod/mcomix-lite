@@ -148,7 +148,7 @@ class FiniteLayout:  # 2D only
         temp_cb_list = Box.align_center(temp_cb_list, alignment_axis, 0, orientation[alignment_axis])
         # distribute
         temp_cb_list = Box.distribute(temp_cb_list, distribution_axis, 0, spacing)
-        temp_wb_list, temp_bb = FiniteLayout._wrap_union(temp_cb_list, viewport_size, orientation)
+        temp_wb_list, temp_bb = self._wrap_union(temp_cb_list, viewport_size, orientation)
         # move to global origin
         bbp = temp_bb.get_position()
         for idx, item in enumerate(temp_cb_list):
