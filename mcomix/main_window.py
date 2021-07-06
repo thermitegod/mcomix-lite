@@ -440,6 +440,7 @@ class MainWindow(Gtk.ApplicationWindow):
         current_page = self.imagehandler.get_current_page()
         nb_pages = 2 if self.displayed_double else 1
         if current_page <= page < (current_page + nb_pages):
+            self._displayed_double()
             self.draw_image(scroll_to=self.__last_scroll_destination)
             self._update_page_information()
 
