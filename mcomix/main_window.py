@@ -204,10 +204,12 @@ class MainWindow(Gtk.ApplicationWindow):
         Draw the current pages and update the titlebar and statusbar
         """
 
-        # FIXME: what if scroll_to is different?
-        if not self.__waiting_for_redraw:  # Don't stack up redraws.
-            self.__waiting_for_redraw = True
-            GLib.idle_add(self._draw_image, scroll_to, priority=GLib.PRIORITY_HIGH_IDLE)
+        if self.__waiting_for_redraw:
+            # Don't stack up redraws.
+            return
+
+        self.__waiting_for_redraw = True
+        GLib.idle_add(self._draw_image, scroll_to, priority=GLib.PRIORITY_HIGH_IDLE)
 
     def _draw_image(self, scroll_to: int):
         if not self.filehandler.get_file_loaded():
@@ -228,12 +230,12 @@ class MainWindow(Gtk.ApplicationWindow):
 
         distribution_axis = Constants.AXIS['DISTRIBUTION']
         alignment_axis = Constants.AXIS['ALIGNMENT']
-        pixbuf_count = 2 if self.displayed_double else 1  # XXX limited to at most 2 pages
+        # XXX limited to at most 2 pages
+        pixbuf_count = 2 if self.displayed_double else 1
+        pixbuf_count_iter = (0, 1) if self.displayed_double else (0,)
         pixbuf_list = list(self.imagehandler.get_pixbufs(pixbuf_count))
         do_not_transform = [ImageTools.disable_transform(x) for x in pixbuf_list]
         size_list = [[pixbuf.get_width(), pixbuf.get_height()] for pixbuf in pixbuf_list]
-
-        orientation = self.__page_orientation
 
         # Rotation handling:
         # - apply Exif rotation on individual images
@@ -245,7 +247,7 @@ class MainWindow(Gtk.ApplicationWindow):
             rotation_list = [0] * len(pixbuf_list)
 
         virtual_size = [0, 0]
-        for i in range(pixbuf_count):
+        for i in pixbuf_count_iter:
             if rotation_list[i] in (90, 270):
                 size_list[i].reverse()
             size = size_list[i]
@@ -253,57 +255,39 @@ class MainWindow(Gtk.ApplicationWindow):
             virtual_size[alignment_axis] = max(virtual_size[alignment_axis], size[alignment_axis])
         rotation = (self._get_size_rotation(*virtual_size) + config['ROTATION']) % 360
 
+        orientation = self.__page_orientation
         if rotation in (90, 270):
             distribution_axis, alignment_axis = alignment_axis, distribution_axis
             orientation.reverse()
-            for i in range(pixbuf_count):
+            for i in pixbuf_count_iter:
                 size_list[i].reverse()
         elif rotation in (180, 270):
             orientation.reverse()
-
-        for i in range(pixbuf_count):
-            rotation_list[i] = (rotation_list[i] + rotation) % 360
 
         if config['VERTICAL_FLIP']:
             orientation.reverse()
         if config['HORIZONTAL_FLIP']:
             orientation.reverse()
 
-        viewport_size = ()  # dummy
-        scaled_sizes = [(0, 0)]
-        union_scaled_size = (0, 0)
-        # Visible area size is recomputed depending on scrollbar visibility
-        while True:
-            new_viewport_size = self.get_visible_area_size()
-            if new_viewport_size == viewport_size:
-                break
-            viewport_size = new_viewport_size
-            zoom_dummy_size = list(viewport_size)
-            dasize = zoom_dummy_size[distribution_axis] - self.__spacing * (pixbuf_count - 1)
-            if dasize <= 0:
-                dasize = 1
-            zoom_dummy_size[distribution_axis] = dasize
-            scaled_sizes = self.zoom.get_zoomed_size(size_list, zoom_dummy_size,
-                                                     distribution_axis, do_not_transform)
+        # Recompute the visible area size
+        viewport_size = self.get_visible_area_size()
+        zoom_dummy_size = list(viewport_size)
+        scaled_sizes = self.zoom.get_zoomed_size(size_list, zoom_dummy_size, distribution_axis, do_not_transform)
 
-            self.__layout = FiniteLayout(
-                scaled_sizes, viewport_size, orientation, self.__spacing,
-                distribution_axis, alignment_axis)
+        self.__layout = FiniteLayout(
+            scaled_sizes, viewport_size, orientation, self.__spacing,
+            distribution_axis, alignment_axis)
 
-            union_scaled_size = self.__layout.get_union_box().get_size()
+        for i in pixbuf_count_iter:
+            rotation_list[i] = (rotation_list[i] + rotation) % 360
 
-        for i in range(pixbuf_count):
-            pixbuf_list[i] = ImageTools.fit_pixbuf_to_rectangle(
-                pixbuf_list[i], scaled_sizes[i], rotation_list[i])
-
-        for i in range(pixbuf_count):
+            pixbuf_list[i] = ImageTools.fit_pixbuf_to_rectangle(pixbuf_list[i], scaled_sizes[i], rotation_list[i])
             pixbuf_list[i] = ImageTools.trans_pixbuf(
                 pixbuf_list[i],
                 flip=config['VERTICAL_FLIP'],
                 flop=config['HORIZONTAL_FLIP'])
             pixbuf_list[i] = self.enhancer.enhance(pixbuf_list[i])
 
-        for i in range(pixbuf_count):
             ImageTools.set_from_pixbuf(self.images[i], pixbuf_list[i])
 
         resolutions = [(*size, scaled_size[0] / size[0])
@@ -311,21 +295,23 @@ class MainWindow(Gtk.ApplicationWindow):
 
         if self.is_manga_mode:
             resolutions.reverse()
-
         self.statusbar.set_resolution(resolutions)
         self.statusbar.update()
 
         self.__main_layout.get_bin_window().freeze_updates()
 
-        self.__main_layout.set_size(*union_scaled_size)
-        content_boxes = self.__layout.get_content_boxes()
-        for i in range(pixbuf_count):
-            self.__main_layout.move(self.images[i], *content_boxes[i].get_position())
+        self.__main_layout.set_size(*self.__layout.get_union_box().get_size())
 
-        for i in range(pixbuf_count):
+        for i in self.images:
+            # hides old images before showing new ones
+            # also if in double page mode and only a single
+            # image is going to be shown, prevents a ghost second image
+            i.hide()
+
+        content_boxes = self.__layout.get_content_boxes()
+        for i in pixbuf_count_iter:
+            self.__main_layout.move(self.images[i], *content_boxes[i].get_position())
             self.images[i].show()
-        for i in range(pixbuf_count, len(self.images)):
-            self.images[i].hide()
 
         # Reset orientation so scrolling behaviour is sane.
         self.__layout.set_orientation(self.__page_orientation)
