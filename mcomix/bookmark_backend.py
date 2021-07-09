@@ -219,9 +219,8 @@ class BookmarkBackend:
         dialog.set_default_response(Gtk.ResponseType.YES)
         dialog.set_should_remember_choice('replace-existing-bookmark', (Gtk.ResponseType.YES, Gtk.ResponseType.NO))
 
-        dialog.set_text(
-            'The current book already contains marked pages.'
-            f'Do you want to replace them with a new bookmark on page {new_page}? \n\n '
-            'Selecting "No" will create a new bookmark.')
+        dialog.set_text(primary='The current book already contains marked pages.',
+                        secondary=f'Do you want to replace them with a new bookmark on page {new_page}?'
+                                  'Selecting "No" will create a new bookmark.')
 
         return dialog.run()

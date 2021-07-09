@@ -788,7 +788,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 'Right', response_right,
                 Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
             dialog.set_default_response(Gtk.ResponseType.CANCEL)
-            dialog.set_text(f'Save Left or Right page?')
+            dialog.set_text(primary='Extract Left or Right page?')
             result = dialog.run()
 
             if result not in (response_left, response_right):
@@ -853,7 +853,7 @@ class MainWindow(Gtk.ApplicationWindow):
         dialog.set_should_remember_choice(
             'delete-opend-file',
             (Gtk.ResponseType.OK,))
-        dialog.set_text(f'Trash Selected File: "{current_file.name}"?')
+        dialog.set_text('Trash Selected File?', secondary=f'{current_file.name}')
         result = dialog.run()
         if result != Gtk.ResponseType.OK:
             return None
