@@ -64,7 +64,7 @@ config = {
     'BOOKMARK_SHOW_PATH': False,
     'SI_UNITS': False,
     'MAX_THREADS': 16,
-    'SCALING_QUALITY': Constants.SCALING_GDK[2].value,
+    'GDK_SCALING_FILTER': Constants.SCALING_GDK[2].value,
     'PIL_SCALING_FILTER': Constants.SCALING_PIL[2].value,
     'ENABLE_PIL_SCALING': True,
     'ESCAPE_QUITS': True,

@@ -613,7 +613,7 @@ class MainWindow(Gtk.ApplicationWindow):
             config_key = 'PIL_SCALING_FILTER'
             algos = Constants.SCALING_PIL
         else:
-            config_key = 'SCALING_QUALITY'
+            config_key = 'GDK_SCALING_FILTER'
             algos = Constants.SCALING_GDK
 
         # inc/dec active algo, modulus loops algos to start on overflow

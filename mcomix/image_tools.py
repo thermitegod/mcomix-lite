@@ -122,7 +122,7 @@ class _ImageTools:
             width, height = height, width
 
         if scaling_quality is None:
-            scaling_quality = config['SCALING_QUALITY']
+            scaling_quality = config['GDK_SCALING_FILTER']
 
         src_width = src.get_width()
         src_height = src.get_height()

@@ -552,7 +552,7 @@ class PreferencesDialog(Gtk.Dialog):
 
         items = Constants.SCALING_GDK
 
-        return self._create_combobox(items, 'SCALING_QUALITY')
+        return self._create_combobox(items, 'GDK_SCALING_FILTER')
 
     def _create_combobox_pil_scaling_filter(self):
         """
@@ -592,9 +592,9 @@ class PreferencesDialog(Gtk.Dialog):
                 if preference in ('ANIMATION_MODE', 'SORT_ARCHIVE_ORDER',
                                   'SORT_ARCHIVE_BY', 'SORT_ORDER', 'SORT_BY'):
                     self.__window.filehandler.refresh_file()
-                elif preference in ('PIL_SCALING_FILTER', 'SCALING_QUALITY',
+                elif preference in ('PIL_SCALING_FILTER', 'GDK_SCALING_FILTER',
                                     'VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'):
-                    if preference in ('PIL_SCALING_FILTER', 'SCALING_QUALITY'):
+                    if preference in ('PIL_SCALING_FILTER', 'GDK_SCALING_FILTER'):
                         self.__window.statusbar.update_image_scaling()
                     self.__window.draw_image()
                 elif preference in ('FIT_TO_SIZE_MODE', 'ZOOM_MODE'):
