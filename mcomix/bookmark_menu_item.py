@@ -7,6 +7,8 @@ from pathlib import Path
 
 from gi.repository import Gtk
 
+from mcomix.message_dialog_info import MessageDialogInfo
+
 
 class Bookmark(Gtk.ImageMenuItem):
     """
@@ -43,6 +45,10 @@ class Bookmark(Gtk.ImageMenuItem):
         """
         Open the file and page the bookmark represents
         """
+
+        if not Path(self._path).is_file():
+            MessageDialogInfo(self.__window, primary='Bookmarked file does not exist', secondary=f'{self._path}')
+            return
 
         if self._file_handler.get_base_path() != Path(self._path):
             self._file_handler.initialize_fileprovider(path=[Path(self._path)])

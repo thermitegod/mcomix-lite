@@ -2,6 +2,8 @@
 
 """Simple extension of Gtk.MessageDialog for consistent formating. Also supports remembering the dialog result"""
 
+import html
+
 from gi.repository import Gtk
 
 from mcomix.preferences import config
@@ -47,10 +49,10 @@ class MessageDialog(Gtk.MessageDialog):
         :param secondary: Descriptive text
         """
 
-        if primary:
-            self.set_markup(f'<span weight="bold" size="larger">{primary}</span>')
+        self.set_markup(f'<span weight="bold" size="larger">{html.escape(primary)}</span>')
+
         if secondary:
-            self.format_secondary_markup(secondary)
+            self.format_secondary_markup(html.escape(secondary))
 
     def should_remember_choice(self):
         """

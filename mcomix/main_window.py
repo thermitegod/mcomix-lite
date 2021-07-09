@@ -2,7 +2,6 @@
 
 import shutil
 from pathlib import Path
-from html import escape
 
 from gi.repository import GLib, Gdk, Gtk
 from send2trash import send2trash
@@ -28,6 +27,7 @@ from mcomix.lens import MagnifyingLens
 from mcomix.lib.callback import Callback
 from mcomix.menubar import Menubar
 from mcomix.message_dialog import MessageDialog
+from mcomix.message_dialog_info import MessageDialogInfo
 from mcomix.pageselect import Pageselector
 from mcomix.preferences import config
 from mcomix.preferences_manager import PreferenceManager
@@ -831,6 +831,9 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self._move_file(move_else_delete=True, current_file=current_file, target_file=target_file)
 
+        if not target_file.is_file():
+            MessageDialogInfo(self, primary='File was not moved', secondary=f'{target_file}')
+
     def trash_file(self, *args):
         """
         The currently opened file/archive will be trashed after showing a confirmation dialog
@@ -850,12 +853,15 @@ class MainWindow(Gtk.ApplicationWindow):
         dialog.set_should_remember_choice(
             'delete-opend-file',
             (Gtk.ResponseType.OK,))
-        dialog.set_text(f'Trash Selected File: "{escape(current_file.name)}"?')
+        dialog.set_text(f'Trash Selected File: "{current_file.name}"?')
         result = dialog.run()
         if result != Gtk.ResponseType.OK:
             return None
 
         self._move_file(move_else_delete=False, current_file=current_file)
+
+        if current_file.is_file():
+            MessageDialogInfo(self, primary='File was not deleted', secondary=f'{current_file}')
 
     def _move_file(self, move_else_delete: bool, current_file: Path = None, target_file: Path = None):
         """
