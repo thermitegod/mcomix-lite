@@ -277,7 +277,7 @@ class ImageHandler:
             if True, sets info to manga layout
         """
 
-        if not self.page_is_available():
+        if not self.page_is_available(page=page):
             return self._get_page_unknown(double)
 
         if page is None:
@@ -303,7 +303,7 @@ class ImageHandler:
             if True, sets info to manga layout
         """
 
-        if not self.page_is_available():
+        if not self.page_is_available(page=page):
             return self._get_page_unknown(double)
 
         if page is None:
