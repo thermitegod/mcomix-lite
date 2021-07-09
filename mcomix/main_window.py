@@ -610,29 +610,19 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def change_image_scaling(self, step: int):
         if config['ENABLE_PIL_SCALING']:
-            self._loop_img_scaling(config_key='PIL_SCALING_FILTER', algos=Constants.SCALING_PIL, step=step)
+            config_key = 'PIL_SCALING_FILTER'
+            algos = Constants.SCALING_PIL
         else:
-            self._loop_img_scaling(config_key='SCALING_QUALITY', algos=Constants.SCALING_GDK, step=step)
+            config_key = 'SCALING_QUALITY'
+            algos = Constants.SCALING_GDK
+
+        # inc/dec active algo, modulus loops algos to start on overflow
+        # and end on underflow
+        config[config_key] = algos[(config[config_key] + step) % len(algos)].value
 
         self.draw_image()
         self.statusbar.update_image_scaling()
         self.statusbar.update()
-
-    @staticmethod
-    def _loop_img_scaling(config_key: str, algos: tuple, step: int):
-        try:
-            scale = algos[config[config_key] + step].value
-        except IndexError:
-            if step == +1:
-                # overflow goto beginning
-                scale = algos[0].value
-            elif step == -1:
-                # underflow goto end
-                scale = algos[-1].value
-            else:
-                raise ValueError
-
-        config[config_key] = scale
 
     def change_stretch(self, *args):
         """
