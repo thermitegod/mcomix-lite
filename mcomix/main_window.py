@@ -829,7 +829,10 @@ class MainWindow(Gtk.ApplicationWindow):
         if not Path.exists(target_dir):
             target_dir.mkdir()
 
-        self._move_file(move_else_delete=True, current_file=current_file, target_file=target_file)
+        self._load_next_file()
+
+        if current_file.is_file():
+            Path.rename(current_file, target_file)
 
         if not target_file.is_file():
             MessageDialogInfo(self, primary='File was not moved', secondary=f'{target_file}')
@@ -856,23 +859,20 @@ class MainWindow(Gtk.ApplicationWindow):
         dialog.set_text('Trash Selected File?', secondary=f'{current_file.name}')
         result = dialog.run()
         if result != Gtk.ResponseType.OK:
-            return None
+            return
 
-        self._move_file(move_else_delete=False, current_file=current_file)
+        self._load_next_file()
+
+        if current_file.is_file():
+            send2trash(bytes(current_file))
 
         if current_file.is_file():
             MessageDialogInfo(self, primary='File was not deleted', secondary=f'{current_file}')
 
-    def _move_file(self, move_else_delete: bool, current_file: Path = None, target_file: Path = None):
+    def _load_next_file(self):
         """
         Shared logic for move_file() and trash_file()
         """
-
-        def file_action():
-            if move_else_delete:
-                Path.rename(current_file, target_file)
-            else:
-                send2trash(bytes(current_file))
 
         if self.filehandler.get_archive_type() is not None:
             next_opened = self.filehandler.open_archive_direction(forward=True)
@@ -880,9 +880,6 @@ class MainWindow(Gtk.ApplicationWindow):
                 next_opened = self.filehandler.open_archive_direction(forward=False)
             if not next_opened:
                 self.filehandler.close_file()
-
-            if Path.is_file(current_file):
-                file_action()
         else:
             if self.imagehandler.get_number_of_pages() > 1:
                 # Open the next/previous file
@@ -890,16 +887,11 @@ class MainWindow(Gtk.ApplicationWindow):
                     self.flip_page(number_of_pages=-1)
                 else:
                     self.flip_page(number_of_pages=+1)
-                # Move the desired file
-                if Path.is_file(current_file):
-                    file_action()
 
                 # Refresh the directory
                 self.filehandler.refresh_file()
             else:
                 self.filehandler.close_file()
-                if Path.is_file(current_file):
-                    file_action()
 
     def minimize(self, *args):
         """
