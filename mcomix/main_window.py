@@ -396,7 +396,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         if (not config['DEFAULT_DOUBLE_PAGE'] or
                 not config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & Constants.DOUBLE_PAGE['AS_ONE_WIDE'] or
-                page == self.imagehandler.get_number_of_pages()):
+                self.imagehandler.is_last_page(page)):
             return False
 
         for page in (page, page + 1):
@@ -728,7 +728,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.displayed_double = (self.imagehandler.get_current_page() and
                                  config['DEFAULT_DOUBLE_PAGE'] and
                                  not self._get_virtual_double_page() and
-                                 self.imagehandler.get_current_page() != self.imagehandler.get_number_of_pages())
+                                 not self.imagehandler.is_last_page())
 
     def get_visible_area_size(self):
         """
@@ -883,7 +883,7 @@ class MainWindow(Gtk.ApplicationWindow):
         else:
             if self.imagehandler.get_number_of_pages() > 1:
                 # Open the next/previous file
-                if self.imagehandler.get_current_page() >= self.imagehandler.get_number_of_pages():
+                if self.imagehandler.is_last_page():
                     self.flip_page(number_of_pages=-1)
                 else:
                     self.flip_page(number_of_pages=+1)

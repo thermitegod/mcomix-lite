@@ -191,7 +191,7 @@ class ImageHandler:
                 # Current 'book' has no page.
                 return False
             index_list = [current_page - 1]
-            if self.__window.displayed_double and current_page < self.__image_files_total:
+            if self.__window.displayed_double and not self.is_last_page(current_page):
                 index_list.append(current_page)
         else:
             index_list = [page - 1]
@@ -245,6 +245,16 @@ class ImageHandler:
             return 0
 
         return self.__current_image_index + 1
+
+    def is_last_page(self, page: int = None):
+        """
+        is <page> the last in a book, if page is None use current page
+        """
+
+        if page is None:
+            page = self.get_current_page()
+
+        return page == self.__image_files_total
 
     def get_path_to_page(self, page: int = None):
         """
