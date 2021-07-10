@@ -63,41 +63,40 @@ class ThumbnailTreeView(Gtk.TreeView):
         if not self.__lock.acquire(blocking=False):
             return
 
-        visible = self.get_visible_range()
-        if not visible:
-            # No valid paths available
-            return
+        try:
+            visible = self.get_visible_range()
+            if not visible:
+                # No valid paths available
+                return
 
-        start = visible[0][0]
-        end = visible[1][0]
+            start = visible[0][0]
+            end = visible[1][0]
 
-        # Currently invisible icons are always cached
-        # only after the visible icons completed.
-        mid = (start + end) // 2 + 1
-        harf = end - start + 1  # twice of current visible length
-        required = set(range(mid - harf, mid + harf))
+            # Currently invisible icons are always cached
+            # only after the visible icons completed.
+            mid = (start + end) // 2 + 1
+            harf = end - start + 1  # twice of current visible length
+            required = set(range(mid - harf, mid + harf))
 
-        taskid = self.__taskid
-        if not taskid:
-            taskid = uuid.uuid4().int
+            taskid = self.__taskid
+            if not taskid:
+                taskid = uuid.uuid4().int
 
-        model = self.get_model()
-        required &= set(range(len(model)))  # filter invalid paths.
-        for path in required:
-            _iter = model.get_iter(path)
-            uid, generated = model.get(_iter, self.__uid_column, self.__status_column)
-            # Do not queue again if thumbnail was already created.
-            if generated:
-                continue
-
-            if uid in self.__done:
-                continue
-
-            self.__taskid = taskid
-            self.__done.add(uid)
-            self.__threadpool.apply_async(self._pixbuf_worker, args=(uid, _iter, model, taskid))
-
-        self.__lock.release()
+            model = self.get_model()
+            required &= set(range(len(model)))  # filter invalid paths.
+            for path in required:
+                _iter = model.get_iter(path)
+                uid, generated = model.get(_iter, self.__uid_column, self.__status_column)
+                # Do not queue again if thumbnail was already created.
+                if generated:
+                    continue
+                if uid in self.__done:
+                    continue
+                self.__taskid = taskid
+                self.__done.add(uid)
+                self.__threadpool.apply_async(self._pixbuf_worker, args=(uid, _iter, model, taskid))
+        finally:
+            self.__lock.release()
 
     def _pixbuf_worker(self, uid: int, _iter, model, taskid):
         """
