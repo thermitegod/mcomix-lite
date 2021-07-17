@@ -3,3 +3,9 @@ mcomix_lite.egg-info/
 dist/
 build/
 test/test/
+
+#cython
+*.c
+*.cpp
+*.so
+*.html
