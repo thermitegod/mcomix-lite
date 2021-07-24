@@ -7,7 +7,6 @@ import uuid
 from gi.repository import Gtk
 from gi.repository import GLib
 
-from mcomix.lib.exceptions import MissingPixbuf
 from mcomix.lib.threadpool import GlobalThreadPool, Lock
 
 
@@ -104,11 +103,11 @@ class ThumbnailTreeView(Gtk.TreeView):
         """
 
         pixbuf = self.generate_thumbnail(uid)
-        if pixbuf is None:
+        if pixbuf is not None:
+            with self.__lock:
+                if self.__taskid != taskid:
+                    return
+                GLib.idle_add(model.set, _iter, self.__status_column, True, self.__pixbuf_column, pixbuf)
+        else:
+            # missing pixbuf, try again
             self.__done.discard(uid)
-            raise MissingPixbuf
-
-        with self.__lock:
-            if self.__taskid != taskid:
-                return
-            GLib.idle_add(model.set, _iter, self.__status_column, True, self.__pixbuf_column, pixbuf)
