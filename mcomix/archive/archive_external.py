@@ -84,21 +84,16 @@ class ArchiveExternal(BaseArchive):
 
         with self.lock:
             with Process.popen(self._get_extract_arguments()) as proc:
-                wanted = dict([(unicode_name, unicode_name) for unicode_name in wanted])
-
                 for filename, filesize in self.contents:
                     if filename not in wanted:
                         continue
-                    unicode_name = wanted.get(filename, None)
-                    if unicode_name is None:
-                        continue
 
-                    destination_path = Path() / destination_dir / unicode_name
+                    destination_path = Path() / destination_dir / filename
                     with self._create_file(destination_path) as new:
                         data = proc.stdout.read(filesize)
                         new.write(data)
-                    yield unicode_name
-                    del wanted[filename]
+                    yield filename
+                    wanted.remove(filename)
                     if not wanted:
                         break
 
