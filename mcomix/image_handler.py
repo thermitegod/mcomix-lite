@@ -272,30 +272,30 @@ class ImageHandler:
             return None
 
     @staticmethod
-    def _get_page_unknown(double: bool):
-        if double:
+    def _get_page_unknown(double_mode: bool):
+        if double_mode:
             return ['unknown', 'unknown']
         return ['unknown']
 
-    def get_page_filename(self, page: int = None, double: bool = False, manga: bool = False):
+    def get_page_filename(self, page: int = None, double_mode: bool = False, manga: bool = False):
         """
         :param page
             A page number or if None the current page
-        :param double
+        :param double_mode
             if True, return [page, page + 1], else return [page]
         :param manga
             if True, sets info to manga layout
         """
 
         if not self.page_is_available(page=page):
-            return self._get_page_unknown(double)
+            return self._get_page_unknown(double_mode)
 
         if page is None:
             page = self.get_current_page()
 
         page_data = [self.get_path_to_page(page).name]
 
-        if double:
+        if double_mode:
             page_data.append(self.get_path_to_page(page + 1).name)
 
             if manga:
@@ -303,25 +303,25 @@ class ImageHandler:
 
         return page_data
 
-    def get_page_filesize(self, page: int = None, double: bool = False, manga: bool = False):
+    def get_page_filesize(self, page: int = None, double_mode: bool = False, manga: bool = False):
         """
         :param page
             A page number or if None the current page
-        :param double
+        :param double_mode
             if True, return [page, page + 1], else return [page]
         :param manga
             if True, sets info to manga layout
         """
 
         if not self.page_is_available(page=page):
-            return self._get_page_unknown(double)
+            return self._get_page_unknown(double_mode)
 
         if page is None:
             page = self.get_current_page()
 
         page_data = [FileSize(self.get_path_to_page(page))]
 
-        if double:
+        if double_mode:
             page_data.append(FileSize(self.get_path_to_page(page + 1)))
 
             if manga:

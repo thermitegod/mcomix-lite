@@ -325,8 +325,8 @@ class MainWindow(Gtk.ApplicationWindow):
 
         if self.displayed_double:
             number_of_pages = 2
-            filenames = self.imagehandler.get_page_filename(page=page, double=True, manga=self.is_manga_mode)
-            filesizes = self.imagehandler.get_page_filesize(page=page, double=True, manga=self.is_manga_mode)
+            filenames = self.imagehandler.get_page_filename(page=page, double_mode=True, manga=self.is_manga_mode)
+            filesizes = self.imagehandler.get_page_filesize(page=page, double_mode=True, manga=self.is_manga_mode)
         else:
             number_of_pages = 1
             filenames = self.imagehandler.get_page_filename(page=page)
