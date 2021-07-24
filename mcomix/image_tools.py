@@ -128,21 +128,33 @@ class _ImageTools:
             src_height = src.get_height()
 
         if src.get_has_alpha():
-            if config['CHECKERED_BG_FOR_TRANSPARENT_IMAGES']:
-                check_size, color1, color2 = config['CHECKERED_BG_SIZE'], 0x777777, 0x999999
-            else:
-                check_size, color1, color2 = 1024, 0xFFFFFF, 0xFFFFFF
             if (width, height) == (src_width, src_height):
                 # Using anything other than nearest interpolation will result in a
                 # modified image if no resizing takes place (even if it's opaque).
                 scaling_quality = GdkPixbuf.InterpType.NEAREST
 
-            src = src.composite_color_simple(width, height, scaling_quality,
-                                             255, check_size, color1, color2)
+            src = self.add_alpha_background(src, width, height, scaling_quality)
+
         elif (width, height) != (src_width, src_height):
             src = src.scale_simple(width, height, scaling_quality)
 
         return self.rotate_pixbuf(src, rotation)
+
+    def add_alpha_background(self, pixbuf, width: int, height: int, scaling_quality = None):
+        if config['CHECKERED_BG_FOR_TRANSPARENT_IMAGES']:
+            check_size = config['CHECKERED_BG_SIZE']
+            color1 = 0x777777
+            color2 = 0x999999
+        else:
+            check_size = 1024
+            color1 = 0xFFFFFF
+            color2 = 0xFFFFFF
+
+        if scaling_quality is None:
+            scaling_quality = GdkPixbuf.InterpType.NEAREST
+
+        return pixbuf.composite_color_simple(width, height, scaling_quality,
+                                             255, check_size, color1, color2)
 
     @staticmethod
     def add_border(pixbuf):

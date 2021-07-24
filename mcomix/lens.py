@@ -289,8 +289,7 @@ class MagnifyingLens:
         else:
             dest_y = min(canvas.get_height() - subpixbuf.get_height(), dest_y)
 
-        if subpixbuf.get_has_alpha() and config['CHECKERED_BG_FOR_TRANSPARENT_IMAGES']:
-            subpixbuf = subpixbuf.composite_color_simple(subpixbuf.get_width(), subpixbuf.get_height(),
-                                                         GdkPixbuf.InterpType.NEAREST, 255, 8, 0x777777, 0x999999)
+        if subpixbuf.get_has_alpha():
+            subpixbuf = ImageTools.add_alpha_background(subpixbuf, subpixbuf.get_width(), subpixbuf.get_height())
 
         subpixbuf.copy_area(0, 0, subpixbuf.get_width(), subpixbuf.get_height(), canvas, dest_x, dest_y)

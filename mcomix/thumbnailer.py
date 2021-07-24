@@ -33,4 +33,7 @@ class Thumbnailer:
         with LockedFileIO(filepath) as fio:
             with Image.open(fio) as im:
                 im.thumbnail((self.__width, self.__height), resample=Image.BOX)
-                return ImageTools.pil_to_pixbuf(im)
+                pixbuf = ImageTools.pil_to_pixbuf(im)
+                if pixbuf.get_has_alpha():
+                    pixbuf = ImageTools.add_alpha_background(pixbuf, pixbuf.get_width(), pixbuf.get_height())
+                return pixbuf
