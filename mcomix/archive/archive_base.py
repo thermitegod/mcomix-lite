@@ -73,7 +73,7 @@ class BaseArchive:
         # recreate the archives directory structure,
         # needed for archives that are not flat
         dst_dir = path.parent
-        if not Path.exists(dst_dir):
+        if not dst_dir.is_dir():
             dst_dir.mkdir(parents=True, exist_ok=True)
 
         return Path.open(path, mode='wb')
