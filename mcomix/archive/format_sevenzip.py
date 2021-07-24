@@ -3,7 +3,6 @@
 from pathlib import Path
 
 from mcomix.archive.archive_external import ArchiveExternal
-from mcomix.lib.executable import GetExecutable
 
 
 class SevenZipArchive(ArchiveExternal):
@@ -14,17 +13,11 @@ class SevenZipArchive(ArchiveExternal):
     def __init__(self, archive: Path):
         super().__init__(archive)
 
-        self.__executable = GetExecutable.executables['SZIP']['PATH']
-
-    @staticmethod
-    def is_available():
-        return GetExecutable.executables['SZIP']['FOUND']
-
     def _get_list_arguments(self):
-        return [self.__executable, 'l', '-slt', '--', self.archive]
+        return ['7zr', 'l', '-slt', '--', self.archive]
 
     def _get_extract_arguments(self):
-        return [self.__executable, 'x', '-so', '--', self.archive]
+        return ['7zr', 'x', '-so', '--', self.archive]
 
     def _parse_list_output_line(self, line: str):
         """

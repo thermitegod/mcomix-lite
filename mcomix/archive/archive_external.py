@@ -26,10 +26,6 @@ class ArchiveExternal(BaseArchive):
         self.NULL = subprocess.DEVNULL
         self.PIPE = subprocess.PIPE
 
-    @staticmethod
-    def is_available():
-        raise NotImplementedError
-
     def _get_list_arguments(self):
         raise NotImplementedError
 

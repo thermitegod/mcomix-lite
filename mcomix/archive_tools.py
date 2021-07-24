@@ -23,30 +23,13 @@ class _ArchiveTools:
             Constants.ARCHIVE_FORMATS['TAR']: TarArchive,
         }
 
-        self.__supported_archive_ext = []
-        if ZipArchive.is_available():
-            self.__ext_zip = [ext[0] for ext in Constants.MIME_FORMAT['ZIP']]
-            self.__supported_archive_ext += self.__ext_zip
-        else:
-            self.__ext_zip = []
+        self.__ext_zip = [ext[0] for ext in Constants.MIME_FORMAT['ZIP']]
+        self.__ext_szip = [ext[0] for ext in Constants.MIME_FORMAT['SEVENZIP']]
+        self.__ext_rar = [ext[0] for ext in Constants.MIME_FORMAT['RAR']]
+        self.__ext_tar = [ext[0] for ext in Constants.MIME_FORMAT['TAR']]
 
-        if SevenZipArchive.is_available():
-            self.__ext_sevenzip = [ext[0] for ext in Constants.MIME_FORMAT['SEVENZIP']]
-            self.__supported_archive_ext += self.__ext_sevenzip
-        else:
-            self.__ext_sevenzip = []
-
-        if RarArchive.is_available():
-            self.__ext_rar = [ext[0] for ext in Constants.MIME_FORMAT['RAR']]
-            self.__supported_archive_ext += self.__ext_rar
-        else:
-            self.__ext_rar = []
-
-        if TarArchive.is_available():
-            self.__ext_tar = [ext[0] for ext in Constants.MIME_FORMAT['TAR']]
-            self.__supported_archive_ext += self.__ext_tar
-        else:
-            self.__ext_tar = []
+        self.__supported_archive_ext = [*self.__ext_zip, *self.__ext_szip,
+                                        *self.__ext_rar, *self.__ext_tar]
 
     @property
     def supported_archive_ext(self):
@@ -66,7 +49,7 @@ class _ArchiveTools:
         ext = path.suffix.lower()
         if ext in self.__ext_zip:
             return Constants.ARCHIVE_FORMATS['ZIP']
-        elif ext in self.__ext_sevenzip:
+        elif ext in self.__ext_szip:
             return Constants.ARCHIVE_FORMATS['SEVENZIP']
         elif ext in self.__ext_rar:
             return Constants.ARCHIVE_FORMATS['RAR']
@@ -84,11 +67,7 @@ class _ArchiveTools:
         if archive_type is None:
             return None
 
-        handler = self.__handlers[archive_type]
-        if handler.is_available():
-            return handler(path)
-
-        return None
+        return self.__handlers[archive_type](path)
 
     def get_recursive_archive_handler(self, path: Path, archive_type: int = None):
         """

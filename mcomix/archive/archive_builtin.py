@@ -16,10 +16,6 @@ class ArchiveBuiltin(BaseArchive):
 
         self.contents_info = {}
 
-    @staticmethod
-    def is_available():
-        return True
-
     def iter_contents(self):
         """
         Generator for listing the archive contents

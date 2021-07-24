@@ -3,7 +3,6 @@
 from pathlib import Path
 
 from mcomix.archive.archive_external import ArchiveExternal
-from mcomix.lib.executable import GetExecutable
 
 
 class RarArchive(ArchiveExternal):
@@ -14,17 +13,11 @@ class RarArchive(ArchiveExternal):
     def __init__(self, archive: Path):
         super().__init__(archive)
 
-        self.__executable = GetExecutable.executables['UNRAR']['PATH']
-
-    @staticmethod
-    def is_available():
-        return GetExecutable.executables['UNRAR']['FOUND']
-
     def _get_list_arguments(self):
-        return [self.__executable, 'vt', '--', self.archive]
+        return ['unrar', 'vt', '--', self.archive]
 
     def _get_extract_arguments(self):
-        return [self.__executable, 'p', '-inul', '-@', '--', self.archive]
+        return ['unrar', 'p', '-inul', '-@', '--', self.archive]
 
     def _parse_list_output_line(self, line: str):
         if self.state == self.STATE_HEADER:
