@@ -230,7 +230,7 @@ class MainWindow(Gtk.ApplicationWindow):
         alignment_axis = Constants.AXIS['ALIGNMENT']
         # XXX limited to at most 2 pages
         pixbuf_count = 2 if self.displayed_double else 1
-        pixbuf_count_iter = (0, 1) if self.displayed_double else (0,)
+        pixbuf_count_iter = range(pixbuf_count)
         pixbuf_list = list(self.imagehandler.get_pixbufs(pixbuf_count))
         do_not_transform = [ImageTools.disable_transform(x) for x in pixbuf_list]
         size_list = [[pixbuf.get_width(), pixbuf.get_height()] for pixbuf in pixbuf_list]
