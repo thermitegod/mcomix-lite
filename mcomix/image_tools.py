@@ -71,18 +71,6 @@ class _ImageTools:
                     width = max(src_width * height // src_height, 1)
         return width, height
 
-    def trans_pixbuf(self, src, flip: bool = False, flop: bool = False):
-        if self.is_animation(src):
-            return AnimeFrameExecutor.frame_executor(
-                src, self.trans_pixbuf,
-                kwargs=dict(flip=flip, flop=flop)
-            )
-        if flip:
-            src = src.flip(horizontal=False)
-        if flop:
-            src = src.flip(horizontal=True)
-        return src
-
     def fit_pixbuf_to_rectangle(self, src, rect: tuple, rotation: int):
         if self.is_animation(src):
             return AnimeFrameExecutor.frame_executor(

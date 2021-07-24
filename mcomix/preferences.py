@@ -37,8 +37,6 @@ config = {
     'ROTATION': 0,
     'AUTO_ROTATE_FROM_EXIF': True,
     'AUTO_ROTATE_DEPENDING_ON_SIZE': Constants.AUTOROTATE['NEVER'],
-    'VERTICAL_FLIP': False,
-    'HORIZONTAL_FLIP': False,
     'KEEP_TRANSFORMATION': False,
     'STORED_DIALOG_CHOICES': {},
     'BRIGHTNESS': 1.0,

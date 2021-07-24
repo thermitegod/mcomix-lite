@@ -73,9 +73,6 @@ class Menubar(Gtk.EventBox):
             MENUBAR('Rotate 90°', self._create_submenu_item, self.__window.rotate_90),
             MENUBAR('Rotate 180°', self._create_submenu_item, self.__window.rotate_180),
             MENUBAR('Rotate 270°', self._create_submenu_item, self.__window.rotate_270),
-            MENUBAR('separator', self._create_separator, None),
-            MENUBAR('Flip Horizontally', self._create_submenu_item, self.__window.flip_horizontally),
-            MENUBAR('Flip Vertically', self._create_submenu_item, self.__window.flip_vertically),
         )
 
         self._populate_menu(items=memu_tools_items, menu=menu_tools)

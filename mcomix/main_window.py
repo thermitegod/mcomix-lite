@@ -128,8 +128,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
         if not config['KEEP_TRANSFORMATION']:
             config['ROTATION'] = 0
-            config['VERTICAL_FLIP'] = False
-            config['HORIZONTAL_FLIP'] = False
 
         # Each widget "eats" part of the main layout visible area.
         self.__toggle_axis = {
@@ -264,11 +262,6 @@ class MainWindow(Gtk.ApplicationWindow):
         elif rotation in (180, 270):
             orientation.reverse()
 
-        if config['VERTICAL_FLIP']:
-            orientation.reverse()
-        if config['HORIZONTAL_FLIP']:
-            orientation.reverse()
-
         # Recompute the visible area size
         viewport_size = self.get_visible_area_size()
         zoom_dummy_size = list(viewport_size)
@@ -282,10 +275,6 @@ class MainWindow(Gtk.ApplicationWindow):
             rotation_list[i] = (rotation_list[i] + rotation) % 360
 
             pixbuf_list[i] = ImageTools.fit_pixbuf_to_rectangle(pixbuf_list[i], scaled_sizes[i], rotation_list[i])
-            pixbuf_list[i] = ImageTools.trans_pixbuf(
-                pixbuf_list[i],
-                flip=config['VERTICAL_FLIP'],
-                flop=config['HORIZONTAL_FLIP'])
             pixbuf_list[i] = self.enhancer.enhance(pixbuf_list[i])
 
             ImageTools.set_from_pixbuf(self.images[i], pixbuf_list[i])
@@ -458,8 +447,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
         if not config['KEEP_TRANSFORMATION']:
             config['ROTATION'] = 0
-            config['HORIZONTAL_FLIP'] = False
-            config['VERTICAL_FLIP'] = False
 
         if at_bottom:
             scroll_to = Constants.SCROLL_TO['END']
@@ -542,14 +529,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def rotate_x(self, rotation: int, *args):
         config['ROTATION'] = (config['ROTATION'] + rotation) % 360
-        self.draw_image()
-
-    def flip_horizontally(self, *args):
-        config['HORIZONTAL_FLIP'] = not config['HORIZONTAL_FLIP']
-        self.draw_image()
-
-    def flip_vertically(self, *args):
-        config['VERTICAL_FLIP'] = not config['VERTICAL_FLIP']
         self.draw_image()
 
     def change_double_page(self, *args):

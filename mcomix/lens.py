@@ -250,17 +250,6 @@ class MagnifyingLens:
         elif rotation == 270:
             x, y = source_pixbuf.get_width() - y, x
 
-        if config['HORIZONTAL_FLIP']:
-            if rotation in (90, 270):
-                y = source_pixbuf.get_height() - y
-            else:
-                x = source_pixbuf.get_width() - x
-        if config['VERTICAL_FLIP']:
-            if rotation in (90, 270):
-                x = source_pixbuf.get_width() - x
-            else:
-                y = source_pixbuf.get_height() - y
-
         src_x = x - width / 2
         src_y = y - height / 2
         if src_x < 0:
@@ -288,11 +277,6 @@ class MagnifyingLens:
             subpixbuf = subpixbuf.rotate_simple(GdkPixbuf.PixbufRotation.UPSIDEDOWN)
         elif rotation == 270:
             subpixbuf = subpixbuf.rotate_simple(GdkPixbuf.PixbufRotation.COUNTERCLOCKWISE)
-
-        if config['HORIZONTAL_FLIP']:
-            subpixbuf = subpixbuf.flip(horizontal=True)
-        if config['VERTICAL_FLIP']:
-            subpixbuf = subpixbuf.flip(horizontal=False)
 
         subpixbuf = self.__window.enhancer.enhance(subpixbuf)
 

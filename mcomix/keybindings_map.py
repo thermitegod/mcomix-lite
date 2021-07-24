@@ -238,24 +238,6 @@ class KeyBindingsMap:
                         {'rotation': 270},
                     ),
                 ),
-            'flip_horiz':
-                MAP(
-                    INFO(group_trans, 'Flip horizontally'),
-                    [],
-                    KEY_EVENT(
-                        self.__window.flip_horizontally,
-                        None,
-                    ),
-                ),
-            'flip_vert':
-                MAP(
-                    INFO(group_trans, 'Flip vertically'),
-                    [],
-                    KEY_EVENT(
-                        self.__window.flip_vertically,
-                        None,
-                    ),
-                ),
 
             # Autorotate
             'no_autorotation':
