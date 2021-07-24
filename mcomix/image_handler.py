@@ -319,10 +319,10 @@ class ImageHandler:
         if page is None:
             page = self.get_current_page()
 
-        page_data = [FileSize(self.get_path_to_page(page)).size]
+        page_data = [FileSize(self.get_path_to_page(page))]
 
         if double:
-            page_data.append(FileSize(self.get_path_to_page(page + 1)).size)
+            page_data.append(FileSize(self.get_path_to_page(page + 1)))
 
             if manga:
                 page_data.reverse()
