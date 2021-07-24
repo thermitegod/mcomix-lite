@@ -26,7 +26,8 @@ class ZoomModel:
         self.__max_user_zoom_log = 12
 
         #: User zoom level.
-        self.__user_zoom_log = self.__identity_zoom_log
+        self.__user_zoom_log = 0.0
+
         #: Image fit mode. Determines the base zoom level for an image by
         #: calculating its maximum size.
         self.__fitmode = Constants.ZOOM['MANUAL']
@@ -89,12 +90,14 @@ class ZoomModel:
                 preferred_scales = map(min, preferred_scales, distributed_scales)
             else:
                 preferred_scales = distributed_scales
+
         if not scale_up:
             preferred_scales = map(lambda x: min(x, self.__identity_zoom), preferred_scales)
         preferred_scales = list(preferred_scales)
         user_scale = 2 ** (self.__user_zoom_log / self.__user_zoom_log_scale1)
         res_scales = [preferred_scales[idx] * (user_scale if not do_not_transform[idx] else self.__identity_zoom)
                       for idx, item in enumerate(preferred_scales)]
+
         return [tuple(self._scale_image_size(size, scale))
                 for size, scale in zip(fitted_image_sizes, res_scales)]
 
@@ -188,6 +191,7 @@ class ZoomModel:
         # This loop collects some data we need for the actual computations later.
         for i in range(n):
             this_size = sizes[i]
+
             # Shortcut: If the size cannot be changed, accept the original size.
             if do_not_transform[i]:
                 total_axis_size += this_size[axis]
@@ -201,7 +205,7 @@ class ZoomModel:
             # later. This rescaling is necessary to ensure that the sizes in ALL
             # dimensions are monotonically scaled (with respect to local_scale).
             # A nice side effect of this is that it keeps the aspect ratio better.
-            dummy_approx = self._round_nonempty((ideal[axis],))[0]
+            dummy_approx = self._round_nonempty([ideal[axis]])[0]
             local_scale = dummy_approx / this_size[axis]
             total_axis_size += dummy_approx
             can_be_downscaled = dummy_approx > 1
@@ -214,6 +218,7 @@ class ZoomModel:
                 forced_scale = None
                 forced_vol_err = None
             scaling_data[i] = [local_scale, ideal, can_be_downscaled, forced_scale, forced_vol_err]
+
         # Now we need to find at most total_axis_size - max_size occasions to
         # scale down some tuples so the whole thing would fit into max_size. If
         # we are lucky, there will be no gaps at the end (or at least fewer gaps
@@ -254,13 +259,14 @@ class ZoomModel:
             # other). However, this is not as useful as the other loop, slightly
             # more complicated and it won't do anything if all tuples are equal.
             pass
+
         return map(lambda d: d[0], scaling_data)
 
-    def _scale_image_size(self, size, scale):
+    def _scale_image_size(self, size: list, scale: float):
         return self._round_nonempty(self.scale(size, scale))
 
     @staticmethod
-    def _round_nonempty(t):
+    def _round_nonempty(t: list):
         result = [0] * len(t)
         for idx, item in enumerate(t):
             x = int(round(t[idx]))
@@ -277,7 +283,7 @@ class ZoomModel:
         max_size = max(axis_sizes)  # max size of pages
         ratios = [(1 if do_not_transform[n] else max_size / s)
                   for n, s in enumerate(axis_sizes)]  # scale ratio of every page if do transform
-        return [(int(x * ratios[n]), int(y * ratios[n]))
+        return [[int(x * ratios[n]), int(y * ratios[n])]
                 for n, (x, y) in enumerate(image_sizes)]  # scale every page
 
     @staticmethod

@@ -146,7 +146,7 @@ class Statusbar(Gtk.EventBox):
         else:
             self.__page_resolution = ', '.join(f'{d[0]}x{d[1]}' for d in dimensions)
 
-    def set_archive_filename(self, root: str):
+    def set_archive_filename(self, root: Path):
         """
         Set the name of the root (directory or archive)
         """

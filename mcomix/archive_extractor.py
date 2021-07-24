@@ -111,7 +111,7 @@ class Extractor:
                 error_callback=self._error_cb)
 
     @Callback
-    def contents_listed(self, extractor, files: list):
+    def contents_listed(self, extractor, files: set):
         """
         Called after the contents of the archive has been listed
         """
