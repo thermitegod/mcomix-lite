@@ -18,10 +18,6 @@ class _ConfigBackend:
             'keybindings': None,
         }
 
-        self.config_dir_check()
-
-    @staticmethod
-    def config_dir_check():
         if not Path.exists(Constants.PATHS['CONFIG']):
             logger.info(f'Creating missing config dir')
             Constants.PATHS['CONFIG'].mkdir()
