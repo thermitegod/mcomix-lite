@@ -64,9 +64,8 @@ class MainWindow(Gtk.ApplicationWindow):
         # Remember last scroll destination.
         self.__last_scroll_destination = Constants.SCROLL_TO['START']
 
-        self.__dummy_layout = FiniteLayout([(1, 1)], (1, 1), [1, 1], 0, 0, 0)
+        self.__dummy_layout = FiniteLayout([(1, 1)], (1, 1), [1, 1], 0, 0)
         self.__layout = self.__dummy_layout
-        self.__spacing = 2
         self.__waiting_for_redraw = False
 
         self.__main_layout = Gtk.Layout()
@@ -267,9 +266,7 @@ class MainWindow(Gtk.ApplicationWindow):
         zoom_dummy_size = list(viewport_size)
         scaled_sizes = self.zoom.get_zoomed_size(size_list, zoom_dummy_size, distribution_axis, do_not_transform)
 
-        self.__layout = FiniteLayout(
-            scaled_sizes, viewport_size, orientation, self.__spacing,
-            distribution_axis, alignment_axis)
+        self.__layout = FiniteLayout(scaled_sizes, viewport_size, orientation, distribution_axis, alignment_axis)
 
         for i in pixbuf_count_iter:
             rotation_list[i] = (rotation_list[i] + rotation) % 360

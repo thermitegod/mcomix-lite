@@ -21,11 +21,11 @@ class Box:
         super().__init__()
 
         if size is None:
-            self.__position = (0,) * len(position)
-            self.__size = tuple(position)
+            self.__position = (0, 0)
+            self.__size = position
         else:
-            self.__position = tuple(position)
-            self.__size = tuple(size)
+            self.__position = position
+            self.__size = size
         if len(self.__position) != len(self.__size):
             raise ValueError(f'different dimensions: {len(self.__position)} != {len(self.__size)}')
 
@@ -73,7 +73,7 @@ class Box:
 
         return self.__position
 
-    def set_position(self, position: list):
+    def set_position(self, position: tuple):
         """
         Returns a new Box that has the same size as this Box and the specified position.
 
@@ -132,11 +132,11 @@ class Box:
             s = b.get_size()
             p = list(b.get_position())
             p[axis] = cp + Box.box_to_center_offset_1d(cs - s[axis], orientation)
-            result.append(Box(p, s))
+            result.append(Box(tuple(p), s))
         return result
 
     @staticmethod
-    def distribute(boxes: list, axis: int, fix: int, spacing: int = 0):
+    def distribute(boxes: list, axis: int, fix: int, spacing: int = 2):
         """
         Ensures that the Boxes do not overlap. For this purpose, the Boxes
         are distributed according to the index of the respective Box.
@@ -158,7 +158,7 @@ class Box:
             s = b.get_size()
             p = list(b.get_position())
             p[axis] = partial_sum
-            result[bi] = Box(p, s)
+            result[bi] = Box(tuple(p), s)
             partial_sum += s[axis] + spacing
         partial_sum = initial_sum
         for bi in range(fix - 1, -1, -1):
@@ -167,7 +167,8 @@ class Box:
             p = list(b.get_position())
             partial_sum -= s[axis] + spacing
             p[axis] = partial_sum
-            result[bi] = Box(p, s)
+            result[bi] = Box(tuple(p), s)
+
         return result
 
     def wrapper_box(self, viewport_size: tuple, orientation: list):
@@ -189,7 +190,7 @@ class Box:
             v = viewport_size[idx]
             result_size[idx] = max(c, v)
             result_position[idx] = Box.box_to_center_offset_1d(c - result_size[idx], orientation[idx]) + position[idx]
-        return Box(result_position, result_size)
+        return Box(tuple(result_position), tuple(result_size))
 
     @staticmethod
     def bounding_box(boxes: list):
@@ -214,4 +215,4 @@ class Box:
                 ps = p[idx] + s[idx]
                 if (maxes[idx] is None) or (ps > maxes[idx]):
                     maxes[idx] = ps
-        return Box(mins, tuple(map(operator.sub, maxes, mins)))
+        return Box(tuple(mins), tuple(map(operator.sub, maxes, mins)))

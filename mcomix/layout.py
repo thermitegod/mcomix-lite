@@ -7,7 +7,7 @@ from mcomix.hyperrectangles import Box
 
 
 class FiniteLayout:  # 2D only
-    def __init__(self, content_sizes: list[tuple], viewport_size: tuple, orientation: list, spacing: int,
+    def __init__(self, content_sizes: list[tuple], viewport_size: tuple, orientation: list,
                  distribution_axis: int, alignment_axis: int):
         """
         Lays out a finite number of Boxes along the first axis.
@@ -15,56 +15,46 @@ class FiniteLayout:  # 2D only
         :param content_sizes: The sizes of the Boxes to lay out.
         :param viewport_size: The size of the viewport.
         :param orientation: The orientation to use.
-        :param spacing: Number of additional pixels between Boxes.
         :param distribution_axis: the axis along which the Boxes are distributed.
         :param alignment_axis: the axis to center
         """
 
         super().__init__()
 
-        self.__viewport_box = None
-        self.__orientation = None
+        # reverse order if necessary
+        if orientation[distribution_axis] == -1:
+            content_sizes = tuple(reversed(content_sizes))
+        temp_cb_list = tuple(map(Box, content_sizes))
 
-        self._reset(content_sizes, viewport_size, orientation, spacing,
-                    distribution_axis, alignment_axis)
+        # align to center
+        temp_cb_list = Box.align_center(temp_cb_list, alignment_axis, 0, orientation[alignment_axis])
 
-    def set_viewport_position(self, viewport_position: list):
-        """
-        Moves the viewport to the specified position.
+        # distribute
+        temp_cb_list = Box.distribute(temp_cb_list, distribution_axis, 0)
+        temp_bb = Box.bounding_box(temp_cb_list).wrapper_box(viewport_size, orientation)
 
-        :param viewport_position: The new viewport position
-        """
+        # move to global origin
+        bbp = temp_bb.get_position()
+        for idx, item in enumerate(temp_cb_list):
+            temp_cb_list[idx] = temp_cb_list[idx].translate_opposite(bbp)
 
-        self.__viewport_box = self.__viewport_box.set_position(viewport_position)
+        temp_bb = temp_bb.translate_opposite(bbp)
+        # reverse order again, if necessary
+        if orientation[distribution_axis] == -1:
+            temp_cb_list = tuple(reversed(temp_cb_list))
+
+        # done
+        self.__content_boxes = temp_cb_list
+        self.__union_box = temp_bb
+        self.__viewport_box = Box(viewport_size)
+        self.__orientation = orientation
 
     def scroll_to_predefined(self, destination: tuple):
-        """
-        Scrolls the viewport to a predefined destination.
-
-        :param destination: An integer representing a predefined destination.
-        Either 1 (towards the greatest possible values in this dimension),
-        -1 (towards the smallest value in this dimension), 0 (keep position),
-        SCROLL_TO_CENTER (scroll to the center of the content in this
-        dimension), SCROLL_TO_START (scroll to where the content starts in this
-        dimension) or SCROLL_TO_END (scroll to where the content ends in this
-        dimension).
-        """
-
-        self.set_viewport_position(self._scroll_to_predefined(
-            self.__union_box, self.__viewport_box, self.__orientation, destination))
-
-    @staticmethod
-    def _scroll_to_predefined(content_box, viewport_box, orientation: tuple, destination: tuple):
         """
         Returns a new viewport position when scrolling towards a
         predefined destination. Note that all params are lists of integers
         where each index corresponds to one dimension.
 
-        :param content_box: The Box of the content to display.
-        :param viewport_box: The viewport Box we are looking through.
-        :param orientation: The orientation which shows where "forward"
-        points to. Either 1 (towards larger values in this dimension when
-        reading) or -1 (towards smaller values in this dimension when reading).
         :param destination: An integer representing a predefined destination.
         Either 1 (towards the greatest possible values in this dimension),
         -1 (towards the smallest value in this dimension), 0 (keep position),
@@ -74,18 +64,21 @@ class FiniteLayout:  # 2D only
         :returns: A new viewport position as specified above
         """
 
-        content_position = content_box.get_position()
-        content_size = content_box.get_size()
-        viewport_size = viewport_box.get_size()
-        result = list(viewport_box.get_position())
+        content_position = self.__union_box.get_position()
+        content_size = self.__union_box.get_size()
+        viewport_size = self.__viewport_box.get_size()
+        result = list(self.__viewport_box.get_position())
         for idx, item in enumerate(content_size):
-            o = orientation[idx]
+            # The orientation which shows where "forward"
+            # points to. Either 1 (towards larger values in this dimension when
+            # reading) or -1 (towards smaller values in this dimension when reading).
+            o = self.__orientation[idx]
             d = destination[idx]
 
             if not d:
                 continue
             elif d < Constants.SCROLL_TO['END'] or d > 1:
-                raise ValueError(f'invalid destination {d} at index {i}')
+                raise ValueError(f'invalid destination {d} at index {idx}')
             elif d == Constants.SCROLL_TO['END']:
                 d = o
             elif d == Constants.SCROLL_TO['START']:
@@ -100,13 +93,14 @@ class FiniteLayout:  # 2D only
             else:
                 if d == 1:
                     offset = invisible_size
-                else:
-                    # if d == -1
+                else:  # d == -1
                     offset = 0
 
             result[idx] = content_position[idx] + offset
 
-        return result
+
+        # Move the viewport to the specified position.
+        self.__viewport_box = self.__viewport_box.set_position(tuple(result))
 
     def get_content_boxes(self):
         """
@@ -135,39 +129,5 @@ class FiniteLayout:  # 2D only
 
         return self.__viewport_box
 
-    def set_orientation(self, orientation: tuple):
+    def set_orientation(self, orientation: list):
         self.__orientation = orientation
-
-    def _reset(self, content_sizes: list[tuple], viewport_size: tuple, orientation: list, spacing: int,
-               distribution_axis: int, alignment_axis: int):
-        # reverse order if necessary
-        if orientation[distribution_axis] == -1:
-            content_sizes = tuple(reversed(content_sizes))
-        temp_cb_list = tuple(map(Box, content_sizes))
-        # align to center
-        temp_cb_list = Box.align_center(temp_cb_list, alignment_axis, 0, orientation[alignment_axis])
-        # distribute
-        temp_cb_list = Box.distribute(temp_cb_list, distribution_axis, 0, spacing)
-        temp_wb_list, temp_bb = self._wrap_union(temp_cb_list, viewport_size, orientation)
-        # move to global origin
-        bbp = temp_bb.get_position()
-        for idx, item in enumerate(temp_cb_list):
-            temp_cb_list[idx] = temp_cb_list[idx].translate_opposite(bbp)
-        for idx, item in enumerate(temp_wb_list):
-            temp_wb_list[idx] = temp_wb_list[idx].translate_opposite(bbp)
-        temp_bb = temp_bb.translate_opposite(bbp)
-        # reverse order again, if necessary
-        if orientation[distribution_axis] == -1:
-            temp_cb_list = tuple(reversed(temp_cb_list))
-            temp_wb_list = tuple(reversed(temp_wb_list))
-        # done
-        self.__content_boxes = temp_cb_list
-        self.__union_box = temp_bb
-        self.__viewport_box = Box(viewport_size)
-        self.__orientation = orientation
-
-    @staticmethod
-    def _wrap_union(temp_cb_list: list, viewport_size: tuple, orientation: list):
-        # calculate bounding Box
-        temp_wb_list = [Box.bounding_box(temp_cb_list).wrapper_box(viewport_size, orientation)]
-        return temp_wb_list, temp_wb_list[0]
