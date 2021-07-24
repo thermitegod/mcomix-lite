@@ -80,7 +80,7 @@ class Extractor:
         with self.__condition:
             if not self.__contents_listed:
                 return
-            self.__files = set(f for f in files.copy() if f not in self.__extracted)
+            self.__files = set(f for f in files if f not in self.__extracted)
             if not self.__files:
                 # Nothing to do!
                 return
@@ -161,7 +161,7 @@ class Extractor:
 
     def _list_contents_cb(self, files: set):
         with self.__condition:
-            self.__files = files.copy()
+            self.__files = files
             self.__contents_listed = True
         self.contents_listed(self, files)
 

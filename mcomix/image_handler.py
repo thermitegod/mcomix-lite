@@ -88,17 +88,16 @@ class ImageHandler:
             return
 
         # Get list of wanted pixbufs.
-        wanted_pixbufs = self._ask_for_pages(self.get_current_page())
+        self.__wanted_pixbufs = self._ask_for_pages(self.get_current_page())
 
         # remove old pixbufs.
-        for index in set(self.__raw_pixbufs) - set(wanted_pixbufs):
+        for index in set(self.__raw_pixbufs) - set(self.__wanted_pixbufs):
             del self.__raw_pixbufs[index]
 
-        logger.debug(f'Caching page(s): \'{" ".join([str(index + 1) for index in wanted_pixbufs])}\'')
+        logger.debug(f'Caching page(s): {self.__wanted_pixbufs}')
 
-        self.__wanted_pixbufs = wanted_pixbufs.copy()
         # Start caching available images not already in cache.
-        wanted_pixbufs = [index for index in wanted_pixbufs
+        wanted_pixbufs = [index for index in self.__wanted_pixbufs
                           if index in self.__available_images]
         self.__threadpool.map_async(self._cache_pixbuf, wanted_pixbufs)
 
@@ -133,7 +132,7 @@ class ImageHandler:
 
     def set_image_files(self, files: list):
         # Set list of image file names
-        self.__image_files = files.copy()
+        self.__image_files = files
         self.__image_files_total = len(self.__image_files)
         self.__image_files_index = dict(zip(self.__image_files, range(self.__image_files_total)))
 

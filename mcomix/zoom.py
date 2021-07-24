@@ -275,7 +275,7 @@ class ZoomModel:
     @staticmethod
     def _fix_page_sizes(image_sizes: list, distribution_axis: int, do_not_transform: list):
         if len(image_sizes) < 2:
-            return image_sizes.copy()
+            return image_sizes
         # in double page mode, resize the smaller image to fit the bigger one
         sizes = list(zip(*image_sizes))  # [(x1,x2,...),(y1,y2,...)]
         axis_sizes = sizes[int(not distribution_axis)]  # use axis else of distribution_axis
