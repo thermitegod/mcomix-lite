@@ -11,7 +11,7 @@ from mcomix.image_tools import ImageTools
 from mcomix.lib.callback import Callback
 from mcomix.lib.threadpool import GlobalThreadPool, Lock
 from mcomix.preferences import config
-from mcomix.thumbnail_tools import Thumbnailer
+from mcomix.thumbnailer import Thumbnailer
 
 
 class ImageHandler:
