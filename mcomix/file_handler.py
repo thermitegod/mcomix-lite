@@ -96,8 +96,8 @@ class FileHandler:
             self._open_archive(self.__current_file)
             self.__file_loading = True
         else:
-            image_files, current_image_index = self._open_image_files(self.__filelist, self.__current_file)
-            self._archive_opened(image_files)
+            self.__base_path = self.__file_provider.get_directory()
+            self._archive_opened(self.__filelist)
 
         return True
 
@@ -271,24 +271,6 @@ class FileHandler:
             current_image_index = start_page - 1
 
         return min(max(0, current_image_index), num_of_pages - 1)
-
-    def _open_image_files(self, filelist: list, image_path: Path):
-        """
-        Opens all files passed in C{filelist}.
-        If C{image_path} is found in C{filelist}, the current page will be set
-        to its index within C{filelist}.
-
-        :returns: Tuple of C{(image_files, image_index)}
-        """
-
-        self.__base_path = self.__file_provider.get_directory()
-
-        if image_path in filelist:
-            current_image_index = filelist.index(image_path)
-        else:
-            current_image_index = 0
-
-        return filelist, current_image_index
 
     def get_file_loaded(self):
         return self.__file_loaded
