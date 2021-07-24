@@ -5,10 +5,10 @@ Base class for unified handling of various archive formats. Used for simplifying
 extraction and adding new archive formats
 """
 
+import subprocess
 from pathlib import Path
 
 from mcomix.archive.archive_base import BaseArchive
-from mcomix.lib.process import Process
 
 
 class ArchiveExternal(BaseArchive):
@@ -22,6 +22,9 @@ class ArchiveExternal(BaseArchive):
         self.state = None
         self.path = None
         self.contents = []
+
+        self.NULL = subprocess.DEVNULL
+        self.PIPE = subprocess.PIPE
 
     @staticmethod
     def is_available():
@@ -51,7 +54,7 @@ class ArchiveExternal(BaseArchive):
 
         with self.lock:
             with self._create_file(destination_path) as output:
-                Process.call(self._get_extract_arguments(), stdout=output)
+                subprocess.call(self._get_extract_arguments(), stdin=self.NULL, stdout=output, stderr=self.NULL)
 
         return destination_path
 
@@ -66,9 +69,8 @@ class ArchiveExternal(BaseArchive):
         self.path = None
 
         with self.lock:
-            with Process.popen(self._get_list_arguments(),
-                               stderr=Process.STDOUT,
-                               universal_newlines=True) as proc:
+            with subprocess.Popen(self._get_list_arguments(),
+                                  stdin=self.NULL, stdout=self.PIPE, stderr=self.NULL, text=True) as proc:
                 for line in proc.stdout:
                     filename = self._parse_list_output_line(line.removesuffix('\n'))
                     if filename is not None:
@@ -83,7 +85,8 @@ class ArchiveExternal(BaseArchive):
         """
 
         with self.lock:
-            with Process.popen(self._get_extract_arguments()) as proc:
+            with subprocess.Popen(self._get_extract_arguments(),
+                                  stdin=self.NULL, stdout=self.PIPE, stderr=self.NULL) as proc:
                 for filename, filesize in self.contents:
                     if filename not in wanted:
                         continue
