@@ -269,15 +269,7 @@ class MagnifyingLens:
             int(math.ceil(source_mag * subpixbuf.get_height())),
             config['GDK_SCALING_FILTER'])
 
-        if rotation == 0:
-            subpixbuf = subpixbuf.rotate_simple(GdkPixbuf.PixbufRotation.NONE)
-        elif rotation == 90:
-            subpixbuf = subpixbuf.rotate_simple(GdkPixbuf.PixbufRotation.CLOCKWISE)
-        elif rotation == 180:
-            subpixbuf = subpixbuf.rotate_simple(GdkPixbuf.PixbufRotation.UPSIDEDOWN)
-        elif rotation == 270:
-            subpixbuf = subpixbuf.rotate_simple(GdkPixbuf.PixbufRotation.COUNTERCLOCKWISE)
-
+        subpixbuf = ImageTools.rotate_pixbuf(subpixbuf, rotation)
         subpixbuf = self.__window.enhancer.enhance(subpixbuf)
 
         if paste_left:
