@@ -30,12 +30,6 @@ class Bookmark(Gtk.ImageMenuItem):
 
         super().__init__(label=str(self), use_underline=False)
 
-        if self.__archive_type is not None:
-            im = Gtk.Image.new_from_stock('mcomix-archive', Gtk.IconSize.MENU)
-        else:
-            im = Gtk.Image.new_from_stock('mcomix-image', Gtk.IconSize.MENU)
-
-        self.set_image(im)
         self.connect('activate', self.load)
 
     def __str__(self):
@@ -75,12 +69,10 @@ class Bookmark(Gtk.ImageMenuItem):
         Return a tuple corresponding to one row in the _BookmarkDialog's ListStore
         """
 
-        stock = self.get_image().get_stock()
-        pixbuf = self.render_icon(*stock)
         page = f'{self._page} / {self._numpages}'
         date = self._date_added.strftime('%x %X')
 
-        return pixbuf, self._name, page, self._path, date, self
+        return None, self._name, page, self._path, date, self
 
     def pack(self):
         """

@@ -17,7 +17,6 @@ from mcomix.dialog.dialog_properties import DialogProperties
 from mcomix.enhance_backend import ImageEnhancer
 from mcomix.event_handler import EventHandler
 from mcomix.file_handler import FileHandler
-from mcomix.icons import Icons
 from mcomix.image_handler import ImageHandler
 from mcomix.image_tools import ImageTools
 from mcomix.keybindings_manager import KeybindingManager
@@ -76,8 +75,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.event_handler = EventHandler(self)
         self.__vadjust = self.__main_scrolled_window.get_vadjustment()
         self.__hadjust = self.__main_scrolled_window.get_hadjustment()
-
-        self.icons = Icons()
 
         self.filehandler = FileHandler(self)
         self.filehandler.file_closed += self._on_file_closed
@@ -435,7 +432,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.clear()
         self.thumbnailsidebar.hide()
         self.thumbnailsidebar.clear()
-        self.set_icon_list(self.icons.mcomix_icons)
 
     def new_page(self, at_bottom: bool = False):
         """

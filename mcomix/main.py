@@ -58,10 +58,6 @@ def main():
 
     Gdk.set_program_class(Constants.APPNAME)
 
-    settings = Gtk.Settings.get_default()
-    # Enable icons for menu items.
-    settings.props.gtk_menu_images = True
-
     from mcomix.main_window import MainWindow
     window = MainWindow(open_path=open_path)
 

@@ -2,7 +2,6 @@
 
 """image_tools.py - Various image manipulations"""
 
-from io import BytesIO
 from pathlib import Path
 
 from PIL import Image, ImageEnhance, ImageOps, ImageSequence
@@ -294,17 +293,6 @@ class _ImageTools:
             return pixbuf
 
         return GdkPixbuf.Pixbuf.new_from_file(str(path))
-
-    def load_pixbuf_data(self, imgdata):
-        """
-        Loads a pixbuf from the data passed in <imgdata>
-        """
-
-        try:
-            with Image.open(BytesIO(imgdata)) as im:
-                return self.pil_to_pixbuf(im, keep_orientation=True)
-        except Exception as ex:
-            logger.error(f'failed to load pixbuf: {ex}')
 
     def enhance(self, pixbuf, brightness: float = 1.0, contrast: float = 1.0,
                 saturation: float = 1.0, sharpness: float = 1.0, autocontrast: bool = False):
