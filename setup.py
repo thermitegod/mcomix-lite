@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import glob
-import os
-
 from setuptools import setup
 
 """ MComix installation routines.
@@ -16,41 +13,16 @@ Example usage:
 """
 
 
-BASE_PATH = os.path.dirname(os.path.realpath(__file__))
 APPNAME = 'MComix-Lite'
 VERSION = '3.3.0.dev0'
-
-
-def get_data_patterns(directory, *patterns):
-    """ Build a list of patterns for all subdirectories of <directory>
-    to be passed into package_data. """
-    olddir = os.getcwd()
-    os.chdir(os.path.join(BASE_PATH, directory))
-    allfiles = []
-    for dirpath, subdirs, files in os.walk('.'):
-        for pattern in patterns:
-            current_pattern = os.path.normpath(os.path.join(dirpath, pattern))
-            if glob.glob(current_pattern):
-                # Forward slashes only for distutils.
-                allfiles.append(current_pattern.replace('\\', '/'))
-    os.chdir(olddir)
-    return allfiles
-
-
-# Filter unnecessary image files. Replace wildcard pattern with actual files.
-images = get_data_patterns('mcomix/images', '*.png')
-images.remove('*.png')
-images.extend([os.path.basename(img)
-               for img in glob.glob(os.path.join(BASE_PATH, 'mcomix/images', '*.png'))])
 
 setup(
         name=APPNAME.lower(),
         version=VERSION,
         python_requires='>=3.9',
-        packages=['mcomix', 'mcomix.archive', 'mcomix.dialog',
-                  'mcomix.images', 'mcomix.lib', 'mcomix.providers',
-                  'mcomix.sort'],
-        package_data={'mcomix.images': images},
+        packages=['mcomix', 'mcomix.archive', 'mcomix.dialog', 'mcomix.lib',
+                  'mcomix.providers', 'mcomix.sort'],
+        package_data={'mcomix.images': ['mcomix.png']},
         entry_points={'console_scripts': ['mcomix = mcomix.main:main'],
                       'setuptools.installation': ['eggsecutable=mcomix.main:main'], },
         test_suite='test',
@@ -70,10 +42,7 @@ setup(
             ('share/metainfo', ['mime/mcomix.appdata.xml']),
             ('share/mime/packages', ['mime/mcomix.xml']),
             ('share/icons/hicolor/48x48/apps', ['mcomix/images/48x48/mcomix.png']),
-            ('share/icons/hicolor/48x48/mimetypes',
-             ['mime/icons/48x48/application-x-cbz.png',
-              'mime/icons/48x48/application-x-cb7.png',
-              'mime/icons/48x48/application-x-cbr.png'])],
+        ],
 
         # Package metadata
         maintainer='thermitegod',
