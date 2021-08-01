@@ -321,8 +321,8 @@ class KeyBindingsMap:
                     INFO(group_pagefit, 'Best fit mode'),
                     ['b'],
                     KEY_EVENT(
-                        self.__window.change_zoom_mode,
-                        {'value': Constants.ZOOM['BEST']},
+                        self.__window.change_fit_mode_best,
+                        None,
                     ),
                 ),
             'fit_width_mode':
@@ -330,8 +330,8 @@ class KeyBindingsMap:
                     INFO(group_pagefit, 'Fit width mode'),
                     ['w'],
                     KEY_EVENT(
-                        self.__window.change_zoom_mode,
-                        {'value': Constants.ZOOM['WIDTH']},
+                        self.__window.change_fit_mode_width,
+                        None,
                     ),
                 ),
             'fit_height_mode':
@@ -339,8 +339,8 @@ class KeyBindingsMap:
                     INFO(group_pagefit, 'Fit height mode'),
                     ['h'],
                     KEY_EVENT(
-                        self.__window.change_zoom_mode,
-                        {'value': Constants.ZOOM['HEIGHT']},
+                        self.__window.change_fit_mode_height,
+                        None,
                     ),
                 ),
             'fit_size_mode':
@@ -348,8 +348,8 @@ class KeyBindingsMap:
                     INFO(group_pagefit, 'Fit size mode'),
                     ['s'],
                     KEY_EVENT(
-                        self.__window.change_zoom_mode,
-                        {'value': Constants.ZOOM['SIZE']},
+                        self.__window.change_fit_mode_size,
+                        None,
                     ),
                 ),
             'fit_manual_mode':
@@ -357,8 +357,8 @@ class KeyBindingsMap:
                     INFO(group_pagefit, 'Manual zoom mode'),
                     ['a'],
                     KEY_EVENT(
-                        self.__window.change_zoom_mode,
-                        {'value': Constants.ZOOM['MANUAL']},
+                        self.__window.change_fit_mode_manual,
+                        None,
                     ),
                 ),
 

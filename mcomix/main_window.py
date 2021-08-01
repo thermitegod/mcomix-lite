@@ -556,8 +556,23 @@ class MainWindow(Gtk.ApplicationWindow):
         # as we'll be receiving a window state
         # change or resize event.
 
-    def change_zoom_mode(self, value=None, *args):
-        if value:
+    def change_fit_mode_best(self, *args):
+        self.change_zoom_mode(value=Constants.ZOOM['BEST'])
+
+    def change_fit_mode_width(self, *args):
+        self.change_zoom_mode(value=Constants.ZOOM['WIDTH'])
+
+    def change_fit_mode_height(self, *args):
+        self.change_zoom_mode(value=Constants.ZOOM['HEIGHT'])
+
+    def change_fit_mode_size(self, *args):
+        self.change_zoom_mode(value=Constants.ZOOM['SIZE'])
+
+    def change_fit_mode_manual(self, *args):
+        self.change_zoom_mode(value=Constants.ZOOM['MANUAL'])
+
+    def change_zoom_mode(self, value: int = None):
+        if value is not None:
             config['ZOOM_MODE'] = value
         self.zoom.set_fit_mode(config['ZOOM_MODE'])
         self.zoom.set_scale_up(config['STRETCH'])

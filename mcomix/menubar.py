@@ -55,6 +55,24 @@ class Menubar(Gtk.EventBox):
         self._populate_menu(items=memu_edit_items, menu=menu_edit)
         self.__menubar.append(menuitem_edit)
 
+        # View #
+        menu_view = Gtk.Menu()
+        menuitem_view = Gtk.MenuItem(label='View')
+        menuitem_view.set_submenu(menu_view)
+
+        memu_edit_items = (
+            MENUBAR('Stretch Small Images', self._create_submenu_item, self.__window.change_stretch),
+            MENUBAR('separator', self._create_separator, None),
+            MENUBAR('Best Fit Mode', self._create_submenu_item, self.__window.change_fit_mode_best),
+            MENUBAR('Fit Width Mode', self._create_submenu_item, self.__window.change_fit_mode_width),
+            MENUBAR('Fit Height Mode', self._create_submenu_item, self.__window.change_fit_mode_height),
+            MENUBAR('Fit Size Mode', self._create_submenu_item, self.__window.change_fit_mode_size),
+            MENUBAR('Manual Zoom Mode', self._create_submenu_item, self.__window.change_fit_mode_manual),
+        )
+
+        self._populate_menu(items=memu_edit_items, menu=menu_view)
+        self.__menubar.append(menuitem_view)
+
         # Bookmarks #
         menuitem_bookmarks = Gtk.MenuItem(label='Bookmarks')
         bookmarks = BookmarksMenu(self.__window)
