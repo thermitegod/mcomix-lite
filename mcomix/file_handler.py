@@ -111,9 +111,7 @@ class FileHandler:
         self.file_opened()
 
         if not image_files:
-            msg = f'No images in "{self.__current_file.name}"'
-            logger.error(msg)
-            self.__window.statusbar.set_message(msg)
+            logger.error(f'No images in "{self.__current_file.name}"')
             return
 
         if self.__archive_type is None:
