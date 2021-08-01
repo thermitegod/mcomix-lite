@@ -2,9 +2,13 @@
 
 """about_dialog.py - About dialog"""
 
+from pathlib import Path
+
+from PIL import Image
 from gi.repository import Gtk
 
 from mcomix.constants import Constants
+from mcomix.image_tools import ImageTools
 
 
 class AboutDialog(Gtk.AboutDialog):
@@ -17,6 +21,9 @@ class AboutDialog(Gtk.AboutDialog):
         self.set_transient_for(self.__window)
 
         self.set_titlebar(Gtk.HeaderBar(title='About'))
+
+        logo = Path(__file__).parent / 'images' / 'mcomix.png'
+        self.set_logo(ImageTools.pil_to_pixbuf(Image.open(logo)))
 
         self.set_name(Constants.APPNAME)
         self.set_program_name(Constants.APPNAME)
