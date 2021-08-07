@@ -16,9 +16,9 @@ class Bookmark(Gtk.MenuItem):
     and is thus put directly in the bookmarks menu
     """
 
-    def __init__(self, window, file_handler, name, path, current_page, total_pages, archive_type, date_added):
+    def __init__(self, window, name, path, current_page, total_pages, archive_type, date_added):
         self.__window = window
-        self.__file_handler = file_handler
+        self.__file_handler = self.__window.filehandler
 
         # deprecated
         self.__archive_type = archive_type

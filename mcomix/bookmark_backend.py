@@ -95,8 +95,7 @@ class BookmarkBackend:
             elif response not in (Gtk.ResponseType.YES, Gtk.ResponseType.NO):
                 return
 
-        bookmark = Bookmark(self.__window, self.__file_handler,
-                            name, path, current_page, total_pages, archive_type, date_added)
+        bookmark = Bookmark(self.__window, name, path, current_page, total_pages, archive_type, date_added)
         self.add_bookmark(bookmark)
 
     def get_bookmarks(self):
@@ -141,7 +140,7 @@ class BookmarkBackend:
                         # if not path.is_file():
                         #     logger.warning(f'Missing bookmark: {path}')
 
-                        bookmarks.append(Bookmark(self.__window, self.__file_handler,
+                        bookmarks.append(Bookmark(self.__window,
                                                   name=item, path=path, current_page=current_page,
                                                   total_pages=total_pages, archive_type=archive_type,
                                                   date_added=date_added))
