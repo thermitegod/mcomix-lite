@@ -42,16 +42,19 @@ class BookmarkBackend:
         Initializes references to the main window and file/image handlers
         """
 
-        if not self.__initialized:
-            self.__window = window
-            self.__file_handler = window.filehandler
-            self.__image_handler = window.imagehandler
-            self.__initialized = True
+        if self.__initialized:
+            return
 
-            # Update already loaded bookmarks with window and file handler information
-            for bookmark in self.__bookmarks:
-                bookmark.__window = window
-                bookmark._file_handler = window.filehandler
+        self.__initialized = True
+
+        self.__window = window
+        self.__file_handler = window.filehandler
+        self.__image_handler = window.imagehandler
+
+        # Update already loaded bookmarks with window and file handler information
+        for bookmark in self.__bookmarks:
+            bookmark.__window = window
+            bookmark._file_handler = window.filehandler
 
     @Callback
     def add_bookmark(self, bookmark):
@@ -128,9 +131,10 @@ class BookmarkBackend:
         return self.__bookmarks
 
     def get_bookmarks_file_size(self):
-        if Path.is_file(self.__bookmark_path):
-            return Path.stat(self.__bookmark_path).st_size
-        return 0
+        if not self.__bookmark_path.is_file():
+            return 0
+
+        return self.__bookmark_path.stat().st_size
 
     def load_bookmarks_file(self):
         """
@@ -141,26 +145,29 @@ class BookmarkBackend:
 
         bookmarks = []
 
-        if Path.is_file(self.__bookmark_path):
-            try:
-                with Path.open(self.__bookmark_path, mode='rt', encoding='utf8') as fd:
-                    packs = yaml.safe_load(fd)
+        if not Path.is_file(self.__bookmark_path):
+            return bookmarks
 
-                    for bookmark in packs:
-                        for idx, item in enumerate(bookmark):
-                            path = str(Path(bookmark[item]['path'], item))
-                            current_page = bookmark[item]['current_page']
-                            total_pages = bookmark[item]['total_pages']
-                            archive_type = bookmark[item]['archive_type']
-                            created = bookmark[item]['created']
+        try:
+            with Path.open(self.__bookmark_path, mode='rt', encoding='utf8') as fd:
+                for bookmark in yaml.safe_load(fd):
+                    for item in bookmark:
+                        path = Path(bookmark[item]['path'], item)
+                        current_page = bookmark[item]['current_page']
+                        total_pages = bookmark[item]['total_pages']
+                        archive_type = bookmark[item]['archive_type']
+                        created = bookmark[item]['created']
 
-                            bookmarks.append(Bookmark(self.__window, self.__file_handler,
-                                                      name=item, path=path, page=current_page,
-                                                      numpages=total_pages, archive_type=archive_type,
-                                                      epoch=created))
-            except Exception as ex:
-                logger.error(f'Could not parse bookmarks file: \'{self.__bookmark_path}\'')
-                logger.error(f'Exception: {ex}')
+                        # if not path.is_file():
+                        #     logger.warning(f'Missing bookmark: {path}')
+
+                        bookmarks.append(Bookmark(self.__window, self.__file_handler,
+                                                  name=item, path=path, page=current_page,
+                                                  numpages=total_pages, archive_type=archive_type,
+                                                  epoch=created))
+        except Exception as ex:
+            logger.error(f'Could not parse bookmarks file: \'{self.__bookmark_path}\'')
+            logger.error(f'Exception: {ex}')
 
         return bookmarks
 
@@ -170,12 +177,11 @@ class BookmarkBackend:
         since it was last read
         """
 
-        if Path.is_file(self.__bookmark_path):
-            if self.get_bookmarks_file_size() != self.__bookmarks_size:
-                return True
-            return False
+        if not self.__bookmark_path.is_file() or \
+                (self.get_bookmarks_file_size() != self.__bookmarks_size):
+            return True
 
-        return True
+        return False
 
     def write_bookmarks_file(self):
         """
