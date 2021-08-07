@@ -57,20 +57,6 @@ class Bookmark(Gtk.MenuItem):
 
         self.__window.bookmark_backend.open_bookmark(path=self.__path, current_page=self.__current_page)
 
-    def same_path(self, path: str):
-        """
-        Return True if the bookmark is for the file <path>
-        """
-
-        return Path(path) == Path(self.__path)
-
-    def same_page(self, page):
-        """
-        Return True if the bookmark is for the same page
-        """
-
-        return page == self.__current_page
-
     def to_row(self):
         """
         Return a tuple corresponding to one row in the _BookmarkDialog's ListStore

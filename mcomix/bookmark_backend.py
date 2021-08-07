@@ -75,8 +75,8 @@ class BookmarkBackend:
         same_file_bookmarks = []
 
         for bookmark in self.__bookmarks:
-            if bookmark.same_path(path):
-                if bookmark.same_page(current_page):
+            if Path(bookmark.bookmark_path) == path:
+                if bookmark.bookmark_current_page == current_page:
                     logger.info(f'Bookmark already exists for \'{name}\' on page \'{current_page}\'')
                     return
 
