@@ -30,7 +30,7 @@ class BookmarkBackend:
         self.__image_handler = None
 
         self.__bookmark_path = Constants.CONFIG_FILES['BOOKMARK']
-        self.__bookmark_state = {'dirty': False}
+        self.__bookmark_state_dirty = False
 
         #: List of bookmarks
         self.__bookmarks = self.load_bookmarks_file()
@@ -64,9 +64,9 @@ class BookmarkBackend:
 
         self.__bookmarks.append(bookmark)
 
-        self.__bookmark_state['dirty'] = True
+        self.__bookmark_state_dirty = True
         self.write_bookmarks_file()
-        self.__bookmark_state['dirty'] = False
+        self.__bookmark_state_dirty = False
 
     @Callback
     def remove_bookmark(self, bookmark):
@@ -76,9 +76,9 @@ class BookmarkBackend:
 
         self.__bookmarks.remove(bookmark)
 
-        self.__bookmark_state['dirty'] = True
+        self.__bookmark_state_dirty = True
         self.write_bookmarks_file()
-        self.__bookmark_state['dirty'] = False
+        self.__bookmark_state_dirty = False
 
     def add_current_to_bookmarks(self):
         """
@@ -189,7 +189,7 @@ class BookmarkBackend:
         """
 
         # Merge changes in case file was modified from within other instances
-        if not self.__bookmark_state['dirty']:
+        if not self.__bookmark_state_dirty:
             logger.info('No changes to write for bookmarks')
             return
         logger.info('Writing changes to bookmarks')
