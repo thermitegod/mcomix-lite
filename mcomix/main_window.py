@@ -4,6 +4,7 @@ import shutil
 from pathlib import Path
 
 from gi.repository import GLib, Gdk, Gtk
+from loguru import logger
 from send2trash import send2trash
 
 from mcomix.bookmark_backend import BookmarkBackend
@@ -816,7 +817,10 @@ class MainWindow(Gtk.ApplicationWindow):
         if not Path.exists(target_dir):
             target_dir.mkdir()
 
-        self._load_next_file()
+        try:
+            self._load_next_file()
+        except Exception:
+            logger.error(f'File action failed: move_file()')
 
         if current_file.is_file():
             Path.rename(current_file, target_file)
@@ -848,7 +852,10 @@ class MainWindow(Gtk.ApplicationWindow):
         if result != Gtk.ResponseType.OK:
             return
 
-        self._load_next_file()
+        try:
+            self._load_next_file()
+        except Exception:
+            logger.error(f'File action failed: trash_file()')
 
         if current_file.is_file():
             send2trash(bytes(current_file))
