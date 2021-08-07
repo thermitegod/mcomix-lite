@@ -16,63 +16,84 @@ class Bookmark(Gtk.MenuItem):
     and is thus put directly in the bookmarks menu
     """
 
-    def __init__(self, window, file_handler, name, path, page, numpages, archive_type, epoch):
+    def __init__(self, window, file_handler, name, path, current_page, total_pages, archive_type, date_added):
         self.__window = window
+        self.__file_handler = file_handler
+
+        # deprecated
         self.__archive_type = archive_type
 
-        self._file_handler = file_handler
-
-        self._name = name
-        self._path = str(path)
-        self._page = page
-        self._numpages = numpages
-        self._date_added = datetime.fromtimestamp(epoch)
+        self.__name = name
+        self.__path = str(path)
+        self.__current_page = current_page
+        self.__total_pages = total_pages
+        self.__date_added = datetime.fromtimestamp(date_added)
 
         super().__init__(label=str(self), use_underline=False)
 
-        self.connect('activate', self.load)
+        self.connect('activate', self._open_bookmark)
 
     def __str__(self):
-        return f'{self._name}, ({self._page} / {self._numpages})'
+        return f'{self.__name}, ({self.__current_page} / {self.__total_pages})'
 
-    def load(self, *args):
+    @property
+    def bookmark_name(self):
+        return self.__name
+
+    @property
+    def bookmark_path(self):
+        return self.__path
+
+    @property
+    def bookmark_current_page(self):
+        return self.__current_page
+
+    @property
+    def bookmark_total_pages(self):
+        return self.__total_pages
+
+    @property
+    def bookmark_date_added(self):
+        return self.__date_added
+
+    def _open_bookmark(self, *args):
         """
         Open the file and page the bookmark represents
         """
 
-        if not Path(self._path).is_file():
-            MessageDialogInfo(self.__window, primary='Bookmarked file does not exist', secondary=f'{self._path}')
+        if not Path(self.__path).is_file():
+            MessageDialogInfo(self.__window, primary='Bookmarked file does not exist', secondary=f'{self.__path}')
             return
 
-        if self._file_handler.get_base_path() != Path(self._path):
-            self._file_handler.initialize_fileprovider(path=[Path(self._path)])
-            self._file_handler.open_file(path=Path(self._path), start_page=self._page)
+        if self.__file_handler.get_base_path() != Path(self.__path):
+            self.__file_handler.initialize_fileprovider(path=[Path(self.__path)])
+            self.__file_handler.open_file(path=Path(self.__path), start_page=self.__current_page)
         else:
-            self.__window.set_page(self._page)
+            self.__window.set_page(self.__current_page)
 
     def same_path(self, path: str):
         """
         Return True if the bookmark is for the file <path>
         """
 
-        return Path(path) == Path(self._path)
+        return Path(path) == Path(self.__path)
 
     def same_page(self, page):
         """
         Return True if the bookmark is for the same page
         """
 
-        return page == self._page
+        return page == self.__current_page
 
     def to_row(self):
         """
         Return a tuple corresponding to one row in the _BookmarkDialog's ListStore
         """
 
-        page = f'{self._page} / {self._numpages}'
-        date = self._date_added.strftime('%x %X')
+        page = f'{self.__current_page} / {self.__total_pages}'
+        date = self.__date_added.strftime('%x %X')
 
-        return self._name, page, self._path, date, self
+        return self.__name, page, self.__path, date, self
 
     def pack(self):
         """
@@ -81,12 +102,14 @@ class Bookmark(Gtk.MenuItem):
         """
 
         return {
-            self._name: {
-                'path': str(Path(self._path).parent),
-                'current_page': self._page,
-                'total_pages': self._numpages,
+            self.__name: {
+                # YAML does not work with Pathlike objects
+                'path': str(Path(self.__path).parent),
+                'current_page': self.__current_page,
+                'total_pages': self.__total_pages,
+                # archive_type is deprecated, to be removed in next format change
                 'archive_type': self.__archive_type,
-                'created': self._date_added.timestamp()
+                'created': self.__date_added.timestamp()
             }
         }
 
@@ -96,7 +119,7 @@ class Bookmark(Gtk.MenuItem):
         """
 
         if isinstance(other, Bookmark):
-            return self._path == other._path and self._page == other._page
+            return self.__path == other.__path and self.__current_page == other.__current_page
 
         return False
 
@@ -105,4 +128,4 @@ class Bookmark(Gtk.MenuItem):
         Hash for this object
         """
 
-        return hash(self._path) | hash(self._page)
+        return hash(self.__path) | hash(self.__current_page)

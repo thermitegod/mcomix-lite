@@ -88,9 +88,9 @@ class BookmarksDialog(Gtk.Dialog):
         if not config['BOOKMARK_SHOW_PATH']:
             path_col.set_visible(False)
 
-        self.__liststore.set_sort_func(pos_sort_name, self._sort_model, ('_name', '_page', '_path'))
-        self.__liststore.set_sort_func(pos_sort_page, self._sort_model, ('_numpages', '_page', '_name'))
-        self.__liststore.set_sort_func(pos_sort_date, self._sort_model, ('_date_added',))
+        self.__liststore.set_sort_func(pos_sort_name, self._sort_model, ('bookmark_name', 'bookmark_current_page', 'bookmark_path'))
+        self.__liststore.set_sort_func(pos_sort_page, self._sort_model, ('bookmark_total_pages', 'bookmark_current_page', 'bookmark_name'))
+        self.__liststore.set_sort_func(pos_sort_date, self._sort_model, ('bookmark_date_added',))
 
         self.resize(config['BOOKMARK_WIDTH'], config['BOOKMARK_HEIGHT'])
 
@@ -143,9 +143,9 @@ class BookmarksDialog(Gtk.Dialog):
         bookmark1 = treemodel.get_value(iter1, self.__total_pos_sort)
         bookmark2 = treemodel.get_value(iter2, self.__total_pos_sort)
 
-        for field in user_data:
-            result = (lambda a, b: (a > b) - (a < b))(getattr(bookmark1, field),
-                                                      getattr(bookmark2, field))
+        for property in user_data:
+            result = (lambda a, b: (a > b) - (a < b))(getattr(bookmark1, property),
+                                                      getattr(bookmark2, property))
             if result != 0:
                 return result
 

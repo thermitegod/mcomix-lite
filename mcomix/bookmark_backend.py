@@ -67,17 +67,17 @@ class BookmarkBackend:
 
         name = self.__image_handler.get_current_filename()
         path = self.__image_handler.get_real_path()
-        page = self.__image_handler.get_current_page()
-        numpages = self.__image_handler.get_number_of_pages()
+        current_page = self.__image_handler.get_current_page()
+        total_pages = self.__image_handler.get_number_of_pages()
         archive_type = self.__file_handler.get_archive_type()
-        epoch = time.time()
+        date_added = time.time()
 
         same_file_bookmarks = []
 
         for bookmark in self.__bookmarks:
             if bookmark.same_path(path):
-                if bookmark.same_page(page):
-                    logger.info(f'Bookmark already exists for \'{name}\' on page \'{page}\'')
+                if bookmark.same_page(current_page):
+                    logger.info(f'Bookmark already exists for \'{name}\' on page \'{current_page}\'')
                     return
 
                 same_file_bookmarks.append(bookmark)
@@ -85,7 +85,7 @@ class BookmarkBackend:
         # If the same file was already bookmarked, ask to replace
         # the existing bookmarks before deleting them.
         if len(same_file_bookmarks) > 0:
-            response = self.show_replace_bookmark_dialog(page)
+            response = self.show_replace_bookmark_dialog(current_page)
 
             # Delete old bookmarks
             if response == Gtk.ResponseType.YES:
@@ -96,7 +96,7 @@ class BookmarkBackend:
                 return
 
         bookmark = Bookmark(self.__window, self.__file_handler,
-                            name, path, page, numpages, archive_type, epoch)
+                            name, path, current_page, total_pages, archive_type, date_added)
         self.add_bookmark(bookmark)
 
     def get_bookmarks(self):
@@ -136,15 +136,15 @@ class BookmarkBackend:
                         current_page = bookmark[item]['current_page']
                         total_pages = bookmark[item]['total_pages']
                         archive_type = bookmark[item]['archive_type']
-                        created = bookmark[item]['created']
+                        date_added = bookmark[item]['created']
 
                         # if not path.is_file():
                         #     logger.warning(f'Missing bookmark: {path}')
 
                         bookmarks.append(Bookmark(self.__window, self.__file_handler,
-                                                  name=item, path=path, page=current_page,
-                                                  numpages=total_pages, archive_type=archive_type,
-                                                  epoch=created))
+                                                  name=item, path=path, current_page=current_page,
+                                                  total_pages=total_pages, archive_type=archive_type,
+                                                  date_added=date_added))
         except Exception as ex:
             logger.error(f'Could not parse bookmarks file: \'{self.__bookmark_path}\'')
             logger.error(f'Exception: {ex}')
