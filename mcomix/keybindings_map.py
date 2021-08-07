@@ -13,8 +13,6 @@ class KeyBindingsMap:
     def __init__(self, window):
         super().__init__()
 
-        self.__window = window
-
         group_nav = 'Navigation'
         group_scroll = 'Scrolling'
         group_zoom = 'Zoom'
@@ -38,7 +36,7 @@ class KeyBindingsMap:
                     INFO(group_nav, 'Previous page'),
                     ['Page_Up', 'KP_Page_Up', 'BackSpace'],
                     KEY_EVENT(
-                        self.__window.flip_page,
+                        window.flip_page,
                         {'number_of_pages': -1},
                     ),
                 ),
@@ -47,7 +45,7 @@ class KeyBindingsMap:
                     INFO(group_nav, 'Next page'),
                     ['Page_Down', 'KP_Page_Down'],
                     KEY_EVENT(
-                        self.__window.flip_page,
+                        window.flip_page,
                         {'number_of_pages': +1},
                     ),
                 ),
@@ -56,7 +54,7 @@ class KeyBindingsMap:
                     INFO(group_nav, 'Previous page (always one page)'),
                     ['<Primary>Up', '<Primary>Page_Up', '<Primary>KP_Page_Up'],
                     KEY_EVENT(
-                        self.__window.flip_page,
+                        window.flip_page,
                         {'number_of_pages': -1, 'single_step': True},
                     ),
                 ),
@@ -65,7 +63,7 @@ class KeyBindingsMap:
                     INFO(group_nav, 'Next page (always one page)'),
                     ['<Primary>Down', '<Primary>Page_Down', '<Primary>KP_Page_Down'],
                     KEY_EVENT(
-                        self.__window.flip_page,
+                        window.flip_page,
                         {'number_of_pages': +1, 'single_step': True},
                     ),
                 ),
@@ -74,7 +72,7 @@ class KeyBindingsMap:
                     INFO(group_nav, 'Rewind by X pages'),
                     ['<Shift>Page_Up', '<Shift>KP_Page_Up', '<Shift>BackSpace', '<Shift><Mod1>Left'],
                     KEY_EVENT(
-                        self.__window.flip_page,
+                        window.flip_page,
                         {'number_of_pages': -config['PAGE_FF_STEP']},
                     ),
                 ),
@@ -83,7 +81,7 @@ class KeyBindingsMap:
                     INFO(group_nav, 'Forward by X pages'),
                     ['<Shift>Page_Down', '<Shift>KP_Page_Down', '<Shift><Mod1>Right'],
                     KEY_EVENT(
-                        self.__window.flip_page,
+                        window.flip_page,
                         {'number_of_pages': +config['PAGE_FF_STEP']},
                     ),
                 ),
@@ -92,7 +90,7 @@ class KeyBindingsMap:
                     INFO(group_nav, 'First page'),
                     ['Home', 'KP_Home'],
                     KEY_EVENT(
-                        self.__window.first_page,
+                        window.first_page,
                         None,
                     ),
                 ),
@@ -101,7 +99,7 @@ class KeyBindingsMap:
                     INFO(group_nav, 'Last page'),
                     ['End', 'KP_End'],
                     KEY_EVENT(
-                        self.__window.last_page,
+                        window.last_page,
                         None,
                     ),
                 ),
@@ -110,7 +108,7 @@ class KeyBindingsMap:
                     INFO(group_nav, 'Go to page'),
                     ['G'],
                     KEY_EVENT(
-                        self.__window.page_select,
+                        window.page_select,
                         None,
                     ),
                 ),
@@ -119,7 +117,7 @@ class KeyBindingsMap:
                     INFO(group_nav, 'Next archive'),
                     ['<Primary>Right'],
                     KEY_EVENT(
-                        self.__window.filehandler.open_archive_direction,
+                        window.filehandler.open_archive_direction,
                         {'forward': True},
                     ),
                 ),
@@ -128,7 +126,7 @@ class KeyBindingsMap:
                     INFO(group_nav, 'Previous archive'),
                     ['<Primary>Left'],
                     KEY_EVENT(
-                        self.__window.filehandler.open_archive_direction,
+                        window.filehandler.open_archive_direction,
                         {'forward': False},
                     ),
                 ),
@@ -140,7 +138,7 @@ class KeyBindingsMap:
                     INFO(group_scroll, 'Scroll down'),
                     ['Down', 'KP_Down'],
                     KEY_EVENT(
-                        self.__window.event_handler.scroll_with_flipping,
+                        window.event_handler.scroll_with_flipping,
                         {'x': 0, 'y': config['PIXELS_TO_SCROLL_PER_KEY_EVENT']},
                     ),
                 ),
@@ -149,7 +147,7 @@ class KeyBindingsMap:
                     INFO(group_scroll, 'Scroll left'),
                     ['Left', 'KP_Left'],
                     KEY_EVENT(
-                        self.__window.event_handler.scroll_with_flipping,
+                        window.event_handler.scroll_with_flipping,
                         {'x': -config['PIXELS_TO_SCROLL_PER_KEY_EVENT'], 'y': 0},
                     ),
                 ),
@@ -158,7 +156,7 @@ class KeyBindingsMap:
                     INFO(group_scroll, 'Scroll right'),
                     ['Right', 'KP_Right'],
                     KEY_EVENT(
-                        self.__window.event_handler.scroll_with_flipping,
+                        window.event_handler.scroll_with_flipping,
                         {'x': config['PIXELS_TO_SCROLL_PER_KEY_EVENT'], 'y': 0},
                     ),
                 ),
@@ -167,7 +165,7 @@ class KeyBindingsMap:
                     INFO(group_scroll, 'Scroll up'),
                     ['Up', 'KP_Up'],
                     KEY_EVENT(
-                        self.__window.event_handler.scroll_with_flipping,
+                        window.event_handler.scroll_with_flipping,
                         {'x': 0, 'y': -config['PIXELS_TO_SCROLL_PER_KEY_EVENT']},
                     ),
                 ),
@@ -178,7 +176,7 @@ class KeyBindingsMap:
                     INFO(group_zoom, 'Normal size'),
                     ['<Control>0', 'KP_0'],
                     KEY_EVENT(
-                        self.__window.manual_zoom_original,
+                        window.manual_zoom_original,
                         None,
                     ),
                 ),
@@ -187,7 +185,7 @@ class KeyBindingsMap:
                     INFO(group_zoom, 'Zoom in'),
                     ['plus', 'KP_Add', 'equal'],
                     KEY_EVENT(
-                        self.__window.manual_zoom_in,
+                        window.manual_zoom_in,
                         None,
                     ),
                 ),
@@ -196,7 +194,7 @@ class KeyBindingsMap:
                     INFO(group_zoom, 'Zoom out'),
                     ['minus', 'KP_Subtract'],
                     KEY_EVENT(
-                        self.__window.manual_zoom_out,
+                        window.manual_zoom_out,
                         None,
                     ),
                 ),
@@ -207,7 +205,7 @@ class KeyBindingsMap:
                     INFO(group_trans, 'Keep transformation'),
                     ['k'],
                     KEY_EVENT(
-                        self.__window.change_keep_transformation,
+                        window.change_keep_transformation,
                         None,
                     ),
                 ),
@@ -216,7 +214,7 @@ class KeyBindingsMap:
                     INFO(group_trans, 'Rotate 90°'),
                     ['r'],
                     KEY_EVENT(
-                        self.__window.rotate_x,
+                        window.rotate_x,
                         {'rotation': 90},
                     ),
                 ),
@@ -225,7 +223,7 @@ class KeyBindingsMap:
                     INFO(group_trans, 'Rotate 180°'),
                     [],
                     KEY_EVENT(
-                        self.__window.rotate_x,
+                        window.rotate_x,
                         {'rotation': 180},
                     ),
                 ),
@@ -234,7 +232,7 @@ class KeyBindingsMap:
                     INFO(group_trans, 'Rotate 270°'),
                     ['<Shift>r'],
                     KEY_EVENT(
-                        self.__window.rotate_x,
+                        window.rotate_x,
                         {'rotation': 270},
                     ),
                 ),
@@ -245,7 +243,7 @@ class KeyBindingsMap:
                     INFO(group_rotate, 'Never autorotate'),
                     [],
                     KEY_EVENT(
-                        self.__window.change_autorotation,
+                        window.change_autorotation,
                         {'value': Constants.AUTOROTATE['NEVER']},
                     ),
                 ),
@@ -254,7 +252,7 @@ class KeyBindingsMap:
                     INFO(group_rotate, 'Rotate width 90°'),
                     [],
                     KEY_EVENT(
-                        self.__window.change_autorotation,
+                        window.change_autorotation,
                         {'value': Constants.AUTOROTATE['WIDTH_90']},
                     ),
                 ),
@@ -263,7 +261,7 @@ class KeyBindingsMap:
                     INFO(group_rotate, 'Rotate width 270°'),
                     [],
                     KEY_EVENT(
-                        self.__window.change_autorotation,
+                        window.change_autorotation,
                         {'value': Constants.AUTOROTATE['WIDTH_270']},
                     ),
                 ),
@@ -272,7 +270,7 @@ class KeyBindingsMap:
                     INFO(group_rotate, 'Rotate height 90°'),
                     [],
                     KEY_EVENT(
-                        self.__window.change_autorotation,
+                        window.change_autorotation,
                         {'value': Constants.AUTOROTATE['HEIGHT_90']},
                     ),
                 ),
@@ -281,7 +279,7 @@ class KeyBindingsMap:
                     INFO(group_rotate, 'Rotate height 270°'),
                     [],
                     KEY_EVENT(
-                        self.__window.change_autorotation,
+                        window.change_autorotation,
                         {'value': Constants.AUTOROTATE['HEIGHT_270']},
                     ),
                 ),
@@ -292,7 +290,7 @@ class KeyBindingsMap:
                     INFO(group_view, 'Double page mode'),
                     ['d'],
                     KEY_EVENT(
-                        self.__window.change_double_page,
+                        window.change_double_page,
                         None,
                     ),
                 ),
@@ -301,7 +299,7 @@ class KeyBindingsMap:
                     INFO(group_view, 'Manga mode'),
                     ['m'],
                     KEY_EVENT(
-                        self.__window.change_manga_mode,
+                        window.change_manga_mode,
                         None,
                     ),
                 ),
@@ -312,7 +310,7 @@ class KeyBindingsMap:
                     INFO(group_pagefit, 'Stretch small images'),
                     ['y'],
                     KEY_EVENT(
-                        self.__window.change_stretch,
+                        window.change_stretch,
                         None,
                     ),
                 ),
@@ -321,7 +319,7 @@ class KeyBindingsMap:
                     INFO(group_pagefit, 'Best fit mode'),
                     ['b'],
                     KEY_EVENT(
-                        self.__window.change_fit_mode_best,
+                        window.change_fit_mode_best,
                         None,
                     ),
                 ),
@@ -330,7 +328,7 @@ class KeyBindingsMap:
                     INFO(group_pagefit, 'Fit width mode'),
                     ['w'],
                     KEY_EVENT(
-                        self.__window.change_fit_mode_width,
+                        window.change_fit_mode_width,
                         None,
                     ),
                 ),
@@ -339,7 +337,7 @@ class KeyBindingsMap:
                     INFO(group_pagefit, 'Fit height mode'),
                     ['h'],
                     KEY_EVENT(
-                        self.__window.change_fit_mode_height,
+                        window.change_fit_mode_height,
                         None,
                     ),
                 ),
@@ -348,7 +346,7 @@ class KeyBindingsMap:
                     INFO(group_pagefit, 'Fit size mode'),
                     ['s'],
                     KEY_EVENT(
-                        self.__window.change_fit_mode_size,
+                        window.change_fit_mode_size,
                         None,
                     ),
                 ),
@@ -357,7 +355,7 @@ class KeyBindingsMap:
                     INFO(group_pagefit, 'Manual zoom mode'),
                     ['a'],
                     KEY_EVENT(
-                        self.__window.change_fit_mode_manual,
+                        window.change_fit_mode_manual,
                         None,
                     ),
                 ),
@@ -368,7 +366,7 @@ class KeyBindingsMap:
                     INFO(group_ui, 'Exit from fullscreen'),
                     ['Escape'],
                     KEY_EVENT(
-                        self.__window.event_handler.escape_event,
+                        window.event_handler.escape_event,
                         None,
                     ),
                 ),
@@ -377,7 +375,7 @@ class KeyBindingsMap:
                     INFO(group_ui, 'Fullscreen'),
                     ['f', 'F11'],
                     KEY_EVENT(
-                        self.__window.change_fullscreen,
+                        window.change_fullscreen,
                         None,
                     ),
                 ),
@@ -386,7 +384,7 @@ class KeyBindingsMap:
                     INFO(group_ui, 'Minimize'),
                     ['n'],
                     KEY_EVENT(
-                        self.__window.minimize,
+                        window.minimize,
                         None,
                     ),
                 ),
@@ -397,7 +395,7 @@ class KeyBindingsMap:
                     INFO(group_info, 'About'),
                     ['F1'],
                     KEY_EVENT(
-                        self.__window.open_dialog_about,
+                        window.open_dialog_about,
                         None,
                     ),
                 ),
@@ -408,7 +406,7 @@ class KeyBindingsMap:
                     INFO(group_file, 'Close'),
                     ['<Control>W'],
                     KEY_EVENT(
-                        self.__window.filehandler.close_file,
+                        window.filehandler.close_file,
                         None,
                     ),
                 ),
@@ -417,7 +415,7 @@ class KeyBindingsMap:
                     INFO(group_file, 'Delete'),
                     ['Delete'],
                     KEY_EVENT(
-                        self.__window.trash_file,
+                        window.trash_file,
                         None,
                     ),
                 ),
@@ -426,7 +424,7 @@ class KeyBindingsMap:
                     INFO(group_file, 'Enhance image'),
                     ['e'],
                     KEY_EVENT(
-                        self.__window.open_dialog_enhance,
+                        window.open_dialog_enhance,
                         None,
                     ),
                 ),
@@ -435,7 +433,7 @@ class KeyBindingsMap:
                     INFO(group_file, 'Extract Page'),
                     ['<Control><Shift>s'],
                     KEY_EVENT(
-                        self.__window.extract_page,
+                        window.extract_page,
                         None,
                     ),
                 ),
@@ -444,7 +442,7 @@ class KeyBindingsMap:
                     INFO(group_file, 'Move to subdirectory'),
                     ['Insert', 'grave'],
                     KEY_EVENT(
-                        self.__window.move_file,
+                        window.move_file,
                         None,
                     ),
                 ),
@@ -453,7 +451,7 @@ class KeyBindingsMap:
                     INFO(group_file, 'Open'),
                     ['<Control>O'],
                     KEY_EVENT(
-                        self.__window.open_dialog_file_chooser,
+                        window.open_dialog_file_chooser,
                         None,
                     ),
                 ),
@@ -462,7 +460,7 @@ class KeyBindingsMap:
                     INFO(group_file, 'Preferences'),
                     ['F12'],
                     KEY_EVENT(
-                        self.__window.open_dialog_preference,
+                        window.open_dialog_preference,
                         None,
                     ),
                 ),
@@ -471,7 +469,7 @@ class KeyBindingsMap:
                     INFO(group_file, 'Properties'),
                     ['<Alt>Return'],
                     KEY_EVENT(
-                        self.__window.open_dialog_properties,
+                        window.open_dialog_properties,
                         None,
                     ),
                 ),
@@ -480,7 +478,7 @@ class KeyBindingsMap:
                     INFO(group_file, 'Quit'),
                     ['<Control>Q'],
                     KEY_EVENT(
-                        self.__window.terminate_program,
+                        window.terminate_program,
                         None,
                     ),
                 ),
@@ -489,7 +487,7 @@ class KeyBindingsMap:
                     INFO(group_file, 'Refresh'),
                     ['<control><shift>R'],
                     KEY_EVENT(
-                        self.__window.filehandler.refresh_file,
+                        window.filehandler.refresh_file,
                         None,
                     ),
                 ),
@@ -500,7 +498,7 @@ class KeyBindingsMap:
                     INFO(group_scale, 'Toggle GDK/PIL Image scaling'),
                     ['c'],
                     KEY_EVENT(
-                        self.__window.toggle_image_scaling,
+                        window.toggle_image_scaling,
                         None,
                     ),
                 ),
@@ -509,7 +507,7 @@ class KeyBindingsMap:
                     INFO(group_scale, 'Cycle GDK/PIL Image scaling forward'),
                     ['z'],
                     KEY_EVENT(
-                        self.__window.change_image_scaling,
+                        window.change_image_scaling,
                         {'step': +1},
                     ),
                 ),
@@ -518,7 +516,7 @@ class KeyBindingsMap:
                     INFO(group_scale, 'Cycle GDK/PIL Image scaling backwards'),
                     ['x'],
                     KEY_EVENT(
-                        self.__window.change_image_scaling,
+                        window.change_image_scaling,
                         {'step': -1},
                     ),
                 ),
