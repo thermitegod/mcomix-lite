@@ -10,9 +10,9 @@ from gi.repository import Gtk
 from mcomix.message_dialog_info import MessageDialogInfo
 
 
-class Bookmark(Gtk.ImageMenuItem):
+class Bookmark(Gtk.MenuItem):
     """
-    Bookmark represents one bookmark. It extends the Gtk.ImageMenuItem
+    Bookmark represents one bookmark. It extends the Gtk.MenuItem
     and is thus put directly in the bookmarks menu
     """
 
@@ -72,7 +72,7 @@ class Bookmark(Gtk.ImageMenuItem):
         page = f'{self._page} / {self._numpages}'
         date = self._date_added.strftime('%x %X')
 
-        return None, self._name, page, self._path, date, self
+        return self._name, page, self._path, date, self
 
     def pack(self):
         """
