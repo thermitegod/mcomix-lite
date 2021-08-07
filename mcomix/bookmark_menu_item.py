@@ -98,20 +98,3 @@ class Bookmark(Gtk.MenuItem):
                 'created': self.__date_added.timestamp()
             }
         }
-
-    def __eq__(self, other):
-        """
-        Equality comparison for Bookmark items
-        """
-
-        if isinstance(other, Bookmark):
-            return self.__path == other.__path and self.__current_page == other.__current_page
-
-        return False
-
-    def __hash__(self):
-        """
-        Hash for this object
-        """
-
-        return hash(self.__path) | hash(self.__current_page)
