@@ -20,8 +20,6 @@ class BookmarksMenu(Gtk.Menu):
 
         self.__window = window
 
-        self.__window.bookmark_backend.initialize(window)
-
         item = Gtk.MenuItem()
         item.set_label('Add Bookmark')
         item.connect('activate', self._add_current_to_bookmarks)

@@ -52,8 +52,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__preference_manager = PreferenceManager()
         self.__preference_manager.load_config_file()
 
-        self.bookmark_backend = BookmarkBackend()
-
         # Used to detect window fullscreen state transitions.
         self.was_fullscreen = False
         self.is_manga_mode = config['DEFAULT_MANGA_MODE']
@@ -82,6 +80,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.filehandler.file_opened += self._on_file_opened
         self.imagehandler = ImageHandler(self)
         self.imagehandler.page_available += self._page_available
+
+        self.bookmark_backend = BookmarkBackend(self)
 
         self.thumbnailsidebar = ThumbnailSidebar(self)
         self.thumbnailsidebar.hide()

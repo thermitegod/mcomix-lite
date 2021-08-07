@@ -21,13 +21,12 @@ class BookmarkBackend:
     Changes in the _BookmarkBackend are mirrored in both
     """
 
-    def __init__(self):
+    def __init__(self, window):
         super().__init__()
 
-        self.__initialized = False
-        self.__window = None
-        self.__file_handler = None
-        self.__image_handler = None
+        self.__window = window
+        self.__file_handler = self.__window.filehandler
+        self.__image_handler = self.__window.imagehandler
 
         self.__bookmark_path = Constants.CONFIG_FILES['BOOKMARK']
         self.__bookmark_state_dirty = False
@@ -36,25 +35,6 @@ class BookmarkBackend:
         self.__bookmarks = self.load_bookmarks_file()
         #: Modification date of bookmarks file
         self.__bookmarks_size = self.get_bookmarks_file_size()
-
-    def initialize(self, window):
-        """
-        Initializes references to the main window and file/image handlers
-        """
-
-        if self.__initialized:
-            return
-
-        self.__initialized = True
-
-        self.__window = window
-        self.__file_handler = window.filehandler
-        self.__image_handler = window.imagehandler
-
-        # Update already loaded bookmarks with window and file handler information
-        for bookmark in self.__bookmarks:
-            bookmark.__window = window
-            bookmark._file_handler = window.filehandler
 
     @Callback
     def add_bookmark(self, bookmark):
