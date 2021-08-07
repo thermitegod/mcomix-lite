@@ -117,11 +117,6 @@ class _Constants:
             'INF': 3,
         }
 
-        self.RESPONSE = {
-            'REVERT_TO_DEFAULT': 3,
-            'REMOVE': 4,
-        }
-
         self.ORIENTATION = {
             'MANGA': [-1, 1],
             'WESTERN': [1, 1],

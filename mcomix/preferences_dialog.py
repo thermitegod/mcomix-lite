@@ -23,7 +23,7 @@ class PreferencesDialog(Gtk.Dialog):
         self.set_transient_for(window)
 
         # Button text is set later depending on active tab
-        self.__reset_button = self.add_button('', Constants.RESPONSE['REVERT_TO_DEFAULT'])
+        self.__reset_button = self.add_button('', Gtk.ResponseType.REJECT)
         self.add_button(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
 
         self.__window = window
@@ -422,7 +422,7 @@ class PreferencesDialog(Gtk.Dialog):
             self.__reset_button.set_sensitive(len(config['STORED_DIALOG_CHOICES']) > 0)
 
     def _response(self, dialog, response):
-        if response == Constants.RESPONSE['REVERT_TO_DEFAULT']:
+        if response == Gtk.ResponseType.REJECT:
             if self.__notebook.get_nth_page(self.__notebook.get_current_page()) == self.__shortcuts:
                 # "Shortcuts" page is active, reset all keys to their default value
                 self.__keybindings.reset_keybindings()
