@@ -7,8 +7,6 @@ from pathlib import Path
 
 from gi.repository import Gtk
 
-from mcomix.message_dialog_info import MessageDialogInfo
-
 
 class Bookmark(Gtk.MenuItem):
     """
@@ -18,13 +16,12 @@ class Bookmark(Gtk.MenuItem):
 
     def __init__(self, window, name, path, current_page, total_pages, archive_type, date_added):
         self.__window = window
-        self.__file_handler = self.__window.filehandler
 
         # deprecated
         self.__archive_type = archive_type
 
         self.__name = name
-        self.__path = str(path)
+        self.__path = path
         self.__current_page = current_page
         self.__total_pages = total_pages
         self.__date_added = datetime.fromtimestamp(date_added)
@@ -42,7 +39,7 @@ class Bookmark(Gtk.MenuItem):
 
     @property
     def bookmark_path(self):
-        return self.__path
+        return str(self.__path)
 
     @property
     def bookmark_current_page(self):
@@ -61,15 +58,7 @@ class Bookmark(Gtk.MenuItem):
         Open the file and page the bookmark represents
         """
 
-        if not Path(self.__path).is_file():
-            MessageDialogInfo(self.__window, primary='Bookmarked file does not exist', secondary=f'{self.__path}')
-            return
-
-        if self.__file_handler.get_base_path() != Path(self.__path):
-            self.__file_handler.initialize_fileprovider(path=[Path(self.__path)])
-            self.__file_handler.open_file(path=Path(self.__path), start_page=self.__current_page)
-        else:
-            self.__window.set_page(self.__current_page)
+        self.__window.bookmark_backend.open_bookmark(path=self.__path, current_page=self.__current_page)
 
     def same_path(self, path: str):
         """
@@ -93,7 +82,7 @@ class Bookmark(Gtk.MenuItem):
         page = f'{self.__current_page} / {self.__total_pages}'
         date = self.__date_added.strftime('%x %X')
 
-        return self.__name, page, self.__path, date, self
+        return self.__name, page, str(self.__path), date, self
 
     def pack(self):
         """

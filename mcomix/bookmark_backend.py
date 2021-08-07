@@ -13,6 +13,7 @@ from mcomix.bookmark_menu_item import Bookmark
 from mcomix.constants import Constants
 from mcomix.lib.callback import Callback
 from mcomix.message_dialog import MessageDialog
+from mcomix.message_dialog_info import MessageDialogInfo
 
 
 class BookmarkBackend:
@@ -97,6 +98,21 @@ class BookmarkBackend:
 
         bookmark = Bookmark(self.__window, name, path, current_page, total_pages, archive_type, date_added)
         self.add_bookmark(bookmark)
+
+    def open_bookmark(self, path: Path, current_page: int):
+        """
+        Open the file and page the bookmark represents
+        """
+
+        if not path.is_file():
+            MessageDialogInfo(self.__window, primary='Bookmarked file does not exist', secondary=f'{path}')
+            return
+
+        if self.__file_handler.get_base_path() != path:
+            self.__file_handler.initialize_fileprovider(path=[path])
+            self.__file_handler.open_file(path=path, start_page=current_page)
+        else:
+            self.__window.set_page(current_page)
 
     def get_bookmarks(self):
         """
