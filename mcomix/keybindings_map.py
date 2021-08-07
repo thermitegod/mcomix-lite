@@ -3,7 +3,8 @@
 #: Bindings defined in this dictionary will appear in the configuration dialog.
 #: If 'group' is None, the binding cannot be modified from the preferences dialog.
 
-from collections import namedtuple
+from dataclasses import dataclass
+from typing import Callable
 
 from mcomix.constants import Constants
 from mcomix.preferences import config
@@ -25,16 +26,36 @@ class KeyBindingsMap:
         group_file = 'File'
         group_scale = 'Image Scaling'
 
-        MAP = namedtuple('MAP', ['info', 'keybindings', 'key_event'])
-        INFO = namedtuple('INFO', ['group', 'title'])
-        KEY_EVENT = namedtuple('KEY_EVENT', ['callback', 'callback_kwargs'])
+        @dataclass(frozen=True)
+        class INFO:
+            __slots__ = ['group', 'title']
+            group: str
+            title: str
+
+        @dataclass(frozen=True)
+        class KEYBINDINGS:
+            __slots__ = ['keybindings']
+            keybindings: list
+
+        @dataclass(frozen=True)
+        class KEY_EVENT:
+            __slots__ = ['callback', 'callback_kwargs']
+            callback: Callable
+            callback_kwargs: dict
+
+        @dataclass(frozen=True)
+        class MAP:
+            __slots__ = ['info', 'keybindings', 'key_event']
+            info: INFO
+            keybindings: KEYBINDINGS
+            key_event: KEY_EVENT
 
         self.BINDINGS = {
             # Navigation
             'previous_page':
                 MAP(
                     INFO(group_nav, 'Previous page'),
-                    ['Page_Up', 'KP_Page_Up', 'BackSpace'],
+                    KEYBINDINGS(['Page_Up', 'KP_Page_Up', 'BackSpace']),
                     KEY_EVENT(
                         window.flip_page,
                         {'number_of_pages': -1},
@@ -43,7 +64,7 @@ class KeyBindingsMap:
             'next_page':
                 MAP(
                     INFO(group_nav, 'Next page'),
-                    ['Page_Down', 'KP_Page_Down'],
+                    KEYBINDINGS(['Page_Down', 'KP_Page_Down']),
                     KEY_EVENT(
                         window.flip_page,
                         {'number_of_pages': +1},
@@ -52,7 +73,7 @@ class KeyBindingsMap:
             'previous_page_singlestep':
                 MAP(
                     INFO(group_nav, 'Previous page (always one page)'),
-                    ['<Primary>Up', '<Primary>Page_Up', '<Primary>KP_Page_Up'],
+                    KEYBINDINGS(['<Primary>Up', '<Primary>Page_Up', '<Primary>KP_Page_Up']),
                     KEY_EVENT(
                         window.flip_page,
                         {'number_of_pages': -1, 'single_step': True},
@@ -61,7 +82,7 @@ class KeyBindingsMap:
             'next_page_singlestep':
                 MAP(
                     INFO(group_nav, 'Next page (always one page)'),
-                    ['<Primary>Down', '<Primary>Page_Down', '<Primary>KP_Page_Down'],
+                    KEYBINDINGS(['<Primary>Down', '<Primary>Page_Down', '<Primary>KP_Page_Down']),
                     KEY_EVENT(
                         window.flip_page,
                         {'number_of_pages': +1, 'single_step': True},
@@ -70,7 +91,7 @@ class KeyBindingsMap:
             'previous_page_ff':
                 MAP(
                     INFO(group_nav, 'Rewind by X pages'),
-                    ['<Shift>Page_Up', '<Shift>KP_Page_Up', '<Shift>BackSpace', '<Shift><Mod1>Left'],
+                    KEYBINDINGS(['<Shift>Page_Up', '<Shift>KP_Page_Up', '<Shift>BackSpace', '<Shift><Mod1>Left']),
                     KEY_EVENT(
                         window.flip_page,
                         {'number_of_pages': -config['PAGE_FF_STEP']},
@@ -79,7 +100,7 @@ class KeyBindingsMap:
             'next_page_ff':
                 MAP(
                     INFO(group_nav, 'Forward by X pages'),
-                    ['<Shift>Page_Down', '<Shift>KP_Page_Down', '<Shift><Mod1>Right'],
+                    KEYBINDINGS(['<Shift>Page_Down', '<Shift>KP_Page_Down', '<Shift><Mod1>Right']),
                     KEY_EVENT(
                         window.flip_page,
                         {'number_of_pages': +config['PAGE_FF_STEP']},
@@ -88,7 +109,7 @@ class KeyBindingsMap:
             'first_page':
                 MAP(
                     INFO(group_nav, 'First page'),
-                    ['Home', 'KP_Home'],
+                    KEYBINDINGS(['Home', 'KP_Home']),
                     KEY_EVENT(
                         window.first_page,
                         None,
@@ -97,7 +118,7 @@ class KeyBindingsMap:
             'last_page':
                 MAP(
                     INFO(group_nav, 'Last page'),
-                    ['End', 'KP_End'],
+                    KEYBINDINGS(['End', 'KP_End']),
                     KEY_EVENT(
                         window.last_page,
                         None,
@@ -106,7 +127,7 @@ class KeyBindingsMap:
             'go_to':
                 MAP(
                     INFO(group_nav, 'Go to page'),
-                    ['G'],
+                    KEYBINDINGS(['G']),
                     KEY_EVENT(
                         window.page_select,
                         None,
@@ -115,7 +136,7 @@ class KeyBindingsMap:
             'next_archive':
                 MAP(
                     INFO(group_nav, 'Next archive'),
-                    ['<Primary>Right'],
+                    KEYBINDINGS(['<Primary>Right']),
                     KEY_EVENT(
                         window.filehandler.open_archive_direction,
                         {'forward': True},
@@ -124,7 +145,7 @@ class KeyBindingsMap:
             'previous_archive':
                 MAP(
                     INFO(group_nav, 'Previous archive'),
-                    ['<Primary>Left'],
+                    KEYBINDINGS(['<Primary>Left']),
                     KEY_EVENT(
                         window.filehandler.open_archive_direction,
                         {'forward': False},
@@ -136,7 +157,7 @@ class KeyBindingsMap:
             'scroll_down':
                 MAP(
                     INFO(group_scroll, 'Scroll down'),
-                    ['Down', 'KP_Down'],
+                    KEYBINDINGS(['Down', 'KP_Down']),
                     KEY_EVENT(
                         window.event_handler.scroll_with_flipping,
                         {'x': 0, 'y': config['PIXELS_TO_SCROLL_PER_KEY_EVENT']},
@@ -145,7 +166,7 @@ class KeyBindingsMap:
             'scroll_left':
                 MAP(
                     INFO(group_scroll, 'Scroll left'),
-                    ['Left', 'KP_Left'],
+                    KEYBINDINGS(['Left', 'KP_Left']),
                     KEY_EVENT(
                         window.event_handler.scroll_with_flipping,
                         {'x': -config['PIXELS_TO_SCROLL_PER_KEY_EVENT'], 'y': 0},
@@ -154,7 +175,7 @@ class KeyBindingsMap:
             'scroll_right':
                 MAP(
                     INFO(group_scroll, 'Scroll right'),
-                    ['Right', 'KP_Right'],
+                    KEYBINDINGS(['Right', 'KP_Right']),
                     KEY_EVENT(
                         window.event_handler.scroll_with_flipping,
                         {'x': config['PIXELS_TO_SCROLL_PER_KEY_EVENT'], 'y': 0},
@@ -163,7 +184,7 @@ class KeyBindingsMap:
             'scroll_up':
                 MAP(
                     INFO(group_scroll, 'Scroll up'),
-                    ['Up', 'KP_Up'],
+                    KEYBINDINGS(['Up', 'KP_Up']),
                     KEY_EVENT(
                         window.event_handler.scroll_with_flipping,
                         {'x': 0, 'y': -config['PIXELS_TO_SCROLL_PER_KEY_EVENT']},
@@ -174,7 +195,7 @@ class KeyBindingsMap:
             'zoom_original':
                 MAP(
                     INFO(group_zoom, 'Normal size'),
-                    ['<Control>0', 'KP_0'],
+                    KEYBINDINGS(['<Control>0', 'KP_0']),
                     KEY_EVENT(
                         window.manual_zoom_original,
                         None,
@@ -183,7 +204,7 @@ class KeyBindingsMap:
             'zoom_in':
                 MAP(
                     INFO(group_zoom, 'Zoom in'),
-                    ['plus', 'KP_Add', 'equal'],
+                    KEYBINDINGS(['plus', 'KP_Add', 'equal']),
                     KEY_EVENT(
                         window.manual_zoom_in,
                         None,
@@ -192,7 +213,7 @@ class KeyBindingsMap:
             'zoom_out':
                 MAP(
                     INFO(group_zoom, 'Zoom out'),
-                    ['minus', 'KP_Subtract'],
+                    KEYBINDINGS(['minus', 'KP_Subtract']),
                     KEY_EVENT(
                         window.manual_zoom_out,
                         None,
@@ -203,7 +224,7 @@ class KeyBindingsMap:
             'keep_transformation':
                 MAP(
                     INFO(group_trans, 'Keep transformation'),
-                    ['k'],
+                    KEYBINDINGS(['k']),
                     KEY_EVENT(
                         window.change_keep_transformation,
                         None,
@@ -212,7 +233,7 @@ class KeyBindingsMap:
             'rotate_90':
                 MAP(
                     INFO(group_trans, 'Rotate 90°'),
-                    ['r'],
+                    KEYBINDINGS(['r']),
                     KEY_EVENT(
                         window.rotate_x,
                         {'rotation': 90},
@@ -221,7 +242,7 @@ class KeyBindingsMap:
             'rotate_180':
                 MAP(
                     INFO(group_trans, 'Rotate 180°'),
-                    [],
+                    KEYBINDINGS([]),
                     KEY_EVENT(
                         window.rotate_x,
                         {'rotation': 180},
@@ -230,7 +251,7 @@ class KeyBindingsMap:
             'rotate_270':
                 MAP(
                     INFO(group_trans, 'Rotate 270°'),
-                    ['<Shift>r'],
+                    KEYBINDINGS(['<Shift>r']),
                     KEY_EVENT(
                         window.rotate_x,
                         {'rotation': 270},
@@ -241,7 +262,7 @@ class KeyBindingsMap:
             'no_autorotation':
                 MAP(
                     INFO(group_rotate, 'Never autorotate'),
-                    [],
+                    KEYBINDINGS([]),
                     KEY_EVENT(
                         window.change_autorotation,
                         {'value': Constants.AUTOROTATE['NEVER']},
@@ -250,7 +271,7 @@ class KeyBindingsMap:
             'rotate_90_width':
                 MAP(
                     INFO(group_rotate, 'Rotate width 90°'),
-                    [],
+                    KEYBINDINGS([]),
                     KEY_EVENT(
                         window.change_autorotation,
                         {'value': Constants.AUTOROTATE['WIDTH_90']},
@@ -259,7 +280,7 @@ class KeyBindingsMap:
             'rotate_270_width':
                 MAP(
                     INFO(group_rotate, 'Rotate width 270°'),
-                    [],
+                    KEYBINDINGS([]),
                     KEY_EVENT(
                         window.change_autorotation,
                         {'value': Constants.AUTOROTATE['WIDTH_270']},
@@ -268,7 +289,7 @@ class KeyBindingsMap:
             'rotate_90_height':
                 MAP(
                     INFO(group_rotate, 'Rotate height 90°'),
-                    [],
+                    KEYBINDINGS([]),
                     KEY_EVENT(
                         window.change_autorotation,
                         {'value': Constants.AUTOROTATE['HEIGHT_90']},
@@ -277,7 +298,7 @@ class KeyBindingsMap:
             'rotate_270_height':
                 MAP(
                     INFO(group_rotate, 'Rotate height 270°'),
-                    [],
+                    KEYBINDINGS([]),
                     KEY_EVENT(
                         window.change_autorotation,
                         {'value': Constants.AUTOROTATE['HEIGHT_270']},
@@ -288,7 +309,7 @@ class KeyBindingsMap:
             'double_page':
                 MAP(
                     INFO(group_view, 'Double page mode'),
-                    ['d'],
+                    KEYBINDINGS(['d']),
                     KEY_EVENT(
                         window.change_double_page,
                         None,
@@ -297,7 +318,7 @@ class KeyBindingsMap:
             'manga_mode':
                 MAP(
                     INFO(group_view, 'Manga mode'),
-                    ['m'],
+                    KEYBINDINGS(['m']),
                     KEY_EVENT(
                         window.change_manga_mode,
                         None,
@@ -308,7 +329,7 @@ class KeyBindingsMap:
             'stretch':
                 MAP(
                     INFO(group_pagefit, 'Stretch small images'),
-                    ['y'],
+                    KEYBINDINGS(['y']),
                     KEY_EVENT(
                         window.change_stretch,
                         None,
@@ -317,7 +338,7 @@ class KeyBindingsMap:
             'best_fit_mode':
                 MAP(
                     INFO(group_pagefit, 'Best fit mode'),
-                    ['b'],
+                    KEYBINDINGS(['b']),
                     KEY_EVENT(
                         window.change_fit_mode_best,
                         None,
@@ -326,7 +347,7 @@ class KeyBindingsMap:
             'fit_width_mode':
                 MAP(
                     INFO(group_pagefit, 'Fit width mode'),
-                    ['w'],
+                    KEYBINDINGS(['w']),
                     KEY_EVENT(
                         window.change_fit_mode_width,
                         None,
@@ -335,7 +356,7 @@ class KeyBindingsMap:
             'fit_height_mode':
                 MAP(
                     INFO(group_pagefit, 'Fit height mode'),
-                    ['h'],
+                    KEYBINDINGS(['h']),
                     KEY_EVENT(
                         window.change_fit_mode_height,
                         None,
@@ -344,7 +365,7 @@ class KeyBindingsMap:
             'fit_size_mode':
                 MAP(
                     INFO(group_pagefit, 'Fit size mode'),
-                    ['s'],
+                    KEYBINDINGS(['s']),
                     KEY_EVENT(
                         window.change_fit_mode_size,
                         None,
@@ -353,7 +374,7 @@ class KeyBindingsMap:
             'fit_manual_mode':
                 MAP(
                     INFO(group_pagefit, 'Manual zoom mode'),
-                    ['a'],
+                    KEYBINDINGS(['a']),
                     KEY_EVENT(
                         window.change_fit_mode_manual,
                         None,
@@ -364,7 +385,7 @@ class KeyBindingsMap:
             'exit_fullscreen':
                 MAP(
                     INFO(group_ui, 'Exit from fullscreen'),
-                    ['Escape'],
+                    KEYBINDINGS(['Escape']),
                     KEY_EVENT(
                         window.event_handler.escape_event,
                         None,
@@ -373,7 +394,7 @@ class KeyBindingsMap:
             'fullscreen':
                 MAP(
                     INFO(group_ui, 'Fullscreen'),
-                    ['f', 'F11'],
+                    KEYBINDINGS(['f', 'F11']),
                     KEY_EVENT(
                         window.change_fullscreen,
                         None,
@@ -382,7 +403,7 @@ class KeyBindingsMap:
             'minimize':
                 MAP(
                     INFO(group_ui, 'Minimize'),
-                    ['n'],
+                    KEYBINDINGS(['n']),
                     KEY_EVENT(
                         window.minimize,
                         None,
@@ -393,7 +414,7 @@ class KeyBindingsMap:
             'about':
                 MAP(
                     INFO(group_info, 'About'),
-                    ['F1'],
+                    KEYBINDINGS(['F1']),
                     KEY_EVENT(
                         window.open_dialog_about,
                         None,
@@ -404,7 +425,7 @@ class KeyBindingsMap:
             'close':
                 MAP(
                     INFO(group_file, 'Close'),
-                    ['<Control>W'],
+                    KEYBINDINGS(['<Control>W']),
                     KEY_EVENT(
                         window.filehandler.close_file,
                         None,
@@ -413,7 +434,7 @@ class KeyBindingsMap:
             'delete':
                 MAP(
                     INFO(group_file, 'Delete'),
-                    ['Delete'],
+                    KEYBINDINGS(['Delete']),
                     KEY_EVENT(
                         window.trash_file,
                         None,
@@ -422,7 +443,7 @@ class KeyBindingsMap:
             'enhance_image':
                 MAP(
                     INFO(group_file, 'Enhance image'),
-                    ['e'],
+                    KEYBINDINGS(['e']),
                     KEY_EVENT(
                         window.open_dialog_enhance,
                         None,
@@ -431,7 +452,7 @@ class KeyBindingsMap:
             'extract_page':
                 MAP(
                     INFO(group_file, 'Extract Page'),
-                    ['<Control><Shift>s'],
+                    KEYBINDINGS(['<Control><Shift>s']),
                     KEY_EVENT(
                         window.extract_page,
                         None,
@@ -440,7 +461,7 @@ class KeyBindingsMap:
             'move_file':
                 MAP(
                     INFO(group_file, 'Move to subdirectory'),
-                    ['Insert', 'grave'],
+                    KEYBINDINGS(['Insert', 'grave']),
                     KEY_EVENT(
                         window.move_file,
                         None,
@@ -449,7 +470,7 @@ class KeyBindingsMap:
             'open':
                 MAP(
                     INFO(group_file, 'Open'),
-                    ['<Control>O'],
+                    KEYBINDINGS(['<Control>O']),
                     KEY_EVENT(
                         window.open_dialog_file_chooser,
                         None,
@@ -458,7 +479,7 @@ class KeyBindingsMap:
             'preferences':
                 MAP(
                     INFO(group_file, 'Preferences'),
-                    ['F12'],
+                    KEYBINDINGS(['F12']),
                     KEY_EVENT(
                         window.open_dialog_preference,
                         None,
@@ -467,7 +488,7 @@ class KeyBindingsMap:
             'properties':
                 MAP(
                     INFO(group_file, 'Properties'),
-                    ['<Alt>Return'],
+                    KEYBINDINGS(['<Alt>Return']),
                     KEY_EVENT(
                         window.open_dialog_properties,
                         None,
@@ -476,7 +497,7 @@ class KeyBindingsMap:
             'quit':
                 MAP(
                     INFO(group_file, 'Quit'),
-                    ['<Control>Q'],
+                    KEYBINDINGS(['<Control>Q']),
                     KEY_EVENT(
                         window.terminate_program,
                         None,
@@ -485,7 +506,7 @@ class KeyBindingsMap:
             'refresh_archive':
                 MAP(
                     INFO(group_file, 'Refresh'),
-                    ['<control><shift>R'],
+                    KEYBINDINGS(['<control><shift>R']),
                     KEY_EVENT(
                         window.filehandler.refresh_file,
                         None,
@@ -496,7 +517,7 @@ class KeyBindingsMap:
             'toggle_scaling_pil':
                 MAP(
                     INFO(group_scale, 'Toggle GDK/PIL Image scaling'),
-                    ['c'],
+                    KEYBINDINGS(['c']),
                     KEY_EVENT(
                         window.toggle_image_scaling,
                         None,
@@ -505,7 +526,7 @@ class KeyBindingsMap:
             'scaling_inc':
                 MAP(
                     INFO(group_scale, 'Cycle GDK/PIL Image scaling forward'),
-                    ['z'],
+                    KEYBINDINGS(['z']),
                     KEY_EVENT(
                         window.change_image_scaling,
                         {'step': +1},
@@ -514,7 +535,7 @@ class KeyBindingsMap:
             'scaling_dec':
                 MAP(
                     INFO(group_scale, 'Cycle GDK/PIL Image scaling backwards'),
-                    ['x'],
+                    KEYBINDINGS(['x']),
                     KEY_EVENT(
                         window.change_image_scaling,
                         {'step': -1},

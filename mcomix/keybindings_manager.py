@@ -61,7 +61,7 @@ class KeybindingManager:
         """
 
         for action_name, action_data in self.__keybindings_map.items():
-            self.__stored_action_bindings[action_name] = action_data.keybindings
+            self.__stored_action_bindings[action_name] = action_data.keybindings.keybindings
 
     def load_keybindings_file(self):
         if Path.is_file(self.__keybindings_path):
@@ -103,7 +103,8 @@ class KeybindingManager:
             if action in self.__stored_action_bindings:
                 bindings = [
                     Gtk.accelerator_parse(keyname)
-                    for keyname in self.__stored_action_bindings[action]]
+                    for keyname in self.__stored_action_bindings[action]
+                ]
                 self.__action_to_bindings[action] = bindings
                 for binding in bindings:
                     self.__binding_to_action[binding] = action
