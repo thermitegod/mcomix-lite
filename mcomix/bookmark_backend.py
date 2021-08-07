@@ -70,7 +70,6 @@ class BookmarkBackend:
         path = self.__image_handler.get_real_path()
         current_page = self.__image_handler.get_current_page()
         total_pages = self.__image_handler.get_number_of_pages()
-        archive_type = self.__file_handler.get_archive_type()
         date_added = time.time()
 
         same_file_bookmarks = []
@@ -96,7 +95,7 @@ class BookmarkBackend:
             elif response not in (Gtk.ResponseType.YES, Gtk.ResponseType.NO):
                 return
 
-        bookmark = Bookmark(self.__window, name, path, current_page, total_pages, archive_type, date_added)
+        bookmark = Bookmark(self.__window, name, path, current_page, total_pages, date_added)
         self.add_bookmark(bookmark)
 
     def open_bookmark(self, path: Path, current_page: int):
@@ -150,7 +149,6 @@ class BookmarkBackend:
                         path = Path(bookmark[item]['path'], item)
                         current_page = bookmark[item]['current_page']
                         total_pages = bookmark[item]['total_pages']
-                        archive_type = bookmark[item]['archive_type']
                         date_added = bookmark[item]['created']
 
                         # if not path.is_file():
@@ -158,8 +156,7 @@ class BookmarkBackend:
 
                         bookmarks.append(Bookmark(self.__window,
                                                   name=item, path=path, current_page=current_page,
-                                                  total_pages=total_pages, archive_type=archive_type,
-                                                  date_added=date_added))
+                                                  total_pages=total_pages, date_added=date_added))
         except Exception as ex:
             logger.error(f'Could not parse bookmarks file: \'{self.__bookmark_path}\'')
             logger.error(f'Exception: {ex}')

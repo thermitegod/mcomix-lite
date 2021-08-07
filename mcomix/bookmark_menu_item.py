@@ -14,11 +14,8 @@ class Bookmark(Gtk.MenuItem):
     and is thus put directly in the bookmarks menu
     """
 
-    def __init__(self, window, name, path, current_page, total_pages, archive_type, date_added):
+    def __init__(self, window, name, path, current_page, total_pages, date_added):
         self.__window = window
-
-        # deprecated
-        self.__archive_type = archive_type
 
         self.__name = name
         self.__path = path
@@ -97,7 +94,7 @@ class Bookmark(Gtk.MenuItem):
                 'current_page': self.__current_page,
                 'total_pages': self.__total_pages,
                 # archive_type is deprecated, to be removed in next format change
-                'archive_type': self.__archive_type,
+                'archive_type': 0,
                 'created': self.__date_added.timestamp()
             }
         }
