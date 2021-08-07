@@ -90,23 +90,6 @@ class Bookmark(Gtk.ImageMenuItem):
             }
         }
 
-    def clone(self):
-        """
-        Creates a copy of the provided Bookmark menu item. This is necessary
-        since one bookmark item cannot be anchored in more than one menu. There are,
-        however, at least two: The main menu and the popup menu
-        """
-
-        return Bookmark(
-            self.__window,
-            self._file_handler,
-            self._name,
-            self._path,
-            self._page,
-            self._numpages,
-            self.__archive_type,
-            self._date_added.timestamp())
-
     def __eq__(self, other):
         """
         Equality comparison for Bookmark items

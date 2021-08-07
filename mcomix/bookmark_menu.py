@@ -61,7 +61,6 @@ class BookmarksMenu(Gtk.Menu):
         Add <bookmark> to the menu
         """
 
-        bookmark = bookmark.clone()
         self.insert(bookmark, 3)
 
     def _add_current_to_bookmarks(self, *args):
