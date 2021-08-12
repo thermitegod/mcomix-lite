@@ -97,15 +97,6 @@ class EnhanceImageDialog(Gtk.Dialog):
 
         self.show_all()
 
-    @staticmethod
-    def _im_putpixel(x: int, channel: list, height: float, im_data):
-        for y in list(range(channel[x - 1] + 1, channel[x] + 1)) + [channel[x]] * (channel[x] != 0):
-            r_px, g_px, b_px = im_data.getpixel((x + 1, height - 5 - y))
-            im_data.putpixel((x + 1, height - 5 - y), (255, g_px, b_px))
-        for y in range(channel[x] + 1, channel[x - 1] + 1):
-            r_px, g_px, b_px = im_data.getpixel((x, height - 5 - y))
-            im_data.putpixel((x, height - 5 - y), (255, g_px, b_px))
-
     def draw_histogram(self, height: int = 170, fill: int = 170):
         """
         Draw a histogram (RGB) from self.__pixbuf and return it as another pixbuf.
@@ -137,9 +128,29 @@ class EnhanceImageDialog(Gtk.Dialog):
 
         # Draw the outlines
         for x in range(1, 256):
-            self._im_putpixel(x=x, channel=r, height=height, im_data=im_data)
-            self._im_putpixel(x=x, channel=g, height=height, im_data=im_data)
-            self._im_putpixel(x=x, channel=b, height=height, im_data=im_data)
+            # channel r
+            for y in list(range(r[x-1] + 1, r[x] + 1)) + [r[x]] * (r[x] != 0):
+                r_px, g_px, b_px = im_data.getpixel((x + 1, height - 5 - y))
+                im_data.putpixel((x + 1, height - 5 - y), (255, g_px, b_px))
+            for y in range(r[x] + 1, r[x-1] + 1):
+                r_px, g_px, b_px = im_data.getpixel((x, height - 5 - y))
+                im_data.putpixel((x, height - 5 - y), (255, g_px, b_px))
+
+            # channel g
+            for y in list(range(g[x-1] + 1, g[x] + 1)) + [g[x]] * (g[x] != 0):
+                r_px, g_px, b_px = im_data.getpixel((x + 1, height - 5 - y))
+                im_data.putpixel((x + 1, height - 5 - y), (r_px, 255, b_px))
+            for y in range(g[x] + 1, g[x-1] + 1):
+                r_px, g_px, b_px = im_data.getpixel((x, height - 5 - y))
+                im_data.putpixel((x, height - 5 - y), (r_px, 255, b_px))
+
+            # channel b
+            for y in list(range(b[x-1] + 1, b[x] + 1)) + [b[x]] * (b[x] != 0):
+                r_px, g_px, b_px = im_data.getpixel((x + 1, height - 5 - y))
+                im_data.putpixel((x + 1, height - 5 - y), (r_px, g_px, 255))
+            for y in list(range(b[x] + 1, b[x-1] + 1)):
+                r_px, g_px, b_px = im_data.getpixel((x, height - 5 - y))
+                im_data.putpixel((x, height - 5 - y), (r_px, g_px, 255))
 
         if config['ENHANCE_EXTRA']:
             # if True a label with the maximum pixel value will be added to one corner
