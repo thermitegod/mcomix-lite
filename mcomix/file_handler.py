@@ -247,10 +247,9 @@ class FileHandler:
         """
         Returns the page that should be displayed for an archive.
 
-        :param start_page: If -1, show last page. If 0, show either first page
-                           or last read page. If > 0, show C{start_page}.
+        :param start_page: If -1, show last page. If 0, show first page.
+                           If > 0, show C{start_page}.
         :param num_of_pages: Page count.
-        :param path: Archive path
         :returns: page index
         """
 

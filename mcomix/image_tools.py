@@ -352,7 +352,7 @@ class _ImageTools:
     @staticmethod
     def get_image_size(path: Path):
         """
-        Return image informations: (format, width, height)
+        Return image informations: (width, height)
         """
 
         with LockedFileIO(path) as fio:
@@ -362,7 +362,7 @@ class _ImageTools:
     @staticmethod
     def get_image_mime(path: Path):
         """
-        Return image informations: (format, width, height)
+        Return image informations: (format)
         """
 
         with LockedFileIO(path) as fio:
