@@ -23,10 +23,10 @@ class _ArchiveTools:
             Constants.ARCHIVE_FORMATS['TAR']: TarArchive,
         }
 
-        self.__ext_zip = [ext[0] for ext in Constants.MIME_FORMAT['ZIP']]
-        self.__ext_szip = [ext[0] for ext in Constants.MIME_FORMAT['SEVENZIP']]
-        self.__ext_rar = [ext[0] for ext in Constants.MIME_FORMAT['RAR']]
-        self.__ext_tar = [ext[0] for ext in Constants.MIME_FORMAT['TAR']]
+        self.__ext_zip = [mime.ext for mime in Constants.MIME_FORMAT['ZIP']]
+        self.__ext_szip = [mime.ext for mime in Constants.MIME_FORMAT['SEVENZIP']]
+        self.__ext_rar = [mime.ext for mime in Constants.MIME_FORMAT['RAR']]
+        self.__ext_tar = [mime.ext for mime in Constants.MIME_FORMAT['TAR']]
 
         self.__supported_archive_ext = [*self.__ext_zip, *self.__ext_szip,
                                         *self.__ext_rar, *self.__ext_tar]

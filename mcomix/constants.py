@@ -6,6 +6,7 @@
 
 import os
 from collections import namedtuple
+from dataclasses import dataclass
 from pathlib import Path
 
 import PIL.Image
@@ -142,30 +143,36 @@ class _Constants:
         # see https://www.freedesktop.org/wiki/Software/shared-mime-info/
         # for mimetypes not registed to IANA
 
+        @dataclass(frozen=True)
+        class MIME:
+            __slots__ = ['ext', 'mimetype']
+            ext: str
+            mimetype: str
+
         self.MIME_FORMAT = {
             'ZIP': (
-                ('.zip', 'application/zip'),
-                ('.cbz', 'application/vnd.comicbook+zip'),
+                MIME('.zip', 'application/zip'),
+                MIME('.cbz', 'application/vnd.comicbook+zip'),
             ),
 
             'RAR': (
-                ('.rar', 'application/vnd.rar'),
-                ('.cbr', 'application/vnd.comicbook-rar'),
+                MIME('.rar', 'application/vnd.rar'),
+                MIME('.cbr', 'application/vnd.comicbook-rar'),
             ),
 
             'SEVENZIP': (
-                ('.7z', 'application/x-7z-compressed'),
-                ('.cb7', 'application/x-cb7'),
+                MIME('.7z', 'application/x-7z-compressed'),
+                MIME('.cb7', 'application/x-cb7'),
             ),
 
             'TAR': (
-                ('.tar', 'application/x-tar'),
-                ('.cbt', 'application/x-cbt'),
+                MIME('.tar', 'application/x-tar'),
+                MIME('.cbt', 'application/x-cbt'),
                 # compressed tar
-                ('.gz', 'application/x-compressed-tar'),
-                ('.bz2', 'application/x-bzip-compressed-tar'),
-                ('.lzma', 'application/x-lzma-compressed-tar'),
-                ('.xz', 'application/x-xz-compressed-tar'),
+                MIME('.gz', 'application/x-compressed-tar'),
+                MIME('.bz2', 'application/x-bzip-compressed-tar'),
+                MIME('.lzma', 'application/x-lzma-compressed-tar'),
+                MIME('.xz', 'application/x-xz-compressed-tar'),
             ),
         }
 
