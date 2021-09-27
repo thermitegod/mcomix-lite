@@ -56,13 +56,6 @@ class Extractor:
             self._list_contents, callback=self._list_contents_cb,
             error_callback=self._error_cb)
 
-    def get_directory(self):
-        """
-        Returns the root extraction directory of this extractor
-        """
-
-        return self.__dst
-
     def set_files(self, files: list):
         """
         Set the files that the extractor should extract from the archive in

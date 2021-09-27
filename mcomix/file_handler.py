@@ -41,8 +41,6 @@ class FileHandler:
         self.__window = window
         #: Path to opened archive file, or directory containing current images.
         self.__base_path = None
-        #: Temporary directory used for extracting archives.
-        self.__tmp_dir = None
         #: Archive extractor.
         self.__extractor = Extractor()
         self.__extractor.file_extracted += self._extracted_file
@@ -185,9 +183,6 @@ class FileHandler:
         while Gtk.events_pending():
             Gtk.main_iteration_do(False)
 
-        if self.__tmp_dir is not None:
-            self.__tmp_dir = None
-
     def initialize_fileprovider(self, path: list):
         """
         Creates the L{file_provider.FileProvider} for C{path}.
@@ -216,8 +211,6 @@ class FileHandler:
             logger.error(f'failed to open archive: {self.__base_path}')
             logger.error(f'Exception: {ex}')
             raise
-
-        self.__tmp_dir = self.__extractor.get_directory()
 
     def _listed_contents(self, archive, files):
         if not self.__file_loading:
