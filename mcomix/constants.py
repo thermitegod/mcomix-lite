@@ -123,6 +123,7 @@ class _Constants:
         }
 
         SCALING = namedtuple('SCALING', ['name', 'value'])
+
         self.SCALING_GDK = (
             SCALING('Nearest', int(GdkPixbuf.InterpType.NEAREST)),
             SCALING('Tiles', int(GdkPixbuf.InterpType.TILES)),

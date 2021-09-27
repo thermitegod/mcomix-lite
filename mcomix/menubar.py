@@ -2,7 +2,7 @@
 
 """menubar.py - creates the menubar for main window"""
 
-from collections import namedtuple
+from dataclasses import dataclass
 from typing import Callable
 
 from gi.repository import Gtk
@@ -19,7 +19,12 @@ class Menubar(Gtk.EventBox):
         self.__menubar = Gtk.MenuBar()
         self.add(self.__menubar)
 
-        MENUBAR = namedtuple('MENUBAR', ['label', 'create_function', 'callback'])
+        @dataclass(frozen=True)
+        class MENUBAR:
+            __slots__ = ['label', 'create_function', 'callback']
+            label: str
+            create_function: Callable
+            callback: Callable
 
         # File #
         menu_file = Gtk.Menu()

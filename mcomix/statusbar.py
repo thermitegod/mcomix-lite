@@ -2,7 +2,7 @@
 
 """status.py - Statusbar for main window"""
 
-from collections import namedtuple
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 
@@ -35,7 +35,13 @@ class Statusbar(Gtk.EventBox):
 
         self.__context_menu = Gtk.Menu()
 
-        STATUSBAR = namedtuple('STATUSBAR', ['label', 'config_key', 'callback'])
+        @dataclass(frozen=True)
+        class STATUSBAR:
+            __slots__ = ['label', 'config_key', 'callback']
+            label: str
+            config_key: str
+            callback: Callable
+
         self.__context_menu_items = (
             STATUSBAR('Show page numbers',
                       'STATUSBAR_FIELD_PAGE_NUMBERS',
