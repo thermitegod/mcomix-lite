@@ -66,21 +66,3 @@ class Bookmark(Gtk.MenuItem):
         date = self.__date_added.strftime('%x %X')
 
         return self.__name, page, str(self.__path), date, self
-
-    def pack(self):
-        """
-        Returns a dict. The bookmark can be fully
-        re-created using the values in the dict
-        """
-
-        return {
-            self.__name: {
-                # YAML does not work with Pathlike objects
-                'path': str(Path(self.__path).parent),
-                'current_page': self.__current_page,
-                'total_pages': self.__total_pages,
-                # archive_type is deprecated, to be removed in next format change
-                'archive_type': 0,
-                'created': self.__date_added.timestamp()
-            }
-        }

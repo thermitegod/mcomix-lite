@@ -163,6 +163,25 @@ class BookmarkBackend:
 
         return bookmarks
 
+    def bookmark_pack(self, bookmark):
+        """
+        Returns a dict. The bookmark can be fully
+        re-created using the values in the dict
+        """
+
+        return {
+            bookmark.bookmark_name: {
+                # YAML does not work with Pathlike objects
+                # when using CSafeDumper
+                'path': str(Path(bookmark.bookmark_path).parent),
+                'current_page': bookmark.bookmark_current_page,
+                'total_pages': bookmark.bookmark_total_pages,
+                # archive_type is deprecated, to be removed before next release
+                'archive_type': 0,
+                'created': bookmark.bookmark_date_added.timestamp()
+            }
+        }
+
     def file_was_modified(self):
         """
         Checks the bookmark store's mtime to see if it has been modified
@@ -190,7 +209,7 @@ class BookmarkBackend:
             new_bookmarks = self.load_bookmarks_file()
             self.__bookmarks = list(set(self.__bookmarks + new_bookmarks))
 
-        packs = [bookmark.pack() for bookmark in self.__bookmarks]
+        packs = [self.bookmark_pack(bookmark) for bookmark in self.__bookmarks]
         bookmarks = yaml.dump(packs, Dumper=yaml.CSafeDumper, sort_keys=False,
                               allow_unicode=True, width=2147483647)
         self.__bookmark_path.write_text(bookmarks)
