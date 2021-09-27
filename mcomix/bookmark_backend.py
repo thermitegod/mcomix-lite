@@ -66,7 +66,6 @@ class BookmarkBackend:
         Add the currently viewed page to the list
         """
 
-        name = self.__image_handler.get_current_filename()
         path = self.__image_handler.get_real_path()
         current_page = self.__image_handler.get_current_page()
         total_pages = self.__image_handler.get_number_of_pages()
@@ -77,7 +76,7 @@ class BookmarkBackend:
         for bookmark in self.__bookmarks:
             if Path(bookmark.bookmark_path) == path:
                 if bookmark.bookmark_current_page == current_page:
-                    logger.info(f'Bookmark already exists for \'{name}\' on page \'{current_page}\'')
+                    logger.info(f'Bookmark already exists for file \'{path}\' on page \'{current_page}\'')
                     return
 
                 same_file_bookmarks.append(bookmark)
@@ -95,7 +94,7 @@ class BookmarkBackend:
             elif response not in (Gtk.ResponseType.YES, Gtk.ResponseType.NO):
                 return
 
-        bookmark = Bookmark(self.__window, name, path, current_page, total_pages, date_added)
+        bookmark = Bookmark(self.__window, path, current_page, total_pages, date_added)
         self.add_bookmark(bookmark)
 
     def open_bookmark(self, path: Path, current_page: int):
@@ -154,8 +153,7 @@ class BookmarkBackend:
                         # if not path.is_file():
                         #     logger.warning(f'Missing bookmark: {path}')
 
-                        bookmarks.append(Bookmark(self.__window,
-                                                  name=item, path=path, current_page=current_page,
+                        bookmarks.append(Bookmark(self.__window, path=path, current_page=current_page,
                                                   total_pages=total_pages, date_added=date_added))
         except Exception as ex:
             logger.error(f'Could not parse bookmarks file: \'{self.__bookmark_path}\'')
