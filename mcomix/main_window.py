@@ -261,6 +261,17 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.__layout = FiniteLayout(scaled_sizes, viewport_size, orientation, distribution_axis, alignment_axis)
 
+        self.__main_layout.get_bin_window().freeze_updates()
+        self.__main_layout.set_size(*self.__layout.get_union_box().get_size())
+
+        content_boxes = self.__layout.get_content_boxes()
+
+        for i in self.images:
+            # hides old images before showing new ones
+            # also if in double page mode and only a single
+            # image is going to be shown, prevents a ghost second image
+            i.hide()
+
         for i in pixbuf_count_iter:
             rotation_list[i] = (rotation_list[i] + rotation) % 360
 
@@ -269,26 +280,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
             ImageTools.set_from_pixbuf(self.images[i], pixbuf_list[i])
 
-        resolutions = [(*size, scaled_size[0] / size[0])
-                       for scaled_size, size in zip(scaled_sizes, size_list)]
-
-        if self.is_manga_mode:
-            resolutions.reverse()
-        self.statusbar.set_resolution(resolutions)
-        self.statusbar.update()
-
-        self.__main_layout.get_bin_window().freeze_updates()
-
-        self.__main_layout.set_size(*self.__layout.get_union_box().get_size())
-
-        for i in self.images:
-            # hides old images before showing new ones
-            # also if in double page mode and only a single
-            # image is going to be shown, prevents a ghost second image
-            i.hide()
-
-        content_boxes = self.__layout.get_content_boxes()
-        for i in pixbuf_count_iter:
             self.__main_layout.move(self.images[i], *content_boxes[i].get_position())
             self.images[i].show()
 
@@ -300,6 +291,13 @@ class MainWindow(Gtk.ApplicationWindow):
             self.scroll_to_predefined(destination)
 
         self.__main_layout.get_bin_window().thaw_updates()
+
+        # update statusbar
+        resolutions = [(*size, scaled_size[0] / size[0]) for scaled_size, size in zip(scaled_sizes, size_list)]
+        if self.is_manga_mode:
+            resolutions.reverse()
+        self.statusbar.set_resolution(resolutions)
+        self.statusbar.update()
 
         self.__waiting_for_redraw = False
 
