@@ -23,7 +23,13 @@ class Bookmark(Gtk.MenuItem):
         self.__total_pages = total_pages
         self.__date_added = date_added
 
-        self.__date_format = datetime.fromtimestamp(self.__date_added).strftime('%Y-%m-%d %H:%M:%S')
+        self.__row_format = (
+            self.__name,
+            f'{self.__current_page} / {self.__total_pages}',
+            str(self.__path),
+            datetime.fromtimestamp(self.__date_added).strftime('%Y-%m-%d %H:%M:%S'),
+            self
+        )
 
         super().__init__(label=str(self), use_underline=False)
 
@@ -64,6 +70,4 @@ class Bookmark(Gtk.MenuItem):
         Return a tuple corresponding to one row in the _BookmarkDialog's ListStore
         """
 
-        page = f'{self.__current_page} / {self.__total_pages}'
-
-        return self.__name, page, str(self.__path), self.__date_format, self
+        return self.__row_format
