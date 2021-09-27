@@ -766,7 +766,7 @@ class MainWindow(Gtk.ApplicationWindow):
             response_right = 80
 
             dialog = MessageDialog(
-                parent=self,
+                window=self,
                 flags=Gtk.DialogFlags.MODAL,
                 message_type=Gtk.MessageType.QUESTION,
                 buttons=Gtk.ButtonsType.NONE)
@@ -835,7 +835,7 @@ class MainWindow(Gtk.ApplicationWindow):
         current_file = self.imagehandler.get_real_path()
 
         dialog = MessageDialog(
-            parent=self,
+            window=self,
             flags=Gtk.DialogFlags.MODAL,
             message_type=Gtk.MessageType.QUESTION,
             buttons=Gtk.ButtonsType.NONE)

@@ -10,11 +10,11 @@ from mcomix.preferences import config
 
 
 class MessageDialog(Gtk.MessageDialog):
-    def __init__(self, parent, flags: int = 0, message_type: int = 0, buttons: int = 0):
+    def __init__(self, window, flags: int = 0, message_type: int = 0, buttons: int = 0):
         """
         Creates a dialog window.
 
-        :param parent: Parent window
+        :param window: Parent window
         :param flags: Dialog flags
         :param type: Dialog icon/type
         :param buttons: Dialog buttons. Can only be a predefined BUTTONS_XXX constant
@@ -27,7 +27,7 @@ class MessageDialog(Gtk.MessageDialog):
         )
 
         self.set_modal(True)
-        self.set_transient_for(parent)
+        self.set_transient_for(window)
 
         #: Unique dialog identifier (for storing 'Do not ask again')
         self.__dialog_id = None
