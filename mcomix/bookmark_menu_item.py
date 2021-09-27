@@ -31,12 +31,9 @@ class Bookmark(Gtk.MenuItem):
             self
         )
 
-        super().__init__(label=str(self), use_underline=False)
+        super().__init__(label=f'{self.__name}, ({self.__current_page} / {self.__total_pages})')
 
         self.connect('activate', self._open_bookmark)
-
-    def __str__(self):
-        return f'{self.__name}, ({self.__current_page} / {self.__total_pages})'
 
     @property
     def bookmark_name(self):
