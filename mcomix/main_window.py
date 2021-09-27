@@ -234,23 +234,18 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # Rotation handling:
         # - apply Exif rotation on individual images
-        # - apply automatic rotation (size based) on whole page
         # - apply manual rotation on whole page
+        orientation = self.__page_orientation
         if config['AUTO_ROTATE_FROM_EXIF']:
             rotation_list = [ImageTools.get_implied_rotation(pixbuf) for pixbuf in pixbuf_list]
+            for i in pixbuf_count_iter:
+                if rotation_list[i] in (90, 270):
+                    size_list[i].reverse()
         else:
+            # no auto rotation
             rotation_list = [0] * len(pixbuf_list)
 
-        virtual_size = [0, 0]
-        for i in pixbuf_count_iter:
-            if rotation_list[i] in (90, 270):
-                size_list[i].reverse()
-            size = size_list[i]
-            virtual_size[distribution_axis] += size[distribution_axis]
-            virtual_size[alignment_axis] = max(virtual_size[alignment_axis], size[alignment_axis])
-        rotation = (self._get_size_rotation(*virtual_size) + config['ROTATION']) % 360
-
-        orientation = self.__page_orientation
+        rotation = config['ROTATION'] % 360
         if rotation in (90, 270):
             distribution_axis, alignment_axis = alignment_axis, distribution_axis
             orientation.reverse()
@@ -335,29 +330,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.statusbar.set_filesize(filesize)
 
         self.statusbar.update()
-
-    @staticmethod
-    def _get_size_rotation(width: int, height: int):
-        """
-        Determines the rotation to be applied. Returns the degree of rotation (0, 90, 180, 270)
-        """
-
-        if (height > width and
-                config['AUTO_ROTATE_DEPENDING_ON_SIZE'] in
-                (Constants.AUTOROTATE['HEIGHT_90'], Constants.AUTOROTATE['HEIGHT_270'])):
-            if config['AUTO_ROTATE_DEPENDING_ON_SIZE'] == Constants.AUTOROTATE['HEIGHT_90']:
-                return 90
-            else:
-                return 270
-        elif (width > height and
-              config['AUTO_ROTATE_DEPENDING_ON_SIZE'] in
-              (Constants.AUTOROTATE['WIDTH_90'], Constants.AUTOROTATE['WIDTH_270'])):
-            if config['AUTO_ROTATE_DEPENDING_ON_SIZE'] == Constants.AUTOROTATE['WIDTH_90']:
-                return 90
-            else:
-                return 270
-
-        return 0
 
     def _get_virtual_double_page(self, page: int = None):
         """
@@ -577,16 +549,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.zoom.set_fit_mode(config['ZOOM_MODE'])
         self.zoom.set_scale_up(config['STRETCH'])
         self.zoom.reset_user_zoom()
-        self.draw_image()
-
-    def change_autorotation(self, value=None, *args):
-        """
-        Switches between automatic rotation modes, depending on which
-        radiobutton is currently activated
-        """
-
-        if value:
-            config['AUTO_ROTATE_DEPENDING_ON_SIZE'] = value
         self.draw_image()
 
     def toggle_image_scaling(self):

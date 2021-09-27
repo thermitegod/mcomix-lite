@@ -6,7 +6,6 @@
 from dataclasses import dataclass
 from typing import Callable
 
-from mcomix.constants import Constants
 from mcomix.preferences import config
 
 
@@ -18,7 +17,6 @@ class KeyBindingsMap:
         group_scroll = 'Scrolling'
         group_zoom = 'Zoom'
         group_trans = 'Transformation'
-        group_rotate = 'Autorotate'
         group_view = 'View mode'
         group_pagefit = 'Page fit mode'
         group_ui = 'User interface'
@@ -255,53 +253,6 @@ class KeyBindingsMap:
                     KEY_EVENT(
                         window.rotate_x,
                         {'rotation': 270},
-                    ),
-                ),
-
-            # Autorotate
-            'no_autorotation':
-                MAP(
-                    INFO(group_rotate, 'Never autorotate'),
-                    KEYBINDINGS([]),
-                    KEY_EVENT(
-                        window.change_autorotation,
-                        {'value': Constants.AUTOROTATE['NEVER']},
-                    ),
-                ),
-            'rotate_90_width':
-                MAP(
-                    INFO(group_rotate, 'Rotate width 90°'),
-                    KEYBINDINGS([]),
-                    KEY_EVENT(
-                        window.change_autorotation,
-                        {'value': Constants.AUTOROTATE['WIDTH_90']},
-                    ),
-                ),
-            'rotate_270_width':
-                MAP(
-                    INFO(group_rotate, 'Rotate width 270°'),
-                    KEYBINDINGS([]),
-                    KEY_EVENT(
-                        window.change_autorotation,
-                        {'value': Constants.AUTOROTATE['WIDTH_270']},
-                    ),
-                ),
-            'rotate_90_height':
-                MAP(
-                    INFO(group_rotate, 'Rotate height 90°'),
-                    KEYBINDINGS([]),
-                    KEY_EVENT(
-                        window.change_autorotation,
-                        {'value': Constants.AUTOROTATE['HEIGHT_90']},
-                    ),
-                ),
-            'rotate_270_height':
-                MAP(
-                    INFO(group_rotate, 'Rotate height 270°'),
-                    KEYBINDINGS([]),
-                    KEY_EVENT(
-                        window.change_autorotation,
-                        {'value': Constants.AUTOROTATE['HEIGHT_270']},
                     ),
                 ),
 

@@ -76,14 +76,6 @@ class _Constants:
             'NONE': 3,
         }
 
-        self.AUTOROTATE = {
-            'NEVER': 0,
-            'WIDTH_90': 1,
-            'WIDTH_270': 2,
-            'HEIGHT_90': 3,
-            'HEIGHT_270': 4,
-        }
-
         self.ZOOM = {
             'BEST': 0,
             'WIDTH': 1,
