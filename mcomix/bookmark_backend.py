@@ -2,7 +2,7 @@
 
 """bookmark_backend.py - Bookmarks handler"""
 
-import time
+from datetime import datetime
 from pathlib import Path
 
 import yaml
@@ -70,7 +70,7 @@ class BookmarkBackend:
         path = self.__image_handler.get_real_path()
         current_page = self.__image_handler.get_current_page()
         total_pages = self.__image_handler.get_number_of_pages()
-        date_added = time.time()
+        date_added = datetime.today().timestamp()
 
         same_file_bookmarks = []
 
@@ -178,7 +178,7 @@ class BookmarkBackend:
                 'total_pages': bookmark.bookmark_total_pages,
                 # archive_type is deprecated, to be removed before next release
                 'archive_type': 0,
-                'created': bookmark.bookmark_date_added.timestamp()
+                'created': bookmark.bookmark_date_added
             }
         }
 

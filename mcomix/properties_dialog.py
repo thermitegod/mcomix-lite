@@ -3,7 +3,7 @@
 """properties_dialog.py - Properties dialog that displays information about the archive/file"""
 
 import stat
-import time
+from datetime import datetime
 from pathlib import Path
 
 from gi.repository import Gtk
@@ -107,8 +107,8 @@ class PropertiesDialog(Gtk.Dialog):
         secondary_info = (
             ('Location', Path.resolve(path).parent),
             ('Size', FileSize(path)),
-            ('Modified', time.strftime('%Y-%m-%d, %H:%M:%S', time.localtime(stats.st_mtime))),
-            ('Accessed', time.strftime('%Y-%m-%d, %H:%M:%S', time.localtime(stats.st_atime))),
+            ('Modified', datetime.fromtimestamp(stats.st_mtime).strftime('%Y-%m-%d %H:%M:%S')),
+            ('Accessed', datetime.fromtimestamp(stats.st_atime).strftime('%Y-%m-%d %H:%M:%S')),
             ('Permissions', oct(stat.S_IMODE(stats.st_mode))),
             ('Owner', path.owner()),
             ('Group', path.group())

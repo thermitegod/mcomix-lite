@@ -21,7 +21,9 @@ class Bookmark(Gtk.MenuItem):
         self.__path = path
         self.__current_page = current_page
         self.__total_pages = total_pages
-        self.__date_added = datetime.fromtimestamp(date_added)
+        self.__date_added = date_added
+
+        self.__date_format = datetime.fromtimestamp(self.__date_added).strftime('%Y-%m-%d %H:%M:%S')
 
         super().__init__(label=str(self), use_underline=False)
 
@@ -63,6 +65,5 @@ class Bookmark(Gtk.MenuItem):
         """
 
         page = f'{self.__current_page} / {self.__total_pages}'
-        date = self.__date_added.strftime('%x %X')
 
-        return self.__name, page, str(self.__path), date, self
+        return self.__name, page, str(self.__path), self.__date_format, self
