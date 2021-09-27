@@ -201,6 +201,10 @@ class PreferencesDialog(Gtk.Dialog):
         page.new_section('Rotation')
 
         page.add_row(self._create_pref_check_button(
+            'Keep manual rotation on page change',
+            'KEEP_TRANSFORMATION'))
+
+        page.add_row(self._create_pref_check_button(
             'Rotate images according to their metadata',
             'AUTO_ROTATE_FROM_EXIF'))
 
