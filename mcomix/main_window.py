@@ -422,7 +422,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.statusbar.set_archive_filename(self.filehandler.get_path_to_base())
         else:
             self.statusbar.set_archive_filename(self.filehandler.get_base_filename())
-        self.statusbar.set_view_mode()
+        self.statusbar.set_view_mode(self.is_manga_mode)
         self.statusbar.set_filesize_archive(self.filehandler.get_path_to_base())
         self.statusbar.set_file_number(*self.filehandler.get_file_number())
         self.statusbar.update()
@@ -528,7 +528,6 @@ class MainWindow(Gtk.ApplicationWindow):
     def change_double_page(self, *args):
         config['DEFAULT_DOUBLE_PAGE'] = not config['DEFAULT_DOUBLE_PAGE']
         self._displayed_double()
-        self.statusbar.set_view_mode()
         self._update_page_information()
         self.draw_image()
 
@@ -536,7 +535,7 @@ class MainWindow(Gtk.ApplicationWindow):
         config['DEFAULT_MANGA_MODE'] = not config['DEFAULT_MANGA_MODE']
         self.is_manga_mode = config['DEFAULT_MANGA_MODE']
         self.__page_orientation = self.page_orientation()
-        self.statusbar.set_view_mode()
+        self.statusbar.set_view_mode(self.is_manga_mode)
         self._update_page_information()
         self.draw_image()
 

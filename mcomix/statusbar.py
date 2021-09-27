@@ -114,12 +114,12 @@ class Statusbar(Gtk.EventBox):
         p = ', '.join(str(page + i) for i in range(this_screen))
         self.__total_page_numbers = f'{p} / {total}'
 
-    def set_view_mode(self):
+    def set_view_mode(self, is_manga_mode: bool):
         """
         Update the mode
         """
 
-        if config['DEFAULT_MANGA_MODE']:
+        if is_manga_mode:
             self.__current_view_mode = 'Manga'
         else:
             self.__current_view_mode = 'Western'
