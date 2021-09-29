@@ -35,8 +35,6 @@ class ImageHandler:
         self.__threadpool = GlobalThreadPool.threadpool
         self.__lock = Lock()
         self.__cache_lock = {}
-        #: Archive path, if currently opened file is archive
-        self.__base_path = None
         #: List of image file names, either from extraction or directory
         self.__image_files = []
         #: Dict of image file names with and index
@@ -136,9 +134,6 @@ class ImageHandler:
         self.__image_files_total = len(self.__image_files)
         self.__image_files_index = dict(zip(self.__image_files, range(self.__image_files_total)))
 
-    def set_base_path(self, path: Path):
-        self.__base_path = path
-
     def get_current_path(self):
         # Get current image path
         try:
@@ -170,7 +165,6 @@ class ImageHandler:
         while self.__cache_lock:
             self.__cache_lock.popitem()
 
-        self.__base_path = None
         self.__image_files.clear()
         self.__image_files_total = 0
         self.__current_image_index = None
@@ -334,7 +328,7 @@ class ImageHandler:
         """
 
         if self.__window.filehandler.get_archive_type() is not None:
-            return Path(self.__base_path).name
+            return self.__window.filehandler.get_base_path().name
 
         return self.get_current_path()
 

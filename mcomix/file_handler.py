@@ -104,7 +104,6 @@ class FileHandler:
         Called once the archive has been opened and its contents listed
         """
 
-        self.__window.imagehandler.set_base_path(self.__base_path)
         self.__window.imagehandler.set_image_files(image_files)
         self.file_opened()
 
