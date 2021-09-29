@@ -50,6 +50,8 @@ class ImageHandler:
         #: Pixbuf map from page > Pixbuf
         self.__raw_pixbufs = {}
 
+        self.__thumbnailer = Thumbnailer()
+
         self.__window.filehandler.file_available += self._file_available
 
     def get_pixbuf(self, index: int):
@@ -372,12 +374,7 @@ class ImageHandler:
         if not Path.is_file(path):
             return None
 
-        try:
-            return Thumbnailer(size=size).thumbnail(path)
-        except Exception as ex:
-            logger.error(f'Failed to create thumbnail for image: \'{path}\'')
-            logger.error(f'Exception: {ex}')
-            return None
+        return self.__thumbnailer(size=size, filepath=path)
 
     def _is_page_extracted(self, page: int):
         if page is None:

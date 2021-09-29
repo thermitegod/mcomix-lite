@@ -10,7 +10,7 @@ from mcomix.lib.reader import LockedFileIO
 
 
 class Thumbnailer:
-    def __init__(self, size: tuple):
+    def __init__(self):
         """
         The Thumbnailer class is responsible for thumbnail creation.
 
@@ -19,21 +19,28 @@ class Thumbnailer:
 
         super().__init__()
 
-        self.__width, self.__height = size
-
-    def thumbnail(self, filepath: Path):
+    def __call__(self, size: tuple, filepath: Path):
         """
         Returns a thumbnail pixbuf for <filepath>, transparently handling
         both normal image files and archives. Returns None if thumbnail creation
         failed, or if the thumbnail creation is run asynchrounosly
+
+        :param size: The dimensions for the created thumbnails (width, height).
+        :param filepath: Path to the image that the thumbnail is generated from.
         """
 
-        # any exceptions get handled by caller
+        try:
+            with LockedFileIO(filepath) as fio:
+                with Image.open(fio) as im:
+                    im.thumbnail(size, resample=Image.BOX)
+                    pixbuf = ImageTools.pil_to_pixbuf(im)
+                    if pixbuf.get_has_alpha():
+                        pixbuf = ImageTools.add_alpha_background(
+                            pixbuf, pixbuf.get_width(), pixbuf.get_height())
+        except Exception as ex:
+            logger.error(f'Failed to create thumbnail for image: \'{filepath}\'')
+            logger.error(f'Exception: {ex}')
+            pixbuf = None
 
-        with LockedFileIO(filepath) as fio:
-            with Image.open(fio) as im:
-                im.thumbnail((self.__width, self.__height), resample=Image.BOX)
-                pixbuf = ImageTools.pil_to_pixbuf(im)
-                if pixbuf.get_has_alpha():
-                    pixbuf = ImageTools.add_alpha_background(pixbuf, pixbuf.get_width(), pixbuf.get_height())
-                return pixbuf
+        return pixbuf
+
