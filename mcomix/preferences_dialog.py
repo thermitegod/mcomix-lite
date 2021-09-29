@@ -181,6 +181,14 @@ class PreferencesDialog(Gtk.Dialog):
             'Use fullscreen by default',
             'DEFAULT_FULLSCREEN'))
 
+        page.add_row(self._create_pref_check_button(
+            'Hide the statusbar in fullscreen',
+            'FULLSCREEN_HIDE_STATUSBAR'))
+
+        page.add_row(self._create_pref_check_button(
+            'Hide the menubar in fullscreen',
+            'FULLSCREEN_HIDE_MENUBAR'))
+
         page.new_section('Fit To Size Mode')
 
         page.add_row(Gtk.Label(label='Page zoom mode:'),

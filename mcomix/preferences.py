@@ -16,6 +16,8 @@ config = {
     'STRETCH': True,
     'DEFAULT_DOUBLE_PAGE': True,
     'DEFAULT_FULLSCREEN': False,
+    'FULLSCREEN_HIDE_MENUBAR': False,
+    'FULLSCREEN_HIDE_STATUSBAR': False,
     'ZOOM_MODE': Constants.ZOOM['BEST'],
     'DEFAULT_MANGA_MODE': True,
     'MANGA_FLIP_RIGHT': False,

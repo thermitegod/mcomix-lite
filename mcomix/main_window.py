@@ -521,9 +521,19 @@ class MainWindow(Gtk.ApplicationWindow):
 
         if self.is_fullscreen():
             self.unfullscreen()
+
+            # menu/status can only be hidden in fullscreen
+            # if not hidden using .show() is the same as a NOOP
+            self.statusbar.show()
+            self.menubar.show()
         else:
             self.save_window_geometry()
             self.fullscreen()
+
+            if config['FULLSCREEN_HIDE_STATUSBAR']:
+                self.statusbar.hide()
+            if config['FULLSCREEN_HIDE_MENUBAR']:
+                self.menubar.hide()
 
         # No need to call draw_image explicitely,
         # as we'll be receiving a window state
