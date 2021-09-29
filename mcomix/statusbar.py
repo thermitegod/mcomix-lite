@@ -112,13 +112,20 @@ class Statusbar(Gtk.EventBox):
         self.__status.pop(self.__context_id)
         self.__status.push(self.__context_id, f'    {message}')
 
-    def set_page_number(self, page: int, total: int, this_screen: int):
+    def set_page_number(self, page: int, total_pages: int, displayed_double: bool, manga_mode: bool):
         """
         Update the page number
         """
 
-        p = ', '.join(str(page + i) for i in range(this_screen))
-        self.__total_page_numbers = f'{p} / {total}'
+        if displayed_double:
+            if manga_mode:
+                p = f'{page + 1}, {page}'
+            else:
+                p = f'{page}, {page + 1}'
+        else:
+            p = f'{page}'
+
+        self.__total_page_numbers = f'{p} / {total_pages}'
 
     def set_view_mode(self, is_manga_mode: bool):
         """
