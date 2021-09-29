@@ -274,25 +274,55 @@ class _ImageTools:
         """
 
         enable_anime = config['ANIMATION_MODE'] != Constants.ANIMATION['DISABLED']
+        n_frames = None
+        loop = None
         try:
             with LockedFileIO(path) as fio:
                 with Image.open(fio) as im:
                     # make sure n_frames loaded
                     im.load()
                     if enable_anime and im.is_animated:
+                        n_frames = im.n_frames
+                        loop = im.info['loop']
                         return self.load_animation(im)
                     return self.pil_to_pixbuf(im, keep_orientation=True)
         except Exception as ex:
             # should only be hit when loading trying to load a gif
             logger.debug(f'failed to load pixbuf: {ex}')
 
-        if enable_anime:
-            pixbuf = GdkPixbuf.PixbufAnimation.new_from_file(str(path))
-            if pixbuf.is_static_image():
-                return pixbuf.get_static_image()
-            return pixbuf
+        if not enable_anime:
+            return GdkPixbuf.Pixbuf.new_from_file(str(path))
 
-        return GdkPixbuf.Pixbuf.new_from_file(str(path))
+        pixbuf = GdkPixbuf.PixbufAnimation.new_from_file(str(path))
+        if pixbuf.is_static_image():
+            return pixbuf.get_static_image()
+
+        if n_frames is None or n_frames < 2:
+            # not recognized by PIL or not animation, or only a single frame
+             return pixbuf
+
+        # assume PIL and GdkPixbuf count frames in same way.
+        anime = AnimeFrameBuffer(n_frames, loop=loop)
+        cur = GLib.TimeVal()
+        frame_iter = pixbuf.get_iter(cur)
+        for n in range(n_frames):
+            frame_ref = frame_iter.get_pixbuf()
+            frame = frame_ref.copy()
+            frame_ref.copy_options(frame)
+
+            delay = frame_iter.get_delay_time()
+            cur.tv_usec += delay * 1000
+            while not frame_iter.advance(cur):
+                delay += frame_iter.get_delay_time()
+                cur.tv_usec += delay * 1000
+
+            anime.add_frame(n, frame, delay)
+
+            if n == n_frames - 1:
+                # end of animation
+                break
+
+        return anime.create_animation()
 
     def enhance(self, pixbuf, brightness: float = 1.0, contrast: float = 1.0,
                 saturation: float = 1.0, sharpness: float = 1.0, autocontrast: bool = False):
