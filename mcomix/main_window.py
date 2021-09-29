@@ -173,6 +173,9 @@ class MainWindow(Gtk.ApplicationWindow):
 
             Gdk.event_handler_set(_on_event)
 
+        if config['DEFAULT_FULLSCREEN']:
+            self.change_fullscreen()
+
     def get_layout(self):
         return self.__layout
 
