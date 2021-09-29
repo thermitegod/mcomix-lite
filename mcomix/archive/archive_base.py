@@ -58,8 +58,17 @@ class BaseArchive:
 
         raise NotImplementedError
 
-    @staticmethod
-    def _create_file(path: Path):
+    def _create_directory(self, path: Path):
+        """
+        Recursively create a directory if it doesn't exist yet
+        """
+
+        if path.is_dir():
+            return
+
+        path.mkdir(parents=True, exist_ok=True)
+
+    def _create_file(self, path: Path):
         """
         Open <dst_path> for writing, making sure base directory exists
 
@@ -68,8 +77,6 @@ class BaseArchive:
 
         # recreate the archives directory structure,
         # needed for archives that are not flat
-        dst_dir = path.parent
-        if not dst_dir.is_dir():
-            dst_dir.mkdir(parents=True, exist_ok=True)
+        self._create_directory(path.parent)
 
         return Path.open(path, mode='wb')
