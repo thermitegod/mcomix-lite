@@ -14,7 +14,7 @@ Example usage:
 
 
 APPNAME = 'MComix-Lite'
-VERSION = '3.3.0.dev0'
+VERSION = '3.3.0'
 
 setup(
         name=APPNAME.lower(),
