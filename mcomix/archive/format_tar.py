@@ -1,47 +1,31 @@
 # -*- coding: utf-8 -*-
 
-import tarfile
 from pathlib import Path
 
-from loguru import logger
-
-from mcomix.archive.archive_builtin import ArchiveBuiltin
+from mcomix.archive.archive_external import ArchiveExternal
 
 
-class TarArchive(ArchiveBuiltin):
+class TarArchive(ArchiveExternal):
+    """
+    TAR file extractor using the tar executable
+    """
+
     def __init__(self, archive: Path):
         super().__init__(archive)
 
-        self.__tar = tarfile.open(archive, mode='r')
+    def _get_list_arguments(self):
+        return ['tar', '--list', '-vf', self.archive]
 
-        # tarfile is not thread-safe
-        # so use OrderedDict to save TarInfo in order
-        # {unicode_name: TarInfo}
-        for member in self.__tar.getmembers():
-            self.contents_info[member.name] = member
+    def _get_extract_arguments(self):
+        return ['tar', '--extract', '--to-stdout', '-f', self.archive]
 
-    def extract(self, filename: str, destination_dir: Path):
-        """
-        Extract <filename> from the archive to <destination_dir>
+    def _parse_list_output_line(self, line: str):
+        line = line.split()
 
-        :param filename: file to extract
-        :param destination_dir: extraction path
-        :returns: full path of the extracted file
-        """
+        filesize = int(line[2])
+        self.path = line[5]
 
-        with self.lock:
-            info = self.contents_info[filename]
-            try:
-                with self.__tar.extractfile(info) as fp:
-                    data = fp.read()
-            except AttributeError:
-                logger.warning(f'Corrupted file: {filename}')
+        if filesize > 0:
+            self.contents.append((self.path, filesize))
 
-        destination_path = Path() / destination_dir / filename
-        with self._create_file(destination_path) as new:
-            new.write(data)
-
-        return destination_path
-
-    def close(self):
-        self.__tar.close()
+        return self.path

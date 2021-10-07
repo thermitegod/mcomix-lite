@@ -1,46 +1,36 @@
 # -*- coding: utf-8 -*-
 
-import zipfile
 from pathlib import Path
 
-from loguru import logger
-
-from mcomix.archive.archive_builtin import ArchiveBuiltin
+from mcomix.archive.archive_external import ArchiveExternal
 
 
-class ZipArchive(ArchiveBuiltin):
+class ZipArchive(ArchiveExternal):
+    """
+    ZIP file extractor using the zip executable
+    """
+
     def __init__(self, archive: Path):
         super().__init__(archive)
 
-        self.__zip = zipfile.ZipFile(archive, 'r')
+    def _get_list_arguments(self):
+        return ['unzip', '-v', '--', self.archive]
 
-        # zipfile is usually not thread-safe
-        # so use OrderedDict to save ZipInfo in order
-        # {unicode_name: ZipInfo}
-        for info in self.__zip.infolist():
-            self.contents_info[info.filename] = info
+    def _get_extract_arguments(self):
+        return ['unzip', '-p', '--', self.archive]
 
-    def extract(self, filename: str, destination_dir: Path):
-        """
-        Extract <filename> from the archive to <destination_dir>
+    def _parse_list_output_line(self, line: str):
+        line = line.split()
 
-        :param filename: file to extract
-        :param destination_dir: extraction path
-        :returns: full path of the extracted file
-        """
+        try:
+            filesize = int(line[0])
+            self.path = line[7]
+        except (ValueError, IndexError):
+            # ValueError, comes from getting filesize
+            # IndexError, comes from getting self.path
+            return None
 
-        with self.lock:
-            info = self.contents_info[filename]
-            data = self.__zip.read(info)
+        if filesize > 0:
+            self.contents.append((self.path, filesize))
 
-        destination_path = Path() / destination_dir / filename
-        with self._create_file(destination_path) as new:
-            filelen = new.write(data)
-
-        if filelen != info.file_size:
-            logger.warning(f'{filename}: extracted size is {filelen} bytes, but should be {info.file_size} bytes')
-
-        return destination_path
-
-    def close(self):
-        self.__zip.close()
+        return self.path
