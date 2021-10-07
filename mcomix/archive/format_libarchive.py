@@ -26,9 +26,8 @@ class LibarchiveExtractor(BaseArchive):
 
     def iter_extract(self, destination_dir: Path):
         """
-        Generator to extract <wanted> from archive to <destination_dir>
+        Generator to extract archive to <destination_dir>
 
-        :param wanted: files to extract
         :param destination_dir: extraction path
         """
 
