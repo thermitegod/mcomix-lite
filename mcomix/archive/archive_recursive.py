@@ -8,7 +8,6 @@ from tempfile import TemporaryDirectory
 from loguru import logger
 
 from mcomix.archive_tools import ArchiveTools
-from mcomix.constants import Constants
 
 
 class ArchiveRecursive:
@@ -17,12 +16,9 @@ class ArchiveRecursive:
 
         self.__main_archive = archive
 
-        if not Path.exists(Constants.PATHS['CACHE']):
-            Constants.PATHS['CACHE'].mkdir(parents=True, exist_ok=True)
+        self.__destdir = archive.destdir
 
-        self.__tempdir = TemporaryDirectory(dir=Constants.PATHS['CACHE'])
         self.__sub_tempdirs = []
-        self.__destdir = self.__tempdir.name
         self.__archive_list = []
         # Map entry name to its archive+name.
         self.__entry_mapping = {}
@@ -150,10 +146,7 @@ class ArchiveRecursive:
         for tempdir in self.__sub_tempdirs:
             tempdir.cleanup()
 
-        try:
-            self.__tempdir.cleanup()
-        except OSError as ex:
-            logger.error(f'tmpdir removal failed: {ex}')
+        archive.cleanup()
 
     def __enter__(self):
         return self

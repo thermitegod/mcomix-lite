@@ -6,7 +6,9 @@ extraction and adding new archive formats
 """
 
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
+from mcomix.constants import Constants
 from mcomix.lib.threadpool import Lock
 
 
@@ -21,6 +23,15 @@ class BaseArchive:
         self.archive = archive
 
         self.lock = Lock()
+
+        if not Path.exists(Constants.PATHS['CACHE']):
+            Constants.PATHS['CACHE'].mkdir(parents=True, exist_ok=True)
+
+        self.__tempdir = TemporaryDirectory(dir=Constants.PATHS['CACHE'])
+
+    @property
+    def destdir(self):
+        return self.__tempdir.name
 
     def iter_contents(self):
         """
@@ -57,6 +68,13 @@ class BaseArchive:
         """
 
         raise NotImplementedError
+
+    def cleanup(self):
+        """
+        Cleanup TemporaryDirectory
+        """
+
+        self.__tempdir.cleanup()
 
     def _create_directory(self, path: Path):
         """
