@@ -206,7 +206,7 @@ class FileHandler:
 
         self.__base_path = path
         try:
-            self.__extractor.setup(self.__base_path, self.__is_archive)
+            self.__extractor.setup(self.__base_path)
         except Exception as ex:
             logger.error(f'failed to open archive: {self.__base_path}')
             logger.error(f'Exception: {ex}')

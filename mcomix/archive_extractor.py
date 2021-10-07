@@ -8,7 +8,7 @@ from pathlib import Path
 
 from loguru import logger
 
-from mcomix.archive_tools import ArchiveTools
+from mcomix.archive.format_libarchive import LibarchiveExtractor
 from mcomix.lib.callback import Callback
 from mcomix.lib.threadpool import GlobalThreadPool
 
@@ -30,22 +30,29 @@ class Extractor:
 
         self.__threadpool = GlobalThreadPool.threadpool
 
-        self.__src = None
         self.__archive = None
+        self.__archive_destination_dir = None
+        self.__extractor = None
 
+        self.__contents = []
         self.__contents_listed = False
         self.__condition = None
 
-    def setup(self, src: Path, is_archive: bool = False):
+    def setup(self, archive: Path):
         """
         Setup the extractor with archive <src> and destination dir <dst>.
         Return a threading.Condition related to the is_ready() method, or
         None if the format of <src> isn't supported
         """
 
-        self.__src = src
-        self.__archive = ArchiveTools.get_recursive_archive_handler(path=self.__src, is_archive=is_archive)
+        self.__contents_listed = False
+
+        self.__archive = archive
+        self.__extractor = LibarchiveExtractor(archive=self.__archive)
+        self.__archive_destination_dir = Path() / self.__extractor.destdir / 'main_archive'
+
         self.__condition = threading.Condition()
+
         self.__threadpool.apply_async(
             self._list_contents, callback=self._list_contents_cb,
             error_callback=self._error_cb)
@@ -98,8 +105,9 @@ class Extractor:
         """
 
         self.stop()
-        if self.__archive:
-            self.__archive.close()
+        if self.__extractor:
+            self.__extractor.close()
+            self.__extractor.cleanup()
 
     def _extraction_finished(self, name: str):
         if self.__threadpool.closed:
@@ -111,12 +119,22 @@ class Extractor:
         self.file_extracted(self, name)
 
     def _extract_all_files(self):
-        for name in self.__archive.iter_extract():
-            if self._extraction_finished(name):
+        for name in self.__extractor.iter_extract(self.__archive_destination_dir):
+            if self._extraction_finished(str(name)):
                 return
 
     def _list_contents(self):
-        return set(filename for filename in self.__archive.iter_contents())
+        if self.__contents_listed:
+            return set(self.__contents)
+
+        self.__contents = []
+        for f in self.__extractor.iter_contents():
+            filename = str(Path(self.__archive_destination_dir, f))
+            self.__contents.append(filename)
+
+        self.__contents_listed = True
+
+        return set(self.__contents)
 
     def _list_contents_cb(self, files: set):
         with self.__condition:
