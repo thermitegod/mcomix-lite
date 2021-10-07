@@ -52,7 +52,7 @@ class BaseArchive:
 
         raise NotImplementedError
 
-    def iter_extract(self, wanted: set, destination_dir: Path):
+    def iter_extract(self, destination_dir: Path):
         """
         Generator to extract <wanted> from archive to <destination_dir>
 

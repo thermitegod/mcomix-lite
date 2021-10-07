@@ -45,18 +45,23 @@ class ArchiveRecursive:
 
         sub_archive_list = []
         for f in archive.iter_contents():
-            if ArchiveTools.is_archive_file(Path(f)):
+            # cast from <class 'libarchive.entry.ArchiveEntry'>
+            filename = Path(str(f))
+            # print(f'archive file: {f}, {type(f)}')
+
+
+            if ArchiveTools.is_archive_file(filename):
                 # We found a sub-archive, don't try to extract it now, as we
                 # must finish listing the containing archive contents before
                 # any extraction can be done.
-                sub_archive_list.append(f)
+                sub_archive_list.append(str(filename))
                 continue
 
             if root is None:
-                name = f
+                name = filename
             else:
-                name = Path() / root / f
-            self.__entry_mapping[str(name)] = (archive, f)
+                name = Path() / root / filename
+            self.__entry_mapping[str(name)] = (archive, str(filename))
 
             yield str(name)
 
@@ -102,39 +107,21 @@ class ArchiveRecursive:
 
         self.__contents_listed = True
 
-    def iter_extract(self, wanted: set, destination_dir: Path):
+    def iter_extract(self, destination_dir: Path):
         """
-        List archive contents
+        extract archive and return an iter of archive contents
         """
+        print(self.__archive_list)
 
-        # Unfortunately we can't just rely on BaseArchive default
-        # implementation if solid archives are to be correctly supported:
-        # we need to call iter_extract (not extract) for each archive ourselves.
         for archive in self.__archive_list:
-            archive_wanted = {}
-            for name in wanted:
-                name_archive, name_archive_name = self.__entry_mapping[name]
-                if name_archive == archive:
-                    archive_wanted[name_archive_name] = name
-
-            if not archive_wanted:
-                continue
-
             root = self.__archive_root[archive]
             if root is None:
                 archive_destination_dir = Path() / destination_dir
             else:
                 archive_destination_dir = Path() / root
 
-            logger.debug(f'Extracting from {archive.archive} to '
-                         f'{archive_destination_dir}: {" ".join(archive_wanted.keys())}')
-
-            for f in archive.iter_extract(set(archive_wanted.keys()), archive_destination_dir):
-                yield archive_wanted[f]
-
-            wanted -= set(archive_wanted.values())
-            if not wanted:
-                break
+            for f in archive.iter_extract(archive_destination_dir):
+                yield str(f)
 
     def close(self):
         """

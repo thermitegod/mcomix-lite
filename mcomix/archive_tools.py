@@ -4,10 +4,12 @@
 
 from pathlib import Path
 
-from mcomix.archive.format_rar import RarArchive
-from mcomix.archive.format_sevenzip import SevenZipArchive
-from mcomix.archive.format_tar import TarArchive
-from mcomix.archive.format_zip import ZipArchive
+from mcomix.archive.format_libarchive import LibarchiveExtractor
+
+#from mcomix.archive.format_rar import RarArchive
+#from mcomix.archive.format_sevenzip import SevenZipArchive
+#from mcomix.archive.format_tar import TarArchive
+#from mcomix.archive.format_zip import ZipArchive
 from mcomix.constants import Constants
 
 
@@ -17,10 +19,10 @@ class _ArchiveTools:
 
         # Handlers for each archive type.
         self.__handlers = {
-            Constants.ARCHIVE_FORMATS['ZIP']: ZipArchive,
-            Constants.ARCHIVE_FORMATS['SEVENZIP']: SevenZipArchive,
-            Constants.ARCHIVE_FORMATS['RAR']: RarArchive,
-            Constants.ARCHIVE_FORMATS['TAR']: TarArchive,
+            Constants.ARCHIVE_FORMATS['ZIP']: LibarchiveExtractor,
+            Constants.ARCHIVE_FORMATS['SEVENZIP']: LibarchiveExtractor,
+            Constants.ARCHIVE_FORMATS['RAR']: LibarchiveExtractor,
+            Constants.ARCHIVE_FORMATS['TAR']: LibarchiveExtractor,
         }
 
         self.__ext_zip = [mime.ext for mime in Constants.MIME_FORMAT['ZIP']]

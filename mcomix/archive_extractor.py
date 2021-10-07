@@ -31,8 +31,6 @@ class Extractor:
         self.__threadpool = GlobalThreadPool.threadpool
 
         self.__src = None
-        self.__files = None
-        self.__extracted = None
         self.__archive = None
 
         self.__dst = None
@@ -47,36 +45,12 @@ class Extractor:
         """
 
         self.__src = src
-        self.__files = []
-        self.__extracted = set()
         self.__archive = ArchiveTools.get_recursive_archive_handler(path=self.__src, archive_type=archive_type)
         self.__dst = self.__archive.get_destdir()
         self.__condition = threading.Condition()
         self.__threadpool.apply_async(
             self._list_contents, callback=self._list_contents_cb,
             error_callback=self._error_cb)
-
-    def set_files(self, files: list):
-        """
-        Set the files that the extractor should extract from the archive in
-        the order of extraction. Normally one would get the list of all files
-        in the archive using get_files(), then filter and/or permute this
-        list before sending it back using set_files().
-
-        Note: Random access on gzip or bzip2 compressed tar archives is
-        no good idea. These formats are supported *only* for backwards
-        compability. They are fine formats for some purposes, but should
-        not be used for scanned comic books. So, we cheat and ignore the
-        ordering applied with this method on such archives
-        """
-
-        with self.__condition:
-            if not self.__contents_listed:
-                return
-            self.__files = set(f for f in files if f not in self.__extracted)
-            if not self.__files:
-                # Nothing to do!
-                return
 
     def stop(self):
         """
@@ -133,19 +107,14 @@ class Extractor:
     def _extraction_finished(self, name: str):
         if self.__threadpool.closed:
             return True
+
         with self.__condition:
-            self.__files.remove(name)
-            self.__extracted.add(name)
             self.__condition.notify_all()
+
         self.file_extracted(self, name)
 
     def _extract_all_files(self):
-        # With multiple extractions for each pass, some of the files might have
-        # already been extracted.
-        with self.__condition:
-            files = self.__files - self.__extracted
-
-        for name in self.__archive.iter_extract(wanted=files, destination_dir=self.__dst):
+        for name in self.__archive.iter_extract(destination_dir=self.__dst):
             if self._extraction_finished(name):
                 return
 
@@ -154,8 +123,8 @@ class Extractor:
 
     def _list_contents_cb(self, files: set):
         with self.__condition:
-            self.__files = files
             self.__contents_listed = True
+
         self.contents_listed(self, files)
 
     @staticmethod

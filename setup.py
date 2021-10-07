@@ -28,7 +28,8 @@ setup(
         test_suite='test',
         requires=['Gtk (>=3.24.0)'],
         install_requires=['setuptools', 'pillow', 'urllib3', 'pygobject',
-                          'loguru', 'send2trash', 'pyyaml', 'xxhash'],
+                          'libarchive-c', 'loguru', 'send2trash', 'pyyaml',
+                          'xxhash'],
         zip_safe=False,
 
         # Various MIME files that need to be copied to certain system locations on Linux.

@@ -178,6 +178,7 @@ class FileHandler:
             self.__current_file = None
             self.__base_path = None
             self.file_closed()
+
         # Catch up on UI events, so we don't leave idle callbacks.
         while Gtk.events_pending():
             Gtk.main_iteration_do(False)
@@ -221,7 +222,6 @@ class FileHandler:
                           and not image.endswith('.pdf')]
 
         self._sort_archive_images(archive_images)
-        self.__extractor.set_files(archive_images)
         self._archive_opened(archive_images)
 
     @staticmethod
