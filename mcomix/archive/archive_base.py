@@ -8,6 +8,8 @@ extraction and adding new archive formats
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
+from loguru import logger
+
 from mcomix.constants import Constants
 from mcomix.lib.threadpool import Lock
 
@@ -40,18 +42,6 @@ class BaseArchive:
 
         raise NotImplementedError
 
-    def extract(self, filename: str, destination_dir: Path):
-        """
-        Extracts the file specified by <filename> and return the path of it.
-        This filename must be obtained by calling list_contents().
-        The file is saved to <destination_dir>
-
-        :param filename: file to extract
-        :param destination_dir: extraction path
-        """
-
-        raise NotImplementedError
-
     def iter_extract(self, destination_dir: Path):
         """
         Generator to extract <wanted> from archive to <destination_dir>
@@ -73,6 +63,8 @@ class BaseArchive:
         """
         Cleanup TemporaryDirectory
         """
+
+        logger.debug(f'Cache directory removed: \'{self.__tempdir}\'')
 
         self.__tempdir.cleanup()
 

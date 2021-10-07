@@ -153,7 +153,7 @@ class ImageHandler:
         full path to the archive or the full path to the currently viewed image
         """
 
-        if self.__window.filehandler.get_archive_type() is not None:
+        if self.__window.filehandler.is_archive():
             return self.__window.filehandler.get_path_to_base()
         return self.get_path_to_page()
 
@@ -329,7 +329,7 @@ class ImageHandler:
         Return a string with the name of the currently viewed file that is suitable for printing
         """
 
-        if self.__window.filehandler.get_archive_type() is not None:
+        if self.__window.filehandler.is_archive():
             return self.__window.filehandler.get_base_path().name
 
         return self.get_current_path()

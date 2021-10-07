@@ -132,48 +132,5 @@ class _Constants:
             SCALING('Hamming', PIL.Image.HAMMING),
         )
 
-        # see https://www.freedesktop.org/wiki/Software/shared-mime-info/
-        # for mimetypes not registed to IANA
-
-        @dataclass(frozen=True)
-        class MIME:
-            __slots__ = ['ext', 'mimetype']
-            ext: str
-            mimetype: str
-
-        self.MIME_FORMAT = {
-            'ZIP': (
-                MIME('.zip', 'application/zip'),
-                MIME('.cbz', 'application/vnd.comicbook+zip'),
-            ),
-
-            'RAR': (
-                MIME('.rar', 'application/vnd.rar'),
-                MIME('.cbr', 'application/vnd.comicbook-rar'),
-            ),
-
-            'SEVENZIP': (
-                MIME('.7z', 'application/x-7z-compressed'),
-                MIME('.cb7', 'application/x-cb7'),
-            ),
-
-            'TAR': (
-                MIME('.tar', 'application/x-tar'),
-                MIME('.cbt', 'application/x-cbt'),
-                # compressed tar
-                MIME('.gz', 'application/x-compressed-tar'),
-                MIME('.bz2', 'application/x-bzip-compressed-tar'),
-                MIME('.lzma', 'application/x-lzma-compressed-tar'),
-                MIME('.xz', 'application/x-xz-compressed-tar'),
-            ),
-        }
-
-        self.ARCHIVE_DESCRIPTIONS = {
-            self.ARCHIVE_FORMATS['ZIP']: 'ZIP archive',
-            self.ARCHIVE_FORMATS['SEVENZIP']: '7z archive',
-            self.ARCHIVE_FORMATS['RAR']: 'RAR archive',
-            self.ARCHIVE_FORMATS['TAR']: 'TAR archive',
-        }
-
 
 Constants = _Constants()

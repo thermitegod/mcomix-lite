@@ -24,18 +24,6 @@ class LibarchiveExtractor(BaseArchive):
             for filename in archive:
                 yield filename.pathname
 
-    def extract(self, filename: str, destination_dir: Path):
-        """
-        Extracts the file specified by <filename> and return the path of it.
-        This filename must be obtained by calling list_contents().
-        The file is saved to <destination_dir>
-
-        :param filename: file to extract
-        :param destination_dir: extraction path
-        """
-
-        pass
-
     def iter_extract(self, destination_dir: Path):
         """
         Generator to extract <wanted> from archive to <destination_dir>

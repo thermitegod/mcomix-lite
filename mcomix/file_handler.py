@@ -31,8 +31,8 @@ class FileHandler:
         #: Indicates if files/archives are currently loaded/loading.
         self.__file_loaded = False
         self.__file_loading = False
-        #: None if current file is not an archive, or unrecognized format.
-        self.__archive_type = None
+        #: False if current file is not an archive, or unrecognized format.
+        self.__is_archive = False
 
         #: Either path to the current archive, or first file in image list.
         #: This is B{not} the path to the currently open page.
@@ -65,7 +65,7 @@ class FileHandler:
 
         if self.__file_loaded:
             current_file = Path.resolve(Path(self.__window.imagehandler.get_real_path()))
-            if self.__archive_type is not None:
+            if self.__is_archive:
                 start_page = self.__window.imagehandler.get_current_page()
             else:
                 start_page = 0
@@ -85,12 +85,12 @@ class FileHandler:
         self._close()
 
         self.__filelist = self.__file_provider.list_files(mode=Constants.FILE_TYPE['IMAGES'])
-        self.__archive_type = ArchiveTools.archive_mime_type(path)
+        self.__is_archive = ArchiveTools.is_archive_file(path)
         self.__start_page = start_page
         self.__current_file = path
 
         # Actually open the file(s)/archive passed in path.
-        if self.__archive_type is not None:
+        if self.__is_archive:
             self._open_archive(self.__current_file)
             self.__file_loading = True
         else:
@@ -111,7 +111,7 @@ class FileHandler:
             logger.error(f'No images in "{self.__current_file.name}"')
             return
 
-        if self.__archive_type is None:
+        if not self.__is_archive:
             # If no extraction is required, mark all files as available.
             for img in self.__filelist:
                 self.file_available(img)
@@ -169,12 +169,12 @@ class FileHandler:
         if self.__file_loaded or self.__file_loading:
             if close_provider:
                 self.__file_provider = None
-            if self.__archive_type is not None:
+            if self.__is_archive:
                 self.__extractor.close()
             self.__window.imagehandler.cleanup()
             self.__file_loaded = False
             self.__file_loading = False
-            self.__archive_type = None
+            self.__is_archive = False
             self.__current_file = None
             self.__base_path = None
             self.file_closed()
@@ -206,7 +206,7 @@ class FileHandler:
 
         self.__base_path = path
         try:
-            self.__extractor.setup(self.__base_path, self.__archive_type)
+            self.__extractor.setup(self.__base_path, self.__is_archive)
         except Exception as ex:
             logger.error(f'failed to open archive: {self.__base_path}')
             logger.error(f'Exception: {ex}')
@@ -264,8 +264,8 @@ class FileHandler:
     def get_file_loaded(self):
         return self.__file_loaded
 
-    def get_archive_type(self):
-        return self.__archive_type
+    def is_archive(self):
+        return self.__is_archive
 
     def get_base_path(self):
         return self.__base_path
@@ -274,7 +274,7 @@ class FileHandler:
         return self.__file_provider.list_files(mode=Constants.FILE_TYPE['ARCHIVES'])
 
     def get_file_number(self):
-        if self.__archive_type is None:
+        if not self.__is_archive:
             # No file numbers for images.
             return 0, 0
 
@@ -290,7 +290,7 @@ class FileHandler:
         Return the full path to the current base (path to archive or image directory.)
         """
 
-        if self.__archive_type is not None:
+        if self.__is_archive:
             return self.__base_path
 
         filename = Path() / self.__window.imagehandler.get_current_path()
@@ -327,7 +327,7 @@ class FileHandler:
         :returns True if a new archive was opened, False otherwise
         """
 
-        if self.__archive_type is None:
+        if not self.__is_archive:
             return False
 
         files = self._get_file_list()

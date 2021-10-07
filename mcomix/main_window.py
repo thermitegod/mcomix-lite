@@ -347,7 +347,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         if (page == 1 and
                 config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & Constants.DOUBLE_PAGE['AS_ONE_TITLE'] and
-                self.filehandler.get_archive_type() is not None):
+                self.filehandler.is_archive()):
             return True
 
         if (not config['DEFAULT_DOUBLE_PAGE'] or
@@ -839,7 +839,7 @@ class MainWindow(Gtk.ApplicationWindow):
         Shared logic for move_file() and trash_file()
         """
 
-        if self.filehandler.get_archive_type() is not None:
+        if self.filehandler.is_archive():
             next_opened = self.filehandler.open_archive_direction(forward=True)
             if not next_opened:
                 next_opened = self.filehandler.open_archive_direction(forward=False)

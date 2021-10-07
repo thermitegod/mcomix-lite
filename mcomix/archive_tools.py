@@ -17,21 +17,13 @@ class _ArchiveTools:
     def __init__(self):
         super().__init__()
 
-        # Handlers for each archive type.
-        self.__handlers = {
-            Constants.ARCHIVE_FORMATS['ZIP']: LibarchiveExtractor,
-            Constants.ARCHIVE_FORMATS['SEVENZIP']: LibarchiveExtractor,
-            Constants.ARCHIVE_FORMATS['RAR']: LibarchiveExtractor,
-            Constants.ARCHIVE_FORMATS['TAR']: LibarchiveExtractor,
-        }
-
-        self.__ext_zip = [mime.ext for mime in Constants.MIME_FORMAT['ZIP']]
-        self.__ext_szip = [mime.ext for mime in Constants.MIME_FORMAT['SEVENZIP']]
-        self.__ext_rar = [mime.ext for mime in Constants.MIME_FORMAT['RAR']]
-        self.__ext_tar = [mime.ext for mime in Constants.MIME_FORMAT['TAR']]
-
-        self.__supported_archive_ext = [*self.__ext_zip, *self.__ext_szip,
-                                        *self.__ext_rar, *self.__ext_tar]
+        self.__supported_archive_ext = (
+            '.zip', '.cbz',
+            '.rar', '.bcr',
+            '.7z', '.cb7',
+            '.tar', '.cbt',
+            '.gz', '.bz2', '.lzma', '.xz', '.zst',
+        )
 
     @property
     def supported_archive_ext(self):
@@ -40,44 +32,24 @@ class _ArchiveTools:
     def is_archive_file(self, path: Path):
         return path.suffix.lower() in self.__supported_archive_ext
 
-    def archive_mime_type(self, path: Path):
-        """
-        Return the archive type of <path> or None for non-archives
-        """
-
-        if not self.is_archive_file(path=path):
-            return None
-
-        ext = path.suffix.lower()
-        if ext in self.__ext_zip:
-            return Constants.ARCHIVE_FORMATS['ZIP']
-        elif ext in self.__ext_szip:
-            return Constants.ARCHIVE_FORMATS['SEVENZIP']
-        elif ext in self.__ext_rar:
-            return Constants.ARCHIVE_FORMATS['RAR']
-        elif ext in self.__ext_tar:
-            return Constants.ARCHIVE_FORMATS['TAR']
-        else:
-            raise ValueError
-
-    def get_archive_handler(self, path: Path, archive_type: int = None):
+    def get_archive_handler(self, path: Path, is_archive: bool = False):
         """
         Returns a fitting extractor handler for the archive passed in <path>
         (with optional mime type <type>. Returns None if no matching extractor was found
         """
 
-        if archive_type is None:
+        if not is_archive:
             return None
 
-        return self.__handlers[archive_type](path)
+        return LibarchiveExtractor(path)
 
-    def get_recursive_archive_handler(self, path: Path, archive_type: int = None):
+    def get_recursive_archive_handler(self, path: Path, is_archive: bool = False):
         """
         Same as <get_archive_handler> but the handler will transparently handle
         archives within archives
         """
 
-        archive = self.get_archive_handler(path=path, archive_type=archive_type)
+        archive = self.get_archive_handler(path=path, is_archive=is_archive)
         if archive is None:
             return None
 

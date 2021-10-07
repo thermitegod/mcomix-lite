@@ -33,11 +33,10 @@ class Extractor:
         self.__src = None
         self.__archive = None
 
-        self.__dst = None
         self.__contents_listed = False
         self.__condition = None
 
-    def setup(self, src: Path, archive_type: int = None):
+    def setup(self, src: Path, is_archive: bool = False):
         """
         Setup the extractor with archive <src> and destination dir <dst>.
         Return a threading.Condition related to the is_ready() method, or
@@ -45,8 +44,7 @@ class Extractor:
         """
 
         self.__src = src
-        self.__archive = ArchiveTools.get_recursive_archive_handler(path=self.__src, archive_type=archive_type)
-        self.__dst = self.__archive.get_destdir()
+        self.__archive = ArchiveTools.get_recursive_archive_handler(path=self.__src, is_archive=is_archive)
         self.__condition = threading.Condition()
         self.__threadpool.apply_async(
             self._list_contents, callback=self._list_contents_cb,
@@ -101,7 +99,6 @@ class Extractor:
 
         self.stop()
         if self.__archive:
-            logger.debug(f'Cache directory removed: \'{self.__dst}\'')
             self.__archive.close()
 
     def _extraction_finished(self, name: str):
@@ -114,7 +111,7 @@ class Extractor:
         self.file_extracted(self, name)
 
     def _extract_all_files(self):
-        for name in self.__archive.iter_extract(destination_dir=self.__dst):
+        for name in self.__archive.iter_extract():
             if self._extraction_finished(name):
                 return
 
