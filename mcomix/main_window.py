@@ -692,11 +692,11 @@ class MainWindow(Gtk.ApplicationWindow):
         size = 0
 
         for widget, axis in self.__toggle_axis.items():
-            minimum_size, natural_size = widget.get_preferred_size()
+            size = widget.get_preferred_size()
             if Constants.AXIS['WIDTH'] == axis:
-                size = natural_size.width
+                size = size.natural_size.width
             elif Constants.AXIS['HEIGHT'] == axis:
-                size = natural_size.height
+                size = size.natural_size.height
             dimensions[axis] -= size
 
         return tuple(dimensions)
