@@ -48,8 +48,7 @@ class OrderedFileProvider(FileProvider):
 
         return files
 
-    @staticmethod
-    def _sort_files(files: list):
+    def _sort_files(self, files: list):
         """
         Sorts a list of C{files} depending on the current preferences. The list is sorted in-place
         """

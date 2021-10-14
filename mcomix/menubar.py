@@ -116,18 +116,15 @@ class Menubar(Gtk.EventBox):
         #
         self.show_all()
 
-    @staticmethod
-    def _populate_menu(items: tuple, menu):
+    def _populate_menu(self, items: tuple, menu):
         for item in items:
             item.create_function(menu, item.label, item.callback)
 
-    @staticmethod
-    def _create_submenu_item(menu, label: str, callback: Callable):
+    def _create_submenu_item(self, menu, label: str, callback: Callable):
         item = Gtk.MenuItem()
         item.set_label(label)
         item.connect('activate', callback)
         menu.append(item)
 
-    @staticmethod
-    def _create_separator(menu, *args):
+    def _create_separator(self, menu, *args):
         menu.append(Gtk.SeparatorMenuItem())

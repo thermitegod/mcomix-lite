@@ -8,8 +8,7 @@ class GetFileProvider:
     def __init__(self):
         super().__init__()
 
-    @staticmethod
-    def get_file_provider(filelist: list):
+    def get_file_provider(self, filelist: list):
         """
         Initialize a FileProvider with the files in <filelist>.
         If len(filelist) is 1, a OrderedFileProvider will be constructed, which

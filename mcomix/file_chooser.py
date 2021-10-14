@@ -116,8 +116,7 @@ class FileChooser(Gtk.Dialog):
 
         self.destroy()
 
-    @staticmethod
-    def _filter(filter_info, pattern):
+    def _filter(self, filter_info, pattern):
         """
         Callback function used to determine if a file
         should be filtered or not. Returns True

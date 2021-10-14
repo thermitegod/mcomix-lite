@@ -607,8 +607,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def open_dialog_about(self, *args):
         DialogAbout().open_dialog(self)
 
-    @staticmethod
-    def change_keep_transformation(*args):
+    def change_keep_transformation(self, *args):
         config['KEEP_TRANSFORMATION'] = not config['KEEP_TRANSFORMATION']
 
     def manual_zoom_in(self, *args):

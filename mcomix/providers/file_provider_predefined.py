@@ -43,8 +43,7 @@ class PreDefinedFileProvider(FileProvider):
 
         return self.__files
 
-    @staticmethod
-    def __get_file_filter(files: list):
+    def __get_file_filter(self, files: list):
         """
         Determines what kind of files should be filtered in the given list
         of <files>. Returns either a filter accepting only images, or only archives,

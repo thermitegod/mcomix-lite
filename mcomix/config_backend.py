@@ -32,12 +32,10 @@ class _ConfigBackend:
     def _hash_config(self, config: dict):
         return xxhash.xxh3_64(self._dump_config(config).encode('utf8')).hexdigest()
 
-    @staticmethod
-    def _dump_config(config: dict):
+    def _dump_config(self, config: dict):
         return yaml.dump(config, Dumper=yaml.CSafeDumper, sort_keys=False)
 
-    @staticmethod
-    def load_config(config: Path, saved_prefs: dict):
+    def load_config(self, config: Path, saved_prefs: dict):
         try:
             with Path.open(config, mode='rt', encoding='utf8') as fd:
                 saved_prefs.update(yaml.safe_load(fd))

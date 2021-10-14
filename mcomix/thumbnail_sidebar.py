@@ -225,8 +225,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         uri = path.as_uri()
         selection.set_uris([uri])
 
-    @staticmethod
-    def _drag_begin(treeview, context):
+    def _drag_begin(self, treeview, context):
         """
         We hook up on drag_begin events so that we can set the hotspot
         for the cursor at the top left corner of the thumbnail (so that we

@@ -100,8 +100,7 @@ class PropertiesDialog(Gtk.Dialog):
         thumb = self.__window.imagehandler.get_thumbnail(page=page_number, size=(size, size))
         page.set_thumbnail(thumb)
 
-    @staticmethod
-    def _update_page_secondary_info(page, path: Path):
+    def _update_page_secondary_info(self, page, path: Path):
         stats = Path.stat(path)
         secondary_info = (
             ('Location', Path.resolve(path).parent),

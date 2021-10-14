@@ -193,7 +193,7 @@ class FileHandler:
         :param path: List of file names, or single file/directory as string.
         """
 
-        self.__file_provider = GetFileProvider.get_file_provider(path)
+        self.__file_provider = GetFileProvider().get_file_provider(path)
 
     def _open_archive(self, path: Path):
         """
@@ -224,8 +224,7 @@ class FileHandler:
         self._sort_archive_images(archive_images)
         self._archive_opened(archive_images)
 
-    @staticmethod
-    def _sort_archive_images(filelist: list):
+    def _sort_archive_images(self, filelist: list):
         """
         Sorts the image list passed in C{filelist} based on the sorting preference option
         """
@@ -241,8 +240,7 @@ class FileHandler:
         if config['SORT_ARCHIVE_ORDER'] == Constants.FILE_SORT_DIRECTION['DESCENDING']:
             filelist.reverse()
 
-    @staticmethod
-    def _get_index_for_page(start_page: int, num_of_pages: int):
+    def _get_index_for_page(self, start_page: int, num_of_pages: int):
         """
         Returns the page that should be displayed for an archive.
 

@@ -698,8 +698,7 @@ class PreferencesDialog(Gtk.Dialog):
         elif preference in ('FIT_TO_SIZE_PX',):
             self.__window.change_zoom_mode()
 
-    @staticmethod
-    def _create_pref_text_box(preference: str):
+    def _create_pref_text_box(self, preference: str):
         def save_pref_text_box(text):
             config[preference] = text.get_text()
 

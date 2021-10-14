@@ -45,8 +45,7 @@ class _ThreadPool:
     def join(self):
         return self.__pool.join()
 
-    @staticmethod
-    def _trycall(function: Callable, args: tuple = None, kwargs: dict = None, lock: Lock = None):
+    def _trycall(self, function: Callable, args: tuple = None, kwargs: dict = None, lock: Lock = None):
         if function is None:
             return
 

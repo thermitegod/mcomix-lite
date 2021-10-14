@@ -53,8 +53,7 @@ class ZoomModel:
     def reset_user_zoom(self):
         self._set_user_zoom_log(self.__identity_zoom_log)
 
-    @staticmethod
-    def scale(t: list, factor: float):
+    def scale(self, t: list, factor: float):
         return [x * factor for x in t]
 
     def get_zoomed_size(self, image_sizes: list, screen_size: list, distribution_axis: int, do_not_transform: list):
@@ -121,8 +120,7 @@ class ZoomModel:
             min_scale = self.__identity_zoom
         return min_scale
 
-    @staticmethod
-    def _calc_limits(union_size: list, screen_size: list, fitmode: int, allow_upscaling: bool):
+    def _calc_limits(self, union_size: list, screen_size: list, fitmode: int, allow_upscaling: bool):
         """
         Returns a list or a tuple with the i-th element set to int x if
         fitmode limits the size at the i-th axis to x, or None if fitmode has no
@@ -264,16 +262,14 @@ class ZoomModel:
     def _scale_image_size(self, size: list, scale: float):
         return self._round_nonempty(self.scale(size, scale))
 
-    @staticmethod
-    def _round_nonempty(t: list):
+    def _round_nonempty(self, t: list):
         result = [0] * len(t)
         for idx, item in enumerate(t):
             x = int(round(t[idx]))
             result[idx] = x if x > 0 else 1
         return result
 
-    @staticmethod
-    def _fix_page_sizes(image_sizes: list, distribution_axis: int, do_not_transform: list):
+    def _fix_page_sizes(self, image_sizes: list, distribution_axis: int, do_not_transform: list):
         if len(image_sizes) < 2:
             return image_sizes
         # in double page mode, resize the smaller image to fit the bigger one
@@ -285,8 +281,7 @@ class ZoomModel:
         return [[int(x * ratios[n]), int(y * ratios[n])]
                 for n, (x, y) in enumerate(image_sizes)]  # scale every page
 
-    @staticmethod
-    def _union_size(image_sizes: list, distribution_axis: int):
+    def _union_size(self, image_sizes: list, distribution_axis: int):
         if not image_sizes:
             return []
         n = len(image_sizes[0])

@@ -19,6 +19,8 @@ class _ImageTools:
     def __init__(self):
         super().__init__()
 
+        self.__anime_executor = AnimeFrameExecutor()
+
         # disable PIL DecompressionBombWarning
         Image.MAX_IMAGE_PIXELS = None
 
@@ -33,8 +35,7 @@ class _ImageTools:
     def is_image_file(self, path: Path):
         return path.suffix.lower() in self.__supported_image_exts
 
-    @staticmethod
-    def rotate_pixbuf(src, rotation: int):
+    def rotate_pixbuf(self, src, rotation: int):
         if rotation == 0:
             return src.rotate_simple(GdkPixbuf.PixbufRotation.NONE)
         elif rotation == 90:
@@ -46,8 +47,7 @@ class _ImageTools:
         else:
             raise ValueError(f'unsupported rotation: {rotation}')
 
-    @staticmethod
-    def get_fitting_size(source_size: tuple, target_size: tuple, keep_ratio: bool = True, scale_up: bool = False):
+    def get_fitting_size(self, source_size: tuple, target_size: tuple, keep_ratio: bool = True, scale_up: bool = False):
         """
         Return a scaled version of <source_size>
         small enough to fit in <target_size>.
@@ -72,7 +72,7 @@ class _ImageTools:
 
     def fit_pixbuf_to_rectangle(self, src, rect: tuple, rotation: int):
         if self.is_animation(src):
-            return AnimeFrameExecutor.frame_executor(
+            return self.__anime_executor.frame_executor(
                 src, self.fit_pixbuf_to_rectangle,
                 args=(rect, rotation)
             )
@@ -155,8 +155,7 @@ class _ImageTools:
         return pixbuf.composite_color_simple(width, height, scaling_quality,
                                              255, check_size, color1, color2)
 
-    @staticmethod
-    def add_border(pixbuf):
+    def add_border(self, pixbuf):
         """
         Return a pixbuf from <pixbuf> with a black, 1 px border
         """
@@ -173,8 +172,7 @@ class _ImageTools:
                          dest_pixbuf=canvas, dest_x=1, dest_y=1)
         return canvas
 
-    @staticmethod
-    def pil_to_pixbuf(im, keep_orientation: bool = False):
+    def pil_to_pixbuf(self, im, keep_orientation: bool = False):
         """
         Return a pixbuf created from the PIL <im>
         """
@@ -206,8 +204,7 @@ class _ImageTools:
                 setattr(pixbuf, 'orientation', str(orientation))
         return pixbuf
 
-    @staticmethod
-    def pixbuf_to_pil(pixbuf):
+    def pixbuf_to_pil(self, pixbuf):
         """
         Return a PIL image created from <pixbuf>
         """
@@ -218,8 +215,7 @@ class _ImageTools:
         mode = 'RGBA' if pixbuf.get_has_alpha() else 'RGB'
         return Image.frombuffer(mode, dimensions, pixels, 'raw', mode, stride, 1)
 
-    @staticmethod
-    def is_animation(pixbuf):
+    def is_animation(self, pixbuf):
         return isinstance(pixbuf, GdkPixbuf.PixbufAnimation)
 
     def disable_transform(self, pixbuf):
@@ -335,7 +331,7 @@ class _ImageTools:
         """
 
         if self.is_animation(pixbuf):
-            return AnimeFrameExecutor.frame_executor(
+            return self.__anime_executor.frame_executor(
                 pixbuf, self.enhance,
                 kwargs=dict(
                     brightness=brightness, contrast=contrast,
@@ -356,8 +352,7 @@ class _ImageTools:
             im = ImageEnhance.Sharpness(im).enhance(sharpness)
         return self.pil_to_pixbuf(im)
 
-    @staticmethod
-    def get_implied_rotation(pixbuf):
+    def get_implied_rotation(self, pixbuf):
         """
         Return the implied rotation in degrees: 0, 90, 180, or 270.
         The implied rotation is the angle (in degrees) that the raw pixbuf should
@@ -379,8 +374,7 @@ class _ImageTools:
 
         return 0
 
-    @staticmethod
-    def get_image_size(path: Path):
+    def get_image_size(self, path: Path):
         """
         Return image informations: (width, height)
         """
@@ -389,8 +383,7 @@ class _ImageTools:
             with Image.open(fio) as im:
                 return im.size
 
-    @staticmethod
-    def get_image_mime(path: Path):
+    def get_image_mime(self, path: Path):
         """
         Return image informations: (format)
         """

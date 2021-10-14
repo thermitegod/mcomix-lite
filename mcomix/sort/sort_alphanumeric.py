@@ -20,8 +20,7 @@ class SortAlphanumeric:
 
         filenames.sort(key=self._keyfunc)
 
-    @staticmethod
-    def _isfloat(p):
+    def _isfloat(self, p):
         try:
             return 0, float(p)
         except ValueError:

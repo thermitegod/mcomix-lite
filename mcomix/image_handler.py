@@ -266,8 +266,7 @@ class ImageHandler:
         except IndexError:
             return None
 
-    @staticmethod
-    def _get_page_unknown(double_mode: bool):
+    def _get_page_unknown(self, double_mode: bool):
         if double_mode:
             return ['unknown', 'unknown']
         return ['unknown']

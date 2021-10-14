@@ -142,8 +142,7 @@ class Extractor:
 
         self.contents_listed(self, files)
 
-    @staticmethod
-    def _error_cb(name, etype, value, tb):
+    def _error_cb(self, name, etype, value, tb):
         # Better to ignore any failed extractions (e.g. from a corrupt
         # archive) than to crash here and leave the main thread in a
         # possible infinite block. Damaged or missing files *should* be
