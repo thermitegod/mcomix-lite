@@ -5,7 +5,6 @@
 from gi.repository import GObject, Gdk, Gtk
 
 from mcomix.bookmark_menu_item import Bookmark
-from mcomix.constants import Constants
 from mcomix.preferences import config
 
 

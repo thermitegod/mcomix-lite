@@ -6,7 +6,6 @@
 
 import os
 from collections import namedtuple
-from dataclasses import dataclass
 from pathlib import Path
 
 import PIL.Image

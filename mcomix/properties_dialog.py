@@ -8,7 +8,6 @@ from pathlib import Path
 
 from gi.repository import Gtk
 
-from mcomix.constants import Constants
 from mcomix.file_size import FileSize
 from mcomix.preferences import config
 from mcomix.properties_page import PropertiesPage
