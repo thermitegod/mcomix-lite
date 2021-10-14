@@ -22,6 +22,8 @@ class LibarchiveExtractor(BaseArchive):
 
         with libarchive.file_reader(str(self.archive)) as archive:
             for filename in archive:
+                if not filename.isfile:
+                    continue
                 yield filename.pathname
 
     def iter_extract(self, destination_dir: Path):
