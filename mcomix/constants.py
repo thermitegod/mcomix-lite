@@ -84,13 +84,6 @@ class _Constants:
             'SIZE': 4,
         }
 
-        self.ARCHIVE_FORMATS = {
-            'ZIP': 0,
-            'SEVENZIP': 1,
-            'RAR': 2,
-            'TAR': 3,
-        }
-
         # Constants for determining which files to list.
         self.FILE_TYPE = {
             'IMAGES': 1,
