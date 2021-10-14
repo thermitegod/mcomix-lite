@@ -44,20 +44,18 @@ class MainWindow(Gtk.ApplicationWindow):
     def __init__(self, open_path: list = None):
         super().__init__(type=Gtk.WindowType.TOPLEVEL)
 
-        # ----------------------------------------------------------------
-        # Attributes
-        # ----------------------------------------------------------------
-
         # Load configuration.
         self.__preference_manager = PreferenceManager()
         self.__preference_manager.load_config_file()
 
+        # Image display mode
+        self.is_manga_mode = config['DEFAULT_MANGA_MODE']
+        self.displayed_double = False
+
         # Used to detect window fullscreen state transitions.
         self.was_fullscreen = False
-        self.is_manga_mode = config['DEFAULT_MANGA_MODE']
         self.__page_orientation = self.page_orientation()
         self.previous_size = (None, None)
-        self.displayed_double = False
 
         # Remember last scroll destination.
         self.__last_scroll_destination = Constants.SCROLL_TO['START']
@@ -66,18 +64,10 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__layout = self.__dummy_layout
         self.__waiting_for_redraw = False
 
-        self.__main_layout = Gtk.Layout()
-        self.__main_scrolled_window = Gtk.ScrolledWindow()
-
-        self.__main_scrolled_window.add(self.__main_layout)
-
-        self.event_handler = EventHandler(self)
-        self.__vadjust = self.__main_scrolled_window.get_vadjustment()
-        self.__hadjust = self.__main_scrolled_window.get_hadjustment()
-
         self.filehandler = FileHandler(self)
         self.filehandler.file_closed += self._on_file_closed
         self.filehandler.file_opened += self._on_file_opened
+
         self.imagehandler = ImageHandler(self)
         self.imagehandler.page_available += self._page_available
 
@@ -87,44 +77,46 @@ class MainWindow(Gtk.ApplicationWindow):
         self.thumbnailsidebar.hide()
 
         self.statusbar = Statusbar()
-        self.cursor_handler = CursorHandler(self)
         self.enhancer = ImageEnhancer(self)
-        self.lens = MagnifyingLens(self)
+
         self.zoom = ZoomModel()
+        self.zoom.set_fit_mode(config['ZOOM_MODE'])
+        self.zoom.set_scale_up(config['STRETCH'])
+        self.zoom.reset_user_zoom()
 
         self.menubar = Menubar(self)
 
+        self.event_handler = EventHandler(self)
+
         self.keybindings_map = KeyBindingsMap(self).BINDINGS
         self.keybindings = KeybindingManager(self)
-
-        self.images = [Gtk.Image(), Gtk.Image()]  # XXX limited to at most 2 pages
-
-        # ----------------------------------------------------------------
-        # Setup
-        # ----------------------------------------------------------------
-        self.set_title(Constants.APPNAME)
-        self.restore_window_geometry()
 
         # Hook up keyboard shortcuts
         self.event_handler.event_handler_init()
         self.event_handler.register_key_events()
 
-        for img in self.images:
-            self.__main_layout.put(img, 0, 0)
+        self.__main_layout = Gtk.Layout()
+        self.__main_scrolled_window = Gtk.ScrolledWindow()
+        self.__main_scrolled_window.add(self.__main_layout)
+        self.__main_scrolled_window.set_hexpand(True)
+        self.__main_scrolled_window.set_vexpand(True)
+        self.__vadjust = self.__main_scrolled_window.get_vadjustment()
+        self.__hadjust = self.__main_scrolled_window.get_hadjustment()
 
         grid = Gtk.Grid()
         grid.attach(self.menubar, 0, 0, 2, 1)
         grid.attach(self.thumbnailsidebar, 0, 1, 1, 1)
         grid.attach_next_to(self.__main_scrolled_window, self.thumbnailsidebar, Gtk.PositionType.RIGHT, 1, 1)
-        self.__main_scrolled_window.set_hexpand(True)
-        self.__main_scrolled_window.set_vexpand(True)
         grid.attach(self.statusbar, 0, 2, 2, 1)
         self.add(grid)
 
-        self.change_zoom_mode()
+        self.cursor_handler = CursorHandler(self)
+        self.lens = MagnifyingLens(self)
 
-        if not config['KEEP_TRANSFORMATION']:
-            config['ROTATION'] = 0
+        # XXX limited to at most 2 pages
+        self.images = [Gtk.Image(), Gtk.Image()]
+        for img in self.images:
+            self.__main_layout.put(img, 0, 0)
 
         # Each widget "eats" part of the main layout visible area.
         self.__toggle_axis = {
@@ -154,6 +146,9 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__main_layout.connect('button_press_event', self.event_handler.mouse_press_event)
         self.__main_layout.connect('motion_notify_event', self.event_handler.mouse_move_event)
         self.__main_layout.connect('drag_data_received', self.event_handler.drag_n_drop_event)
+
+        self.set_title(Constants.APPNAME)
+        self.restore_window_geometry()
 
         self.show_all()
 
