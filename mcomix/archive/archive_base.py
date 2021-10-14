@@ -11,7 +11,6 @@ from tempfile import TemporaryDirectory
 from loguru import logger
 
 from mcomix.constants import Constants
-from mcomix.lib.threadpool import Lock
 
 
 class BaseArchive:
@@ -19,12 +18,10 @@ class BaseArchive:
     Base archive interface.
     """
 
-    def __init__(self, archive):
+    def __init__(self, archive: Path):
         super().__init__()
 
         self.archive = archive
-
-        self.lock = Lock()
 
         if not Path.exists(Constants.PATHS['CACHE']):
             Constants.PATHS['CACHE'].mkdir(parents=True, exist_ok=True)
@@ -57,15 +54,7 @@ class BaseArchive:
         Closes the archive and releases held resources
         """
 
-        raise NotImplementedError
-
-    def cleanup(self):
-        """
-        Cleanup TemporaryDirectory
-        """
-
-        logger.debug(f'Cache directory removed: \'{self.__tempdir}\'')
-
+        logger.debug(f'Cleanup TemporaryDirectory: \'{self.__tempdir}\'')
         self.__tempdir.cleanup()
 
     def _create_directory(self, path: Path):

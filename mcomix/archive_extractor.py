@@ -107,7 +107,6 @@ class Extractor:
         self.stop()
         if self.__extractor:
             self.__extractor.close()
-            self.__extractor.cleanup()
 
     def _extraction_finished(self, name: str):
         if self.__threadpool.closed:

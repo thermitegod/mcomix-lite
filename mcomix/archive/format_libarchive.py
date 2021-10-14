@@ -48,10 +48,3 @@ class LibarchiveExtractor(BaseArchive):
                     for block in filename.get_blocks():
                         image.write(block)
                 yield destination_path
-
-    def close(self):
-        """
-        Closes the archive and releases held resources
-        """
-
-        pass
