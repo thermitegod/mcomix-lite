@@ -296,7 +296,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__main_layout.get_bin_window().thaw_updates()
 
         # update statusbar
-        resolutions = [(*size, scaled_size[0] / size[0]) for scaled_size, size in zip(scaled_sizes, size_list)]
+        resolutions = [(*size, scaled_size[0] / size[0]) for scaled_size, size in zip(scaled_sizes, size_list, strict=True)]
         if self.is_manga_mode:
             resolutions.reverse()
         self.statusbar.set_resolution(resolutions)

@@ -134,7 +134,7 @@ class ImageHandler:
         # Set list of image file names
         self.__image_files = files
         self.__image_files_total = len(self.__image_files)
-        self.__image_files_index = dict(zip(self.__image_files, range(self.__image_files_total)))
+        self.__image_files_index = dict(zip(self.__image_files, range(self.__image_files_total), strict=True))
 
     def get_current_path(self):
         # Get current image path

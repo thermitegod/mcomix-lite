@@ -63,7 +63,7 @@ class ZoomModel:
         prefscale = self._preferred_scale(union_size, limits, distribution_axis)
         preferred_scales = [(self.__identity_zoom if dnt else prefscale) for dnt in do_not_transform]
         prescaled = [tuple(self._scale_image_size(size, scale))
-                     for size, scale in zip(fitted_image_sizes, preferred_scales)]
+                     for size, scale in zip(fitted_image_sizes, preferred_scales, strict=True)]
         prescaled_union_size = self._union_size(prescaled, distribution_axis)
 
         other_preferences = False
@@ -95,7 +95,7 @@ class ZoomModel:
                       for idx, item in enumerate(preferred_scales)]
 
         return [tuple(self._scale_image_size(size, scale))
-                for size, scale in zip(fitted_image_sizes, res_scales)]
+                for size, scale in zip(fitted_image_sizes, res_scales, strict=True)]
 
     def _preferred_scale(self, image_size: list, limits: list, distribution_axis: int):
         """
@@ -276,7 +276,7 @@ class ZoomModel:
         if len(image_sizes) < 2:
             return image_sizes
         # in double page mode, resize the smaller image to fit the bigger one
-        sizes = list(zip(*image_sizes))  # [(x1,x2,...),(y1,y2,...)]
+        sizes = list(zip(*image_sizes, strict=True))  # [(x1,x2,...),(y1,y2,...)]
         axis_sizes = sizes[int(not distribution_axis)]  # use axis else of distribution_axis
         max_size = max(axis_sizes)  # max size of pages
         ratios = [(1 if do_not_transform[n] else max_size / s)
