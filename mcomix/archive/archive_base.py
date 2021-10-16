@@ -10,7 +10,7 @@ from tempfile import TemporaryDirectory
 
 from loguru import logger
 
-from mcomix.constants import Constants
+from mcomix.enum.config_files import ConfigPaths
 
 
 class BaseArchive:
@@ -23,10 +23,10 @@ class BaseArchive:
 
         self.archive = archive
 
-        if not Path.exists(Constants.PATHS['CACHE']):
-            Constants.PATHS['CACHE'].mkdir(parents=True, exist_ok=True)
+        if not Path.exists(ConfigPaths.CACHE.value):
+            ConfigPaths.CACHE.value.mkdir(parents=True, exist_ok=True)
 
-        self.__tempdir = TemporaryDirectory(dir=Constants.PATHS['CACHE'])
+        self.__tempdir = TemporaryDirectory(dir=ConfigPaths.CACHE.value)
 
     @property
     def destdir(self):

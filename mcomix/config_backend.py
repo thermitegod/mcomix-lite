@@ -6,7 +6,7 @@ import xxhash
 import yaml
 from loguru import logger
 
-from mcomix.constants import Constants
+from mcomix.enum.config_files import ConfigPaths
 
 
 class _ConfigBackend:
@@ -18,13 +18,13 @@ class _ConfigBackend:
             'keybindings': None,
         }
 
-        if not Path.exists(Constants.PATHS['CONFIG']):
+        if not Path.exists(ConfigPaths.CONFIG.value):
             logger.info(f'Creating missing config dir')
-            Constants.PATHS['CONFIG'].mkdir()
+            ConfigPaths.CONFIG.value.mkdir()
 
-        if not Path.exists(Constants.PATHS['DATA']):
+        if not Path.exists(ConfigPaths.DATA.value):
             logger.info(f'Creating missing data dir')
-            Constants.PATHS['DATA'].mkdir()
+            ConfigPaths.DATA.value.mkdir()
 
     def update_config_hash(self, config: dict, module: str):
         self.__stored_config_hash[module] = self._hash_config(config=config)

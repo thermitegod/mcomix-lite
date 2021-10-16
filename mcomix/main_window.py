@@ -16,6 +16,7 @@ from mcomix.dialog.dialog_file_chooser import DialogFileChooser
 from mcomix.dialog.dialog_preferences import DialogPreference
 from mcomix.dialog.dialog_properties import DialogProperties
 from mcomix.enhance_backend import ImageEnhancer
+from mcomix.enum.mcomix import Mcomix
 from mcomix.event_handler import EventHandler
 from mcomix.file_handler import FileHandler
 from mcomix.image_handler import ImageHandler
@@ -147,7 +148,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__main_layout.connect('motion_notify_event', self.event_handler.mouse_move_event)
         self.__main_layout.connect('drag_data_received', self.event_handler.drag_n_drop_event)
 
-        self.set_title(Constants.APPNAME)
+        self.set_title(Mcomix.APP_NAME.value)
         self.restore_window_geometry()
 
         self.show_all()
@@ -661,7 +662,7 @@ class MainWindow(Gtk.ApplicationWindow):
         Clear the currently displayed data (i.e. "close" the file)
         """
 
-        self.set_title(Constants.APPNAME)
+        self.set_title(Mcomix.APP_NAME.value)
         self.statusbar.set_message('')
         self.draw_image()
 
@@ -706,7 +707,7 @@ class MainWindow(Gtk.ApplicationWindow):
         Set the title acording to current state
         """
 
-        self.set_title(f'{Constants.APPNAME} [{self.imagehandler.get_current_filename()}]')
+        self.set_title(f'{Mcomix.APP_NAME.value} [{self.imagehandler.get_current_filename()}]')
 
     def extract_page(self, *args):
         """

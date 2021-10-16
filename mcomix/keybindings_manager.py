@@ -29,7 +29,7 @@ from gi.repository import Gtk
 from loguru import logger
 
 from mcomix.config_backend import ConfigBackend
-from mcomix.constants import Constants
+from mcomix.enum.config_files import ConfigFiles
 
 
 class KeybindingManager:
@@ -51,7 +51,7 @@ class KeybindingManager:
         self.__keybindings_map = self.__window.keybindings_map
 
         self.__config_manager = ConfigBackend
-        self.__keybindings_path = Constants.CONFIG_FILES['KEYBINDINGS']
+        self.__keybindings_path = ConfigFiles.KEYBINDINGS.value
 
         self.load_keybindings_file()
 

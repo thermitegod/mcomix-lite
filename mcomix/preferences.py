@@ -3,6 +3,7 @@
 # must not depend on GTK, PIL, or any other optional libraries.
 
 from mcomix.constants import Constants
+from mcomix.enum.config_files import ConfigPaths
 from mcomix.enum.file_sort import FileSortDirection, FileSortType
 from mcomix.enum.zoom_modes import ZoomModes
 
@@ -36,7 +37,7 @@ config = {
     'PIXELS_TO_SCROLL_PER_KEY_EVENT': 50,
     'PIXELS_TO_SCROLL_PER_MOUSE_WHEEL_EVENT': 50,
     'FLIP_WITH_WHEEL': True,
-    'FILECHOOSER_LAST_BROWSED_PATH': str(Constants.HOME),
+    'FILECHOOSER_LAST_BROWSED_PATH': str(ConfigPaths.HOME.value),
     'FILECHOOSER_LAST_FILTER': 0,
     'ROTATION': 0,
     'AUTO_ROTATE_FROM_EXIF': True,

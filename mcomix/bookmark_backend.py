@@ -10,7 +10,7 @@ from gi.repository import Gtk
 from loguru import logger
 
 from mcomix.bookmark_menu_item import Bookmark
-from mcomix.constants import Constants
+from mcomix.enum.config_files import ConfigFiles
 from mcomix.lib.callback import Callback
 from mcomix.message_dialog import MessageDialog
 from mcomix.message_dialog_info import MessageDialogInfo
@@ -29,7 +29,7 @@ class BookmarkBackend:
         self.__file_handler = self.__window.filehandler
         self.__image_handler = self.__window.imagehandler
 
-        self.__bookmark_path = Constants.CONFIG_FILES['BOOKMARK']
+        self.__bookmark_path = ConfigFiles.BOOKMARK.value
         self.__bookmark_state_dirty = False
 
         #: List of bookmarks

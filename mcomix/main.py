@@ -15,7 +15,7 @@ try:
 except (ValueError, ImportError):
     raise SystemExit('GTK+ 3.0 import error')
 
-from mcomix.constants import Constants
+from mcomix.enum.mcomix import Mcomix
 
 
 def main():
@@ -41,7 +41,7 @@ def main():
     args = parser.parse_args()
 
     if args.version:
-        raise SystemExit(f'{Constants.APPNAME} {Constants.VERSION}')
+        raise SystemExit(f'{Mcomix.APP_NAME.value} {Mcomix.VERSION.value}')
 
     # start logger
     logger.remove()
@@ -56,7 +56,7 @@ def main():
         logger.info(f'Loading file from command line: \'{p}\'')
         open_path.append(p)
 
-    Gdk.set_program_class(Constants.APPNAME)
+    Gdk.set_program_class(Mcomix.APP_NAME.value)
 
     from mcomix.main_window import MainWindow
     window = MainWindow(open_path=open_path)

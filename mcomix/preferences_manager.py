@@ -5,7 +5,7 @@
 from pathlib import Path
 
 from mcomix.config_backend import ConfigBackend
-from mcomix.constants import Constants
+from mcomix.enum.config_files import ConfigFiles
 from mcomix.preferences import config
 
 
@@ -14,7 +14,7 @@ class PreferenceManager:
         super().__init__()
 
         self.__config_manager = ConfigBackend
-        self.__config_path = Constants.CONFIG_FILES['CONFIG']
+        self.__config_path = ConfigFiles.CONFIG.value
 
     def load_config_file(self):
         saved_prefs = {}
