@@ -20,12 +20,6 @@ class _Constants:
             'AS_ONE_WIDE': 2,
         }
 
-        self.SCROLL_TO = {
-            'END': -4,
-            'START': -3,
-            'CENTER': -2,
-        }
-
         self.ORIENTATION = {
             'MANGA': [-1, 1],
             'WESTERN': [1, 1],

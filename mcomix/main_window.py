@@ -17,6 +17,7 @@ from mcomix.dialog.dialog_preferences import DialogPreference
 from mcomix.dialog.dialog_properties import DialogProperties
 from mcomix.enhance_backend import ImageEnhancer
 from mcomix.enum.mcomix import Mcomix
+from mcomix.enum.scroll import Scroll
 from mcomix.enum.zoom_modes import ZoomAxis, ZoomModes
 from mcomix.event_handler import EventHandler
 from mcomix.file_handler import FileHandler
@@ -60,7 +61,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.previous_size = (None, None)
 
         # Remember last scroll destination.
-        self.__last_scroll_destination = Constants.SCROLL_TO['START']
+        self.__last_scroll_destination = Scroll.START.value
 
         self.__dummy_layout = FiniteLayout([(1, 1)], (1, 1), [1, 1], 0, 0)
         self.__layout = self.__dummy_layout
@@ -412,9 +413,9 @@ class MainWindow(Gtk.ApplicationWindow):
             config['ROTATION'] = 0
 
         if at_bottom:
-            scroll_to = Constants.SCROLL_TO['END']
+            scroll_to = Scroll.END.value
         else:
-            scroll_to = Constants.SCROLL_TO['START']
+            scroll_to = Scroll.START.value
 
         self.draw_image(scroll_to=scroll_to)
 

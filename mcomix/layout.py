@@ -2,7 +2,7 @@
 
 """Layout"""
 
-from mcomix.constants import Constants
+from mcomix.enum.scroll import Scroll
 from mcomix.hyperrectangles import Box
 
 
@@ -77,18 +77,18 @@ class FiniteLayout:  # 2D only
 
             if not d:
                 continue
-            elif d < Constants.SCROLL_TO['END'] or d > 1:
+            elif d < Scroll.END.value or d > 1:
                 raise ValueError(f'invalid destination {d} at index {idx}')
-            elif d == Constants.SCROLL_TO['END']:
+            elif d == Scroll.END.value:
                 d = o
-            elif d == Constants.SCROLL_TO['START']:
+            elif d == Scroll.START.value:
                 d = -o
 
             c = content_size[idx]
             v = viewport_size[idx]
             invisible_size = c - v
 
-            if d == Constants.SCROLL_TO['CENTER']:
+            if d == Scroll.CENTER.value:
                 offset = Box.box_to_center_offset_1d(invisible_size, o)
             else:
                 if d == 1:
