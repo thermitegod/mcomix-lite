@@ -14,13 +14,6 @@ class _Constants:
     def __init__(self):
         super().__init__()
 
-        self.AXIS = {
-            'DISTRIBUTION': 0,
-            'ALIGNMENT': 1,
-            'WIDTH': 0,
-            'HEIGHT': 1,
-        }
-
         self.DOUBLE_PAGE = {
             'NEVER': 0,
             'AS_ONE_TITLE': 1,

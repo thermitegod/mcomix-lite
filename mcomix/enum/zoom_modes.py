@@ -9,3 +9,10 @@ class ZoomModes(Enum):
     HEIGHT = 2
     MANUAL = 3
     SIZE = 4
+
+
+class ZoomAxis(Enum):
+    DISTRIBUTION = 0
+    ALIGNMENT = 1
+    WIDTH = 0
+    HEIGHT = 1

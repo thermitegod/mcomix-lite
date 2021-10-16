@@ -17,6 +17,7 @@ from mcomix.dialog.dialog_preferences import DialogPreference
 from mcomix.dialog.dialog_properties import DialogProperties
 from mcomix.enhance_backend import ImageEnhancer
 from mcomix.enum.mcomix import Mcomix
+from mcomix.enum.zoom_modes import ZoomAxis, ZoomModes
 from mcomix.event_handler import EventHandler
 from mcomix.file_handler import FileHandler
 from mcomix.image_handler import ImageHandler
@@ -34,7 +35,7 @@ from mcomix.preferences import config
 from mcomix.preferences_manager import PreferenceManager
 from mcomix.statusbar import Statusbar
 from mcomix.thumbnail_sidebar import ThumbnailSidebar
-from mcomix.zoom import ZoomModel, ZoomModes
+from mcomix.zoom import ZoomModel
 
 
 class MainWindow(Gtk.ApplicationWindow):
@@ -121,9 +122,9 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # Each widget "eats" part of the main layout visible area.
         self.__toggle_axis = {
-            self.thumbnailsidebar: Constants.AXIS['WIDTH'],
-            self.statusbar: Constants.AXIS['HEIGHT'],
-            self.menubar: Constants.AXIS['HEIGHT'],
+            self.thumbnailsidebar: ZoomAxis.WIDTH.value,
+            self.statusbar: ZoomAxis.HEIGHT.value,
+            self.menubar: ZoomAxis.HEIGHT.value,
         }
 
         self.__main_layout.set_events(Gdk.EventMask.BUTTON1_MOTION_MASK |
@@ -222,8 +223,8 @@ class MainWindow(Gtk.ApplicationWindow):
             self.__waiting_for_redraw = False
             return
 
-        distribution_axis = Constants.AXIS['DISTRIBUTION']
-        alignment_axis = Constants.AXIS['ALIGNMENT']
+        distribution_axis = ZoomAxis.DISTRIBUTION.value
+        alignment_axis = ZoomAxis.ALIGNMENT.value
         # XXX limited to at most 2 pages
         pixbuf_count = 2 if self.displayed_double else 1
         pixbuf_count_iter = range(pixbuf_count)
@@ -694,9 +695,9 @@ class MainWindow(Gtk.ApplicationWindow):
 
         for widget, axis in self.__toggle_axis.items():
             size = widget.get_preferred_size()
-            if Constants.AXIS['WIDTH'] == axis:
+            if axis == ZoomAxis.WIDTH.value:
                 size = size.natural_size.width
-            elif Constants.AXIS['HEIGHT'] == axis:
+            elif axis == ZoomAxis.HEIGHT.value:
                 size = size.natural_size.height
             dimensions[axis] -= size
 

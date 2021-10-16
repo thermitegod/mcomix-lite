@@ -7,9 +7,8 @@ from functools import reduce
 
 from loguru import logger
 
-from mcomix.constants import Constants
 from mcomix.preferences import config
-from mcomix.enum.zoom_modes import ZoomModes
+from mcomix.enum.zoom_modes import ZoomAxis, ZoomModes
 
 
 class ZoomModel:
@@ -140,9 +139,9 @@ class ZoomModel:
                 fixed_size = config['FIT_TO_SIZE_PX']
 
             if fitmode == ZoomModes.WIDTH:
-                axis = Constants.AXIS['WIDTH']
+                axis = ZoomAxis.WIDTH.value
             elif fitmode == ZoomModes.HEIGHT:
-                axis = Constants.AXIS['HEIGHT']
+                axis = ZoomAxis.HEIGHT.value
             else:
                 logger.error('Cannot map fitmode to axis')
 
