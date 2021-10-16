@@ -19,7 +19,7 @@ VERSION = '3.4.0.dev0'
 setup(
         name=APPNAME.lower(),
         version=VERSION,
-        python_requires='>=3.9',
+        python_requires='>=3.10',
         packages=['mcomix', 'mcomix.archive', 'mcomix.dialog', 'mcomix.lib', 'mcomix.enum',
                   'mcomix.providers', 'mcomix.sort'],
         package_data={'mcomix.images': ['mcomix.png']},
