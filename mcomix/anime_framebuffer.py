@@ -5,7 +5,7 @@ from typing import Callable
 
 from gi.repository import GdkPixbuf
 
-from mcomix.constants import Constants
+from mcomix.enum.animation import Animation
 from mcomix.preferences import config
 
 
@@ -16,9 +16,9 @@ class AnimeFrameBuffer:
         self.__n_frames = n_frames
         self.__width = 0
         self.__height = 0
-        if config['ANIMATION_MODE'] == Constants.ANIMATION['INF']:
+        if config['ANIMATION_MODE'] == Animation.INF.value:
             self.__loop = 0
-        elif config['ANIMATION_MODE'] == Constants.ANIMATION['ONCE']:
+        elif config['ANIMATION_MODE'] == Animation.ONCE.value:
             self.__loop = 1
         else:
             self.__loop = 0 if loop > 10 else loop  # loop over 10 is infinitely

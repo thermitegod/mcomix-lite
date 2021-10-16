@@ -5,6 +5,7 @@
 from gi.repository import GObject, Gtk
 
 from mcomix.constants import Constants
+from mcomix.enum.animation import Animation
 from mcomix.enum.file_sort import FileSortDirection, FileSortType
 from mcomix.enum.zoom_modes import ZoomModes
 from mcomix.keybindings_editor import KeybindingEditorWindow
@@ -581,10 +582,10 @@ class PreferencesDialog(Gtk.Dialog):
         """
 
         items = (
-            ('Never', Constants.ANIMATION['DISABLED']),
-            ('Normal', Constants.ANIMATION['NORMAL']),
-            ('Once', Constants.ANIMATION['ONCE']),
-            ('Infinity', Constants.ANIMATION['INF']),
+            ('Never', Animation.DISABLED.value),
+            ('Normal', Animation.NORMAL.value),
+            ('Once', Animation.ONCE.value),
+            ('Infinity', Animation.INF.value),
         )
 
         return self._create_combobox(items, 'ANIMATION_MODE')

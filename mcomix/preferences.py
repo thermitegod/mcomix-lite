@@ -3,6 +3,7 @@
 # must not depend on GTK, PIL, or any other optional libraries.
 
 from mcomix.constants import Constants
+from mcomix.enum.animation import Animation
 from mcomix.enum.config_files import ConfigPaths
 from mcomix.enum.file_sort import FileSortDirection, FileSortType
 from mcomix.enum.zoom_modes import ZoomModes
@@ -72,7 +73,7 @@ config = {
     'ESCAPE_QUITS': True,
     'FIT_TO_SIZE_MODE': ZoomModes.HEIGHT.value,
     'FIT_TO_SIZE_PX': 1800,
-    'ANIMATION_MODE': Constants.ANIMATION['INF'],
+    'ANIMATION_MODE': Animation.INF.value,
     'ANIMATION_BACKGROUND': True,
     'ANIMATION_TRANSFORM': True,
     'MOVE_FILE': 'keep',

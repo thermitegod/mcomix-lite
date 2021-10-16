@@ -10,7 +10,7 @@ from loguru import logger
 
 from mcomix.anime_executor import AnimeFrameExecutor
 from mcomix.anime_framebuffer import AnimeFrameBuffer
-from mcomix.constants import Constants
+from mcomix.enum.animation import Animation
 from mcomix.lib.reader import LockedFileIO
 from mcomix.preferences import config
 
@@ -269,7 +269,7 @@ class _ImageTools:
         Loads a pixbuf from a given image file
         """
 
-        enable_anime = config['ANIMATION_MODE'] != Constants.ANIMATION['DISABLED']
+        enable_anime = config['ANIMATION_MODE'] != Animation.DISABLED.value
         n_frames = None
         loop = None
         try:

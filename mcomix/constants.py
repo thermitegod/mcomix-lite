@@ -33,13 +33,6 @@ class _Constants:
             'CENTER': -2,
         }
 
-        self.ANIMATION = {
-            'DISABLED': 0,
-            'NORMAL': 1,
-            'ONCE': 2,
-            'INF': 3,
-        }
-
         self.ORIENTATION = {
             'MANGA': [-1, 1],
             'WESTERN': [1, 1],
