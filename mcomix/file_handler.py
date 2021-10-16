@@ -232,10 +232,11 @@ class FileHandler:
         """
 
         # sort files
-        if config['SORT_ARCHIVE_BY'] == FileSortType.NAME.value:
-            SortAlphanumeric(filelist)
-        elif config['SORT_ARCHIVE_BY'] == FileSortType.NAME_LITERAL.value:
-            filelist.sort()
+        match config['SORT_ARCHIVE_BY']:
+            case FileSortType.NAME.value:
+                SortAlphanumeric(filelist)
+            case FileSortType.NAME_LITERAL.value:
+                filelist.sort()
 
         # sort files order
         if config['SORT_ARCHIVE_ORDER'] == FileSortDirection.DESCENDING.value:

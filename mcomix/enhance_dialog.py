@@ -201,23 +201,24 @@ class EnhanceImageDialog(Gtk.Dialog):
         self.__enhancer.signal_update()
 
     def _response(self, dialog, response: int):
-        if response in (Gtk.ResponseType.OK, Gtk.ResponseType.DELETE_EVENT):
-            self.destroy()
+        match response:
+            case (Gtk.ResponseType.OK|Gtk.ResponseType.DELETE_EVENT):
+                self.destroy()
 
-        elif response == Gtk.ResponseType.APPLY:
-            self._change_values(self)
-            config['BRIGHTNESS'] = self.__enhancer.brightness
-            config['CONTRAST'] = self.__enhancer.contrast
-            config['SATURATION'] = self.__enhancer.saturation
-            config['SHARPNESS'] = self.__enhancer.sharpness
-            config['AUTO_CONTRAST'] = self.__enhancer.autocontrast
+            case Gtk.ResponseType.APPLY:
+                self._change_values(self)
+                config['BRIGHTNESS'] = self.__enhancer.brightness
+                config['CONTRAST'] = self.__enhancer.contrast
+                config['SATURATION'] = self.__enhancer.saturation
+                config['SHARPNESS'] = self.__enhancer.sharpness
+                config['AUTO_CONTRAST'] = self.__enhancer.autocontrast
 
-        elif response == Gtk.ResponseType.REJECT:
-            self.__block = True
-            self.__brightness_scale.set_value(config['BRIGHTNESS'] - 1.0)
-            self.__contrast_scale.set_value(config['CONTRAST'] - 1.0)
-            self.__saturation_scale.set_value(config['SATURATION'] - 1.0)
-            self.__sharpness_scale.set_value(config['SHARPNESS'] - 1.0)
-            self.__autocontrast_button.set_active(config['AUTO_CONTRAST'])
-            self.__block = False
-            self._change_values(self)
+            case Gtk.ResponseType.REJECT:
+                self.__block = True
+                self.__brightness_scale.set_value(config['BRIGHTNESS'] - 1.0)
+                self.__contrast_scale.set_value(config['CONTRAST'] - 1.0)
+                self.__saturation_scale.set_value(config['SATURATION'] - 1.0)
+                self.__sharpness_scale.set_value(config['SHARPNESS'] - 1.0)
+                self.__autocontrast_button.set_active(config['AUTO_CONTRAST'])
+                self.__block = False
+                self._change_values(self)

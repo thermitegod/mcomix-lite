@@ -242,13 +242,14 @@ class MagnifyingLens:
         dest_x = max(0, int(math.ceil((width / 2 - x) * source_mag)))
         dest_y = max(0, int(math.ceil((height / 2 - y) * source_mag)))
 
-        if rotation == 90:
-            x, y = y, source_pixbuf.get_height() - x
-        elif rotation == 180:
-            x = source_pixbuf.get_width() - x
-            y = source_pixbuf.get_height() - y
-        elif rotation == 270:
-            x, y = source_pixbuf.get_width() - y, x
+        match rotation:
+            case 90:
+                x, y = y, source_pixbuf.get_height() - x
+            case 180:
+                x = source_pixbuf.get_width() - x
+                y = source_pixbuf.get_height() - y
+            case 270:
+                x, y = source_pixbuf.get_width() - y, x
 
         src_x = x - width / 2
         src_y = y - height / 2

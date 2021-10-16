@@ -35,12 +35,13 @@ class OrderedFileProvider(FileProvider):
         Lists all files in the current directory. Returns a list of absolute paths, already sorted
         """
 
-        if mode == FileTypes.IMAGES:
-            should_accept = ImageTools.is_image_file
-        elif mode == FileTypes.ARCHIVES:
-            should_accept = ArchiveTools.is_archive_file
-        else:
-            raise ValueError
+        match mode:
+            case FileTypes.IMAGES:
+                should_accept = ImageTools.is_image_file
+            case FileTypes.ARCHIVES:
+                should_accept = ArchiveTools.is_archive_file
+            case _:
+                raise ValueError
 
         files = [fn for fn in Path(self.__base_dir).iterdir()
                  if should_accept(fn)]
@@ -54,14 +55,15 @@ class OrderedFileProvider(FileProvider):
         Sorts a list of C{files} depending on the current preferences. The list is sorted in-place
         """
 
-        if config['SORT_BY'] == FileSortType.NAME.value:
-            SortAlphanumeric(files)
-        elif config['SORT_BY'] == FileSortType.LAST_MODIFIED.value:
-            # Most recently modified file first
-            files.sort(key=lambda filename: Path.stat(filename).st_mtime * -1)
-        elif config['SORT_BY'] == FileSortType.SIZE.value:
-            # Smallest file first
-            files.sort(key=lambda filename: Path.stat(filename).st_size)
+        match config['SORT_BY']:
+            case FileSortType.NAME.value:
+                SortAlphanumeric(files)
+            case FileSortType.LAST_MODIFIED.value:
+                # Most recently modified file first
+                files.sort(key=lambda filename: Path.stat(filename).st_mtime * -1)
+            case FileSortType.SIZE.value:
+                # Smallest file first
+                files.sort(key=lambda filename: Path.stat(filename).st_size)
 
         # Default is ascending.
         if config['SORT_ORDER'] == FileSortDirection.DESCENDING.value:

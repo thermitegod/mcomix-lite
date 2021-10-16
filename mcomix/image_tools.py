@@ -36,16 +36,17 @@ class _ImageTools:
         return path.suffix.lower() in self.__supported_image_exts
 
     def rotate_pixbuf(self, src, rotation: int):
-        if rotation == 0:
-            return src.rotate_simple(GdkPixbuf.PixbufRotation.NONE)
-        elif rotation == 90:
-            return src.rotate_simple(GdkPixbuf.PixbufRotation.CLOCKWISE)
-        elif rotation == 180:
-            return src.rotate_simple(GdkPixbuf.PixbufRotation.UPSIDEDOWN)
-        elif rotation == 270:
-            return src.rotate_simple(GdkPixbuf.PixbufRotation.COUNTERCLOCKWISE)
-        else:
-            raise ValueError(f'unsupported rotation: {rotation}')
+        match rotation:
+            case 0:
+                return src.rotate_simple(GdkPixbuf.PixbufRotation.NONE)
+            case 90:
+                return src.rotate_simple(GdkPixbuf.PixbufRotation.CLOCKWISE)
+            case 180:
+                return src.rotate_simple(GdkPixbuf.PixbufRotation.UPSIDEDOWN)
+            case 270:
+                return src.rotate_simple(GdkPixbuf.PixbufRotation.COUNTERCLOCKWISE)
+            case _:
+                raise ValueError(f'unsupported rotation: {rotation}')
 
     def get_fitting_size(self, source_size: tuple, target_size: tuple, keep_ratio: bool = True, scale_up: bool = False):
         """
@@ -363,12 +364,13 @@ class _ImageTools:
 
         try:
             orientation = pixbuf.orientation
-            if orientation == '3':
-                return 180
-            elif orientation == '6':
-                return 90
-            elif orientation == '8':
-                return 270
+            match orientation:
+                case '3':
+                    return 180
+                case '6':
+                    return 90
+                case '8':
+                    return 270
         except AttributeError:
             pass
 

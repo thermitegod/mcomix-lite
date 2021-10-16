@@ -138,12 +138,13 @@ class ZoomModel:
                 fitmode = ZoomModes(config['FIT_TO_SIZE_MODE'])  # reassigning fitmode
                 fixed_size = config['FIT_TO_SIZE_PX']
 
-            if fitmode == ZoomModes.WIDTH:
-                axis = ZoomAxis.WIDTH.value
-            elif fitmode == ZoomModes.HEIGHT:
-                axis = ZoomAxis.HEIGHT.value
-            else:
-                logger.error('Cannot map fitmode to axis')
+            match fitmode:
+                case ZoomModes.WIDTH:
+                    axis = ZoomAxis.WIDTH.value
+                case ZoomModes.HEIGHT:
+                    axis = ZoomAxis.HEIGHT.value
+                case _:
+                    logger.error('Cannot map fitmode to axis')
 
             result[axis] = fixed_size if fixed_size is not None else screen_size[axis]
 

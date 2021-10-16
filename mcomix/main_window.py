@@ -249,13 +249,14 @@ class MainWindow(Gtk.ApplicationWindow):
             rotation_list = [0] * len(pixbuf_list)
 
         rotation = config['ROTATION'] % 360
-        if rotation in (90, 270):
-            distribution_axis, alignment_axis = alignment_axis, distribution_axis
-            orientation.reverse()
-            for i in pixbuf_count_iter:
-                size_list[i].reverse()
-        elif rotation in (180, 270):
-            orientation.reverse()
+        match rotation:
+            case (90|270):
+                distribution_axis, alignment_axis = alignment_axis, distribution_axis
+                orientation.reverse()
+                for i in pixbuf_count_iter:
+                    size_list[i].reverse()
+            case 180:
+                orientation.reverse()
 
         # Recompute the visible area size
         viewport_size = self.get_visible_area_size()
@@ -698,10 +699,11 @@ class MainWindow(Gtk.ApplicationWindow):
 
         for widget, axis in self.__toggle_axis.items():
             size = widget.get_preferred_size()
-            if axis == ZoomAxis.WIDTH.value:
-                size = size.natural_size.width
-            elif axis == ZoomAxis.HEIGHT.value:
-                size = size.natural_size.height
+            match axis:
+                case ZoomAxis.WIDTH.value:
+                    size = size.natural_size.width
+                case ZoomAxis.HEIGHT.value:
+                    size = size.natural_size.height
             dimensions[axis] -= size
 
         return tuple(dimensions)

@@ -612,19 +612,19 @@ class PreferencesDialog(Gtk.Dialog):
             last_value = config[preference]
             config[preference] = value
 
-            if value != last_value:
-                if preference in ('ANIMATION_MODE', 'SORT_ARCHIVE_ORDER',
-                                  'SORT_ARCHIVE_BY', 'SORT_ORDER', 'SORT_BY'):
+            if value == last_value:
+                return
+
+            match preference:
+                case ('ANIMATION_MODE'|'SORT_ARCHIVE_ORDER'|'SORT_ARCHIVE_BY'|'SORT_ORDER'|'SORT_BY'):
                     self.__window.filehandler.refresh_file()
-                elif preference in ('PIL_SCALING_FILTER', 'GDK_SCALING_FILTER',
-                                    'VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'):
-                    if preference in ('PIL_SCALING_FILTER', 'GDK_SCALING_FILTER'):
-                        self.__window.statusbar.update_image_scaling()
+                case ('PIL_SCALING_FILTER'|'GDK_SCALING_FILTER'):
+                    self.__window.statusbar.update_image_scaling()
                     self.__window.draw_image()
-                elif preference in ('FIT_TO_SIZE_MODE', 'ZOOM_MODE'):
+                case ('VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'|'CHECKERED_BG_SIZE'):
+                    self.__window.draw_image()
+                case ('FIT_TO_SIZE_MODE'|'ZOOM_MODE'):
                     self.__window.change_zoom_mode()
-                elif preference in ('CHECKERED_BG_SIZE',):
-                    self.__window.draw_image()
 
     def _create_combobox(self, options: tuple, preference: str):
         """
@@ -673,15 +673,14 @@ class PreferencesDialog(Gtk.Dialog):
 
         config[preference] = button.get_active()
 
-        if preference in ('CHECKERED_BG_FOR_TRANSPARENT_IMAGES', 'AUTO_ROTATE_FROM_EXIF'):
-            self.__window.draw_image()
-
-        elif preference in ('ANIMATION_BACKGROUND', 'ANIMATION_TRANSFORM'):
-            self.__window.thumbnailsidebar.toggle_page_numbers_visible()
-            self.__window.filehandler.refresh_file()
-
-        elif preference in ('OPEN_FIRST_PAGE', ):
-            self.__window.filehandler.update_opening_behavior()
+        match preference:
+            case ('CHECKERED_BG_FOR_TRANSPARENT_IMAGES'|'AUTO_ROTATE_FROM_EXIF'):
+                self.__window.draw_image()
+            case ('ANIMATION_BACKGROUND'|'ANIMATION_TRANSFORM'):
+                self.__window.thumbnailsidebar.toggle_page_numbers_visible()
+                self.__window.filehandler.refresh_file()
+            case ('OPEN_FIRST_PAGE'):
+                self.__window.filehandler.update_opening_behavior()
 
     def _create_pref_spinner(self, prefkey: str, scale: float, lower: float, upper: float,
                              step_incr: float, page_incr: float, digits: float):
@@ -703,14 +702,14 @@ class PreferencesDialog(Gtk.Dialog):
         if preference not in ('LENS_MAGNIFICATION',):
             config[preference] = int(value)
 
-        #  now apply new pref
-        if preference in ('THUMBNAIL_SIZE',):
-            self.__window.thumbnailsidebar.resize()
-            self.__window.draw_image()
-        elif preference in ('PAGE_CACHE_FORWARD', 'PAGE_CACHE_BEHIND'):
-            self.__window.imagehandler.do_cacheing()
-        elif preference in ('FIT_TO_SIZE_PX',):
-            self.__window.change_zoom_mode()
+        match preference:
+            case ('THUMBNAIL_SIZE'):
+                self.__window.thumbnailsidebar.resize()
+                self.__window.draw_image()
+            case ('PAGE_CACHE_FORWARD'|'PAGE_CACHE_BEHIND'):
+                self.__window.imagehandler.do_cacheing()
+            case ('FIT_TO_SIZE_PX'):
+                self.__window.change_zoom_mode()
 
     def _create_pref_text_box(self, preference: str):
         def save_pref_text_box(text):

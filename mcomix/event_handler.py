@@ -130,15 +130,13 @@ class EventHandler:
             if event.get_state() & Gdk.ModifierType.CONTROL_MASK:
                 self.__window.manual_zoom_in()
             else:
-                if config['FLIP_WITH_WHEEL']:
-                    self.scroll_with_flipping(0, -config['PIXELS_TO_SCROLL_PER_MOUSE_WHEEL_EVENT'])
+                self.scroll_with_flipping(0, -config['PIXELS_TO_SCROLL_PER_MOUSE_WHEEL_EVENT'])
         elif deltas.delta_y > 0:
             # Gdk.ScrollDirection.DOWN
             if event.get_state() & Gdk.ModifierType.CONTROL_MASK:
                 self.__window.manual_zoom_out()
             else:
-                if config['FLIP_WITH_WHEEL']:
-                    self.scroll_with_flipping(0, config['PIXELS_TO_SCROLL_PER_MOUSE_WHEEL_EVENT'])
+                self.scroll_with_flipping(0, config['PIXELS_TO_SCROLL_PER_MOUSE_WHEEL_EVENT'])
         elif not config['FLIP_WITH_WHEEL']:
             return
         elif deltas.delta_x > 0:
@@ -159,36 +157,30 @@ class EventHandler:
         Handle mouse click events on the main layout area
         """
 
-        if event.button == 1:
-            pass
-
-        elif event.button == 2:
-            self.__window.lens.toggle(True)
-
-        elif event.button == 3:
-            pass
-
-        elif event.button == 4:
-            pass
+        match event.button:
+            case 1:
+                pass
+            case 2:
+                self.__window.lens.toggle(True)
+            case 3:
+                pass
+            case 4:
+                pass
 
     def mouse_release_event(self, widget, event):
         """
         Handle mouse button release events on the main layout area
         """
 
-        self.__window.cursor_handler.set_cursor_normal()
-
-        if event.button == 1:
-            pass
-
-        elif event.button == 2:
-            self.__window.lens.toggle(False)
-
-        elif event.button == 3:
-            pass
-
-        elif event.button == 4:
-            pass
+        match event.button:
+            case 1:
+                pass
+            case 2:
+                self.__window.lens.toggle(False)
+            case 3:
+                pass
+            case 4:
+                pass
 
     def mouse_move_event(self, widget, event):
         """
@@ -226,6 +218,9 @@ class EventHandler:
         the pages might be flipped depending on the preferences.  Returns True
         if able to scroll without flipping and False if a new page was flipped to
         """
+
+        if not config['FLIP_WITH_WHEEL']:
+            return
 
         if self.__window.scroll(x, y):
             return True

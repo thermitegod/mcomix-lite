@@ -152,12 +152,13 @@ class BookmarksDialog(Gtk.Dialog):
         return 0
 
     def _response(self, dialog, response):
-        if response == Gtk.ResponseType.CLOSE:
-            self._close()
-        elif response == Gtk.ResponseType.REJECT:
-            self._remove_selected()
-        else:
-            self.destroy()
+        match response:
+            case Gtk.ResponseType.CLOSE:
+                self._close()
+            case Gtk.ResponseType.REJECT:
+                self._remove_selected()
+            case _:
+                self.destroy()
 
     def _key_press_event(self, dialog, event, *args):
         if event.keyval == Gdk.KEY_Delete:
