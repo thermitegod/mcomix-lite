@@ -2,9 +2,15 @@
 
 """cursor_handler.py - Cursor handler"""
 
+from enum import Enum, auto
+
 from gi.repository import GLib, Gdk
 
-from mcomix.constants import Constants
+
+class CursorModes(Enum):
+    NORMAL = auto()
+    GRAB = auto()
+    HIDDEN = auto()
 
 
 class CursorHandler:
@@ -14,35 +20,35 @@ class CursorHandler:
         self.__window = window
         self.__timer_id = None
         self.__auto_hide = False
-        self.__current_cursor = Constants.CURSOR['NORMAL']
+        self.__current_cursor = CursorModes.NORMAL
 
-    def set_cursor_type(self, cursor: int):
+    def _set_cursor(self, mode):
         """
-        Set the cursor to type <cursor>. Supported cursor types are
-        available as constants in this module. If <cursor> is not one of the
-        cursor constants above, it must be a Gdk.Cursor
+        Set the cursor on the main layout area to <mode>.
         """
 
-        if cursor == Constants.CURSOR['NORMAL']:
-            mode = None
-        elif cursor == Constants.CURSOR['GRAB']:
-            mode = Gdk.Cursor.new(Gdk.CursorType.FLEUR)
-        elif cursor == Constants.CURSOR['WAIT']:
-            mode = Gdk.Cursor.new(Gdk.CursorType.WATCH)
-        elif cursor == Constants.CURSOR['NONE']:
-            mode = self._get_hidden_cursor()
-        else:
-            mode = cursor
+        self.__window.get_main_layout().get_bin_window().set_cursor(mode)
 
-        self.__window.set_cursor(mode)
-
-        self.__current_cursor = cursor
+    def set_cursor_normal(self):
+        self._set_cursor(None)
+        self.__current_cursor = CursorModes.NORMAL
 
         if self.__auto_hide:
-            if cursor == Constants.CURSOR['NORMAL']:
-                self._set_hide_timer()
-            else:
-                self._kill_timer()
+            self._set_hide_timer()
+
+    def set_cursor_grab(self):
+        self._set_cursor(Gdk.Cursor.new(Gdk.CursorType.FLEUR))
+        self.__current_cursor = CursorModes.GRAB
+
+        if self.__auto_hide:
+            self._kill_timer()
+
+    def set_cursor_hidden(self):
+        self._set_cursor(Gdk.Cursor.new(Gdk.CursorType.BLANK_CURSOR))
+        self.__current_cursor = CursorModes.HIDDEN
+
+        if self.__auto_hide:
+            self._kill_timer()
 
     def auto_hide_on(self):
         """
@@ -50,7 +56,7 @@ class CursorHandler:
         """
 
         self.__auto_hide = True
-        if self.__current_cursor == Constants.CURSOR['NORMAL']:
+        if self.__current_cursor == CursorModes.NORMAL:
             self._set_hide_timer()
 
     def refresh(self):
@@ -60,11 +66,11 @@ class CursorHandler:
         """
 
         if self.__auto_hide:
-            self.set_cursor_type(self.__current_cursor)
+            self.set_cursor_normal()
 
     def _on_timeout(self):
-        mode = self._get_hidden_cursor()
-        self.__window.set_cursor(mode)
+        mode = Gdk.Cursor.new(Gdk.CursorType.BLANK_CURSOR)
+        self._set_cursor(mode)
         self.__timer_id = None
         return False
 
@@ -76,7 +82,3 @@ class CursorHandler:
         if self.__timer_id is not None:
             GLib.source_remove(self.__timer_id)
             self.__timer_id = None
-
-    @staticmethod
-    def _get_hidden_cursor():
-        return Gdk.Cursor.new_for_display(Gdk.Display.get_default(), Gdk.CursorType.BLANK_CURSOR)

@@ -701,14 +701,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
         return tuple(dimensions)
 
-    def set_cursor(self, mode):
-        """
-        Set the cursor on the main layout area to <mode>. You should
-        probably use the cursor_handler instead of using this method directly
-        """
-
-        self.__main_layout.get_bin_window().set_cursor(mode)
-
     def _update_title(self):
         """
         Set the title acording to current state

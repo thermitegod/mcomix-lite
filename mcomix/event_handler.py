@@ -8,7 +8,6 @@ from urllib.request import url2pathname
 
 from gi.repository import Gdk, Gtk
 
-from mcomix.constants import Constants
 from mcomix.preferences import config
 
 
@@ -177,7 +176,7 @@ class EventHandler:
         Handle mouse button release events on the main layout area
         """
 
-        self.__window.cursor_handler.set_cursor_type(Constants.CURSOR['NORMAL'])
+        self.__window.cursor_handler.set_cursor_normal()
 
         if event.button == 1:
             pass
@@ -197,7 +196,7 @@ class EventHandler:
         """
 
         if 'GDK_BUTTON1_MASK' in event.get_state().value_names:
-            self.__window.cursor_handler.set_cursor_type(Constants.CURSOR['GRAB'])
+            self.__window.cursor_handler.set_cursor_grab()
             self.__window.scroll(self.__last_pointer_pos_x - event.x_root,
                                  self.__last_pointer_pos_y - event.y_root)
             self.__last_pointer_pos_x = event.x_root

@@ -20,7 +20,7 @@ setup(
         name=APPNAME.lower(),
         version=VERSION,
         python_requires='>=3.9',
-        packages=['mcomix', 'mcomix.archive', 'mcomix.dialog', 'mcomix.lib',
+        packages=['mcomix', 'mcomix.archive', 'mcomix.dialog', 'mcomix.lib', 'mcomix.enum',
                   'mcomix.providers', 'mcomix.sort'],
         package_data={'mcomix.images': ['mcomix.png']},
         entry_points={'console_scripts': ['mcomix = mcomix.main:main'],

@@ -7,7 +7,6 @@ import math
 import cairo
 from gi.repository import Gdk, GdkPixbuf, Gtk
 
-from mcomix.constants import Constants
 from mcomix.image_tools import ImageTools
 from mcomix.preferences import config
 
@@ -50,12 +49,12 @@ class MagnifyingLens:
         self.__enabled = enabled
 
         if self.__enabled:
-            self.__window.cursor_handler.set_cursor_type(Constants.CURSOR['NONE'])
+            self.__window.cursor_handler.set_cursor_hidden()
 
             if self.__point:
                 self._draw_lens(*self.__point)
         else:
-            self.__window.cursor_handler.set_cursor_type(Constants.CURSOR['NORMAL'])
+            self.__window.cursor_handler.set_cursor_normal()
             self._clear_lens()
             self.__last_lens_rect = None
 

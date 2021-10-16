@@ -68,13 +68,6 @@ class _Constants:
             'ASCENDING': 1,
         }
 
-        self.CURSOR = {
-            'NORMAL': 0,
-            'GRAB': 1,
-            'WAIT': 2,
-            'NONE': 3,
-        }
-
         self.ZOOM = {
             'BEST': 0,
             'WIDTH': 1,
