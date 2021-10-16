@@ -14,12 +14,6 @@ class _Constants:
     def __init__(self):
         super().__init__()
 
-        self.DOUBLE_PAGE = {
-            'NEVER': 0,
-            'AS_ONE_TITLE': 1,
-            'AS_ONE_WIDE': 2,
-        }
-
         self.ORIENTATION = {
             'MANGA': [-1, 1],
             'WESTERN': [1, 1],

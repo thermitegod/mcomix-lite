@@ -16,6 +16,7 @@ from mcomix.dialog.dialog_file_chooser import DialogFileChooser
 from mcomix.dialog.dialog_preferences import DialogPreference
 from mcomix.dialog.dialog_properties import DialogProperties
 from mcomix.enhance_backend import ImageEnhancer
+from mcomix.enum.double_page import DoublePage
 from mcomix.enum.mcomix import Mcomix
 from mcomix.enum.scroll import Scroll
 from mcomix.enum.zoom_modes import ZoomAxis, ZoomModes
@@ -344,12 +345,12 @@ class MainWindow(Gtk.ApplicationWindow):
             page = self.imagehandler.get_current_page()
 
         if (page == 1 and
-                config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & Constants.DOUBLE_PAGE['AS_ONE_TITLE'] and
+                config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & DoublePage.AS_ONE_TITLE.value and
                 self.filehandler.is_archive()):
             return True
 
         if (not config['DEFAULT_DOUBLE_PAGE'] or
-                not config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & Constants.DOUBLE_PAGE['AS_ONE_WIDE'] or
+                not config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & DoublePage.AS_ONE_WIDE.value or
                 self.imagehandler.is_last_page(page)):
             return False
 

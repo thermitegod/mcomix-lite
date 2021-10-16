@@ -6,6 +6,7 @@ from gi.repository import GObject, Gtk
 
 from mcomix.constants import Constants
 from mcomix.enum.animation import Animation
+from mcomix.enum.double_page import DoublePage
 from mcomix.enum.file_sort import FileSortDirection, FileSortType
 from mcomix.enum.zoom_modes import ZoomModes
 from mcomix.keybindings_editor import KeybindingEditorWindow
@@ -493,11 +494,10 @@ class PreferencesDialog(Gtk.Dialog):
         """
 
         items = (
-            ('Never', Constants.DOUBLE_PAGE['NEVER']),
-            ('Only for title pages', Constants.DOUBLE_PAGE['AS_ONE_TITLE']),
-            ('Only for wide images', Constants.DOUBLE_PAGE['AS_ONE_WIDE']),
-            ('Always', Constants.DOUBLE_PAGE['AS_ONE_TITLE'] |
-             Constants.DOUBLE_PAGE['AS_ONE_WIDE']))
+            ('Never', DoublePage.NEVER.value),
+            ('Only for title pages', DoublePage.AS_ONE_TITLE.value),
+            ('Only for wide images', DoublePage.AS_ONE_WIDE.value),
+            ('Always', DoublePage.ALWAYS.value))
 
         return self._create_combobox(items, 'VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES')
 

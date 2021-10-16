@@ -5,6 +5,7 @@
 from mcomix.constants import Constants
 from mcomix.enum.animation import Animation
 from mcomix.enum.config_files import ConfigPaths
+from mcomix.enum.double_page import DoublePage
 from mcomix.enum.file_sort import FileSortDirection, FileSortType
 from mcomix.enum.zoom_modes import ZoomModes
 
@@ -30,8 +31,7 @@ config = {
     'LENS_MAGNIFICATION': 2,
     'LENS_SIZE': 200,
     'ENHANCE_EXTRA': True,
-    'VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES': Constants.DOUBLE_PAGE['AS_ONE_TITLE'] |
-                                              Constants.DOUBLE_PAGE['AS_ONE_WIDE'],
+    'VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES': DoublePage.AS_ONE_TITLE.value,
     'DOUBLE_STEP_IN_DOUBLE_PAGE_MODE': True,
     'SHOW_PAGE_NUMBERS_ON_THUMBNAILS': True,
     'THUMBNAIL_SIZE': 80,
