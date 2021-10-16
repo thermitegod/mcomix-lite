@@ -5,6 +5,7 @@
 from gi.repository import GObject, Gtk
 
 from mcomix.constants import Constants
+from mcomix.enum.zoom_modes import ZoomModes
 from mcomix.keybindings_editor import KeybindingEditorWindow
 from mcomix.preferences import config
 from mcomix.preferences_page import PreferencePage
@@ -475,11 +476,11 @@ class PreferencesDialog(Gtk.Dialog):
         """
 
         items = (
-            ('Best fit', Constants.ZOOM['BEST']),
-            ('Fit to width', Constants.ZOOM['WIDTH']),
-            ('Fit to height', Constants.ZOOM['HEIGHT']),
-            ('Fit to size', Constants.ZOOM['SIZE']),
-            ('Manual fit', Constants.ZOOM['MANUAL']),
+            ('Best fit', ZoomModes.BEST.value),
+            ('Fit to width', ZoomModes.WIDTH.value),
+            ('Fit to height', ZoomModes.HEIGHT.value),
+            ('Fit to size', ZoomModes.SIZE.value),
+            ('Manual fit', ZoomModes.MANUAL.value),
         )
 
         return self._create_combobox(items, 'ZOOM_MODE')
@@ -501,8 +502,8 @@ class PreferencesDialog(Gtk.Dialog):
     def _create_combobox_fitmode(self):
         """Combobox for fit to size mode"""
         items = (
-            ('Fit to width', Constants.ZOOM['WIDTH']),
-            ('Fit to height', Constants.ZOOM['HEIGHT']))
+            ('Fit to width', ZoomModes.WIDTH.value),
+            ('Fit to height', ZoomModes.HEIGHT.value))
 
         return self._create_combobox(items, 'FIT_TO_SIZE_MODE')
 

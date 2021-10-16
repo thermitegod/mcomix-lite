@@ -68,14 +68,6 @@ class _Constants:
             'ASCENDING': 1,
         }
 
-        self.ZOOM = {
-            'BEST': 0,
-            'WIDTH': 1,
-            'HEIGHT': 2,
-            'MANUAL': 3,
-            'SIZE': 4,
-        }
-
         # Constants for determining which files to list.
         self.FILE_TYPE = {
             'IMAGES': 1,

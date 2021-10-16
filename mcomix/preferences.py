@@ -3,6 +3,7 @@
 # must not depend on GTK, PIL, or any other optional libraries.
 
 from mcomix.constants import Constants
+from mcomix.enum.zoom_modes import ZoomModes
 
 # All preferences are stored here.
 config = {
@@ -18,7 +19,7 @@ config = {
     'DEFAULT_FULLSCREEN': False,
     'FULLSCREEN_HIDE_MENUBAR': False,
     'FULLSCREEN_HIDE_STATUSBAR': False,
-    'ZOOM_MODE': Constants.ZOOM['BEST'],
+    'ZOOM_MODE': ZoomModes.BEST.value,
     'DEFAULT_MANGA_MODE': True,
     'MANGA_FLIP_RIGHT': False,
     'WESTERN_FLIP_LEFT': False,
@@ -67,7 +68,7 @@ config = {
     'PIL_SCALING_FILTER': Constants.SCALING_PIL[2].value,
     'ENABLE_PIL_SCALING': True,
     'ESCAPE_QUITS': True,
-    'FIT_TO_SIZE_MODE': Constants.ZOOM['HEIGHT'],
+    'FIT_TO_SIZE_MODE': ZoomModes.HEIGHT.value,
     'FIT_TO_SIZE_PX': 1800,
     'ANIMATION_MODE': Constants.ANIMATION['INF'],
     'ANIMATION_BACKGROUND': True,

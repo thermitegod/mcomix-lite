@@ -33,7 +33,7 @@ from mcomix.preferences import config
 from mcomix.preferences_manager import PreferenceManager
 from mcomix.statusbar import Statusbar
 from mcomix.thumbnail_sidebar import ThumbnailSidebar
-from mcomix.zoom import ZoomModel
+from mcomix.zoom import ZoomModel, ZoomModes
 
 
 class MainWindow(Gtk.ApplicationWindow):
@@ -534,19 +534,19 @@ class MainWindow(Gtk.ApplicationWindow):
         # change or resize event.
 
     def change_fit_mode_best(self, *args):
-        self.change_zoom_mode(value=Constants.ZOOM['BEST'])
+        self.change_zoom_mode(ZoomModes.BEST.value)
 
     def change_fit_mode_width(self, *args):
-        self.change_zoom_mode(value=Constants.ZOOM['WIDTH'])
+        self.change_zoom_mode(ZoomModes.WIDTH.value)
 
     def change_fit_mode_height(self, *args):
-        self.change_zoom_mode(value=Constants.ZOOM['HEIGHT'])
+        self.change_zoom_mode(ZoomModes.HEIGHT.value)
 
     def change_fit_mode_size(self, *args):
-        self.change_zoom_mode(value=Constants.ZOOM['SIZE'])
+        self.change_zoom_mode(ZoomModes.SIZE.value)
 
     def change_fit_mode_manual(self, *args):
-        self.change_zoom_mode(value=Constants.ZOOM['MANUAL'])
+        self.change_zoom_mode(ZoomModes.MANUAL.value)
 
     def change_zoom_mode(self, value: int = None):
         if value is not None:

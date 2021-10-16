@@ -9,6 +9,7 @@ from loguru import logger
 
 from mcomix.constants import Constants
 from mcomix.preferences import config
+from mcomix.enum.zoom_modes import ZoomModes
 
 
 class ZoomModel:
@@ -30,13 +31,11 @@ class ZoomModel:
 
         #: Image fit mode. Determines the base zoom level for an image by
         #: calculating its maximum size.
-        self.__fitmode = Constants.ZOOM['MANUAL']
+        self.__fitmode = ZoomModes.MANUAL
         self.__scale_up = False
 
     def set_fit_mode(self, fitmode: int):
-        if fitmode < Constants.ZOOM['BEST'] or fitmode > Constants.ZOOM['SIZE']:
-            raise ValueError(f'No fit mode for id {fitmode}')
-        self.__fitmode = fitmode
+        self.__fitmode = ZoomModes(fitmode)
 
     def set_scale_up(self, scale_up: bool):
         self.__scale_up = scale_up
@@ -127,23 +126,28 @@ class ZoomModel:
         preference for this axis
         """
 
-        manual = fitmode == Constants.ZOOM['MANUAL']
-        if fitmode == Constants.ZOOM['BEST'] or \
+        manual = fitmode == ZoomModes.MANUAL
+        if fitmode == ZoomModes.BEST or \
                 (manual and allow_upscaling and all(map(operator.lt, union_size, screen_size))):
             return screen_size
+
         result = [None] * len(screen_size)
         if not manual:
             fixed_size = None
-            if fitmode == Constants.ZOOM['SIZE']:
-                fitmode = config['FIT_TO_SIZE_MODE']  # reassigning fitmode
+
+            if fitmode == ZoomModes.SIZE:
+                fitmode = ZoomModes(config['FIT_TO_SIZE_MODE'])  # reassigning fitmode
                 fixed_size = config['FIT_TO_SIZE_PX']
-            if fitmode == Constants.ZOOM['WIDTH']:
+
+            if fitmode == ZoomModes.WIDTH:
                 axis = Constants.AXIS['WIDTH']
-            elif fitmode == Constants.ZOOM['HEIGHT']:
+            elif fitmode == ZoomModes.HEIGHT:
                 axis = Constants.AXIS['HEIGHT']
             else:
                 logger.error('Cannot map fitmode to axis')
+
             result[axis] = fixed_size if fixed_size is not None else screen_size[axis]
+
         return result
 
     def _scale_distributed(self, sizes: list, axis: int, max_size: int,
