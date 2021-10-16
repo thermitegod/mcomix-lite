@@ -18,6 +18,7 @@ from mcomix.dialog.dialog_properties import DialogProperties
 from mcomix.enhance_backend import ImageEnhancer
 from mcomix.enum.double_page import DoublePage
 from mcomix.enum.mcomix import Mcomix
+from mcomix.enum.page_orientation import PageOrientation
 from mcomix.enum.scroll import Scroll
 from mcomix.enum.zoom_modes import ZoomAxis, ZoomModes
 from mcomix.event_handler import EventHandler
@@ -192,9 +193,9 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def page_orientation(self):
         if self.is_manga_mode:
-            return Constants.ORIENTATION['MANGA']
+            return PageOrientation.MANGA.value
         else:
-            return Constants.ORIENTATION['WESTERN']
+            return PageOrientation.WESTERN.value
 
     def draw_image(self, scroll_to=None):
         """

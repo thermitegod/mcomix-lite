@@ -14,11 +14,6 @@ class _Constants:
     def __init__(self):
         super().__init__()
 
-        self.ORIENTATION = {
-            'MANGA': [-1, 1],
-            'WESTERN': [1, 1],
-        }
-
         SCALING = namedtuple('SCALING', ['name', 'value'])
 
         self.SCALING_GDK = (
