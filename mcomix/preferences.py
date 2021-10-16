@@ -2,11 +2,11 @@
 
 # must not depend on GTK, PIL, or any other optional libraries.
 
-from mcomix.constants import Constants
 from mcomix.enum.animation import Animation
 from mcomix.enum.config_files import ConfigPaths
 from mcomix.enum.double_page import DoublePage
 from mcomix.enum.file_sort import FileSortDirection, FileSortType
+from mcomix.enum.image_scaling import ScalingGDK, ScalingPIL
 from mcomix.enum.zoom_modes import ZoomModes
 
 # All preferences are stored here.
@@ -67,8 +67,8 @@ config = {
     'BOOKMARK_SHOW_PATH': False,
     'SI_UNITS': False,
     'MAX_THREADS': 16,
-    'GDK_SCALING_FILTER': Constants.SCALING_GDK[2].value,
-    'PIL_SCALING_FILTER': Constants.SCALING_PIL[2].value,
+    'GDK_SCALING_FILTER': ScalingGDK.Bilinear.value,
+    'PIL_SCALING_FILTER': ScalingPIL.Bilinear.value,
     'ENABLE_PIL_SCALING': True,
     'ESCAPE_QUITS': True,
     'FIT_TO_SIZE_MODE': ZoomModes.HEIGHT.value,

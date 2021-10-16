@@ -8,8 +8,8 @@ from typing import Callable
 
 from gi.repository import Gdk, Gtk
 
-from mcomix.constants import Constants
 from mcomix.file_size import FileSize
+from mcomix.enum.image_scaling import ScalingGDK, ScalingPIL
 from mcomix.preferences import config
 
 
@@ -99,9 +99,9 @@ class Statusbar(Gtk.EventBox):
         # scaling algos get changed
 
         if config['ENABLE_PIL_SCALING']:
-            self.__image_scaling = f'PIL: {Constants.SCALING_PIL[config["PIL_SCALING_FILTER"]].name}'
+            self.__image_scaling = f'PIL: {ScalingPIL(config["PIL_SCALING_FILTER"]).name}'
         else:
-            self.__image_scaling = f'GDK: {Constants.SCALING_GDK[config["GDK_SCALING_FILTER"]].name}'
+            self.__image_scaling = f'GDK: {ScalingGDK(config["GDK_SCALING_FILTER"]).name}'
 
     def set_message(self, message: str):
         """

@@ -8,7 +8,6 @@ from loguru import logger
 from send2trash import send2trash
 
 from mcomix.bookmark_backend import BookmarkBackend
-from mcomix.constants import Constants
 from mcomix.cursor_handler import CursorHandler
 from mcomix.dialog.dialog_about import DialogAbout
 from mcomix.dialog.dialog_enhance import DialogEnhance
@@ -19,6 +18,7 @@ from mcomix.enhance_backend import ImageEnhancer
 from mcomix.enum.double_page import DoublePage
 from mcomix.enum.mcomix import Mcomix
 from mcomix.enum.page_orientation import PageOrientation
+from mcomix.enum.image_scaling import ScalingGDK, ScalingPIL
 from mcomix.enum.scroll import Scroll
 from mcomix.enum.zoom_modes import ZoomAxis, ZoomModes
 from mcomix.event_handler import EventHandler
@@ -570,14 +570,14 @@ class MainWindow(Gtk.ApplicationWindow):
     def change_image_scaling(self, step: int):
         if config['ENABLE_PIL_SCALING']:
             config_key = 'PIL_SCALING_FILTER'
-            algos = Constants.SCALING_PIL
+            algos = ScalingPIL
         else:
             config_key = 'GDK_SCALING_FILTER'
-            algos = Constants.SCALING_GDK
+            algos = ScalingGDK
 
         # inc/dec active algo, modulus loops algos to start on overflow
         # and end on underflow
-        config[config_key] = algos[(config[config_key] + step) % len(algos)].value
+        config[config_key] = algos((config[config_key] + step) % len(algos)).value
 
         self.draw_image()
         self.statusbar.update_image_scaling()

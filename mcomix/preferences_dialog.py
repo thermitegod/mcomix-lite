@@ -4,10 +4,10 @@
 
 from gi.repository import GObject, Gtk
 
-from mcomix.constants import Constants
 from mcomix.enum.animation import Animation
 from mcomix.enum.double_page import DoublePage
 from mcomix.enum.file_sort import FileSortDirection, FileSortType
+from mcomix.enum.image_scaling import ScalingGDK, ScalingPIL
 from mcomix.enum.zoom_modes import ZoomModes
 from mcomix.keybindings_editor import KeybindingEditorWindow
 from mcomix.preferences import config
@@ -563,7 +563,11 @@ class PreferencesDialog(Gtk.Dialog):
         Creates combo box for image scaling quality
         """
 
-        items = Constants.SCALING_GDK
+        items = (
+            ('Nearest', ScalingGDK.Nearest.value),
+            ('Tiles', ScalingGDK.Tiles.value),
+            ('Bilinear', ScalingGDK.Bilinear.value),
+        )
 
         return self._create_combobox(items, 'GDK_SCALING_FILTER')
 
@@ -572,7 +576,14 @@ class PreferencesDialog(Gtk.Dialog):
         Creates combo box for PIL filter to scale with in main view
         """
 
-        items = Constants.SCALING_PIL
+        items = (
+            ('Nearest', ScalingPIL.Nearest.value),
+            ('Lanczos', ScalingPIL.Lanczos.value),
+            ('Bilinear', ScalingPIL.Bilinear.value),
+            ('Bicubic', ScalingPIL.Bicubic.value),
+            ('Box', ScalingPIL.Box.value),
+            ('Hamming', ScalingPIL.Hamming.value),
+        )
 
         return self._create_combobox(items, 'PIL_SCALING_FILTER')
 
