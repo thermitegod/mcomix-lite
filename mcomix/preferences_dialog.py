@@ -5,6 +5,7 @@
 from gi.repository import GObject, Gtk
 
 from mcomix.constants import Constants
+from mcomix.enum.file_sort import FileSortDirection, FileSortType
 from mcomix.enum.zoom_modes import ZoomModes
 from mcomix.keybindings_editor import KeybindingEditorWindow
 from mcomix.preferences import config
@@ -513,16 +514,16 @@ class PreferencesDialog(Gtk.Dialog):
         """
 
         sortkey_items = (
-            ('No sorting', Constants.FILE_SORT_TYPE['NONE']),
-            ('File name', Constants.FILE_SORT_TYPE['NAME']),
-            ('File size', Constants.FILE_SORT_TYPE['SIZE']),
-            ('Last modified', Constants.FILE_SORT_TYPE['LAST_MODIFIED']))
+            ('No sorting', FileSortType.NONE.value),
+            ('File name', FileSortType.NAME.value),
+            ('File size', FileSortType.SIZE.value),
+            ('Last modified', FileSortType.LAST_MODIFIED.value))
 
         sortkey_box = self._create_combobox(sortkey_items, 'SORT_BY')
 
         sortorder_items = (
-            ('Ascending', Constants.FILE_SORT_DIRECTION['ASCENDING']),
-            ('Descending', Constants.FILE_SORT_DIRECTION['DESCENDING']))
+            ('Ascending', FileSortDirection.ASCENDING.value),
+            ('Descending', FileSortDirection.DESCENDING.value))
 
         sortorder_box = self._create_combobox(sortorder_items, 'SORT_ORDER')
 
@@ -538,15 +539,15 @@ class PreferencesDialog(Gtk.Dialog):
         """
 
         sortkey_items = (
-            ('No sorting', Constants.FILE_SORT_TYPE['NONE']),
-            ('Natural order', Constants.FILE_SORT_TYPE['NAME']),
-            ('Literal order', Constants.FILE_SORT_TYPE['NAME_LITERAL']))
+            ('No sorting', FileSortType.NONE.value),
+            ('Natural order', FileSortType.NAME.value),
+            ('Literal order', FileSortType.NAME_LITERAL.value))
 
         sortkey_box = self._create_combobox(sortkey_items, 'SORT_ARCHIVE_BY')
 
         sortorder_items = (
-            ('Ascending', Constants.FILE_SORT_DIRECTION['ASCENDING']),
-            ('Descending', Constants.FILE_SORT_DIRECTION['DESCENDING']))
+            ('Ascending', FileSortDirection.ASCENDING.value),
+            ('Descending', FileSortDirection.DESCENDING.value))
 
         sortorder_box = self._create_combobox(sortorder_items, 'SORT_ARCHIVE_ORDER')
 

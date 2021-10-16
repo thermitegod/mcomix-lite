@@ -3,7 +3,7 @@
 from pathlib import Path
 
 from mcomix.archive_tools import ArchiveTools
-from mcomix.constants import Constants
+from mcomix.enum.file_types import FileTypes
 from mcomix.image_tools import ImageTools
 from mcomix.providers.file_provider_base import FileProvider
 from mcomix.providers.file_provider_ordered import OrderedFileProvider
@@ -31,7 +31,7 @@ class PreDefinedFileProvider(FileProvider):
         for file in files:
             if Path.is_dir(file):
                 provider = OrderedFileProvider(file)
-                self.__files.extend(provider.list_files(mode=Constants.FILE_TYPE['IMAGES']))
+                self.__files.extend(provider.list_files(mode=FileTypes.IMAGES))
 
             elif should_accept(file):
                 self.__files.append(file)

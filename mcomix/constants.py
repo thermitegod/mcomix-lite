@@ -55,25 +55,6 @@ class _Constants:
             'AS_ONE_WIDE': 2,
         }
 
-        self.FILE_SORT_TYPE = {
-            'NONE': 0,
-            'NAME': 1,
-            'SIZE': 2,
-            'LAST_MODIFIED': 3,
-            'NAME_LITERAL': 4,
-        }
-
-        self.FILE_SORT_DIRECTION = {
-            'DESCENDING': 0,
-            'ASCENDING': 1,
-        }
-
-        # Constants for determining which files to list.
-        self.FILE_TYPE = {
-            'IMAGES': 1,
-            'ARCHIVES': 2,
-        }
-
         self.SCROLL_TO = {
             'END': -4,
             'START': -3,

@@ -3,7 +3,8 @@
 from pathlib import Path
 
 from mcomix.archive_tools import ArchiveTools
-from mcomix.constants import Constants
+from mcomix.enum.file_sort import FileSortDirection, FileSortType
+from mcomix.enum.file_types import FileTypes
 from mcomix.image_tools import ImageTools
 from mcomix.preferences import config
 from mcomix.providers.file_provider_base import FileProvider
@@ -34,9 +35,9 @@ class OrderedFileProvider(FileProvider):
         Lists all files in the current directory. Returns a list of absolute paths, already sorted
         """
 
-        if mode == Constants.FILE_TYPE['IMAGES']:
+        if mode == FileTypes.IMAGES:
             should_accept = ImageTools.is_image_file
-        elif mode == Constants.FILE_TYPE['ARCHIVES']:
+        elif mode == FileTypes.ARCHIVES:
             should_accept = ArchiveTools.is_archive_file
         else:
             raise ValueError
@@ -53,18 +54,15 @@ class OrderedFileProvider(FileProvider):
         Sorts a list of C{files} depending on the current preferences. The list is sorted in-place
         """
 
-        if config['SORT_BY'] == Constants.FILE_SORT_TYPE['NAME']:
+        if config['SORT_BY'] == FileSortType.NAME.value:
             SortAlphanumeric(files)
-        elif config['SORT_BY'] == Constants.FILE_SORT_TYPE['LAST_MODIFIED']:
+        elif config['SORT_BY'] == FileSortType.LAST_MODIFIED.value:
             # Most recently modified file first
             files.sort(key=lambda filename: Path.stat(filename).st_mtime * -1)
-        elif config['SORT_BY'] == Constants.FILE_SORT_TYPE['SIZE']:
+        elif config['SORT_BY'] == FileSortType.SIZE.value:
             # Smallest file first
             files.sort(key=lambda filename: Path.stat(filename).st_size)
-        else:
-            # don't sort at all: use arbitrary ordering.
-            pass
 
         # Default is ascending.
-        if config['SORT_ORDER'] == Constants.FILE_SORT_DIRECTION['DESCENDING']:
+        if config['SORT_ORDER'] == FileSortDirection.DESCENDING.value:
             files.reverse()

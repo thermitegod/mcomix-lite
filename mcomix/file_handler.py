@@ -9,7 +9,8 @@ from loguru import logger
 
 from mcomix.archive_extractor import Extractor
 from mcomix.archive_tools import ArchiveTools
-from mcomix.constants import Constants
+from mcomix.enum.file_sort import FileSortDirection, FileSortType
+from mcomix.enum.file_types import FileTypes
 from mcomix.file_provider import GetFileProvider
 from mcomix.image_tools import ImageTools
 from mcomix.lib.callback import Callback
@@ -46,6 +47,7 @@ class FileHandler:
         self.__extractor.file_extracted += self._extracted_file
         self.__extractor.contents_listed += self._listed_contents
         #: Provides a list of available files/archives in the open directory.
+        self.__file_provider_chooser = GetFileProvider()
         self.__file_provider = None
 
         self.__filelist = None
@@ -84,7 +86,7 @@ class FileHandler:
 
         self._close()
 
-        self.__filelist = self.__file_provider.list_files(mode=Constants.FILE_TYPE['IMAGES'])
+        self.__filelist = self.__file_provider.list_files(mode=FileTypes.IMAGES)
         self.__is_archive = ArchiveTools.is_archive_file(path)
         self.__start_page = start_page
         self.__current_file = path
@@ -193,7 +195,7 @@ class FileHandler:
         :param path: List of file names, or single file/directory as string.
         """
 
-        self.__file_provider = GetFileProvider().get_file_provider(path)
+        self.__file_provider = self.__file_provider_chooser.get_file_provider(path)
 
     def _open_archive(self, path: Path):
         """
@@ -229,15 +231,14 @@ class FileHandler:
         Sorts the image list passed in C{filelist} based on the sorting preference option
         """
 
-        if config['SORT_ARCHIVE_BY'] == Constants.FILE_SORT_TYPE['NAME']:
+        # sort files
+        if config['SORT_ARCHIVE_BY'] == FileSortType.NAME.value:
             SortAlphanumeric(filelist)
-        elif config['SORT_ARCHIVE_BY'] == Constants.FILE_SORT_TYPE['NAME_LITERAL']:
+        elif config['SORT_ARCHIVE_BY'] == FileSortType.NAME_LITERAL.value:
             filelist.sort()
-        else:
-            # No sorting
-            pass
 
-        if config['SORT_ARCHIVE_ORDER'] == Constants.FILE_SORT_DIRECTION['DESCENDING']:
+        # sort files order
+        if config['SORT_ARCHIVE_ORDER'] == FileSortDirection.DESCENDING.value:
             filelist.reverse()
 
     def _get_index_for_page(self, start_page: int, num_of_pages: int):
@@ -269,7 +270,7 @@ class FileHandler:
         return self.__base_path
 
     def _get_file_list(self):
-        return self.__file_provider.list_files(mode=Constants.FILE_TYPE['ARCHIVES'])
+        return self.__file_provider.list_files(mode=FileTypes.ARCHIVES)
 
     def get_file_number(self):
         if not self.__is_archive:

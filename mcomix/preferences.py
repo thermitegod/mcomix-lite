@@ -3,15 +3,16 @@
 # must not depend on GTK, PIL, or any other optional libraries.
 
 from mcomix.constants import Constants
+from mcomix.enum.file_sort import FileSortDirection, FileSortType
 from mcomix.enum.zoom_modes import ZoomModes
 
 # All preferences are stored here.
 config = {
     'AUTO_OPEN_NEXT_ARCHIVE': True,
-    'SORT_BY': Constants.FILE_SORT_TYPE['NAME'],  # Normal files obtained by directory listing
-    'SORT_ORDER': Constants.FILE_SORT_DIRECTION['ASCENDING'],
-    'SORT_ARCHIVE_BY': Constants.FILE_SORT_TYPE['NAME'],  # Files in archives
-    'SORT_ARCHIVE_ORDER': Constants.FILE_SORT_DIRECTION['ASCENDING'],
+    'SORT_BY': FileSortType.NAME.value,  # Normal files obtained by directory listing
+    'SORT_ORDER': FileSortDirection.ASCENDING.value,
+    'SORT_ARCHIVE_BY': FileSortType.NAME.value,  # Files in archives
+    'SORT_ARCHIVE_ORDER': FileSortDirection.ASCENDING.value,
     'CHECKERED_BG_FOR_TRANSPARENT_IMAGES': True,
     'CHECKERED_BG_SIZE': 16,
     'STRETCH': True,
