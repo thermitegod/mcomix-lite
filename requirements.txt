@@ -1,0 +1,9 @@
+libarchive-c
+loguru
+pillow
+pygobject
+pyyaml
+send2trash
+setuptools
+urllib3
+xxhash
