@@ -151,6 +151,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__main_layout.connect('button_press_event', self.event_handler.mouse_press_event)
         self.__main_layout.connect('motion_notify_event', self.event_handler.mouse_move_event)
         self.__main_layout.connect('drag_data_received', self.event_handler.drag_n_drop_event)
+        self.__main_layout.connect('motion-notify-event', self.lens.motion_event)
 
         self.set_title(Mcomix.APP_NAME.value)
         self.restore_window_geometry()

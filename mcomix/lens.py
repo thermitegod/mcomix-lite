@@ -27,9 +27,6 @@ class MagnifyingLens:
 
         self.__window = window
 
-        self.__area = self.__window.get_main_layout()
-        self.__area.connect('motion-notify-event', self._motion_event)
-
         #: Stores lens state
         self.__enabled = False
         #: Stores a tuple of the last mouse coordinates
@@ -173,7 +170,7 @@ class MagnifyingLens:
 
         self.enabled = value
 
-    def _motion_event(self, widget, event):
+    def motion_event(self, widget, event):
         """
         Called whenever the mouse moves over the image area
         """
