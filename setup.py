@@ -1,20 +1,21 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 from setuptools import setup
 
+from mcomix.enum.mcomix import Mcomix
+
 """ MComix installation routines.
 Example usage:
-    Normal installation (all files are copied into a directory in python/lib/site-packages/mcomix)
-    $ ./setup.py install
+    Normal installation
+    $ ./setup.py install --user
 
     For distribution packaging (All files are installed relative to /tmp/mcomix)
     $ ./setup.py install --single-version-externally-managed --root /tmp/mcomix --prefix /usr
 """
 
 
-APPNAME = 'MComix-Lite'
-VERSION = '3.4.0.dev0'
+APPNAME = Mcomix.APP_NAME.value
+VERSION = Mcomix.VERSION.value
 
 setup(
         name=APPNAME.lower(),
@@ -31,12 +32,6 @@ setup(
                           'libarchive-c', 'loguru', 'send2trash', 'pyyaml',
                           'xxhash'],
         zip_safe=False,
-
-        # Various MIME files that need to be copied to certain system locations on Linux.
-        # Note that these files are only installed correctly if
-        # --single-version-externally-managed is used as argument to "setup.py install".
-        # Otherwise, these files end up in a MComix egg directory in site-packages.
-        # (Thank you, setuptools!)
         data_files=[
             ('share/man/man1', ['man/mcomix.1']),
             ('share/applications', ['mime/mcomix.desktop']),
@@ -50,7 +45,7 @@ setup(
         url='https://github.com/thermitegod/mcomix-lite',
         description='GTK comic book viewer',
         long_description='MComix-Lite is a manga/comic reader.'
-                         'Supports archive formats are 7Z, ZIP, RAR, TAR, CBR, CBZ, CB7, CBT. '
+                         'Supports all archive formats supported by libarchive. '
                          'MComix-Lite is a fork of MComix3 which is a fork of MComix which is a fork of Comix.',
         license="License :: OSI Approved :: GNU General Public License (GPL)",
         platforms=['Operating System :: POSIX :: Linux',
