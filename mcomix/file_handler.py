@@ -220,8 +220,7 @@ class FileHandler:
         self.__file_loading = False
 
         archive_images = [image for image in files
-                          if ImageTools.is_image_file(Path(image))
-                          and not image.endswith('.pdf')]
+                          if ImageTools.is_image_file(Path(image))]
 
         self._sort_archive_images(archive_images)
         self._archive_opened(archive_images)

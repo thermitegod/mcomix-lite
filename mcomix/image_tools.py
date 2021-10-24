@@ -27,6 +27,7 @@ class _ImageTools:
         # formats supported by PIL
         Image.init()
         self.__supported_image_exts = [ext for ext in Image.EXTENSION]
+        self.__supported_image_exts.remove('.pdf')
 
     @property
     def supported_image_exts(self):
