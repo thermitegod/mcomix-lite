@@ -19,7 +19,13 @@ Should support all libarchive supported formats. Loose image files are also supp
 ### Installing
 
 ```
-./setup.py build && ./setup.py install --user
+./setup.py install --user
+```
+
+or
+
+```
+pip install --user -r ./requirements.txt .
 ```
 
 Gentoo ebuilds at
