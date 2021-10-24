@@ -15,7 +15,7 @@ try:
 except (ValueError, ImportError):
     raise SystemExit('GTK+ 3.0 import error')
 
-from mcomix.enum.mcomix import Mcomix
+from mcomix.enums.mcomix import Mcomix
 
 
 def main():

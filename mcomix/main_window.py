@@ -15,12 +15,12 @@ from mcomix.dialog.dialog_file_chooser import DialogFileChooser
 from mcomix.dialog.dialog_preferences import DialogPreference
 from mcomix.dialog.dialog_properties import DialogProperties
 from mcomix.enhance_backend import ImageEnhancer
-from mcomix.enum.double_page import DoublePage
-from mcomix.enum.mcomix import Mcomix
-from mcomix.enum.page_orientation import PageOrientation
-from mcomix.enum.image_scaling import ScalingGDK, ScalingPIL
-from mcomix.enum.scroll import Scroll
-from mcomix.enum.zoom_modes import ZoomAxis, ZoomModes
+from mcomix.enums.double_page import DoublePage
+from mcomix.enums.mcomix import Mcomix
+from mcomix.enums.page_orientation import PageOrientation
+from mcomix.enums.image_scaling import ScalingGDK, ScalingPIL
+from mcomix.enums.scroll import Scroll
+from mcomix.enums.zoom_modes import ZoomAxis, ZoomModes
 from mcomix.event_handler import EventHandler
 from mcomix.file_handler import FileHandler
 from mcomix.image_handler import ImageHandler

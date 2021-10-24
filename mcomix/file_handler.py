@@ -8,8 +8,8 @@ from gi.repository import Gtk
 from loguru import logger
 
 from mcomix.archive_extractor import Extractor
-from mcomix.enum.file_sort import FileSortDirection, FileSortType
-from mcomix.enum.file_types import FileTypes
+from mcomix.enums.file_sort import FileSortDirection, FileSortType
+from mcomix.enums.file_types import FileTypes
 from mcomix.formats.archive import ArchiveSupported
 from mcomix.formats.image import ImageSupported
 from mcomix.file_provider import GetFileProvider

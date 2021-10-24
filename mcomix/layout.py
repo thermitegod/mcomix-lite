@@ -2,7 +2,7 @@
 
 """Layout"""
 
-from mcomix.enum.scroll import Scroll
+from mcomix.enums.scroll import Scroll
 from mcomix.hyperrectangles import Box
 
 

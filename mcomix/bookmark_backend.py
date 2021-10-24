@@ -10,7 +10,7 @@ from gi.repository import Gtk
 from loguru import logger
 
 from mcomix.bookmark_menu_item import Bookmark
-from mcomix.enum.config_files import ConfigFiles
+from mcomix.enums.config_files import ConfigFiles
 from mcomix.lib.callback import Callback
 from mcomix.message_dialog import MessageDialog
 from mcomix.message_dialog_info import MessageDialogInfo

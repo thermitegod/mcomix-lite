@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from mcomix.enum.file_types import FileTypes
+from mcomix.enums.file_types import FileTypes
 from mcomix.formats.archive import ArchiveSupported
 from mcomix.formats.image import ImageSupported
 from mcomix.providers.file_provider_base import FileProvider

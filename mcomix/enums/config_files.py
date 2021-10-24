@@ -4,7 +4,7 @@ import os
 from enum import Enum
 from pathlib import Path
 
-from mcomix.enum.mcomix import Mcomix
+from mcomix.enums.mcomix import Mcomix
 
 
 try:

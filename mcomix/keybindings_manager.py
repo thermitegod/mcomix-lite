@@ -29,7 +29,7 @@ from gi.repository import Gtk
 from loguru import logger
 
 from mcomix.config_backend import ConfigBackend
-from mcomix.enum.config_files import ConfigFiles
+from mcomix.enums.config_files import ConfigFiles
 
 
 class KeybindingManager:

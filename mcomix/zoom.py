@@ -8,7 +8,7 @@ from functools import reduce
 from loguru import logger
 
 from mcomix.preferences import config
-from mcomix.enum.zoom_modes import ZoomAxis, ZoomModes
+from mcomix.enums.zoom_modes import ZoomAxis, ZoomModes
 
 
 class ZoomModel:

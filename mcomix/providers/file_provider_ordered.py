@@ -2,8 +2,8 @@
 
 from pathlib import Path
 
-from mcomix.enum.file_sort import FileSortDirection, FileSortType
-from mcomix.enum.file_types import FileTypes
+from mcomix.enums.file_sort import FileSortDirection, FileSortType
+from mcomix.enums.file_types import FileTypes
 from mcomix.formats.archive import ArchiveSupported
 from mcomix.formats.image import ImageSupported
 from mcomix.preferences import config

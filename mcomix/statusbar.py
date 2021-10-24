@@ -9,7 +9,7 @@ from typing import Callable
 from gi.repository import Gdk, Gtk
 
 from mcomix.file_size import FileSize
-from mcomix.enum.image_scaling import ScalingGDK, ScalingPIL
+from mcomix.enums.image_scaling import ScalingGDK, ScalingPIL
 from mcomix.preferences import config
 
 

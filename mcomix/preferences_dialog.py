@@ -4,11 +4,11 @@
 
 from gi.repository import GObject, Gtk
 
-from mcomix.enum.animation import Animation
-from mcomix.enum.double_page import DoublePage
-from mcomix.enum.file_sort import FileSortDirection, FileSortType
-from mcomix.enum.image_scaling import ScalingGDK, ScalingPIL
-from mcomix.enum.zoom_modes import ZoomModes
+from mcomix.enums.animation import Animation
+from mcomix.enums.double_page import DoublePage
+from mcomix.enums.file_sort import FileSortDirection, FileSortType
+from mcomix.enums.image_scaling import ScalingGDK, ScalingPIL
+from mcomix.enums.zoom_modes import ZoomModes
 from mcomix.keybindings_editor import KeybindingEditorWindow
 from mcomix.preferences import config
 from mcomix.preferences_page import PreferencePage

@@ -7,7 +7,7 @@ from pathlib import Path
 from PIL import Image
 from gi.repository import Gtk
 
-from mcomix.enum.mcomix import Mcomix
+from mcomix.enums.mcomix import Mcomix
 from mcomix.image_tools import ImageTools
 
 

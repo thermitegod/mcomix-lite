@@ -10,7 +10,7 @@ from loguru import logger
 
 from mcomix.anime_executor import AnimeFrameExecutor
 from mcomix.anime_framebuffer import AnimeFrameBuffer
-from mcomix.enum.animation import Animation
+from mcomix.enums.animation import Animation
 from mcomix.lib.reader import LockedFileIO
 from mcomix.preferences import config
 

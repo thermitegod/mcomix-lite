@@ -2,7 +2,7 @@
 
 from setuptools import setup
 
-from mcomix.enum.mcomix import Mcomix
+from mcomix.enums.mcomix import Mcomix
 
 """ MComix installation routines.
 Example usage:
@@ -21,7 +21,7 @@ setup(
         name=APPNAME.lower(),
         version=VERSION,
         python_requires='>=3.10',
-        packages=['mcomix', 'mcomix.archive', 'mcomix.dialog', 'mcomix.enum',
+        packages=['mcomix', 'mcomix.archive', 'mcomix.dialog', 'mcomix.enums',
                   'mcomix.formats', 'mcomix.lib', 'mcomix.providers', 'mcomix.sort'],
         package_data={'mcomix.images': ['mcomix.png']},
         entry_points={'console_scripts': ['mcomix = mcomix.main:main'],
