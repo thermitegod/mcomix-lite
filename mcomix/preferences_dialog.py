@@ -258,12 +258,6 @@ class PreferencesDialog(Gtk.Dialog):
             'Show bookmark path in bookmark menu',
             'BOOKMARK_SHOW_PATH'))
 
-        page.new_section('Cursor')
-
-        page.add_row(self._create_pref_check_button(
-            'Hide cursor after delay',
-            'HIDE_CURSOR'))
-
         return page
 
     def _init_dialog_tab(self):

@@ -59,7 +59,18 @@ class CursorHandler:
         if self.__current_cursor == CursorModes.NORMAL:
             self._set_hide_timer()
 
-    def refresh(self):
+    def auto_hide_off(self):
+        """
+        Signal that the cursor should *not* auto-hide from now on
+        """
+
+        self.__auto_hide = False
+        self._kill_timer()
+
+        if self.__current_cursor != CursorModes.NORMAL:
+            self.set_cursor_normal()
+
+    def refresh(self, *args):
         """
         Refresh the current cursor (i.e. display it and set a new timer in
         fullscreen). Used when we move the cursor
@@ -69,8 +80,7 @@ class CursorHandler:
             self.set_cursor_normal()
 
     def _on_timeout(self):
-        mode = Gdk.Cursor.new(Gdk.CursorType.BLANK_CURSOR)
-        self._set_cursor(mode)
+        self.set_cursor_hidden()
         self.__timer_id = None
         return False
 

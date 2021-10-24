@@ -100,6 +100,9 @@ class MainWindow(Gtk.ApplicationWindow):
         self.event_handler.event_handler_init()
         self.event_handler.register_key_events()
 
+        self.cursor_handler = CursorHandler(self)
+        self.lens = MagnifyingLens(self)
+
         self.__main_layout = Gtk.Layout()
         self.__main_scrolled_window = Gtk.ScrolledWindow()
         self.__main_scrolled_window.add(self.__main_layout)
@@ -114,9 +117,6 @@ class MainWindow(Gtk.ApplicationWindow):
         grid.attach_next_to(self.__main_scrolled_window, self.thumbnailsidebar, Gtk.PositionType.RIGHT, 1, 1)
         grid.attach(self.statusbar, 0, 2, 2, 1)
         self.add(grid)
-
-        self.cursor_handler = CursorHandler(self)
-        self.lens = MagnifyingLens(self)
 
         # XXX limited to at most 2 pages
         self.images = [Gtk.Image(), Gtk.Image()]
@@ -152,6 +152,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__main_layout.connect('motion_notify_event', self.event_handler.mouse_move_event)
         self.__main_layout.connect('drag_data_received', self.event_handler.drag_n_drop_event)
         self.__main_layout.connect('motion-notify-event', self.lens.motion_event)
+        self.__main_layout.connect('motion-notify-event', self.cursor_handler.refresh)
 
         self.set_title(Mcomix.APP_NAME.value)
         self.restore_window_geometry()
@@ -164,18 +165,6 @@ class MainWindow(Gtk.ApplicationWindow):
         if open_path:
             self.filehandler.initialize_fileprovider(path=open_path)
             self.filehandler.open_file(Path(open_path[0]))
-
-        if config['HIDE_CURSOR']:
-            self.cursor_handler.auto_hide_on()
-
-            # Make sure we receive *all* mouse motion events,
-            # even if a modal dialog is being shown.
-            def _on_event(event):
-                if Gdk.EventType.MOTION_NOTIFY == event.type:
-                    self.cursor_handler.refresh()
-                Gtk.main_do_event(event)
-
-            Gdk.event_handler_set(_on_event)
 
     def get_layout(self):
         return self.__layout
@@ -523,6 +512,8 @@ class MainWindow(Gtk.ApplicationWindow):
         if self.is_fullscreen():
             self.unfullscreen()
 
+            self.cursor_handler.auto_hide_off()
+
             # menu/status can only be hidden in fullscreen
             # if not hidden using .show() is the same as a NOOP
             self.statusbar.show()
@@ -530,6 +521,8 @@ class MainWindow(Gtk.ApplicationWindow):
         else:
             self.save_window_geometry()
             self.fullscreen()
+
+            self.cursor_handler.auto_hide_on()
 
             if config['FULLSCREEN_HIDE_STATUSBAR']:
                 self.statusbar.hide()
