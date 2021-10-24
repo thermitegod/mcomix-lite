@@ -155,6 +155,9 @@ class MainWindow(Gtk.ApplicationWindow):
         self.set_title(Mcomix.APP_NAME.value)
         self.restore_window_geometry()
 
+        if config['DEFAULT_FULLSCREEN']:
+            self.change_fullscreen()
+
         self.show_all()
 
         if open_path:
@@ -172,9 +175,6 @@ class MainWindow(Gtk.ApplicationWindow):
                 Gtk.main_do_event(event)
 
             Gdk.event_handler_set(_on_event)
-
-        if config['DEFAULT_FULLSCREEN']:
-            self.change_fullscreen()
 
     def get_layout(self):
         return self.__layout
