@@ -8,11 +8,11 @@ from gi.repository import Gtk
 from loguru import logger
 
 from mcomix.archive_extractor import Extractor
-from mcomix.archive_tools import ArchiveTools
 from mcomix.enum.file_sort import FileSortDirection, FileSortType
 from mcomix.enum.file_types import FileTypes
+from mcomix.formats.archive import ArchiveSupported
+from mcomix.formats.image import ImageSupported
 from mcomix.file_provider import GetFileProvider
-from mcomix.image_tools import ImageTools
 from mcomix.lib.callback import Callback
 from mcomix.preferences import config
 from mcomix.sort.sort_alphanumeric import SortAlphanumeric
@@ -87,7 +87,7 @@ class FileHandler:
         self._close()
 
         self.__filelist = self.__file_provider.list_files(mode=FileTypes.IMAGES)
-        self.__is_archive = ArchiveTools.is_archive_file(path)
+        self.__is_archive = ArchiveSupported.is_archive_file(path)
         self.__start_page = start_page
         self.__current_file = path
 
@@ -220,7 +220,7 @@ class FileHandler:
         self.__file_loading = False
 
         archive_images = [image for image in files
-                          if ImageTools.is_image_file(Path(image))]
+                          if ImageSupported.is_image_file(Path(image))]
 
         self._sort_archive_images(archive_images)
         self._archive_opened(archive_images)
@@ -347,7 +347,7 @@ class FileHandler:
             if not path.is_file():
                 return False
 
-            if ArchiveTools.is_archive_file(path=path):
+            if ArchiveSupported.is_archive_file(path=path):
                 self._close()
                 self.open_file(path, next_page)
                 return True

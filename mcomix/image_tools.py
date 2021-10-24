@@ -21,21 +21,6 @@ class _ImageTools:
 
         self.__anime_executor = AnimeFrameExecutor()
 
-        # disable PIL DecompressionBombWarning
-        Image.MAX_IMAGE_PIXELS = None
-
-        # formats supported by PIL
-        Image.init()
-        self.__supported_image_exts = [ext for ext in Image.EXTENSION]
-        self.__supported_image_exts.remove('.pdf')
-
-    @property
-    def supported_image_exts(self):
-        return self.__supported_image_exts
-
-    def is_image_file(self, path: Path):
-        return path.suffix.lower() in self.__supported_image_exts
-
     def rotate_pixbuf(self, src, rotation: int):
         match rotation:
             case 0:

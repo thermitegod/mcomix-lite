@@ -2,9 +2,9 @@
 
 from pathlib import Path
 
-from mcomix.archive_tools import ArchiveTools
 from mcomix.enum.file_types import FileTypes
-from mcomix.image_tools import ImageTools
+from mcomix.formats.archive import ArchiveSupported
+from mcomix.formats.image import ImageSupported
 from mcomix.providers.file_provider_base import FileProvider
 from mcomix.providers.file_provider_ordered import OrderedFileProvider
 
@@ -52,10 +52,10 @@ class PreDefinedFileProvider(FileProvider):
 
         for file in files:
             if Path.is_file(file):
-                if ImageTools.is_image_file(file):
-                    return ImageTools.is_image_file
-                if ArchiveTools.is_archive_file(file):
-                    return ArchiveTools.is_archive_file
+                if ImageSupported.is_image_file(file):
+                    return ImageSupported.is_image_file
+                if ArchiveSupported.is_archive_file(file):
+                    return ArchiveSupported.is_archive_file
 
         # Default filter only accepts images.
-        return ImageTools.is_image_file
+        return ImageSupported.is_image_file

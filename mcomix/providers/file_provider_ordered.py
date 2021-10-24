@@ -2,10 +2,10 @@
 
 from pathlib import Path
 
-from mcomix.archive_tools import ArchiveTools
 from mcomix.enum.file_sort import FileSortDirection, FileSortType
 from mcomix.enum.file_types import FileTypes
-from mcomix.image_tools import ImageTools
+from mcomix.formats.archive import ArchiveSupported
+from mcomix.formats.image import ImageSupported
 from mcomix.preferences import config
 from mcomix.providers.file_provider_base import FileProvider
 from mcomix.sort.sort_alphanumeric import SortAlphanumeric
@@ -37,9 +37,9 @@ class OrderedFileProvider(FileProvider):
 
         match mode:
             case FileTypes.IMAGES:
-                should_accept = ImageTools.is_image_file
+                should_accept = ImageSupported.is_image_file
             case FileTypes.ARCHIVES:
-                should_accept = ArchiveTools.is_archive_file
+                should_accept = ArchiveSupported.is_archive_file
             case _:
                 raise ValueError
 
