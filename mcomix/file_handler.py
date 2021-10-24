@@ -252,10 +252,11 @@ class FileHandler:
         :returns: page index
         """
 
-        if start_page < 0 and config['DEFAULT_DOUBLE_PAGE']:
-            current_image_index = num_of_pages - 2
-        elif start_page < 0 and not config['DEFAULT_DOUBLE_PAGE']:
-            current_image_index = num_of_pages - 1
+        if start_page < 0:
+            if config['DEFAULT_DOUBLE_PAGE']:
+                current_image_index = num_of_pages - 2
+            else:
+                current_image_index = num_of_pages - 1
         else:
             current_image_index = start_page - 1
 
