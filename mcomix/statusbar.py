@@ -42,7 +42,7 @@ class Statusbar(Gtk.EventBox):
             config_key: str
             callback: Callable
 
-        self.__context_menu_items = (
+        context_menu_items = (
             STATUSBAR('Show page numbers',
                       'STATUSBAR_FIELD_PAGE_NUMBERS',
                       self._toggle_status_page_numbers),
@@ -72,7 +72,7 @@ class Statusbar(Gtk.EventBox):
                       self._toggle_status_view_mode),
         )
 
-        for item in self.__context_menu_items:
+        for item in context_menu_items:
             self._populate_context_menu(label=item.label, config_key=item.config_key, callback=item.callback)
 
         # Hook mouse release event

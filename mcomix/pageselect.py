@@ -33,17 +33,18 @@ class Pageselector(Gtk.Dialog):
                                                     lower=1, upper=self.__number_of_pages,
                                                     step_increment=1, page_increment=1)
 
-        self.__page_selector = Gtk.Scale.new(Gtk.Orientation.VERTICAL, self.__selector_adjustment)
-        self.__page_selector.set_draw_value(False)
-        self.__page_selector.set_digits(0)
+        page_selector = Gtk.Scale.new(Gtk.Orientation.VERTICAL, self.__selector_adjustment)
+        page_selector.set_draw_value(False)
+        page_selector.set_digits(0)
 
-        self.__page_spinner = Gtk.SpinButton.new(self.__selector_adjustment, 0.0, 0)
-        self.__page_spinner.connect('changed', self._page_text_changed)
-        self.__page_spinner.set_activates_default(True)
-        self.__page_spinner.set_numeric(True)
-        self.__pages_label = Gtk.Label(label=f' of {self.__number_of_pages}')
-        self.__pages_label.set_xalign(0.0)
-        self.__pages_label.set_yalign(0.5)
+        page_spinner = Gtk.SpinButton.new(self.__selector_adjustment, 0.0, 0)
+        page_spinner.connect('changed', self._page_text_changed)
+        page_spinner.set_activates_default(True)
+        page_spinner.set_numeric(True)
+
+        pages_label = Gtk.Label(label=f' of {self.__number_of_pages}')
+        pages_label.set_xalign(0.0)
+        pages_label.set_yalign(0.5)
 
         self.__image_preview = Gtk.Image()
         self.__image_preview.set_size_request(config['THUMBNAIL_SIZE'], config['THUMBNAIL_SIZE'])
@@ -56,12 +57,12 @@ class Pageselector(Gtk.Dialog):
         preview_box.set_border_width(5)
         preview_box.set_spacing(5)
         preview_box.pack_start(self.__image_preview, True, True, 0)
-        preview_box.pack_end(self.__page_selector, False, True, 0)
+        preview_box.pack_end(page_selector, False, True, 0)
         # Below them, group selection spinner and current page label
         selection_box = Gtk.HBox()
         selection_box.set_border_width(5)
-        selection_box.pack_start(self.__page_spinner, True, True, 0)
-        selection_box.pack_end(self.__pages_label, False, True, 0)
+        selection_box.pack_start(page_spinner, True, True, 0)
+        selection_box.pack_end(pages_label, False, True, 0)
 
         self.get_content_area().pack_start(preview_box, True, True, 0)
         self.get_content_area().pack_end(selection_box, False, True, 0)
@@ -70,8 +71,8 @@ class Pageselector(Gtk.Dialog):
         self.__selector_adjustment.connect('value-changed', self._cb_value_changed)
 
         # Set focus on the input box.
-        self.__page_spinner.select_region(0, -1)
-        self.__page_spinner.grab_focus()
+        page_spinner.select_region(0, -1)
+        page_spinner.grab_focus()
 
         # Currently displayed thumbnail page.
         self.__thumbnail_page = 0

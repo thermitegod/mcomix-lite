@@ -16,8 +16,8 @@ class Menubar(Gtk.EventBox):
 
         self.__window = window
 
-        self.__menubar = Gtk.MenuBar()
-        self.add(self.__menubar)
+        menubar = Gtk.MenuBar()
+        self.add(menubar)
 
         @dataclass(frozen=True)
         class MENUBAR:
@@ -46,7 +46,7 @@ class Menubar(Gtk.EventBox):
         )
 
         self._populate_menu(items=memu_file_items, menu=menu_file)
-        self.__menubar.append(menuitem_file)
+        menubar.append(menuitem_file)
 
         # Edit #
         menu_edit = Gtk.Menu()
@@ -58,7 +58,7 @@ class Menubar(Gtk.EventBox):
         )
 
         self._populate_menu(items=memu_edit_items, menu=menu_edit)
-        self.__menubar.append(menuitem_edit)
+        menubar.append(menuitem_edit)
 
         # View #
         menu_view = Gtk.Menu()
@@ -76,14 +76,14 @@ class Menubar(Gtk.EventBox):
         )
 
         self._populate_menu(items=memu_edit_items, menu=menu_view)
-        self.__menubar.append(menuitem_view)
+        menubar.append(menuitem_view)
 
         # Bookmarks #
         menuitem_bookmarks = Gtk.MenuItem(label='Bookmarks')
         bookmarks = BookmarksMenu(self.__window)
         menuitem_bookmarks.set_submenu(bookmarks)
 
-        self.__menubar.append(menuitem_bookmarks)
+        menubar.append(menuitem_bookmarks)
 
         # Tools #
         menu_tools = Gtk.Menu()
@@ -99,7 +99,7 @@ class Menubar(Gtk.EventBox):
         )
 
         self._populate_menu(items=memu_tools_items, menu=menu_tools)
-        self.__menubar.append(menuitem_tools)
+        menubar.append(menuitem_tools)
 
         # Help #
         menu_help = Gtk.Menu()
@@ -111,7 +111,7 @@ class Menubar(Gtk.EventBox):
         )
 
         self._populate_menu(items=memu_help_items, menu=menu_help)
-        self.__menubar.append(menuitem_help)
+        menubar.append(menuitem_help)
 
         #
         self.show_all()
