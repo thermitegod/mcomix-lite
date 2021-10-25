@@ -27,7 +27,7 @@ class CursorHandler:
         Set the cursor on the main layout area to <mode>.
         """
 
-        self.__window.get_main_layout().get_bin_window().set_cursor(mode)
+        self.__window.get_main_layout().get_window().set_cursor(mode)
 
     def set_cursor_normal(self):
         self._set_cursor(None)
@@ -37,14 +37,14 @@ class CursorHandler:
             self._set_hide_timer()
 
     def set_cursor_grab(self):
-        self._set_cursor(Gdk.Cursor.new(Gdk.CursorType.FLEUR))
+        self._set_cursor(Gdk.Cursor.new_for_display(Gdk.Display.get_default(), Gdk.CursorType.FLEUR))
         self.__current_cursor = CursorModes.GRAB
 
         if self.__auto_hide:
             self._kill_timer()
 
     def set_cursor_hidden(self):
-        self._set_cursor(Gdk.Cursor.new(Gdk.CursorType.BLANK_CURSOR))
+        self._set_cursor(Gdk.Cursor.new_for_display(Gdk.Display.get_default(), Gdk.CursorType.BLANK_CURSOR))
         self.__current_cursor = CursorModes.HIDDEN
 
         if self.__auto_hide:
