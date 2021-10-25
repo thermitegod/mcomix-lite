@@ -71,7 +71,8 @@ class MagnifyingLens:
 
         draw_region = cairo.Region(rectangle=rectangle)
 
-        window = self.__window.get_main_layout().get_bin_window()
+        window = self.__window.get_main_layout().get_window()
+
         window.end_draw_frame(window.begin_draw_frame(draw_region))
 
         self._clear_lens(rectangle_alt)
@@ -112,7 +113,7 @@ class MagnifyingLens:
         if not self.__last_lens_rect:
             return
 
-        window = self.__window.get_main_layout().get_bin_window()
+        window = self.__window.get_main_layout().get_window()
 
         lrect = Gdk.Rectangle()
         lrect.x, lrect.y, lrect.width, lrect.height = self.__last_lens_rect
