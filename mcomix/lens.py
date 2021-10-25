@@ -72,17 +72,17 @@ class MagnifyingLens:
         draw_region = cairo.Region(rectangle=rectangle)
 
         window = self.__window.get_main_layout().get_window()
-
-        window.end_draw_frame(window.begin_draw_frame(draw_region))
+        frame = window.begin_draw_frame(draw_region)
 
         self._clear_lens(rectangle_alt)
 
-        cr = window.cairo_create()
+        cr = Gdk.DrawingContext.get_cairo_context(frame)
         surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 0, window)
         cr.set_source_surface(surface, rectangle.x, rectangle.y)
         cr.paint()
 
         window.end_paint()
+        window.end_draw_frame(frame)
 
         self.__last_lens_rect = rectangle_alt
 
