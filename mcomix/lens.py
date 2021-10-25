@@ -5,7 +5,7 @@
 import math
 
 import cairo
-from gi.repository import Gdk, GdkPixbuf, Gtk
+from gi.repository import Gdk, GdkPixbuf
 
 from mcomix.image_tools import ImageTools
 from mcomix.preferences import config
@@ -61,9 +61,6 @@ class MagnifyingLens:
         with it; <x> and <y> are the positions of the cursor within the
         main window layout area
         """
-
-        if self.__window.images[0].get_storage_type() not in (Gtk.ImageType.PIXBUF, Gtk.ImageType.ANIMATION):
-            return
 
         rectangle = self._calculate_lens_rect(x, y, config['LENS_SIZE'])
         rectangle_alt = [rectangle.x, rectangle.y, rectangle.width, rectangle.height]
