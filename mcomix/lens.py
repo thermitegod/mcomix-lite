@@ -63,7 +63,6 @@ class MagnifyingLens:
         """
 
         rectangle = self._calculate_lens_rect(x, y, config['LENS_SIZE'])
-        rectangle_alt = [rectangle.x, rectangle.y, rectangle.width, rectangle.height]
         pixbuf = self._get_lens_pixbuf(x, y)
 
         draw_region = cairo.Region(rectangle=rectangle)
@@ -71,7 +70,7 @@ class MagnifyingLens:
         window = self.__window.get_main_layout().get_window()
         frame = window.begin_draw_frame(draw_region)
 
-        self._clear_lens(rectangle_alt)
+        self._clear_lens(rectangle)
 
         cr = Gdk.DrawingContext.get_cairo_context(frame)
         surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 0, window)
@@ -81,7 +80,7 @@ class MagnifyingLens:
         window.end_paint()
         window.end_draw_frame(frame)
 
-        self.__last_lens_rect = rectangle_alt
+        self.__last_lens_rect = rectangle
 
     def _calculate_lens_rect(self, x: int, y: int, lens_size: int):
         """
@@ -113,15 +112,21 @@ class MagnifyingLens:
         window = self.__window.get_main_layout().get_window()
 
         lrect = Gdk.Rectangle()
-        lrect.x, lrect.y, lrect.width, lrect.height = self.__last_lens_rect
+        lrect.x = self.__last_lens_rect.x
+        lrect.y = self.__last_lens_rect.y
+        lrect.width = self.__last_lens_rect.width
+        lrect.height = self.__last_lens_rect.height
 
         if not current_lens_region:
             window.invalidate_rect(lrect, True)
             return
 
         crect = Gdk.Rectangle()
+        crect.x = current_lens_region.x
+        crect.y = current_lens_region.y
+        crect.width = current_lens_region.width
+        crect.height = current_lens_region.height
 
-        crect.x, crect.y, crect.width, crect.height = current_lens_region
         rwidth = crect.width
         rheigt = crect.height
 
