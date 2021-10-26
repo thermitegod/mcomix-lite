@@ -23,7 +23,7 @@ from mcomix.formats.archive import ArchiveSupported
     Path('test.tar.bz2'),
     Path('test.tar.lzma'),
     Path('test.tar.xz'),
-    # Path('test.tar.lz4'),
+    Path('test.tar.lz4'),
     Path('test.tar.zst'),
 
     Path('test.lrzip'),

@@ -11,7 +11,7 @@ class ArchiveSupported(Enum):
             '.rar', '.cbr',
             '.7z', '.cb7',
             '.tar', '.cbt',
-            '.gz', '.bz2', '.lzma', '.xz', 'lz4', '.zst',
+            '.gz', '.bz2', '.lzma', '.xz', '.lz4', '.zst',
             '.lrzip', '.lzip',
             '.lha', '.lzh',
         )
