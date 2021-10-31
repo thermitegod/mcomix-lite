@@ -24,9 +24,9 @@ class LibarchiveExtractor(BaseArchive):
             for filename in archive:
                 if not filename.isfile:
                     continue
-                yield filename.pathname
+                yield Path() / self.destination_path / filename.pathname
 
-    def iter_extract(self, destination_dir: Path):
+    def iter_extract(self):
         """
         Generator to extract archive to <destination_dir>
 
@@ -34,8 +34,8 @@ class LibarchiveExtractor(BaseArchive):
         """
 
         # can only extract into CWD
-        self._create_directory(destination_dir)
-        os.chdir(destination_dir)
+        self._create_directory(self.destination_path)
+        os.chdir(self.destination_path)
 
         with libarchive.file_reader(str(self.archive)) as archive:
             for filename in archive:
@@ -43,8 +43,8 @@ class LibarchiveExtractor(BaseArchive):
                     # only extract files, directories will be created
                     # as needed by _create_file()
                     continue
-                destination_path = Path() / destination_dir / filename.pathname
-                with self._create_file(destination_path) as image:
+                destination_file_path = Path() / self.destination_path / filename.pathname
+                with self._create_file(destination_file_path) as image:
                     for block in filename.get_blocks():
                         image.write(block)
-                yield destination_path
+                yield destination_file_path

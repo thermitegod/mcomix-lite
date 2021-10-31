@@ -216,7 +216,7 @@ class ImageHandler:
         if index in self.__wanted_pixbufs:
             self.__threadpool.apply_async(self._cache_pixbuf, (index,))
 
-    def _file_available(self, filepath: str):
+    def _file_available(self, filepath: Path):
         """
         Called by the filehandler when a new file becomes available
         """

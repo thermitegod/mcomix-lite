@@ -26,11 +26,8 @@ class BaseArchive:
         if not Path.exists(ConfigPaths.CACHE.value):
             ConfigPaths.CACHE.value.mkdir(parents=True, exist_ok=True)
 
-        self.__tempdir = TemporaryDirectory(dir=ConfigPaths.CACHE.value)
-
-    @property
-    def destdir(self):
-        return self.__tempdir.name
+        self.tempdir = TemporaryDirectory(dir=ConfigPaths.CACHE.value)
+        self.destination_path = Path() / self.tempdir.name / 'main_archive'
 
     def iter_contents(self):
         """
@@ -39,7 +36,7 @@ class BaseArchive:
 
         raise NotImplementedError
 
-    def iter_extract(self, destination_dir: Path):
+    def iter_extract(self):
         """
         Generator to extract <wanted> from archive to <destination_dir>
 
@@ -54,8 +51,8 @@ class BaseArchive:
         Closes the archive and releases held resources
         """
 
-        logger.debug(f'Cleanup TemporaryDirectory: \'{self.__tempdir}\'')
-        self.__tempdir.cleanup()
+        logger.debug(f'Cleanup TemporaryDirectory: \'{self.tempdir}\'')
+        self.tempdir.cleanup()
 
     def _create_directory(self, path: Path):
         """

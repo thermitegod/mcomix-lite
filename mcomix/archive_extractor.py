@@ -30,7 +30,6 @@ class Extractor:
 
         self.__threadpool = GlobalThreadPool.threadpool
 
-        self.__archive_destination_dir = None
         self.__extractor = None
 
         self.__contents = []
@@ -47,7 +46,6 @@ class Extractor:
         self.__contents_listed = False
 
         self.__extractor = LibarchiveExtractor(archive)
-        self.__archive_destination_dir = Path() / self.__extractor.destdir / 'main_archive'
 
         self.__threadpool.apply_async(
             self._list_contents, callback=self._list_contents_cb,
@@ -114,22 +112,19 @@ class Extractor:
         self.file_extracted(self, name)
 
     def _extract_all_files(self):
-        for name in self.__extractor.iter_extract(self.__archive_destination_dir):
-            if self._extraction_finished(str(name)):
+        for name in self.__extractor.iter_extract():
+            if self._extraction_finished(name):
                 return
 
     def _list_contents(self):
         if self.__contents_listed:
-            return set(self.__contents)
+            return self.__contents
 
-        self.__contents = []
-        for f in self.__extractor.iter_contents():
-            filename = str(Path(self.__archive_destination_dir, f))
-            self.__contents.append(filename)
+        self.__contents = [image for image in self.__extractor.iter_contents()]
 
         self.__contents_listed = True
 
-        return set(self.__contents)
+        return self.__contents
 
     def _list_contents_cb(self, files: set):
         with self.__condition:

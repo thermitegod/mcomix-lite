@@ -214,7 +214,7 @@ class FileHandler:
             logger.error(f'Exception: {ex}')
             raise
 
-    def _listed_contents(self, archive, files):
+    def _listed_contents(self, extractor, files: list):
         if not self.__file_loading:
             return
         self.__file_loading = False
