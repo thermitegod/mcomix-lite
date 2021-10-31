@@ -234,14 +234,6 @@ class PreferencesDialog(Gtk.Dialog):
             'Show page scaling percent',
             'STATUSBAR_SHOW_SCALE'))
 
-        page.add_row(Gtk.Label(label='Charactor to use as statusbar separator'),
-                     self._create_pref_text_box('STATUSBAR_SEPARATOR'))
-
-        page.add_row(Gtk.Label(label='Statusbar margin padding:'),
-                     self._create_pref_spinner(
-                         'STATUSBAR_MARGIN_PADDING',
-                         1, 0, 10, 1, 3, 0))
-
         page.new_section('Bookmarks')
 
         page.add_row(self._create_pref_check_button(

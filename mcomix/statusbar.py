@@ -17,17 +17,17 @@ class Statusbar(Gtk.EventBox):
     def __init__(self):
         super().__init__()
 
-        spacing = 5
-        sep = config['STATUSBAR_SEPARATOR']
-        self.__sep = f'{sep:^{spacing}}'
+        # statusbar field separator
+        self.__sep = '  |  '
 
         # Status text layout
         # page number, file number, page resolution, archive filename,
         # page filename, page filesize, archive filesize, view mode
         self.__status = Gtk.Statusbar()
 
-        self.__status.set_margin_top(config['STATUSBAR_MARGIN_PADDING'])
-        self.__status.set_margin_bottom(config['STATUSBAR_MARGIN_PADDING'])
+        # margin padding, gtk3 defaults are too large
+        self.__status.set_margin_top(2)
+        self.__status.set_margin_bottom(2)
 
         self.add(self.__status)
 
