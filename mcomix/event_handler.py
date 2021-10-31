@@ -38,12 +38,6 @@ class EventHandler:
         self.__keybindings = self.__window.keybindings
         self.__keybindings_map = self.__window.keybindings_map
 
-    def get_manga_flip_direction(self):
-        if (self.__window.is_manga_mode and not config['MANGA_FLIP_RIGHT']) or \
-                (not self.__window.is_manga_mode and config['WESTERN_FLIP_LEFT']):
-            return True
-        return False
-
     def resize_event(self, widget, event):
         """
         Handle events from resizing and moving the main window
@@ -141,16 +135,10 @@ class EventHandler:
             return
         elif deltas.delta_x > 0:
             # Gdk.ScrollDirection.RIGHT
-            if self.get_manga_flip_direction():
-                self.__window.flip_page(number_of_pages=-1)
-            else:
-                self.__window.flip_page(number_of_pages=+1)
+            self.__window.flip_page(number_of_pages=-1)
         elif deltas.delta_x < 0:
             # Gdk.ScrollDirection.LEFT
-            if self.get_manga_flip_direction():
-                self.__window.flip_page(number_of_pages=+1)
-            else:
-                self.__window.flip_page(number_of_pages=-1)
+            self.__window.flip_page(number_of_pages=+1)
 
     def mouse_press_event(self, widget, event):
         """
@@ -225,8 +213,8 @@ class EventHandler:
         if self.__window.scroll(x, y):
             return True
 
-        if y > 0 or (self.get_manga_flip_direction() and x < 0) or \
-                (not self.get_manga_flip_direction() and x > 0):
+        if y > 0 or (self.__window.is_manga_mode and x < 0) or \
+                (not self.__window.is_manga_mode and x > 0):
             self.__window.flip_page(number_of_pages=+1)
         else:
             self.__window.flip_page(number_of_pages=-1)

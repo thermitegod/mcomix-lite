@@ -25,8 +25,6 @@ config = {
     'FULLSCREEN_HIDE_STATUSBAR': False,
     'ZOOM_MODE': ZoomModes.BEST.value,
     'DEFAULT_MANGA_MODE': True,
-    'MANGA_FLIP_RIGHT': False,
-    'WESTERN_FLIP_LEFT': False,
     'PAGE_FF_STEP': 10,
     'LENS_MAGNIFICATION': 2,
     'LENS_SIZE': 200,
