@@ -76,7 +76,7 @@ class Statusbar(Gtk.EventBox):
             self._populate_context_menu(label=item.label, config_key=item.config_key, callback=item.callback)
 
         # Hook mouse release event
-        self.connect('button-release-event', self._button_released)
+        self.connect('button-press-event', self._button_released)
         self.set_events(Gdk.EventMask.BUTTON_PRESS_MASK | Gdk.EventMask.BUTTON_RELEASE_MASK)
 
         # Default status information
