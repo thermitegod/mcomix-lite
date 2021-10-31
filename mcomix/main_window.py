@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """main.py - Main window"""
 
 import shutil
