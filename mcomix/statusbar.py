@@ -45,31 +45,31 @@ class Statusbar(Gtk.EventBox):
         context_menu_items = (
             STATUSBAR('Show page numbers',
                       'STATUSBAR_FIELD_PAGE_NUMBERS',
-                      self._toggle_status_page_numbers),
+                      self._toggle_status_visibility),
             STATUSBAR('Show file numbers',
                       'STATUSBAR_FIELD_FILE_NUMBERS',
-                      self._toggle_status_file_numbers),
+                      self._toggle_status_visibility),
             STATUSBAR('Show page resolution',
                       'STATUSBAR_FIELD_PAGE_RESOLUTION',
-                      self._toggle_status_page_resolution),
+                      self._toggle_status_visibility),
             STATUSBAR('Show archive filename',
                       'STATUSBAR_FIELD_ARCHIVE_NAME',
-                      self._toggle_status_archive_name),
+                      self._toggle_status_visibility),
             STATUSBAR('Show page filename',
                       'STATUSBAR_FIELD_PAGE_FILENAME',
-                      self._toggle_status_page_filename),
+                      self._toggle_status_visibility),
             STATUSBAR('Show page filesize',
                       'STATUSBAR_FIELD_PAGE_FILESIZE',
-                      self._toggle_status_page_filesize),
+                      self._toggle_status_visibility),
             STATUSBAR('Show archive filesize',
                       'STATUSBAR_FIELD_ARCHIVE_FILESIZE',
-                      self._toggle_status_archive_filesize),
+                      self._toggle_status_visibility),
             STATUSBAR('Show page scaling',
                       'STATUSBAR_FIELD_PAGE_SCALING',
-                      self._toggle_status_page_scale),
+                      self._toggle_status_visibility),
             STATUSBAR('Show current mode',
                       'STATUSBAR_FIELD_VIEW_MODE',
-                      self._toggle_status_view_mode),
+                      self._toggle_status_visibility),
         )
 
         for item in context_menu_items:
@@ -217,38 +217,11 @@ class Statusbar(Gtk.EventBox):
     def _populate_context_menu(self, label: str, config_key: str, callback: Callable):
         item = Gtk.CheckMenuItem(label=label)
         item.set_active(config[config_key])
-        item.connect('activate', callback)
+        item.connect('activate', callback, config_key)
         item.show_all()
         self.__context_menu.append(item)
 
-    def _toggle_status_page_numbers(self, *args):
-        self._toggle_status_visibility('STATUSBAR_FIELD_PAGE_NUMBERS')
-
-    def _toggle_status_file_numbers(self, *args):
-        self._toggle_status_visibility('STATUSBAR_FIELD_FILE_NUMBERS')
-
-    def _toggle_status_page_resolution(self, *args):
-        self._toggle_status_visibility('STATUSBAR_FIELD_PAGE_RESOLUTION')
-
-    def _toggle_status_archive_name(self, *args):
-        self._toggle_status_visibility('STATUSBAR_FIELD_ARCHIVE_NAME')
-
-    def _toggle_status_page_filename(self, *args):
-        self._toggle_status_visibility('STATUSBAR_FIELD_PAGE_FILENAME')
-
-    def _toggle_status_page_filesize(self, *args):
-        self._toggle_status_visibility('STATUSBAR_FIELD_PAGE_FILESIZE')
-
-    def _toggle_status_archive_filesize(self, *args):
-        self._toggle_status_visibility('STATUSBAR_FIELD_ARCHIVE_FILESIZE')
-
-    def _toggle_status_page_scale(self, *args):
-        self._toggle_status_visibility('STATUSBAR_FIELD_PAGE_SCALING')
-
-    def _toggle_status_view_mode(self, *args):
-        self._toggle_status_visibility('STATUSBAR_FIELD_VIEW_MODE')
-
-    def _toggle_status_visibility(self, config_statusbar):
+    def _toggle_status_visibility(self, widget, config_statusbar):
         """
         Called when status entries visibility is to be changed
         """
