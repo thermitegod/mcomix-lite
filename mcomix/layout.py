@@ -111,15 +111,6 @@ class FiniteLayout:  # 2D only
 
         return self.__content_boxes
 
-    def get_union_box(self):
-        """
-        Returns the union Box for this layout.
-
-        :return: The union Box for this layout
-        """
-
-        return self.__union_box
-
     def get_viewport_box(self):
         """
         Returns the current viewport Box.

@@ -202,9 +202,14 @@ class MainWindow(Gtk.ApplicationWindow):
         GLib.idle_add(self._draw_image, scroll_to, priority=GLib.PRIORITY_HIGH_IDLE)
 
     def _draw_image(self, scroll_to: int):
+        # hides old images before showing new ones
+        # also if in double page mode and only a single
+        # image is going to be shown, prevents a ghost second image
+        for i in self.images:
+            i.clear()
+
         if not self.filehandler.get_file_loaded():
             self.thumbnailsidebar.hide()
-            self._clear_main_area()
             self.__waiting_for_redraw = False
             return
 
@@ -213,8 +218,6 @@ class MainWindow(Gtk.ApplicationWindow):
         if not self.imagehandler.page_is_available():
             # Save scroll destination for when the page becomes available.
             self.__last_scroll_destination = scroll_to
-            # If the pixbuf for the current page(s) isn't available clear old pixbufs.
-            self._clear_main_area()
             self.__waiting_for_redraw = False
             return
 
@@ -257,16 +260,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.__layout = FiniteLayout(scaled_sizes, viewport_size, orientation, distribution_axis, alignment_axis)
 
-        self.__main_layout.get_bin_window().freeze_updates()
-        self.__main_layout.set_size(*self.__layout.get_union_box().get_size())
-
         content_boxes = self.__layout.get_content_boxes()
-
-        for i in self.images:
-            # hides old images before showing new ones
-            # also if in double page mode and only a single
-            # image is going to be shown, prevents a ghost second image
-            i.hide()
 
         for i in pixbuf_count_iter:
             rotation_list[i] = (rotation_list[i] + rotation) % 360
@@ -285,8 +279,6 @@ class MainWindow(Gtk.ApplicationWindow):
         if scroll_to is not None:
             destination = (scroll_to,) * 2
             self.scroll_to_predefined(destination)
-
-        self.__main_layout.get_bin_window().thaw_updates()
 
         # update statusbar
         resolutions = [(*size, scaled_size[0] / size[0]) for scaled_size, size in zip(scaled_sizes, size_list, strict=True)]
@@ -666,14 +658,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.set_title(Mcomix.APP_NAME.value)
         self.statusbar.set_message('')
         self.draw_image()
-
-    def _clear_main_area(self):
-        for i in self.images:
-            i.hide()
-            i.clear()
-
-        self.__layout = self.__dummy_layout
-        self.__main_layout.set_size(*self.__layout.get_union_box().get_size())
 
     def _displayed_double(self):
         """

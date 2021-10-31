@@ -82,15 +82,6 @@ class Box:
 
         return Box(position, self.get_size())
 
-    def set_size(self, size):
-        """
-        Returns a new Box that has the same position as this Box and the specified size
-
-        :return: A new Box as specified above
-        """
-
-        return Box(self.get_position(), size)
-
     def translate_opposite(self, delta: tuple):
         """
         Returns a new Box that has the same size as this Box and a
