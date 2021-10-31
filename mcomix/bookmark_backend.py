@@ -26,8 +26,6 @@ class BookmarkBackend:
         super().__init__()
 
         self.__window = window
-        self.__file_handler = self.__window.filehandler
-        self.__image_handler = self.__window.imagehandler
 
         self.__bookmark_path = ConfigFiles.BOOKMARK.value
         self.__bookmark_state_dirty = False
@@ -66,9 +64,9 @@ class BookmarkBackend:
         Add the currently viewed page to the list
         """
 
-        path = self.__image_handler.get_real_path()
-        current_page = self.__image_handler.get_current_page()
-        total_pages = self.__image_handler.get_number_of_pages()
+        path = self.__window.imagehandler.get_real_path()
+        current_page = self.__window.imagehandler.get_current_page()
+        total_pages = self.__window.imagehandler.get_number_of_pages()
         date_added = datetime.today().timestamp()
 
         same_file_bookmarks = []
@@ -106,9 +104,9 @@ class BookmarkBackend:
             MessageDialogInfo(self.__window, primary='Bookmarked file does not exist', secondary=f'{path}')
             return
 
-        if self.__file_handler.get_base_path() != path:
-            self.__file_handler.initialize_fileprovider(path=[path])
-            self.__file_handler.open_file(path=path, start_page=current_page)
+        if self.__window.filehandler.get_base_path() != path:
+            self.__window.filehandler.initialize_fileprovider(path=[path])
+            self.__window.filehandler.open_file(path=path, start_page=current_page)
         else:
             self.__window.set_page(current_page)
 
