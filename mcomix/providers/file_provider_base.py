@@ -27,7 +27,7 @@ class FileProvider:
             return path.parent
         else:
             logger.error(f'Invalid path: \'{path}\'')
-            raise ValueError
+            return None
 
     def get_directory(self):
         raise NotImplementedError
