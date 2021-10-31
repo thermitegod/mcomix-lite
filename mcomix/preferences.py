@@ -11,7 +11,6 @@ from mcomix.enums.zoom_modes import ZoomModes
 
 # All preferences are stored here.
 config = {
-    'AUTO_OPEN_NEXT_ARCHIVE': True,
     'SORT_BY': FileSortType.NAME.value,  # Normal files obtained by directory listing
     'SORT_ORDER': FileSortDirection.ASCENDING.value,
     'SORT_ARCHIVE_BY': FileSortType.NAME.value,  # Files in archives
