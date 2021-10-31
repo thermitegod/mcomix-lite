@@ -35,7 +35,7 @@ class Extractor:
 
         self.__contents = []
         self.__contents_listed = False
-        self.__condition = None
+        self.__condition = threading.Condition()
 
     def setup(self, archive: Path):
         """
@@ -48,8 +48,6 @@ class Extractor:
 
         self.__extractor = LibarchiveExtractor(archive)
         self.__archive_destination_dir = Path() / self.__extractor.destdir / 'main_archive'
-
-        self.__condition = threading.Condition()
 
         self.__threadpool.apply_async(
             self._list_contents, callback=self._list_contents_cb,
