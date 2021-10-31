@@ -32,8 +32,6 @@ class Extractor:
 
         self.__extractor = None
 
-        self.__contents = []
-        self.__contents_listed = False
         self.__condition = threading.Condition()
 
     def setup(self, archive: Path):
@@ -42,8 +40,6 @@ class Extractor:
         Return a threading.Condition related to the is_ready() method, or
         None if the format of <src> isn't supported
         """
-
-        self.__contents_listed = False
 
         self.__extractor = LibarchiveExtractor(archive)
 
@@ -69,9 +65,6 @@ class Extractor:
         """
 
         with self.__condition:
-            if not self.__contents_listed:
-                return
-
             self.__threadpool.apply_async(
                 self._extract_all_files,
                 error_callback=self._error_cb)
@@ -117,19 +110,9 @@ class Extractor:
                 return
 
     def _list_contents(self):
-        if self.__contents_listed:
-            return self.__contents
-
-        self.__contents = [image for image in self.__extractor.iter_contents()]
-
-        self.__contents_listed = True
-
-        return self.__contents
+        return [image for image in self.__extractor.iter_contents()]
 
     def _list_contents_cb(self, files: set):
-        with self.__condition:
-            self.__contents_listed = True
-
         self.contents_listed(self, files)
 
     def _error_cb(self, name, etype, value, tb):
