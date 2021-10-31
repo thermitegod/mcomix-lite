@@ -36,7 +36,6 @@ class EnhanceImageDialog(Gtk.Dialog):
         self.__pixbuf = None
 
         self.__enhancer = window.enhancer
-        self.__block = False
 
         vbox = Gtk.VBox(homogeneous=False, spacing=10)
         self.set_border_width(4)
@@ -81,13 +80,12 @@ class EnhanceImageDialog(Gtk.Dialog):
         vbox.pack_start(self.__autocontrast_button, False, False, 2)
         self.__autocontrast_button.connect('toggled', self._change_values)
 
-        self.__block = True
         self.__brightness_scale.set_value(self.__enhancer.brightness - 1)
         self.__contrast_scale.set_value(self.__enhancer.contrast - 1)
         self.__saturation_scale.set_value(self.__enhancer.saturation - 1)
         self.__sharpness_scale.set_value(self.__enhancer.sharpness - 1)
         self.__autocontrast_button.set_active(self.__enhancer.autocontrast)
-        self.__block = False
+
         self.__contrast_scale.set_sensitive(not self.__autocontrast_button.get_active())
 
         self.__window.imagehandler.page_available += self._on_page_available
@@ -189,9 +187,6 @@ class EnhanceImageDialog(Gtk.Dialog):
         self.__hist_image.clear()
 
     def _change_values(self, *args):
-        if self.__block:
-            return
-
         self.__enhancer.brightness = self.__brightness_scale.get_value() + 1
         self.__enhancer.contrast = self.__contrast_scale.get_value() + 1
         self.__enhancer.saturation = self.__saturation_scale.get_value() + 1
@@ -214,11 +209,9 @@ class EnhanceImageDialog(Gtk.Dialog):
                 config['AUTO_CONTRAST'] = self.__enhancer.autocontrast
 
             case Gtk.ResponseType.REJECT:
-                self.__block = True
                 self.__brightness_scale.set_value(config['BRIGHTNESS'] - 1.0)
                 self.__contrast_scale.set_value(config['CONTRAST'] - 1.0)
                 self.__saturation_scale.set_value(config['SATURATION'] - 1.0)
                 self.__sharpness_scale.set_value(config['SHARPNESS'] - 1.0)
                 self.__autocontrast_button.set_active(config['AUTO_CONTRAST'])
-                self.__block = False
                 self._change_values(self)
