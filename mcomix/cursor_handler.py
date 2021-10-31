@@ -27,7 +27,7 @@ class CursorHandler:
         Set the cursor on the main layout area to <mode>.
         """
 
-        self.__window.get_main_layout().get_window().set_cursor(mode)
+        self.__window.main_layout.get_window().set_cursor(mode)
 
     def set_cursor_normal(self):
         self._set_cursor(None)

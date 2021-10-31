@@ -168,20 +168,21 @@ class MainWindow(Gtk.ApplicationWindow):
             self.filehandler.initialize_fileprovider(path=open_path)
             self.filehandler.open_file(Path(open_path[0]))
 
-    def get_layout(self):
+    @property
+    def layout(self):
         return self.__layout
 
-    def get_main_layout(self):
+    @property
+    def main_layout(self):
         return self.__main_layout
 
-    def get_hadjust(self):
+    @property
+    def hadjust(self):
         return self.__hadjust
 
-    def get_vadjust(self):
+    @property
+    def vadjust(self):
         return self.__vadjust
-
-    def get_event_handler(self):
-        return self.event_handler
 
     def page_orientation(self):
         if self.is_manga_mode:

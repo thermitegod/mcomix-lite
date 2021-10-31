@@ -67,7 +67,7 @@ class MagnifyingLens:
 
         draw_region = cairo.Region(rectangle=rectangle)
 
-        window = self.__window.get_main_layout().get_window()
+        window = self.__window.main_layout.get_window()
         frame = window.begin_draw_frame(draw_region)
 
         self._clear_lens(rectangle)
@@ -93,8 +93,8 @@ class MagnifyingLens:
         lens_y = max(y - lens_size // 2, 0)
 
         max_width, max_height = self.__window.get_visible_area_size()
-        max_width += int(self.__window.get_hadjust().get_value())
-        max_height += int(self.__window.get_vadjust().get_value())
+        max_width += int(self.__window.hadjust.get_value())
+        max_height += int(self.__window.vadjust.get_value())
         lens_x = min(lens_x, max_width - lens_size)
         lens_y = min(lens_y, max_height - lens_size)
 
@@ -109,7 +109,7 @@ class MagnifyingLens:
         if not self.__last_lens_rect:
             return
 
-        window = self.__window.get_main_layout().get_window()
+        window = self.__window.main_layout.get_window()
 
         lrect = Gdk.Rectangle()
         lrect.x = self.__last_lens_rect.x
@@ -193,7 +193,7 @@ class MagnifyingLens:
                                       width=config['LENS_SIZE'],
                                       height=config['LENS_SIZE'])
         canvas.fill(0x000000FF)  # black
-        cb = self.__window.get_layout().get_content_boxes()
+        cb = self.__window.layout.get_content_boxes()
         source_pixbufs = self.__window.imagehandler.get_pixbufs(len(cb))
         for idx, item in enumerate(cb):
             if ImageTools.is_animation(source_pixbufs[idx]):
