@@ -21,13 +21,10 @@ class FileProvider:
         Sets the base directory
         """
 
-        if Path.is_dir(path):
+        if path.is_dir():
             return path
-        elif Path.is_file(path):
-            return path.parent
-        else:
-            logger.error(f'Invalid path: \'{path}\'')
-            return None
+
+        return path.parent
 
     def get_directory(self):
         raise NotImplementedError
