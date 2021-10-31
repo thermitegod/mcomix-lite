@@ -30,7 +30,6 @@ class Extractor:
 
         self.__threadpool = GlobalThreadPool.threadpool
 
-        self.__archive = None
         self.__archive_destination_dir = None
         self.__extractor = None
 
@@ -47,8 +46,7 @@ class Extractor:
 
         self.__contents_listed = False
 
-        self.__archive = archive
-        self.__extractor = LibarchiveExtractor(archive=self.__archive)
+        self.__extractor = LibarchiveExtractor(archive)
         self.__archive_destination_dir = Path() / self.__extractor.destdir / 'main_archive'
 
         self.__condition = threading.Condition()
