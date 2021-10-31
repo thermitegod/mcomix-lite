@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 
-from gi.repository import Gdk, Gtk
+from gi.repository import Gtk
 
 from mcomix.file_size import FileSize
 from mcomix.enums.image_scaling import ScalingGDK, ScalingPIL
@@ -77,7 +77,6 @@ class Statusbar(Gtk.EventBox):
 
         # Hook mouse release event
         self.connect('button-press-event', self._button_released)
-        self.set_events(Gdk.EventMask.BUTTON_PRESS_MASK | Gdk.EventMask.BUTTON_RELEASE_MASK)
 
         # Default status information
         self.__total_page_numbers = ''
