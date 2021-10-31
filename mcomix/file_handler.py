@@ -11,7 +11,6 @@ from mcomix.archive_extractor import Extractor
 from mcomix.enums.file_sort import FileSortDirection, FileSortType
 from mcomix.enums.file_types import FileTypes
 from mcomix.formats.archive import ArchiveSupported
-from mcomix.formats.image import ImageSupported
 from mcomix.file_provider import GetFileProvider
 from mcomix.lib.callback import Callback
 from mcomix.preferences import config
@@ -219,11 +218,8 @@ class FileHandler:
             return
         self.__file_loading = False
 
-        archive_images = [image for image in files
-                          if ImageSupported.is_image_file(Path(image))]
-
-        self._sort_archive_images(archive_images)
-        self._archive_opened(archive_images)
+        self._sort_archive_images(files)
+        self._archive_opened(files)
 
     def _sort_archive_images(self, filelist: list):
         """
