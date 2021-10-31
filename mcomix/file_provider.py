@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from loguru import logger
+
 from mcomix.providers.file_provider_ordered import OrderedFileProvider
 from mcomix.providers.file_provider_predefined import PreDefinedFileProvider
 
@@ -20,11 +22,14 @@ class GetFileProvider:
         """
 
         if not filelist:
+            logger.info('File provider: None')
             return None
         elif len(filelist) == 1:
             # A single file was passed - use Comix' classic open mode
             # and open all files in its directory.
+            logger.info('File provider: Ordered')
             return OrderedFileProvider(filelist[0])
         else:
             # A list of files was passed - open only these files.
+            logger.info('File provider: Predefined')
             return PreDefinedFileProvider(filelist)
