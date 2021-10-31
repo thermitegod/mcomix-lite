@@ -30,7 +30,7 @@ class FileProvider:
             raise ValueError
 
     def get_directory(self):
-        return Path.cwd()
+        raise NotImplementedError
 
     def list_files(self, mode: int):
         raise NotImplementedError
