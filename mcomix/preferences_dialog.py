@@ -579,24 +579,26 @@ class PreferencesDialog(Gtk.Dialog):
         """
 
         _iter = combobox.get_active_iter()
-        if combobox.get_model().iter_is_valid(_iter):
-            value = combobox.get_model().get_value(_iter, 1)
-            last_value = config[preference]
-            config[preference] = value
+        if not combobox.get_model().iter_is_valid(_iter):
+            return
 
-            if value == last_value:
-                return
+        value = combobox.get_model().get_value(_iter, 1)
+        last_value = config[preference]
+        if value == last_value:
+            return
 
-            match preference:
-                case ('ANIMATION_MODE'|'SORT_ARCHIVE_ORDER'|'SORT_ARCHIVE_BY'|'SORT_ORDER'|'SORT_BY'):
-                    self.__window.filehandler.refresh_file()
-                case ('PIL_SCALING_FILTER'|'GDK_SCALING_FILTER'):
-                    self.__window.statusbar.update_image_scaling()
-                    self.__window.draw_image()
-                case ('VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'|'CHECKERED_BG_SIZE'):
-                    self.__window.draw_image()
-                case ('FIT_TO_SIZE_MODE'|'ZOOM_MODE'):
-                    self.__window.change_zoom_mode()
+        config[preference] = value
+
+        match preference:
+            case ('ANIMATION_MODE'|'SORT_ARCHIVE_ORDER'|'SORT_ARCHIVE_BY'|'SORT_ORDER'|'SORT_BY'):
+                self.__window.filehandler.refresh_file()
+            case ('PIL_SCALING_FILTER'|'GDK_SCALING_FILTER'):
+                self.__window.statusbar.update_image_scaling()
+                self.__window.draw_image()
+            case ('VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'|'CHECKERED_BG_SIZE'):
+                self.__window.draw_image()
+            case ('FIT_TO_SIZE_MODE'|'ZOOM_MODE'):
+                self.__window.change_zoom_mode()
 
     def _create_combobox(self, options: tuple, preference: str):
         """
