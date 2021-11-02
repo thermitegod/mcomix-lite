@@ -139,13 +139,13 @@ class ImageHandler:
     def get_current_path(self):
         # Get current image path
         try:
-            try:
-                return self.__image_files[self.__current_image_index]
-            except TypeError:
+            if self.__current_image_index is None:
                 return self.__image_files[0]
+
+            return self.__image_files[self.__current_image_index]
         except IndexError:
             logger.warning(f'failed to get current image path')
-            return ''
+            return Path()
 
     def get_real_path(self):
         """

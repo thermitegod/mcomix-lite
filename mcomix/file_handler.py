@@ -288,11 +288,7 @@ class FileHandler:
         if self.__is_archive:
             return self.__base_path
 
-        filename = Path() / self.__window.imagehandler.get_current_path()
-        if filename:
-            return filename.parent
-
-        return None
+        return self.__window.imagehandler.get_current_path().parent
 
     def get_base_filename(self):
         """
