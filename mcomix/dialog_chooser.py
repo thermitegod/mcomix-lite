@@ -2,12 +2,23 @@
 
 from __future__ import annotations
 
+from enum import Enum, auto
+
 from mcomix.about_dialog import AboutDialog
 from mcomix.enhance_dialog import EnhanceImageDialog
 from mcomix.file_chooser import FileChooser
 from mcomix.keybindings_dialog import KeybindingEditorDialog
 from mcomix.preferences_dialog import PreferencesDialog
 from mcomix.properties_dialog import PropertiesDialog
+
+
+class DialogChoice(Enum):
+    ABOUT = auto()
+    ENHANCE = auto()
+    FILECHOOSER = auto()
+    KEYBINDINGS = auto()
+    PREFERENCES = auto()
+    PROPERTIES = auto()
 
 
 class DialogChooser:
@@ -18,23 +29,20 @@ class DialogChooser:
         super().__init__()
 
         self.__dialog = None
-        self.__dialog_chosen = None
 
         match dialog:
-            case 'about':
+            case DialogChoice.ABOUT:
                 self.__dialog_chosen = AboutDialog
-            case 'enhance':
+            case DialogChoice.ENHANCE:
                 self.__dialog_chosen = EnhanceImageDialog
-            case 'file_chooser':
+            case DialogChoice.FILECHOOSER:
                 self.__dialog_chosen = FileChooser
-            case 'keybindings':
+            case DialogChoice.KEYBINDINGS:
                 self.__dialog_chosen = KeybindingEditorDialog
-            case 'preferences':
+            case DialogChoice.PREFERENCES:
                 self.__dialog_chosen = PreferencesDialog
-            case 'properties':
+            case DialogChoice.PROPERTIES:
                 self.__dialog_chosen = PropertiesDialog
-            case _:
-                raise ValueError
 
     def open_dialog(self, window):
         """

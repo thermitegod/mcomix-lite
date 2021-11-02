@@ -11,7 +11,7 @@ from send2trash import send2trash
 
 from mcomix.bookmark_backend import BookmarkBackend
 from mcomix.cursor_handler import CursorHandler
-from mcomix.dialog_chooser import DialogChooser
+from mcomix.dialog_chooser import DialogChooser, DialogChoice
 from mcomix.enhance_backend import ImageEnhancer
 from mcomix.enums.double_page import DoublePage
 from mcomix.enums.mcomix import Mcomix
@@ -579,27 +579,27 @@ class MainWindow(Gtk.ApplicationWindow):
         self.draw_image()
 
     def open_dialog_about(self, *args):
-        dialog = DialogChooser('about')
+        dialog = DialogChooser(DialogChoice.ABOUT)
         dialog.open_dialog(self)
 
     def open_dialog_enhance(self, *args):
-        dialog = DialogChooser('enhance')
+        dialog = DialogChooser(DialogChoice.ENHANCE)
         dialog.open_dialog(self)
 
     def open_dialog_file_chooser(self, *args):
-        dialog = DialogChooser('file_chooser')
+        dialog = DialogChooser(DialogChoice.FILECHOOSER)
         dialog.open_dialog(self)
 
     def open_dialog_keybindings(self, *args):
-        dialog = DialogChooser('keybindings')
+        dialog = DialogChooser(DialogChoice.KEYBINDINGS)
         dialog.open_dialog(self)
 
     def open_dialog_preference(self, *args):
-        dialog = DialogChooser('preferences')
+        dialog = DialogChooser(DialogChoice.PREFERENCES)
         dialog.open_dialog(self)
 
     def open_dialog_properties(self, *args):
-        dialog = DialogChooser('properties')
+        dialog = DialogChooser(DialogChoice.PROPERTIES)
         dialog.open_dialog(self)
 
     def change_keep_transformation(self, *args):
