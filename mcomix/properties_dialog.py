@@ -9,7 +9,6 @@ from pathlib import Path
 from gi.repository import Gtk
 
 from mcomix.file_size import FileSize
-from mcomix.preferences import config
 from mcomix.properties_page import PropertiesPage
 
 
@@ -23,14 +22,15 @@ class PropertiesDialog(Gtk.Dialog):
         self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT)
 
         self.__window = window
-        self.resize(config['PROPERTIES_WIDTH'], config['PROPERTIES_HEIGHT'])
+        self.resize(870, 560)
+        self.set_border_width(2)
         self.set_resizable(True)
         self.set_default_response(Gtk.ResponseType.CLOSE)
 
         self.__notebook = Gtk.Notebook()
         self.vbox.pack_start(self.__notebook, True, True, 0)
-        self.set_border_width(4)
-        self.__notebook.set_border_width(6)
+
+        self.__notebook.set_border_width(2)
 
         self.__archive_page = PropertiesPage()
         self.__image_page = PropertiesPage()
@@ -97,8 +97,8 @@ class PropertiesDialog(Gtk.Dialog):
     def _update_page_image(self, page, page_number: int = None):
         if not self.__window.imagehandler.page_is_available(page_number):
             return
-        size = config['PROPERTIES_THUMB_SIZE']
-        thumb = self.__window.imagehandler.get_thumbnail(page=page_number, size=(size, size))
+        thumb_size = 256
+        thumb = self.__window.imagehandler.get_thumbnail(page=page_number, size=(thumb_size, thumb_size))
         page.set_thumbnail(thumb)
 
     def _update_page_secondary_info(self, page, path: Path):

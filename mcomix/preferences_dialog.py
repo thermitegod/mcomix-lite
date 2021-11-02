@@ -52,9 +52,6 @@ class PreferencesDialog(Gtk.Dialog):
         notebook.append_page(self._init_display_tab(),
                              Gtk.Label(label='Display'))
 
-        notebook.append_page(self._init_dialog_tab(),
-                             Gtk.Label(label='Dialog'))
-
         notebook.append_page(self._init_animation_tab(),
                              Gtk.Label(label='Animation'))
 
@@ -157,6 +154,12 @@ class PreferencesDialog(Gtk.Dialog):
         # ----------------------------------------------------------------
         page = PreferencePage()
 
+        page.new_section('Window')
+
+        page.add_row(self._create_pref_check_button(
+            'Save main window size',
+            'WINDOW_SAVE'))
+
         page.new_section('Fullscreen')
 
         page.add_row(self._create_pref_check_button(
@@ -227,71 +230,6 @@ class PreferencesDialog(Gtk.Dialog):
         page.add_row(self._create_pref_check_button(
             'Show bookmark path in bookmark menu',
             'BOOKMARK_SHOW_PATH'))
-
-        return page
-
-    def _init_dialog_tab(self):
-        # ----------------------------------------------------------------
-        # The "Display" tab.
-        # ----------------------------------------------------------------
-        page = PreferencePage()
-
-        page.new_section('Bookmark')
-
-        page.add_row(Gtk.Label(label='Bookmark dialog size (width):'),
-                     self._create_pref_spinner(
-                         'BOOKMARK_WIDTH',
-                         1, 480, 10000, 10, 10, 0))
-
-        page.add_row(Gtk.Label(label='Bookmark dialog size (height):'),
-                     self._create_pref_spinner(
-                         'BOOKMARK_HEIGHT',
-                         1, 320, 10000, 10, 10, 0))
-
-        page.new_section('Properties')
-
-        page.add_row(Gtk.Label(label='Properties dialog size (width):'),
-                     self._create_pref_spinner(
-                         'PROPERTIES_WIDTH',
-                         1, 480, 10000, 10, 10, 0))
-
-        page.add_row(Gtk.Label(label='Properties dialog size (height):'),
-                     self._create_pref_spinner(
-                         'PROPERTIES_HEIGHT',
-                         1, 320, 10000, 10, 10, 0))
-
-        page.add_row(Gtk.Label(label='Properties thumb size:'),
-                     self._create_pref_spinner(
-                         'PROPERTIES_THUMB_SIZE',
-                         1, 32, 1024, 1, 10, 0))
-
-        page.new_section('Page Selector')
-
-        page.add_row(Gtk.Label(label='window size (width):'),
-                     self._create_pref_spinner(
-                         'PAGESELECTOR_WIDTH',
-                         1, 560, 10000, 10, 10, 0))
-
-        page.add_row(Gtk.Label(label='window size (height):'),
-                     self._create_pref_spinner(
-                         'PAGESELECTOR_HEIGHT',
-                         1, 820, 10000, 10, 10, 0))
-
-        page.new_section('Main Window')
-
-        page.add_row(self._create_pref_check_button(
-            'Save window size',
-            'WINDOW_SAVE'))
-
-        page.add_row(Gtk.Label(label='window size (width):'),
-                     self._create_pref_spinner(
-                         'WINDOW_WIDTH',
-                         1, 480, 10000, 10, 10, 0))
-
-        page.add_row(Gtk.Label(label='window size (height):'),
-                     self._create_pref_spinner(
-                         'WINDOW_HEIGHT',
-                         1, 320, 10000, 10, 10, 0))
 
         return page
 

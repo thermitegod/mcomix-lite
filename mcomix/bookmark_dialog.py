@@ -97,6 +97,7 @@ class BookmarksDialog(Gtk.Dialog):
 
         self.connect('response', self._response)
         self.connect('delete_event', self._close)
+        self.connect('configure-event', self._size_changed_cb)
 
         treeview.connect('key_press_event', self._key_press_event)
         treeview.connect('row_activated', self._bookmark_activated)
@@ -165,6 +166,10 @@ class BookmarksDialog(Gtk.Dialog):
     def _key_press_event(self, dialog, event, *args):
         if event.keyval == Gdk.KEY_Delete:
             self._remove_selected()
+
+    def _size_changed_cb(self, *args):
+        config['BOOKMARK_WIDTH'] = self.get_allocation().width
+        config['BOOKMARK_HEIGHT'] = self.get_allocation().height
 
     def _close(self, *args):
         """
