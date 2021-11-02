@@ -71,7 +71,7 @@ class Extractor:
                 error_callback=self._error_cb)
 
     @Callback
-    def contents_listed(self, extractor, files: set):
+    def contents_listed(self, extractor, files: list):
         """
         Called after the contents of the archive has been listed
         """
@@ -79,7 +79,7 @@ class Extractor:
         pass
 
     @Callback
-    def file_extracted(self, extractor, filename: str):
+    def file_extracted(self, extractor, filename: Path):
         """
         Called whenever a new file is extracted and ready
         """
@@ -96,7 +96,7 @@ class Extractor:
         if self.__extractor:
             self.__extractor.close()
 
-    def _extraction_finished(self, name: str):
+    def _extraction_finished(self, name: Path):
         if self.__threadpool.closed:
             return True
 
@@ -114,7 +114,7 @@ class Extractor:
         return [image for image in self.__extractor.iter_contents()
                 if ImageSupported.is_image_file(image)]
 
-    def _list_contents_cb(self, files: set):
+    def _list_contents_cb(self, files: list):
         self.contents_listed(self, files)
 
     def _error_cb(self, name, etype, value, tb):
