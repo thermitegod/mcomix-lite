@@ -11,12 +11,7 @@ from send2trash import send2trash
 
 from mcomix.bookmark_backend import BookmarkBackend
 from mcomix.cursor_handler import CursorHandler
-from mcomix.dialog.dialog_about import DialogAbout
-from mcomix.dialog.dialog_enhance import DialogEnhance
-from mcomix.dialog.dialog_file_chooser import DialogFileChooser
-from mcomix.dialog.dialog_keybindigs import DialogKeybindings
-from mcomix.dialog.dialog_preferences import DialogPreference
-from mcomix.dialog.dialog_properties import DialogProperties
+from mcomix.dialog_chooser import DialogChooser
 from mcomix.enhance_backend import ImageEnhancer
 from mcomix.enums.double_page import DoublePage
 from mcomix.enums.mcomix import Mcomix
@@ -583,23 +578,29 @@ class MainWindow(Gtk.ApplicationWindow):
         self.zoom.set_scale_up(config['STRETCH'])
         self.draw_image()
 
-    def open_dialog_file_chooser(self, *args):
-        DialogFileChooser().open_dialog(self)
-
-    def open_dialog_properties(self, *args):
-        DialogProperties().open_dialog(self)
-
-    def open_dialog_preference(self, *args):
-        DialogPreference().open_dialog(self)
-
-    def open_dialog_keybindings(self, *args):
-        DialogKeybindings().open_dialog(self)
+    def open_dialog_about(self, *args):
+        dialog = DialogChooser('about')
+        dialog.open_dialog(self)
 
     def open_dialog_enhance(self, *args):
-        DialogEnhance().open_dialog(self)
+        dialog = DialogChooser('enhance')
+        dialog.open_dialog(self)
 
-    def open_dialog_about(self, *args):
-        DialogAbout().open_dialog(self)
+    def open_dialog_file_chooser(self, *args):
+        dialog = DialogChooser('file_chooser')
+        dialog.open_dialog(self)
+
+    def open_dialog_keybindings(self, *args):
+        dialog = DialogChooser('keybindings')
+        dialog.open_dialog(self)
+
+    def open_dialog_preference(self, *args):
+        dialog = DialogChooser('preferences')
+        dialog.open_dialog(self)
+
+    def open_dialog_properties(self, *args):
+        dialog = DialogChooser('properties')
+        dialog.open_dialog(self)
 
     def change_keep_transformation(self, *args):
         config['KEEP_TRANSFORMATION'] = not config['KEEP_TRANSFORMATION']
