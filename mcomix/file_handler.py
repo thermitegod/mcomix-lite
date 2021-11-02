@@ -49,7 +49,6 @@ class FileHandler:
         self.__file_provider_chooser = GetFileProvider()
         self.__file_provider = None
 
-        self.__filelist = None
         self.__start_page = 0
 
         self.__open_first_page = None
@@ -85,7 +84,6 @@ class FileHandler:
 
         self._close()
 
-        self.__filelist = self.__file_provider.list_files(mode=FileTypes.IMAGES)
         self.__is_archive = ArchiveSupported.is_archive_file(path)
         self.__start_page = start_page
         self.__current_file = path
@@ -95,8 +93,9 @@ class FileHandler:
             self._open_archive(self.__current_file)
             self.__file_loading = True
         else:
+            image_files = self.__file_provider.list_files(mode=FileTypes.IMAGES)
             self.__base_path = self.__file_provider.get_directory()
-            self._archive_opened(self.__filelist)
+            self._archive_opened(image_files)
 
         return True
 
@@ -114,12 +113,12 @@ class FileHandler:
 
         if not self.__is_archive:
             # If no extraction is required, mark all files as available.
-            for img in self.__filelist:
+            for img in image_files:
                 self.file_available(img)
 
             # Set current page to current file.
-            if self.__current_file in self.__filelist:
-                current_image_index = self.__filelist.index(self.__current_file)
+            if self.__current_file in image_files:
+                current_image_index = image_files.index(self.__current_file)
             else:
                 current_image_index = 0
         else:
@@ -213,13 +212,13 @@ class FileHandler:
             logger.error(f'Exception: {ex}')
             raise
 
-    def _listed_contents(self, extractor, files: list):
+    def _listed_contents(self, extractor, image_files: list):
         if not self.__file_loading:
             return
         self.__file_loading = False
 
-        self._sort_archive_images(files)
-        self._archive_opened(files)
+        self._sort_archive_images(image_files)
+        self._archive_opened(image_files)
 
     def _sort_archive_images(self, filelist: list):
         """
