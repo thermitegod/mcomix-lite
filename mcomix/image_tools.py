@@ -89,8 +89,8 @@ class _ImageTools:
 
         rotation %= 360
 
-        if rotation not in (0, 90, 180, 270):
-            raise ValueError(f'unsupported rotation: {rotation}')
+        # if rotation not in (0, 90, 180, 270):
+        #     raise ValueError(f'unsupported rotation: {rotation}')
 
         if rotation in (90, 270):
             width, height = height, width
