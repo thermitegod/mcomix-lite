@@ -11,6 +11,8 @@ from mcomix.bookmark_menu import BookmarksMenu
 
 
 class Menubar(Gtk.EventBox):
+    __slots__ = ()
+
     def __init__(self, window):
         super().__init__()
 
@@ -19,7 +21,7 @@ class Menubar(Gtk.EventBox):
 
         @dataclass(frozen=True)
         class MENUBAR:
-            __slots__ = ['label', 'create_function', 'callback']
+            __slots__ = ('label', 'create_function', 'callback')
             label: str
             create_function: Callable
             callback: Callable

@@ -6,6 +6,8 @@ from mcomix.message_dialog import MessageDialog
 
 
 class MessageDialogInfo:
+    __slots__ = ()
+
     def __init__(self, window, primary: str = None, secondary: str = None):
         """
         Creates a dialog window that only shows a message.

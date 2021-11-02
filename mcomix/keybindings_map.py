@@ -10,6 +10,8 @@ from mcomix.preferences import config
 
 
 class KeyBindingsMap:
+    __slots__ = ('BINDINGS',)
+
     def __init__(self, window):
         super().__init__()
 
@@ -26,24 +28,24 @@ class KeyBindingsMap:
 
         @dataclass(frozen=True)
         class INFO:
-            __slots__ = ['group', 'title']
+            __slots__ = ('group', 'title')
             group: str
             title: str
 
         @dataclass(frozen=True)
         class KEYBINDINGS:
-            __slots__ = ['keybindings']
+            __slots__ = ('keybindings')
             keybindings: list
 
         @dataclass(frozen=True)
         class KEY_EVENT:
-            __slots__ = ['callback', 'callback_kwargs']
+            __slots__ = ('callback', 'callback_kwargs')
             callback: Callable
             callback_kwargs: dict
 
         @dataclass(frozen=True)
         class MAP:
-            __slots__ = ['info', 'keybindings', 'key_event']
+            __slots__ = ('info', 'keybindings', 'key_event')
             info: INFO
             keybindings: KEYBINDINGS
             key_event: KEY_EVENT

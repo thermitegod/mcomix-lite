@@ -12,6 +12,8 @@ class PropertiesPage(Gtk.ScrolledWindow):
     A page to put in the Gtk.Notebook. Contains info about a file, image, or archive.)
     """
 
+    __slots__ = ('__vbox', '__thumb', '__insidebox', '__mainbox', '__extrabox')
+
     def __init__(self):
         super().__init__()
 

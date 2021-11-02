@@ -14,6 +14,8 @@ class PreDefinedFileProvider(FileProvider):
     Returns only a list of files as passed to the constructor
     """
 
+    __slots__ = ('__files',)
+
     def __init__(self, files: list):
         """
         <files> is a list of files that should be shown. The list is filtered

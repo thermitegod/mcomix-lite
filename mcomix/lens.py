@@ -22,6 +22,8 @@ class MagnifyingLens:
     module as it uses implementation details not in the interface
     """
 
+    __slots__ = ('__window', '__enabled', '__point', '__last_lens_rect')
+
     def __init__(self, window):
         super().__init__()
 

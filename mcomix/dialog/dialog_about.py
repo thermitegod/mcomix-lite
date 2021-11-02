@@ -5,6 +5,8 @@ from mcomix.dialog.dialog_base import DialogBase
 
 
 class DialogAbout(DialogBase):
+    __slots__ = ()
+
     def __init__(self):
         super().__init__()
 

@@ -5,6 +5,8 @@ from mcomix.preferences_dialog import PreferencesDialog
 
 
 class DialogPreference(DialogBase):
+    __slots__ = ()
+
     def __init__(self):
         super().__init__()
 

@@ -10,6 +10,8 @@ from mcomix.enums.config_files import ConfigPaths
 
 
 class _ConfigBackend:
+    __slots__ = ('__stored_config_hash',)
+
     def __init__(self):
         super().__init__()
 

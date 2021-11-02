@@ -12,6 +12,8 @@ class LibarchiveExtractor(BaseArchive):
     libarchive file extractor
     """
 
+    __slots__ = ()
+
     def __init__(self, archive: Path):
         super().__init__(archive)
 

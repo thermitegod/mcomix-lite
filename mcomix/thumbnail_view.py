@@ -17,6 +17,9 @@ class ThumbnailTreeView(Gtk.TreeView):
     as it depends on methods provided by the view classes
     """
 
+    __slots__ = ('__uid_column', '__pixbuf_column', '__status_column',
+                 '__threadpool', '__lock', '__done', '__taskid')
+
     def __init__(self, model, uid_column: int, pixbuf_column: int, status_column: int):
         """
         Constructs a new ThumbnailView.

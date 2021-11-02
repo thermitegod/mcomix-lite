@@ -13,6 +13,8 @@ class ImageEnhancer:
     can be made using an _EnhanceImageDialog
     """
 
+    __slots__ = ('__window', 'brightness', 'contrast', 'saturation', 'sharpness', 'autocontrast')
+
     def __init__(self, window):
         super().__init__()
 

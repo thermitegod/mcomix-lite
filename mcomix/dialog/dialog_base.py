@@ -2,6 +2,9 @@
 
 
 class DialogBase:
+
+    __slots__ = ('dialog',)
+
     def __init__(self):
         super().__init__()
 

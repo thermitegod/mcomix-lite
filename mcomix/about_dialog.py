@@ -12,6 +12,8 @@ from mcomix.image_tools import ImageTools
 
 
 class AboutDialog(Gtk.AboutDialog):
+    __slots__ = ('__window',)
+
     def __init__(self, window):
         super().__init__(title='About')
 

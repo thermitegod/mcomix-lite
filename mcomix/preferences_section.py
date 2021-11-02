@@ -10,6 +10,8 @@ class PreferenceSection(Gtk.VBox):
     and a number of rows which are indented with respect to that header
     """
 
+    __slots__ = ('__right_column_width', '__contentbox')
+
     def __init__(self, header, right_column_width: int = None):
         """
         Contruct a new section with the header set to the text in

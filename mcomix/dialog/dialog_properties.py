@@ -5,6 +5,8 @@ from mcomix.properties_dialog import PropertiesDialog
 
 
 class DialogProperties(DialogBase):
+    __slots__ = ()
+
     def __init__(self):
         super().__init__()
 

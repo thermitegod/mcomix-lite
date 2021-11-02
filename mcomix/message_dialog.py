@@ -10,6 +10,8 @@ from mcomix.preferences import config
 
 
 class MessageDialog(Gtk.MessageDialog):
+    __slots__ = ('__dialog_id', '__choices', '__remember_checkbox')
+
     def __init__(self, window, flags: int = 0, message_type: int = 0, buttons: int = 0):
         """
         Creates a dialog window.

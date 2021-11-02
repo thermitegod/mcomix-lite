@@ -14,6 +14,11 @@ from mcomix.preferences import config
 
 
 class Statusbar(Gtk.EventBox):
+    __slots__ = ('__sep', '__status', '__context_id', '__context_menu',
+                 '__total_page_numbers', '__total_file_numbers', '__page_resolution',
+                 '__archive_filename', '__page_filename', '__page_filesize', '__archive_filesize',
+                 '__image_scaling', '__current_view_mode')
+
     def __init__(self):
         super().__init__()
 
@@ -37,7 +42,7 @@ class Statusbar(Gtk.EventBox):
 
         @dataclass(frozen=True)
         class STATUSBAR:
-            __slots__ = ['label', 'config_key', 'callback']
+            __slots__ = ('label', 'config_key', 'callback')
             label: str
             config_key: str
             callback: Callable

@@ -10,6 +10,8 @@ from mcomix.lib.reader import LockedFileIO
 
 
 class Thumbnailer:
+    __slots__ = ()
+
     def __init__(self):
         """
         The Thumbnailer class is responsible for thumbnail creation.

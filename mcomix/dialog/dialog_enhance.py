@@ -5,6 +5,8 @@ from mcomix.enhance_dialog import EnhanceImageDialog
 
 
 class DialogEnhance(DialogBase):
+    __slots__ = ()
+
     def __init__(self):
         super().__init__()
 

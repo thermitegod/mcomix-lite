@@ -13,6 +13,8 @@ class BookmarksDialog(Gtk.Dialog):
     BookmarksDialog lets the user remove or rearrange bookmarks
     """
 
+    __slots__ = ('__bookmarks_store', '__liststore', '__total_pos_sort', '__selection')
+
     def __init__(self, window, bookmarks_store):
         super().__init__(title='Edit Bookmarks', destroy_with_parent=True)
 

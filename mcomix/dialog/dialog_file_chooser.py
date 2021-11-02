@@ -5,6 +5,8 @@ from mcomix.file_chooser import FileChooser
 
 
 class DialogFileChooser(DialogBase):
+    __slots__ = ()
+
     def __init__(self):
         super().__init__()
 

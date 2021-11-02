@@ -15,6 +15,10 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
     A thumbnail sidebar including scrollbar for the main window
     """
 
+    __slots__ = ('__window', '__loaded', '__currently_selected_row', '__thumbnail_size',
+                 '__width_padding', '__empty_thumbnail', '__thumbnail_liststore', '__treeview',
+                 '__thumbnail_page_treeviewcolumn', '__text_cellrenderer', '__thumbnail_image_treeviewcolumn')
+
     # Thumbnail border width in pixels.
     def __init__(self, window):
         super().__init__()

@@ -33,6 +33,9 @@ from mcomix.enums.config_files import ConfigFiles
 
 
 class KeybindingManager:
+    __slots__ = ('__window', '__action_to_callback', '__action_to_bindings', '__binding_to_action',
+                 '__stored_action_bindings', '__keybindings_map', '__config_manager', '__keybindings_path')
+
     def __init__(self, window):
         super().__init__()
 

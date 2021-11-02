@@ -12,6 +12,9 @@ from mcomix.preferences import config
 
 
 class EventHandler:
+    __slots__ = ('__window', '__keybindings', '__keybindings_map', '__all_accels_mask',
+                 '__keymap', '__last_pointer_pos_x', '__last_pointer_pos_y')
+
     def __init__(self, window):
         super().__init__()
 

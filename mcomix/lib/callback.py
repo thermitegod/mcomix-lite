@@ -12,6 +12,8 @@ class CallbackList:
     Add listeners to method calls with method += callback_function
     """
 
+    __slots__ = ('__callbacks', '__object', '__function')
+
     def __init__(self, obj, function):
         super().__init__()
 

@@ -10,6 +10,8 @@ from mcomix.preferences import config
 
 
 class PreferenceManager:
+    __slots__ = ('__config_manager', '__config_path')
+
     def __init__(self):
         super().__init__()
 

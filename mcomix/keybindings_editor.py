@@ -6,6 +6,9 @@ from gi.repository import Gtk
 
 
 class KeybindingEditorWindow(Gtk.ScrolledWindow):
+    __slots__ = ('__window', '__keybindings', '__keybindings_map',
+                 '__accel_column_num', '__action_treeiter_map')
+
     def __init__(self, window):
         """
         :param keymanager: KeybindingManager instance

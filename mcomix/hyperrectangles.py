@@ -6,6 +6,8 @@ import operator
 
 
 class Box:
+    __slots__ = ('__position', '__size')
+
     def __init__(self, position, size=None):
         """
         A Box is immutable and always axis-aligned.

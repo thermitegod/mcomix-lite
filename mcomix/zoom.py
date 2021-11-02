@@ -16,6 +16,10 @@ class ZoomModel:
     Handles zoom and fit modes
     """
 
+    __slots__ = ('__identity_zoom', '__identity_zoom_log', '__user_zoom_log_scale1',
+                 '__min_user_zoom_log', '__max_user_zoom_log', '__user_zoom_log',
+                 '__fitmode', '__scale_up')
+
     def __init__(self):
         super().__init__()
 

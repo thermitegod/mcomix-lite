@@ -14,6 +14,8 @@ from mcomix.properties_page import PropertiesPage
 
 
 class PropertiesDialog(Gtk.Dialog):
+    __slots__ = ('__window', '__notebook', '__archive_page', '__image_page')
+
     def __init__(self, window):
         super().__init__(title='Properties')
 

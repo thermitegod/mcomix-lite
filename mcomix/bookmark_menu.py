@@ -15,6 +15,8 @@ class BookmarksMenu(Gtk.Menu):
     as dynamic items corresponding to the current bookmarks
     """
 
+    __slots__ = ('__window',)
+
     def __init__(self, window):
         super().__init__()
 
