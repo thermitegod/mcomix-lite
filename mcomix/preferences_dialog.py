@@ -9,7 +9,6 @@ from mcomix.enums.double_page import DoublePage
 from mcomix.enums.file_sort import FileSortDirection, FileSortType
 from mcomix.enums.image_scaling import ScalingGDK, ScalingPIL
 from mcomix.enums.zoom_modes import ZoomModes
-from mcomix.keybindings_editor import KeybindingEditorWindow
 from mcomix.preferences import config
 from mcomix.preferences_page import PreferencePage
 
@@ -20,54 +19,47 @@ class PreferencesDialog(Gtk.Dialog):
     saved between sessions are presented to the user
     """
 
-    __slots__ = ('__window', '__reset_button', '__notebook', '__shortcuts')
+    __slots__ = ('__window', '__reset_button')
 
     def __init__(self, window):
         super().__init__(title='Preferences')
 
+        self.__window = window
+
         self.set_modal(True)
         self.set_transient_for(window)
 
-        # Button text is set later depending on active tab
-        self.__reset_button = self.add_button('', Gtk.ResponseType.REJECT)
+        self.__reset_button = self.add_button('Clear _dialog choices', Gtk.ResponseType.REJECT)
+        self.__reset_button.set_sensitive(len(config['STORED_DIALOG_CHOICES']) > 0)
         self.add_button(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
 
-        self.__window = window
-        self.set_resizable(True)
+        self.set_resizable(False)
         self.set_default_response(Gtk.ResponseType.CLOSE)
-
-        self.__keybindings = self.__window.keybindings
 
         self.connect('response', self._response)
 
-        self.__notebook = Gtk.Notebook()
-        self.vbox.pack_start(self.__notebook, True, True, 0)
+        notebook = Gtk.Notebook()
+        self.vbox.pack_start(notebook, True, True, 0)
         self.set_border_width(2)
-        self.__notebook.set_border_width(2)
+        notebook.set_border_width(2)
 
-        self.__notebook.append_page(self._init_appearance_tab(),
-                                    Gtk.Label(label='Appearance'))
+        notebook.append_page(self._init_appearance_tab(),
+                             Gtk.Label(label='Appearance'))
 
-        self.__notebook.append_page(self._init_behaviour_tab(),
-                                    Gtk.Label(label='Behaviour'))
+        notebook.append_page(self._init_behaviour_tab(),
+                             Gtk.Label(label='Behaviour'))
 
-        self.__notebook.append_page(self._init_display_tab(),
-                                    Gtk.Label(label='Display'))
+        notebook.append_page(self._init_display_tab(),
+                             Gtk.Label(label='Display'))
 
-        self.__notebook.append_page(self._init_dialog_tab(),
-                                    Gtk.Label(label='Dialog'))
+        notebook.append_page(self._init_dialog_tab(),
+                             Gtk.Label(label='Dialog'))
 
-        self.__notebook.append_page(self._init_animation_tab(),
-                                    Gtk.Label(label='Animation'))
+        notebook.append_page(self._init_animation_tab(),
+                             Gtk.Label(label='Animation'))
 
-        self.__notebook.append_page(self._init_advanced_tab(),
-                                    Gtk.Label(label='Advanced'))
-
-        self.__shortcuts = self._init_shortcuts_tab()
-        self.__notebook.append_page(self.__shortcuts,
-                                    Gtk.Label(label='Shortcuts'))
-
-        self.__notebook.connect('switch-page', self._tab_page_changed)
+        notebook.append_page(self._init_advanced_tab(),
+                             Gtk.Label(label='Advanced'))
 
         self.show_all()
 
@@ -388,43 +380,15 @@ class PreferencesDialog(Gtk.Dialog):
 
         return page
 
-    def _init_shortcuts_tab(self):
-        # ----------------------------------------------------------------
-        # The "Shortcuts" tab.
-        # ----------------------------------------------------------------
-        page = KeybindingEditorWindow(self.__window)
-
-        return page
-
-    def _tab_page_changed(self, notebook, page_ptr, page_num: int):
-        """
-        Dynamically switches the "Reset" button's text
-        depending on the currently selected tab page
-        """
-
-        if notebook.get_nth_page(page_num) == self.__shortcuts:
-            self.__reset_button.set_label('_Reset keys')
-            self.__reset_button.set_sensitive(True)
-        else:
-            self.__reset_button.set_label('Clear _dialog choices')
-            self.__reset_button.set_sensitive(len(config['STORED_DIALOG_CHOICES']) > 0)
-
     def _response(self, dialog, response):
-        if response == Gtk.ResponseType.REJECT:
-            if self.__notebook.get_nth_page(self.__notebook.get_current_page()) == self.__shortcuts:
-                # "Shortcuts" page is active, reset all keys to their default value
-                self.__keybindings.reset_keybindings()
-                self.__window.event_handler.register_key_events()
-                self.__keybindings.write_keybindings_file()
-                self.__shortcuts.refresh_model()
-            else:
+        match response:
+            case Gtk.ResponseType.REJECT:
                 # Reset stored choices
                 config['STORED_DIALOG_CHOICES'] = {}
                 self.__reset_button.set_sensitive(False)
 
-        else:
-            # Other responses close the dialog, e.g. clicking the X icon on the dialog.
-            self.destroy()
+            case _:
+                self.destroy()
 
     def _create_combobox_checkered_bg_size(self):
         """

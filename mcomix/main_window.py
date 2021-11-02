@@ -14,6 +14,7 @@ from mcomix.cursor_handler import CursorHandler
 from mcomix.dialog.dialog_about import DialogAbout
 from mcomix.dialog.dialog_enhance import DialogEnhance
 from mcomix.dialog.dialog_file_chooser import DialogFileChooser
+from mcomix.dialog.dialog_keybindigs import DialogKeybindings
 from mcomix.dialog.dialog_preferences import DialogPreference
 from mcomix.dialog.dialog_properties import DialogProperties
 from mcomix.enhance_backend import ImageEnhancer
@@ -590,6 +591,9 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def open_dialog_preference(self, *args):
         DialogPreference().open_dialog(self)
+
+    def open_dialog_keybindings(self, *args):
+        DialogKeybindings().open_dialog(self)
 
     def open_dialog_enhance(self, *args):
         DialogEnhance().open_dialog(self)

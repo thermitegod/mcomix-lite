@@ -55,6 +55,7 @@ class Menubar(Gtk.EventBox):
 
         memu_edit_items = (
             MENUBAR('Preference', self._create_submenu_item, window.open_dialog_preference),
+            MENUBAR('Keybindings', self._create_submenu_item, window.open_dialog_keybindings),
         )
 
         self._populate_menu(items=memu_edit_items, menu=menu_edit)
