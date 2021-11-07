@@ -296,15 +296,6 @@ class FileHandler:
 
         return self.__base_path.parent
 
-    def get_base_filename(self):
-        """
-        Return the filename of the current base (archive filename or directory name)
-
-        :returns: filename of the current base
-        """
-
-        return self.get_path_to_base().name
-
     def get_current_filename(self):
         """
         Return a string with the name of the currently viewed file that is suitable for printing
