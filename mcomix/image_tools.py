@@ -126,6 +126,15 @@ class _ImageTools:
 
         return self.rotate_pixbuf(src, rotation)
 
+    def pil_has_alpha(self, im):
+        """
+        Returns True if PIL image has alpha channel
+        """
+
+        if im.mode in ('RGBA', 'LA', 'P'):
+            return True
+        return False
+
     def add_alpha_background(self, pixbuf, width: int, height: int, scaling_quality = None):
         if config['CHECKERED_BG_FOR_TRANSPARENT_IMAGES']:
             check_size = config['CHECKERED_BG_SIZE']
@@ -164,12 +173,7 @@ class _ImageTools:
         Return a pixbuf created from the PIL <im>
         """
 
-        if im.mode.startswith('RGB'):
-            has_alpha = im.mode == 'RGBA'
-        elif im.mode in ('LA', 'P'):
-            has_alpha = True
-        else:
-            has_alpha = False
+        has_alpha = self.pil_has_alpha(im)
 
         if has_alpha:
             target_mode = 'RGBA'

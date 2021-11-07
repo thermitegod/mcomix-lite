@@ -36,9 +36,8 @@ class Thumbnailer:
                 with Image.open(fio) as im:
                     im.thumbnail(size, resample=Image.BOX)
                     pixbuf = ImageTools.pil_to_pixbuf(im)
-                    if pixbuf.get_has_alpha():
-                        pixbuf = ImageTools.add_alpha_background(
-                            pixbuf, pixbuf.get_width(), pixbuf.get_height())
+                    if ImageTools.pil_has_alpha(im):
+                        pixbuf = ImageTools.add_alpha_background(pixbuf, pixbuf.get_width(), pixbuf.get_height())
         except Exception as ex:
             logger.error(f'Failed to create thumbnail for image: \'{filepath}\'')
             logger.error(f'Exception: {ex}')
