@@ -138,10 +138,6 @@ class FileHandler:
                 # the user for confirmation yet.
                 current_image_index = 0
 
-            if last_image_index != current_image_index:
-                # Bump last page closer to the front of the extractor queue.
-                self.__window.set_page(last_image_index + 1)
-
         self.__window.set_page(current_image_index + 1)
 
     @Callback
