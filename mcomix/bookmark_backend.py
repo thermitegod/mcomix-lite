@@ -70,7 +70,7 @@ class BookmarkBackend:
         Add the currently viewed page to the list
         """
 
-        path = self.__window.imagehandler.get_real_path()
+        path = self.__window.filehandler.get_real_path()
         current_page = self.__window.imagehandler.get_current_page()
         total_pages = self.__window.imagehandler.get_number_of_pages()
         date_added = datetime.today().timestamp()

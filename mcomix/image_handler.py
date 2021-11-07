@@ -142,16 +142,6 @@ class ImageHandler:
         self.__image_files_total = len(self.__image_files)
         self.__image_files_index = dict(zip(self.__image_files, range(self.__image_files_total), strict=True))
 
-    def get_real_path(self):
-        """
-        Return the "real" path to the currently viewed file, i.e. the
-        full path to the archive or the full path to the currently viewed image
-        """
-
-        if self.__window.filehandler.is_archive():
-            return self.__window.filehandler.get_path_to_base()
-        return self.get_path_to_page()
-
     def cleanup(self):
         """
         Run clean-up tasks. Should be called prior to exit

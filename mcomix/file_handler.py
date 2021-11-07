@@ -70,7 +70,7 @@ class FileHandler:
         """
 
         if self.__file_loaded:
-            current_file = Path.resolve(Path(self.__window.imagehandler.get_real_path()))
+            current_file = self.get_real_path()
             if self.__is_archive:
                 start_page = self.__window.imagehandler.get_current_page()
             else:
@@ -316,6 +316,17 @@ class FileHandler:
             return self.__base_path.name
 
         return self.__base_path.parent
+
+    def get_real_path(self):
+        """
+        Return the "real" path to the currently viewed file, i.e. the
+        full path to the archive or the full path to the currently viewed image
+        """
+
+        if self.__is_archive:
+            return self.__base_path
+
+        return self.__window.imagehandler.get_path_to_page()
 
     def open_archive_direction(self, forward: bool, *args):
         """

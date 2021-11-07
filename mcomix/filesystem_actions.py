@@ -80,7 +80,7 @@ class FileSystemActions:
         The currently opened file/archive will be moved to prefs['MOVE_FILE']
         """
 
-        current_file = self.__window.imagehandler.get_real_path()
+        current_file = self.__window.filehandler.get_real_path()
 
         target_dir = Path() / current_file.parent / config['MOVE_FILE']
         target_file = Path() / target_dir / current_file.name
@@ -106,7 +106,7 @@ class FileSystemActions:
         The currently opened file/archive will be trashed after showing a confirmation dialog
         """
 
-        current_file = self.__window.imagehandler.get_real_path()
+        current_file = self.__window.filehandler.get_real_path()
 
         dialog = MessageDialogRemember()
         dialog.add_buttons(
