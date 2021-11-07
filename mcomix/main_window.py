@@ -67,39 +67,39 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__layout = self.__dummy_layout
         self.__waiting_for_redraw = False
 
-        self.filehandler = FileHandler(self)
-        self.filehandler.file_closed += self._on_file_closed
-        self.filehandler.file_opened += self._on_file_opened
+        self.__filehandler = FileHandler(self)
+        self.__filehandler.file_closed += self._on_file_closed
+        self.__filehandler.file_opened += self._on_file_opened
 
-        self.imagehandler = ImageHandler(self)
-        self.imagehandler.page_available += self._page_available
+        self.__imagehandler = ImageHandler(self)
+        self.__imagehandler.page_available += self._page_available
 
-        self.bookmark_backend = BookmarkBackend(self)
+        self.__bookmark_backend = BookmarkBackend(self)
 
-        self.thumbnailsidebar = ThumbnailSidebar(self)
-        self.thumbnailsidebar.hide()
+        self.__thumbnailsidebar = ThumbnailSidebar(self)
+        self.__thumbnailsidebar.hide()
 
-        self.statusbar = Statusbar()
-        self.enhancer = ImageEnhancer(self)
+        self.__statusbar = Statusbar()
+        self.__enhancer = ImageEnhancer(self)
 
-        self.zoom = ZoomModel()
-        self.zoom.set_fit_mode(config['ZOOM_MODE'])
-        self.zoom.set_scale_up(config['STRETCH'])
-        self.zoom.reset_user_zoom()
+        self.__zoom = ZoomModel()
+        self.__zoom.set_fit_mode(config['ZOOM_MODE'])
+        self.__zoom.set_scale_up(config['STRETCH'])
+        self.__zoom.reset_user_zoom()
 
-        self.menubar = Menubar(self)
+        self.__menubar = Menubar(self)
 
-        self.event_handler = EventHandler(self)
+        self.__event_handler = EventHandler(self)
 
-        self.keybindings_map = KeyBindingsMap(self).BINDINGS
-        self.keybindings = KeybindingManager(self)
+        self.__keybindings_map = KeyBindingsMap(self).BINDINGS
+        self.__keybindings = KeybindingManager(self)
 
         # Hook up keyboard shortcuts
-        self.event_handler.event_handler_init()
-        self.event_handler.register_key_events()
+        self.__event_handler.event_handler_init()
+        self.__event_handler.register_key_events()
 
-        self.cursor_handler = CursorHandler(self)
-        self.lens = MagnifyingLens(self)
+        self.__cursor_handler = CursorHandler(self)
+        self.__lens = MagnifyingLens(self)
 
         self.__main_layout = Gtk.Layout()
         self.__main_scrolled_window = Gtk.ScrolledWindow()
@@ -110,10 +110,10 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__hadjust = self.__main_scrolled_window.get_hadjustment()
 
         grid = Gtk.Grid()
-        grid.attach(self.menubar, 0, 0, 2, 1)
-        grid.attach(self.thumbnailsidebar, 0, 1, 1, 1)
-        grid.attach_next_to(self.__main_scrolled_window, self.thumbnailsidebar, Gtk.PositionType.RIGHT, 1, 1)
-        grid.attach(self.statusbar, 0, 2, 2, 1)
+        grid.attach(self.__menubar, 0, 0, 2, 1)
+        grid.attach(self.__thumbnailsidebar, 0, 1, 1, 1)
+        grid.attach_next_to(self.__main_scrolled_window, self.__thumbnailsidebar, Gtk.PositionType.RIGHT, 1, 1)
+        grid.attach(self.__statusbar, 0, 2, 2, 1)
         self.add(grid)
 
         # XXX limited to at most 2 pages
@@ -123,9 +123,9 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # Each widget "eats" part of the main layout visible area.
         self.__toggle_axis = {
-            self.thumbnailsidebar: ZoomAxis.WIDTH.value,
-            self.statusbar: ZoomAxis.HEIGHT.value,
-            self.menubar: ZoomAxis.HEIGHT.value,
+            self.__thumbnailsidebar: ZoomAxis.WIDTH.value,
+            self.__statusbar: ZoomAxis.HEIGHT.value,
+            self.__menubar: ZoomAxis.HEIGHT.value,
         }
 
         self.__main_layout.set_events(Gdk.EventMask.BUTTON1_MOTION_MASK |
@@ -140,17 +140,17 @@ class MainWindow(Gtk.ApplicationWindow):
                                          Gdk.DragAction.MOVE)
 
         self.connect('delete_event', self.terminate_program)
-        self.connect('key_press_event', self.event_handler.key_press_event)
-        self.connect('configure_event', self.event_handler.resize_event)
-        self.connect('window-state-event', self.event_handler.window_state_event)
+        self.connect('key_press_event', self.__event_handler.key_press_event)
+        self.connect('configure_event', self.__event_handler.resize_event)
+        self.connect('window-state-event', self.__event_handler.window_state_event)
 
-        self.__main_layout.connect('button_release_event', self.event_handler.mouse_release_event)
-        self.__main_layout.connect('scroll_event', self.event_handler.scroll_wheel_event)
-        self.__main_layout.connect('button_press_event', self.event_handler.mouse_press_event)
-        self.__main_layout.connect('motion_notify_event', self.event_handler.mouse_move_event)
-        self.__main_layout.connect('drag_data_received', self.event_handler.drag_n_drop_event)
-        self.__main_layout.connect('motion-notify-event', self.lens.motion_event)
-        self.__main_layout.connect('motion-notify-event', self.cursor_handler.refresh)
+        self.__main_layout.connect('button_release_event', self.__event_handler.mouse_release_event)
+        self.__main_layout.connect('scroll_event', self.__event_handler.scroll_wheel_event)
+        self.__main_layout.connect('button_press_event', self.__event_handler.mouse_press_event)
+        self.__main_layout.connect('motion_notify_event', self.__event_handler.mouse_move_event)
+        self.__main_layout.connect('drag_data_received', self.__event_handler.drag_n_drop_event)
+        self.__main_layout.connect('motion-notify-event', self.__lens.motion_event)
+        self.__main_layout.connect('motion-notify-event', self.__cursor_handler.refresh)
 
         self.set_title(Mcomix.APP_NAME.value)
         self.restore_window_geometry()
@@ -161,8 +161,96 @@ class MainWindow(Gtk.ApplicationWindow):
         self.show_all()
 
         if open_path:
-            self.filehandler.initialize_fileprovider(path=open_path)
-            self.filehandler.open_file(Path(open_path[0]))
+            self.__filehandler.initialize_fileprovider(path=open_path)
+            self.__filehandler.open_file(Path(open_path[0]))
+
+    @property
+    def filehandler(self):
+        """
+        Interface for FileHandler
+        """
+
+        return self.__filehandler
+
+    @property
+    def imagehandler(self):
+        """
+        Interface for ImageHandler
+        """
+
+        return self.__imagehandler
+
+    @property
+    def bookmark_backend(self):
+        """
+        Interface for BookmarkBackend
+        """
+
+        return self.__bookmark_backend
+
+    @property
+    def thumbnailsidebar(self):
+        """
+        Interface for ThumbnailSidebar
+        """
+
+        return self.__thumbnailsidebar
+
+    @property
+    def statusbar(self):
+        """
+        Interface for Statusbar
+        """
+
+        return self.__statusbar
+
+    @property
+    def enhancer(self):
+        """
+        Interface for ImageEnhancer
+        """
+
+        return self.__enhancer
+
+    @property
+    def event_handler(self):
+        """
+        Interface for EventHandler
+        """
+
+        return self.__event_handler
+
+    @property
+    def keybindings_map(self):
+        """
+        Interface for KeyBindingsMap
+        """
+
+        return self.__keybindings_map
+
+    @property
+    def keybindings(self):
+        """
+        Interface for KeybindingManager
+        """
+
+        return self.__keybindings
+
+    @property
+    def cursor_handler(self):
+        """
+        Interface for CursorHandler
+        """
+
+        return self.__cursor_handler
+
+    @property
+    def lens(self):
+        """
+        Interface for MagnifyingLens
+        """
+
+        return self.__lens
 
     @property
     def layout(self):
@@ -205,14 +293,14 @@ class MainWindow(Gtk.ApplicationWindow):
         for i in self.images:
             i.clear()
 
-        if not self.filehandler.get_file_loaded():
-            self.thumbnailsidebar.hide()
+        if not self.__filehandler.get_file_loaded():
+            self.__thumbnailsidebar.hide()
             self.__waiting_for_redraw = False
             return
 
-        self.thumbnailsidebar.show()
+        self.__thumbnailsidebar.show()
 
-        if not self.imagehandler.page_is_available():
+        if not self.__imagehandler.page_is_available():
             # Save scroll destination for when the page becomes available.
             self.__last_scroll_destination = scroll_to
             self.__waiting_for_redraw = False
@@ -223,7 +311,7 @@ class MainWindow(Gtk.ApplicationWindow):
         # XXX limited to at most 2 pages
         pixbuf_count = 2 if self.displayed_double else 1
         pixbuf_count_iter = range(pixbuf_count)
-        pixbuf_list = list(self.imagehandler.get_pixbufs(pixbuf_count))
+        pixbuf_list = list(self.__imagehandler.get_pixbufs(pixbuf_count))
         do_not_transform = [ImageTools.disable_transform(x) for x in pixbuf_list]
         size_list = [[pixbuf.get_width(), pixbuf.get_height()] for pixbuf in pixbuf_list]
 
@@ -253,7 +341,7 @@ class MainWindow(Gtk.ApplicationWindow):
         # Recompute the visible area size
         viewport_size = self.get_visible_area_size()
         zoom_dummy_size = list(viewport_size)
-        scaled_sizes = self.zoom.get_zoomed_size(size_list, zoom_dummy_size, distribution_axis, do_not_transform)
+        scaled_sizes = self.__zoom.get_zoomed_size(size_list, zoom_dummy_size, distribution_axis, do_not_transform)
 
         self.__layout = FiniteLayout(scaled_sizes, viewport_size, orientation, distribution_axis, alignment_axis)
 
@@ -263,7 +351,7 @@ class MainWindow(Gtk.ApplicationWindow):
             rotation_list[i] = (rotation_list[i] + rotation) % 360
 
             pixbuf_list[i] = ImageTools.fit_pixbuf_to_rectangle(pixbuf_list[i], scaled_sizes[i], rotation_list[i])
-            pixbuf_list[i] = self.enhancer.enhance(pixbuf_list[i])
+            pixbuf_list[i] = self.__enhancer.enhance(pixbuf_list[i])
 
             ImageTools.set_from_pixbuf(self.images[i], pixbuf_list[i])
 
@@ -281,8 +369,8 @@ class MainWindow(Gtk.ApplicationWindow):
         resolutions = [(*size, scaled_size[0] / size[0]) for scaled_size, size in zip(scaled_sizes, size_list, strict=True)]
         if self.is_manga_mode:
             resolutions.reverse()
-        self.statusbar.set_resolution(resolutions)
-        self.statusbar.update()
+        self.__statusbar.set_resolution(resolutions)
+        self.__statusbar.update()
 
         self.__waiting_for_redraw = False
 
@@ -292,26 +380,26 @@ class MainWindow(Gtk.ApplicationWindow):
         even when the page pixbuf(s) aren't ready yet
         """
 
-        page = self.imagehandler.get_current_page()
+        page = self.__imagehandler.get_current_page()
         if not page:
             return
 
         if self.displayed_double:
-            filenames = self.imagehandler.get_page_filename(page=page, double_mode=True, manga=self.is_manga_mode)
-            filesizes = self.imagehandler.get_page_filesize(page=page, double_mode=True, manga=self.is_manga_mode)
+            filenames = self.__imagehandler.get_page_filename(page=page, double_mode=True, manga=self.is_manga_mode)
+            filesizes = self.__imagehandler.get_page_filesize(page=page, double_mode=True, manga=self.is_manga_mode)
         else:
-            filenames = self.imagehandler.get_page_filename(page=page)
-            filesizes = self.imagehandler.get_page_filesize(page=page)
+            filenames = self.__imagehandler.get_page_filename(page=page)
+            filesizes = self.__imagehandler.get_page_filesize(page=page)
 
         filename = ', '.join(filenames)
         filesize = ', '.join(filesizes)
 
-        self.statusbar.set_page_number(page, self.imagehandler.get_number_of_pages(),
+        self.__statusbar.set_page_number(page, self.__imagehandler.get_number_of_pages(),
                                        self.displayed_double, self.is_manga_mode)
-        self.statusbar.set_filename(filename)
-        self.statusbar.set_filesize(filesize)
+        self.__statusbar.set_filename(filename)
+        self.__statusbar.set_filesize(filesize)
 
-        self.statusbar.update()
+        self.__statusbar.update()
 
     def _get_virtual_double_page(self, page: int = None):
         """
@@ -325,22 +413,22 @@ class MainWindow(Gtk.ApplicationWindow):
         """
 
         if page is None:
-            page = self.imagehandler.get_current_page()
+            page = self.__imagehandler.get_current_page()
 
         if (page == 1 and
                 config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & DoublePage.AS_ONE_TITLE.value and
-                self.filehandler.is_archive()):
+                self.__filehandler.is_archive()):
             return True
 
         if (not config['DEFAULT_DOUBLE_PAGE'] or
                 not config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & DoublePage.AS_ONE_WIDE.value or
-                self.imagehandler.is_last_page(page)):
+                self.__imagehandler.is_last_page(page)):
             return False
 
         for page in (page, page + 1):
-            if not self.imagehandler.page_is_available(page):
+            if not self.__imagehandler.page_is_available(page):
                 return False
-            pixbuf = self.imagehandler.get_pixbuf(page - 1)
+            pixbuf = self.__imagehandler.get_pixbuf(page - 1)
             width, height = pixbuf.get_width(), pixbuf.get_height()
             if config['AUTO_ROTATE_FROM_EXIF']:
                 rotation = ImageTools.get_implied_rotation(pixbuf)
@@ -361,7 +449,7 @@ class MainWindow(Gtk.ApplicationWindow):
         """
 
         # Refresh display when currently opened page becomes available.
-        current_page = self.imagehandler.get_current_page()
+        current_page = self.__imagehandler.get_current_page()
         nb_pages = 2 if self.displayed_double else 1
         if current_page <= page < (current_page + nb_pages):
             self._displayed_double()
@@ -370,23 +458,23 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def _on_file_opened(self):
         self._displayed_double()
-        self.thumbnailsidebar.show()
+        self.__thumbnailsidebar.show()
 
         if config['STATUSBAR_FULLPATH']:
-            self.statusbar.set_archive_filename(self.filehandler.get_path_to_base())
+            self.__statusbar.set_archive_filename(self.__filehandler.get_path_to_base())
         else:
-            self.statusbar.set_archive_filename(self.filehandler.get_base_filename())
-        self.statusbar.set_view_mode(self.is_manga_mode)
-        self.statusbar.set_filesize_archive(self.filehandler.get_path_to_base())
-        self.statusbar.set_file_number(*self.filehandler.get_file_number())
-        self.statusbar.update()
+            self.__statusbar.set_archive_filename(self.__filehandler.get_base_filename())
+        self.__statusbar.set_view_mode(self.is_manga_mode)
+        self.__statusbar.set_filesize_archive(self.__filehandler.get_path_to_base())
+        self.__statusbar.set_file_number(*self.__filehandler.get_file_number())
+        self.__statusbar.update()
 
         self._update_title()
 
     def _on_file_closed(self):
         self.clear()
-        self.thumbnailsidebar.hide()
-        self.thumbnailsidebar.clear()
+        self.__thumbnailsidebar.hide()
+        self.__thumbnailsidebar.clear()
 
     def new_page(self, at_bottom: bool = False):
         """
@@ -410,23 +498,23 @@ class MainWindow(Gtk.ApplicationWindow):
         """
 
         self._displayed_double()
-        self.thumbnailsidebar.hide()
-        self.thumbnailsidebar.load_thumbnails()
+        self.__thumbnailsidebar.hide()
+        self.__thumbnailsidebar.load_thumbnails()
         self._update_page_information()
 
     def set_page(self, num: int, at_bottom: bool = False):
-        if num == self.imagehandler.get_current_page():
+        if num == self.__imagehandler.get_current_page():
             return
-        self.imagehandler.set_page(num)
+        self.__imagehandler.set_page(num)
         self.page_changed()
         self.new_page(at_bottom=at_bottom)
 
     def flip_page(self, number_of_pages: int, single_step: bool = False):
-        if not self.filehandler.get_file_loaded():
+        if not self.__filehandler.get_file_loaded():
             return
 
-        current_page = self.imagehandler.get_current_page()
-        current_number_of_pages = self.imagehandler.get_number_of_pages()
+        current_page = self.__imagehandler.get_current_page()
+        current_number_of_pages = self.__imagehandler.get_number_of_pages()
 
         new_page = current_page + number_of_pages
         if (abs(number_of_pages) == 1 and
@@ -443,23 +531,23 @@ class MainWindow(Gtk.ApplicationWindow):
             # first one. (Note: check for (page number <= 1) to handle empty
             # archive case).
             if number_of_pages == -1 and current_page <= +1:
-                return self.filehandler.open_archive_direction(forward=False)
+                return self.__filehandler.open_archive_direction(forward=False)
             # Handle empty archive case.
             new_page = min(+1, current_number_of_pages)
         elif new_page > current_number_of_pages:
             if number_of_pages == +1:
-                return self.filehandler.open_archive_direction(forward=True)
+                return self.__filehandler.open_archive_direction(forward=True)
             new_page = current_number_of_pages
 
         if new_page != current_page:
             self.set_page(new_page, at_bottom=(-1 == number_of_pages))
 
     def first_page(self):
-        if self.imagehandler.get_number_of_pages():
+        if self.__imagehandler.get_number_of_pages():
             self.set_page(1)
 
     def last_page(self):
-        number_of_pages = self.imagehandler.get_number_of_pages()
+        number_of_pages = self.__imagehandler.get_number_of_pages()
         if number_of_pages:
             self.set_page(number_of_pages)
 
@@ -489,7 +577,7 @@ class MainWindow(Gtk.ApplicationWindow):
         config['DEFAULT_MANGA_MODE'] = not config['DEFAULT_MANGA_MODE']
         self.is_manga_mode = config['DEFAULT_MANGA_MODE']
         self.__page_orientation = self.page_orientation()
-        self.statusbar.set_view_mode(self.is_manga_mode)
+        self.__statusbar.set_view_mode(self.is_manga_mode)
         self._update_page_information()
         self.draw_image()
 
@@ -503,22 +591,22 @@ class MainWindow(Gtk.ApplicationWindow):
         if self.is_fullscreen():
             self.unfullscreen()
 
-            self.cursor_handler.auto_hide_off()
+            self.__cursor_handler.auto_hide_off()
 
             # menu/status can only be hidden in fullscreen
             # if not hidden using .show() is the same as a NOOP
-            self.statusbar.show()
-            self.menubar.show()
+            self.__statusbar.show()
+            self.__menubar.show()
         else:
             self.save_window_geometry()
             self.fullscreen()
 
-            self.cursor_handler.auto_hide_on()
+            self.__cursor_handler.auto_hide_on()
 
             if config['FULLSCREEN_HIDE_STATUSBAR']:
-                self.statusbar.hide()
+                self.__statusbar.hide()
             if config['FULLSCREEN_HIDE_MENUBAR']:
-                self.menubar.hide()
+                self.__menubar.hide()
 
         # No need to call draw_image explicitely,
         # as we'll be receiving a window state
@@ -542,16 +630,16 @@ class MainWindow(Gtk.ApplicationWindow):
     def change_zoom_mode(self, value: int = None):
         if value is not None:
             config['ZOOM_MODE'] = value
-        self.zoom.set_fit_mode(config['ZOOM_MODE'])
-        self.zoom.set_scale_up(config['STRETCH'])
-        self.zoom.reset_user_zoom()
+        self.__zoom.set_fit_mode(config['ZOOM_MODE'])
+        self.__zoom.set_scale_up(config['STRETCH'])
+        self.__zoom.reset_user_zoom()
         self.draw_image()
 
     def toggle_image_scaling(self):
         config['ENABLE_PIL_SCALING'] = not config['ENABLE_PIL_SCALING']
         self.draw_image()
-        self.statusbar.update_image_scaling()
-        self.statusbar.update()
+        self.__statusbar.update_image_scaling()
+        self.__statusbar.update()
 
     def change_image_scaling(self, step: int):
         if config['ENABLE_PIL_SCALING']:
@@ -566,8 +654,8 @@ class MainWindow(Gtk.ApplicationWindow):
         config[config_key] = algos((config[config_key] + step) % len(algos)).value
 
         self.draw_image()
-        self.statusbar.update_image_scaling()
-        self.statusbar.update()
+        self.__statusbar.update_image_scaling()
+        self.__statusbar.update()
 
     def change_stretch(self, *args):
         """
@@ -575,7 +663,7 @@ class MainWindow(Gtk.ApplicationWindow):
         """
 
         config['STRETCH'] = not config['STRETCH']
-        self.zoom.set_scale_up(config['STRETCH'])
+        self.__zoom.set_scale_up(config['STRETCH'])
         self.draw_image()
 
     def open_dialog_about(self, *args):
@@ -606,15 +694,15 @@ class MainWindow(Gtk.ApplicationWindow):
         config['KEEP_TRANSFORMATION'] = not config['KEEP_TRANSFORMATION']
 
     def manual_zoom_in(self, *args):
-        self.zoom.zoom_in()
+        self.__zoom.zoom_in()
         self.draw_image()
 
     def manual_zoom_out(self, *args):
-        self.zoom.zoom_out()
+        self.__zoom.zoom_out()
         self.draw_image()
 
     def manual_zoom_original(self, *args):
-        self.zoom.reset_user_zoom()
+        self.__zoom.reset_user_zoom()
         self.draw_image()
 
     def scroll(self, x: int, y: int):
@@ -662,7 +750,7 @@ class MainWindow(Gtk.ApplicationWindow):
         """
 
         self.set_title(Mcomix.APP_NAME.value)
-        self.statusbar.set_message('')
+        self.__statusbar.set_message('')
         self.draw_image()
 
     def _displayed_double(self):
@@ -670,10 +758,10 @@ class MainWindow(Gtk.ApplicationWindow):
         sets True if two pages are currently displayed
         """
 
-        self.displayed_double = (self.imagehandler.get_current_page() and
+        self.displayed_double = (self.__imagehandler.get_current_page() and
                                  config['DEFAULT_DOUBLE_PAGE'] and
                                  not self._get_virtual_double_page() and
-                                 not self.imagehandler.is_last_page())
+                                 not self.__imagehandler.is_last_page())
 
     def get_visible_area_size(self):
         """
@@ -699,7 +787,7 @@ class MainWindow(Gtk.ApplicationWindow):
         Set the title acording to current state
         """
 
-        self.set_title(f'{Mcomix.APP_NAME.value} [{self.imagehandler.get_current_filename()}]')
+        self.set_title(f'{Mcomix.APP_NAME.value} [{self.__imagehandler.get_current_filename()}]')
 
     def extract_page(self, *args):
         """
@@ -707,7 +795,7 @@ class MainWindow(Gtk.ApplicationWindow):
         the user the choice to save the current page with the selected name
         """
 
-        page = self.imagehandler.get_current_page()
+        page = self.__imagehandler.get_current_page()
 
         if self.displayed_double:
             # asks for left or right page if in double page mode
@@ -739,8 +827,8 @@ class MainWindow(Gtk.ApplicationWindow):
                 if not self.is_manga_mode:
                     page += 1
 
-        page_name = self.imagehandler.get_page_filename(page=page)[0]
-        page_path = self.imagehandler.get_path_to_page(page=page)
+        page_name = self.__imagehandler.get_page_filename(page=page)[0]
+        page_path = self.__imagehandler.get_path_to_page(page=page)
 
         save_dialog = Gtk.FileChooserDialog(title='Save page as', action=Gtk.FileChooserAction.SAVE)
         save_dialog.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT, Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT)
@@ -759,7 +847,7 @@ class MainWindow(Gtk.ApplicationWindow):
         The currently opened file/archive will be moved to prefs['MOVE_FILE']
         """
 
-        current_file = self.imagehandler.get_real_path()
+        current_file = self.__imagehandler.get_real_path()
 
         target_dir = Path() / current_file.parent / config['MOVE_FILE']
         target_file = Path() / target_dir / current_file.name
@@ -783,7 +871,7 @@ class MainWindow(Gtk.ApplicationWindow):
         The currently opened file/archive will be trashed after showing a confirmation dialog
         """
 
-        current_file = self.imagehandler.get_real_path()
+        current_file = self.__imagehandler.get_real_path()
 
         dialog = MessageDialog(
             window=self,
@@ -818,24 +906,24 @@ class MainWindow(Gtk.ApplicationWindow):
         Shared logic for move_file() and trash_file()
         """
 
-        if self.filehandler.is_archive():
-            next_opened = self.filehandler.open_archive_direction(forward=True)
+        if self.__filehandler.is_archive():
+            next_opened = self.__filehandler.open_archive_direction(forward=True)
             if not next_opened:
-                next_opened = self.filehandler.open_archive_direction(forward=False)
+                next_opened = self.__filehandler.open_archive_direction(forward=False)
             if not next_opened:
-                self.filehandler.close_file()
+                self.__filehandler.close_file()
         else:
-            if self.imagehandler.get_number_of_pages() > 1:
+            if self.__imagehandler.get_number_of_pages() > 1:
                 # Open the next/previous file
-                if self.imagehandler.is_last_page():
+                if self.__imagehandler.is_last_page():
                     self.flip_page(number_of_pages=-1)
                 else:
                     self.flip_page(number_of_pages=+1)
 
                 # Refresh the directory
-                self.filehandler.refresh_file()
+                self.__filehandler.refresh_file()
             else:
-                self.filehandler.close_file()
+                self.__filehandler.close_file()
 
     def minimize(self, *args):
         """
@@ -881,7 +969,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # write config file
         self.__preference_manager.write_config_file()
-        self.keybindings.write_keybindings_file()
-        self.bookmark_backend.write_bookmarks_file()
+        self.__keybindings.write_keybindings_file()
+        self.__bookmark_backend.write_bookmarks_file()
 
-        self.filehandler.close_file()
+        self.__filehandler.close_file()
