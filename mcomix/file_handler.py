@@ -280,10 +280,8 @@ class FileHandler:
             return 0, 0
 
         file_list = self._get_file_list()
-        if self.__current_file in file_list:
-            current_index = file_list.index(self.__current_file)
-        else:
-            current_index = 0
+        current_index = file_list.index(self.__current_file)
+
         return current_index + 1, len(file_list)
 
     def get_current_filename(self):
