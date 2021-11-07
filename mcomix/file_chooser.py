@@ -56,11 +56,15 @@ class FileChooser(Gtk.Dialog):
         filters = self.__filechooser.list_filters()
         self.__filechooser.set_filter(filters[config['FILECHOOSER_LAST_FILTER']])
 
+        current_file = self.__window.filehandler.get_base_path()
         try:
-            current_file = self.__window.filehandler.get_base_path()
             if current_file is not None:
                 # If a file is currently open, use its path
-                self.__filechooser.set_current_folder(str(current_file.parent))
+                if current_file.is_file():
+                    current_file = current_file.parent
+
+                self.__filechooser.set_current_folder(str(current_file))
+
             elif self.__last_activated_file:
                 # If no file is open, use the last stored file
                 self.__filechooser.set_filename(self.__last_activated_file)
