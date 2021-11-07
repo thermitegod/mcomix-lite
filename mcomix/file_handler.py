@@ -286,16 +286,6 @@ class FileHandler:
             current_index = 0
         return current_index + 1, len(file_list)
 
-    def get_path_to_base(self):
-        """
-        Return the full path to the current base (path to archive or image directory.)
-        """
-
-        if self.__is_archive:
-            return self.__base_path
-
-        return self.__base_path.parent
-
     def get_current_filename(self):
         """
         Return a string with the name of the currently viewed file that is suitable for printing

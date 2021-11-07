@@ -459,11 +459,11 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__thumbnailsidebar.show()
 
         if config['STATUSBAR_FULLPATH']:
-            self.__statusbar.set_archive_filename(self.__filehandler.get_path_to_base())
+            self.__statusbar.set_archive_filename(self.__filehandler.get_base_path())
         else:
-            self.__statusbar.set_archive_filename(self.__filehandler.get_path_to_base().name)
+            self.__statusbar.set_archive_filename(self.__filehandler.get_base_path().name)
         self.__statusbar.set_view_mode(self.is_manga_mode)
-        self.__statusbar.set_filesize_archive(self.__filehandler.get_path_to_base())
+        self.__statusbar.set_filesize_archive(self.__filehandler.get_base_path())
         self.__statusbar.set_file_number(*self.__filehandler.get_file_number())
         self.__statusbar.update()
 
