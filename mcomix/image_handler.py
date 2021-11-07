@@ -78,7 +78,7 @@ class ImageHandler:
 
         return [self.get_pixbuf(self.__current_image_index + i) for i in range(number_of_bufs)]
 
-    def do_cacheing(self):
+    def do_caching(self):
         """
         Make sure that the correct pixbufs are stored in cache. These
         are (in the current implementation) the current image(s), and
@@ -131,7 +131,7 @@ class ImageHandler:
         #     return
 
         self.__current_image_index = page_num - 1
-        self.do_cacheing()
+        self.do_caching()
 
     def set_image_files(self, files: list):
         # Set list of image file names

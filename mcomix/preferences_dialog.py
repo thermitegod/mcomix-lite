@@ -587,7 +587,7 @@ class PreferencesDialog(Gtk.Dialog):
                 self.__window.thumbnailsidebar.resize()
                 self.__window.draw_image()
             case ('PAGE_CACHE_FORWARD'|'PAGE_CACHE_BEHIND'):
-                self.__window.imagehandler.do_cacheing()
+                self.__window.imagehandler.do_caching()
             case ('FIT_TO_SIZE_PX'):
                 self.__window.change_zoom_mode()
 
