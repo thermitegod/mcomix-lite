@@ -635,9 +635,9 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def toggle_image_scaling(self):
         config['ENABLE_PIL_SCALING'] = not config['ENABLE_PIL_SCALING']
-        self.draw_image()
+
         self.__statusbar.update_image_scaling()
-        self.__statusbar.update()
+        self.draw_image()
 
     def change_image_scaling(self, step: int):
         if config['ENABLE_PIL_SCALING']:
@@ -651,9 +651,8 @@ class MainWindow(Gtk.ApplicationWindow):
         # and end on underflow
         config[config_key] = algos((config[config_key] + step) % len(algos)).value
 
-        self.draw_image()
         self.__statusbar.update_image_scaling()
-        self.__statusbar.update()
+        self.draw_image()
 
     def change_stretch(self, *args):
         """
