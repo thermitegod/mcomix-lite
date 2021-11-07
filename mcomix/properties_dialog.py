@@ -2,6 +2,8 @@
 
 """properties_dialog.py - Properties dialog that displays information about the archive/file"""
 
+from __future__ import annotations
+
 import stat
 from datetime import datetime
 from pathlib import Path
@@ -11,11 +13,15 @@ from gi.repository import Gtk
 from mcomix.file_size import FileSize
 from mcomix.properties_page import PropertiesPage
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mcomix.main_window import MainWindow
+
 
 class PropertiesDialog(Gtk.Dialog):
     __slots__ = ('__window', '__notebook', '__archive_page', '__image_page')
 
-    def __init__(self, window):
+    def __init__(self, window: MainWindow):
         super().__init__(title='Properties')
 
         self.set_transient_for(window)

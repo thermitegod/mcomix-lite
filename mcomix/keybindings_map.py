@@ -3,16 +3,22 @@
 #: Bindings defined in this dictionary will appear in the configuration dialog.
 #: If 'group' is None, the binding cannot be modified from the preferences dialog.
 
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import Callable
 
 from mcomix.preferences import config
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mcomix.main_window import MainWindow
+
 
 class KeyBindingsMap:
     __slots__ = ('BINDINGS',)
 
-    def __init__(self, window):
+    def __init__(self, window: MainWindow):
         super().__init__()
 
         group_nav = 'Navigation'

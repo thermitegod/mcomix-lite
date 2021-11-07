@@ -2,10 +2,17 @@
 
 """bookmark_dialog.py - Bookmarks dialog handler"""
 
+from __future__ import annotations
+
 from gi.repository import GObject, Gdk, Gtk
 
 from mcomix.bookmark_menu_item import Bookmark
 from mcomix.preferences import config
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mcomix.main_window import MainWindow
+    from mcomix.bookmark_backend import BookmarkBackend
 
 
 class BookmarksDialog(Gtk.Dialog):
@@ -15,7 +22,7 @@ class BookmarksDialog(Gtk.Dialog):
 
     __slots__ = ('__bookmarks_store', '__liststore', '__total_pos_sort', '__selection')
 
-    def __init__(self, window, bookmarks_store):
+    def __init__(self, window: MainWindow, bookmarks_store: BookmarkBackend):
         super().__init__(title='Edit Bookmarks', destroy_with_parent=True)
 
         self.set_transient_for(window)

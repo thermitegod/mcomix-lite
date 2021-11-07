@@ -2,6 +2,8 @@
 
 """file_handler.py - File handler that takes care of opening archives and images"""
 
+from __future__ import annotations
+
 from pathlib import Path
 
 from gi.repository import Gtk
@@ -16,6 +18,10 @@ from mcomix.lib.callback import Callback
 from mcomix.preferences import config
 from mcomix.sort.sort_alphanumeric import SortAlphanumeric
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mcomix.main_window import MainWindow
+
 
 class FileHandler:
     """
@@ -25,7 +31,7 @@ class FileHandler:
     archives, and lists directories for image files
     """
 
-    def __init__(self, window):
+    def __init__(self, window: MainWindow):
         super().__init__()
 
         #: Indicates if files/archives are currently loaded/loading.

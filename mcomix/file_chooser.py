@@ -2,6 +2,8 @@
 
 """filechooser_chooser.py - Custom FileChooserDialog implementations"""
 
+from __future__ import annotations
+
 import fnmatch
 from pathlib import Path
 
@@ -10,6 +12,10 @@ from gi.repository import Gtk
 from mcomix.formats.archive import ArchiveSupported
 from mcomix.formats.image import ImageSupported
 from mcomix.preferences import config
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mcomix.main_window import MainWindow
 
 
 class FileChooser(Gtk.Dialog):
@@ -22,7 +28,7 @@ class FileChooser(Gtk.Dialog):
 
     __slots__ = ('__window', '__action', '__last_activated_file', '__filechooser')
 
-    def __init__(self, window):
+    def __init__(self, window: MainWindow):
         self.__window = window
         self.__action = Gtk.FileChooserAction.OPEN
         self.__last_activated_file = None

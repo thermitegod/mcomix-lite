@@ -2,12 +2,18 @@
 
 """thumbnail_sidebar.py - Thumbnail sidebar for main window"""
 
+from __future__ import annotations
+
 from gi.repository import Gdk, GdkPixbuf, Gtk
 from loguru import logger
 
 from mcomix.image_tools import ImageTools
 from mcomix.preferences import config
 from mcomix.thumbnail_view import ThumbnailTreeView
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mcomix.main_window import MainWindow
 
 
 class ThumbnailSidebar(Gtk.ScrolledWindow):
@@ -20,7 +26,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
                  '__thumbnail_page_treeviewcolumn', '__text_cellrenderer', '__thumbnail_image_treeviewcolumn')
 
     # Thumbnail border width in pixels.
-    def __init__(self, window):
+    def __init__(self, window: MainWindow):
         super().__init__()
 
         self.__window = window

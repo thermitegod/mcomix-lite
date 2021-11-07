@@ -2,6 +2,8 @@
 
 """bookmark_backend.py - Bookmarks handler"""
 
+from __future__ import annotations
+
 from datetime import datetime
 from pathlib import Path
 
@@ -15,6 +17,10 @@ from mcomix.lib.callback import Callback
 from mcomix.message_dialog.info import MessageDialogInfo
 from mcomix.message_dialog.remember import MessageDialogRemember
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mcomix.main_window import MainWindow
+
 
 class BookmarkBackend:
     """
@@ -22,7 +28,7 @@ class BookmarkBackend:
     Changes in the _BookmarkBackend are mirrored in both
     """
 
-    def __init__(self, window):
+    def __init__(self, window: MainWindow):
         super().__init__()
 
         self.__window = window

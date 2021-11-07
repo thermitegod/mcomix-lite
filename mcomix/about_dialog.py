@@ -2,6 +2,8 @@
 
 """about_dialog.py - About dialog"""
 
+from __future__ import annotations
+
 from pathlib import Path
 
 from PIL import Image
@@ -10,11 +12,15 @@ from gi.repository import Gtk
 from mcomix.enums.mcomix import Mcomix
 from mcomix.image_tools import ImageTools
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mcomix.main_window import MainWindow
+
 
 class AboutDialog(Gtk.AboutDialog):
     __slots__ = ('__window',)
 
-    def __init__(self, window):
+    def __init__(self, window: MainWindow):
         super().__init__(title='About')
 
         self.__window = window

@@ -2,8 +2,14 @@
 
 """enhance_backend.py - Image enhancement handler and dialog (e.g. contrast, brightness etc.)"""
 
+from __future__ import annotations
+
 from mcomix.image_tools import ImageTools
 from mcomix.preferences import config
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mcomix.main_window import MainWindow
 
 
 class ImageEnhancer:
@@ -15,7 +21,7 @@ class ImageEnhancer:
 
     __slots__ = ('__window', 'brightness', 'contrast', 'saturation', 'sharpness', 'autocontrast')
 
-    def __init__(self, window):
+    def __init__(self, window: MainWindow):
         super().__init__()
 
         self.__window = window

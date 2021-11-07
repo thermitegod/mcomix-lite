@@ -2,9 +2,15 @@
 
 """cursor_handler.py - Cursor handler"""
 
+from __future__ import annotations
+
 from enum import Enum, auto
 
 from gi.repository import GLib, Gdk
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mcomix.main_window import MainWindow
 
 
 class CursorModes(Enum):
@@ -16,7 +22,7 @@ class CursorModes(Enum):
 class CursorHandler:
     __slots__ = ('__window', '__timer_id', '__auto_hide', '__current_cursor')
 
-    def __init__(self, window):
+    def __init__(self, window: MainWindow):
         super().__init__()
 
         self.__window = window

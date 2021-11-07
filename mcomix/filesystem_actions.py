@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import annotations
+
 import shutil
 from pathlib import Path
 
@@ -11,11 +13,15 @@ from mcomix.message_dialog.info import MessageDialogInfo
 from mcomix.message_dialog.remember import MessageDialogRemember
 from mcomix.preferences import config
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mcomix.main_window import MainWindow
+
 
 class FileSystemActions:
     __slots__ = ('__window')
 
-    def __init__(self, window):
+    def __init__(self, window: MainWindow):
         super().__init__()
 
         self.__window = window

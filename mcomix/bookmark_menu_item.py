@@ -2,10 +2,16 @@
 
 """bookmark_menu_item.py - A signle bookmark item"""
 
+from __future__ import annotations
+
 from datetime import datetime
 from pathlib import Path
 
 from gi.repository import Gtk
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mcomix.main_window import MainWindow
 
 
 class Bookmark(Gtk.MenuItem):
@@ -17,7 +23,7 @@ class Bookmark(Gtk.MenuItem):
     __slots__ = ('__window', '__name', '__path', '__current_page',
                  '__total_pages', '__date_added', '__row_format')
 
-    def __init__(self, window, path: Path, current_page: int, total_pages: int, date_added: float):
+    def __init__(self, window: MainWindow, path: Path, current_page: int, total_pages: int, date_added: float):
         self.__window = window
 
         self.__name = path.name

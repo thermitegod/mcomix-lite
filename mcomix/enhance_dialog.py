@@ -2,6 +2,8 @@
 
 """enhance_dialog.py - Image enhancement dialog"""
 
+from __future__ import annotations
+
 import PIL.Image as Image
 import PIL.ImageDraw as ImageDraw
 import PIL.ImageOps as ImageOps
@@ -10,13 +12,17 @@ from gi.repository import Gtk
 from mcomix.image_tools import ImageTools
 from mcomix.preferences import config
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mcomix.main_window import MainWindow
+
 
 class EnhanceImageDialog(Gtk.Dialog):
     """
     A Gtk.Dialog which allows modification of the values belonging to an ImageEnhancer
     """
 
-    def __init__(self, window):
+    def __init__(self, window: MainWindow):
         super().__init__()
 
         self.set_transient_for(window)

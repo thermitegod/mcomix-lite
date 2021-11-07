@@ -2,6 +2,8 @@
 
 """image_handler.py - Image handler that takes care of cacheing and giving out images"""
 
+from __future__ import annotations
+
 from pathlib import Path
 
 from loguru import logger
@@ -12,6 +14,10 @@ from mcomix.lib.callback import Callback
 from mcomix.lib.threadpool import GlobalThreadPool, Lock
 from mcomix.preferences import config
 from mcomix.thumbnailer import Thumbnailer
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mcomix.main_window import MainWindow
 
 
 class ImageHandler:
@@ -25,7 +31,7 @@ class ImageHandler:
     threaded
     """
 
-    def __init__(self, window):
+    def __init__(self, window: MainWindow):
         super().__init__()
 
         #: Reference to main window

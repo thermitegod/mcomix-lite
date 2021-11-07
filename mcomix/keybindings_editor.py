@@ -2,14 +2,20 @@
 
 """Configuration tree view for the preferences dialog to edit keybindings"""
 
+from __future__ import annotations
+
 from gi.repository import Gtk
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mcomix.main_window import MainWindow
 
 
 class KeybindingEditorWindow(Gtk.ScrolledWindow):
     __slots__ = ('__window', '__keybindings', '__keybindings_map',
                  '__accel_column_num', '__action_treeiter_map')
 
-    def __init__(self, window):
+    def __init__(self, window: MainWindow):
         """
         :param keymanager: KeybindingManager instance
         """

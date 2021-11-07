@@ -11,6 +11,10 @@ from mcomix.keybindings_dialog import KeybindingEditorDialog
 from mcomix.preferences_dialog import PreferencesDialog
 from mcomix.properties_dialog import PropertiesDialog
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mcomix.main_window import MainWindow
+
 
 class DialogChoice(Enum):
     ABOUT = auto()
@@ -44,7 +48,7 @@ class DialogChooser:
             case DialogChoice.PROPERTIES:
                 self.__dialog_chosen = PropertiesDialog
 
-    def open_dialog(self, window):
+    def open_dialog(self, window: MainWindow):
         """
         Create and display the given dialog
         """

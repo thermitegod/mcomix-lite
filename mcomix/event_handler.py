@@ -2,6 +2,8 @@
 
 """event_handler.py - Event handling (keyboard, mouse, etc.) for the main window"""
 
+from __future__ import annotations
+
 from pathlib import Path
 from urllib.parse import urlparse
 from urllib.request import url2pathname
@@ -10,12 +12,16 @@ from gi.repository import Gdk, Gtk
 
 from mcomix.preferences import config
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mcomix.main_window import MainWindow
+
 
 class EventHandler:
     __slots__ = ('__window', '__keybindings', '__keybindings_map', '__all_accels_mask',
                  '__keymap', '__last_pointer_pos_x', '__last_pointer_pos_y')
 
-    def __init__(self, window):
+    def __init__(self, window: MainWindow):
         super().__init__()
 
         self.__window = window

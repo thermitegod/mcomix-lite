@@ -2,10 +2,16 @@
 
 """pageselect.py - The dialog window for the page selector"""
 
+from __future__ import annotations
+
 from gi.repository import Gtk
 
 from mcomix.lib.callback import Callback
 from mcomix.lib.threadpool import GlobalThreadPool
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mcomix.main_window import MainWindow
 
 
 class Pageselector(Gtk.Dialog):
@@ -16,7 +22,7 @@ class Pageselector(Gtk.Dialog):
     __slots__ = ('__window', '__number_of_pages', '__selector_adjustment',
                  '__image_preview', '__thumbnail_page', '__threadpool')
 
-    def __init__(self, window):
+    def __init__(self, window: MainWindow):
         self.__window = window
 
         super().__init__(title='Go to page...', modal=True, destroy_with_parent=True)

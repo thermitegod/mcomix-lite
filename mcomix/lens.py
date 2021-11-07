@@ -2,6 +2,8 @@
 
 """lens.py - Magnifying lens"""
 
+from __future__ import annotations
+
 import math
 
 import cairo
@@ -9,6 +11,10 @@ from gi.repository import Gdk, GdkPixbuf
 
 from mcomix.image_tools import ImageTools
 from mcomix.preferences import config
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mcomix.main_window import MainWindow
 
 
 class MagnifyingLens:
@@ -24,7 +30,7 @@ class MagnifyingLens:
 
     __slots__ = ('__window', '__enabled', '__point', '__last_lens_rect')
 
-    def __init__(self, window):
+    def __init__(self, window: MainWindow):
         super().__init__()
 
         self.__window = window

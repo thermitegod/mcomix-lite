@@ -2,10 +2,16 @@
 
 """bookmark_menu.py - Bookmarks menu"""
 
+from __future__ import annotations
+
 from gi.repository import Gtk
 from loguru import logger
 
 from mcomix.bookmark_dialog import BookmarksDialog
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mcomix.main_window import MainWindow
 
 
 class BookmarksMenu(Gtk.Menu):
@@ -17,7 +23,7 @@ class BookmarksMenu(Gtk.Menu):
 
     __slots__ = ('__window',)
 
-    def __init__(self, window):
+    def __init__(self, window: MainWindow):
         super().__init__()
 
         self.__window = window

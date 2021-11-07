@@ -2,6 +2,8 @@
 
 """preferences_dialog.py - Preferences dialog"""
 
+from __future__ import annotations
+
 from gi.repository import GObject, Gtk
 
 from mcomix.enums.animation import Animation
@@ -12,6 +14,10 @@ from mcomix.enums.zoom_modes import ZoomModes
 from mcomix.preferences import config
 from mcomix.preferences_page import PreferencePage
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mcomix.main_window import MainWindow
+
 
 class PreferencesDialog(Gtk.Dialog):
     """
@@ -21,7 +27,7 @@ class PreferencesDialog(Gtk.Dialog):
 
     __slots__ = ('__window', '__reset_button')
 
-    def __init__(self, window):
+    def __init__(self, window: MainWindow):
         super().__init__(title='Preferences')
 
         self.__window = window

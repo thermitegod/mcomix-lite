@@ -1,14 +1,20 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import annotations
+
 from gi.repository import Gtk
 
 from mcomix.keybindings_editor import KeybindingEditorWindow
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mcomix.main_window import MainWindow
 
 
 class KeybindingEditorDialog(Gtk.Dialog):
     __slots__ = ('__window', '__shortcuts')
 
-    def __init__(self, window):
+    def __init__(self, window: MainWindow):
         super().__init__(title='Preferences')
 
         self.__window = window

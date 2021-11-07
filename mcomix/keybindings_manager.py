@@ -21,6 +21,8 @@ action-name: string => [keycodes: list]
 
 Each action_name can have multiple keybindings"""
 
+from __future__ import annotations
+
 from collections import defaultdict
 from pathlib import Path
 from typing import Callable
@@ -31,12 +33,16 @@ from loguru import logger
 from mcomix.config_backend import ConfigBackend
 from mcomix.enums.config_files import ConfigFiles
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mcomix.main_window import MainWindow
+
 
 class KeybindingManager:
     __slots__ = ('__window', '__action_to_callback', '__action_to_bindings', '__binding_to_action',
                  '__stored_action_bindings', '__keybindings_map', '__config_manager', '__keybindings_path')
 
-    def __init__(self, window):
+    def __init__(self, window: MainWindow):
         super().__init__()
 
         #: Main window instance

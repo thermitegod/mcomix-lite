@@ -2,6 +2,8 @@
 
 """menubar.py - creates the menubar for main window"""
 
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import Callable
 
@@ -9,11 +11,15 @@ from gi.repository import Gtk
 
 from mcomix.bookmark_menu import BookmarksMenu
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mcomix.main_window import MainWindow
+
 
 class Menubar(Gtk.EventBox):
     __slots__ = ()
 
-    def __init__(self, window):
+    def __init__(self, window: MainWindow):
         super().__init__()
 
         menubar = Gtk.MenuBar()
