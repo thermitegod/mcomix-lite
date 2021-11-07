@@ -2,12 +2,9 @@
 
 """main.py - Main window"""
 
-import shutil
 from pathlib import Path
 
 from gi.repository import GLib, Gdk, Gtk
-from loguru import logger
-from send2trash import send2trash
 
 from mcomix.bookmark_backend import BookmarkBackend
 from mcomix.cursor_handler import CursorHandler
@@ -21,6 +18,7 @@ from mcomix.enums.scroll import Scroll
 from mcomix.enums.zoom_modes import ZoomAxis, ZoomModes
 from mcomix.event_handler import EventHandler
 from mcomix.file_handler import FileHandler
+from mcomix.filesystem_actions import FileSystemActions
 from mcomix.image_handler import ImageHandler
 from mcomix.image_tools import ImageTools
 from mcomix.keybindings_manager import KeybindingManager
@@ -29,8 +27,6 @@ from mcomix.layout import FiniteLayout
 from mcomix.lens import MagnifyingLens
 from mcomix.lib.callback import Callback
 from mcomix.menubar import Menubar
-from mcomix.message_dialog.info import MessageDialogInfo
-from mcomix.message_dialog.remember import MessageDialogRemember
 from mcomix.pageselect import Pageselector
 from mcomix.preferences import config
 from mcomix.preferences_manager import PreferenceManager
@@ -70,6 +66,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__filehandler = FileHandler(self)
         self.__filehandler.file_closed += self._on_file_closed
         self.__filehandler.file_opened += self._on_file_opened
+
+        self.__filesystem_hactions = FileSystemActions(self)
 
         self.__imagehandler = ImageHandler(self)
         self.__imagehandler.page_available += self._page_available
@@ -790,134 +788,13 @@ class MainWindow(Gtk.ApplicationWindow):
         self.set_title(f'{Mcomix.APP_NAME.value} [{self.__imagehandler.get_current_filename()}]')
 
     def extract_page(self, *args):
-        """
-        Derive some sensible filename (archive name + _ + filename should do) and offer
-        the user the choice to save the current page with the selected name
-        """
-
-        page = self.__imagehandler.get_current_page()
-
-        if self.displayed_double:
-            # asks for left or right page if in double page mode
-            # and not showing a single page
-
-            response_left = 70
-            response_right = 80
-
-            dialog = MessageDialogRemember()
-            dialog.add_buttons(
-                'Left', response_left,
-                'Right', response_right,
-                Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
-            dialog.set_default_response(Gtk.ResponseType.CANCEL)
-            dialog.set_text(primary='Extract Left or Right page?')
-            result = dialog.run()
-
-            if result not in (response_left, response_right):
-                return None
-
-            if result == response_left:
-                if self.is_manga_mode:
-                    page += 1
-            elif result == response_right:
-                if not self.is_manga_mode:
-                    page += 1
-
-        page_name = self.__imagehandler.get_page_filename(page=page)[0]
-        page_path = self.__imagehandler.get_path_to_page(page=page)
-
-        save_dialog = Gtk.FileChooserDialog(title='Save page as', action=Gtk.FileChooserAction.SAVE)
-        save_dialog.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT, Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT)
-        save_dialog.set_modal(True)
-        save_dialog.set_transient_for(self)
-        save_dialog.set_do_overwrite_confirmation(True)
-        save_dialog.set_current_name(page_name)
-
-        if save_dialog.run() == Gtk.ResponseType.ACCEPT and save_dialog.get_filename():
-            shutil.copy(page_path, save_dialog.get_filename())
-
-        save_dialog.destroy()
+        self.__filesystem_hactions.extract_page()
 
     def move_file(self, *args):
-        """
-        The currently opened file/archive will be moved to prefs['MOVE_FILE']
-        """
-
-        current_file = self.__imagehandler.get_real_path()
-
-        target_dir = Path() / current_file.parent / config['MOVE_FILE']
-        target_file = Path() / target_dir / current_file.name
-
-        if not Path.exists(target_dir):
-            target_dir.mkdir()
-
-        try:
-            self._load_next_file()
-        except Exception:
-            logger.error(f'File action failed: move_file()')
-
-        if current_file.is_file():
-            Path.rename(current_file, target_file)
-
-        if not target_file.is_file():
-            dialog = MessageDialogInfo()
-            dialog.set_text(primary='File was not moved', secondary=f'{target_file}')
-            dialog.run()
+        self.__filesystem_hactions.move_file()
 
     def trash_file(self, *args):
-        """
-        The currently opened file/archive will be trashed after showing a confirmation dialog
-        """
-
-        current_file = self.__imagehandler.get_real_path()
-
-        dialog = MessageDialogRemember()
-        dialog.add_buttons(
-            Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-            Gtk.STOCK_DELETE, Gtk.ResponseType.OK)
-        dialog.set_default_response(Gtk.ResponseType.OK)
-        dialog.set_should_remember_choice('delete-opend-file', (Gtk.ResponseType.OK,))
-        dialog.set_text('Trash Selected File?', secondary=f'{current_file.name}')
-        result = dialog.run()
-        if result != Gtk.ResponseType.OK:
-            return
-
-        try:
-            self._load_next_file()
-        except Exception:
-            logger.error(f'File action failed: trash_file()')
-
-        if current_file.is_file():
-            send2trash(bytes(current_file))
-
-        if current_file.is_file():
-            dialog = MessageDialogInfo()
-            dialog.set_text(primary='File was not deleted', secondary=f'{current_file}')
-            dialog.run()
-
-    def _load_next_file(self):
-        """
-        Shared logic for move_file() and trash_file()
-        """
-
-        if self.__filehandler.is_archive():
-            next_opened = self.__filehandler.open_archive_direction(forward=True)
-            if not next_opened:
-                next_opened = self.__filehandler.open_archive_direction(forward=False)
-            if not next_opened:
-                self.__filehandler.close_file()
-        else:
-            if self.__imagehandler.get_number_of_pages() > 1:
-                # Open the next/previous file
-                if self.__imagehandler.is_last_page():
-                    self.flip_page(number_of_pages=-1)
-                else:
-                    self.flip_page(number_of_pages=+1)
-
-                # Refresh the directory
-                self.__filehandler.refresh_file()
-            else:
-                self.__filehandler.close_file()
+        self.__filesystem_hactions.trash_file()
 
     def minimize(self, *args):
         """
