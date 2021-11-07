@@ -12,8 +12,8 @@ from loguru import logger
 from mcomix.bookmark_menu_item import Bookmark
 from mcomix.enums.config_files import ConfigFiles
 from mcomix.lib.callback import Callback
-from mcomix.message_dialog import MessageDialog
-from mcomix.message_dialog_info import MessageDialogInfo
+from mcomix.message_dialog.info import MessageDialogInfo
+from mcomix.message_dialog.remember import MessageDialogRemember
 
 
 class BookmarkBackend:
@@ -101,7 +101,9 @@ class BookmarkBackend:
         """
 
         if not path.is_file():
-            MessageDialogInfo(self.__window, primary='Bookmarked file does not exist', secondary=f'{path}')
+            dialog = MessageDialogInfo()
+            dialog.set_text(primary='Bookmarked file does not exist', secondary=f'{path}')
+            dialog.run()
             return
 
         if self.__window.filehandler.get_base_path() != path:
@@ -220,18 +222,13 @@ class BookmarkBackend:
         a new bookmark
         """
 
-        dialog = MessageDialog(
-            self.__window,
-            flags=Gtk.DialogFlags.MODAL,
-            message_type=Gtk.MessageType.INFO,
-            buttons=Gtk.ButtonsType.NONE)
+        dialog = MessageDialogRemember()
         dialog.add_buttons(
             Gtk.STOCK_YES, Gtk.ResponseType.YES,
             Gtk.STOCK_NO, Gtk.ResponseType.NO,
             Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
         dialog.set_default_response(Gtk.ResponseType.YES)
         dialog.set_should_remember_choice('replace-existing-bookmark', (Gtk.ResponseType.YES, Gtk.ResponseType.NO))
-
         dialog.set_text(primary='The current book already contains marked pages.',
                         secondary=f'Do you want to replace them with a new bookmark on page {new_page}?'
                                   'Selecting "No" will create a new bookmark.')

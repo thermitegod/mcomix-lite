@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-"""Simple extension of Gtk.MessageDialog for consistent formating. Also supports remembering the dialog result"""
-
 import html
 
 from gi.repository import Gtk
@@ -9,39 +7,29 @@ from gi.repository import Gtk
 from mcomix.preferences import config
 
 
-class MessageDialog(Gtk.MessageDialog):
+class MessageDialogRemember(Gtk.MessageDialog):
     __slots__ = ('__dialog_id', '__choices', '__remember_checkbox')
 
-    def __init__(self, window, flags: int = 0, message_type: int = 0, buttons: int = 0):
+    def __init__(self):
         """
         Creates a dialog window.
-
-        :param window: Parent window
-        :param flags: Dialog flags
-        :param type: Dialog icon/type
-        :param buttons: Dialog buttons. Can only be a predefined BUTTONS_XXX constant
         """
 
-        super().__init__(
-            message_type=message_type, buttons=buttons,
-            modal=flags & Gtk.DialogFlags.MODAL,
-            destroy_with_parent=flags & Gtk.DialogFlags.DESTROY_WITH_PARENT,
-        )
+        super().__init__()
 
         self.set_modal(True)
-        self.set_transient_for(window)
 
         #: Unique dialog identifier (for storing 'Do not ask again')
         self.__dialog_id = None
         #: List of response IDs that should be remembered
         self.__choices = []
-        #: Automatically destroy dialog after run?
-        self.__auto_destroy = True
 
         self.__remember_checkbox = Gtk.CheckButton(label='Do not ask again.')
         self.__remember_checkbox.set_no_show_all(True)
         self.__remember_checkbox.set_can_focus(False)
         self.get_message_area().pack_end(self.__remember_checkbox, True, True, 6)
+
+        self.set_default_response(Gtk.ResponseType.OK)
 
     def set_text(self, primary: str, secondary: str = None):
         """
@@ -94,6 +82,5 @@ class MessageDialog(Gtk.MessageDialog):
         if self.should_remember_choice() and int(result) in self.__choices:
             config['STORED_DIALOG_CHOICES'][self.__dialog_id] = int(result)
 
-        if self.__auto_destroy:
-            self.destroy()
+        self.destroy()
         return result

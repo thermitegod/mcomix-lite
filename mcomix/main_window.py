@@ -29,8 +29,8 @@ from mcomix.layout import FiniteLayout
 from mcomix.lens import MagnifyingLens
 from mcomix.lib.callback import Callback
 from mcomix.menubar import Menubar
-from mcomix.message_dialog import MessageDialog
-from mcomix.message_dialog_info import MessageDialogInfo
+from mcomix.message_dialog.info import MessageDialogInfo
+from mcomix.message_dialog.remember import MessageDialogRemember
 from mcomix.pageselect import Pageselector
 from mcomix.preferences import config
 from mcomix.preferences_manager import PreferenceManager
@@ -804,11 +804,7 @@ class MainWindow(Gtk.ApplicationWindow):
             response_left = 70
             response_right = 80
 
-            dialog = MessageDialog(
-                window=self,
-                flags=Gtk.DialogFlags.MODAL,
-                message_type=Gtk.MessageType.QUESTION,
-                buttons=Gtk.ButtonsType.NONE)
+            dialog = MessageDialogRemember()
             dialog.add_buttons(
                 'Left', response_left,
                 'Right', response_right,
@@ -864,7 +860,9 @@ class MainWindow(Gtk.ApplicationWindow):
             Path.rename(current_file, target_file)
 
         if not target_file.is_file():
-            MessageDialogInfo(self, primary='File was not moved', secondary=f'{target_file}')
+            dialog = MessageDialogInfo()
+            dialog.set_text(primary='File was not moved', secondary=f'{target_file}')
+            dialog.run()
 
     def trash_file(self, *args):
         """
@@ -873,18 +871,12 @@ class MainWindow(Gtk.ApplicationWindow):
 
         current_file = self.__imagehandler.get_real_path()
 
-        dialog = MessageDialog(
-            window=self,
-            flags=Gtk.DialogFlags.MODAL,
-            message_type=Gtk.MessageType.QUESTION,
-            buttons=Gtk.ButtonsType.NONE)
+        dialog = MessageDialogRemember()
         dialog.add_buttons(
             Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
             Gtk.STOCK_DELETE, Gtk.ResponseType.OK)
         dialog.set_default_response(Gtk.ResponseType.OK)
-        dialog.set_should_remember_choice(
-            'delete-opend-file',
-            (Gtk.ResponseType.OK,))
+        dialog.set_should_remember_choice('delete-opend-file', (Gtk.ResponseType.OK,))
         dialog.set_text('Trash Selected File?', secondary=f'{current_file.name}')
         result = dialog.run()
         if result != Gtk.ResponseType.OK:
@@ -899,7 +891,9 @@ class MainWindow(Gtk.ApplicationWindow):
             send2trash(bytes(current_file))
 
         if current_file.is_file():
-            MessageDialogInfo(self, primary='File was not deleted', secondary=f'{current_file}')
+            dialog = MessageDialogInfo()
+            dialog.set_text(primary='File was not deleted', secondary=f'{current_file}')
+            dialog.run()
 
     def _load_next_file(self):
         """
