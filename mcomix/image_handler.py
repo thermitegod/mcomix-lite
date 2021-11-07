@@ -87,9 +87,6 @@ class ImageHandler:
         collected directly in order to save memory
         """
 
-        if not self.__window.filehandler.get_file_loaded():
-            return
-
         if not self.__lock.acquire(blocking=False):
             return
 
