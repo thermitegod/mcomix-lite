@@ -95,7 +95,7 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
         if not paths:
             return
 
-        self._initialize_fileprovider(path=paths)
+        self._initialize_fileprovider(paths=paths)
         self.open_file(paths[0], start_page)
 
     def open_file(self, path: Path, start_page: int = 1):
@@ -193,25 +193,22 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
             self.__base_path = None
             self.file_closed()
 
-    def _initialize_fileprovider(self, path: list):
+    def _initialize_fileprovider(self, paths: list):
         """
-        Creates the L{file_provider.FileProvider} for C{path}.
-        If C{path} is a list, assumes that only the files in the list
-        should be available. If C{path} is a string, assume that it is
-        either a directory or an image file, and all files in that directory should be opened.
+        Initialize the file provider based on the total number of file paths
+        in <paths>. If <paths> is a list with more than one entry, assumes that
+        only the files in the list should be available. If <paths> is a list with
+        a single path, assume that it is either a directory or an image file,
+        and all files in that directory should be opened.
 
         :param path: List of file names, or single file/directory as string.
         """
 
-        self.__file_provider = self.__file_provider_chooser.get_file_provider(path)
+        self.__file_provider = self.__file_provider_chooser.get_file_provider(paths)
 
     def _open_archive(self, path: Path):
         """
-        Opens the archive passed in C{path}.
-        Creates an L{archive_extractor.Extractor} and extracts all images
-        found within the archive.
-
-        :returns: A tuple containing C{(image_files, image_index)}
+        Extracts all images in the archive passed in path
         """
 
         self.__base_path = path
@@ -250,15 +247,34 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
         return self.__file_loaded
 
     def is_archive(self):
+        """
+        Returns True if the current opened file an archive.
+        """
+
         return self.__is_archive
 
     def get_base_path(self):
+        """
+        Returns the path to opened archive file, or directory containing current images.
+        """
+
         return self.__base_path
 
     def _get_file_list(self):
+        """
+        Get a list of all archives in the same diretory as the opened archive
+        """
+
         return self.__file_provider.list_files(mode=FileTypes.ARCHIVES)
 
     def get_file_number(self):
+        """
+        Get the current position of the opened archive and the total archives in the
+        current directory. If the current opened file is not an archive do nothing.
+
+        :returns a tuple of (current file number, total files)
+        """
+
         if not self.__is_archive:
             # No file numbers for images.
             return 0, 0
