@@ -785,7 +785,7 @@ class MainWindow(Gtk.ApplicationWindow):
         Set the title acording to current state
         """
 
-        self.set_title(f'{Mcomix.APP_NAME.value} [{self.__imagehandler.get_current_filename()}]')
+        self.set_title(f'{Mcomix.APP_NAME.value} [{self.__filehandler.get_current_filename()}]')
 
     def extract_page(self, *args):
         self.__filesystem_hactions.extract_page()

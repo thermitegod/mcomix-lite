@@ -294,7 +294,7 @@ class FileHandler:
         if self.__is_archive:
             return self.__base_path
 
-        return self.__window.imagehandler.get_current_path().parent
+        return self.__base_path.parent
 
     def get_base_filename(self):
         """
@@ -312,7 +312,10 @@ class FileHandler:
         :returns: name of the currently viewed file
         """
 
-        return self.__window.imagehandler.get_current_filename()
+        if self.__is_archive:
+            return self.__base_path.name
+
+        return self.__base_path.parent
 
     def open_archive_direction(self, forward: bool, *args):
         """

@@ -142,17 +142,6 @@ class ImageHandler:
         self.__image_files_total = len(self.__image_files)
         self.__image_files_index = dict(zip(self.__image_files, range(self.__image_files_total), strict=True))
 
-    def get_current_path(self):
-        # Get current image path
-        try:
-            if self.__current_image_index is None:
-                return self.__image_files[0]
-
-            return self.__image_files[self.__current_image_index]
-        except IndexError:
-            logger.warning(f'failed to get current image path')
-            return Path()
-
     def get_real_path(self):
         """
         Return the "real" path to the currently viewed file, i.e. the
@@ -328,16 +317,6 @@ class ImageHandler:
                 page_data.reverse()
 
         return page_data
-
-    def get_current_filename(self):
-        """
-        Return a string with the name of the currently viewed file that is suitable for printing
-        """
-
-        if self.__window.filehandler.is_archive():
-            return self.__window.filehandler.get_base_path().name
-
-        return self.get_current_path()
 
     def get_size(self, page: int = None):
         """
