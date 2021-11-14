@@ -54,10 +54,7 @@ class BookmarkBackend:
         """
 
         self.__bookmarks.append(bookmark)
-
-        self.__bookmark_state_dirty = True
         self.write_bookmarks_file()
-        self.__bookmark_state_dirty = False
 
         self.__events.run_events(EventType.BOOKMARK_ADD)
 
@@ -67,10 +64,7 @@ class BookmarkBackend:
         """
 
         self.__bookmarks.remove(bookmark)
-
-        self.__bookmark_state_dirty = True
         self.write_bookmarks_file()
-        self.__bookmark_state_dirty = False
 
         self.__events.run_events(EventType.BOOKMARK_REMOVE)
 
@@ -206,13 +200,13 @@ class BookmarkBackend:
 
         return False
 
-    def write_bookmarks_file(self):
+    def write_bookmarks_file(self, force_write: bool = False):
         """
         Store relevant bookmark info in the mcomix directory
         """
 
         # Merge changes in case file was modified from within other instances
-        if not self.__bookmark_state_dirty:
+        if not self.__bookmark_state_dirty or force_write:
             logger.info('No changes to write for bookmarks')
             return
         logger.info('Writing changes to bookmarks')
