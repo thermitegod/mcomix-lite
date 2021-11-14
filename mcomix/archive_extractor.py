@@ -25,27 +25,21 @@ class Extractor:
     for other threads to wait on specific files to be ready
     """
 
-    def __init__(self):
+    def __init__(self, archive: Path):
         super().__init__()
 
         self.__events = Events()
         self.__threadpool = GlobalThreadPool().threadpool
-        self.__extractor = None
         self.__condition = threading.Condition()
-
-    def setup(self, archive: Path):
-        """
-        Setup the extractor with archive <src> and destination dir <dst>.
-        Return a threading.Condition related to the is_ready() method, or
-        None if the format of <src> isn't supported
-        """
 
         self.__extractor = LibarchiveExtractor(archive)
 
+    def list_contents(self):
         self.__threadpool.apply_async(
             self._list_contents,
             callback=self._list_contents_cb,
-            error_callback=self._error_cb)
+            error_callback=self._error_cb
+        )
 
     def stop(self):
         """

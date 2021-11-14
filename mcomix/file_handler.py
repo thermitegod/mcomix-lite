@@ -57,7 +57,7 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
         #: Path to opened archive file, or directory containing current images.
         self.__base_path = None
         #: Archive extractor.
-        self.__extractor = Extractor()
+        self.__extractor = None
         #: Provides a list of available files/archives in the open directory.
         self.__file_provider_chooser = GetFileProvider()
         self.__file_provider = None
@@ -213,7 +213,8 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
 
         self.__base_path = path
         try:
-            self.__extractor.setup(self.__base_path)
+            self.__extractor = Extractor(self.__base_path)
+            self.__extractor.list_contents()
         except Exception as ex:
             logger.error(f'failed to open archive: {self.__base_path}')
             logger.error(f'Exception: {ex}')
