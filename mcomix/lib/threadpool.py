@@ -2,14 +2,14 @@
 
 import sys
 from multiprocessing.dummy import Pool
-from multiprocessing.pool import ThreadPool as mpThreadPool
+from multiprocessing.pool import ThreadPool
 from threading import Lock
 from typing import Callable
 
 from mcomix.preferences import config
 
 
-class _NamedPool(mpThreadPool):
+class _NamedPool(ThreadPool):
     __slots__ = ('__name',)
 
     def __init__(self, *args, name: str = None, **kwargs):
@@ -19,7 +19,7 @@ class _NamedPool(mpThreadPool):
     def Process(self, *args, **kwargs):
         if self.__name:
             kwargs.update(name=self.__name)
-        return mpThreadPool.Process(*args, **kwargs)
+        return ThreadPool.Process(*args, **kwargs)
 
 
 class _ThreadPool:
