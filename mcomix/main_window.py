@@ -246,6 +246,13 @@ class MainWindow(Gtk.ApplicationWindow):
         else:
             return PageOrientation.WESTERN.value
 
+    def _hide_images(self):
+        # hides old images before showing new ones
+        # also if in double page mode and only a single
+        # image is going to be shown, prevents a ghost second image
+        for i in self.__images:
+            i.clear()
+
     def draw_image(self, scroll_to=None):
         """
         Draw the current pages and update the titlebar and statusbar
@@ -259,11 +266,7 @@ class MainWindow(Gtk.ApplicationWindow):
         GLib.idle_add(self._draw_image, scroll_to, priority=GLib.PRIORITY_HIGH_IDLE)
 
     def _draw_image(self, scroll_to: int):
-        # hides old images before showing new ones
-        # also if in double page mode and only a single
-        # image is going to be shown, prevents a ghost second image
-        for i in self.__images:
-            i.clear()
+        self._hide_images()
 
         if not self.__file_handler.get_file_loaded():
             self.__thumbnailsidebar.hide()
@@ -439,6 +442,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def _on_file_closed(self):
         self.set_title(Mcomix.APP_NAME.value)
+        self._hide_images()
         self.__statusbar.set_message('')
         self.__thumbnailsidebar.hide()
         self.__thumbnailsidebar.clear()
