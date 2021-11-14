@@ -438,7 +438,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self._update_title()
 
     def _on_file_closed(self):
-        self.clear()
+        self.set_title(Mcomix.APP_NAME.value)
+        self.__statusbar.set_message('')
         self.__thumbnailsidebar.hide()
         self.__thumbnailsidebar.clear()
 
@@ -638,15 +639,6 @@ class MainWindow(Gtk.ApplicationWindow):
         viewport_position = self.__layout.get_viewport_box().get_position()
         self.__hadjust.set_value(viewport_position[0])  # 2D only
         self.__vadjust.set_value(viewport_position[1])  # 2D only
-
-    def clear(self):
-        """
-        Clear the currently displayed data (i.e. "close" the file)
-        """
-
-        self.set_title(Mcomix.APP_NAME.value)
-        self.__statusbar.set_message('')
-        self.draw_image()
 
     def _displayed_double(self):
         """
