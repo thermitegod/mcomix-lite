@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Callable
+from typing import Any, Callable
 
 from gi.repository import Gtk
 
@@ -30,10 +30,11 @@ class Menubar(Gtk.EventBox):
 
         @dataclass(frozen=True)
         class MENUBAR:
-            __slots__ = ('label', 'create_function', 'callback')
+            __slots__ = ('label', 'create_function', 'callback', 'callback_args')
             label: str
             create_function: Callable
             callback: Callable
+            callback_args: Any
 
         # File #
         menu_file = Gtk.Menu()
@@ -41,17 +42,17 @@ class Menubar(Gtk.EventBox):
         menuitem_file.set_submenu(menu_file)
 
         memu_file_items = (
-            MENUBAR('Open', self._create_submenu_item, window.open_dialog_file_chooser),
-            MENUBAR('separator', self._create_separator, None),
-            MENUBAR('Save Page As', self._create_submenu_item, window.extract_page),
-            MENUBAR('Refresh', self._create_submenu_item, file_handler.refresh_file),
-            MENUBAR('Properties', self._create_submenu_item, window.open_dialog_properties),
-            MENUBAR('separator', self._create_separator, None),
-            MENUBAR('Trash', self._create_submenu_item, window.trash_file),
-            MENUBAR('separator', self._create_separator, None),
-            MENUBAR('Minimize', self._create_submenu_item, window.minimize),
-            MENUBAR('Close', self._create_submenu_item, file_handler.close_file),
-            MENUBAR('Quit', self._create_submenu_item, window.terminate_program),
+            MENUBAR('Open', self._create_submenu_item, window.open_dialog_file_chooser, None),
+            MENUBAR('separator', self._create_separator, None, None),
+            MENUBAR('Save Page As', self._create_submenu_item, window.extract_page, None),
+            MENUBAR('Refresh', self._create_submenu_item, file_handler.refresh_file, None),
+            MENUBAR('Properties', self._create_submenu_item, window.open_dialog_properties, None),
+            MENUBAR('separator', self._create_separator, None, None),
+            MENUBAR('Trash', self._create_submenu_item, window.trash_file, None),
+            MENUBAR('separator', self._create_separator, None, None),
+            MENUBAR('Minimize', self._create_submenu_item, window.minimize, None),
+            MENUBAR('Close', self._create_submenu_item, file_handler.close_file, None),
+            MENUBAR('Quit', self._create_submenu_item, window.terminate_program, None),
         )
 
         self._populate_menu(items=memu_file_items, menu=menu_file)
@@ -63,8 +64,8 @@ class Menubar(Gtk.EventBox):
         menuitem_edit.set_submenu(menu_edit)
 
         memu_edit_items = (
-            MENUBAR('Preference', self._create_submenu_item, window.open_dialog_preference),
-            MENUBAR('Keybindings', self._create_submenu_item, window.open_dialog_keybindings),
+            MENUBAR('Preference', self._create_submenu_item, window.open_dialog_preference, None),
+            MENUBAR('Keybindings', self._create_submenu_item, window.open_dialog_keybindings, None),
         )
 
         self._populate_menu(items=memu_edit_items, menu=menu_edit)
@@ -76,13 +77,13 @@ class Menubar(Gtk.EventBox):
         menuitem_view.set_submenu(menu_view)
 
         memu_edit_items = (
-            MENUBAR('Stretch Small Images', self._create_submenu_item, window.change_stretch),
-            MENUBAR('separator', self._create_separator, None),
-            MENUBAR('Best Fit Mode', self._create_submenu_item, window.change_fit_mode_best),
-            MENUBAR('Fit Width Mode', self._create_submenu_item, window.change_fit_mode_width),
-            MENUBAR('Fit Height Mode', self._create_submenu_item, window.change_fit_mode_height),
-            MENUBAR('Fit Size Mode', self._create_submenu_item, window.change_fit_mode_size),
-            MENUBAR('Manual Zoom Mode', self._create_submenu_item, window.change_fit_mode_manual),
+            MENUBAR('Stretch Small Images', self._create_submenu_item, window.change_stretch, None),
+            MENUBAR('separator', self._create_separator, None, None),
+            MENUBAR('Best Fit Mode', self._create_submenu_item, window.change_fit_mode_best, None),
+            MENUBAR('Fit Width Mode', self._create_submenu_item, window.change_fit_mode_width, None),
+            MENUBAR('Fit Height Mode', self._create_submenu_item, window.change_fit_mode_height, None),
+            MENUBAR('Fit Size Mode', self._create_submenu_item, window.change_fit_mode_size, None),
+            MENUBAR('Manual Zoom Mode', self._create_submenu_item, window.change_fit_mode_manual, None),
         )
 
         self._populate_menu(items=memu_edit_items, menu=menu_view)
@@ -101,11 +102,11 @@ class Menubar(Gtk.EventBox):
         menuitem_tools.set_submenu(menu_tools)
 
         memu_tools_items = (
-            MENUBAR('Enhance Image', self._create_submenu_item, window.open_dialog_enhance),
-            MENUBAR('separator', self._create_separator, None),
-            MENUBAR('Rotate 90°', self._create_submenu_item, window.rotate_90),
-            MENUBAR('Rotate 180°', self._create_submenu_item, window.rotate_180),
-            MENUBAR('Rotate 270°', self._create_submenu_item, window.rotate_270),
+            MENUBAR('Enhance Image', self._create_submenu_item, window.open_dialog_enhance, None),
+            MENUBAR('separator', self._create_separator, None, None),
+            MENUBAR('Rotate 90°', self._create_submenu_item, window.rotate_90, None),
+            MENUBAR('Rotate 180°', self._create_submenu_item, window.rotate_180, None),
+            MENUBAR('Rotate 270°', self._create_submenu_item, window.rotate_270, None),
         )
 
         self._populate_menu(items=memu_tools_items, menu=menu_tools)
@@ -117,7 +118,7 @@ class Menubar(Gtk.EventBox):
         menuitem_help.set_submenu(menu_help)
 
         memu_help_items = (
-            MENUBAR('About', self._create_submenu_item, window.open_dialog_about),
+            MENUBAR('About', self._create_submenu_item, window.open_dialog_about, None),
         )
 
         self._populate_menu(items=memu_help_items, menu=menu_help)
@@ -130,10 +131,13 @@ class Menubar(Gtk.EventBox):
         for item in items:
             item.create_function(menu, item.label, item.callback)
 
-    def _create_submenu_item(self, menu, label: str, callback: Callable):
+    def _create_submenu_item(self, menu, label: str, callback: Callable, callback_args: Any = None):
         item = Gtk.MenuItem()
         item.set_label(label)
-        item.connect('activate', callback)
+        if callback_args is None:
+            item.connect('activate', callback)
+        else:
+            item.connect('activate', callback, callback_args)
         menu.append(item)
 
     def _create_separator(self, menu, *args):
