@@ -29,9 +29,6 @@ class OrderedFileProvider(FileProvider):
 
         self.__base_dir = self.set_directory(path)
 
-    def get_directory(self):
-        return self.__base_dir
-
     def list_files(self, mode: int):
         """
         Lists all files in the current directory. Returns a list of absolute paths, already sorted

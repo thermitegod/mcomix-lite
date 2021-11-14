@@ -115,11 +115,15 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
 
         # Actually open the file(s)/archive passed in path.
         if self.__is_archive:
+            self.__base_path = path
             self._open_archive(self.__current_file)
             self.__file_loading = True
         else:
             image_files = self.__file_provider.list_files(mode=FileTypes.IMAGES)
-            self.__base_path = self.__file_provider.get_directory()
+            if self.__current_file.is_dir():
+                self.__base_path = self.__current_file
+            else:
+                self.__base_path = self.__current_file.parent
             self._archive_opened(image_files)
 
     def _archive_opened(self, image_files: list):
@@ -211,12 +215,11 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
         Extracts all images in the archive passed in path
         """
 
-        self.__base_path = path
         try:
-            self.__extractor = Extractor(self.__base_path)
+            self.__extractor = Extractor(path)
             self.__extractor.list_contents()
         except Exception as ex:
-            logger.error(f'failed to open archive: {self.__base_path}')
+            logger.error(f'failed to open archive: {path}')
             logger.error(f'Exception: {ex}')
             raise
 

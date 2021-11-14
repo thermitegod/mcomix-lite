@@ -38,9 +38,6 @@ class PreDefinedFileProvider(FileProvider):
             elif should_accept(file):
                 self.__files.append(file)
 
-    def get_directory(self):
-        return Path.cwd()
-
     def list_files(self, mode: int):
         """
         Returns the files as passed to the constructor

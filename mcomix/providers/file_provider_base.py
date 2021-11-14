@@ -5,8 +5,6 @@ switching to the next/previous directory"""
 
 from pathlib import Path
 
-from loguru import logger
-
 
 class FileProvider:
     """
@@ -25,9 +23,6 @@ class FileProvider:
             return path
 
         return path.parent
-
-    def get_directory(self):
-        raise NotImplementedError
 
     def list_files(self, mode: int):
         raise NotImplementedError
