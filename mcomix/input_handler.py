@@ -196,8 +196,8 @@ class InputHandler:
 
         if 'GDK_BUTTON1_MASK' in event.get_state().value_names:
             self.__window.cursor_handler.set_cursor_grab()
-            self.__window.scroll(self.__last_pointer_pos_x - event.x_root,
-                                 self.__last_pointer_pos_y - event.y_root)
+            self._scroll(self.__last_pointer_pos_x - event.x_root,
+                         self.__last_pointer_pos_y - event.y_root)
             self.__last_pointer_pos_x = event.x_root
             self.__last_pointer_pos_y = event.y_root
 
@@ -227,7 +227,7 @@ class InputHandler:
         if not config['FLIP_WITH_WHEEL']:
             return
 
-        if self.__window.scroll(x, y):
+        if self._scroll(x, y):
             return True
 
         if y > 0 or (ViewState.is_manga_mode and x < 0) or \
@@ -235,3 +235,36 @@ class InputHandler:
             self.__window.flip_page(number_of_pages=1)
         else:
             self.__window.flip_page(number_of_pages=-1)
+
+    def _scroll(self, x: int, y: int):
+        """
+        Scroll <x> px horizontally and <y> px vertically. If <bound> is
+        'first' or 'second', we will not scroll out of the first or second
+        page respectively (dependent on manga mode). The <bound> argument
+        only makes sense in double page mode.
+
+        :returns: True if call resulted in new adjustment values, False otherwise
+        """
+
+        old_hadjust = self.__window.hadjust.get_value()
+        old_vadjust = self.__window.vadjust.get_value()
+
+        visible_width, visible_height = self.__window.get_visible_area_size()
+
+        hadjust_upper = max(0, self.__window.hadjust.get_upper() - visible_width)
+        vadjust_upper = max(0, self.__window.vadjust.get_upper() - visible_height)
+        hadjust_lower = 0
+
+        new_hadjust = old_hadjust + x
+        new_vadjust = old_vadjust + y
+
+        new_hadjust = max(hadjust_lower, new_hadjust)
+        new_vadjust = max(0, new_vadjust)
+
+        new_hadjust = min(hadjust_upper, new_hadjust)
+        new_vadjust = min(vadjust_upper, new_vadjust)
+
+        self.__window.hadjust.set_value(new_hadjust)
+        self.__window.vadjust.set_value(new_vadjust)
+
+        return old_vadjust != new_vadjust or old_hadjust != new_hadjust

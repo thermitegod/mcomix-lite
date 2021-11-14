@@ -633,39 +633,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__zoom.reset_user_zoom()
         self.draw_image()
 
-    def scroll(self, x: int, y: int):
-        """
-        Scroll <x> px horizontally and <y> px vertically. If <bound> is
-        'first' or 'second', we will not scroll out of the first or second
-        page respectively (dependent on manga mode). The <bound> argument
-        only makes sense in double page mode.
-
-        :returns: True if call resulted in new adjustment values, False otherwise
-        """
-
-        old_hadjust = self.__hadjust.get_value()
-        old_vadjust = self.__vadjust.get_value()
-
-        visible_width, visible_height = self.get_visible_area_size()
-
-        hadjust_upper = max(0, self.__hadjust.get_upper() - visible_width)
-        vadjust_upper = max(0, self.__vadjust.get_upper() - visible_height)
-        hadjust_lower = 0
-
-        new_hadjust = old_hadjust + x
-        new_vadjust = old_vadjust + y
-
-        new_hadjust = max(hadjust_lower, new_hadjust)
-        new_vadjust = max(0, new_vadjust)
-
-        new_hadjust = min(hadjust_upper, new_hadjust)
-        new_vadjust = min(vadjust_upper, new_vadjust)
-
-        self.__vadjust.set_value(new_vadjust)
-        self.__hadjust.set_value(new_hadjust)
-
-        return old_vadjust != new_vadjust or old_hadjust != new_hadjust
-
     def scroll_to_predefined(self, destination: tuple):
         self.__layout.scroll_to_predefined(destination)
         viewport_position = self.__layout.get_viewport_box().get_position()
