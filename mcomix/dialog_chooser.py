@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-from enum import Enum, auto
-
 from mcomix.about_dialog import AboutDialog
 from mcomix.enhance_dialog import EnhanceImageDialog
+from mcomix.enums.dialog_choice import DialogChoice
 from mcomix.file_chooser import FileChooser
 from mcomix.keybindings_dialog import KeybindingEditorDialog
 from mcomix.preferences_dialog import PreferencesDialog
@@ -14,15 +13,6 @@ from mcomix.properties_dialog import PropertiesDialog
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from mcomix.main_window import MainWindow
-
-
-class DialogChoice(Enum):
-    ABOUT = auto()
-    ENHANCE = auto()
-    FILECHOOSER = auto()
-    KEYBINDINGS = auto()
-    PREFERENCES = auto()
-    PROPERTIES = auto()
 
 
 class DialogChooser:

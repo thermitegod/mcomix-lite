@@ -6,7 +6,8 @@ from gi.repository import GLib, Gdk, Gtk
 
 from mcomix.bookmark_backend import BookmarkBackend
 from mcomix.cursor_handler import CursorHandler
-from mcomix.dialog_chooser import DialogChooser, DialogChoice
+from mcomix.dialog_chooser import DialogChooser
+from mcomix.enums.dialog_choice import DialogChoice
 from mcomix.enums.double_page import DoublePage
 from mcomix.enums.mcomix import Mcomix
 from mcomix.enums.page_orientation import PageOrientation

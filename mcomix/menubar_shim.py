@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from mcomix.enums.dialog_choice import DialogChoice
+
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from mcomix.main_window import MainWindow
@@ -25,7 +27,7 @@ class MenubarShim:
     def change_zoom_mode(self, menubar, value: int = None):
         self.__window.change_zoom_mode(value)
 
-    def open_dialog(self, menubar, dialog):
+    def open_dialog(self, menubar, dialog: DialogChoice):
         self.__window.open_dialog(dialog)
 
     def extract_page(self, menubar):
