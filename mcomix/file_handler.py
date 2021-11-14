@@ -71,7 +71,7 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
     def update_opening_behavior(self):
         self.__open_first_page = 1 if config['OPEN_FIRST_PAGE'] else -1
 
-    def refresh_file(self, *args, **kwargs):
+    def refresh_file(self):
         """
         Closes the current file(s)/archive and reloads them
         """
@@ -172,7 +172,7 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
 
         self.__events.run_events(EventType.FILE_CLOSED)
 
-    def close_file(self, *args):
+    def close_file(self):
         """
         Close the currently opened file and its provider
         """
@@ -299,7 +299,7 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
 
         return self.__image_handler.get_path_to_page()
 
-    def open_archive_direction(self, forward: bool, *args):
+    def open_archive_direction(self, forward: bool):
         """
         Opens the archive that comes directly after the currently loaded
         archive in that archive's directory listing if forward=True else

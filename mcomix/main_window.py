@@ -12,7 +12,7 @@ from mcomix.enums.mcomix import Mcomix
 from mcomix.enums.page_orientation import PageOrientation
 from mcomix.enums.image_scaling import ScalingGDK, ScalingPIL
 from mcomix.enums.scroll import Scroll
-from mcomix.enums.zoom_modes import ZoomAxis, ZoomModes
+from mcomix.enums.zoom_modes import ZoomAxis
 from mcomix.event_handler import EventHandler
 from mcomix.file_handler import FileHandler
 from mcomix.filesystem_actions import FileSystemActions
@@ -24,6 +24,7 @@ from mcomix.layout import FiniteLayout
 from mcomix.lens import MagnifyingLens
 from mcomix.lib.events import Events, EventType
 from mcomix.menubar import Menubar
+from mcomix.menubar_shim import MenubarShim
 from mcomix.pageselect import Pageselector
 from mcomix.preferences import config
 from mcomix.preferences_manager import PreferenceManager
@@ -74,6 +75,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__zoom.set_scale_up(config['STRETCH'])
         self.__zoom.reset_user_zoom()
 
+        self.__menubar_shim = MenubarShim(self)
         self.__menubar = Menubar(self)
 
         self.__event_handler = EventHandler(self)
@@ -212,6 +214,14 @@ class MainWindow(Gtk.ApplicationWindow):
         """
 
         return self.__lens
+
+    @property
+    def menubar_shim(self):
+        """
+        Interface for MenubarShim
+        """
+
+        return self.__menubar_shim
 
     @property
     def layout(self):
@@ -516,29 +526,20 @@ class MainWindow(Gtk.ApplicationWindow):
         if number_of_pages:
             self.set_page(number_of_pages)
 
-    def page_select(self, *args):
+    def page_select(self):
         Pageselector(self)
 
-    def rotate_90(self, *args):
-        self.rotate_x(rotation=90)
-
-    def rotate_180(self, *args):
-        self.rotate_x(rotation=180)
-
-    def rotate_270(self, *args):
-        self.rotate_x(rotation=270)
-
-    def rotate_x(self, rotation: int, *args):
+    def rotate_x(self, rotation: int):
         config['ROTATION'] = (config['ROTATION'] + rotation) % 360
         self.draw_image()
 
-    def change_double_page(self, *args):
+    def change_double_page(self):
         config['DEFAULT_DOUBLE_PAGE'] = not config['DEFAULT_DOUBLE_PAGE']
         self._displayed_double()
         self._update_page_information()
         self.draw_image()
 
-    def change_manga_mode(self, *args):
+    def change_manga_mode(self):
         config['DEFAULT_MANGA_MODE'] = not config['DEFAULT_MANGA_MODE']
         ViewState.is_manga_mode = config['DEFAULT_MANGA_MODE']
         self.__page_orientation = self._page_orientation()
@@ -550,7 +551,7 @@ class MainWindow(Gtk.ApplicationWindow):
         window_state = self.get_window().get_state()
         return (window_state & Gdk.WindowState.FULLSCREEN) != 0
 
-    def change_fullscreen(self, *args):
+    def change_fullscreen(self):
         # Disable action until transition if complete.
 
         if self.is_fullscreen():
@@ -576,21 +577,6 @@ class MainWindow(Gtk.ApplicationWindow):
         # No need to call draw_image explicitely,
         # as we'll be receiving a window state
         # change or resize event.
-
-    def change_fit_mode_best(self, *args):
-        self.change_zoom_mode(ZoomModes.BEST.value)
-
-    def change_fit_mode_width(self, *args):
-        self.change_zoom_mode(ZoomModes.WIDTH.value)
-
-    def change_fit_mode_height(self, *args):
-        self.change_zoom_mode(ZoomModes.HEIGHT.value)
-
-    def change_fit_mode_size(self, *args):
-        self.change_zoom_mode(ZoomModes.SIZE.value)
-
-    def change_fit_mode_manual(self, *args):
-        self.change_zoom_mode(ZoomModes.MANUAL.value)
 
     def change_zoom_mode(self, value: int = None):
         if value is not None:
@@ -621,7 +607,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__statusbar.update_image_scaling()
         self.draw_image()
 
-    def change_stretch(self, *args):
+    def change_stretch(self):
         """
         Toggles stretching small images
         """
@@ -630,42 +616,22 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__zoom.set_scale_up(config['STRETCH'])
         self.draw_image()
 
-    def open_dialog_about(self, *args):
-        dialog = DialogChooser(DialogChoice.ABOUT)
+    def open_dialog(self, dialog: DialogChoice):
+        dialog = DialogChooser(dialog)
         dialog.open_dialog(self)
 
-    def open_dialog_enhance(self, *args):
-        dialog = DialogChooser(DialogChoice.ENHANCE)
-        dialog.open_dialog(self)
-
-    def open_dialog_file_chooser(self, *args):
-        dialog = DialogChooser(DialogChoice.FILECHOOSER)
-        dialog.open_dialog(self)
-
-    def open_dialog_keybindings(self, *args):
-        dialog = DialogChooser(DialogChoice.KEYBINDINGS)
-        dialog.open_dialog(self)
-
-    def open_dialog_preference(self, *args):
-        dialog = DialogChooser(DialogChoice.PREFERENCES)
-        dialog.open_dialog(self)
-
-    def open_dialog_properties(self, *args):
-        dialog = DialogChooser(DialogChoice.PROPERTIES)
-        dialog.open_dialog(self)
-
-    def change_keep_transformation(self, *args):
+    def change_keep_transformation(self):
         config['KEEP_TRANSFORMATION'] = not config['KEEP_TRANSFORMATION']
 
-    def manual_zoom_in(self, *args):
+    def manual_zoom_in(self):
         self.__zoom.zoom_in()
         self.draw_image()
 
-    def manual_zoom_out(self, *args):
+    def manual_zoom_out(self):
         self.__zoom.zoom_out()
         self.draw_image()
 
-    def manual_zoom_original(self, *args):
+    def manual_zoom_original(self):
         self.__zoom.reset_user_zoom()
         self.draw_image()
 
@@ -755,16 +721,25 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.set_title(f'{Mcomix.APP_NAME.value} [{self.__file_handler.get_real_path()}]')
 
-    def extract_page(self, *args):
+    def extract_page(self):
         self.__filesystem_actions.extract_page()
 
-    def move_file(self, *args):
+    def move_file(self):
         self.__filesystem_actions.move_file()
 
-    def trash_file(self, *args):
+    def trash_file(self):
         self.__filesystem_actions.trash_file()
 
-    def minimize(self, *args):
+    def refresh_file(self):
+        self.__file_handler.refresh_file()
+
+    def close_file(self):
+        self.__file_handler.close_file()
+
+    def open_archive_direction(self, forward: bool):
+        self.__file_handler.open_archive_direction(forward)
+
+    def minimize(self):
         """
         Minimizes the MComix window
         """

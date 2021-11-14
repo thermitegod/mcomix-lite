@@ -8,7 +8,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Callable
 
-from mcomix.file_handler import FileHandler
+from mcomix.dialog_chooser import DialogChoice
+from mcomix.enums.zoom_modes import ZoomModes
 from mcomix.preferences import config
 
 from typing import TYPE_CHECKING
@@ -21,8 +22,6 @@ class KeyBindingsMap:
 
     def __init__(self, window: MainWindow):
         super().__init__()
-
-        file_handler = FileHandler(None)
 
         group_nav = 'Navigation'
         group_scroll = 'Scrolling'
@@ -147,7 +146,7 @@ class KeyBindingsMap:
                     INFO(group_nav, 'Next archive'),
                     KEYBINDINGS(['<Primary>Right']),
                     KEY_EVENT(
-                        file_handler.open_archive_direction,
+                        window.open_archive_direction,
                         {'forward': True},
                     ),
                 ),
@@ -156,7 +155,7 @@ class KeyBindingsMap:
                     INFO(group_nav, 'Previous archive'),
                     KEYBINDINGS(['<Primary>Left']),
                     KEY_EVENT(
-                        file_handler.open_archive_direction,
+                        window.open_archive_direction,
                         {'forward': False},
                     ),
                 ),
@@ -302,8 +301,8 @@ class KeyBindingsMap:
                     INFO(group_pagefit, 'Best fit mode'),
                     KEYBINDINGS(['b']),
                     KEY_EVENT(
-                        window.change_fit_mode_best,
-                        None,
+                        window.change_zoom_mode,
+                        {'value': ZoomModes.BEST.value},
                     ),
                 ),
             'fit_width_mode':
@@ -311,8 +310,8 @@ class KeyBindingsMap:
                     INFO(group_pagefit, 'Fit width mode'),
                     KEYBINDINGS(['w']),
                     KEY_EVENT(
-                        window.change_fit_mode_width,
-                        None,
+                        window.change_zoom_mode,
+                        {'value': ZoomModes.WIDTH.value},
                     ),
                 ),
             'fit_height_mode':
@@ -320,8 +319,8 @@ class KeyBindingsMap:
                     INFO(group_pagefit, 'Fit height mode'),
                     KEYBINDINGS(['h']),
                     KEY_EVENT(
-                        window.change_fit_mode_height,
-                        None,
+                        window.change_zoom_mode,
+                        {'value': ZoomModes.HEIGHT.value},
                     ),
                 ),
             'fit_size_mode':
@@ -329,8 +328,8 @@ class KeyBindingsMap:
                     INFO(group_pagefit, 'Fit size mode'),
                     KEYBINDINGS(['s']),
                     KEY_EVENT(
-                        window.change_fit_mode_size,
-                        None,
+                        window.change_zoom_mode,
+                        {'value': ZoomModes.SIZE.value},
                     ),
                 ),
             'fit_manual_mode':
@@ -338,8 +337,8 @@ class KeyBindingsMap:
                     INFO(group_pagefit, 'Manual zoom mode'),
                     KEYBINDINGS(['a']),
                     KEY_EVENT(
-                        window.change_fit_mode_manual,
-                        None,
+                        window.change_zoom_mode,
+                        {'value': ZoomModes.MANUAL.value},
                     ),
                 ),
 
@@ -378,8 +377,8 @@ class KeyBindingsMap:
                     INFO(group_info, 'About'),
                     KEYBINDINGS(['F1']),
                     KEY_EVENT(
-                        window.open_dialog_about,
-                        None,
+                        window.open_dialog,
+                        {'dialog': DialogChoice.ABOUT},
                     ),
                 ),
 
@@ -389,7 +388,7 @@ class KeyBindingsMap:
                     INFO(group_file, 'Close'),
                     KEYBINDINGS(['<Control>W']),
                     KEY_EVENT(
-                        file_handler.close_file,
+                        window.close_file,
                         None,
                     ),
                 ),
@@ -407,8 +406,8 @@ class KeyBindingsMap:
                     INFO(group_file, 'Enhance image'),
                     KEYBINDINGS(['e']),
                     KEY_EVENT(
-                        window.open_dialog_enhance,
-                        None,
+                        window.open_dialog,
+                        {'dialog': DialogChoice.ENHANCE},
                     ),
                 ),
             'extract_page':
@@ -434,8 +433,8 @@ class KeyBindingsMap:
                     INFO(group_file, 'Open'),
                     KEYBINDINGS(['<Control>O']),
                     KEY_EVENT(
-                        window.open_dialog_file_chooser,
-                        None,
+                        window.open_dialog,
+                        {'dialog': DialogChoice.FILECHOOSER},
                     ),
                 ),
             'preferences':
@@ -443,8 +442,8 @@ class KeyBindingsMap:
                     INFO(group_file, 'Preferences'),
                     KEYBINDINGS(['F12']),
                     KEY_EVENT(
-                        window.open_dialog_preference,
-                        None,
+                        window.open_dialog,
+                        {'dialog': DialogChoice.PREFERENCES},
                     ),
                 ),
             'properties':
@@ -452,8 +451,8 @@ class KeyBindingsMap:
                     INFO(group_file, 'Properties'),
                     KEYBINDINGS(['<Alt>Return']),
                     KEY_EVENT(
-                        window.open_dialog_properties,
-                        None,
+                        window.open_dialog,
+                        {'dialog': DialogChoice.PROPERTIES},
                     ),
                 ),
             'quit':
@@ -470,7 +469,7 @@ class KeyBindingsMap:
                     INFO(group_file, 'Refresh'),
                     KEYBINDINGS(['<control><shift>R']),
                     KEY_EVENT(
-                        file_handler.refresh_file,
+                        window.refresh_file,
                         None,
                     ),
                 ),
