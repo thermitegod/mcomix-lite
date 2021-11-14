@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""event_handler.py - Event handling (keyboard, mouse, etc.) for the main window"""
+"""input_handler.py - Event handling (keyboard, mouse, etc.) for the main window"""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from mcomix.main_window import MainWindow
 
 
-class EventHandler:
+class InputHandler:
     __slots__ = (
         '__window', '__file_handler', '__keybindings', '__keybindings_map', '__all_accels_mask',
         '__keymap', '__last_pointer_pos_x', '__last_pointer_pos_y',

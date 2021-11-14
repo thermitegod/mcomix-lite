@@ -167,7 +167,7 @@ class KeyBindingsMap:
                     INFO(group_scroll, 'Scroll down'),
                     KEYBINDINGS(['Down', 'KP_Down']),
                     KEY_EVENT(
-                        window.event_handler.scroll_with_flipping,
+                        window.input_handler.scroll_with_flipping,
                         {'x': 0, 'y': config['PIXELS_TO_SCROLL_PER_KEY_EVENT']},
                     ),
                 ),
@@ -176,7 +176,7 @@ class KeyBindingsMap:
                     INFO(group_scroll, 'Scroll left'),
                     KEYBINDINGS(['Left', 'KP_Left']),
                     KEY_EVENT(
-                        window.event_handler.scroll_with_flipping,
+                        window.input_handler.scroll_with_flipping,
                         {'x': -config['PIXELS_TO_SCROLL_PER_KEY_EVENT'], 'y': 0},
                     ),
                 ),
@@ -185,7 +185,7 @@ class KeyBindingsMap:
                     INFO(group_scroll, 'Scroll right'),
                     KEYBINDINGS(['Right', 'KP_Right']),
                     KEY_EVENT(
-                        window.event_handler.scroll_with_flipping,
+                        window.input_handler.scroll_with_flipping,
                         {'x': config['PIXELS_TO_SCROLL_PER_KEY_EVENT'], 'y': 0},
                     ),
                 ),
@@ -194,7 +194,7 @@ class KeyBindingsMap:
                     INFO(group_scroll, 'Scroll up'),
                     KEYBINDINGS(['Up', 'KP_Up']),
                     KEY_EVENT(
-                        window.event_handler.scroll_with_flipping,
+                        window.input_handler.scroll_with_flipping,
                         {'x': 0, 'y': -config['PIXELS_TO_SCROLL_PER_KEY_EVENT']},
                     ),
                 ),
@@ -348,7 +348,7 @@ class KeyBindingsMap:
                     INFO(group_ui, 'Exit from fullscreen'),
                     KEYBINDINGS(['Escape']),
                     KEY_EVENT(
-                        window.event_handler.escape_event,
+                        window.input_handler.escape_event,
                         None,
                     ),
                 ),

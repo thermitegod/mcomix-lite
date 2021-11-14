@@ -55,7 +55,7 @@ class KeybindingEditorDialog(Gtk.Dialog):
         match response:
             case Gtk.ResponseType.REJECT:
                 self.__window.keybindings.reset_keybindings()
-                self.__window.event_handler.register_key_events()
+                self.__window.input_handler.register_key_events()
                 self.__window.keybindings.write_keybindings_file()
                 self.__shortcuts.refresh_model()
 

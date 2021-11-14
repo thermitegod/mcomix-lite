@@ -14,11 +14,11 @@ from mcomix.enums.page_orientation import PageOrientation
 from mcomix.enums.image_scaling import ScalingGDK, ScalingPIL
 from mcomix.enums.scroll import Scroll
 from mcomix.enums.zoom_modes import ZoomAxis
-from mcomix.event_handler import EventHandler
 from mcomix.file_handler import FileHandler
 from mcomix.filesystem_actions import FileSystemActions
 from mcomix.image_handler import ImageHandler
 from mcomix.image_tools import ImageTools
+from mcomix.input_handler import InputHandler
 from mcomix.keybindings_manager import KeybindingManager
 from mcomix.keybindings_map import KeyBindingsMap
 from mcomix.layout import FiniteLayout
@@ -79,14 +79,14 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__menubar_shim = MenubarShim(self)
         self.__menubar = Menubar(self)
 
-        self.__event_handler = EventHandler(self)
+        self.__input_handler = InputHandler(self)
 
         self.__keybindings_map = KeyBindingsMap(self).BINDINGS
         self.__keybindings = KeybindingManager(self)
 
         # Hook up keyboard shortcuts
-        self.__event_handler.event_handler_init()
-        self.__event_handler.register_key_events()
+        self.__input_handler.event_handler_init()
+        self.__input_handler.register_key_events()
 
         self.__cursor_handler = CursorHandler(self)
         self.__lens = MagnifyingLens(self)
@@ -130,15 +130,15 @@ class MainWindow(Gtk.ApplicationWindow):
                                          Gdk.DragAction.MOVE)
 
         self.connect('delete_event', self.terminate_program)
-        self.connect('key_press_event', self.__event_handler.key_press_event)
-        self.connect('configure_event', self.__event_handler.resize_event)
-        self.connect('window-state-event', self.__event_handler.window_state_event)
+        self.connect('key_press_event', self.__input_handler.key_press_event)
+        self.connect('configure_event', self.__input_handler.resize_event)
+        self.connect('window-state-event', self.__input_handler.window_state_event)
 
-        self.__main_layout.connect('button_release_event', self.__event_handler.mouse_release_event)
-        self.__main_layout.connect('scroll_event', self.__event_handler.scroll_wheel_event)
-        self.__main_layout.connect('button_press_event', self.__event_handler.mouse_press_event)
-        self.__main_layout.connect('motion_notify_event', self.__event_handler.mouse_move_event)
-        self.__main_layout.connect('drag_data_received', self.__event_handler.drag_n_drop_event)
+        self.__main_layout.connect('button_release_event', self.__input_handler.mouse_release_event)
+        self.__main_layout.connect('scroll_event', self.__input_handler.scroll_wheel_event)
+        self.__main_layout.connect('button_press_event', self.__input_handler.mouse_press_event)
+        self.__main_layout.connect('motion_notify_event', self.__input_handler.mouse_move_event)
+        self.__main_layout.connect('drag_data_received', self.__input_handler.drag_n_drop_event)
         self.__main_layout.connect('motion-notify-event', self.__lens.motion_event)
         self.__main_layout.connect('motion-notify-event', self.__cursor_handler.refresh)
 
@@ -177,12 +177,12 @@ class MainWindow(Gtk.ApplicationWindow):
         return self.__statusbar
 
     @property
-    def event_handler(self):
+    def input_handler(self):
         """
-        Interface for EventHandler
+        Interface for InputHandler
         """
 
-        return self.__event_handler
+        return self.__input_handler
 
     @property
     def keybindings_map(self):
