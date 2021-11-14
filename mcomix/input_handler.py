@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 
 class InputHandler:
     __slots__ = (
-        '__window', '__file_handler', '__keybindings', '__keybindings_map', '__all_accels_mask',
+        '__window', '__file_handler', '__all_accels_mask',
         '__keymap', '__last_pointer_pos_x', '__last_pointer_pos_y',
         '__was_fullscreen', '__previous_size',
     )
@@ -30,9 +30,6 @@ class InputHandler:
         super().__init__()
 
         self.__window = window
-        self.__keybindings = None
-        self.__keybindings_map = None
-
         self.__file_handler = FileHandler(None)
 
         self.__was_fullscreen = False
@@ -48,14 +45,6 @@ class InputHandler:
 
         self.__last_pointer_pos_x = 0
         self.__last_pointer_pos_y = 0
-
-    def event_handler_init(self):
-        """
-        lazy init to avoid circular deps
-        """
-
-        self.__keybindings = self.__window.keybindings
-        self.__keybindings_map = self.__window.keybindings_map
 
     def resize_event(self, widget, event):
         """
@@ -88,11 +77,11 @@ class InputHandler:
         them up with their respective callback functions
         """
 
-        for action in self.__keybindings_map.keys():
-            self.__keybindings.register(
+        for action in self.__window.keybindings_map.keys():
+            self.__window.keybindings.register(
                 name=action,
-                callback=self.__keybindings_map[action].key_event.callback,
-                callback_kwargs=self.__keybindings_map[action].key_event.callback_kwargs,
+                callback=self.__window.keybindings_map[action].key_event.callback,
+                callback_kwargs=self.__window.keybindings_map[action].key_event.callback_kwargs,
             )
 
     def key_press_event(self, widget, event, *args):
@@ -115,7 +104,7 @@ class InputHandler:
                 consumed_modifiers &= ~Gdk.ModifierType.SHIFT_MASK
 
             # 'consumed_modifiers' is the modifier that was necessary to type the key
-            self.__keybindings.execute((keyval, event.get_state() & ~consumed_modifiers & self.__all_accels_mask))
+            self.__window.keybindings.execute((keyval, event.get_state() & ~consumed_modifiers & self.__all_accels_mask))
 
     def escape_event(self):
         """
