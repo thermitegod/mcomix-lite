@@ -65,7 +65,8 @@ class _ThreadPool:
             except Exception:
                 pass
 
-    def _caller(self, function: Callable, args: tuple, kwargs: dict, callback, error_callback, exc_raise: bool):
+    def _caller(self, function: Callable, args: tuple, kwargs: dict,
+                callback: Callable, error_callback: Callable, exc_raise: bool):
         try:
             result = function(*args, **kwargs)
         except Exception:
@@ -80,7 +81,7 @@ class _ThreadPool:
             return result
 
     def apply_async(self, function: Callable, args: tuple = None, kwargs: dict = None,
-                    callback=None, error_callback=None):
+                    callback: Callable = None, error_callback: Callable = None):
         # run error_callback with ThreadPool.name and exc_info if function failed,
         # callback and error_callback will *not* run in multi thread.
         # other arguments is same as Pool.apply_async
