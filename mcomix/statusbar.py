@@ -149,17 +149,21 @@ class Statusbar(Gtk.EventBox):
 
         self.__total_file_numbers = f'{fileno} / {total}'
 
-    def set_resolution(self, dimensions: list):  # 2D only
+    def set_resolution(self, scaled_sizes: list, size_list: list):
         """
         Update the resolution data.
         Takes an iterable of tuples, (x, y, scale), describing the original
         resolution of an image as well as the currently displayed scale
         """
 
+        resolutions = [(*size, scaled_size[0] / size[0]) for scaled_size, size in zip(scaled_sizes, size_list, strict=True)]
+        if ViewState.is_manga_mode:
+            resolutions.reverse()
+
         if config['STATUSBAR_SHOW_SCALE']:
-            self.__page_resolution = ', '.join(f'{d[0]}x{d[1]} ({d[2]:.2%})' for d in dimensions)
+            self.__page_resolution = ', '.join(f'{d[0]}x{d[1]} ({d[2]:.2%})' for d in resolutions)
         else:
-            self.__page_resolution = ', '.join(f'{d[0]}x{d[1]}' for d in dimensions)
+            self.__page_resolution = ', '.join(f'{d[0]}x{d[1]}' for d in resolutions)
 
     def set_archive_filename(self, root: Path):
         """

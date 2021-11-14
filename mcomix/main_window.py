@@ -340,10 +340,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.scroll_to_predefined(destination)
 
         # update statusbar
-        resolutions = [(*size, scaled_size[0] / size[0]) for scaled_size, size in zip(scaled_sizes, size_list, strict=True)]
-        if ViewState.is_manga_mode:
-            resolutions.reverse()
-        self.__statusbar.set_resolution(resolutions)
+        self.__statusbar.set_resolution(scaled_sizes, size_list)
         self.__statusbar.update()
 
         self.__waiting_for_redraw = False
