@@ -11,6 +11,7 @@ from urllib.request import url2pathname
 from gi.repository import Gdk, Gtk
 
 from mcomix.preferences import config
+from mcomix.state.view_state import ViewState
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -222,8 +223,8 @@ class EventHandler:
         if self.__window.scroll(x, y):
             return True
 
-        if y > 0 or (self.__window.is_manga_mode and x < 0) or \
-                (not self.__window.is_manga_mode and x > 0):
+        if y > 0 or (ViewState.is_manga_mode and x < 0) or \
+                (not ViewState.is_manga_mode and x > 0):
             self.__window.flip_page(number_of_pages=+1)
         else:
             self.__window.flip_page(number_of_pages=-1)

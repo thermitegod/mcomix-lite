@@ -12,6 +12,7 @@ from send2trash import send2trash
 from mcomix.message_dialog.info import MessageDialogInfo
 from mcomix.message_dialog.remember import MessageDialogRemember
 from mcomix.preferences import config
+from mcomix.state.view_state import ViewState
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -34,7 +35,7 @@ class FileSystemActions:
 
         page = self.__window.imagehandler.get_current_page()
 
-        if self.__window.displayed_double:
+        if ViewState.is_displaying_double:
             # asks for left or right page if in double page mode
             # and not showing a single page
 
@@ -54,10 +55,10 @@ class FileSystemActions:
                 return None
 
             if result == response_left:
-                if self.__window.is_manga_mode:
+                if ViewState.is_manga_mode:
                     page += 1
             elif result == response_right:
-                if not self.__window.is_manga_mode:
+                if not ViewState.is_manga_mode:
                     page += 1
 
         page_name = self.__window.imagehandler.get_page_filename(page=page)[0]

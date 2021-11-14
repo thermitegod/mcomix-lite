@@ -30,6 +30,7 @@ from mcomix.menubar import Menubar
 from mcomix.pageselect import Pageselector
 from mcomix.preferences import config
 from mcomix.preferences_manager import PreferenceManager
+from mcomix.state.view_state import ViewState
 from mcomix.statusbar import Statusbar
 from mcomix.thumbnail_sidebar import ThumbnailSidebar
 from mcomix.zoom import ZoomModel
@@ -46,10 +47,6 @@ class MainWindow(Gtk.ApplicationWindow):
         # Load configuration.
         self.__preference_manager = PreferenceManager()
         self.__preference_manager.load_config_file()
-
-        # Image display mode
-        self.is_manga_mode = config['DEFAULT_MANGA_MODE']
-        self.displayed_double = False
 
         # Used to detect window fullscreen state transitions.
         self.was_fullscreen = False
@@ -267,7 +264,7 @@ class MainWindow(Gtk.ApplicationWindow):
         return self.__vadjust
 
     def page_orientation(self):
-        if self.is_manga_mode:
+        if ViewState.is_manga_mode:
             return PageOrientation.MANGA.value
         else:
             return PageOrientation.WESTERN.value
@@ -307,7 +304,7 @@ class MainWindow(Gtk.ApplicationWindow):
         distribution_axis = ZoomAxis.DISTRIBUTION.value
         alignment_axis = ZoomAxis.ALIGNMENT.value
         # XXX limited to at most 2 pages
-        pixbuf_count = 2 if self.displayed_double else 1
+        pixbuf_count = 2 if ViewState.is_displaying_double else 1
         pixbuf_count_iter = range(pixbuf_count)
         pixbuf_list = list(self.__imagehandler.get_pixbufs(pixbuf_count))
         do_not_transform = [ImageTools.disable_transform(x) for x in pixbuf_list]
@@ -365,7 +362,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # update statusbar
         resolutions = [(*size, scaled_size[0] / size[0]) for scaled_size, size in zip(scaled_sizes, size_list, strict=True)]
-        if self.is_manga_mode:
+        if ViewState.is_manga_mode:
             resolutions.reverse()
         self.__statusbar.set_resolution(resolutions)
         self.__statusbar.update()
@@ -382,18 +379,13 @@ class MainWindow(Gtk.ApplicationWindow):
         if not page:
             return
 
-        if self.displayed_double:
-            filenames = self.__imagehandler.get_page_filename(page=page, double_mode=True, manga=self.is_manga_mode)
-            filesizes = self.__imagehandler.get_page_filesize(page=page, double_mode=True, manga=self.is_manga_mode)
-        else:
-            filenames = self.__imagehandler.get_page_filename(page=page)
-            filesizes = self.__imagehandler.get_page_filesize(page=page)
+        filenames = self.__imagehandler.get_page_filename(page=page)
+        filesizes = self.__imagehandler.get_page_filesize(page=page)
 
         filename = ', '.join(filenames)
         filesize = ', '.join(filesizes)
 
-        self.__statusbar.set_page_number(page, self.__imagehandler.get_number_of_pages(),
-                                       self.displayed_double, self.is_manga_mode)
+        self.__statusbar.set_page_number(page, self.__imagehandler.get_number_of_pages())
         self.__statusbar.set_filename(filename)
         self.__statusbar.set_filesize(filesize)
 
@@ -448,7 +440,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # Refresh display when currently opened page becomes available.
         current_page = self.__imagehandler.get_current_page()
-        nb_pages = 2 if self.displayed_double else 1
+        nb_pages = 2 if ViewState.is_displaying_double else 1
         if current_page <= page < (current_page + nb_pages):
             self._displayed_double()
             self.draw_image(scroll_to=self.__last_scroll_destination)
@@ -462,7 +454,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.__statusbar.set_archive_filename(self.__filehandler.get_base_path())
         else:
             self.__statusbar.set_archive_filename(self.__filehandler.get_base_path().name)
-        self.__statusbar.set_view_mode(self.is_manga_mode)
+        self.__statusbar.set_view_mode()
         self.__statusbar.set_filesize_archive(self.__filehandler.get_base_path())
         self.__statusbar.set_file_number(*self.__filehandler.get_file_number())
         self.__statusbar.update()
@@ -573,9 +565,9 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def change_manga_mode(self, *args):
         config['DEFAULT_MANGA_MODE'] = not config['DEFAULT_MANGA_MODE']
-        self.is_manga_mode = config['DEFAULT_MANGA_MODE']
+        ViewState.is_manga_mode = config['DEFAULT_MANGA_MODE']
         self.__page_orientation = self.page_orientation()
-        self.__statusbar.set_view_mode(self.is_manga_mode)
+        self.__statusbar.set_view_mode()
         self._update_page_information()
         self.draw_image()
 
@@ -755,10 +747,10 @@ class MainWindow(Gtk.ApplicationWindow):
         sets True if two pages are currently displayed
         """
 
-        self.displayed_double = (self.__imagehandler.get_current_page() and
-                                 config['DEFAULT_DOUBLE_PAGE'] and
-                                 not self._get_virtual_double_page() and
-                                 not self.__imagehandler.is_last_page())
+        ViewState.is_displaying_double = (self.__imagehandler.get_current_page() and
+                                      config['DEFAULT_DOUBLE_PAGE'] and
+                                      not self._get_virtual_double_page() and
+                                      not self.__imagehandler.is_last_page())
 
     def get_visible_area_size(self):
         """

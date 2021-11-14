@@ -11,6 +11,7 @@ from gi.repository import Gtk
 from mcomix.file_size import FileSize
 from mcomix.enums.image_scaling import ScalingGDK, ScalingPIL
 from mcomix.preferences import config
+from mcomix.state.view_state import ViewState
 
 
 class Statusbar(Gtk.EventBox):
@@ -116,13 +117,13 @@ class Statusbar(Gtk.EventBox):
         self.__status.pop(self.__context_id)
         self.__status.push(self.__context_id, f'    {message}')
 
-    def set_page_number(self, page: int, total_pages: int, displayed_double: bool, manga_mode: bool):
+    def set_page_number(self, page: int, total_pages: int):
         """
         Update the page number
         """
 
-        if displayed_double:
-            if manga_mode:
+        if ViewState.is_displaying_double:
+            if ViewState.is_manga_mode:
                 p = f'{page + 1}, {page}'
             else:
                 p = f'{page}, {page + 1}'
@@ -131,12 +132,12 @@ class Statusbar(Gtk.EventBox):
 
         self.__total_page_numbers = f'{p} / {total_pages}'
 
-    def set_view_mode(self, is_manga_mode: bool):
+    def set_view_mode(self):
         """
         Update the mode
         """
 
-        if is_manga_mode:
+        if ViewState.is_manga_mode:
             self.__current_view_mode = 'Manga'
         else:
             self.__current_view_mode = 'Western'

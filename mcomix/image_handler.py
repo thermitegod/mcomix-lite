@@ -13,6 +13,7 @@ from mcomix.image_tools import ImageTools
 from mcomix.lib.callback import Callback
 from mcomix.lib.threadpool import GlobalThreadPool, Lock
 from mcomix.preferences import config
+from mcomix.state.view_state import ViewState
 from mcomix.thumbnailer import Thumbnailer
 
 from typing import TYPE_CHECKING
@@ -168,7 +169,7 @@ class ImageHandler:
                 # Current 'book' has no page.
                 return False
             index_list = [current_page - 1]
-            if self.__window.displayed_double and not self.is_last_page(current_page):
+            if ViewState.is_displaying_double and not self.is_last_page(current_page):
                 index_list.append(current_page)
         else:
             index_list = [page - 1]
@@ -248,59 +249,55 @@ class ImageHandler:
         except IndexError:
             return None
 
-    def _get_page_unknown(self, double_mode: bool):
-        if double_mode:
+    def _get_page_unknown(self):
+        if ViewState.is_displaying_double:
             return ['unknown', 'unknown']
         return ['unknown']
 
-    def get_page_filename(self, page: int = None, double_mode: bool = False, manga: bool = False):
+    def get_page_filename(self, page: int = None):
         """
         :param page
             A page number or if None the current page
-        :param double_mode
-            if True, return [page, page + 1], else return [page]
-        :param manga
-            if True, sets info to manga layout
+        :returns
+            [page, page + 1] if ViewState.displayed_double is True else return [page]
         """
 
         if not self.page_is_available(page=page):
-            return self._get_page_unknown(double_mode)
+            return self._get_page_unknown()
 
         if page is None:
             page = self.get_current_page()
 
         page_data = [self.get_path_to_page(page).name]
 
-        if double_mode:
+        if ViewState.is_displaying_double:
             page_data.append(self.get_path_to_page(page + 1).name)
 
-            if manga:
+            if ViewState.is_manga_mode:
                 page_data.reverse()
 
         return page_data
 
-    def get_page_filesize(self, page: int = None, double_mode: bool = False, manga: bool = False):
+    def get_page_filesize(self, page: int = None):
         """
         :param page
             A page number or if None the current page
-        :param double_mode
-            if True, return [page, page + 1], else return [page]
-        :param manga
-            if True, sets info to manga layout
+        :returns
+            [page, page + 1] if ViewState.displayed_double is True else return [page]
         """
 
         if not self.page_is_available(page=page):
-            return self._get_page_unknown(double_mode)
+            return self._get_page_unknown()
 
         if page is None:
             page = self.get_current_page()
 
         page_data = [FileSize(self.get_path_to_page(page))]
 
-        if double_mode:
+        if ViewState.is_displaying_double:
             page_data.append(FileSize(self.get_path_to_page(page + 1)))
 
-            if manga:
+            if ViewState.is_manga_mode:
                 page_data.reverse()
 
         return page_data
