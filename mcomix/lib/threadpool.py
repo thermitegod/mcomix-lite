@@ -119,8 +119,14 @@ class _GlobalThreadPool:
     def __init__(self):
         super().__init__()
 
-        self.threadpool = _ThreadPool(name='GlobalThreadPool',
-                                      processes=config['MAX_THREADS'])
+        self.__threadpool = _ThreadPool(
+            name='GlobalThreadPool',
+            processes=config['MAX_THREADS'],
+        )
+
+    @property
+    def threadpool(self):
+        return self.__threadpool
 
 
 GlobalThreadPool = _GlobalThreadPool()
