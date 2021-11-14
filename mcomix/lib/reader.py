@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import io
-from threading import Lock
+from multiprocessing import Lock
 
 _IOLock = Lock()
 

@@ -80,7 +80,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         collected directly in order to save memory
         """
 
-        if not self.__lock.acquire(blocking=False):
+        if not self.__lock.acquire():
             return
 
         # Get list of wanted pixbufs.

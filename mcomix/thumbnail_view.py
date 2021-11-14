@@ -62,7 +62,7 @@ class ThumbnailTreeView(Gtk.TreeView):
         """
 
         # 'draw' event called too frequently
-        if not self.__lock.acquire(blocking=False):
+        if not self.__lock.acquire():
             return
 
         try:

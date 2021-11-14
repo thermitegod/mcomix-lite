@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import sys
+from multiprocessing import Lock
 from multiprocessing.dummy import Pool
 from multiprocessing.pool import ThreadPool
-from threading import Lock
 from typing import Callable
 
 from mcomix.lib.metaclass import SingleInstanceMetaClass
