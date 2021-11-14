@@ -22,15 +22,13 @@ if TYPE_CHECKING:
 
 
 class PropertiesDialog(Gtk.Dialog):
-    __slots__ = ('__window', '__image_handler', '__notebook', '__archive_page', '__image_page')
+    __slots__ = ('__image_handler', '__notebook', '__archive_page', '__image_page')
 
     def __init__(self, window: MainWindow):
         super().__init__(title='Properties')
 
         self.set_transient_for(window)
         self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT)
-
-        self.__window = window
 
         events = Events()
         events.add_event(EventType.FILE_OPENED, self._on_book_change)
@@ -58,6 +56,7 @@ class PropertiesDialog(Gtk.Dialog):
         self.__notebook.append_page(self.__image_page, Gtk.Label(label='Image'))
 
         self._update_archive_page()
+        self._update_image_page()
 
         self.show_all()
 
@@ -78,9 +77,7 @@ class PropertiesDialog(Gtk.Dialog):
         page = self.__archive_page
         page.reset()
         if not self.__file_handler.is_archive():
-            self._update_image_page()
-            if self.__notebook.get_n_pages() == 2:
-                self.__notebook.detach_tab(page)
+            self.__notebook.detach_tab(page)
             return
         if self.__notebook.get_n_pages() == 1:
             self.__notebook.insert_page(page, Gtk.Label(label='Archive'), 0)
@@ -92,7 +89,6 @@ class PropertiesDialog(Gtk.Dialog):
         page.set_main_info(main_info)
         self._update_page_secondary_info(page, path)
         page.show_all()
-        self._update_image_page()
 
     def _update_image_page(self):
         page = self.__image_page
