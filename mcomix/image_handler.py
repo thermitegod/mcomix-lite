@@ -10,15 +10,11 @@ from loguru import logger
 
 from mcomix.file_size import FileSize
 from mcomix.image_tools import ImageTools
-from mcomix.lib.callback import Callback
+from mcomix.lib.events import Events, EventType
 from mcomix.lib.threadpool import GlobalThreadPool, Lock
 from mcomix.preferences import config
 from mcomix.state.view_state import ViewState
 from mcomix.thumbnailer import Thumbnailer
-
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from mcomix.main_window import MainWindow
 
 
 class ImageHandler:
@@ -32,11 +28,11 @@ class ImageHandler:
     threaded
     """
 
-    def __init__(self, window: MainWindow):
+    def __init__(self):
         super().__init__()
 
-        #: Reference to main window
-        self.__window = window
+        self.__events = Events()
+        self.__events.add_event(EventType.FILE_AVAILABLE, self.file_available)
 
         #: Caching thread
         self.__threadpool = GlobalThreadPool.threadpool
@@ -58,8 +54,6 @@ class ImageHandler:
         self.__raw_pixbufs = {}
 
         self.__thumbnailer = Thumbnailer()
-
-        self.__window.filehandler.file_available += self._file_available
 
     def get_pixbuf(self, index: int):
         """
@@ -180,7 +174,6 @@ class ImageHandler:
 
         return True
 
-    @Callback
     def page_available(self, page: int):
         """
         Called whenever a new page becomes available, i.e. the corresponding file has been extracted
@@ -199,7 +192,9 @@ class ImageHandler:
         if index in self.__wanted_pixbufs:
             self.__threadpool.apply_async(self._cache_pixbuf, (index,))
 
-    def _file_available(self, filepath: Path):
+        self.__events.run_events(EventType.PAGE_AVAILABLE, page)
+
+    def file_available(self, filepath: Path):
         """
         Called by the filehandler when a new file becomes available
         """

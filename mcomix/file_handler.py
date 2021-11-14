@@ -14,7 +14,7 @@ from mcomix.enums.file_sort import FileSortDirection, FileSortType
 from mcomix.enums.file_types import FileTypes
 from mcomix.formats.archive import ArchiveSupported
 from mcomix.file_provider import GetFileProvider
-from mcomix.lib.callback import Callback
+from mcomix.lib.events import Events, EventType
 from mcomix.preferences import config
 from mcomix.sort.sort_alphanumeric import SortAlphanumeric
 
@@ -34,6 +34,10 @@ class FileHandler:
     def __init__(self, window: MainWindow):
         super().__init__()
 
+        self.__events = Events()
+        self.__events.add_event(EventType.FILE_EXTRACTED, self._extracted_file)
+        self.__events.add_event(EventType.FILE_LISTED, self._listed_contents)
+
         #: Indicates if files/archives are currently loaded/loading.
         self.__file_loaded = False
         self.__file_loading = False
@@ -49,8 +53,6 @@ class FileHandler:
         self.__base_path = None
         #: Archive extractor.
         self.__extractor = Extractor()
-        self.__extractor.file_extracted += self._extracted_file
-        self.__extractor.contents_listed += self._listed_contents
         #: Provides a list of available files/archives in the open directory.
         self.__file_provider_chooser = GetFileProvider()
         self.__file_provider = None
@@ -120,7 +122,7 @@ class FileHandler:
         if not self.__is_archive:
             # If no extraction is required, mark all files as available.
             for img in image_files:
-                self.file_available(img)
+                self.__window.imagehandler.file_available(img)
 
             # Set current page to current file.
             if self.__current_file in image_files:
@@ -140,7 +142,6 @@ class FileHandler:
 
         self.__window.set_page(current_image_index + 1)
 
-    @Callback
     def file_opened(self):
         """
         Called when a new set of files has successfully been opened
@@ -148,13 +149,14 @@ class FileHandler:
 
         self.__file_loaded = True
 
-    @Callback
+        self.__events.run_events(EventType.FILE_OPENED)
+
     def file_closed(self):
         """
         Called when the current file has been closed
         """
 
-        pass
+        self.__events.run_events(EventType.FILE_CLOSED)
 
     def close_file(self, *args):
         """
@@ -180,10 +182,6 @@ class FileHandler:
             self.__current_file = None
             self.__base_path = None
             self.file_closed()
-
-        # Catch up on UI events, so we don't leave idle callbacks.
-        while Gtk.events_pending():
-            Gtk.main_iteration_do(False)
 
     def initialize_fileprovider(self, path: list):
         """
@@ -214,7 +212,7 @@ class FileHandler:
             logger.error(f'Exception: {ex}')
             raise
 
-    def _listed_contents(self, extractor, image_files: list):
+    def _listed_contents(self, image_files: list):
         if not self.__file_loading:
             return
         self.__file_loading = False
@@ -338,16 +336,7 @@ class FileHandler:
                 self.open_file(path, next_page)
                 return True
 
-    @Callback
-    def file_available(self, filepath: str):
-        """
-        Called every time a new file from the Filehandler's opened
-        files becomes available. C{filepaths} is a list of now available files
-        """
-
-        pass
-
-    def _extracted_file(self, extractor, name: str):
+    def _extracted_file(self, name: str):
         """
         Called when the extractor finishes extracting the file at
         <name>. This name is relative to the temporary directory
@@ -356,4 +345,4 @@ class FileHandler:
 
         if not self.__file_loaded:
             return
-        self.file_available(name)
+        self.__events.run_events(EventType.FILE_AVAILABLE, name)

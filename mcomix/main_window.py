@@ -25,7 +25,7 @@ from mcomix.keybindings_manager import KeybindingManager
 from mcomix.keybindings_map import KeyBindingsMap
 from mcomix.layout import FiniteLayout
 from mcomix.lens import MagnifyingLens
-from mcomix.lib.callback import Callback
+from mcomix.lib.events import Events, EventType
 from mcomix.menubar import Menubar
 from mcomix.pageselect import Pageselector
 from mcomix.preferences import config
@@ -53,6 +53,12 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__page_orientation = self.page_orientation()
         self.previous_size = (None, None)
 
+        self.__events = Events()
+        self.__events.add_event(EventType.FILE_OPENED, self._on_file_opened)
+        self.__events.add_event(EventType.FILE_CLOSED, self._on_file_closed)
+        self.__events.add_event(EventType.PAGE_AVAILABLE, self._page_available)
+        self.__events.add_event(EventType.PAGE_CHANGED, self._page_changed)
+
         # Remember last scroll destination.
         self.__last_scroll_destination = Scroll.START.value
 
@@ -61,14 +67,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__waiting_for_redraw = False
 
         self.__filehandler = FileHandler(self)
-        self.__filehandler.file_closed += self._on_file_closed
-        self.__filehandler.file_opened += self._on_file_opened
-
         self.__filesystem_hactions = FileSystemActions(self)
-
-        self.__imagehandler = ImageHandler(self)
-        self.__imagehandler.page_available += self._page_available
-
+        self.__imagehandler = ImageHandler()
         self.__bookmark_backend = BookmarkBackend(self)
 
         self.__thumbnailsidebar = ThumbnailSidebar(self)
@@ -481,12 +481,14 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.draw_image(scroll_to=scroll_to)
 
-    @Callback
     def page_changed(self):
         """
         Called on page change
         """
 
+        self.__events.run_events(EventType.PAGE_CHANGED)
+
+    def _page_changed(self):
         self._displayed_double()
         self.__thumbnailsidebar.hide()
         self.__thumbnailsidebar.load_thumbnails()

@@ -8,6 +8,7 @@ from gi.repository import Gdk, GdkPixbuf, Gtk
 from loguru import logger
 
 from mcomix.image_tools import ImageTools
+from mcomix.lib.events import Events, EventType
 from mcomix.preferences import config
 from mcomix.thumbnail_view import ThumbnailTreeView
 
@@ -30,6 +31,11 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         super().__init__()
 
         self.__window = window
+
+        events = Events()
+        events.add_event(EventType.PAGE_AVAILABLE, self._on_page_available)
+        events.add_event(EventType.PAGE_CHANGED, self._on_page_change)
+
         #: Thumbnail load status
         self.__loaded = False
         #: Selected row in treeview
@@ -90,9 +96,6 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
 
         self.add(self.__treeview)
         self.show_all()
-
-        self.__window.page_changed += self._on_page_change
-        self.__window.imagehandler.page_available += self._on_page_available
 
     def toggle_page_numbers_visible(self):
         """

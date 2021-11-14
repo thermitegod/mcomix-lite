@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from gi.repository import Gtk
 
-from mcomix.lib.callback import Callback
+from mcomix.lib.events import Events, EventType
 from mcomix.lib.threadpool import GlobalThreadPool
 
 from typing import TYPE_CHECKING
@@ -24,6 +24,9 @@ class Pageselector(Gtk.Dialog):
 
     def __init__(self, window: MainWindow):
         self.__window = window
+
+        self.__events = Events()
+        self.__events.add_event(EventType.PAGE_AVAILABLE, self._page_available)
 
         super().__init__(title='Go to page...', modal=True, destroy_with_parent=True)
 
@@ -83,7 +86,6 @@ class Pageselector(Gtk.Dialog):
         self.__thumbnail_page = 0
         self.__threadpool = GlobalThreadPool.threadpool
         self._update_thumbnail(int(self.__selector_adjustment.props.value))
-        self.__window.imagehandler.page_available += self._page_available
 
     def _cb_value_changed(self, *args):
         """
@@ -109,7 +111,7 @@ class Pageselector(Gtk.Dialog):
         if event == Gtk.ResponseType.OK:
             self.__window.set_page(int(self.__selector_adjustment.props.value))
 
-        self.__window.imagehandler.page_available -= self._page_available
+        self.__events.remove_event(EventType.PAGE_AVAILABLE, self._page_available)
         self.__threadpool.renew()
         self.destroy()
 
@@ -137,7 +139,6 @@ class Pageselector(Gtk.Dialog):
         page, pixbuf = params
         return self._thumbnail_finished(page, pixbuf)
 
-    @Callback
     def _thumbnail_finished(self, page: int, pixbuf):
         # Don't bother if we changed page in the meantime.
         if page == self.__thumbnail_page:

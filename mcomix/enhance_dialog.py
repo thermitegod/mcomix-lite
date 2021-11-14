@@ -10,6 +10,7 @@ import PIL.ImageOps as ImageOps
 from gi.repository import Gtk
 
 from mcomix.image_tools import ImageTools
+from mcomix.lib.events import Events, EventType
 from mcomix.preferences import config
 
 from typing import TYPE_CHECKING
@@ -28,6 +29,11 @@ class EnhanceImageDialog(Gtk.Dialog):
         self.set_transient_for(window)
 
         self.__window = window
+
+        events = Events()
+        events.add_event(EventType.FILE_CLOSED, self._on_book_close)
+        events.add_event(EventType.PAGE_AVAILABLE, self._on_page_available)
+        events.add_event(EventType.PAGE_CHANGED, self._on_page_change)
 
         reset = Gtk.Button.new_with_label('Reset')
         self.add_action_widget(reset, Gtk.ResponseType.REJECT)
@@ -94,9 +100,6 @@ class EnhanceImageDialog(Gtk.Dialog):
 
         self.__contrast_scale.set_sensitive(not self.__autocontrast_button.get_active())
 
-        self.__window.imagehandler.page_available += self._on_page_available
-        self.__window.filehandler.file_closed += self._on_book_close
-        self.__window.page_changed += self._on_page_change
         self._on_page_change()
 
         self.show_all()

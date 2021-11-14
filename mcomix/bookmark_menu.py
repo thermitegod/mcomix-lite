@@ -8,6 +8,7 @@ from gi.repository import Gtk
 from loguru import logger
 
 from mcomix.bookmark_dialog import BookmarksDialog
+from mcomix.lib.events import Events, EventType
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -28,6 +29,10 @@ class BookmarksMenu(Gtk.Menu):
 
         self.__window = window
 
+        events = Events()
+        events.add_event(EventType.BOOKMARK_ADD, self._create_bookmark_menuitems)
+        events.add_event(EventType.BOOKMARK_REMOVE, self._create_bookmark_menuitems)
+
         item = Gtk.MenuItem()
         item.set_label('Add Bookmark')
         item.connect('activate', self._add_current_to_bookmarks)
@@ -43,8 +48,6 @@ class BookmarksMenu(Gtk.Menu):
 
         # Re-create the bookmarks menu if one was added/removed
         self._create_bookmark_menuitems()
-        self.__window.bookmark_backend.add_bookmark += lambda bookmark: self._create_bookmark_menuitems()
-        self.__window.bookmark_backend.remove_bookmark += lambda bookmark: self._create_bookmark_menuitems()
 
         self.show_all()
 

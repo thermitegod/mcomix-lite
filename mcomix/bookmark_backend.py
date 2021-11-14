@@ -13,7 +13,7 @@ from loguru import logger
 
 from mcomix.bookmark_menu_item import Bookmark
 from mcomix.enums.config_files import ConfigFiles
-from mcomix.lib.callback import Callback
+from mcomix.lib.events import Events, EventType
 from mcomix.message_dialog.info import MessageDialogInfo
 from mcomix.message_dialog.remember import MessageDialogRemember
 
@@ -33,6 +33,8 @@ class BookmarkBackend:
 
         self.__window = window
 
+        self.__events = Events()
+
         self.__bookmark_path = ConfigFiles.BOOKMARK.value
         self.__bookmark_state_dirty = False
 
@@ -41,7 +43,6 @@ class BookmarkBackend:
         #: Modification date of bookmarks file
         self.__bookmarks_size = self.get_bookmarks_file_size()
 
-    @Callback
     def add_bookmark(self, bookmark):
         """
         Add the <bookmark> to the list
@@ -53,7 +54,8 @@ class BookmarkBackend:
         self.write_bookmarks_file()
         self.__bookmark_state_dirty = False
 
-    @Callback
+        self.__events.run_events(EventType.BOOKMARK_ADD)
+
     def remove_bookmark(self, bookmark):
         """
         Remove the <bookmark> from the list
@@ -64,6 +66,8 @@ class BookmarkBackend:
         self.__bookmark_state_dirty = True
         self.write_bookmarks_file()
         self.__bookmark_state_dirty = False
+
+        self.__events.run_events(EventType.BOOKMARK_REMOVE)
 
     def add_current_to_bookmarks(self):
         """

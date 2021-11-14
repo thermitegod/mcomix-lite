@@ -10,7 +10,7 @@ from loguru import logger
 
 from mcomix.archive.format_libarchive import LibarchiveExtractor
 from mcomix.formats.image import ImageSupported
-from mcomix.lib.callback import Callback
+from mcomix.lib.events import Events, EventType
 from mcomix.lib.threadpool import GlobalThreadPool
 
 
@@ -29,10 +29,9 @@ class Extractor:
     def __init__(self):
         super().__init__()
 
+        self.__events = Events()
         self.__threadpool = GlobalThreadPool.threadpool
-
         self.__extractor = None
-
         self.__condition = threading.Condition()
 
     def setup(self, archive: Path):
@@ -45,7 +44,8 @@ class Extractor:
         self.__extractor = LibarchiveExtractor(archive)
 
         self.__threadpool.apply_async(
-            self._list_contents, callback=self._list_contents_cb,
+            self._list_contents,
+            callback=self._list_contents_cb,
             error_callback=self._error_cb)
 
     def stop(self):
@@ -70,21 +70,19 @@ class Extractor:
                 self._extract_all_files,
                 error_callback=self._error_cb)
 
-    @Callback
-    def contents_listed(self, extractor, files: list):
+    def _file_listed(self, extractor, files: list):
         """
         Called after the contents of the archive has been listed
         """
 
-        pass
+        self.__events.run_events(EventType.FILE_LISTED, files)
 
-    @Callback
-    def file_extracted(self, extractor, filename: Path):
+    def _file_extracted(self, extractor, filename: Path):
         """
         Called whenever a new file is extracted and ready
         """
 
-        pass
+        self.__events.run_events(EventType.FILE_EXTRACTED, filename)
 
     def close(self):
         """
@@ -103,7 +101,7 @@ class Extractor:
         with self.__condition:
             self.__condition.notify_all()
 
-        self.file_extracted(self, name)
+        self._file_extracted(self, name)
 
     def _extract_all_files(self):
         for name in self.__extractor.iter_extract():
@@ -115,7 +113,7 @@ class Extractor:
                 if ImageSupported.is_image_file(image)]
 
     def _list_contents_cb(self, files: list):
-        self.contents_listed(self, files)
+        self._file_listed(self, files)
 
     def _error_cb(self, name, etype, value, tb):
         # Better to ignore any failed extractions (e.g. from a corrupt

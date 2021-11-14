@@ -11,6 +11,7 @@ from pathlib import Path
 from gi.repository import Gtk
 
 from mcomix.file_size import FileSize
+from mcomix.lib.events import Events, EventType
 from mcomix.properties_page import PropertiesPage
 
 from typing import TYPE_CHECKING
@@ -28,6 +29,13 @@ class PropertiesDialog(Gtk.Dialog):
         self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT)
 
         self.__window = window
+
+        events = Events()
+        events.add_event(EventType.FILE_OPENED, self._on_book_change)
+        events.add_event(EventType.FILE_CLOSED, self._on_book_change)
+        events.add_event(EventType.PAGE_AVAILABLE, self._on_page_available)
+        events.add_event(EventType.PAGE_CHANGED, self._on_page_change)
+
         self.resize(870, 560)
         self.set_border_width(2)
         self.set_resizable(True)
@@ -45,10 +53,6 @@ class PropertiesDialog(Gtk.Dialog):
         self.__notebook.append_page(self.__image_page, Gtk.Label(label='Image'))
 
         self._update_archive_page()
-        self.__window.page_changed += self._on_page_change
-        self.__window.filehandler.file_opened += self._on_book_change
-        self.__window.filehandler.file_closed += self._on_book_change
-        self.__window.imagehandler.page_available += self._on_page_available
 
         self.show_all()
 
