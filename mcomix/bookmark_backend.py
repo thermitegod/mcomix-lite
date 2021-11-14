@@ -231,10 +231,9 @@ class BookmarkBackend:
         """
 
         dialog = MessageDialogRemember()
-        dialog.add_buttons(
-            Gtk.STOCK_YES, Gtk.ResponseType.YES,
-            Gtk.STOCK_NO, Gtk.ResponseType.NO,
-            Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+        dialog.add_buttons(Gtk.STOCK_YES, Gtk.ResponseType.YES)
+        dialog.add_buttons(Gtk.STOCK_NO, Gtk.ResponseType.NO)
+        dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
         dialog.set_default_response(Gtk.ResponseType.YES)
         dialog.set_should_remember_choice('replace-existing-bookmark', (Gtk.ResponseType.YES, Gtk.ResponseType.NO))
         dialog.set_text(primary='The current book already contains marked pages.',

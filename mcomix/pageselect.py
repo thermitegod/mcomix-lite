@@ -37,7 +37,9 @@ class Pageselector(Gtk.Dialog):
         self.set_transient_for(window)
         self.set_size_request(560, 820)
 
-        self.add_buttons('_Go', Gtk.ResponseType.OK, '_Cancel', Gtk.ResponseType.CANCEL, )
+        self.add_buttons('_Go', Gtk.ResponseType.OK)
+        self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+
         self.set_default_response(Gtk.ResponseType.OK)
         self.connect('response', self._response)
         self.set_resizable(True)

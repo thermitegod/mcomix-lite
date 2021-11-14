@@ -28,7 +28,7 @@ class PropertiesDialog(Gtk.Dialog):
         super().__init__(title='Properties')
 
         self.set_transient_for(window)
-        self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT)
+        self.add_buttons(Gtk.STOCK_CLOSE, Gtk.ResponseType.CANCEL)
 
         events = Events()
         events.add_event(EventType.FILE_OPENED, self._on_book_change)

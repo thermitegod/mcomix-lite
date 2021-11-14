@@ -48,10 +48,9 @@ class FileSystemActions:
             response_right = 80
 
             dialog = MessageDialogRemember()
-            dialog.add_buttons(
-                'Left', response_left,
-                'Right', response_right,
-                Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+            dialog.add_buttons('Left', response_left)
+            dialog.add_buttons('Right', response_right)
+            dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
             dialog.set_default_response(Gtk.ResponseType.CANCEL)
             dialog.set_text(primary='Extract Left or Right page?')
             result = dialog.run()
@@ -70,7 +69,8 @@ class FileSystemActions:
         page_path = self.__image_handler.get_path_to_page(page=page)
 
         save_dialog = Gtk.FileChooserDialog(title='Save page as', action=Gtk.FileChooserAction.SAVE)
-        save_dialog.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT, Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT)
+        save_dialog.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT)
+        save_dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT)
         save_dialog.set_modal(True)
         save_dialog.set_transient_for(self.__window)
         save_dialog.set_do_overwrite_confirmation(True)
@@ -115,10 +115,9 @@ class FileSystemActions:
         current_file = self.__file_handler.get_real_path()
 
         dialog = MessageDialogRemember()
-        dialog.add_buttons(
-            Gtk.STOCK_OK, Gtk.ResponseType.OK,
-            Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-            Gtk.STOCK_DELETE, Gtk.ResponseType.OK)
+        dialog.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.OK)
+        dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+        dialog.add_buttons(Gtk.STOCK_DELETE, Gtk.ResponseType.OK)
         dialog.set_default_response(Gtk.ResponseType.OK)
         dialog.set_should_remember_choice('delete-opend-file', (Gtk.ResponseType.OK,))
         dialog.set_text('Trash Selected File?', secondary=f'{current_file.name}')
