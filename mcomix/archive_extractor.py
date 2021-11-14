@@ -29,7 +29,7 @@ class Extractor:
         super().__init__()
 
         self.__events = Events()
-        self.__threadpool = GlobalThreadPool.threadpool
+        self.__threadpool = GlobalThreadPool().threadpool
         self.__extractor = None
         self.__condition = threading.Condition()
 

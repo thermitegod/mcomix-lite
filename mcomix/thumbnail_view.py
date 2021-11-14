@@ -41,7 +41,7 @@ class ThumbnailTreeView(Gtk.TreeView):
         self.__status_column = status_column
 
         #: Worker thread
-        self.__threadpool = GlobalThreadPool.threadpool
+        self.__threadpool = GlobalThreadPool().threadpool
         self.__lock = Lock()
         self.__done = set()
         self.__taskid = 0

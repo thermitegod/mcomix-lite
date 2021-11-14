@@ -87,7 +87,7 @@ class Pageselector(Gtk.Dialog):
 
         # Currently displayed thumbnail page.
         self.__thumbnail_page = 0
-        self.__threadpool = GlobalThreadPool.threadpool
+        self.__threadpool = GlobalThreadPool().threadpool
         self._update_thumbnail(int(self.__selector_adjustment.props.value))
 
     def _cb_value_changed(self, *args):

@@ -39,7 +39,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         self.__image_files = ImageFiles()
 
         #: Caching thread
-        self.__threadpool = GlobalThreadPool.threadpool
+        self.__threadpool = GlobalThreadPool().threadpool
         self.__lock = Lock()
         self.__cache_lock = {}
         #: Current page

@@ -6,6 +6,7 @@ from multiprocessing.pool import ThreadPool
 from threading import Lock
 from typing import Callable
 
+from mcomix.lib.metaclass import SingleInstanceMetaClass
 from mcomix.preferences import config
 
 
@@ -115,7 +116,7 @@ class _ThreadPool:
         return self.__closed
 
 
-class _GlobalThreadPool:
+class GlobalThreadPool(metaclass=SingleInstanceMetaClass):
     def __init__(self):
         super().__init__()
 
@@ -127,6 +128,3 @@ class _GlobalThreadPool:
     @property
     def threadpool(self):
         return self.__threadpool
-
-
-GlobalThreadPool = _GlobalThreadPool()
