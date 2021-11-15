@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from mcomix.enums.page_orientation import PageOrientation
+from mcomix.enums import PageOrientation
 
 
 def test_page_orientation_manga():

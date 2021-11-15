@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from mcomix.about_dialog import AboutDialog
 from mcomix.enhance_dialog import EnhanceImageDialog
-from mcomix.enums.dialog_choice import DialogChoice
+from mcomix.enums import DialogChoice
 from mcomix.file_chooser import FileChooser
 from mcomix.keybindings_dialog import KeybindingEditorDialog
 from mcomix.preferences_dialog import PreferencesDialog

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from mcomix.enums.animation import Animation
+from mcomix.enums import Animation
 
 
 def test_animation_disabled():

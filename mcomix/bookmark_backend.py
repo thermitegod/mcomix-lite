@@ -12,7 +12,7 @@ from gi.repository import Gtk
 from loguru import logger
 
 from mcomix.bookmark_menu_item import Bookmark
-from mcomix.enums.config_files import ConfigFiles
+from mcomix.enums import ConfigFiles
 from mcomix.file_handler import FileHandler
 from mcomix.image_handler import ImageHandler
 from mcomix.lib.events import Events, EventType

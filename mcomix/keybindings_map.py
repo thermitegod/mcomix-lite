@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from typing import Callable
 
 from mcomix.dialog_chooser import DialogChoice
-from mcomix.enums.zoom_modes import ZoomModes
+from mcomix.enums import ZoomModes
 from mcomix.preferences import config
 
 from typing import TYPE_CHECKING

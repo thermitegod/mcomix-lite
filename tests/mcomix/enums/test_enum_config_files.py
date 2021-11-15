@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from mcomix.enums.config_files import ConfigFiles, ConfigPaths
+from mcomix.enums import ConfigFiles, ConfigPaths
 
 
 def test_config_files__is_pathlike():

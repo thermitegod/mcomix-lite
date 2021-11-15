@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from mcomix.enums.scroll import Scroll
+from mcomix.enums import Scroll
 
 
 def test_scroll_end():

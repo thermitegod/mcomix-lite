@@ -6,7 +6,7 @@ import xxhash
 import yaml
 from loguru import logger
 
-from mcomix.enums.config_files import ConfigPaths
+from mcomix.enums import ConfigPaths
 
 
 class _ConfigBackend:

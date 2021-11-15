@@ -10,7 +10,7 @@ from tempfile import TemporaryDirectory
 
 from loguru import logger
 
-from mcomix.enums.config_files import ConfigPaths
+from mcomix.enums import ConfigPaths
 
 
 class BaseArchive:

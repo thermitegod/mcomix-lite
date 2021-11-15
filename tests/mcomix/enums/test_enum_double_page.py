@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from mcomix.enums.double_page import DoublePage
+from mcomix.enums import DoublePage
 
 
 def test_doublepage_never():

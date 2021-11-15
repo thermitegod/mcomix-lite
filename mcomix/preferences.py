@@ -2,12 +2,7 @@
 
 # must not depend on GTK, PIL, or any other optional libraries.
 
-from mcomix.enums.animation import Animation
-from mcomix.enums.config_files import ConfigPaths
-from mcomix.enums.double_page import DoublePage
-from mcomix.enums.file_sort import FileSortDirection, FileSortType
-from mcomix.enums.image_scaling import ScalingGDK, ScalingPIL
-from mcomix.enums.zoom_modes import ZoomModes
+from mcomix.enums import Animation, ConfigPaths, DoublePage, FileSortDirection, FileSortType, ScalingGDK, ScalingPIL, ZoomModes
 
 # All preferences are stored here.
 config = {

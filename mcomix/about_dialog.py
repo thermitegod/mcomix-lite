@@ -9,7 +9,7 @@ from pathlib import Path
 from PIL import Image
 from gi.repository import Gtk
 
-from mcomix.enums.mcomix import Mcomix
+from mcomix.enums import Mcomix
 from mcomix.image_tools import ImageTools
 
 from typing import TYPE_CHECKING

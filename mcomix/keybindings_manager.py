@@ -31,7 +31,7 @@ from gi.repository import Gtk
 from loguru import logger
 
 from mcomix.config_backend import ConfigBackend
-from mcomix.enums.config_files import ConfigFiles
+from mcomix.enums import ConfigFiles
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:

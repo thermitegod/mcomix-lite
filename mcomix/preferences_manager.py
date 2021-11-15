@@ -5,7 +5,7 @@
 from pathlib import Path
 
 from mcomix.config_backend import ConfigBackend
-from mcomix.enums.config_files import ConfigFiles
+from mcomix.enums import ConfigFiles
 from mcomix.preferences import config
 
 

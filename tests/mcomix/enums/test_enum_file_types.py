@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from mcomix.enums.file_types import FileTypes
+from mcomix.enums import FileTypes
 
 
 def test_file_types():

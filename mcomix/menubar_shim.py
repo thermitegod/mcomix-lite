@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from mcomix.enums.dialog_choice import DialogChoice
+from mcomix.enums import DialogChoice
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:

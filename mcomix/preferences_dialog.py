@@ -6,11 +6,7 @@ from __future__ import annotations
 
 from gi.repository import GObject, Gtk
 
-from mcomix.enums.animation import Animation
-from mcomix.enums.double_page import DoublePage
-from mcomix.enums.file_sort import FileSortDirection, FileSortType
-from mcomix.enums.image_scaling import ScalingGDK, ScalingPIL
-from mcomix.enums.zoom_modes import ZoomModes
+from mcomix.enums import Animation, DoublePage, FileSortDirection, FileSortType, ScalingGDK, ScalingPIL, ZoomModes
 from mcomix.file_handler import FileHandler
 from mcomix.image_handler import ImageHandler
 from mcomix.preferences import config

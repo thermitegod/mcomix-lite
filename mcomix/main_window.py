@@ -7,13 +7,7 @@ from gi.repository import GLib, Gdk, Gtk
 from mcomix.bookmark_backend import BookmarkBackend
 from mcomix.cursor_handler import CursorHandler
 from mcomix.dialog_chooser import DialogChooser
-from mcomix.enums.dialog_choice import DialogChoice
-from mcomix.enums.double_page import DoublePage
-from mcomix.enums.mcomix import Mcomix
-from mcomix.enums.page_orientation import PageOrientation
-from mcomix.enums.image_scaling import ScalingGDK, ScalingPIL
-from mcomix.enums.scroll import Scroll
-from mcomix.enums.zoom_modes import ZoomAxis
+from mcomix.enums import DialogChoice, DoublePage, Mcomix, PageOrientation, ScalingGDK, ScalingPIL, Scroll, ZoomAxis
 from mcomix.file_handler import FileHandler
 from mcomix.filesystem_actions import FileSystemActions
 from mcomix.image_handler import ImageHandler

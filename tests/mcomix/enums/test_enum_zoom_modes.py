@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from mcomix.enums.zoom_modes import ZoomModes, ZoomAxis
+from mcomix.enums import ZoomModes, ZoomAxis
 
 
 def test_zoom_modes_best():

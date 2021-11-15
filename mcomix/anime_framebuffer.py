@@ -5,7 +5,7 @@ from typing import Callable
 
 from gi.repository import GdkPixbuf
 
-from mcomix.enums.animation import Animation
+from mcomix.enums import Animation
 from mcomix.preferences import config
 
 

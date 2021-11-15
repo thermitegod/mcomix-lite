@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from mcomix.enums.file_sort import FileSortType, FileSortDirection
+from mcomix.enums import FileSortType, FileSortDirection
 
 
 def test_file_sort_none():

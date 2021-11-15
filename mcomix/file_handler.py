@@ -9,8 +9,7 @@ from pathlib import Path
 from loguru import logger
 
 from mcomix.archive_extractor import Extractor
-from mcomix.enums.file_sort import FileSortDirection, FileSortType
-from mcomix.enums.file_types import FileTypes
+from mcomix.enums import FileSortDirection, FileSortType, FileTypes
 from mcomix.formats.archive import ArchiveSupported
 from mcomix.file_provider import GetFileProvider
 from mcomix.image_files import ImageFiles

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from mcomix.enums.image_scaling import ScalingGDK, ScalingPIL
+from mcomix.enums import ScalingGDK, ScalingPIL
 
 
 def test_scaleing_gdk():

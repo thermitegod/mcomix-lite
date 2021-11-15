@@ -10,8 +10,7 @@ from typing import Any, Callable
 from gi.repository import Gtk
 
 from mcomix.bookmark_menu import BookmarksMenu
-from mcomix.enums.dialog_choice import DialogChoice
-from mcomix.enums.zoom_modes import ZoomModes
+from mcomix.enums import DialogChoice, ZoomModes
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
