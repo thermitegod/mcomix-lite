@@ -1,28 +1,13 @@
 # -*- coding: utf-8 -*-
 
-"""file_provider.py - Handles listing files for the current directory and
-switching to the next/previous directory"""
 
-from pathlib import Path
-
-
-class FileProvider:
-    """
-    Base class for various file listing strategies
-    """
+class FileProviderBase:
+    __slots__ = ('files',)
 
     def __init__(self):
         super().__init__()
 
-    def set_directory(self, path: Path):
-        """
-        Sets the base directory
-        """
-
-        if path.is_dir():
-            return path
-
-        return path.parent
+        self.files = []
 
     def list_files(self, mode: int):
         raise NotImplementedError
