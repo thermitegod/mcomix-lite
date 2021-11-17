@@ -67,7 +67,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__waiting_for_redraw = False
 
         self.__filehandler = FileHandler(self)
-        self.__filesystem_hactions = FileSystemActions(self)
+        self.__filesystem_actions = FileSystemActions(self)
         self.__imagehandler = ImageHandler()
         self.__bookmark_backend = BookmarkBackend(self)
 
@@ -781,13 +781,13 @@ class MainWindow(Gtk.ApplicationWindow):
         self.set_title(f'{Mcomix.APP_NAME.value} [{self.__filehandler.get_current_filename()}]')
 
     def extract_page(self, *args):
-        self.__filesystem_hactions.extract_page()
+        self.__filesystem_actions.extract_page()
 
     def move_file(self, *args):
-        self.__filesystem_hactions.move_file()
+        self.__filesystem_actions.move_file()
 
     def trash_file(self, *args):
-        self.__filesystem_hactions.trash_file()
+        self.__filesystem_actions.trash_file()
 
     def minimize(self, *args):
         """
