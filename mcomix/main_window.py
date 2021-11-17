@@ -340,6 +340,8 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.__layout = FiniteLayout(scaled_sizes, viewport_size, orientation, distribution_axis, alignment_axis)
 
+        self.__main_layout.set_size(*self.__layout.get_union_box().get_size())
+
         content_boxes = self.__layout.get_content_boxes()
 
         for i in pixbuf_count_iter:
