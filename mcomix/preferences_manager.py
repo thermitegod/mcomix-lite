@@ -19,11 +19,13 @@ class PreferenceManager:
         self.__config_path = ConfigFiles.CONFIG.value
 
     def load_config_file(self):
-        saved_prefs = {}
         if Path.is_file(self.__config_path):
+            saved_prefs = {}
             self.__config_manager.load_config(config=self.__config_path, saved_prefs=saved_prefs)
 
-        config.update(filter(lambda i: i[0] in config, saved_prefs.items()))
+            for key, value in saved_prefs.items():
+                if key in config:
+                    config[key] = value
 
         self.__config_manager.update_config_hash(config=config, module='preferences')
 
