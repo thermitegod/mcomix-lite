@@ -2,7 +2,7 @@
 
 # flake8: noqa
 from mcomix._enums.animation import Animation
-from mcomix._enums.config_files import ConfigFiles, ConfigPaths
+from mcomix._enums.config_files import ConfigFiles, ConfigPaths, ConfigType
 from mcomix._enums.dialog_choice import DialogChoice
 from mcomix._enums.double_page import DoublePage
 from mcomix._enums.file_sort import FileSortDirection, FileSortType

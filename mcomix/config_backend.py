@@ -6,7 +6,7 @@ import xxhash
 import yaml
 from loguru import logger
 
-from mcomix.enums import ConfigPaths
+from mcomix.enums import ConfigPaths, ConfigType
 
 
 class _ConfigBackend:
@@ -16,8 +16,8 @@ class _ConfigBackend:
         super().__init__()
 
         self.__stored_config_hash = {
-            'preferences': None,
-            'keybindings': None,
+            ConfigType.CONFIG: None,
+            ConfigType.KEYBINDINGS: None,
         }
 
         if not Path.exists(ConfigPaths.CONFIG.value):

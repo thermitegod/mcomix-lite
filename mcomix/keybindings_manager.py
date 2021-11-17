@@ -29,7 +29,7 @@ from pathlib import Path
 from gi.repository import Gtk
 
 from mcomix.config_backend import ConfigBackend
-from mcomix.enums import ConfigFiles
+from mcomix.enums import ConfigFiles, ConfigType
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -77,7 +77,7 @@ class KeybindingManager:
                                               saved_prefs=self.__stored_action_bindings)
 
             self.__config_manager.update_config_hash(config=self.__stored_action_bindings,
-                                                     module='keybindings')
+                                                     module=ConfigType.KEYBINDINGS)
         else:
             # dont need to update config hash if missing input.conf
             self._load_keybindings_default()
@@ -98,7 +98,7 @@ class KeybindingManager:
 
         self.__config_manager.write_config(config=action_to_keys,
                                            config_path=self.__keybindings_path,
-                                           module='keybindings')
+                                           module=ConfigType.KEYBINDINGS)
 
     def _register_keybindings(self):
         for action_name, action_data in self.__keybindings_map.items():

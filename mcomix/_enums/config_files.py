@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from enum import Enum
+from enum import Enum, auto
 from pathlib import Path
 
 from mcomix._enums.mcomix import Mcomix
@@ -27,3 +27,7 @@ class ConfigFiles(Enum):
     CONFIG = ConfigPaths.CONFIG.value / 'mcomix.conf'
     KEYBINDINGS = ConfigPaths.CONFIG.value / 'input.conf'
     BOOKMARK = ConfigPaths.DATA.value / 'bookmarks.yml'
+
+class ConfigType(Enum):
+    CONFIG = auto()
+    KEYBINDINGS = auto()
