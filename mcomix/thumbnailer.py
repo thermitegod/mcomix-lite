@@ -44,4 +44,3 @@ class Thumbnailer:
             pixbuf = None
 
         return pixbuf
-

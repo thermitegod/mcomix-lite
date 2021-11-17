@@ -6,7 +6,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from gi.repository import Gtk
 from loguru import logger
 
 from mcomix.archive_extractor import Extractor

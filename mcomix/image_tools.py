@@ -135,7 +135,7 @@ class _ImageTools:
             return True
         return False
 
-    def add_alpha_background(self, pixbuf, width: int, height: int, scaling_quality = None):
+    def add_alpha_background(self, pixbuf, width: int, height: int, scaling_quality: int = None):
         if config['CHECKERED_BG_FOR_TRANSPARENT_IMAGES']:
             check_size = config['CHECKERED_BG_SIZE']
             color1 = 0x777777
@@ -286,7 +286,7 @@ class _ImageTools:
 
         if n_frames is None or n_frames < 2:
             # not recognized by PIL or not animation, or only a single frame
-             return pixbuf
+            return pixbuf
 
         # assume PIL and GdkPixbuf count frames in same way.
         anime = AnimeFrameBuffer(n_frames, loop=loop)

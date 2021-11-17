@@ -14,6 +14,7 @@ except (ValueError, ImportError):
 # from mcomix.preferences import config
 
 
-# @pytest.fixture
-# def mcomix_config(scope='session'):
-#     return config
+@pytest.fixture
+def mcomix_config(scope='session'):
+    # return config
+    pass

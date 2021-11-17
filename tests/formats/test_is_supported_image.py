@@ -11,11 +11,12 @@ from mcomix.formats.image import ImageSupported
     Path('test.jpg'),
     Path('test.png'),
 
-    #Path('test.ppm'),
-    #Path('test.ppn'),
+    # Path('test.ppm'),
+    # Path('test.ppn'),
 ])
 def test_is_archive(image: Path):
-    assert ImageSupported.is_image_file(image) == True
+    assert ImageSupported.is_image_file(image)
+
 
 @pytest.mark.parametrize('not_image', [
     Path('test.pdf'),  # make sure .pdf files are not detected as supported
@@ -26,5 +27,4 @@ def test_is_archive(image: Path):
     Path('test.file'),
 ])
 def test_is_not_archive(not_image: Path):
-    assert ImageSupported.is_image_file(not_image) == False
-
+    assert not ImageSupported.is_image_file(not_image)

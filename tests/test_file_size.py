@@ -14,9 +14,9 @@ def test_file_size():
     FileSize = _FileSize()
     assert FileSize(test_file) == '17.814 KiB'
 
+
 def test_file_size_si():
     config['SI_UNITS'] = True
     test_file = Path() / Path(__file__).parent.parent / 'COPYING'
     FileSize = _FileSize()
     assert FileSize(test_file) == '18.242 KB'
-

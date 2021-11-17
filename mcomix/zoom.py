@@ -112,10 +112,10 @@ class ZoomModel:
         for idx, item in enumerate(limits):
             if idx == distribution_axis:
                 continue
-            l = limits[idx]
-            if l is None:
+            limit = limits[idx]
+            if limit is None:
                 continue
-            s = l / image_size[idx]
+            s = limit / image_size[idx]
             if min_scale is None or s < min_scale:
                 min_scale = s
         if min_scale is None:

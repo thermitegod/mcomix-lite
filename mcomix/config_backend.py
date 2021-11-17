@@ -21,11 +21,11 @@ class _ConfigBackend:
         }
 
         if not Path.exists(ConfigPaths.CONFIG.value):
-            logger.info(f'Creating missing config dir')
+            logger.info('Creating missing config dir')
             ConfigPaths.CONFIG.value.mkdir()
 
         if not Path.exists(ConfigPaths.DATA.value):
-            logger.info(f'Creating missing data dir')
+            logger.info('Creating missing data dir')
             ConfigPaths.DATA.value.mkdir()
 
     def update_config_hash(self, config: dict, module: str):

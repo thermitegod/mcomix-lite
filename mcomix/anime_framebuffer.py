@@ -74,8 +74,8 @@ class AnimeFrameBuffer:
             anime.set_loop(False)
         else:
             anime.set_loop(True)
-        for l in range(max(1, self.__loop)):
-            for n, frame in enumerate(self.__framelist):
+        for _ in range(max(1, self.__loop)):
+            for _, frame in enumerate(self.__framelist):
                 if not frame:
                     raise OSError('animation corrupted')
                 pixbuf, duration = frame

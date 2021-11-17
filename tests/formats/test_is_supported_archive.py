@@ -33,7 +33,8 @@ from mcomix.formats.archive import ArchiveSupported
     Path('test.lzh'),
 ])
 def test_is_archive(archive: Path):
-    assert ArchiveSupported.is_archive_file(archive) == True
+    assert ArchiveSupported.is_archive_file(archive)
+
 
 @pytest.mark.parametrize('not_archive', [
     (Path('test.not')),
@@ -43,4 +44,4 @@ def test_is_archive(archive: Path):
 
 ])
 def test_is_not_archive(not_archive: Path):
-    assert ArchiveSupported.is_archive_file(not_archive) == False
+    assert not ArchiveSupported.is_archive_file(not_archive)

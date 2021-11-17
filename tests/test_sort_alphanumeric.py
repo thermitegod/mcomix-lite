@@ -25,4 +25,3 @@ def test_sort_alphanumeric(unsorted_file_list: list, sorted_file_list: list):
     SortAlphanumeric(unsorted_file_list)
 
     assert unsorted_file_list == sorted_file_list
-

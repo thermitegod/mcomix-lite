@@ -11,7 +11,7 @@ try:
     gi.require_version('PangoCairo', '1.0')
     gi.require_version('Gtk', '3.0')
     gi.require_version('Gdk', '3.0')
-    from gi.repository import GLib, Gdk, Gtk
+    from gi.repository import Gdk, Gtk
 except (ValueError, ImportError):
     raise SystemExit('GTK+ 3.0 import error')
 

@@ -100,7 +100,6 @@ class FiniteLayout:  # 2D only
 
             result[idx] = content_position[idx] + offset
 
-
         # Move the viewport to the specified position.
         self.__viewport_box = self.__viewport_box.set_position(tuple(result))
 

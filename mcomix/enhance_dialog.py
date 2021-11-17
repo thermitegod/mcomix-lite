@@ -206,7 +206,7 @@ class EnhanceImageDialog(Gtk.Dialog):
 
     def _response(self, dialog, response: int):
         match response:
-            case (Gtk.ResponseType.OK|Gtk.ResponseType.DELETE_EVENT):
+            case (Gtk.ResponseType.OK | Gtk.ResponseType.DELETE_EVENT):
                 self.destroy()
 
             case Gtk.ResponseType.APPLY:

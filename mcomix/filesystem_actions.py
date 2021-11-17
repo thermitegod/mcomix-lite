@@ -92,7 +92,7 @@ class FileSystemActions:
         try:
             self._load_next_file()
         except Exception:
-            logger.error(f'File action failed: move_file()')
+            logger.error('File action failed: move_file()')
 
         if current_file.is_file():
             Path.rename(current_file, target_file)
@@ -124,7 +124,7 @@ class FileSystemActions:
         try:
             self._load_next_file()
         except Exception:
-            logger.error(f'File action failed: trash_file()')
+            logger.error('File action failed: trash_file()')
 
         if current_file.is_file():
             send2trash(bytes(current_file))

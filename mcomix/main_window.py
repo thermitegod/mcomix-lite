@@ -325,7 +325,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         rotation = config['ROTATION'] % 360
         match rotation:
-            case (90|270):
+            case (90 | 270):
                 distribution_axis, alignment_axis = alignment_axis, distribution_axis
                 orientation.reverse()
                 for i in pixbuf_count_iter:
