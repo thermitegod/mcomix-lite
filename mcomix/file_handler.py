@@ -38,6 +38,9 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
         self.__events = Events()
         self.__events.add_event(EventType.FILE_EXTRACTED, self._extracted_file)
         self.__events.add_event(EventType.FILE_LISTED, self._file_listed)
+        self.__events.add_event(EventType.KB_FILE_CLOSE, self.close_file)
+        self.__events.add_event(EventType.KB_FILE_REFRESH, self.refresh_file)
+        self.__events.add_event(EventType.KB_OPEN_ARCHIVE_DIRECTION, self.open_archive_direction)
 
         self.__image_handler = ImageHandler()
         self.__image_files = ImageFiles()

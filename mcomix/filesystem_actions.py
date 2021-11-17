@@ -13,6 +13,7 @@ from mcomix.file_handler import FileHandler
 from mcomix.image_handler import ImageHandler
 from mcomix.message_dialog.info import MessageDialogInfo
 from mcomix.message_dialog.remember import MessageDialogRemember
+from mcomix.lib.events import Events, EventType
 from mcomix.preferences import config
 from mcomix.state.view_state import ViewState
 
@@ -28,6 +29,11 @@ class FileSystemActions:
         super().__init__()
 
         self.__window = window
+
+        events = Events()
+        events.add_event(EventType.KB_EXTRACT_PAGE, self.extract_page)
+        events.add_event(EventType.KB_FILE_MOVE, self.move_file)
+        events.add_event(EventType.KB_FILE_TRASH, self.trash_file)
 
         self.__file_handler = FileHandler(None)
         self.__image_handler = ImageHandler()

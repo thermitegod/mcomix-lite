@@ -34,6 +34,8 @@ class InputHandler:
         self.__file_handler = FileHandler(None)
 
         self.__events = Events()
+        self.__events.add_event(EventType.KB_ESCAPE, self.escape_event)
+        self.__events.add_event(EventType.KB_SCROLL_WITH_FLIPPING, self.scroll_with_flipping)
 
         self.__was_fullscreen = False
         self.__previous_size = (None, None)

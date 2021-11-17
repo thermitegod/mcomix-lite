@@ -50,21 +50,13 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__events.add_event(EventType.KB_PAGE_FIRST, self.first_page)
         self.__events.add_event(EventType.KB_PAGE_LAST, self.last_page)
         self.__events.add_event(EventType.KB_CHANGE_ZOOM_MODE, self.change_zoom_mode)
-        self.__events.add_event(EventType.KB_ESCAPE, self.escape_event)
         self.__events.add_event(EventType.KB_CHANGE_FULLSCREEN, self.change_fullscreen)
         self.__events.add_event(EventType.KB_MINIMIZE, self.minimize)
         self.__events.add_event(EventType.KB_OPEN_DIALOG, self.open_dialog)
-        self.__events.add_event(EventType.KB_FILE_TRASH, self.trash_file)
-        self.__events.add_event(EventType.KB_FILE_CLOSE, self.close_file)
-        self.__events.add_event(EventType.KB_FILE_MOVE, self.move_file)
-        self.__events.add_event(EventType.KB_FILE_REFRESH, self.refresh_file)
-        self.__events.add_event(EventType.KB_EXTRACT_PAGE, self.extract_page)
         self.__events.add_event(EventType.KB_EXIT, self.terminate_program)
         self.__events.add_event(EventType.KB_IMAGE_SCALING_CHANGE, self.change_image_scaling)
         self.__events.add_event(EventType.KB_IMAGE_SCALING_TOGGLE, self.toggle_image_scaling)
         self.__events.add_event(EventType.KB_OPEN_PAGESELECTOR, self.page_select)
-        self.__events.add_event(EventType.KB_OPEN_ARCHIVE_DIRECTION, self.open_archive_direction)
-        self.__events.add_event(EventType.KB_SCROLL_WITH_FLIPPING, self.scroll_with_flipping)
         self.__events.add_event(EventType.KB_PAGE_ROTATE, self.rotate_x)
         self.__events.add_event(EventType.KB_CHANGE_STRETCH, self.change_stretch)
         self.__events.add_event(EventType.KB_CHANGE_MANGA, self.change_manga_mode)
@@ -190,14 +182,6 @@ class MainWindow(Gtk.ApplicationWindow):
         """
 
         return self.__statusbar
-
-    @property
-    def input_handler(self):
-        """
-        Interface for InputHandler
-        """
-
-        return self.__input_handler
 
     @property
     def keybindings(self):
@@ -680,30 +664,6 @@ class MainWindow(Gtk.ApplicationWindow):
         """
 
         self.set_title(f'{Mcomix.APP_NAME.value} [{self.__file_handler.get_real_path()}]')
-
-    def extract_page(self):
-        self.__filesystem_actions.extract_page()
-
-    def move_file(self):
-        self.__filesystem_actions.move_file()
-
-    def trash_file(self):
-        self.__filesystem_actions.trash_file()
-
-    def refresh_file(self):
-        self.__file_handler.refresh_file()
-
-    def close_file(self):
-        self.__file_handler.close_file()
-
-    def open_archive_direction(self, forward: bool):
-        self.__file_handler.open_archive_direction(forward)
-
-    def scroll_with_flipping(self, x: int, y: int):
-        self.input_handler.scroll_with_flipping(x, y)
-
-    def escape_event(self):
-        self.input_handler.escape_event()
 
     def minimize(self):
         """
