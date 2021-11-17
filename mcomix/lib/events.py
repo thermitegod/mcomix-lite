@@ -31,9 +31,7 @@ class Events(metaclass=SingleInstanceMetaClass):
         self.__run_event = _EventMainthread()
 
         # knockoff defaultdict(list)
-        self.__events = {}
-        for event in EventType:
-            self.__events.update({event: []})
+        self.__events = {event: [] for event in EventType}
 
     def add_event(self, event_type: EventType, function: Callable) -> None:
         """
