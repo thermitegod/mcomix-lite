@@ -37,7 +37,7 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
 
         self.__events = Events()
         self.__events.add_event(EventType.FILE_EXTRACTED, self._extracted_file)
-        self.__events.add_event(EventType.FILE_LISTED, self._listed_contents)
+        self.__events.add_event(EventType.FILE_LISTED, self._file_listed)
 
         self.__image_handler = ImageHandler()
         self.__image_files = ImageFiles()
@@ -222,13 +222,13 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
             logger.error(f'Exception: {ex}')
             raise
 
-    def _listed_contents(self, image_files: list):
+    def _file_listed(self, files: list):
         if not self.__file_loading:
             return
         self.__file_loading = False
 
-        self._sort_archive_images(image_files)
-        self._archive_opened(image_files)
+        self._sort_archive_images(files)
+        self._archive_opened(files)
 
     def _sort_archive_images(self, filelist: list):
         """
@@ -331,7 +331,7 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
 
         return False
 
-    def _extracted_file(self, name: str):
+    def _extracted_file(self, filename: Path):
         """
         Called when the extractor finishes extracting the file at
         <name>. This name is relative to the temporary directory
@@ -340,4 +340,4 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
 
         if not self.__file_loaded:
             return
-        self.__events.run_events(EventType.FILE_AVAILABLE, name)
+        self.__events.run_events(EventType.FILE_AVAILABLE, {'filename': filename})

@@ -2,7 +2,7 @@
 
 import threading
 from enum import Enum, auto
-from typing import Any, Callable
+from typing import Callable
 
 from gi.repository import GLib
 from loguru import logger
@@ -50,14 +50,17 @@ class Events(metaclass=SingleInstanceMetaClass):
         logger.trace(f'Removing event: {event_type}')
         self.__events[event_type].remove(function)
 
-    def run_events(self, event_type: EventType, function_args: Any = None) -> None:
+    def run_events(self, event_type: EventType, function_kwargs: dict = None) -> None:
         """
         Run all registered functions for event_type
         """
 
+        if function_kwargs is None:
+            function_kwargs = {}
+
         for function in self.__events[event_type]:
             # logger.trace(f'Running event: {event_type}')
-            self.__run_event(function, function_args)
+            self.__run_event(function, function_kwargs)
 
 
 class _EventMainthread:
@@ -68,7 +71,7 @@ class _EventMainthread:
     def __init__(self):
         super().__init__()
 
-    def __call__(self, function: Callable, function_args: Any) -> None:
+    def __call__(self, function: Callable, function_kwargs: dict) -> None:
         """
         Event functions must be executed in the main thread, if they are not run
         in the main thread python can segfault with
@@ -76,31 +79,28 @@ class _EventMainthread:
         """
 
         if threading.current_thread().name == 'MainThread':
-            self.__run_event(function, function_args)
+            self.__run_event(function, function_kwargs)
         else:
             # Call this method again in the main thread.
-            GLib.idle_add(self.__mainthread_call, function, function_args)
+            GLib.idle_add(self.__mainthread_call, function, function_kwargs)
 
-    def __mainthread_call(self, function: Callable, function_args: Any) -> int:
+    def __mainthread_call(self, function: Callable, function_kwargs: dict) -> int:
         """
         Helper function to execute code in the main thread.
         This will be called by GLib.idle_add
         """
 
-        self(function, function_args)
+        self(function, function_kwargs)
         # Removes this function from the idle queue
         return 0
 
-    def __run_event(self, function: Callable, function_args: Any) -> None:
+    def __run_event(self, function: Callable, function_kwargs: dict) -> None:
         """
         Executes event functions
         """
 
         try:
-            if function_args is None:
-                function()
-            else:
-                function(function_args)
+            function(**function_kwargs)
         except Exception as ex:
             logger.error(f'Event failed: {function}')
             logger.error(f'Exception: {ex}')

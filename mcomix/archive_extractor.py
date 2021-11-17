@@ -68,14 +68,14 @@ class Extractor:
         Called after the contents of the archive has been listed
         """
 
-        self.__events.run_events(EventType.FILE_LISTED, files)
+        self.__events.run_events(EventType.FILE_LISTED, {'files': files})
 
     def _file_extracted(self, extractor, filename: Path):
         """
         Called whenever a new file is extracted and ready
         """
 
-        self.__events.run_events(EventType.FILE_EXTRACTED, filename)
+        self.__events.run_events(EventType.FILE_EXTRACTED, {'filename': filename})
 
     def close(self):
         """

@@ -169,15 +169,15 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         if page in self.__wanted_pixbufs:
             self.__threadpool.apply_async(self._cache_pixbuf, (page,))
 
-        self.__events.run_events(EventType.PAGE_AVAILABLE, page)
+        self.__events.run_events(EventType.PAGE_AVAILABLE, {'page': page})
 
-    def file_available(self, filepath: Path):
+    def file_available(self, filename: Path):
         """
         Called by the filehandler when a new file becomes available
         """
 
-        # Find the page that corresponds to <filepath>
-        self.page_available(self.__image_files.get_page_from_path(filepath))
+        # Find the page that corresponds to <filename>
+        self.page_available(self.__image_files.get_page_from_path(filename))
 
     def get_number_of_pages(self):
         """

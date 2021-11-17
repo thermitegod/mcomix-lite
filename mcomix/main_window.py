@@ -416,7 +416,7 @@ class MainWindow(Gtk.ApplicationWindow):
         nb_pages = 2 if ViewState.is_displaying_double else 1
         if current_page <= page < (current_page + nb_pages):
             self._displayed_double()
-            self.__events.run_events(EventType.DRAW_PAGE, self.__last_scroll_destination)
+            self.__events.run_events(EventType.DRAW_PAGE, {'scroll_to': self.__last_scroll_destination})
             self._update_page_information()
 
     def _on_file_opened(self):
@@ -454,7 +454,7 @@ class MainWindow(Gtk.ApplicationWindow):
         else:
             scroll_to = Scroll.START.value
 
-        self.__events.run_events(EventType.DRAW_PAGE, scroll_to)
+        self.__events.run_events(EventType.DRAW_PAGE, {'scroll_to': scroll_to})
 
     def page_changed(self):
         """
