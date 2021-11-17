@@ -30,6 +30,7 @@ from gi.repository import Gtk
 
 from mcomix.config_backend import ConfigBackend
 from mcomix.enums import ConfigFiles, ConfigType
+from mcomix.keybindings_map import KeyBindingsMap
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -46,7 +47,7 @@ class KeybindingManager:
         #: Main window instance
         self.__window = window
 
-        # action name => (func, callback_kwargs)
+        # action name => (event, event_type, event_kwargs)
         self.__action_to_callback = {}
         # action name => [ (key code, key modifier), ]
         self.__action_to_bindings = defaultdict(list)
@@ -55,7 +56,7 @@ class KeybindingManager:
 
         self.__stored_action_bindings = {}
 
-        self.__keybindings_map = self.__window.keybindings_map
+        self.__keybindings_map = KeyBindingsMap().bindings
 
         self.__config_manager = ConfigBackend
         self.__keybindings_path = ConfigFiles.KEYBINDINGS.value
@@ -128,11 +129,12 @@ class KeybindingManager:
         them up with their respective callback functions
         """
 
-        callback=action_data.key_event.callback
-        callback_kwargs=action_data.key_event.callback_kwargs
+        event=action_data.key_event.event
+        event_type=action_data.key_event.event_type
+        event_kwargs=action_data.key_event.event_kwargs
 
-        if callback_kwargs is None:
-            callback_kwargs = {}
+        if event_kwargs is None:
+            event_kwargs = {}
 
         for keycode in self.__action_to_bindings[action_name]:
             if keycode in self.__binding_to_action:
@@ -141,7 +143,7 @@ class KeybindingManager:
             self.__binding_to_action[keycode] = action_name
             self.__action_to_bindings[action_name].append(keycode)
 
-        self.__action_to_callback[action_name] = (callback, callback_kwargs)
+        self.__action_to_callback[action_name] = (event, event_type, event_kwargs)
 
     def edit_accel(self, name: str, new_binding: str, old_binding: str):
         """
@@ -211,9 +213,9 @@ class KeybindingManager:
 
         if keybinding in self.__binding_to_action:
             action = self.__binding_to_action[keybinding]
-            func, func_kwargs = self.__action_to_callback[action]
+            func, event_type, func_kwargs = self.__action_to_callback[action]
             self.__window.stop_emission_by_name('key_press_event')
-            return func(**func_kwargs)
+            return func(event_type, func_kwargs)
 
         # Some keys enable additional modifiers (NumLock enables GDK_MOD2_MASK),
         # which prevent direct lookup simply by being pressed.
@@ -222,9 +224,9 @@ class KeybindingManager:
         for stored_binding, action in self.__binding_to_action.items():
             stored_keycode, stored_flags = stored_binding
             if stored_keycode == keybinding[0] and stored_flags & keybinding[1]:
-                func, func_kwargs = self.__action_to_callback[action]
+                func, event_type, func_kwargs = self.__action_to_callback[action]
                 self.__window.stop_emission_by_name('key_press_event')
-                return func(**func_kwargs)
+                return func(event_type, func_kwargs)
 
     def get_bindings_for_action(self, name):
         """

@@ -6,6 +6,8 @@ from __future__ import annotations
 
 from gi.repository import Gtk
 
+from mcomix.keybindings_map import KeyBindingsMap
+
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from mcomix.main_window import MainWindow
@@ -27,7 +29,7 @@ class KeybindingEditorWindow(Gtk.ScrolledWindow):
 
         self.__window = window
         self.__keybindings = self.__window.keybindings
-        self.__keybindings_map = self.__window.keybindings_map
+        self.__keybindings_map = KeyBindingsMap().bindings
 
         # max number of keybindings for a single action
         self.__accel_column_num = 5

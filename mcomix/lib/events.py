@@ -11,6 +11,7 @@ from mcomix.lib.metaclass import SingleInstanceMetaClass
 
 
 class EventType(Enum):
+    # general
     BOOKMARK_ADD = auto()
     BOOKMARK_REMOVE = auto()
     DRAW_PAGE = auto()
@@ -21,6 +22,34 @@ class EventType(Enum):
     FILE_LISTED = auto()
     PAGE_AVAILABLE = auto()
     PAGE_CHANGED = auto()
+    # keyboard shortcuts
+    KB_PAGE_FLIP = auto()
+    KB_PAGE_FIRST = auto()
+    KB_PAGE_LAST = auto()
+    KB_CHANGE_ZOOM_MODE = auto()
+    KB_ESCAPE = auto()
+    KB_CHANGE_FULLSCREEN = auto()
+    KB_MINIMIZE = auto()
+    KB_OPEN_DIALOG = auto()
+    KB_FILE_CLOSE = auto()
+    KB_FILE_TRASH = auto()
+    KB_FILE_MOVE = auto()
+    KB_FILE_REFRESH = auto()
+    KB_EXTRACT_PAGE = auto()
+    KB_EXIT = auto()
+    KB_IMAGE_SCALING_CHANGE = auto()
+    KB_IMAGE_SCALING_TOGGLE = auto()
+    KB_OPEN_PAGESELECTOR = auto()
+    KB_OPEN_ARCHIVE_DIRECTION = auto()
+    KB_SCROLL_WITH_FLIPPING = auto()
+    KB_PAGE_ROTATE = auto()
+    KB_CHANGE_STRETCH = auto()
+    KB_CHANGE_MANGA = auto()
+    KB_CHANGE_DOUBLE = auto()
+    KB_ZOOM_IN = auto()
+    KB_ZOOM_OUT = auto()
+    KB_ZOOM_ORIGINAL = auto()
+    KB_CHANGE_KEEP_TRANSFORMATION = auto()
 
 
 class Events(metaclass=SingleInstanceMetaClass):

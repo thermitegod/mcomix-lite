@@ -14,7 +14,6 @@ from mcomix.image_handler import ImageHandler
 from mcomix.image_tools import ImageTools
 from mcomix.input_handler import InputHandler
 from mcomix.keybindings_manager import KeybindingManager
-from mcomix.keybindings_map import KeyBindingsMap
 from mcomix.layout import FiniteLayout
 from mcomix.lens import MagnifyingLens
 from mcomix.lib.events import Events, EventType
@@ -47,6 +46,34 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__events.add_event(EventType.PAGE_AVAILABLE, self._page_available)
         self.__events.add_event(EventType.PAGE_CHANGED, self._page_changed)
         self.__events.add_event(EventType.DRAW_PAGE, self.draw_pages)
+        # keyboard shortcut events
+        self.__events.add_event(EventType.KB_PAGE_FLIP, self.flip_page)
+        self.__events.add_event(EventType.KB_PAGE_FIRST, self.first_page)
+        self.__events.add_event(EventType.KB_PAGE_LAST, self.last_page)
+        self.__events.add_event(EventType.KB_CHANGE_ZOOM_MODE, self.change_zoom_mode)
+        self.__events.add_event(EventType.KB_ESCAPE, self.escape_event)
+        self.__events.add_event(EventType.KB_CHANGE_FULLSCREEN, self.change_fullscreen)
+        self.__events.add_event(EventType.KB_MINIMIZE, self.minimize)
+        self.__events.add_event(EventType.KB_OPEN_DIALOG, self.open_dialog)
+        self.__events.add_event(EventType.KB_FILE_TRASH, self.trash_file)
+        self.__events.add_event(EventType.KB_FILE_CLOSE, self.close_file)
+        self.__events.add_event(EventType.KB_FILE_MOVE, self.move_file)
+        self.__events.add_event(EventType.KB_FILE_REFRESH, self.refresh_file)
+        self.__events.add_event(EventType.KB_EXTRACT_PAGE, self.extract_page)
+        self.__events.add_event(EventType.KB_EXIT, self.terminate_program)
+        self.__events.add_event(EventType.KB_IMAGE_SCALING_CHANGE, self.change_image_scaling)
+        self.__events.add_event(EventType.KB_IMAGE_SCALING_TOGGLE, self.toggle_image_scaling)
+        self.__events.add_event(EventType.KB_OPEN_PAGESELECTOR, self.page_select)
+        self.__events.add_event(EventType.KB_OPEN_ARCHIVE_DIRECTION, self.open_archive_direction)
+        self.__events.add_event(EventType.KB_SCROLL_WITH_FLIPPING, self.scroll_with_flipping)
+        self.__events.add_event(EventType.KB_PAGE_ROTATE, self.rotate_x)
+        self.__events.add_event(EventType.KB_CHANGE_STRETCH, self.change_stretch)
+        self.__events.add_event(EventType.KB_CHANGE_MANGA, self.change_manga_mode)
+        self.__events.add_event(EventType.KB_CHANGE_DOUBLE, self.change_double_page)
+        self.__events.add_event(EventType.KB_ZOOM_IN, self.manual_zoom_in)
+        self.__events.add_event(EventType.KB_ZOOM_OUT, self.manual_zoom_out)
+        self.__events.add_event(EventType.KB_ZOOM_ORIGINAL, self.manual_zoom_original)
+        self.__events.add_event(EventType.KB_CHANGE_KEEP_TRANSFORMATION, self.change_keep_transformation)
 
         # Remember last scroll destination.
         self.__last_scroll_destination = Scroll.START.value
@@ -76,7 +103,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.__input_handler = InputHandler(self)
 
-        self.__keybindings_map = KeyBindingsMap(self).BINDINGS
         self.__keybindings = KeybindingManager(self)
 
         self.__cursor_handler = CursorHandler(self)
@@ -174,14 +200,6 @@ class MainWindow(Gtk.ApplicationWindow):
         """
 
         return self.__input_handler
-
-    @property
-    def keybindings_map(self):
-        """
-        Interface for KeyBindingsMap
-        """
-
-        return self.__keybindings_map
 
     @property
     def keybindings(self):
@@ -690,6 +708,12 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def open_archive_direction(self, forward: bool):
         self.__file_handler.open_archive_direction(forward)
+
+    def scroll_with_flipping(self, x: int, y: int):
+        self.input_handler.scroll_with_flipping(x, y)
+
+    def escape_event(self):
+        self.input_handler.escape_event()
 
     def minimize(self):
         """
