@@ -25,10 +25,8 @@ from __future__ import annotations
 
 from collections import defaultdict
 from pathlib import Path
-from typing import Callable
 
 from gi.repository import Gtk
-from loguru import logger
 
 from mcomix.config_backend import ConfigBackend
 from mcomix.enums import ConfigFiles
@@ -62,9 +60,10 @@ class KeybindingManager:
         self.__config_manager = ConfigBackend
         self.__keybindings_path = ConfigFiles.KEYBINDINGS.value
 
-        self.load_keybindings_file()
+        self._load_keybindings_file()
+        self._register_keybindings()
 
-    def load_keybindings_default(self):
+    def _load_keybindings_default(self):
         """
         default keybindings set in keybindings_map.py
         """
@@ -72,7 +71,7 @@ class KeybindingManager:
         for action_name, action_data in self.__keybindings_map.items():
             self.__stored_action_bindings[action_name] = action_data.keybindings.keybindings
 
-    def load_keybindings_file(self):
+    def _load_keybindings_file(self):
         if Path.is_file(self.__keybindings_path):
             self.__config_manager.load_config(config=self.__keybindings_path,
                                               saved_prefs=self.__stored_action_bindings)
@@ -81,9 +80,7 @@ class KeybindingManager:
                                                      module='keybindings')
         else:
             # dont need to update config hash if missing input.conf
-            self.load_keybindings_default()
-
-        self.register_keybindings()
+            self._load_keybindings_default()
 
     def write_keybindings_file(self):
         """
@@ -103,45 +100,48 @@ class KeybindingManager:
                                            config_path=self.__keybindings_path,
                                            module='keybindings')
 
-    def register_keybindings(self):
+    def _register_keybindings(self):
+        for action_name, action_data in self.__keybindings_map.items():
+            self._register_keybindings_structure(action_name)
+            self._register_keybindings_events(action_name, action_data)
+
+    def _register_keybindings_structure(self, action_name):
         """
         inits self.__binding_to_action and self.__action_to_bindings
         """
 
-        for action in self.__keybindings_map:
-            if action in self.__stored_action_bindings:
-                bindings = [
-                    Gtk.accelerator_parse(keyname)
-                    for keyname in self.__stored_action_bindings[action]
-                ]
-                self.__action_to_bindings[action] = bindings
-                for binding in bindings:
-                    self.__binding_to_action[binding] = action
-            else:
-                self.__action_to_bindings[action] = []
+        if not action_name in self.__stored_action_bindings:
+            self.__action_to_bindings[action_name] = []
+            return
 
-    def register(self, name: str, callback: Callable, callback_kwargs: dict = None):
-        """
-        Registers an action for a predefined keybinding name.
+        bindings = [
+            Gtk.accelerator_parse(keyname)
+            for keyname in self.__stored_action_bindings[action_name]
+        ]
+        self.__action_to_bindings[action_name] = bindings
+        for binding in bindings:
+            self.__binding_to_action[binding] = action_name
 
-        :param name: Action name, defined in L{keybindings_map.BINDING_INFO}.
-        :param callback: Function callback
-        :param callback_kwargs: List of keyword arguments to pass to the callback
+    def _register_keybindings_events(self, action_name, action_data):
         """
+        Registers keyboard events and their default binings, and hooks
+        them up with their respective callback functions
+        """
+
+        callback=action_data.key_event.callback
+        callback_kwargs=action_data.key_event.callback_kwargs
 
         if callback_kwargs is None:
             callback_kwargs = {}
 
-        for keycode in self.__action_to_bindings[name]:
+        for keycode in self.__action_to_bindings[action_name]:
             if keycode in self.__binding_to_action:
-                if self.__binding_to_action[keycode] != name:
-                    logger.warning(f'Keybinding for \'{name}\' overrides hotkey for another action.\n'
-                                   f'Binding \'{keycode}\' overrides \'{self.__binding_to_action[keycode]}\'')
-            else:
-                self.__binding_to_action[keycode] = name
-                self.__action_to_bindings[name].append(keycode)
+                continue
 
-        self.__action_to_callback[name] = (callback, callback_kwargs)
+            self.__binding_to_action[keycode] = action_name
+            self.__action_to_bindings[action_name].append(keycode)
+
+        self.__action_to_callback[action_name] = (callback, callback_kwargs)
 
     def edit_accel(self, name: str, new_binding: str, old_binding: str):
         """
@@ -199,8 +199,8 @@ class KeybindingManager:
         self.__binding_to_action = {}
         self.__stored_action_bindings = {}
 
-        self.load_keybindings_default()
-        self.register_keybindings()
+        self._load_keybindings_default()
+        self._register_keybindings()
 
     def execute(self, keybinding: tuple):
         """

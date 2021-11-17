@@ -79,9 +79,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__keybindings_map = KeyBindingsMap(self).BINDINGS
         self.__keybindings = KeybindingManager(self)
 
-        # Hook up keyboard shortcuts
-        self.__input_handler.register_key_events()
-
         self.__cursor_handler = CursorHandler(self)
         self.__lens = MagnifyingLens(self)
 

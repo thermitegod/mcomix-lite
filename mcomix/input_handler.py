@@ -74,19 +74,6 @@ class InputHandler:
                 self.__previous_size = self.__window.get_size()
                 self.__events.run_events(EventType.DRAW_PAGE)
 
-    def register_key_events(self):
-        """
-        Registers keyboard events and their default binings, and hooks
-        them up with their respective callback functions
-        """
-
-        for action in self.__window.keybindings_map:
-            self.__window.keybindings.register(
-                name=action,
-                callback=self.__window.keybindings_map[action].key_event.callback,
-                callback_kwargs=self.__window.keybindings_map[action].key_event.callback_kwargs,
-            )
-
     def key_press_event(self, widget, event, *args):
         """
         Handle key press events on the main window
