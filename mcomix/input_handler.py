@@ -11,6 +11,7 @@ from urllib.request import url2pathname
 from gi.repository import Gdk, Gtk
 
 from mcomix.file_handler import FileHandler
+from mcomix.lib.events import Events, EventType
 from mcomix.preferences import config
 from mcomix.state.view_state import ViewState
 
@@ -23,7 +24,7 @@ class InputHandler:
     __slots__ = (
         '__window', '__file_handler', '__all_accels_mask',
         '__keymap', '__last_pointer_pos_x', '__last_pointer_pos_y',
-        '__was_fullscreen', '__previous_size',
+        '__was_fullscreen', '__previous_size', '__events',
     )
 
     def __init__(self, window: MainWindow):
@@ -31,6 +32,8 @@ class InputHandler:
 
         self.__window = window
         self.__file_handler = FileHandler(None)
+
+        self.__events = Events()
 
         self.__was_fullscreen = False
         self.__previous_size = (None, None)
@@ -54,7 +57,7 @@ class InputHandler:
         size = (event.width, event.height)
         if size != self.__previous_size:
             self.__previous_size = size
-            self.__window.draw_image()
+            self.__events.run_events(EventType.DRAW_PAGE)
 
     def window_state_event(self, widget, event):
         is_fullscreen = self.__window.is_fullscreen()
@@ -69,7 +72,7 @@ class InputHandler:
                 redraw = not self.__window.restore_window_geometry()
             if redraw:
                 self.__previous_size = self.__window.get_size()
-                self.__window.draw_image()
+                self.__events.run_events(EventType.DRAW_PAGE)
 
     def register_key_events(self):
         """

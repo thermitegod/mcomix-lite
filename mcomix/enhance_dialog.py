@@ -23,12 +23,10 @@ class EnhanceImageDialog(Gtk.Dialog):
 
         self.set_transient_for(window)
 
-        self.__window = window
-
-        events = Events()
-        events.add_event(EventType.FILE_CLOSED, self._on_book_close)
-        events.add_event(EventType.PAGE_AVAILABLE, self._on_page_available)
-        events.add_event(EventType.PAGE_CHANGED, self._on_page_change)
+        self.__events = Events()
+        self.__events.add_event(EventType.FILE_CLOSED, self._on_book_close)
+        self.__events.add_event(EventType.PAGE_AVAILABLE, self._on_page_available)
+        self.__events.add_event(EventType.PAGE_CHANGED, self._on_page_change)
 
         self.__image_handler = ImageHandler()
 
@@ -192,7 +190,7 @@ class EnhanceImageDialog(Gtk.Dialog):
         config['SHARPNESS'] = self.__sharpness_scale.get_value() + 1
         config['AUTO_CONTRAST'] = self.__autocontrast_button.get_active()
         self.__contrast_scale.set_sensitive(not self.__autocontrast_button.get_active())
-        self.__window.draw_image()
+        self.__events.run_events(EventType.DRAW_PAGE)
 
     def _response(self, dialog, response: int):
         match response:

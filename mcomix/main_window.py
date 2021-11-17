@@ -46,6 +46,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__events.add_event(EventType.FILE_CLOSED, self._on_file_closed)
         self.__events.add_event(EventType.PAGE_AVAILABLE, self._page_available)
         self.__events.add_event(EventType.PAGE_CHANGED, self._page_changed)
+        self.__events.add_event(EventType.DRAW_PAGE, self.draw_pages)
 
         # Remember last scroll destination.
         self.__last_scroll_destination = Scroll.START.value
@@ -246,7 +247,7 @@ class MainWindow(Gtk.ApplicationWindow):
         for i in self.__images:
             i.clear()
 
-    def draw_image(self, scroll_to=None):
+    def draw_pages(self, scroll_to=None):
         """
         Draw the current pages and update the titlebar and statusbar
         """
@@ -256,9 +257,9 @@ class MainWindow(Gtk.ApplicationWindow):
             return
 
         self.__waiting_for_redraw = True
-        GLib.idle_add(self._draw_image, scroll_to, priority=GLib.PRIORITY_HIGH_IDLE)
+        GLib.idle_add(self._draw_pages, scroll_to, priority=GLib.PRIORITY_HIGH_IDLE)
 
-    def _draw_image(self, scroll_to: int):
+    def _draw_pages(self, scroll_to: int):
         self._hide_images()
 
         if not self.__file_handler.get_file_loaded():
@@ -415,7 +416,7 @@ class MainWindow(Gtk.ApplicationWindow):
         nb_pages = 2 if ViewState.is_displaying_double else 1
         if current_page <= page < (current_page + nb_pages):
             self._displayed_double()
-            self.draw_image(scroll_to=self.__last_scroll_destination)
+            self.__events.run_events(EventType.DRAW_PAGE, self.__last_scroll_destination)
             self._update_page_information()
 
     def _on_file_opened(self):
@@ -453,7 +454,7 @@ class MainWindow(Gtk.ApplicationWindow):
         else:
             scroll_to = Scroll.START.value
 
-        self.draw_image(scroll_to=scroll_to)
+        self.__events.run_events(EventType.DRAW_PAGE, scroll_to)
 
     def page_changed(self):
         """
@@ -527,13 +528,13 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def rotate_x(self, rotation: int):
         config['ROTATION'] = (config['ROTATION'] + rotation) % 360
-        self.draw_image()
+        self.__events.run_events(EventType.DRAW_PAGE)
 
     def change_double_page(self):
         config['DEFAULT_DOUBLE_PAGE'] = not config['DEFAULT_DOUBLE_PAGE']
         self._displayed_double()
         self._update_page_information()
-        self.draw_image()
+        self.__events.run_events(EventType.DRAW_PAGE)
 
     def change_manga_mode(self):
         config['DEFAULT_MANGA_MODE'] = not config['DEFAULT_MANGA_MODE']
@@ -541,7 +542,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__page_orientation = self._page_orientation()
         self.__statusbar.set_view_mode()
         self._update_page_information()
-        self.draw_image()
+        self.__events.run_events(EventType.DRAW_PAGE)
 
     def is_fullscreen(self):
         window_state = self.get_window().get_state()
@@ -570,7 +571,7 @@ class MainWindow(Gtk.ApplicationWindow):
             if config['FULLSCREEN_HIDE_MENUBAR']:
                 self.__menubar.hide()
 
-        # No need to call draw_image explicitely,
+        # No need to call draw_pages explicitely,
         # as we'll be receiving a window state
         # change or resize event.
 
@@ -580,13 +581,13 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__zoom.set_fit_mode(config['ZOOM_MODE'])
         self.__zoom.set_scale_up(config['STRETCH'])
         self.__zoom.reset_user_zoom()
-        self.draw_image()
+        self.__events.run_events(EventType.DRAW_PAGE)
 
     def toggle_image_scaling(self):
         config['ENABLE_PIL_SCALING'] = not config['ENABLE_PIL_SCALING']
 
         self.__statusbar.update_image_scaling()
-        self.draw_image()
+        self.__events.run_events(EventType.DRAW_PAGE)
 
     def change_image_scaling(self, step: int):
         if config['ENABLE_PIL_SCALING']:
@@ -601,7 +602,7 @@ class MainWindow(Gtk.ApplicationWindow):
         config[config_key] = algos((config[config_key] + step) % len(algos)).value
 
         self.__statusbar.update_image_scaling()
-        self.draw_image()
+        self.__events.run_events(EventType.DRAW_PAGE)
 
     def change_stretch(self):
         """
@@ -610,7 +611,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         config['STRETCH'] = not config['STRETCH']
         self.__zoom.set_scale_up(config['STRETCH'])
-        self.draw_image()
+        self.__events.run_events(EventType.DRAW_PAGE)
 
     def open_dialog(self, dialog: DialogChoice):
         dialog = DialogChooser(dialog)
@@ -621,15 +622,15 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def manual_zoom_in(self):
         self.__zoom.zoom_in()
-        self.draw_image()
+        self.__events.run_events(EventType.DRAW_PAGE)
 
     def manual_zoom_out(self):
         self.__zoom.zoom_out()
-        self.draw_image()
+        self.__events.run_events(EventType.DRAW_PAGE)
 
     def manual_zoom_original(self):
         self.__zoom.reset_user_zoom()
-        self.draw_image()
+        self.__events.run_events(EventType.DRAW_PAGE)
 
     def scroll_to_predefined(self, destination: tuple):
         self.__layout.scroll_to_predefined(destination)

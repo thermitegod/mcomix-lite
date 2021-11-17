@@ -9,6 +9,7 @@ from gi.repository import GObject, Gtk
 from mcomix.enums import Animation, DoublePage, FileSortDirection, FileSortType, ScalingGDK, ScalingPIL, ZoomModes
 from mcomix.file_handler import FileHandler
 from mcomix.image_handler import ImageHandler
+from mcomix.lib.events import Events, EventType
 from mcomix.preferences import config
 from mcomix.preferences_page import PreferencePage
 
@@ -29,6 +30,8 @@ class PreferencesDialog(Gtk.Dialog):
         super().__init__(title='Preferences')
 
         self.__window = window
+
+        self.__events = Events()
 
         self.__file_handler = FileHandler(None)
         self.__image_handler = ImageHandler()
@@ -501,9 +504,9 @@ class PreferencesDialog(Gtk.Dialog):
                 self.__file_handler.refresh_file()
             case ('PIL_SCALING_FILTER' | 'GDK_SCALING_FILTER'):
                 self.__window.statusbar.update_image_scaling()
-                self.__window.draw_image()
+                self.__events.run_events(EventType.DRAW_PAGE)
             case ('VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES' | 'CHECKERED_BG_SIZE'):
-                self.__window.draw_image()
+                self.__events.run_events(EventType.DRAW_PAGE)
             case ('FIT_TO_SIZE_MODE' | 'ZOOM_MODE'):
                 self.__window.change_zoom_mode()
 
@@ -556,7 +559,7 @@ class PreferencesDialog(Gtk.Dialog):
 
         match preference:
             case ('CHECKERED_BG_FOR_TRANSPARENT_IMAGES' | 'AUTO_ROTATE_FROM_EXIF'):
-                self.__window.draw_image()
+                self.__events.run_events(EventType.DRAW_PAGE)
             case ('ANIMATION_BACKGROUND' | 'ANIMATION_TRANSFORM'):
                 self.__window.thumbnailsidebar.toggle_page_numbers_visible()
                 self.__file_handler.refresh_file()
@@ -586,7 +589,7 @@ class PreferencesDialog(Gtk.Dialog):
         match preference:
             case ('THUMBNAIL_SIZE'):
                 self.__window.thumbnailsidebar.resize()
-                self.__window.draw_image()
+                self.__events.run_events(EventType.DRAW_PAGE)
             case ('PAGE_CACHE_FORWARD' | 'PAGE_CACHE_BEHIND'):
                 self.__image_handler.do_caching()
             case ('FIT_TO_SIZE_PX'):

@@ -13,6 +13,7 @@ from mcomix.lib.metaclass import SingleInstanceMetaClass
 class EventType(Enum):
     BOOKMARK_ADD = auto()
     BOOKMARK_REMOVE = auto()
+    DRAW_PAGE = auto()
     FILE_AVAILABLE = auto()
     FILE_CLOSED = auto()
     FILE_OPENED = auto()
