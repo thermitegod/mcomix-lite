@@ -70,7 +70,7 @@ class MagnifyingLens:
         main window layout area
         """
 
-        rectangle = self._calculate_lens_rect(x, y, config['LENS_SIZE'])
+        rectangle = self._calculate_lens_rect(x, y, config['LENS_SIZE'], config['LENS_SIZE'])
         pixbuf = self._get_lens_pixbuf(x, y)
 
         draw_region = cairo.Region(rectangle=rectangle)
@@ -90,24 +90,24 @@ class MagnifyingLens:
 
         self.__last_lens_rect = rectangle
 
-    def _calculate_lens_rect(self, x: int, y: int, lens_size: int):
+    def _calculate_lens_rect(self, x: int, y: int, width: int, height: int):
         """
         Calculates the area where the lens will be drawn on screen. This method takes
         screen space into calculation and moves the rectangle accordingly when the the rectangle
         would otherwise flow over the allocated area
         """
 
-        lens_x = max(x - lens_size // 2, 0)
-        lens_y = max(y - lens_size // 2, 0)
+        lens_x = max(x - width // 2, 0)
+        lens_y = max(y - height // 2, 0)
 
         max_width, max_height = self.__window.get_visible_area_size()
         max_width += int(self.__window.hadjust.get_value())
         max_height += int(self.__window.vadjust.get_value())
-        lens_x = min(lens_x, max_width - lens_size)
-        lens_y = min(lens_y, max_height - lens_size)
+        lens_x = min(lens_x, max_width - width)
+        lens_y = min(lens_y, max_height - height)
 
         # Don't forget 1 pixel border...
-        return cairo.RectangleInt(lens_x, lens_y, lens_size + 2, lens_size + 2)
+        return cairo.RectangleInt(lens_x, lens_y, width + 2, height + 2)
 
     def _clear_lens(self, current_lens_region=None):
         """
@@ -243,12 +243,12 @@ class MagnifyingLens:
         y *= scale
 
         source_mag = config['LENS_MAGNIFICATION'] / scale
-        lens_size = config['LENS_SIZE'] / source_mag
+        width = height = config['LENS_SIZE'] / source_mag
 
-        paste_left = x > lens_size / 2
-        paste_top = y > lens_size / 2
-        dest_x = max(0, math.ceil((lens_size / 2 - x) * source_mag))
-        dest_y = max(0, math.ceil((lens_size / 2 - y) * source_mag))
+        paste_left = x > width / 2
+        paste_top = y > height / 2
+        dest_x = max(0, int(math.ceil((width / 2 - x) * source_mag)))
+        dest_y = max(0, int(math.ceil((height / 2 - y) * source_mag)))
 
         match rotation:
             case 90:
@@ -259,19 +259,23 @@ class MagnifyingLens:
             case 270:
                 x, y = source_pixbuf.get_width() - y, x
 
-        src_x = x - lens_size / 2
-        src_y = y - lens_size / 2
+        src_x = x - width / 2
+        src_y = y - height / 2
         if src_x < 0:
-            lens_size += src_x
+            width += src_x
             src_x = 0
         if src_y < 0:
-            lens_size += src_y
+            height += src_y
             src_y = 0
+        width = max(0, min(source_pixbuf.get_width() - src_x, width))
+        height = max(0, min(source_pixbuf.get_height() - src_y, height))
+        if width < 1 or height < 1:
+            return
 
-        subpixbuf = source_pixbuf.new_subpixbuf(int(src_x), int(src_y), int(lens_size), int(lens_size))
+        subpixbuf = source_pixbuf.new_subpixbuf(int(src_x), int(src_y), int(width), int(height))
         subpixbuf = subpixbuf.scale_simple(
-            math.ceil(source_mag * subpixbuf.get_width()),
-            math.ceil(source_mag * subpixbuf.get_height()),
+            int(math.ceil(source_mag * subpixbuf.get_width())),
+            int(math.ceil(source_mag * subpixbuf.get_height())),
             config['GDK_SCALING_FILTER'])
 
         subpixbuf = ImageTools.rotate_pixbuf(subpixbuf, rotation)
