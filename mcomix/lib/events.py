@@ -22,7 +22,7 @@ class EventType(Enum):
     FILE_LISTED = auto()
     PAGE_AVAILABLE = auto()
     PAGE_CHANGED = auto()
-    # keyboard shortcuts
+    # keyboard shortcuts / menubar
     KB_PAGE_FLIP = auto()
     KB_PAGE_FIRST = auto()
     KB_PAGE_LAST = auto()
@@ -90,6 +90,14 @@ class Events(metaclass=SingleInstanceMetaClass):
         for function in self.__events[event_type]:
             # logger.trace(f'Running event: {event_type}')
             self.__run_event(function, function_kwargs)
+
+    def run_events_gui(self, widget, event_type: EventType, function_kwargs: dict = None) -> None:
+        """
+        Run all registered functions for event_type from the GUI.
+        Since GTK will pass a widget its easier to use a seperate method to handle this case
+        """
+
+        self.run_events(event_type, function_kwargs)
 
 
 class _EventMainthread:

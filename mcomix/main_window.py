@@ -18,7 +18,6 @@ from mcomix.layout import FiniteLayout
 from mcomix.lens import MagnifyingLens
 from mcomix.lib.events import Events, EventType
 from mcomix.menubar import Menubar
-from mcomix.menubar_shim import MenubarShim
 from mcomix.pageselect import Pageselector
 from mcomix.preferences import config
 from mcomix.preferences_manager import PreferenceManager
@@ -98,7 +97,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__zoom.set_scale_up(config['STRETCH'])
         self.__zoom.reset_user_zoom()
 
-        self.__menubar_shim = MenubarShim(self)
         self.__menubar = Menubar(self)
 
         self.__input_handler = InputHandler(self)
@@ -224,14 +222,6 @@ class MainWindow(Gtk.ApplicationWindow):
         """
 
         return self.__lens
-
-    @property
-    def menubar_shim(self):
-        """
-        Interface for MenubarShim
-        """
-
-        return self.__menubar_shim
 
     @property
     def layout(self):
