@@ -80,7 +80,7 @@ class InputHandler:
         them up with their respective callback functions
         """
 
-        for action in self.__window.keybindings_map.keys():
+        for action in self.__window.keybindings_map:
             self.__window.keybindings.register(
                 name=action,
                 callback=self.__window.keybindings_map[action].key_event.callback,

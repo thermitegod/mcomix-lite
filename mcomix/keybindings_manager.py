@@ -108,7 +108,7 @@ class KeybindingManager:
         inits self.__binding_to_action and self.__action_to_bindings
         """
 
-        for action in self.__keybindings_map.keys():
+        for action in self.__keybindings_map:
             if action in self.__stored_action_bindings:
                 bindings = [
                     Gtk.accelerator_parse(keyname)
@@ -133,7 +133,7 @@ class KeybindingManager:
             callback_kwargs = {}
 
         for keycode in self.__action_to_bindings[name]:
-            if keycode in self.__binding_to_action.keys():
+            if keycode in self.__binding_to_action:
                 if self.__binding_to_action[keycode] != name:
                     logger.warning(f'Keybinding for \'{name}\' overrides hotkey for another action.\n'
                                    f'Binding \'{keycode}\' overrides \'{self.__binding_to_action[keycode]}\'')
