@@ -135,10 +135,10 @@ class InputHandler:
             return
         elif deltas.delta_x > 0:
             # Gdk.ScrollDirection.RIGHT
-            self.__window.flip_page(number_of_pages=-1)
+            self.__events.run_events(EventType.KB_PAGE_FLIP, {'number_of_pages': -1})
         elif deltas.delta_x < 0:
             # Gdk.ScrollDirection.LEFT
-            self.__window.flip_page(number_of_pages=1)
+            self.__events.run_events(EventType.KB_PAGE_FLIP, {'number_of_pages': 1})
 
     def mouse_press_event(self, widget, event):
         """
@@ -213,9 +213,9 @@ class InputHandler:
 
         if y > 0 or (ViewState.is_manga_mode and x < 0) or \
                 (not ViewState.is_manga_mode and x > 0):
-            self.__window.flip_page(number_of_pages=1)
+            self.__events.run_events(EventType.KB_PAGE_FLIP, {'number_of_pages': 1})
         else:
-            self.__window.flip_page(number_of_pages=-1)
+            self.__events.run_events(EventType.KB_PAGE_FLIP, {'number_of_pages': -1})
 
     def _scroll(self, x: int, y: int):
         """

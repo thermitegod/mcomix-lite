@@ -23,17 +23,17 @@ if TYPE_CHECKING:
 
 
 class FileSystemActions:
-    __slots__ = ('__window', '__file_handler', '__image_handler')
+    __slots__ = ('__window', '__file_handler', '__image_handler', '__events')
 
     def __init__(self, window: MainWindow):
         super().__init__()
 
         self.__window = window
 
-        events = Events()
-        events.add_event(EventType.KB_EXTRACT_PAGE, self.extract_page)
-        events.add_event(EventType.KB_FILE_MOVE, self.move_file)
-        events.add_event(EventType.KB_FILE_TRASH, self.trash_file)
+        self.__events = Events()
+        self.__events.add_event(EventType.KB_EXTRACT_PAGE, self.extract_page)
+        self.__events.add_event(EventType.KB_FILE_MOVE, self.move_file)
+        self.__events.add_event(EventType.KB_FILE_TRASH, self.trash_file)
 
         self.__file_handler = FileHandler(None)
         self.__image_handler = ImageHandler()
@@ -159,9 +159,9 @@ class FileSystemActions:
             if self.__image_handler.get_number_of_pages() > 1:
                 # Open the next/previous file
                 if self.__image_handler.is_last_page():
-                    self.__window.flip_page(number_of_pages=-1)
+                    self.__events.run_events(EventType.KB_PAGE_FLIP, {'number_of_pages': -1})
                 else:
-                    self.__window.flip_page(number_of_pages=1)
+                    self.__events.run_events(EventType.KB_PAGE_FLIP, {'number_of_pages': 1})
 
                 # Refresh the directory
                 self.__file_handler.refresh_file()
