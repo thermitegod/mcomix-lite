@@ -11,6 +11,7 @@ from mcomix.enums.double_page import DoublePage
 from mcomix.enums.file_sort import FileSortDirection, FileSortType
 from mcomix.enums.image_scaling import ScalingGDK, ScalingPIL
 from mcomix.enums.zoom_modes import ZoomModes
+from mcomix.file_handler import FileHandler
 from mcomix.image_handler import ImageHandler
 from mcomix.preferences import config
 from mcomix.preferences_page import PreferencePage
@@ -26,13 +27,14 @@ class PreferencesDialog(Gtk.Dialog):
     saved between sessions are presented to the user
     """
 
-    __slots__ = ('__window', '__image_handler', '__reset_button')
+    __slots__ = ('__window', '__file_handler', '__image_handler', '__reset_button')
 
     def __init__(self, window: MainWindow):
         super().__init__(title='Preferences')
 
         self.__window = window
 
+        self.__file_handler = FileHandler(None)
         self.__image_handler = ImageHandler()
 
         self.set_modal(True)
@@ -500,7 +502,7 @@ class PreferencesDialog(Gtk.Dialog):
 
         match preference:
             case ('ANIMATION_MODE' | 'SORT_ARCHIVE_ORDER' | 'SORT_ARCHIVE_BY' | 'SORT_ORDER' | 'SORT_BY'):
-                self.__window.filehandler.refresh_file()
+                self.__file_handler.refresh_file()
             case ('PIL_SCALING_FILTER' | 'GDK_SCALING_FILTER'):
                 self.__window.statusbar.update_image_scaling()
                 self.__window.draw_image()
@@ -561,9 +563,9 @@ class PreferencesDialog(Gtk.Dialog):
                 self.__window.draw_image()
             case ('ANIMATION_BACKGROUND' | 'ANIMATION_TRANSFORM'):
                 self.__window.thumbnailsidebar.toggle_page_numbers_visible()
-                self.__window.filehandler.refresh_file()
+                self.__file_handler.refresh_file()
             case ('OPEN_FIRST_PAGE'):
-                self.__window.filehandler.update_opening_behavior()
+                self.__file_handler.update_opening_behavior()
 
     def _create_pref_spinner(self, prefkey: str, scale: float, lower: float, upper: float,
                              step_incr: float, page_incr: float, digits: float):

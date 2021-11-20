@@ -15,6 +15,7 @@ from mcomix.formats.archive import ArchiveSupported
 from mcomix.file_provider import GetFileProvider
 from mcomix.image_handler import ImageHandler
 from mcomix.lib.events import Events, EventType
+from mcomix.lib.metaclass import SingleInstanceMetaClass
 from mcomix.preferences import config
 from mcomix.sort.sort_alphanumeric import SortAlphanumeric
 
@@ -23,7 +24,7 @@ if TYPE_CHECKING:
     from mcomix.main_window import MainWindow
 
 
-class FileHandler:
+class FileHandler(metaclass=SingleInstanceMetaClass):
     """
     The FileHandler keeps track of the actual files/archives opened.
     While ImageHandler takes care of pages/images, this class provides
@@ -348,4 +349,3 @@ class FileHandler:
         if not self.__file_loaded:
             return
         self.__events.run_events(EventType.FILE_AVAILABLE, name)
-

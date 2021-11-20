@@ -9,6 +9,7 @@ from gi.repository import Gtk
 from loguru import logger
 from send2trash import send2trash
 
+from mcomix.file_handler import FileHandler
 from mcomix.image_handler import ImageHandler
 from mcomix.message_dialog.info import MessageDialogInfo
 from mcomix.message_dialog.remember import MessageDialogRemember
@@ -21,13 +22,14 @@ if TYPE_CHECKING:
 
 
 class FileSystemActions:
-    __slots__ = ('__window', '__image_handler')
+    __slots__ = ('__window', '__file_handler', '__image_handler')
 
     def __init__(self, window: MainWindow):
         super().__init__()
 
         self.__window = window
 
+        self.__file_handler = FileHandler(None)
         self.__image_handler = ImageHandler()
 
     def extract_page(self):
@@ -84,7 +86,7 @@ class FileSystemActions:
         The currently opened file/archive will be moved to prefs['MOVE_FILE']
         """
 
-        current_file = self.__window.filehandler.get_real_path()
+        current_file = self.__file_handler.get_real_path()
 
         target_dir = Path() / current_file.parent / config['MOVE_FILE']
         target_file = Path() / target_dir / current_file.name
@@ -110,7 +112,7 @@ class FileSystemActions:
         The currently opened file/archive will be trashed after showing a confirmation dialog
         """
 
-        current_file = self.__window.filehandler.get_real_path()
+        current_file = self.__file_handler.get_real_path()
 
         dialog = MessageDialogRemember()
         dialog.add_buttons(
@@ -142,12 +144,12 @@ class FileSystemActions:
         Shared logic for move_file() and trash_file()
         """
 
-        if self.__window.filehandler.is_archive():
-            next_opened = self.__window.filehandler.open_archive_direction(forward=True)
+        if self.__file_handler.is_archive():
+            next_opened = self.__file_handler.open_archive_direction(forward=True)
             if not next_opened:
-                next_opened = self.__window.filehandler.open_archive_direction(forward=False)
+                next_opened = self.__file_handler.open_archive_direction(forward=False)
             if not next_opened:
-                self.__window.filehandler.close_file()
+                self.__file_handler.close_file()
         else:
             if self.__image_handler.get_number_of_pages() > 1:
                 # Open the next/previous file
@@ -157,6 +159,6 @@ class FileSystemActions:
                     self.__window.flip_page(number_of_pages=+1)
 
                 # Refresh the directory
-                self.__window.filehandler.refresh_file()
+                self.__file_handler.refresh_file()
             else:
-                self.__window.filehandler.close_file()
+                self.__file_handler.close_file()

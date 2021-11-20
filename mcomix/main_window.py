@@ -62,7 +62,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__waiting_for_redraw = False
         self.__page_orientation = self._page_orientation()
 
-        self.__filehandler = FileHandler(self)
+        self.__file_handler = FileHandler(self)
         self.__filesystem_actions = FileSystemActions(self)
         self.__image_handler = ImageHandler()
         self.__bookmark_backend = BookmarkBackend(self)
@@ -152,16 +152,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.show_all()
 
         if open_path:
-            self.__filehandler.initialize_fileprovider(path=open_path)
-            self.__filehandler.open_file(Path(open_path[0]))
-
-    @property
-    def filehandler(self):
-        """
-        Interface for FileHandler
-        """
-
-        return self.__filehandler
+            self.__file_handler.initialize_fileprovider(path=open_path)
+            self.__file_handler.open_file(Path(open_path[0]))
 
     @property
     def bookmark_backend(self):
@@ -276,7 +268,7 @@ class MainWindow(Gtk.ApplicationWindow):
         for i in self.images:
             i.clear()
 
-        if not self.__filehandler.get_file_loaded():
+        if not self.__file_handler.get_file_loaded():
             self.__thumbnailsidebar.hide()
             self.__waiting_for_redraw = False
             return
@@ -397,7 +389,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         if (page == 1 and
                 config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & DoublePage.AS_ONE_TITLE.value and
-                self.__filehandler.is_archive()):
+                self.__file_handler.is_archive()):
             return True
 
         if (not config['DEFAULT_DOUBLE_PAGE'] or
@@ -441,12 +433,12 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__thumbnailsidebar.show()
 
         if config['STATUSBAR_FULLPATH']:
-            self.__statusbar.set_archive_filename(self.__filehandler.get_base_path())
+            self.__statusbar.set_archive_filename(self.__file_handler.get_base_path())
         else:
-            self.__statusbar.set_archive_filename(self.__filehandler.get_base_path().name)
+            self.__statusbar.set_archive_filename(self.__file_handler.get_base_path().name)
         self.__statusbar.set_view_mode()
-        self.__statusbar.set_filesize_archive(self.__filehandler.get_base_path())
-        self.__statusbar.set_file_number(*self.__filehandler.get_file_number())
+        self.__statusbar.set_filesize_archive(self.__file_handler.get_base_path())
+        self.__statusbar.set_file_number(*self.__file_handler.get_file_number())
         self.__statusbar.update()
 
         self._update_title()
@@ -497,7 +489,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self._new_page(at_bottom=at_bottom)
 
     def flip_page(self, number_of_pages: int, single_step: bool = False):
-        if not self.__filehandler.get_file_loaded():
+        if not self.__file_handler.get_file_loaded():
             return
 
         current_page = self.__image_handler.get_current_page()
@@ -518,12 +510,12 @@ class MainWindow(Gtk.ApplicationWindow):
             # first one. (Note: check for (page number <= 1) to handle empty
             # archive case).
             if number_of_pages == -1 and current_page <= +1:
-                return self.__filehandler.open_archive_direction(forward=False)
+                return self.__file_handler.open_archive_direction(forward=False)
             # Handle empty archive case.
             new_page = min(+1, current_number_of_pages)
         elif new_page > current_number_of_pages:
             if number_of_pages == +1:
-                return self.__filehandler.open_archive_direction(forward=True)
+                return self.__file_handler.open_archive_direction(forward=True)
             new_page = current_number_of_pages
 
         if new_page != current_page:
@@ -775,7 +767,7 @@ class MainWindow(Gtk.ApplicationWindow):
         Set the title acording to current state
         """
 
-        self.set_title(f'{Mcomix.APP_NAME.value} [{self.__filehandler.get_current_filename()}]')
+        self.set_title(f'{Mcomix.APP_NAME.value} [{self.__file_handler.get_current_filename()}]')
 
     def extract_page(self, *args):
         self.__filesystem_actions.extract_page()
@@ -833,4 +825,4 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__keybindings.write_keybindings_file()
         self.__bookmark_backend.write_bookmarks_file()
 
-        self.__filehandler.close_file()
+        self.__file_handler.close_file()

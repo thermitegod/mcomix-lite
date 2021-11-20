@@ -13,6 +13,7 @@ from loguru import logger
 
 from mcomix.bookmark_menu_item import Bookmark
 from mcomix.enums.config_files import ConfigFiles
+from mcomix.file_handler import FileHandler
 from mcomix.image_handler import ImageHandler
 from mcomix.lib.events import Events, EventType
 from mcomix.message_dialog.info import MessageDialogInfo
@@ -36,6 +37,7 @@ class BookmarkBackend:
 
         self.__events = Events()
 
+        self.__file_handler = FileHandler(None)
         self.__image_handler = ImageHandler()
 
         self.__bookmark_path = ConfigFiles.BOOKMARK.value
@@ -77,7 +79,7 @@ class BookmarkBackend:
         Add the currently viewed page to the list
         """
 
-        path = self.__window.filehandler.get_real_path()
+        path = self.__file_handler.get_real_path()
         current_page = self.__image_handler.get_current_page()
         total_pages = self.__image_handler.get_number_of_pages()
         date_added = datetime.today().timestamp()
@@ -119,9 +121,9 @@ class BookmarkBackend:
             dialog.run()
             return
 
-        if self.__window.filehandler.get_base_path() != path:
-            self.__window.filehandler.initialize_fileprovider(path=[path])
-            self.__window.filehandler.open_file(path=path, start_page=current_page)
+        if self.__file_handler.get_base_path() != path:
+            self.__file_handler.initialize_fileprovider(path=[path])
+            self.__file_handler.open_file(path=path, start_page=current_page)
         else:
             self.__window.set_page(current_page)
 

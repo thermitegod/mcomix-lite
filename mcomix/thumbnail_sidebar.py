@@ -7,6 +7,7 @@ from __future__ import annotations
 from gi.repository import Gdk, GdkPixbuf, Gtk
 from loguru import logger
 
+from mcomix.file_handler import FileHandler
 from mcomix.image_handler import ImageHandler
 from mcomix.image_tools import ImageTools
 from mcomix.lib.events import Events, EventType
@@ -37,6 +38,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         events.add_event(EventType.PAGE_AVAILABLE, self._on_page_available)
         events.add_event(EventType.PAGE_CHANGED, self._on_page_change)
 
+        self.__file_handler = FileHandler(None)
         self.__image_handler = ImageHandler()
 
         #: Thumbnail load status
@@ -163,7 +165,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         Load the thumbnails, if it is appropriate to do so
         """
 
-        if (not self.__window.filehandler.get_file_loaded() or
+        if (not self.__file_handler.get_file_loaded() or
                 not self.__image_handler.get_number_of_pages() or
                 self.__loaded):
             return

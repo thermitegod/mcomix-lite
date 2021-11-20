@@ -10,6 +10,7 @@ from typing import Callable
 from gi.repository import Gtk
 
 from mcomix.bookmark_menu import BookmarksMenu
+from mcomix.file_handler import FileHandler
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -21,6 +22,8 @@ class Menubar(Gtk.EventBox):
 
     def __init__(self, window: MainWindow):
         super().__init__()
+
+        file_handler = FileHandler(None)
 
         menubar = Gtk.MenuBar()
         self.add(menubar)
@@ -41,13 +44,13 @@ class Menubar(Gtk.EventBox):
             MENUBAR('Open', self._create_submenu_item, window.open_dialog_file_chooser),
             MENUBAR('separator', self._create_separator, None),
             MENUBAR('Save Page As', self._create_submenu_item, window.extract_page),
-            MENUBAR('Refresh', self._create_submenu_item, window.filehandler.refresh_file),
+            MENUBAR('Refresh', self._create_submenu_item, file_handler.refresh_file),
             MENUBAR('Properties', self._create_submenu_item, window.open_dialog_properties),
             MENUBAR('separator', self._create_separator, None),
             MENUBAR('Trash', self._create_submenu_item, window.trash_file),
             MENUBAR('separator', self._create_separator, None),
             MENUBAR('Minimize', self._create_submenu_item, window.minimize),
-            MENUBAR('Close', self._create_submenu_item, window.filehandler.close_file),
+            MENUBAR('Close', self._create_submenu_item, file_handler.close_file),
             MENUBAR('Quit', self._create_submenu_item, window.terminate_program),
         )
 

@@ -8,6 +8,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Callable
 
+from mcomix.file_handler import FileHandler
 from mcomix.preferences import config
 
 from typing import TYPE_CHECKING
@@ -20,6 +21,8 @@ class KeyBindingsMap:
 
     def __init__(self, window: MainWindow):
         super().__init__()
+
+        file_handler = FileHandler(None)
 
         group_nav = 'Navigation'
         group_scroll = 'Scrolling'
@@ -144,7 +147,7 @@ class KeyBindingsMap:
                     INFO(group_nav, 'Next archive'),
                     KEYBINDINGS(['<Primary>Right']),
                     KEY_EVENT(
-                        window.filehandler.open_archive_direction,
+                        file_handler.open_archive_direction,
                         {'forward': True},
                     ),
                 ),
@@ -153,7 +156,7 @@ class KeyBindingsMap:
                     INFO(group_nav, 'Previous archive'),
                     KEYBINDINGS(['<Primary>Left']),
                     KEY_EVENT(
-                        window.filehandler.open_archive_direction,
+                        file_handler.open_archive_direction,
                         {'forward': False},
                     ),
                 ),
@@ -386,7 +389,7 @@ class KeyBindingsMap:
                     INFO(group_file, 'Close'),
                     KEYBINDINGS(['<Control>W']),
                     KEY_EVENT(
-                        window.filehandler.close_file,
+                        file_handler.close_file,
                         None,
                     ),
                 ),
@@ -467,7 +470,7 @@ class KeyBindingsMap:
                     INFO(group_file, 'Refresh'),
                     KEYBINDINGS(['<control><shift>R']),
                     KEY_EVENT(
-                        window.filehandler.refresh_file,
+                        file_handler.refresh_file,
                         None,
                     ),
                 ),

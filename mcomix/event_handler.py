@@ -10,6 +10,7 @@ from urllib.request import url2pathname
 
 from gi.repository import Gdk, Gtk
 
+from mcomix.file_handler import FileHandler
 from mcomix.preferences import config
 from mcomix.state.view_state import ViewState
 
@@ -19,9 +20,11 @@ if TYPE_CHECKING:
 
 
 class EventHandler:
-    __slots__ = ('__window', '__keybindings', '__keybindings_map', '__all_accels_mask',
-                 '__keymap', '__last_pointer_pos_x', '__last_pointer_pos_y',
-                 '__was_fullscreen', '__previous_size')
+    __slots__ = (
+        '__window', '__file_handler', '__keybindings', '__keybindings_map', '__all_accels_mask',
+        '__keymap', '__last_pointer_pos_x', '__last_pointer_pos_y',
+        '__was_fullscreen', '__previous_size',
+    )
 
     def __init__(self, window: MainWindow):
         super().__init__()
@@ -29,6 +32,8 @@ class EventHandler:
         self.__window = window
         self.__keybindings = None
         self.__keybindings_map = None
+
+        self.__file_handler = FileHandler(None)
 
         self.__was_fullscreen = False
         self.__previous_size = (None, None)
@@ -211,8 +216,8 @@ class EventHandler:
 
         paths = [Path(url2pathname(urlparse(uri).path)) for uri in uris]
 
-        self.__window.filehandler.initialize_fileprovider(path=paths)
-        self.__window.filehandler.open_file(paths[0])
+        self.__file_handler.initialize_fileprovider(path=paths)
+        self.__file_handler.open_file(paths[0])
 
     def scroll_with_flipping(self, x: int, y: int):
         """

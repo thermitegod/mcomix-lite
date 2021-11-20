@@ -10,6 +10,7 @@ from pathlib import Path
 
 from gi.repository import Gtk
 
+from mcomix.file_handler import FileHandler
 from mcomix.file_size import FileSize
 from mcomix.image_handler import ImageHandler
 from mcomix.lib.events import Events, EventType
@@ -37,6 +38,7 @@ class PropertiesDialog(Gtk.Dialog):
         events.add_event(EventType.PAGE_AVAILABLE, self._on_page_available)
         events.add_event(EventType.PAGE_CHANGED, self._on_page_change)
 
+        self.__file_handler = FileHandler(None)
         self.__image_handler = ImageHandler()
 
         self.resize(870, 560)
@@ -75,18 +77,17 @@ class PropertiesDialog(Gtk.Dialog):
     def _update_archive_page(self):
         page = self.__archive_page
         page.reset()
-        window = self.__window
-        if not window.filehandler.is_archive():
+        if not self.__file_handler.is_archive():
             if self.__notebook.get_n_pages() == 2:
                 self.__notebook.detach_tab(page)
             return
         if self.__notebook.get_n_pages() == 1:
             self.__notebook.insert_page(page, Gtk.Label(label='Archive'), 0)
         self._update_page_image(page, 1)
-        page.set_filename(window.filehandler.get_current_filename())
-        path = window.filehandler.get_base_path()
+        page.set_filename(self.__file_handler.get_current_filename())
+        path = self.__file_handler.get_base_path()
         main_info = (f'{self.__image_handler.get_number_of_pages()} pages',
-                     'Archive File' if window.filehandler.is_archive else 'Image File')
+                     'Archive File' if self.__file_handler.is_archive else 'Image File')
         page.set_main_info(main_info)
         self._update_page_secondary_info(page, path)
         page.show_all()

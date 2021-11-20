@@ -9,6 +9,7 @@ from pathlib import Path
 
 from gi.repository import Gtk
 
+from mcomix.file_handler import FileHandler
 from mcomix.formats.archive import ArchiveSupported
 from mcomix.formats.image import ImageSupported
 from mcomix.preferences import config
@@ -29,11 +30,14 @@ class FileChooser(Gtk.Dialog):
     __slots__ = ('__window', '__action', '__last_activated_file', '__filechooser')
 
     def __init__(self, window: MainWindow):
+        super().__init__(title='Open')
+
         self.__window = window
+
+        self.__file_handler = FileHandler(None)
+
         self.__action = Gtk.FileChooserAction.OPEN
         self.__last_activated_file = None
-
-        super().__init__(title='Open')
 
         self.set_modal(True)
         self.set_transient_for(self.__window)
@@ -56,7 +60,7 @@ class FileChooser(Gtk.Dialog):
         filters = self.__filechooser.list_filters()
         self.__filechooser.set_filter(filters[config['FILECHOOSER_LAST_FILTER']])
 
-        current_file = self.__window.filehandler.get_base_path()
+        current_file = self.__file_handler.get_base_path()
         try:
             if current_file is not None:
                 # If a file is currently open, use its path
@@ -123,8 +127,8 @@ class FileChooser(Gtk.Dialog):
             config['FILECHOOSER_LAST_FILTER'] = filter_index
 
             files = [Path(path) for path in paths]
-            self.__window.filehandler.initialize_fileprovider(files)
-            self.__window.filehandler.open_file(Path(files[0]))
+            self.__file_handler.initialize_fileprovider(files)
+            self.__file_handler.open_file(Path(files[0]))
 
         self.destroy()
 
