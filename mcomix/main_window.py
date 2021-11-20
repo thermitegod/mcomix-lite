@@ -60,7 +60,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__dummy_layout = FiniteLayout([(1, 1)], (1, 1), [1, 1], 0, 0)
         self.__layout = self.__dummy_layout
         self.__waiting_for_redraw = False
-        self.__page_orientation = self.page_orientation()
+        self.__page_orientation = self._page_orientation()
 
         self.__filehandler = FileHandler(self)
         self.__filesystem_actions = FileSystemActions(self)
@@ -251,7 +251,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def vadjust(self):
         return self.__vadjust
 
-    def page_orientation(self):
+    def _page_orientation(self):
         if ViewState.is_manga_mode:
             return PageOrientation.MANGA.value
         else:
@@ -456,7 +456,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__thumbnailsidebar.hide()
         self.__thumbnailsidebar.clear()
 
-    def new_page(self, at_bottom: bool = False):
+    def _new_page(self, at_bottom: bool = False):
         """
         Draw a *new* page correctly (as opposed to redrawing the same image with a new size or whatever)
         """
@@ -494,7 +494,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.__image_handler.set_page(num)
         self.page_changed()
-        self.new_page(at_bottom=at_bottom)
+        self._new_page(at_bottom=at_bottom)
 
     def flip_page(self, number_of_pages: int, single_step: bool = False):
         if not self.__filehandler.get_file_loaded():
@@ -563,7 +563,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def change_manga_mode(self, *args):
         config['DEFAULT_MANGA_MODE'] = not config['DEFAULT_MANGA_MODE']
         ViewState.is_manga_mode = config['DEFAULT_MANGA_MODE']
-        self.__page_orientation = self.page_orientation()
+        self.__page_orientation = self._page_orientation()
         self.__statusbar.set_view_mode()
         self._update_page_information()
         self.draw_image()
