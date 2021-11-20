@@ -20,7 +20,8 @@ if TYPE_CHECKING:
 
 class EventHandler:
     __slots__ = ('__window', '__keybindings', '__keybindings_map', '__all_accels_mask',
-                 '__keymap', '__last_pointer_pos_x', '__last_pointer_pos_y')
+                 '__keymap', '__last_pointer_pos_x', '__last_pointer_pos_y',
+                 '__was_fullscreen', '__previous_size')
 
     def __init__(self, window: MainWindow):
         super().__init__()
@@ -28,6 +29,9 @@ class EventHandler:
         self.__window = window
         self.__keybindings = None
         self.__keybindings_map = None
+
+        self.__was_fullscreen = False
+        self.__previous_size = (None, None)
 
         # Dispatch keyboard input handling
         # Some keys require modifiers that are irrelevant to the hotkey. Find out and ignore them.
@@ -54,15 +58,15 @@ class EventHandler:
         """
 
         size = (event.width, event.height)
-        if size != self.__window.previous_size:
-            self.__window.previous_size = size
+        if size != self.__previous_size:
+            self.__previous_size = size
             self.__window.draw_image()
 
     def window_state_event(self, widget, event):
         is_fullscreen = self.__window.is_fullscreen()
-        if self.__window.was_fullscreen != is_fullscreen:
+        if self.__was_fullscreen != is_fullscreen:
             # Fullscreen state changed.
-            self.__window.was_fullscreen = is_fullscreen
+            self.__was_fullscreen = is_fullscreen
             # Re-enable control, now that transition is complete.
             if is_fullscreen:
                 redraw = True
@@ -70,7 +74,7 @@ class EventHandler:
                 # Only redraw if we don't need to restore geometry.
                 redraw = not self.__window.restore_window_geometry()
             if redraw:
-                self.__window.previous_size = self.__window.get_size()
+                self.__previous_size = self.__window.get_size()
                 self.__window.draw_image()
 
     def register_key_events(self):

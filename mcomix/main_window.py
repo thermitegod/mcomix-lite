@@ -48,11 +48,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__preference_manager = PreferenceManager()
         self.__preference_manager.load_config_file()
 
-        # Used to detect window fullscreen state transitions.
-        self.was_fullscreen = False
-        self.__page_orientation = self.page_orientation()
-        self.previous_size = (None, None)
-
         self.__events = Events()
         self.__events.add_event(EventType.FILE_OPENED, self._on_file_opened)
         self.__events.add_event(EventType.FILE_CLOSED, self._on_file_closed)
@@ -65,6 +60,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__dummy_layout = FiniteLayout([(1, 1)], (1, 1), [1, 1], 0, 0)
         self.__layout = self.__dummy_layout
         self.__waiting_for_redraw = False
+        self.__page_orientation = self.page_orientation()
 
         self.__filehandler = FileHandler(self)
         self.__filesystem_actions = FileSystemActions(self)
