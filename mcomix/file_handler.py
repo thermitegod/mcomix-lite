@@ -142,7 +142,6 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
                 # Don't switch to last page yet; since we have not asked
                 # the user for confirmation yet.
                 current_image_index = 0
-
         self.__window.set_page(current_image_index + 1)
 
     def file_opened(self):
@@ -241,23 +240,27 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
 
     def _get_index_for_page(self, start_page: int, num_of_pages: int):
         """
-        Returns the page that should be displayed for an archive.
+        Returns the index of the page that should be displayed for an archive.
 
-        :param start_page: If -1, show last page. If 0, show first page.
-                           If > 0, show C{start_page}.
-        :param num_of_pages: Page count.
+        :param start_page: If 0, show first page.
+                           If -1, show last page.
+                           If > 0, show start_page.
+        :param num_of_pages: total number of pages in archive.
         :returns: page index
         """
 
-        if start_page < 0:
-            if config['DEFAULT_DOUBLE_PAGE']:
-                current_image_index = num_of_pages - 2
-            else:
-                current_image_index = num_of_pages - 1
-        else:
-            current_image_index = start_page - 1
+        if start_page == 0:
+            # load first page
+            return start_page
 
-        return min(max(0, current_image_index), num_of_pages - 1)
+        if start_page == -1:
+            # load last page
+            if config['DEFAULT_DOUBLE_PAGE']:
+                return num_of_pages - 2
+            return num_of_pages - 1
+
+        # load page
+        return start_page - 1
 
     def get_file_loaded(self):
         return self.__file_loaded
