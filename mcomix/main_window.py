@@ -9,7 +9,6 @@ from gi.repository import GLib, Gdk, Gtk
 from mcomix.bookmark_backend import BookmarkBackend
 from mcomix.cursor_handler import CursorHandler
 from mcomix.dialog_chooser import DialogChooser, DialogChoice
-from mcomix.enhance_backend import ImageEnhancer
 from mcomix.enums.double_page import DoublePage
 from mcomix.enums.mcomix import Mcomix
 from mcomix.enums.page_orientation import PageOrientation
@@ -71,7 +70,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__thumbnailsidebar.hide()
 
         self.__statusbar = Statusbar()
-        self.__enhancer = ImageEnhancer(self)
 
         self.__zoom = ZoomModel()
         self.__zoom.set_fit_mode(config['ZOOM_MODE'])
@@ -178,14 +176,6 @@ class MainWindow(Gtk.ApplicationWindow):
         """
 
         return self.__statusbar
-
-    @property
-    def enhancer(self):
-        """
-        Interface for ImageEnhancer
-        """
-
-        return self.__enhancer
 
     @property
     def event_handler(self):
@@ -328,7 +318,7 @@ class MainWindow(Gtk.ApplicationWindow):
             rotation_list[i] = (rotation_list[i] + rotation) % 360
 
             pixbuf_list[i] = ImageTools.fit_pixbuf_to_rectangle(pixbuf_list[i], scaled_sizes[i], rotation_list[i])
-            pixbuf_list[i] = self.__enhancer.enhance(pixbuf_list[i])
+            pixbuf_list[i] = ImageTools.enhance(pixbuf_list[i])
 
             ImageTools.set_from_pixbuf(self.images[i], pixbuf_list[i])
 

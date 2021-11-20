@@ -311,8 +311,7 @@ class _ImageTools:
 
         return anime.create_animation()
 
-    def enhance(self, pixbuf, brightness: float = 1.0, contrast: float = 1.0,
-                saturation: float = 1.0, sharpness: float = 1.0, autocontrast: bool = False):
+    def enhance(self, pixbuf):
         """
         Return a modified pixbuf from <pixbuf> where the enhancement operations
         corresponding to each argument has been performed. A value of 1.0 means
@@ -321,26 +320,25 @@ class _ImageTools:
         it is L or RGB.)
         """
 
+        enhance_config = {config['BRIGHTNESS'], config['CONTRAST'], config['SATURATION'], config['SHARPNESS']}
+        if all(val == 1.0 for val in enhance_config):
+            return pixbuf
+
         if self.is_animation(pixbuf):
-            return self.__anime_executor.frame_executor(
-                pixbuf, self.enhance,
-                kwargs=dict(
-                    brightness=brightness, contrast=contrast,
-                    saturation=saturation, sharpness=1.0,
-                    autocontrast=False
-                )
-            )
+            return self.__anime_executor.frame_executor(pixbuf, self.enhance)
+
         im = self.pixbuf_to_pil(pixbuf)
-        if brightness != 1.0:
-            im = ImageEnhance.Brightness(im).enhance(brightness)
-        if autocontrast and im.mode in ('L', 'RGB'):
+        if config['BRIGHTNESS'] != 1.0:
+            im = ImageEnhance.Brightness(im).enhance(config['BRIGHTNESS'])
+        if config['AUTO_CONTRAST'] and im.mode in ('L', 'RGB'):
             im = ImageOps.autocontrast(im, cutoff=0.1)
-        elif contrast != 1.0:
-            im = ImageEnhance.Contrast(im).enhance(contrast)
-        if saturation != 1.0:
-            im = ImageEnhance.Color(im).enhance(saturation)
-        if sharpness != 1.0:
-            im = ImageEnhance.Sharpness(im).enhance(sharpness)
+        elif config['CONTRAST'] != 1.0:
+            im = ImageEnhance.Contrast(im).enhance(config['CONTRAST'])
+        if config['SATURATION'] != 1.0:
+            im = ImageEnhance.Color(im).enhance(config['SATURATION'])
+        if config['SHARPNESS'] != 1.0:
+            im = ImageEnhance.Sharpness(im).enhance(config['SHARPNESS'])
+
         return self.pil_to_pixbuf(im)
 
     def get_implied_rotation(self, pixbuf):

@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-"""enhance_dialog.py - Image enhancement dialog"""
-
 from __future__ import annotations
 
 import PIL.Image as Image
@@ -20,10 +18,6 @@ if TYPE_CHECKING:
 
 
 class EnhanceImageDialog(Gtk.Dialog):
-    """
-    A Gtk.Dialog which allows modification of the values belonging to an ImageEnhancer
-    """
-
     def __init__(self, window: MainWindow):
         super().__init__()
 
@@ -50,8 +44,6 @@ class EnhanceImageDialog(Gtk.Dialog):
 
         self.__pixbuf = None
 
-        self.__enhancer = window.enhancer
-
         vbox = Gtk.VBox(homogeneous=False, spacing=10)
         self.set_border_width(4)
         vbox.set_border_width(6)
@@ -69,7 +61,7 @@ class EnhanceImageDialog(Gtk.Dialog):
         hbox.pack_start(vbox_left, False, False, 2)
         hbox.pack_start(vbox_right, True, True, 2)
 
-        def _create_scale(label_text: str):
+        def _create_scale(label_text: str, config_key: str):
             label = Gtk.Label(label=label_text)
             label.set_xalign(1.0)
             label.set_yalign(0.5)
@@ -78,29 +70,24 @@ class EnhanceImageDialog(Gtk.Dialog):
             adj = Gtk.Adjustment(value=0.0, lower=-1.0, upper=1.0, step_increment=0.01, page_increment=0.1)
             scale = Gtk.Scale.new(Gtk.Orientation.HORIZONTAL, adj)
             scale.set_digits(2)
+            scale.set_value(config[config_key] - 1)
             scale.set_value_pos(Gtk.PositionType.RIGHT)
             scale.connect('value-changed', self._change_values)
             label.set_mnemonic_widget(scale)
             vbox_right.pack_start(scale, True, False, 2)
             return scale
 
-        self.__brightness_scale = _create_scale('_Brightness:')
-        self.__contrast_scale = _create_scale('_Contrast:')
-        self.__saturation_scale = _create_scale('S_aturation:')
-        self.__sharpness_scale = _create_scale('S_harpness:')
+        self.__brightness_scale = _create_scale('Brightness:', 'BRIGHTNESS')
+        self.__contrast_scale = _create_scale('Contrast:', 'CONTRAST')
+        self.__saturation_scale = _create_scale('Saturation:', 'SATURATION')
+        self.__sharpness_scale = _create_scale('Sharpness:', 'SHARPNESS')
 
         vbox.pack_start(Gtk.Separator.new(Gtk.Orientation.HORIZONTAL), True, True, 0)
 
         self.__autocontrast_button = Gtk.CheckButton.new_with_mnemonic('_Automatically adjust contrast')
         vbox.pack_start(self.__autocontrast_button, False, False, 2)
         self.__autocontrast_button.connect('toggled', self._change_values)
-
-        self.__brightness_scale.set_value(self.__enhancer.brightness - 1)
-        self.__contrast_scale.set_value(self.__enhancer.contrast - 1)
-        self.__saturation_scale.set_value(self.__enhancer.saturation - 1)
-        self.__sharpness_scale.set_value(self.__enhancer.sharpness - 1)
-        self.__autocontrast_button.set_active(self.__enhancer.autocontrast)
-
+        self.__autocontrast_button.set_active(config['AUTO_CONTRAST'])
         self.__contrast_scale.set_sensitive(not self.__autocontrast_button.get_active())
 
         self._on_page_change()
@@ -199,13 +186,13 @@ class EnhanceImageDialog(Gtk.Dialog):
         self.__hist_image.clear()
 
     def _change_values(self, *args):
-        self.__enhancer.brightness = self.__brightness_scale.get_value() + 1
-        self.__enhancer.contrast = self.__contrast_scale.get_value() + 1
-        self.__enhancer.saturation = self.__saturation_scale.get_value() + 1
-        self.__enhancer.sharpness = self.__sharpness_scale.get_value() + 1
-        self.__enhancer.autocontrast = self.__autocontrast_button.get_active()
+        config['BRIGHTNESS'] = self.__brightness_scale.get_value() + 1
+        config['CONTRAST'] = self.__contrast_scale.get_value() + 1
+        config['SATURATION'] = self.__saturation_scale.get_value() + 1
+        config['SHARPNESS'] = self.__sharpness_scale.get_value() + 1
+        config['AUTO_CONTRAST'] = self.__autocontrast_button.get_active()
         self.__contrast_scale.set_sensitive(not self.__autocontrast_button.get_active())
-        self.__enhancer.signal_update()
+        self.__window.draw_image()
 
     def _response(self, dialog, response: int):
         match response:
@@ -214,16 +201,11 @@ class EnhanceImageDialog(Gtk.Dialog):
 
             case Gtk.ResponseType.APPLY:
                 self._change_values(self)
-                config['BRIGHTNESS'] = self.__enhancer.brightness
-                config['CONTRAST'] = self.__enhancer.contrast
-                config['SATURATION'] = self.__enhancer.saturation
-                config['SHARPNESS'] = self.__enhancer.sharpness
-                config['AUTO_CONTRAST'] = self.__enhancer.autocontrast
 
             case Gtk.ResponseType.REJECT:
-                self.__brightness_scale.set_value(config['BRIGHTNESS'] - 1.0)
-                self.__contrast_scale.set_value(config['CONTRAST'] - 1.0)
-                self.__saturation_scale.set_value(config['SATURATION'] - 1.0)
-                self.__sharpness_scale.set_value(config['SHARPNESS'] - 1.0)
-                self.__autocontrast_button.set_active(config['AUTO_CONTRAST'])
+                self.__brightness_scale.set_value(0.0)
+                self.__contrast_scale.set_value(0.0)
+                self.__saturation_scale.set_value(0.0)
+                self.__sharpness_scale.set_value(0.0)
+                self.__autocontrast_button.set_active(False)
                 self._change_values(self)

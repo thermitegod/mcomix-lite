@@ -282,7 +282,7 @@ class MagnifyingLens:
             config['GDK_SCALING_FILTER'])
 
         subpixbuf = ImageTools.rotate_pixbuf(subpixbuf, rotation)
-        subpixbuf = self.__window.enhancer.enhance(subpixbuf)
+        subpixbuf = ImageTools.enhance(subpixbuf)
 
         if paste_left:
             dest_x = 0
