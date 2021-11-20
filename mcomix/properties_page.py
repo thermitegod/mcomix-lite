@@ -52,7 +52,7 @@ class PropertiesPage(Gtk.ScrolledWindow):
         self.__vbox.pack_start(self.__extrabox, False, False, 0)
 
     def set_thumbnail(self, pixbuf):
-        pixbuf = ImageTools.add_border(pixbuf)
+        pixbuf = ImageTools.add_border_pixbuf(pixbuf)
         self.__thumb.set_from_pixbuf(pixbuf)
 
     def set_filename(self, filename: str):

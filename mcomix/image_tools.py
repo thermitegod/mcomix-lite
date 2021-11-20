@@ -151,7 +151,14 @@ class _ImageTools:
         return pixbuf.composite_color_simple(width, height, scaling_quality,
                                              255, check_size, color1, color2)
 
-    def add_border(self, pixbuf):
+    def add_border_pil(self, im):
+        """
+        Return a pixbuf from <pixbuf> with a black, 1 px border
+        """
+
+        return ImageOps.expand(im, border=1, fill=0)
+
+    def add_border_pixbuf(self, pixbuf):
         """
         Return a pixbuf from <pixbuf> with a black, 1 px border
         """

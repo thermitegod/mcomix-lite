@@ -198,7 +198,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         if pixbuf is None:
             return None
 
-        return ImageTools.add_border(pixbuf)
+        return pixbuf
 
     def _set_selected_row(self, row: int, scroll: bool = True):
         """

@@ -35,6 +35,7 @@ class Thumbnailer:
             with LockedFileIO(filepath) as fio:
                 with Image.open(fio) as im:
                     im.thumbnail(size, resample=Image.BOX)
+                    im = ImageTools.add_border_pil(im)
                     pixbuf = ImageTools.pil_to_pixbuf(im)
                     if ImageTools.pil_has_alpha(im):
                         pixbuf = ImageTools.add_alpha_background(pixbuf, pixbuf.get_width(), pixbuf.get_height())
