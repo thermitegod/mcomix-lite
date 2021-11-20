@@ -122,26 +122,20 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
             logger.error(f'No images in "{self.__current_file.name}"')
             return
 
-        if not self.__is_archive:
+        if self.__is_archive:
+            self.__extractor.extract()
+
+            current_image_index = 0
+            if self.__start_page:
+                current_image_index = self._get_index_for_page(self.__start_page, len(image_files))
+        else:
             # If no extraction is required, mark all files as available.
             for img in image_files:
                 self.__image_handler.file_available(img)
 
             # Set current page to current file.
-            if self.__current_file in image_files:
-                current_image_index = image_files.index(self.__current_file)
-            else:
-                current_image_index = 0
-        else:
-            self.__extractor.extract()
-            last_image_index = self._get_index_for_page(self.__start_page, len(image_files))
+            current_image_index = image_files.index(self.__current_file)
 
-            if self.__start_page:
-                current_image_index = last_image_index
-            else:
-                # Don't switch to last page yet; since we have not asked
-                # the user for confirmation yet.
-                current_image_index = 0
         self.__window.set_page(current_image_index + 1)
 
     def file_opened(self):
