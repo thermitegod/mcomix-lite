@@ -26,7 +26,7 @@ class LibarchiveExtractor(BaseArchive):
             for filename in archive:
                 if not filename.isfile:
                     continue
-                yield Path() / self.destination_path / filename.pathname
+                yield Path(filename.pathname)
 
     def iter_extract(self):
         """

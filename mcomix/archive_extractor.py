@@ -109,7 +109,8 @@ class Extractor:
                 return
 
     def _list_contents(self):
-        return [image for image in self.__extractor.iter_contents()
+        return [Path(self.__extractor.destination_path, image)
+                for image in self.__extractor.iter_contents()
                 if ImageSupported.is_image_file(image)]
 
     def _list_contents_cb(self, files: list):
