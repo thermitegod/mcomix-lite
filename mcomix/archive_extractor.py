@@ -9,7 +9,6 @@ from pathlib import Path
 from loguru import logger
 
 from mcomix.archive.format_libarchive import LibarchiveExtractor
-from mcomix.formats.image import ImageSupported
 from mcomix.lib.events import Events, EventType
 from mcomix.lib.threadpool import GlobalThreadPool
 
@@ -110,8 +109,7 @@ class Extractor:
 
     def _list_contents(self):
         return [Path(self.__extractor.destination_path, image)
-                for image in self.__extractor.iter_contents()
-                if ImageSupported.is_image_file(image)]
+                for image in self.__extractor.iter_contents()]
 
     def _list_contents_cb(self, files: list):
         self._file_listed(self, files)

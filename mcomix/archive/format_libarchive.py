@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 
 from mcomix.archive.archive_base import BaseArchive
+from mcomix.formats.image import ImageSupported
 
 
 class LibarchiveExtractor(BaseArchive):
@@ -26,13 +27,14 @@ class LibarchiveExtractor(BaseArchive):
             for filename in archive:
                 if not filename.isfile:
                     continue
-                yield Path(filename.pathname)
+                filepath = Path(filename.pathname)
+                if not ImageSupported.is_image_file(filepath):
+                    continue
+                yield filepath
 
     def iter_extract(self):
         """
-        Generator to extract archive to <destination_dir>
-
-        :param destination_dir: extraction path
+        Generator to extract archive
         """
 
         # can only extract into CWD
@@ -45,8 +47,11 @@ class LibarchiveExtractor(BaseArchive):
                     # only extract files, directories will be created
                     # as needed by _create_file()
                     continue
-                destination_file_path = Path() / self.destination_path / filename.pathname
-                with self._create_file(destination_file_path) as image:
+                filepath = Path(filename.pathname)
+                if not ImageSupported.is_image_file(filepath):
+                    continue
+                destination_filepath = Path() / self.destination_path / filepath
+                with self._create_file(destination_filepath) as image:
                     for block in filename.get_blocks():
                         image.write(block)
-                yield destination_file_path
+                yield destination_filepath
