@@ -89,8 +89,6 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
         page to 1 (first page), if it is set we set the current page to the
         value of <start_page>. If <start_page> is non-positive it means the
         last image.
-
-        :returns: True if the file is successfully loaded.
         """
 
         self._close()
@@ -107,8 +105,6 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
             image_files = self.__file_provider.list_files(mode=FileTypes.IMAGES)
             self.__base_path = self.__file_provider.get_directory()
             self._archive_opened(image_files)
-
-        return True
 
     def _archive_opened(self, image_files: list):
         """
