@@ -9,6 +9,7 @@ from gi.repository import Gtk
 from loguru import logger
 from send2trash import send2trash
 
+from mcomix.image_handler import ImageHandler
 from mcomix.message_dialog.info import MessageDialogInfo
 from mcomix.message_dialog.remember import MessageDialogRemember
 from mcomix.preferences import config
@@ -20,12 +21,14 @@ if TYPE_CHECKING:
 
 
 class FileSystemActions:
-    __slots__ = ('__window')
+    __slots__ = ('__window', '__image_handler')
 
     def __init__(self, window: MainWindow):
         super().__init__()
 
         self.__window = window
+
+        self.__image_handler = ImageHandler()
 
     def extract_page(self):
         """
@@ -33,7 +36,7 @@ class FileSystemActions:
         the user the choice to save the current page with the selected name
         """
 
-        page = self.__window.imagehandler.get_current_page()
+        page = self.__image_handler.get_current_page()
 
         if ViewState.is_displaying_double:
             # asks for left or right page if in double page mode
@@ -61,8 +64,8 @@ class FileSystemActions:
                 if not ViewState.is_manga_mode:
                     page += 1
 
-        page_name = self.__window.imagehandler.get_page_filename(page=page)[0]
-        page_path = self.__window.imagehandler.get_path_to_page(page=page)
+        page_name = self.__image_handler.get_page_filename(page=page)[0]
+        page_path = self.__image_handler.get_path_to_page(page=page)
 
         save_dialog = Gtk.FileChooserDialog(title='Save page as', action=Gtk.FileChooserAction.SAVE)
         save_dialog.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT, Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT)
@@ -146,9 +149,9 @@ class FileSystemActions:
             if not next_opened:
                 self.__window.filehandler.close_file()
         else:
-            if self.__window.imagehandler.get_number_of_pages() > 1:
+            if self.__image_handler.get_number_of_pages() > 1:
                 # Open the next/previous file
-                if self.__window.imagehandler.is_last_page():
+                if self.__image_handler.is_last_page():
                     self.__window.flip_page(number_of_pages=-1)
                 else:
                     self.__window.flip_page(number_of_pages=+1)

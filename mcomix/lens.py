@@ -9,6 +9,7 @@ import math
 import cairo
 from gi.repository import Gdk, GdkPixbuf
 
+from mcomix.image_handler import ImageHandler
 from mcomix.image_tools import ImageTools
 from mcomix.preferences import config
 
@@ -28,12 +29,14 @@ class MagnifyingLens:
     module as it uses implementation details not in the interface
     """
 
-    __slots__ = ('__window', '__enabled', '__point', '__last_lens_rect')
+    __slots__ = ('__window', '__image_handler', '__enabled', '__point', '__last_lens_rect')
 
     def __init__(self, window: MainWindow):
         super().__init__()
 
         self.__window = window
+
+        self.__image_handler = ImageHandler()
 
         #: Stores lens state
         self.__enabled = False
@@ -48,7 +51,7 @@ class MagnifyingLens:
 
     @enabled.setter
     def enabled(self, enabled):
-        if self.__window.imagehandler.get_number_of_pages() == 0:
+        if self.__image_handler.get_number_of_pages() == 0:
             return
 
         self.__enabled = enabled
@@ -202,7 +205,7 @@ class MagnifyingLens:
                                       height=config['LENS_SIZE'])
         canvas.fill(0x000000FF)  # black
         cb = self.__window.layout.get_content_boxes()
-        source_pixbufs = self.__window.imagehandler.get_pixbufs(len(cb))
+        source_pixbufs = self.__image_handler.get_pixbufs(len(cb))
         for idx, item in enumerate(cb):
             if ImageTools.is_animation(source_pixbufs[idx]):
                 continue

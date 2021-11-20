@@ -13,6 +13,7 @@ from mcomix.enums.file_sort import FileSortDirection, FileSortType
 from mcomix.enums.file_types import FileTypes
 from mcomix.formats.archive import ArchiveSupported
 from mcomix.file_provider import GetFileProvider
+from mcomix.image_handler import ImageHandler
 from mcomix.lib.events import Events, EventType
 from mcomix.preferences import config
 from mcomix.sort.sort_alphanumeric import SortAlphanumeric
@@ -36,6 +37,8 @@ class FileHandler:
         self.__events = Events()
         self.__events.add_event(EventType.FILE_EXTRACTED, self._extracted_file)
         self.__events.add_event(EventType.FILE_LISTED, self._listed_contents)
+
+        self.__image_handler = ImageHandler()
 
         #: Indicates if files/archives are currently loaded/loading.
         self.__file_loaded = False
@@ -73,7 +76,7 @@ class FileHandler:
         if self.__file_loaded:
             current_file = self.get_real_path()
             if self.__is_archive:
-                start_page = self.__window.imagehandler.get_current_page()
+                start_page = self.__image_handler.get_current_page()
             else:
                 start_page = 0
             self.open_file(current_file, start_page)
@@ -111,7 +114,7 @@ class FileHandler:
         Called once the archive has been opened and its contents listed
         """
 
-        self.__window.imagehandler.set_image_files(image_files)
+        self.__image_handler.set_image_files(image_files)
         self.file_opened()
 
         if not image_files:
@@ -121,7 +124,7 @@ class FileHandler:
         if not self.__is_archive:
             # If no extraction is required, mark all files as available.
             for img in image_files:
-                self.__window.imagehandler.file_available(img)
+                self.__image_handler.file_available(img)
 
             # Set current page to current file.
             if self.__current_file in image_files:
@@ -174,7 +177,7 @@ class FileHandler:
                 self.__file_provider = None
             if self.__is_archive:
                 self.__extractor.close()
-            self.__window.imagehandler.cleanup()
+            self.__image_handler.cleanup()
             self.__file_loaded = False
             self.__file_loading = False
             self.__is_archive = False
@@ -298,7 +301,7 @@ class FileHandler:
         if self.__is_archive:
             return self.__base_path
 
-        return self.__window.imagehandler.get_path_to_page()
+        return self.__image_handler.get_path_to_page()
 
     def open_archive_direction(self, forward: bool, *args):
         """
@@ -345,3 +348,4 @@ class FileHandler:
         if not self.__file_loaded:
             return
         self.__events.run_events(EventType.FILE_AVAILABLE, name)
+

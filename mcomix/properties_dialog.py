@@ -11,6 +11,7 @@ from pathlib import Path
 from gi.repository import Gtk
 
 from mcomix.file_size import FileSize
+from mcomix.image_handler import ImageHandler
 from mcomix.lib.events import Events, EventType
 from mcomix.properties_page import PropertiesPage
 
@@ -20,7 +21,7 @@ if TYPE_CHECKING:
 
 
 class PropertiesDialog(Gtk.Dialog):
-    __slots__ = ('__window', '__notebook', '__archive_page', '__image_page')
+    __slots__ = ('__window', '__image_handler', '__notebook', '__archive_page', '__image_page')
 
     def __init__(self, window: MainWindow):
         super().__init__(title='Properties')
@@ -35,6 +36,8 @@ class PropertiesDialog(Gtk.Dialog):
         events.add_event(EventType.FILE_CLOSED, self._on_book_change)
         events.add_event(EventType.PAGE_AVAILABLE, self._on_page_available)
         events.add_event(EventType.PAGE_CHANGED, self._on_page_change)
+
+        self.__image_handler = ImageHandler()
 
         self.resize(870, 560)
         self.set_border_width(2)
@@ -65,7 +68,7 @@ class PropertiesDialog(Gtk.Dialog):
     def _on_page_available(self, page_number: int):
         if page_number == 1:
             self._update_page_image(self.__archive_page, 1)
-        current_page_number = self.__window.imagehandler.get_current_page()
+        current_page_number = self.__image_handler.get_current_page()
         if current_page_number == page_number:
             self._update_image_page()
 
@@ -82,7 +85,7 @@ class PropertiesDialog(Gtk.Dialog):
         self._update_page_image(page, 1)
         page.set_filename(window.filehandler.get_current_filename())
         path = window.filehandler.get_base_path()
-        main_info = (f'{window.imagehandler.get_number_of_pages()} pages',
+        main_info = (f'{self.__image_handler.get_number_of_pages()} pages',
                      'Archive File' if window.filehandler.is_archive else 'Image File')
         page.set_main_info(main_info)
         self._update_page_secondary_info(page, path)
@@ -92,23 +95,21 @@ class PropertiesDialog(Gtk.Dialog):
     def _update_image_page(self):
         page = self.__image_page
         page.reset()
-        window = self.__window
-        if not window.imagehandler.page_is_available():
+        if not self.__image_handler.page_is_available():
             return
         self._update_page_image(page)
-        path = window.imagehandler.get_path_to_page()
+        path = self.__image_handler.get_path_to_page()
         page.set_filename(path.name)
-        width, height = window.imagehandler.get_size()
-        main_info = (f'{width}x{height} px', window.imagehandler.get_mime_name(),)
+        width, height = self.__image_handler.get_size()
+        main_info = (f'{width}x{height} px', self.__image_handler.get_mime_name(),)
         page.set_main_info(main_info)
         self._update_page_secondary_info(page, path)
         page.show_all()
 
     def _update_page_image(self, page, page_number: int = None):
-        if not self.__window.imagehandler.page_is_available(page_number):
+        if not self.__image_handler.page_is_available(page_number):
             return
-        thumb_size = 256
-        thumb = self.__window.imagehandler.get_thumbnail(page=page_number, size=(thumb_size, thumb_size))
+        thumb = self.__image_handler.get_thumbnail(page=page_number, size=(256, 256))
         page.set_thumbnail(thumb)
 
     def _update_page_secondary_info(self, page, path: Path):

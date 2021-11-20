@@ -11,13 +11,14 @@ from loguru import logger
 from mcomix.file_size import FileSize
 from mcomix.image_tools import ImageTools
 from mcomix.lib.events import Events, EventType
+from mcomix.lib.metaclass import SingleInstanceMetaClass
 from mcomix.lib.threadpool import GlobalThreadPool, Lock
 from mcomix.preferences import config
 from mcomix.state.view_state import ViewState
 from mcomix.thumbnailer import Thumbnailer
 
 
-class ImageHandler:
+class ImageHandler(metaclass=SingleInstanceMetaClass):
     """
     The FileHandler keeps track of images, pages, caches and reads files.
     When the Filehandler's methods refer to pages, they are indexed from 1,

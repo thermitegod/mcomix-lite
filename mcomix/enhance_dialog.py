@@ -9,6 +9,7 @@ import PIL.ImageDraw as ImageDraw
 import PIL.ImageOps as ImageOps
 from gi.repository import Gtk
 
+from mcomix.image_handler import ImageHandler
 from mcomix.image_tools import ImageTools
 from mcomix.lib.events import Events, EventType
 from mcomix.preferences import config
@@ -34,6 +35,8 @@ class EnhanceImageDialog(Gtk.Dialog):
         events.add_event(EventType.FILE_CLOSED, self._on_book_close)
         events.add_event(EventType.PAGE_AVAILABLE, self._on_page_available)
         events.add_event(EventType.PAGE_CHANGED, self._on_page_change)
+
+        self.__image_handler = ImageHandler()
 
         reset = Gtk.Button.new_with_label('Reset')
         self.add_action_widget(reset, Gtk.ResponseType.REJECT)
@@ -175,15 +178,15 @@ class EnhanceImageDialog(Gtk.Dialog):
         self.clear_histogram()
 
     def _on_page_change(self):
-        if not self.__window.imagehandler.page_is_available():
+        if not self.__image_handler.page_is_available():
             self.clear_histogram()
             return
         # XXX transitional(double page limitation)
-        self.__pixbuf = self.__window.imagehandler.get_pixbufs(1)[0]
+        self.__pixbuf = self.__image_handler.get_pixbufs(1)[0]
         self.draw_histogram()
 
     def _on_page_available(self, page_number):
-        current_page_number = self.__window.imagehandler.get_current_page()
+        current_page_number = self.__image_handler.get_current_page()
         if current_page_number == page_number:
             self._on_page_change()
 

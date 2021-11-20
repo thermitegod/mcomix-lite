@@ -11,6 +11,7 @@ from mcomix.enums.double_page import DoublePage
 from mcomix.enums.file_sort import FileSortDirection, FileSortType
 from mcomix.enums.image_scaling import ScalingGDK, ScalingPIL
 from mcomix.enums.zoom_modes import ZoomModes
+from mcomix.image_handler import ImageHandler
 from mcomix.preferences import config
 from mcomix.preferences_page import PreferencePage
 
@@ -25,12 +26,14 @@ class PreferencesDialog(Gtk.Dialog):
     saved between sessions are presented to the user
     """
 
-    __slots__ = ('__window', '__reset_button')
+    __slots__ = ('__window', '__image_handler', '__reset_button')
 
     def __init__(self, window: MainWindow):
         super().__init__(title='Preferences')
 
         self.__window = window
+
+        self.__image_handler = ImageHandler()
 
         self.set_modal(True)
         self.set_transient_for(window)
@@ -587,7 +590,7 @@ class PreferencesDialog(Gtk.Dialog):
                 self.__window.thumbnailsidebar.resize()
                 self.__window.draw_image()
             case ('PAGE_CACHE_FORWARD' | 'PAGE_CACHE_BEHIND'):
-                self.__window.imagehandler.do_caching()
+                self.__image_handler.do_caching()
             case ('FIT_TO_SIZE_PX'):
                 self.__window.change_zoom_mode()
 

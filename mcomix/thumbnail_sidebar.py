@@ -7,6 +7,7 @@ from __future__ import annotations
 from gi.repository import Gdk, GdkPixbuf, Gtk
 from loguru import logger
 
+from mcomix.image_handler import ImageHandler
 from mcomix.image_tools import ImageTools
 from mcomix.lib.events import Events, EventType
 from mcomix.preferences import config
@@ -22,7 +23,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
     A thumbnail sidebar including scrollbar for the main window
     """
 
-    __slots__ = ('__window', '__loaded', '__currently_selected_row', '__thumbnail_size',
+    __slots__ = ('__window', '__image_handler', '__loaded', '__currently_selected_row', '__thumbnail_size',
                  '__width_padding', '__empty_thumbnail', '__thumbnail_liststore', '__treeview',
                  '__thumbnail_page_treeviewcolumn', '__text_cellrenderer', '__thumbnail_image_treeviewcolumn')
 
@@ -35,6 +36,8 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         events = Events()
         events.add_event(EventType.PAGE_AVAILABLE, self._on_page_available)
         events.add_event(EventType.PAGE_CHANGED, self._on_page_change)
+
+        self.__image_handler = ImageHandler()
 
         #: Thumbnail load status
         self.__loaded = False
@@ -103,7 +106,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         """
 
         if config['SHOW_PAGE_NUMBERS_ON_THUMBNAILS']:
-            number_of_pages = len(str(self.__window.imagehandler.get_number_of_pages()))
+            number_of_pages = len(str(self.__image_handler.get_number_of_pages()))
             self.__text_cellrenderer.set_property('width-chars', number_of_pages + 1)
             w = self.__text_cellrenderer.get_preferred_size(self.__treeview)[1].width
             self.__thumbnail_page_treeviewcolumn.set_fixed_width(w)
@@ -161,7 +164,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         """
 
         if (not self.__window.filehandler.get_file_loaded() or
-                not self.__window.imagehandler.get_number_of_pages() or
+                not self.__image_handler.get_number_of_pages() or
                 self.__loaded):
             return
 
@@ -172,7 +175,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         self.__treeview.set_model(None)
 
         # Create empty preview thumbnails.
-        for row in range(self.__window.imagehandler.get_number_of_pages()):
+        for row in range(self.__image_handler.get_number_of_pages()):
             self.__thumbnail_liststore.append((row + 1, self.__empty_thumbnail, False))
 
         self.__loaded = True
@@ -189,7 +192,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         """
 
         size = config['THUMBNAIL_SIZE']
-        pixbuf = self.__window.imagehandler.get_thumbnail(page=uid, size=(size, size))
+        pixbuf = self.__image_handler.get_thumbnail(page=uid, size=(size, size))
         if pixbuf is None:
             return None
 
@@ -234,7 +237,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         """
 
         selected = self._get_selected_row()
-        path = self.__window.imagehandler.get_path_to_page(selected + 1)
+        path = self.__image_handler.get_path_to_page(selected + 1)
         uri = path.as_uri()
         selection.set_uris([uri])
 
@@ -267,7 +270,7 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         return pixbuf
 
     def _on_page_change(self):
-        row = self.__window.imagehandler.get_current_page() - 1
+        row = self.__image_handler.get_current_page() - 1
         if row == self.__currently_selected_row:
             return
         self._set_selected_row(row)

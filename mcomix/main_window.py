@@ -68,7 +68,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.__filehandler = FileHandler(self)
         self.__filesystem_actions = FileSystemActions(self)
-        self.__imagehandler = ImageHandler()
+        self.__image_handler = ImageHandler()
         self.__bookmark_backend = BookmarkBackend(self)
 
         self.__thumbnailsidebar = ThumbnailSidebar(self)
@@ -166,14 +166,6 @@ class MainWindow(Gtk.ApplicationWindow):
         """
 
         return self.__filehandler
-
-    @property
-    def imagehandler(self):
-        """
-        Interface for ImageHandler
-        """
-
-        return self.__imagehandler
 
     @property
     def bookmark_backend(self):
@@ -295,7 +287,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.__thumbnailsidebar.show()
 
-        if not self.__imagehandler.page_is_available():
+        if not self.__image_handler.page_is_available():
             # Save scroll destination for when the page becomes available.
             self.__last_scroll_destination = scroll_to
             self.__waiting_for_redraw = False
@@ -306,7 +298,7 @@ class MainWindow(Gtk.ApplicationWindow):
         # XXX limited to at most 2 pages
         pixbuf_count = 2 if ViewState.is_displaying_double else 1
         pixbuf_count_iter = range(pixbuf_count)
-        pixbuf_list = list(self.__imagehandler.get_pixbufs(pixbuf_count))
+        pixbuf_list = list(self.__image_handler.get_pixbufs(pixbuf_count))
         do_not_transform = [ImageTools.disable_transform(x) for x in pixbuf_list]
         size_list = [[pixbuf.get_width(), pixbuf.get_height()] for pixbuf in pixbuf_list]
 
@@ -377,17 +369,17 @@ class MainWindow(Gtk.ApplicationWindow):
         even when the page pixbuf(s) aren't ready yet
         """
 
-        page = self.__imagehandler.get_current_page()
+        page = self.__image_handler.get_current_page()
         if not page:
             return
 
-        filenames = self.__imagehandler.get_page_filename(page=page)
-        filesizes = self.__imagehandler.get_page_filesize(page=page)
+        filenames = self.__image_handler.get_page_filename(page=page)
+        filesizes = self.__image_handler.get_page_filesize(page=page)
 
         filename = ', '.join(filenames)
         filesize = ', '.join(filesizes)
 
-        self.__statusbar.set_page_number(page, self.__imagehandler.get_number_of_pages())
+        self.__statusbar.set_page_number(page, self.__image_handler.get_number_of_pages())
         self.__statusbar.set_filename(filename)
         self.__statusbar.set_filesize(filesize)
 
@@ -405,7 +397,7 @@ class MainWindow(Gtk.ApplicationWindow):
         """
 
         if page is None:
-            page = self.__imagehandler.get_current_page()
+            page = self.__image_handler.get_current_page()
 
         if (page == 1 and
                 config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & DoublePage.AS_ONE_TITLE.value and
@@ -414,13 +406,13 @@ class MainWindow(Gtk.ApplicationWindow):
 
         if (not config['DEFAULT_DOUBLE_PAGE'] or
                 not config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & DoublePage.AS_ONE_WIDE.value or
-                self.__imagehandler.is_last_page(page)):
+                self.__image_handler.is_last_page(page)):
             return False
 
         for page in (page, page + 1):
-            if not self.__imagehandler.page_is_available(page):
+            if not self.__image_handler.page_is_available(page):
                 return False
-            pixbuf = self.__imagehandler.get_pixbuf(page - 1)
+            pixbuf = self.__image_handler.get_pixbuf(page - 1)
             width, height = pixbuf.get_width(), pixbuf.get_height()
             if config['AUTO_ROTATE_FROM_EXIF']:
                 rotation = ImageTools.get_implied_rotation(pixbuf)
@@ -441,7 +433,7 @@ class MainWindow(Gtk.ApplicationWindow):
         """
 
         # Refresh display when currently opened page becomes available.
-        current_page = self.__imagehandler.get_current_page()
+        current_page = self.__image_handler.get_current_page()
         nb_pages = 2 if ViewState.is_displaying_double else 1
         if current_page <= page < (current_page + nb_pages):
             self._displayed_double()
@@ -497,9 +489,14 @@ class MainWindow(Gtk.ApplicationWindow):
         self._update_page_information()
 
     def set_page(self, num: int, at_bottom: bool = False):
-        if num == self.__imagehandler.get_current_page():
+        """
+        Draws a *new* page (as opposed to redrawing the same image with a new size or whatever)
+        """
+
+        if num == self.__image_handler.get_current_page():
             return
-        self.__imagehandler.set_page(num)
+
+        self.__image_handler.set_page(num)
         self.page_changed()
         self.new_page(at_bottom=at_bottom)
 
@@ -507,8 +504,8 @@ class MainWindow(Gtk.ApplicationWindow):
         if not self.__filehandler.get_file_loaded():
             return
 
-        current_page = self.__imagehandler.get_current_page()
-        current_number_of_pages = self.__imagehandler.get_number_of_pages()
+        current_page = self.__image_handler.get_current_page()
+        current_number_of_pages = self.__image_handler.get_number_of_pages()
 
         new_page = current_page + number_of_pages
         if (abs(number_of_pages) == 1 and
@@ -537,11 +534,11 @@ class MainWindow(Gtk.ApplicationWindow):
             self.set_page(new_page, at_bottom=(-1 == number_of_pages))
 
     def first_page(self):
-        if self.__imagehandler.get_number_of_pages():
+        if self.__image_handler.get_number_of_pages():
             self.set_page(1)
 
     def last_page(self):
-        number_of_pages = self.__imagehandler.get_number_of_pages()
+        number_of_pages = self.__image_handler.get_number_of_pages()
         if number_of_pages:
             self.set_page(number_of_pages)
 
@@ -751,10 +748,12 @@ class MainWindow(Gtk.ApplicationWindow):
         sets True if two pages are currently displayed
         """
 
-        ViewState.is_displaying_double = (self.__imagehandler.get_current_page() and
-                                      config['DEFAULT_DOUBLE_PAGE'] and
-                                      not self._get_virtual_double_page() and
-                                      not self.__imagehandler.is_last_page())
+        ViewState.is_displaying_double = (
+            self.__image_handler.get_current_page() and
+            config['DEFAULT_DOUBLE_PAGE'] and
+            not self._get_virtual_double_page() and
+            not self.__image_handler.is_last_page()
+        )
 
     def get_visible_area_size(self):
         """

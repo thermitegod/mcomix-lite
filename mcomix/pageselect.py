@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from gi.repository import Gtk
 
+from mcomix.image_handler import ImageHandler
 from mcomix.lib.events import Events, EventType
 from mcomix.lib.threadpool import GlobalThreadPool
 
@@ -19,7 +20,7 @@ class Pageselector(Gtk.Dialog):
     The Pageselector takes care of the popup page selector
     """
 
-    __slots__ = ('__window', '__number_of_pages', '__selector_adjustment',
+    __slots__ = ('__window', '__image_handler', '__number_of_pages', '__selector_adjustment',
                  '__image_preview', '__thumbnail_page', '__threadpool')
 
     def __init__(self, window: MainWindow):
@@ -27,6 +28,8 @@ class Pageselector(Gtk.Dialog):
 
         self.__events = Events()
         self.__events.add_event(EventType.PAGE_AVAILABLE, self._page_available)
+
+        self.__image_handler = ImageHandler()
 
         super().__init__(title='Go to page...', modal=True, destroy_with_parent=True)
 
@@ -39,9 +42,9 @@ class Pageselector(Gtk.Dialog):
         self.connect('response', self._response)
         self.set_resizable(True)
 
-        self.__number_of_pages = self.__window.imagehandler.get_number_of_pages()
+        self.__number_of_pages = self.__image_handler.get_number_of_pages()
 
-        self.__selector_adjustment = Gtk.Adjustment(value=self.__window.imagehandler.get_current_page(),
+        self.__selector_adjustment = Gtk.Adjustment(value=self.__image_handler.get_current_page(),
                                                     lower=1, upper=self.__number_of_pages,
                                                     step_increment=1, page_increment=1)
 
@@ -133,7 +136,7 @@ class Pageselector(Gtk.Dialog):
         A transparent image will be used if the page is not yet available
         """
 
-        return page, self.__window.imagehandler.get_thumbnail(page=page, size=(width, height))
+        return page, self.__image_handler.get_thumbnail(page=page, size=(width, height))
 
     def _generate_thumbnail_cb(self, params):
         page, pixbuf = params
