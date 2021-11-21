@@ -274,18 +274,9 @@ class MainWindow(Gtk.ApplicationWindow):
         size_list = [[pixbuf.get_width(), pixbuf.get_height()] for pixbuf in pixbuf_list]
 
         # Rotation handling:
-        # - apply Exif rotation on individual images
         # - apply manual rotation on whole page
         orientation = self.__page_orientation
-        if config['AUTO_ROTATE_FROM_EXIF']:
-            rotation_list = [ImageTools.get_implied_rotation(pixbuf) for pixbuf in pixbuf_list]
-            for i in pixbuf_count_iter:
-                if rotation_list[i] in (90, 270):
-                    size_list[i].reverse()
-        else:
-            # no auto rotation
-            rotation_list = [0] * len(pixbuf_list)
-
+        rotation_list = [0] * len(pixbuf_list)
         rotation = config['ROTATION'] % 360
         match rotation:
             case (90 | 270):
@@ -308,7 +299,7 @@ class MainWindow(Gtk.ApplicationWindow):
         content_boxes = self.__layout.get_content_boxes()
 
         for i in pixbuf_count_iter:
-            rotation_list[i] = (rotation_list[i] + rotation) % 360
+            rotation_list[i] = rotation
 
             pixbuf_list[i] = ImageTools.fit_pixbuf_to_rectangle(pixbuf_list[i], scaled_sizes[i], rotation_list[i])
             pixbuf_list[i] = ImageTools.enhance(pixbuf_list[i])
@@ -381,16 +372,7 @@ class MainWindow(Gtk.ApplicationWindow):
             if not self.__image_handler.page_is_available(page):
                 return False
             pixbuf = self.__image_handler.get_pixbuf(page)
-            width, height = pixbuf.get_width(), pixbuf.get_height()
-            if config['AUTO_ROTATE_FROM_EXIF']:
-                rotation = ImageTools.get_implied_rotation(pixbuf)
-
-                # if rotation not in (0, 90, 180, 270):
-                #     return
-
-                if rotation in (90, 270):
-                    width, height = height, width
-            if width > height:
+            if pixbuf.get_width() > pixbuf.get_height():
                 return True
 
         return False

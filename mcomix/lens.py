@@ -233,10 +233,6 @@ class MagnifyingLens:
         source_pixbuf = ImageTools.static_image(source_pixbuf)
 
         rotation = config['ROTATION']
-        if config['AUTO_ROTATE_FROM_EXIF']:
-            rotation += ImageTools.get_implied_rotation(source_pixbuf)
-            rotation %= 360
-
         if rotation in (90, 270):
             scale = source_pixbuf.get_height() / image_size[0]
         else:

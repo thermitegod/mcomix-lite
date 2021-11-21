@@ -33,7 +33,6 @@ config = {
     'FILECHOOSER_LAST_BROWSED_PATH': str(ConfigPaths.HOME.value),
     'FILECHOOSER_LAST_FILTER': 0,
     'ROTATION': 0,
-    'AUTO_ROTATE_FROM_EXIF': True,
     'KEEP_TRANSFORMATION': False,
     'STORED_DIALOG_CHOICES': {},
     'BRIGHTNESS': 1.0,

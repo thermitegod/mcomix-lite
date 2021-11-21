@@ -175,7 +175,7 @@ class _ImageTools:
                          dest_pixbuf=canvas, dest_x=1, dest_y=1)
         return canvas
 
-    def pil_to_pixbuf(self, im, keep_orientation: bool = False):
+    def pil_to_pixbuf(self, im):
         """
         Return a pixbuf created from the PIL <im>
         """
@@ -195,11 +195,7 @@ class _ImageTools:
             im.size[0], im.size[1],
             (4 if has_alpha else 3) * im.size[0]
         )
-        if keep_orientation:
-            # Keep orientation metadata.
-            orientation = im.getexif().get(274, None)
-            if orientation is not None:
-                setattr(pixbuf, 'orientation', str(orientation))
+
         return pixbuf
 
     def pixbuf_to_pil(self, pixbuf):
@@ -279,7 +275,7 @@ class _ImageTools:
                         n_frames = im.n_frames
                         loop = im.info['loop']
                         return self.load_animation(im)
-                    return self.pil_to_pixbuf(im, keep_orientation=True)
+                    return self.pil_to_pixbuf(im)
         except Exception as ex:
             # should only be hit when loading trying to load a gif
             logger.debug(f'failed to load pixbuf: {ex}')
@@ -347,29 +343,6 @@ class _ImageTools:
             im = ImageEnhance.Sharpness(im).enhance(config['SHARPNESS'])
 
         return self.pil_to_pixbuf(im)
-
-    def get_implied_rotation(self, pixbuf):
-        """
-        Return the implied rotation in degrees: 0, 90, 180, or 270.
-        The implied rotation is the angle (in degrees) that the raw pixbuf should
-        be rotated in order to be displayed "correctly". E.g. a photograph taken
-        by a camera that is held sideways might store this fact in its Exif data,
-        and the pixbuf loader will set the orientation option correspondingly
-        """
-
-        try:
-            orientation = pixbuf.orientation
-            match orientation:
-                case '3':
-                    return 180
-                case '6':
-                    return 90
-                case '8':
-                    return 270
-        except AttributeError:
-            pass
-
-        return 0
 
     def get_image_size(self, path: Path):
         """

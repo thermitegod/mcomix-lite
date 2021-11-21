@@ -207,10 +207,6 @@ class PreferencesDialog(Gtk.Dialog):
             'Keep manual rotation on page change',
             'KEEP_TRANSFORMATION'))
 
-        page.add_row(self._create_pref_check_button(
-            'Rotate images according to their metadata',
-            'AUTO_ROTATE_FROM_EXIF'))
-
         page.new_section('Image Scaling Quality')
 
         page.add_row(Gtk.Label(label='GDK image scaling'),
@@ -558,7 +554,7 @@ class PreferencesDialog(Gtk.Dialog):
         config[preference] = button.get_active()
 
         match preference:
-            case ('CHECKERED_BG_FOR_TRANSPARENT_IMAGES' | 'AUTO_ROTATE_FROM_EXIF'):
+            case ('CHECKERED_BG_FOR_TRANSPARENT_IMAGES'):
                 self.__events.run_events(EventType.DRAW_PAGE)
             case ('ANIMATION_BACKGROUND' | 'ANIMATION_TRANSFORM'):
                 self.__window.thumbnailsidebar.toggle_page_numbers_visible()
