@@ -268,18 +268,6 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
 
         return current_index + 1, len(file_list)
 
-    def get_current_filename(self):
-        """
-        Return a string with the name of the currently viewed file that is suitable for printing
-
-        :returns: name of the currently viewed file
-        """
-
-        if self.__is_archive:
-            return self.__base_path.name
-
-        return self.__base_path.parent
-
     def get_real_path(self):
         """
         Return the "real" path to the currently viewed file, i.e. the

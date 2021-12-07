@@ -84,7 +84,7 @@ class PropertiesDialog(Gtk.Dialog):
         if self.__notebook.get_n_pages() == 1:
             self.__notebook.insert_page(page, Gtk.Label(label='Archive'), 0)
         self._update_page_image(page, 1)
-        page.set_filename(self.__file_handler.get_current_filename())
+        page.set_filename(self.__file_handler.get_real_path().name)
         path = self.__file_handler.get_base_path()
         main_info = (f'{self.__image_handler.get_number_of_pages()} pages',
                      'Archive File' if self.__file_handler.is_archive else 'Image File')
