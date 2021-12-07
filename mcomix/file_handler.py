@@ -13,6 +13,7 @@ from mcomix.enums.file_sort import FileSortDirection, FileSortType
 from mcomix.enums.file_types import FileTypes
 from mcomix.formats.archive import ArchiveSupported
 from mcomix.file_provider import GetFileProvider
+from mcomix.image_files import ImageFiles
 from mcomix.image_handler import ImageHandler
 from mcomix.lib.events import Events, EventType
 from mcomix.lib.metaclass import SingleInstanceMetaClass
@@ -40,6 +41,7 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
         self.__events.add_event(EventType.FILE_LISTED, self._listed_contents)
 
         self.__image_handler = ImageHandler()
+        self.__image_files = ImageFiles()
 
         #: Indicates if files/archives are currently loaded/loading.
         self.__file_loaded = False
@@ -123,7 +125,7 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
         Called once the archive has been opened and its contents listed
         """
 
-        self.__image_handler.set_image_files(image_files)
+        self.__image_files.set_image_files(image_files)
         self.file_opened()
 
         if not image_files:

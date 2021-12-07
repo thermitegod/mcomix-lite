@@ -9,6 +9,7 @@ from pathlib import Path
 from loguru import logger
 
 from mcomix.file_size import FileSize
+from mcomix.image_files import ImageFiles
 from mcomix.image_tools import ImageTools
 from mcomix.lib.events import Events, EventType
 from mcomix.lib.metaclass import SingleInstanceMetaClass
@@ -35,16 +36,12 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         self.__events = Events()
         self.__events.add_event(EventType.FILE_AVAILABLE, self.file_available)
 
+        self.__image_files = ImageFiles()
+
         #: Caching thread
         self.__threadpool = GlobalThreadPool.threadpool
         self.__lock = Lock()
         self.__cache_lock = {}
-        #: List of image file names, either from extraction or directory
-        self.__image_files = []
-        #: Dict of image file names with and index
-        self.__image_files_index = {}
-        #: Total number of pages
-        self.__image_files_total = 0
         #: Index of current page
         self.__current_image_index = None
         #: Set of images reading for decoding (i.e. already extracted)
@@ -109,11 +106,12 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
             with self.__lock:
                 if index not in self.__wanted_pixbufs and force_return:
                     return
-            logger.debug(f'Caching page: \'{index + 1}\'')
+            page = index + 1
+            logger.debug(f'Caching page: {page}')
             try:
-                pixbuf = ImageTools.load_pixbuf(self.__image_files[index])
+                pixbuf = ImageTools.load_pixbuf(self.__image_files.get_path_from_page(page))
             except Exception as ex:
-                logger.error(f'Could not load pixbuf for page: \'{index + 1}\'')
+                logger.error(f'Could not load pixbuf for page: {page}')
                 logger.error(f'Exception: {ex}')
                 pixbuf = None
             self.__raw_pixbufs[index] = pixbuf
@@ -129,12 +127,6 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         self.__current_image_index = page_num - 1
         self.do_caching()
 
-    def set_image_files(self, files: list):
-        # Set list of image file names
-        self.__image_files = files
-        self.__image_files_total = len(self.__image_files)
-        self.__image_files_index = dict(zip(self.__image_files, range(self.__image_files_total), strict=True))
-
     def cleanup(self):
         """
         Run clean-up tasks. Should be called prior to exit
@@ -145,10 +137,8 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         while self.__cache_lock:
             self.__cache_lock.popitem()
 
-        self.__image_files.clear()
-        self.__image_files_total = 0
+        self.__image_files.cleanup()
         self.__current_image_index = None
-        self.__image_files_index.clear()
         self.__available_images.clear()
         self.__raw_pixbufs.clear()
 
@@ -201,14 +191,14 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         """
 
         # Find the page that corresponds to <filepath>
-        self.page_available(self.__image_files_index[filepath] + 1)
+        self.page_available(self.__image_files.get_page_from_path(filepath))
 
     def get_number_of_pages(self):
         """
         Return the number of pages in the current archive/directory
         """
 
-        return self.__image_files_total
+        return self.__image_files.get_total_pages()
 
     def get_current_page(self):
         """
@@ -228,7 +218,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         if page is None:
             page = self.get_current_page()
 
-        return page == self.__image_files_total
+        return page == self.__image_files.get_total_pages()
 
     def get_path_to_page(self, page: int = None):
         """
@@ -236,14 +226,9 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         """
 
         if page is None:
-            index = self.__current_image_index
-        else:
-            index = page - 1
+            page = self.__current_image_index + 1
 
-        try:
-            return Path(self.__image_files[index])
-        except IndexError:
-            return None
+        return self.__image_files.get_path_from_page(page)
 
     def _get_page_unknown(self):
         if ViewState.is_displaying_double:
