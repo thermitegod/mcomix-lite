@@ -106,8 +106,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.add(grid)
 
         # XXX limited to at most 2 pages
-        self.images = [Gtk.Image(), Gtk.Image()]
-        for img in self.images:
+        self.__images = [Gtk.Image(), Gtk.Image()]
+        for img in self.__images:
             self.__main_layout.put(img, 0, 0)
 
         # Each widget "eats" part of the main layout visible area.
@@ -255,7 +255,7 @@ class MainWindow(Gtk.ApplicationWindow):
         # hides old images before showing new ones
         # also if in double page mode and only a single
         # image is going to be shown, prevents a ghost second image
-        for i in self.images:
+        for i in self.__images:
             i.clear()
 
         if not self.__file_handler.get_file_loaded():
@@ -320,10 +320,10 @@ class MainWindow(Gtk.ApplicationWindow):
             pixbuf_list[i] = ImageTools.fit_pixbuf_to_rectangle(pixbuf_list[i], scaled_sizes[i], rotation_list[i])
             pixbuf_list[i] = ImageTools.enhance(pixbuf_list[i])
 
-            ImageTools.set_from_pixbuf(self.images[i], pixbuf_list[i])
+            ImageTools.set_from_pixbuf(self.__images[i], pixbuf_list[i])
 
-            self.__main_layout.move(self.images[i], *content_boxes[i].get_position())
-            self.images[i].show()
+            self.__main_layout.move(self.__images[i], *content_boxes[i].get_position())
+            self.__images[i].show()
 
         # Reset orientation so scrolling behaviour is sane.
         self.__layout.set_orientation(self.__page_orientation)
