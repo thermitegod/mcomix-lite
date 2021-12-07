@@ -486,8 +486,8 @@ class MainWindow(Gtk.ApplicationWindow):
                 not single_step and
                 config['DEFAULT_DOUBLE_PAGE'] and
                 config['DOUBLE_STEP_IN_DOUBLE_PAGE_MODE']):
-            if number_of_pages == +1 and not self._get_virtual_double_page():
-                new_page += +1
+            if number_of_pages == 1 and not self._get_virtual_double_page():
+                new_page += 1
             elif number_of_pages == -1 and not self._get_virtual_double_page(new_page - 1):
                 new_page -= 1
 
@@ -495,12 +495,12 @@ class MainWindow(Gtk.ApplicationWindow):
             # Only switch to previous page when flipping one page before the
             # first one. (Note: check for (page number <= 1) to handle empty
             # archive case).
-            if number_of_pages == -1 and current_page <= +1:
+            if number_of_pages == -1 and current_page <= 1:
                 return self.__file_handler.open_archive_direction(forward=False)
             # Handle empty archive case.
-            new_page = min(+1, current_number_of_pages)
+            new_page = min(1, current_number_of_pages)
         elif new_page > current_number_of_pages:
-            if number_of_pages == +1:
+            if number_of_pages == 1:
                 return self.__file_handler.open_archive_direction(forward=True)
             new_page = current_number_of_pages
 

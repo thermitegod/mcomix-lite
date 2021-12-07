@@ -76,7 +76,7 @@ class KeyBindingsMap:
                     KEYBINDINGS(['Page_Down', 'KP_Page_Down']),
                     KEY_EVENT(
                         window.flip_page,
-                        {'number_of_pages': +1},
+                        {'number_of_pages': 1},
                     ),
                 ),
             'previous_page_singlestep':
@@ -94,7 +94,7 @@ class KeyBindingsMap:
                     KEYBINDINGS(['<Primary>Down', '<Primary>Page_Down', '<Primary>KP_Page_Down']),
                     KEY_EVENT(
                         window.flip_page,
-                        {'number_of_pages': +1, 'single_step': True},
+                        {'number_of_pages': 1, 'single_step': True},
                     ),
                 ),
             'previous_page_ff':
@@ -112,7 +112,7 @@ class KeyBindingsMap:
                     KEYBINDINGS(['<Shift>Page_Down', '<Shift>KP_Page_Down', '<Shift><Mod1>Right']),
                     KEY_EVENT(
                         window.flip_page,
-                        {'number_of_pages': +config['PAGE_FF_STEP']},
+                        {'number_of_pages': config['PAGE_FF_STEP']},
                     ),
                 ),
             'first_page':
@@ -491,7 +491,7 @@ class KeyBindingsMap:
                     KEYBINDINGS(['z']),
                     KEY_EVENT(
                         window.change_image_scaling,
-                        {'step': +1},
+                        {'step': 1},
                     ),
                 ),
             'scaling_dec':

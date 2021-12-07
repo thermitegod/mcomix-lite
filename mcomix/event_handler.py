@@ -157,7 +157,7 @@ class EventHandler:
             self.__window.flip_page(number_of_pages=-1)
         elif deltas.delta_x < 0:
             # Gdk.ScrollDirection.LEFT
-            self.__window.flip_page(number_of_pages=+1)
+            self.__window.flip_page(number_of_pages=1)
 
     def mouse_press_event(self, widget, event):
         """
@@ -232,6 +232,6 @@ class EventHandler:
 
         if y > 0 or (ViewState.is_manga_mode and x < 0) or \
                 (not ViewState.is_manga_mode and x > 0):
-            self.__window.flip_page(number_of_pages=+1)
+            self.__window.flip_page(number_of_pages=1)
         else:
             self.__window.flip_page(number_of_pages=-1)

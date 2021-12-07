@@ -156,7 +156,7 @@ class FileSystemActions:
                 if self.__image_handler.is_last_page():
                     self.__window.flip_page(number_of_pages=-1)
                 else:
-                    self.__window.flip_page(number_of_pages=+1)
+                    self.__window.flip_page(number_of_pages=1)
 
                 # Refresh the directory
                 self.__file_handler.refresh_file()
