@@ -386,7 +386,7 @@ class MainWindow(Gtk.ApplicationWindow):
         for page in (page, page + 1):
             if not self.__image_handler.page_is_available(page):
                 return False
-            pixbuf = self.__image_handler.get_pixbuf(page - 1)
+            pixbuf = self.__image_handler.get_pixbuf(page)
             width, height = pixbuf.get_width(), pixbuf.get_height()
             if config['AUTO_ROTATE_FROM_EXIF']:
                 rotation = ImageTools.get_implied_rotation(pixbuf)

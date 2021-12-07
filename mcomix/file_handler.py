@@ -62,14 +62,14 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
         self.__file_provider_chooser = GetFileProvider()
         self.__file_provider = None
 
-        self.__start_page = 0
+        self.__start_page = 1
 
         self.__open_first_page = None
 
         self.update_opening_behavior()
 
     def update_opening_behavior(self):
-        self.__open_first_page = 0 if config['OPEN_FIRST_PAGE'] else -1
+        self.__open_first_page = 1 if config['OPEN_FIRST_PAGE'] else -1
 
     def refresh_file(self, *args, **kwargs):
         """
@@ -81,10 +81,10 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
             if self.__is_archive:
                 start_page = self.__image_handler.get_current_page()
             else:
-                start_page = 0
+                start_page = 1
             self.open_file(current_file, start_page)
 
-    def open_file_init(self, paths: list, start_page: int = 0):
+    def open_file_init(self, paths: list, start_page: int = 1):
         """
         Open the first file pointed to in <paths>,
         and initialize the file provider.
@@ -96,7 +96,7 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
         self._initialize_fileprovider(path=paths)
         self.open_file(paths[0], start_page)
 
-    def open_file(self, path: Path, start_page: int = 0):
+    def open_file(self, path: Path, start_page: int = 1):
         """
         Open the file pointed to by <path>.
         If <start_page> is not set we set the current
@@ -135,18 +135,20 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
         if self.__is_archive:
             self.__extractor.extract()
 
-            current_image_index = 0
-            if self.__start_page:
-                current_image_index = self._get_index_for_page(self.__start_page, len(image_files))
+            start_page = self.__start_page
         else:
             # If no extraction is required, mark all files as available.
             for img in image_files:
                 self.__image_handler.file_available(img)
 
-            # Set current page to current file.
-            current_image_index = image_files.index(self.__current_file)
+            if self.__current_file.is_dir():
+                # if the current_file is a directory then start at the first image
+                start_page = 1
+            else:
+                # Set start_page to the same as current_file.
+                start_page = self.__image_files.get_page_from_path(self.__current_file)
 
-        self.__window.set_page(current_image_index + 1)
+        self.__window.set_page(start_page)
 
     def file_opened(self):
         """
@@ -242,30 +244,6 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
         if config['SORT_ARCHIVE_ORDER'] == FileSortDirection.DESCENDING.value:
             filelist.reverse()
 
-    def _get_index_for_page(self, start_page: int, num_of_pages: int):
-        """
-        Returns the index of the page that should be displayed for an archive.
-
-        :param start_page: If 0, show first page.
-                           If -1, show last page.
-                           If > 0, show start_page.
-        :param num_of_pages: total number of pages in archive.
-        :returns: page index
-        """
-
-        if start_page == 0:
-            # load first page
-            return start_page
-
-        if start_page == -1:
-            # load last page
-            if config['DEFAULT_DOUBLE_PAGE']:
-                return num_of_pages - 2
-            return num_of_pages - 1
-
-        # load page
-        return start_page - 1
-
     def get_file_loaded(self):
         return self.__file_loaded
 
@@ -332,7 +310,7 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
 
         if forward:
             next_file = files[current_index + 1:]
-            next_page = 0
+            next_page = 1
         else:
             next_file = reversed(files[:current_index])
             next_page = self.__open_first_page

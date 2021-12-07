@@ -42,8 +42,8 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         self.__threadpool = GlobalThreadPool.threadpool
         self.__lock = Lock()
         self.__cache_lock = {}
-        #: Index of current page
-        self.__current_image_index = None
+        #: Current page
+        self.__current_image = None
         #: Set of images reading for decoding (i.e. already extracted)
         self.__available_images = set()
         #: List of pixbufs we want to cache
@@ -53,14 +53,14 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
 
         self.__thumbnailer = Thumbnailer()
 
-    def get_pixbuf(self, index: int):
+    def get_pixbuf(self, page: int):
         """
-        Return the pixbuf indexed by <index> from cache.
+        Return the pixbuf indexed by <page> from cache.
         Pixbufs not found in cache are fetched from disk first
         """
 
-        self._cache_pixbuf(index, force_return=False)
-        return self.__raw_pixbufs[index]
+        self._cache_pixbuf(page, force_return=False)
+        return self.__raw_pixbufs[page]
 
     def get_pixbufs(self, number_of_bufs: int):
         """
@@ -69,7 +69,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         sure that number_of_bufs is as small as possible
         """
 
-        return [self.get_pixbuf(self.__current_image_index + i) for i in range(number_of_bufs)]
+        return [self.get_pixbuf(self.__current_image + i) for i in range(number_of_bufs)]
 
     def do_caching(self):
         """
@@ -87,26 +87,25 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         self.__wanted_pixbufs = self._ask_for_pages(self.get_current_page())
 
         # remove old pixbufs.
-        for index in set(self.__raw_pixbufs) - set(self.__wanted_pixbufs):
-            del self.__raw_pixbufs[index]
+        for page in set(self.__raw_pixbufs) - set(self.__wanted_pixbufs):
+            del self.__raw_pixbufs[page]
 
         logger.debug(f'Caching page(s): {self.__wanted_pixbufs}')
 
         # Start caching available images not already in cache.
-        wanted_pixbufs = [index for index in self.__wanted_pixbufs
-                          if index in self.__available_images]
+        wanted_pixbufs = [page for page in self.__wanted_pixbufs
+                          if page in self.__available_images]
         self.__threadpool.map_async(self._cache_pixbuf, wanted_pixbufs)
 
         self.__lock.release()
 
-    def _cache_pixbuf(self, index: int, force_return: bool = True):
-        with self.__cache_lock[index]:
-            if index in self.__raw_pixbufs:
+    def _cache_pixbuf(self, page: int, force_return: bool = True):
+        with self.__cache_lock[page]:
+            if page in self.__raw_pixbufs:
                 return
             with self.__lock:
-                if index not in self.__wanted_pixbufs and force_return:
+                if page not in self.__wanted_pixbufs and force_return:
                     return
-            page = index + 1
             logger.debug(f'Caching page: {page}')
             try:
                 pixbuf = ImageTools.load_pixbuf(self.__image_files.get_path_from_page(page))
@@ -114,17 +113,14 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
                 logger.error(f'Could not load pixbuf for page: {page}')
                 logger.error(f'Exception: {ex}')
                 pixbuf = None
-            self.__raw_pixbufs[index] = pixbuf
+            self.__raw_pixbufs[page] = pixbuf
 
-    def set_page(self, page_num: int):
+    def set_page(self, page: int):
         """
         Set up filehandler to the page <page_num>
         """
 
-        # if 0 > page_num > self.get_number_of_pages():
-        #     return
-
-        self.__current_image_index = page_num - 1
+        self.__current_image = page
         self.do_caching()
 
     def cleanup(self):
@@ -134,11 +130,9 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
 
         self.__threadpool.renew()
         self.__wanted_pixbufs.clear()
-        while self.__cache_lock:
-            self.__cache_lock.popitem()
-
+        self.__cache_lock.clear()
         self.__image_files.cleanup()
-        self.__current_image_index = None
+        self.__current_image = None
         self.__available_images.clear()
         self.__raw_pixbufs.clear()
 
@@ -149,18 +143,14 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         """
 
         if page is None:
-            current_page = self.get_current_page()
-            if not current_page:
-                # Current 'book' has no page.
-                return False
-            index_list = [current_page - 1]
-            if ViewState.is_displaying_double and not self.is_last_page(current_page):
-                index_list.append(current_page)
-        else:
-            index_list = [page - 1]
+            page = self.get_current_page()
 
-        for index in index_list:
-            if index not in self.__available_images:
+        page_list = [page]
+        if ViewState.is_displaying_double and not self.is_last_page(page):
+            page_list.append(page + 1)
+
+        for page in page_list:
+            if page not in self.__available_images:
                 return False
 
         return True
@@ -170,18 +160,14 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         Called whenever a new page becomes available, i.e. the corresponding file has been extracted
         """
 
-        logger.debug(f'Page is available: \'{page}\'')
-        index = page - 1
+        logger.debug(f'Page is available: {page}')
 
-        # if index in self.__available_images:
-        #     return
-
-        self.__cache_lock[index] = Lock()
-        self.__available_images.add(index)
+        self.__cache_lock[page] = Lock()
+        self.__available_images.add(page)
 
         # Check if we need to cache it.
-        if index in self.__wanted_pixbufs:
-            self.__threadpool.apply_async(self._cache_pixbuf, (index,))
+        if page in self.__wanted_pixbufs:
+            self.__threadpool.apply_async(self._cache_pixbuf, (page,))
 
         self.__events.run_events(EventType.PAGE_AVAILABLE, page)
 
@@ -205,10 +191,10 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         Return the current page number (starting from 1), or 0 if no file is loaded
         """
 
-        if self.__current_image_index is None:
+        if self.__current_image is None:
             return 0
 
-        return self.__current_image_index + 1
+        return self.__current_image
 
     def is_last_page(self, page: int = None):
         """
@@ -226,7 +212,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         """
 
         if page is None:
-            page = self.__current_image_index + 1
+            page = self.__current_image
 
         return self.__image_files.get_path_from_page(page)
 
@@ -327,10 +313,9 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
 
     def _is_page_extracted(self, page: int):
         if page is None:
-            index = self.__current_image_index
-        else:
-            index = page - 1
-        if index in self.__available_images:
+            page = self.get_current_page()
+
+        if page in self.__available_images:
             # page is extracted
             return True
 
@@ -344,11 +329,9 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
 
         total_pages = self.get_number_of_pages()
 
-        page -= 1
-
         cache_start = page - config['PAGE_CACHE_BEHIND']
-        if cache_start < 0:
-            cache_start = 0
+        if cache_start < 1:
+            cache_start = 1
 
         cache_end = page + config['PAGE_CACHE_FORWARD']
         if cache_end > total_pages:
