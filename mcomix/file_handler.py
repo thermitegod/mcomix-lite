@@ -318,13 +318,11 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
             next_page = self.__open_first_page
 
         for path in next_file:
-            if not path.is_file():
-                return False
+            self._close()
+            self.open_file(path, next_page)
+            return True
 
-            if ArchiveSupported.is_archive_file(path=path):
-                self._close()
-                self.open_file(path, next_page)
-                return True
+        return False
 
     def _extracted_file(self, name: str):
         """
