@@ -121,7 +121,7 @@ class BookmarkBackend:
             dialog.run()
             return
 
-        if self.__file_handler.get_base_path() != path:
+        if self.__file_handler.get_real_path() != path:
             self.__file_handler.open_file_init(paths=[path], start_page=current_page)
         else:
             self.__window.set_page(current_page)
