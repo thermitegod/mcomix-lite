@@ -76,13 +76,15 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
         Closes the current file(s)/archive and reloads them
         """
 
-        if self.__file_loaded:
-            current_file = self.get_real_path()
-            if self.__is_archive:
-                start_page = self.__image_handler.get_current_page()
-            else:
-                start_page = 1
-            self.open_file(current_file, start_page)
+        if not self.__file_loaded:
+            return
+
+        current_file = self.get_real_path()
+        if self.__is_archive:
+            start_page = self.__image_handler.get_current_page()
+        else:
+            start_page = 1
+        self.open_file(current_file, start_page)
 
     def open_file_init(self, paths: list, start_page: int = 1):
         """
