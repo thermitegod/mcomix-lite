@@ -215,9 +215,7 @@ class EventHandler:
             return
 
         paths = [Path(url2pathname(urlparse(uri).path)) for uri in uris]
-
-        self.__file_handler.initialize_fileprovider(path=paths)
-        self.__file_handler.open_file(paths[0])
+        self.__file_handler.open_file_init(paths)
 
     def scroll_with_flipping(self, x: int, y: int):
         """

@@ -19,19 +19,14 @@ class GetFileProvider:
         will simply open all files in the passed directory.
         If len(filelist) is greater 1, a PreDefinedFileProvider will be created,
         which will only ever list the files that were passed into it.
-        If len(filelist) is zero, FileProvider will look at the last file opened,
-        if "Auto Open last file" is set. Otherwise, no provider is constructed
         """
 
-        if not filelist:
-            logger.info('File provider: None')
-            return None
-        elif len(filelist) == 1:
+        if len(filelist) == 1:
             # A single file was passed - use Comix' classic open mode
             # and open all files in its directory.
             logger.info('File provider: Ordered')
             return OrderedFileProvider(filelist[0])
-        else:
-            # A list of files was passed - open only these files.
-            logger.info('File provider: Predefined')
-            return PreDefinedFileProvider(filelist)
+
+        # A list of files was passed - open only these files.
+        logger.info('File provider: Predefined')
+        return PreDefinedFileProvider(filelist)

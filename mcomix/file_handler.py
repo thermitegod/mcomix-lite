@@ -82,6 +82,18 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
                 start_page = 0
             self.open_file(current_file, start_page)
 
+    def open_file_init(self, paths: list, start_page: int = 0):
+        """
+        Open the first file pointed to in <paths>,
+        and initialize the file provider.
+        """
+
+        if not paths:
+            return
+
+        self._initialize_fileprovider(path=paths)
+        self.open_file(paths[0], start_page)
+
     def open_file(self, path: Path, start_page: int = 0):
         """
         Open the file pointed to by <path>.
@@ -175,7 +187,7 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
             self.__base_path = None
             self.file_closed()
 
-    def initialize_fileprovider(self, path: list):
+    def _initialize_fileprovider(self, path: list):
         """
         Creates the L{file_provider.FileProvider} for C{path}.
         If C{path} is a list, assumes that only the files in the list

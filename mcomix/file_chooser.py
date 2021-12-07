@@ -127,8 +127,7 @@ class FileChooser(Gtk.Dialog):
             config['FILECHOOSER_LAST_FILTER'] = filter_index
 
             files = [Path(path) for path in paths]
-            self.__file_handler.initialize_fileprovider(files)
-            self.__file_handler.open_file(Path(files[0]))
+            self.__file_handler.open_file_init(files)
 
         self.destroy()
 

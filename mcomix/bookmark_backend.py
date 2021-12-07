@@ -122,8 +122,7 @@ class BookmarkBackend:
             return
 
         if self.__file_handler.get_base_path() != path:
-            self.__file_handler.initialize_fileprovider(path=[path])
-            self.__file_handler.open_file(path=path, start_page=current_page)
+            self.__file_handler.open_file_init(paths=[path], start_page=current_page)
         else:
             self.__window.set_page(current_page)
 

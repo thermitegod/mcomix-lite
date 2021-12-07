@@ -2,8 +2,6 @@
 
 """main.py - Main window"""
 
-from pathlib import Path
-
 from gi.repository import GLib, Gdk, Gtk
 
 from mcomix.bookmark_backend import BookmarkBackend
@@ -149,9 +147,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.show_all()
 
-        if open_path:
-            self.__file_handler.initialize_fileprovider(path=open_path)
-            self.__file_handler.open_file(Path(open_path[0]))
+        self.__file_handler.open_file_init(open_path)
 
     @property
     def bookmark_backend(self):
