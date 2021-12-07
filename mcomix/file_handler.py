@@ -326,7 +326,7 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
 
         files = self._get_file_list()
         if self.__base_path not in files:
-            return
+            return False
 
         current_index = files.index(self.__base_path)
 
