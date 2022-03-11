@@ -78,6 +78,7 @@ class PropertiesDialog(Gtk.Dialog):
         page = self.__archive_page
         page.reset()
         if not self.__file_handler.is_archive():
+            self._update_image_page()
             if self.__notebook.get_n_pages() == 2:
                 self.__notebook.detach_tab(page)
             return
