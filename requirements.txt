@@ -3,6 +3,7 @@ loguru
 pillow
 pygobject
 pyyaml
+regex
 send2trash
 setuptools
 urllib3

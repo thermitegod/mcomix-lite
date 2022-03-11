@@ -3,10 +3,10 @@
 """file_provider.py - Handles listing files for the current directory and
 switching to the next/previous directory"""
 
-import re
+import regex
 
 # Split into float, int, and characters
-NUMERIC_REGEXP = re.compile(r'\d+[.]\d+|\d+|\D+')
+NUMERIC_REGEXP = regex.compile(r'\d+[.]\d+|\d+|\D+')
 
 
 class SortAlphanumeric:
