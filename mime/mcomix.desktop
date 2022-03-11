@@ -1,13 +1,12 @@
 [Desktop Entry]
 Version=1.0
 Name=MComix
-Name[it]=MComix
 GenericName=Manga Viewer
 Comment=A viewer for manga archives
-Exec=mcomix %f
+Exec=mcomix %F
 Icon=mcomix
 Terminal=false
 Type=Application
-StartupNotify=true
+StartupNotify=false
 Categories=Graphics;Viewer;
 MimeType=application/zip;application/vnd.rar;application/x-rar;application/x-rar-compressed;application/x-7z-compressed;application/x-cb7;application/x-ext-cb7;application/x-cbr;application/x-ext-cbr;application/x-cbt;application/x-ext-cbt;application/x-cbz;application/x-ext-cbz;application/pdf;application/x-pdf;application/x-ext-pdf;image/bmp;image/x-MS-bmp;image/x-bmp;image/gif;image/jpeg;image/png;image/tiff;image/x-portable-bitmap;image/x-portable-graymap;image/x-portable-pixmap;
