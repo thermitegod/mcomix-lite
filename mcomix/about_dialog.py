@@ -36,7 +36,7 @@ class AboutDialog(Gtk.AboutDialog):
         self.set_name(Mcomix.APP_NAME.value)
         self.set_program_name(Mcomix.APP_NAME.value)
         self.set_version(f'Version {Mcomix.VERSION.value}')
-        self.set_copyright('Copyright (C) 2005-2021')
+        self.set_copyright('Copyright (C) 2005-2023')
 
         self.set_license_type(Gtk.License.GPL_2_0)
 
