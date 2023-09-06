@@ -13,22 +13,17 @@
 
 from pathlib import Path
 
-from PIL import Image, ImageEnhance, ImageOps, ImageSequence
-from gi.repository import GLib, GdkPixbuf
-from loguru import logger
+from typing import Callable
 
-from mcomix.anime_executor import AnimeFrameExecutor
-from mcomix.anime_framebuffer import AnimeFrameBuffer
+from gi.repository import GdkPixbuf
+
 from mcomix.enums import Animation
-from mcomix.lib.reader import LockedFileIO
 from mcomix.preferences import config
 
 
 class _ImageTools:
     def __init__(self):
         super().__init__()
-
-        self.__anime_executor = AnimeFrameExecutor()
 
     def rotate_pixbuf(self, src, rotation: int):
         match rotation:
@@ -66,9 +61,32 @@ class _ImageTools:
                     width = max(src_width * height // src_height, 1)
         return width, height
 
+    def frame_executor(self, animation, function: Callable, args: tuple = None, kwargs: dict = None):
+        if function is None:
+            # function is not a function, do nothing
+            return animation
+
+        if args is None:
+            args = ()
+        if kwargs is None:
+            kwargs = {}
+
+        if not config['ANIMATION_TRANSFORM']:
+            # transform disabled, do nothing
+            return animation
+
+        try:
+            framebuffer = animation.framebuffer
+        except AttributeError:
+            # animation does not have AnimeFrameBuffer, do nothing
+            return animation
+
+        return framebuffer.copy(lambda pb: function(pb, *args, **kwargs)).create_animation()
+
+
     def fit_pixbuf_to_rectangle(self, src, rect: tuple, rotation: int):
         if self.is_animation(src):
-            return self.__anime_executor.frame_executor(
+            return self.frame_executor(
                 src, self.fit_pixbuf_to_rectangle,
                 args=(rect, rotation)
             )
@@ -115,13 +133,6 @@ class _ImageTools:
                                               keep_ratio=keep_ratio,
                                               scale_up=scale_up)
 
-        if (width, height) != (src_width, src_height) and config['ENABLE_PIL_SCALING']:
-            # scale by PIL interpolation filter
-            src = self.pil_to_pixbuf(self.pixbuf_to_pil(src).resize([width, height],
-                                                                    resample=config['PIL_SCALING_FILTER']))
-            src_width = src.get_width()
-            src_height = src.get_height()
-
         if src.get_has_alpha():
             if (width, height) == (src_width, src_height):
                 # Using anything other than nearest interpolation will result in a
@@ -134,15 +145,6 @@ class _ImageTools:
             src = src.scale_simple(width, height, scaling_quality)
 
         return self.rotate_pixbuf(src, rotation)
-
-    def pil_has_alpha(self, im):
-        """
-        Returns True if PIL image has alpha channel
-        """
-
-        if im.mode in ('RGBA', 'LA', 'P'):
-            return True
-        return False
 
     def add_alpha_background(self, pixbuf, width: int, height: int, scaling_quality: int = None):
         if config['CHECKERED_BG_FOR_TRANSPARENT_IMAGES']:
@@ -160,13 +162,6 @@ class _ImageTools:
         return pixbuf.composite_color_simple(width, height, scaling_quality,
                                              255, check_size, color1, color2)
 
-    def add_border_pil(self, im):
-        """
-        Return a pixbuf from <pixbuf> with a black, 1 px border
-        """
-
-        return ImageOps.expand(im, border=1, fill=0)
-
     def add_border_pixbuf(self, pixbuf):
         """
         Return a pixbuf from <pixbuf> with a black, 1 px border
@@ -183,40 +178,6 @@ class _ImageTools:
         pixbuf.copy_area(src_x=0, src_y=0, width=width, height=height,
                          dest_pixbuf=canvas, dest_x=1, dest_y=1)
         return canvas
-
-    def pil_to_pixbuf(self, im):
-        """
-        Return a pixbuf created from the PIL <im>
-        """
-
-        has_alpha = self.pil_has_alpha(im)
-
-        if has_alpha:
-            target_mode = 'RGBA'
-        else:
-            target_mode = 'RGB'
-
-        if im.mode != target_mode:
-            im = im.convert(target_mode)
-        pixbuf = GdkPixbuf.Pixbuf.new_from_bytes(
-            GLib.Bytes.new(im.tobytes()), GdkPixbuf.Colorspace.RGB,
-            has_alpha, 8,
-            im.size[0], im.size[1],
-            (4 if has_alpha else 3) * im.size[0]
-        )
-
-        return pixbuf
-
-    def pixbuf_to_pil(self, pixbuf):
-        """
-        Return a PIL image created from <pixbuf>
-        """
-
-        dimensions = pixbuf.get_width(), pixbuf.get_height()
-        stride = pixbuf.get_rowstride()
-        pixels = pixbuf.get_pixels()
-        mode = 'RGBA' if pixbuf.get_has_alpha() else 'RGB'
-        return Image.frombuffer(mode, dimensions, pixels, 'raw', mode, stride, 1)
 
     def is_animation(self, pixbuf):
         return isinstance(pixbuf, GdkPixbuf.PixbufAnimation)
@@ -246,48 +207,12 @@ class _ImageTools:
 
         return image.set_from_pixbuf(pixbuf)
 
-    def load_animation(self, im):
-        if im.format == 'GIF' and im.mode == 'P':
-            # TODO: Pillow has bug with gif animation
-            # https://github.com/python-pillow/Pillow/labels/GIF
-            #
-            # Pillow has bug with gif animation, fallback to GdkPixbuf
-            raise NotImplementedError
-        anime = AnimeFrameBuffer(im.n_frames, loop=im.info['loop'])
-        background = im.info.get('background', None)
-        if isinstance(background, tuple):
-            color = 0
-            for n, c in enumerate(background):
-                color |= c << n * 8
-            background = color
-        frameiter = ImageSequence.Iterator(im)
-        for n, frame in enumerate(frameiter):
-            anime.add_frame(n, self.pil_to_pixbuf(frame),
-                            int(frame.info.get('duration', 0)),
-                            background=background)
-        return anime.create_animation()
-
     def load_pixbuf(self, path: Path):
         """
         Loads a pixbuf from a given image file
         """
 
         enable_anime = config['ANIMATION_MODE'] != Animation.DISABLED.value
-        n_frames = None
-        loop = None
-        try:
-            with LockedFileIO(path) as fio:
-                with Image.open(fio) as im:
-                    # make sure n_frames loaded
-                    im.load()
-                    if enable_anime and im.is_animated:
-                        n_frames = im.n_frames
-                        loop = im.info['loop']
-                        return self.load_animation(im)
-                    return self.pil_to_pixbuf(im)
-        except Exception as ex:
-            # should only be hit when loading trying to load a gif
-            logger.debug(f'failed to load pixbuf: {ex}')
 
         if not enable_anime:
             return GdkPixbuf.Pixbuf.new_from_file(str(path))
@@ -295,81 +220,29 @@ class _ImageTools:
         pixbuf = GdkPixbuf.PixbufAnimation.new_from_file(str(path))
         if pixbuf.is_static_image():
             return pixbuf.get_static_image()
-
-        if n_frames is None or n_frames < 2:
-            # not recognized by PIL or not animation, or only a single frame
-            return pixbuf
-
-        # assume PIL and GdkPixbuf count frames in same way.
-        anime = AnimeFrameBuffer(n_frames, loop=loop)
-        cur = GLib.TimeVal()
-        frame_iter = pixbuf.get_iter(cur)
-        for n in range(n_frames):
-            frame_ref = frame_iter.get_pixbuf()
-            frame = frame_ref.copy()
-            frame_ref.copy_options(frame)
-
-            delay = frame_iter.get_delay_time()
-            cur.tv_usec += delay * 1000
-            while not frame_iter.advance(cur):
-                delay += frame_iter.get_delay_time()
-                cur.tv_usec += delay * 1000
-
-            anime.add_frame(n, frame, delay)
-
-            if n == n_frames - 1:
-                # end of animation
-                break
-
-        return anime.create_animation()
-
-    def enhance(self, pixbuf):
-        """
-        Return a modified pixbuf from <pixbuf> where the enhancement operations
-        corresponding to each argument has been performed. A value of 1.0 means
-        no change. If <autocontrast> is True it overrides the <contrast> value,
-        but only if the image mode is supported by ImageOps.autocontrast (i.e.
-        it is L or RGB.)
-        """
-
-        enhance_config = {config['BRIGHTNESS'], config['CONTRAST'], config['SATURATION'], config['SHARPNESS']}
-        if all(val == 1.0 for val in enhance_config):
-            return pixbuf
-
-        if self.is_animation(pixbuf):
-            return self.__anime_executor.frame_executor(pixbuf, self.enhance)
-
-        im = self.pixbuf_to_pil(pixbuf)
-        if config['BRIGHTNESS'] != 1.0:
-            im = ImageEnhance.Brightness(im).enhance(config['BRIGHTNESS'])
-        if config['AUTO_CONTRAST'] and im.mode in ('L', 'RGB'):
-            im = ImageOps.autocontrast(im, cutoff=0.1)
-        elif config['CONTRAST'] != 1.0:
-            im = ImageEnhance.Contrast(im).enhance(config['CONTRAST'])
-        if config['SATURATION'] != 1.0:
-            im = ImageEnhance.Color(im).enhance(config['SATURATION'])
-        if config['SHARPNESS'] != 1.0:
-            im = ImageEnhance.Sharpness(im).enhance(config['SHARPNESS'])
-
-        return self.pil_to_pixbuf(im)
+        return pixbuf
 
     def get_image_size(self, path: Path):
         """
         Return image informations: (width, height)
         """
 
-        with LockedFileIO(path) as fio:
-            with Image.open(fio) as im:
-                return im.size
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file(str(path))
+        return (pixbuf.get_width(), pixbuf.get_height())
 
     def get_image_mime(self, path: Path):
         """
         Return image informations: (format)
         """
 
-        with LockedFileIO(path) as fio:
-            with Image.open(fio) as im:
-                return im.format
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file(str(path))
+        formats = GdkPixbuf.Pixbuf.get_formats()
+        for format_info in formats:
+            if format_info.is_disabled():
+                continue
+            if format_info.get_name().lower() == pixbuf.get_file_info().get_mime_type().lower():
+                return format_info.get_mime_types()[0]
+        return None
 
 
 ImageTools = _ImageTools()

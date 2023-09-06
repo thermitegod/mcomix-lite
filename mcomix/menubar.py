@@ -110,8 +110,6 @@ class Menubar(Gtk.EventBox):
         menuitem_tools.set_submenu(menu_tools)
 
         memu_tools_items = (
-            MENUBAR('Enhance Image', self._create_submenu_item, events.run_events_gui, EventType.KB_OPEN_DIALOG, {'dialog': DialogChoice.ENHANCE}),
-            MENUBAR('separator', self._create_separator, None, None, None),
             MENUBAR('Rotate 90°', self._create_submenu_item, events.run_events_gui, EventType.KB_PAGE_ROTATE, {'rotation': 90}),
             MENUBAR('Rotate 180°', self._create_submenu_item, events.run_events_gui, EventType.KB_PAGE_ROTATE, {'rotation': 180}),
             MENUBAR('Rotate 270°', self._create_submenu_item, events.run_events_gui, EventType.KB_PAGE_ROTATE, {'rotation': 270}),

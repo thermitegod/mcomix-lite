@@ -14,21 +14,17 @@
 from enum import Enum
 from pathlib import Path
 
-from PIL import Image
-
-
-# disable PIL DecompressionBombWarning
-Image.MAX_IMAGE_PIXELS = None
-
-# formats supported by PIL
-Image.init()
+from gi.repository import GdkPixbuf
 
 
 class ImageSupported(Enum):
-    # formats supported by PIL
-    EXTS = set([ext for ext in Image.EXTENSION
-                if ext not in ('.pdf',)])
+    # formats supported by GdkPixbuf
+    # extensions: set = set()
+    # for format in GdkPixbuf.Pixbuf.get_formats():
+    #     extensions.update(format.get_extensions())
+    extensions = {ext for format in GdkPixbuf.Pixbuf.get_formats() for ext in format.get_extensions()}
 
     @classmethod
     def is_image_file(cls, path: Path):
-        return path.suffix.lower() in cls.EXTS.value
+        # GdkPixbuf does not include '.' at the start
+        return path.suffix.lower().removeprefix('.') in cls.extensions.value

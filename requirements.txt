@@ -1,6 +1,5 @@
 libarchive-c
 loguru
-pillow
 pygobject
 pyyaml
 regex

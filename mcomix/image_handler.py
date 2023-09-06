@@ -318,7 +318,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         if not Path.is_file(path):
             return None
 
-        return self.__thumbnailer(size=size, filepath=path)
+        return self.__thumbnailer(max_size=size[0], filepath=path)
 
     def _is_page_extracted(self, page: int):
         if page is None:

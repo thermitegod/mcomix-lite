@@ -14,7 +14,6 @@
 from __future__ import annotations
 
 from mcomix.about_dialog import AboutDialog
-from mcomix.enhance_dialog import EnhanceImageDialog
 from mcomix.enums import DialogChoice
 from mcomix.file_chooser import FileChooser
 from mcomix.keybindings_dialog import KeybindingEditorDialog
@@ -35,8 +34,6 @@ class DialogChooser:
         match dialog:
             case DialogChoice.ABOUT:
                 self.__dialog_chosen = AboutDialog
-            case DialogChoice.ENHANCE:
-                self.__dialog_chosen = EnhanceImageDialog
             case DialogChoice.FILECHOOSER:
                 self.__dialog_chosen = FileChooser
             case DialogChoice.KEYBINDINGS:

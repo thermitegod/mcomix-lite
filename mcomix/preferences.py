@@ -11,9 +11,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-# must not depend on GTK, PIL, or any other optional libraries.
+# must not depend on GTK, or any other optional libraries.
 
-from mcomix.enums import Animation, ConfigPaths, DoublePage, FileSortDirection, FileSortType, ScalingGDK, ScalingPIL, ZoomModes
+from mcomix.enums import Animation, ConfigPaths, DoublePage, FileSortDirection, FileSortType, ScalingGDK, ZoomModes
 
 # All preferences are stored here.
 config = {
@@ -44,11 +44,6 @@ config = {
     'ROTATION': 0,
     'KEEP_TRANSFORMATION': False,
     'STORED_DIALOG_CHOICES': {},
-    'BRIGHTNESS': 1.0,
-    'CONTRAST': 1.0,
-    'SATURATION': 1.0,
-    'SHARPNESS': 1.0,
-    'AUTO_CONTRAST': False,
     'PAGE_CACHE_FORWARD': 8,
     'PAGE_CACHE_BEHIND': 4,
     'STATUSBAR_FIELD_PAGE_NUMBERS': True,
@@ -66,12 +61,10 @@ config = {
     'SI_UNITS': False,
     'MAX_THREADS': 16,
     'GDK_SCALING_FILTER': ScalingGDK.Bilinear.value,
-    'PIL_SCALING_FILTER': ScalingPIL.Bilinear.value,
-    'ENABLE_PIL_SCALING': True,
     'ESCAPE_QUITS': True,
     'FIT_TO_SIZE_MODE': ZoomModes.HEIGHT.value,
     'FIT_TO_SIZE_PX': 1800,
-    'ANIMATION_MODE': Animation.INF.value,
+    'ANIMATION_MODE': Animation.NORMAL.value,
     'ANIMATION_BACKGROUND': True,
     'ANIMATION_TRANSFORM': True,
     'MOVE_FILE': 'keep',

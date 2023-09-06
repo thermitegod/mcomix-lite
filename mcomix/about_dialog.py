@@ -18,7 +18,6 @@ from pathlib import Path
 from gi.repository import Gtk, GdkPixbuf
 
 from mcomix.enums import Mcomix
-from mcomix.image_tools import ImageTools
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:

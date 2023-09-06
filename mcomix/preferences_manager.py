@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-# must not depend on GTK, PIL, or any other optional libraries.
+# must not depend on GTK, or any other optional libraries.
 
 from pathlib import Path
 

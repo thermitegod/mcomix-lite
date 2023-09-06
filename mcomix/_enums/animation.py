@@ -11,11 +11,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-from enum import Enum
+from enum import Enum, auto
 
 
 class Animation(Enum):
-    DISABLED = 0
-    NORMAL = 1
-    ONCE = 2
-    INF = 3
+    DISABLED = auto()
+    NORMAL = auto()

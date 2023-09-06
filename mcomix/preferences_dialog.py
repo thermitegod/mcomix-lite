@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from gi.repository import GObject, Gtk
 
-from mcomix.enums import Animation, DoublePage, FileSortDirection, FileSortType, ScalingGDK, ScalingPIL, ZoomModes
+from mcomix.enums import Animation, DoublePage, FileSortDirection, FileSortType, ScalingGDK, ZoomModes
 from mcomix.file_handler import FileHandler
 from mcomix.image_handler import ImageHandler
 from mcomix.lib.events import Events, EventType
@@ -219,13 +219,6 @@ class PreferencesDialog(Gtk.Dialog):
         page.add_row(Gtk.Label(label='GDK image scaling'),
                      self._create_combobox_scaling_quality())
 
-        page.add_row(self._create_pref_check_button(
-            'Enable PIL image scaling',
-            'ENABLE_PIL_SCALING'))
-
-        page.add_row(Gtk.Label(label='PIL image scaling'),
-                     self._create_combobox_pil_scaling_filter())
-
         page.new_section('Statusbar')
 
         page.add_row(self._create_pref_check_button(
@@ -260,7 +253,7 @@ class PreferencesDialog(Gtk.Dialog):
             'ANIMATION_BACKGROUND'))
 
         page.add_row(self._create_pref_check_button(
-            'Enable scale, rotate, flip and enhance operation on animation',
+            'Enable scale, rotate, and flip operation on animation',
             'ANIMATION_TRANSFORM'))
 
         return page
@@ -295,12 +288,6 @@ class PreferencesDialog(Gtk.Dialog):
                      self._create_pref_spinner(
                          'PAGE_CACHE_BEHIND',
                          1, 1, 10, 1, 3, 0))
-
-        page.new_section('Enhance')
-
-        page.add_row(self._create_pref_check_button(
-            'Show extra info on enhance dialog',
-            'ENHANCE_EXTRA'))
 
         page.new_section('Unit Size')
 
@@ -444,22 +431,6 @@ class PreferencesDialog(Gtk.Dialog):
 
         return self._create_combobox(items, 'GDK_SCALING_FILTER')
 
-    def _create_combobox_pil_scaling_filter(self):
-        """
-        Creates combo box for PIL filter to scale with in main view
-        """
-
-        items = (
-            ('Nearest', ScalingPIL.Nearest.value),
-            ('Lanczos', ScalingPIL.Lanczos.value),
-            ('Bilinear', ScalingPIL.Bilinear.value),
-            ('Bicubic', ScalingPIL.Bicubic.value),
-            ('Box', ScalingPIL.Box.value),
-            ('Hamming', ScalingPIL.Hamming.value),
-        )
-
-        return self._create_combobox(items, 'PIL_SCALING_FILTER')
-
     def _create_combobox_animation_mode(self):
         """
         Creates combo box for animation mode
@@ -468,8 +439,6 @@ class PreferencesDialog(Gtk.Dialog):
         items = (
             ('Never', Animation.DISABLED.value),
             ('Normal', Animation.NORMAL.value),
-            ('Once', Animation.ONCE.value),
-            ('Infinity', Animation.INF.value),
         )
 
         return self._create_combobox(items, 'ANIMATION_MODE')
@@ -493,7 +462,7 @@ class PreferencesDialog(Gtk.Dialog):
         match preference:
             case ('ANIMATION_MODE' | 'SORT_ARCHIVE_ORDER' | 'SORT_ARCHIVE_BY' | 'SORT_ORDER' | 'SORT_BY'):
                 self.__file_handler.refresh_file()
-            case ('PIL_SCALING_FILTER' | 'GDK_SCALING_FILTER'):
+            case ('GDK_SCALING_FILTER'):
                 self.__window.statusbar.update_image_scaling()
                 self.__events.run_events(EventType.DRAW_PAGE)
             case ('VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES' | 'CHECKERED_BG_SIZE'):

@@ -16,7 +16,7 @@ from gi.repository import GLib, Gdk, Gtk
 from mcomix.bookmark_backend import BookmarkBackend
 from mcomix.cursor_handler import CursorHandler
 from mcomix.dialog_chooser import DialogChooser
-from mcomix.enums import DialogChoice, DoublePage, Mcomix, PageOrientation, ScalingGDK, ScalingPIL, Scroll, ZoomAxis
+from mcomix.enums import DialogChoice, DoublePage, Mcomix, PageOrientation, ScalingGDK, Scroll, ZoomAxis
 from mcomix.file_handler import FileHandler
 from mcomix.filesystem_actions import FileSystemActions
 from mcomix.image_handler import ImageHandler
@@ -63,7 +63,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__events.add_event(EventType.KB_OPEN_DIALOG, self.open_dialog)
         self.__events.add_event(EventType.KB_EXIT, self.terminate_program)
         self.__events.add_event(EventType.KB_IMAGE_SCALING_CHANGE, self.change_image_scaling)
-        self.__events.add_event(EventType.KB_IMAGE_SCALING_TOGGLE, self.toggle_image_scaling)
         self.__events.add_event(EventType.KB_OPEN_PAGESELECTOR, self.page_select)
         self.__events.add_event(EventType.KB_PAGE_ROTATE, self.rotate_x)
         self.__events.add_event(EventType.KB_CHANGE_STRETCH, self.change_stretch)
@@ -300,7 +299,6 @@ class MainWindow(Gtk.ApplicationWindow):
             rotation_list[i] = rotation
 
             pixbuf_list[i] = ImageTools.fit_pixbuf_to_rectangle(pixbuf_list[i], scaled_sizes[i], rotation_list[i])
-            pixbuf_list[i] = ImageTools.enhance(pixbuf_list[i])
 
             ImageTools.set_from_pixbuf(self.__images[i], pixbuf_list[i])
 
@@ -552,23 +550,10 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__zoom.reset_user_zoom()
         self.__events.run_events(EventType.DRAW_PAGE)
 
-    def toggle_image_scaling(self):
-        config['ENABLE_PIL_SCALING'] = not config['ENABLE_PIL_SCALING']
-
-        self.__statusbar.update_image_scaling()
-        self.__events.run_events(EventType.DRAW_PAGE)
-
     def change_image_scaling(self, step: int):
-        if config['ENABLE_PIL_SCALING']:
-            config_key = 'PIL_SCALING_FILTER'
-            algos = ScalingPIL
-        else:
-            config_key = 'GDK_SCALING_FILTER'
-            algos = ScalingGDK
-
         # inc/dec active algo, modulus loops algos to start on overflow
         # and end on underflow
-        config[config_key] = algos((config[config_key] + step) % len(algos)).value
+        config['GDK_SCALING_FILTER'] = ScalingGDK((config['GDK_SCALING_FILTER'] + step) % len(ScalingGDK)).value
 
         self.__statusbar.update_image_scaling()
         self.__events.run_events(EventType.DRAW_PAGE)

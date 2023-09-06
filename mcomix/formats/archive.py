@@ -16,7 +16,7 @@ from pathlib import Path
 
 
 class ArchiveSupported(Enum):
-    EXTS = set(
+    extensions = set(
         (
             '.zip', '.cbz',
             '.rar', '.cbr',
@@ -30,4 +30,4 @@ class ArchiveSupported(Enum):
 
     @classmethod
     def is_archive_file(cls, path: Path):
-        return path.suffix.lower() in cls.EXTS.value
+        return path.suffix.lower() in cls.extensions.value

@@ -49,7 +49,6 @@ class EventType(Enum):
     KB_EXTRACT_PAGE = auto()
     KB_EXIT = auto()
     KB_IMAGE_SCALING_CHANGE = auto()
-    KB_IMAGE_SCALING_TOGGLE = auto()
     KB_OPEN_PAGESELECTOR = auto()
     KB_OPEN_ARCHIVE_DIRECTION = auto()
     KB_SCROLL_WITH_FLIPPING = auto()

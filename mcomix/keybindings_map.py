@@ -441,16 +441,6 @@ class KeyBindingsMap(metaclass=SingleInstanceMetaClass):
                         None,
                     ),
                 ),
-            'enhance_image':
-                MAP(
-                    INFO(group_file, 'Enhance image'),
-                    KEYBINDINGS(['e']),
-                    KEY_EVENT(
-                        events.run_events,
-                        EventType.KB_OPEN_DIALOG,
-                        {'dialog': DialogChoice.ENHANCE},
-                    ),
-                ),
             'extract_page':
                 MAP(
                     INFO(group_file, 'Extract Page'),
@@ -523,19 +513,9 @@ class KeyBindingsMap(metaclass=SingleInstanceMetaClass):
                 ),
 
             # Image Scaling
-            'toggle_scaling_pil':
-                MAP(
-                    INFO(group_scale, 'Toggle GDK/PIL Image scaling'),
-                    KEYBINDINGS(['c']),
-                    KEY_EVENT(
-                        events.run_events,
-                        EventType.KB_IMAGE_SCALING_TOGGLE,
-                        None,
-                    ),
-                ),
             'scaling_inc':
                 MAP(
-                    INFO(group_scale, 'Cycle GDK/PIL Image scaling forward'),
+                    INFO(group_scale, 'Cycle GDK Image scaling forward'),
                     KEYBINDINGS(['z']),
                     KEY_EVENT(
                         events.run_events,
@@ -545,7 +525,7 @@ class KeyBindingsMap(metaclass=SingleInstanceMetaClass):
                 ),
             'scaling_dec':
                 MAP(
-                    INFO(group_scale, 'Cycle GDK/PIL Image scaling backwards'),
+                    INFO(group_scale, 'Cycle GDK Image scaling backwards'),
                     KEYBINDINGS(['x']),
                     KEY_EVENT(
                         events.run_events,
