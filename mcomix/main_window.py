@@ -15,7 +15,6 @@ from mcomix.image_tools import ImageTools
 from mcomix.input_handler import InputHandler
 from mcomix.keybindings_manager import KeybindingManager
 from mcomix.layout import FiniteLayout
-from mcomix.lens import MagnifyingLens
 from mcomix.lib.events import Events, EventType
 from mcomix.menubar import Menubar
 from mcomix.pageselect import Pageselector
@@ -96,7 +95,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__keybindings = KeybindingManager(self)
 
         self.__cursor_handler = CursorHandler(self)
-        self.__lens = MagnifyingLens(self)
 
         self.__main_layout = Gtk.Layout()
         self.__main_scrolled_window = Gtk.ScrolledWindow()
@@ -146,7 +144,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__main_layout.connect('button_press_event', self.__input_handler.mouse_press_event)
         self.__main_layout.connect('motion_notify_event', self.__input_handler.mouse_move_event)
         self.__main_layout.connect('drag_data_received', self.__input_handler.drag_n_drop_event)
-        self.__main_layout.connect('motion-notify-event', self.__lens.motion_event)
         self.__main_layout.connect('motion-notify-event', self.__cursor_handler.refresh)
 
         self.set_title(Mcomix.APP_NAME.value)
@@ -198,14 +195,6 @@ class MainWindow(Gtk.ApplicationWindow):
         """
 
         return self.__cursor_handler
-
-    @property
-    def lens(self):
-        """
-        Interface for MagnifyingLens
-        """
-
-        return self.__lens
 
     @property
     def layout(self):

@@ -287,18 +287,6 @@ class PreferencesDialog(Gtk.Dialog):
                          'PAGE_CACHE_BEHIND',
                          1, 1, 10, 1, 3, 0))
 
-        page.new_section('Magnifying Lens')
-
-        page.add_row(Gtk.Label(label='Magnifying lens size (in pixels):'),
-                     self._create_pref_spinner(
-                         'LENS_SIZE',
-                         1, 50, 400, 1, 10, 0))
-
-        page.add_row(Gtk.Label(label='Magnification lens factor:'),
-                     self._create_pref_spinner(
-                         'LENS_MAGNIFICATION',
-                         1, 1.1, 10.0, 0.1, 1.0, 1))
-
         page.new_section('Enhance')
 
         page.add_row(self._create_pref_check_button(
@@ -576,9 +564,7 @@ class PreferencesDialog(Gtk.Dialog):
         """
 
         value = spinbutton.get_value()
-
-        if preference not in ('LENS_MAGNIFICATION',):
-            config[preference] = int(value)
+        config[preference] = int(value)
 
         match preference:
             case ('THUMBNAIL_SIZE'):

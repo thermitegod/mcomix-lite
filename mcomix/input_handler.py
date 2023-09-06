@@ -143,7 +143,7 @@ class InputHandler:
             case 1:
                 pass
             case 2:
-                self.__window.lens.toggle(True)
+                pass
             case 3:
                 pass
             case 4:
@@ -158,7 +158,7 @@ class InputHandler:
             case 1:
                 pass
             case 2:
-                self.__window.lens.toggle(False)
+                pass
             case 3:
                 pass
             case 4:

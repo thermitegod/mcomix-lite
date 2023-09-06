@@ -20,8 +20,6 @@ config = {
     'ZOOM_MODE': ZoomModes.BEST.value,
     'DEFAULT_MANGA_MODE': True,
     'PAGE_FF_STEP': 10,
-    'LENS_MAGNIFICATION': 2,
-    'LENS_SIZE': 200,
     'ENHANCE_EXTRA': True,
     'VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES': DoublePage.ALWAYS.value,
     'DOUBLE_STEP_IN_DOUBLE_PAGE_MODE': True,
