@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""Configuration tree view for the preferences dialog to edit keybindings"""
-
 from __future__ import annotations
 
 from gi.repository import Gtk

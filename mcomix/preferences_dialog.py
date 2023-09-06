@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""preferences_dialog.py - Preferences dialog"""
-
 from __future__ import annotations
 
 from gi.repository import GObject, Gtk

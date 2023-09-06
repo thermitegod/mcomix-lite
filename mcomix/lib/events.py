@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import threading
 from enum import Enum, auto
 from typing import Callable

@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""image_tools.py - Various image manipulations"""
-
 from pathlib import Path
 
 from PIL import Image, ImageEnhance, ImageOps, ImageSequence

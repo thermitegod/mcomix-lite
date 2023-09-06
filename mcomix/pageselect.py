@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""pageselect.py - The dialog window for the page selector"""
-
 from __future__ import annotations
 
 from gi.repository import Gtk

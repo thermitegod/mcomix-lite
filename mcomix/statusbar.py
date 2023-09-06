@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""status.py - Statusbar for main window"""
-
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable

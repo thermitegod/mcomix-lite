@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""properties_page.py - A page to put in the properties dialog window"""
-
 from gi.repository import Gtk
 
 from mcomix.image_tools import ImageTools

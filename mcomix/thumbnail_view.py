@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""Gtk.IconView subclass for dynamically generated thumbnails"""
-
 import uuid
 
 from gi.repository import Gtk

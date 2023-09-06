@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # must not depend on GTK, PIL, or any other optional libraries.
 
 from pathlib import Path

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from loguru import logger
 
 from mcomix.providers.file_provider_ordered import OrderedFileProvider

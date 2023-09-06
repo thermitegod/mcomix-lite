@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Dynamic hotkey management
 
 This module handles global hotkeys that were previously hardcoded in events.py.

@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""menubar.py - creates the menubar for main window"""
-
 from __future__ import annotations
 
 from dataclasses import dataclass

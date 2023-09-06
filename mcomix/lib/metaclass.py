@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # https://www.pythonprogramming.in/singleton-class-using-metaclass-in-python.html
 
 

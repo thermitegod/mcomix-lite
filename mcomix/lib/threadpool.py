@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import sys
 from multiprocessing import Lock
 from multiprocessing.dummy import Pool

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import os
 from enum import Enum, auto
 from pathlib import Path

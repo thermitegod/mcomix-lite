@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""archive_extractor.py - Archive extraction class"""
-
 import threading
 import traceback
 from pathlib import Path

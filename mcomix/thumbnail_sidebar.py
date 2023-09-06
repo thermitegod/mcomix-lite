@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""thumbnail_sidebar.py - Thumbnail sidebar for main window"""
-
 from __future__ import annotations
 
 from gi.repository import Gdk, GdkPixbuf, Gtk

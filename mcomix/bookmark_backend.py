@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""bookmark_backend.py - Bookmarks handler"""
-
 from __future__ import annotations
 
 from datetime import datetime

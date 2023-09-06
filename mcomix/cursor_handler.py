@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""cursor_handler.py - Cursor handler"""
-
 from __future__ import annotations
 
 from enum import Enum, auto

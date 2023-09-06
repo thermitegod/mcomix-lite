@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""bookmark_menu.py - Bookmarks menu"""
-
 from __future__ import annotations
 
 from gi.repository import Gtk

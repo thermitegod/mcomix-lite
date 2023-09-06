@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""Handles zoom and fit of images in the main display area"""
-
 import operator
 from functools import reduce
 

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import html
 
 from gi.repository import Gtk

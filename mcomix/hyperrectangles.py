@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""Hyperrectangles"""
-
 import operator
 
 

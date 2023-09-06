@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 from mcomix.state.view_state import ViewState
 

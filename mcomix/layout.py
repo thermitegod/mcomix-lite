@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""Layout"""
-
 from mcomix.enums import Scroll
 from mcomix.hyperrectangles import Box
 

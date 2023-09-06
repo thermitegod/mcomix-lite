@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""
-Base class for unified handling of various archive formats. Used for simplifying
-extraction and adding new archive formats
-"""
-
 from pathlib import Path
 from tempfile import TemporaryDirectory
 

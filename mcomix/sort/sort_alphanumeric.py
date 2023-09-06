@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""file_provider.py - Handles listing files for the current directory and
-switching to the next/previous directory"""
-
 import regex
 
 # Split into float, int, and characters

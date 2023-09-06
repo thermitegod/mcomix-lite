@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #: Bindings defined in this dictionary will appear in the configuration dialog.
 #: If 'group' is None, the binding cannot be modified from the preferences dialog.
 

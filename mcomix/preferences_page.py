@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from gi.repository import Gtk
 
 from mcomix.preferences_section import PreferenceSection

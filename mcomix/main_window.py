@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""main.py - Main window"""
-
 from gi.repository import GLib, Gdk, Gtk
 
 from mcomix.bookmark_backend import BookmarkBackend

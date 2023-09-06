@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""bookmark_menu_item.py - A signle bookmark item"""
-
 from __future__ import annotations
 
 from datetime import datetime

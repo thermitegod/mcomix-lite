@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""image_handler.py - Image handler that takes care of cacheing and giving out images"""
-
 from __future__ import annotations
 
 from pathlib import Path

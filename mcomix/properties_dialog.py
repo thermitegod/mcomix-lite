@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""properties_dialog.py - Properties dialog that displays information about the archive/file"""
-
 from __future__ import annotations
 
 import stat

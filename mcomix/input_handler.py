@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""input_handler.py - Event handling (keyboard, mouse, etc.) for the main window"""
-
 from __future__ import annotations
 
 from pathlib import Path

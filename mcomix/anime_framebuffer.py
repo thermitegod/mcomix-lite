@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import math
 from typing import Callable
 

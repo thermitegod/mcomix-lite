@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""bookmark_dialog.py - Bookmarks dialog handler"""
-
 from __future__ import annotations
 
 from gi.repository import GObject, Gdk, Gtk

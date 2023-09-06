@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from pathlib import Path
 
 from mcomix.lib.metaclass import SingleInstanceMetaClass

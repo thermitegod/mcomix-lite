@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # flake8: noqa
 from mcomix._enums.animation import Animation
 from mcomix._enums.config_files import ConfigFiles, ConfigPaths, ConfigType

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # must not depend on GTK, PIL, or any other optional libraries.
 
 from mcomix.enums import Animation, ConfigPaths, DoublePage, FileSortDirection, FileSortType, ScalingGDK, ScalingPIL, ZoomModes

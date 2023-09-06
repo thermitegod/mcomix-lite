@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""filechooser_chooser.py - Custom FileChooserDialog implementations"""
-
 from __future__ import annotations
 
 import fnmatch
