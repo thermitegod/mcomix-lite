@@ -7,4 +7,3 @@ regex
 send2trash
 setuptools
 urllib3
-xxhash

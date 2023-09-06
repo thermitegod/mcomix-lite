@@ -13,7 +13,7 @@
 
 from pathlib import Path
 
-import xxhash
+import hashlib
 import yaml
 from loguru import logger
 
@@ -41,7 +41,7 @@ class _ConfigBackend:
         self.__stored_config_hash[module] = self._hash_config(config=config)
 
     def _hash_config(self, config: dict):
-        return xxhash.xxh3_64(self._dump_config(config).encode('utf8')).hexdigest()
+        return hashlib.sha1(self._dump_config(config).encode('utf8')).hexdigest()
 
     def _dump_config(self, config: dict):
         return yaml.dump(config, Dumper=yaml.CSafeDumper, sort_keys=False)
