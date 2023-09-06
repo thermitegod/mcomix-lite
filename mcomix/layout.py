@@ -7,8 +7,6 @@ from mcomix.hyperrectangles import Box
 
 
 class FiniteLayout:  # 2D only
-    __slots__ = ('__content_boxes', '__union_box', '__viewport_box', '__orientation')
-
     def __init__(self, content_sizes: list[tuple], viewport_size: tuple, orientation: list,
                  distribution_axis: int, alignment_axis: int):
         """

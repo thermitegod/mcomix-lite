@@ -10,9 +10,6 @@ from mcomix.preferences import config
 
 
 class AnimeFrameBuffer:
-    __slots__ = ('__n_frames', '__width', '__height', '__loop',
-                 '__framelist', '__duration', '__fps')
-
     def __init__(self, n_frames: int, loop: int = 1):
         super().__init__()
 

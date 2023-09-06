@@ -7,8 +7,6 @@ _IOLock = Lock()
 
 
 class LockedFileIO(io.BytesIO):
-    __slots__ = ()
-
     def __init__(self, path):
         super().__init__()
 

@@ -18,8 +18,6 @@ if TYPE_CHECKING:
 
 
 class AboutDialog(Gtk.AboutDialog):
-    __slots__ = ('__window',)
-
     def __init__(self, window: MainWindow):
         super().__init__(title='About')
 

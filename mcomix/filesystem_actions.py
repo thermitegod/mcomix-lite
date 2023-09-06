@@ -23,8 +23,6 @@ if TYPE_CHECKING:
 
 
 class FileSystemActions:
-    __slots__ = ('__window', '__file_handler', '__image_handler', '__events')
-
     def __init__(self, window: MainWindow):
         super().__init__()
 

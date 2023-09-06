@@ -21,12 +21,6 @@ if TYPE_CHECKING:
 
 
 class InputHandler:
-    __slots__ = (
-        '__window', '__file_handler', '__all_accels_mask',
-        '__keymap', '__last_pointer_pos_x', '__last_pointer_pos_y',
-        '__was_fullscreen', '__previous_size', '__events',
-    )
-
     def __init__(self, window: MainWindow):
         super().__init__()
 

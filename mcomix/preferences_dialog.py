@@ -24,8 +24,6 @@ class PreferencesDialog(Gtk.Dialog):
     saved between sessions are presented to the user
     """
 
-    __slots__ = ('__window', '__file_handler', '__image_handler', '__reset_button')
-
     def __init__(self, window: MainWindow):
         super().__init__(title='Preferences')
 

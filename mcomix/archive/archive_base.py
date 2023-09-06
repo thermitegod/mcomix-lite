@@ -18,8 +18,6 @@ class BaseArchive:
     Base archive interface.
     """
 
-    __slots__ = ('archive', 'tempdir', 'destination_path')
-
     def __init__(self, archive: Path):
         super().__init__()
 

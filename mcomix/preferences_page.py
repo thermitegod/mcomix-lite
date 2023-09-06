@@ -11,8 +11,6 @@ class PreferencePage(Gtk.VBox):
     in a preferences-style dialog that contains one or more _PreferenceSections
     """
 
-    # __slots__ = ('__right_column_width', '__section')
-
     def __init__(self, right_column_width: int = None):
         """
         Create a new page where any possible right columns have the width request <right_column_width>

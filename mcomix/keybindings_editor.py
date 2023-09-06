@@ -14,9 +14,6 @@ if TYPE_CHECKING:
 
 
 class KeybindingEditorWindow(Gtk.ScrolledWindow):
-    __slots__ = ('__window', '__keybindings', '__keybindings_map',
-                 '__accel_column_num', '__action_treeiter_map')
-
     def __init__(self, window: MainWindow):
         """
         :param keymanager: KeybindingManager instance

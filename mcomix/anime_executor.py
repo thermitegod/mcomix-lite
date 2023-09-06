@@ -6,8 +6,6 @@ from mcomix.preferences import config
 
 
 class AnimeFrameExecutor:
-    __slots__ = ()
-
     def __init__(self):
         super().__init__()
 

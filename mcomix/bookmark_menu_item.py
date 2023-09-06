@@ -20,9 +20,6 @@ class Bookmark(Gtk.MenuItem):
     and is thus put directly in the bookmarks menu
     """
 
-    __slots__ = ('__window', '__name', '__path', '__current_page',
-                 '__total_pages', '__date_added', '__row_format')
-
     def __init__(self, window: MainWindow, path: Path, current_page: int, total_pages: int, date_added: float):
         self.__window = window
 

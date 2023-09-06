@@ -12,8 +12,6 @@ if TYPE_CHECKING:
 
 
 class KeybindingEditorDialog(Gtk.Dialog):
-    __slots__ = ('__window', '__shortcuts')
-
     def __init__(self, window: MainWindow):
         super().__init__(title='Preferences')
 

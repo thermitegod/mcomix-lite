@@ -2,8 +2,6 @@
 
 
 class FileProviderBase:
-    __slots__ = ('files',)
-
     def __init__(self):
         super().__init__()
 

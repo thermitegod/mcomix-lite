@@ -22,8 +22,6 @@ if TYPE_CHECKING:
 
 
 class PropertiesDialog(Gtk.Dialog):
-    __slots__ = ('__image_handler', '__notebook', '__archive_page', '__image_page')
-
     def __init__(self, window: MainWindow):
         super().__init__(title='Properties')
 

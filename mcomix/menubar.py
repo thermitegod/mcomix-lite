@@ -19,8 +19,6 @@ if TYPE_CHECKING:
 
 
 class Menubar(Gtk.EventBox):
-    __slots__ = ()
-
     def __init__(self, window: MainWindow):
         super().__init__()
 
@@ -31,7 +29,6 @@ class Menubar(Gtk.EventBox):
 
         @dataclass(frozen=True)
         class MENUBAR:
-            __slots__ = ('label', 'create_function', 'event', 'event_type', 'event_kwargs')
             label: str
             create_function: Callable
             event: Callable

@@ -8,8 +8,6 @@ from mcomix.preferences import config
 
 
 class _FileSize:
-    __slots__ = ('__unit_size', '__unit_symbols')
-
     def __init__(self):
         super().__init__()
 

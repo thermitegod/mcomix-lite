@@ -6,8 +6,6 @@ from gi.repository import Gtk
 
 
 class MessageDialogInfo(Gtk.MessageDialog):
-    __slots__ = ()
-
     def __init__(self):
         """
         Creates a dialog window that only shows a message.

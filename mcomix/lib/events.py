@@ -53,8 +53,6 @@ class EventType(Enum):
 
 
 class Events(metaclass=SingleInstanceMetaClass):
-    __slots__ = ('__events', '__run_event')
-
     def __init__(self) -> None:
         super().__init__()
 

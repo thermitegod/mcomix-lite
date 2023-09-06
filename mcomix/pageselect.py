@@ -20,9 +20,6 @@ class Pageselector(Gtk.Dialog):
     The Pageselector takes care of the popup page selector
     """
 
-    __slots__ = ('__window', '__image_handler', '__number_of_pages', '__selector_adjustment',
-                 '__image_preview', '__thumbnail_page', '__threadpool')
-
     def __init__(self, window: MainWindow):
         self.__window = window
 

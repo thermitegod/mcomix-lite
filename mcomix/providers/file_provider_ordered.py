@@ -15,8 +15,6 @@ class OrderedFileProvider(FileProviderBase):
     This provider will list all files in the same directory as the one passed to the constructor
     """
 
-    __slots__ = ('__base_dir',)
-
     def __init__(self, path: Path):
         """
         Initializes the file listing. If <path> is a file,

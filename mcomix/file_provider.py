@@ -7,8 +7,6 @@ from mcomix.providers.file_provider_predefined import PreDefinedFileProvider
 
 
 class GetFileProvider:
-    __slots__ = ()
-
     def __init__(self):
         super().__init__()
 

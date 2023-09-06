@@ -20,8 +20,6 @@ class CursorModes(Enum):
 
 
 class CursorHandler:
-    __slots__ = ('__window', '__timer_id', '__auto_hide', '__current_cursor')
-
     def __init__(self, window: MainWindow):
         super().__init__()
 

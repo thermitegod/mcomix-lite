@@ -14,8 +14,6 @@ from mcomix.preferences import config
 
 
 class KeyBindingsMap(metaclass=SingleInstanceMetaClass):
-    __slots__ = ('__bindings',)
-
     def __init__(self):
         super().__init__()
 
@@ -34,25 +32,21 @@ class KeyBindingsMap(metaclass=SingleInstanceMetaClass):
 
         @dataclass(frozen=True)
         class INFO:
-            __slots__ = ('group', 'title')
             group: str
             title: str
 
         @dataclass(frozen=True)
         class KEYBINDINGS:
-            __slots__ = ('keybindings')
             keybindings: list
 
         @dataclass(frozen=True)
         class KEY_EVENT:
-            __slots__ = ('event', 'event_type', 'event_kwargs')
             event: Callable
             event_type: EventType
             event_kwargs: dict
 
         @dataclass(frozen=True)
         class MAP:
-            __slots__ = ('info', 'keybindings', 'key_event')
             info: INFO
             keybindings: KEYBINDINGS
             key_event: KEY_EVENT

@@ -11,8 +11,6 @@ from mcomix.preferences import config
 
 
 class _NamedPool(ThreadPool):
-    __slots__ = ('__name',)
-
     def __init__(self, *args, name: str = None, **kwargs):
         self.__name = name
         super().__init__(*args, **kwargs)
@@ -24,8 +22,6 @@ class _NamedPool(ThreadPool):
 
 
 class _ThreadPool:
-    __slots__ = ('__name', '__processes', '__pool', '__lock', '__cblock', '__errcblock', '__closed')
-
     # multiprocessing.dummy.Pool with exc_info in error_callback
     def __init__(self, name: str = None, processes: int = None):
         super().__init__()

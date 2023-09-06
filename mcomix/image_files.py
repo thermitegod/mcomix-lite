@@ -6,8 +6,6 @@ from mcomix.lib.metaclass import SingleInstanceMetaClass
 
 
 class ImageFiles(metaclass=SingleInstanceMetaClass):
-    __slots__ = ('__pages', '__paths', '__total_pages')
-
     def __init__(self) -> None:
         self.__pages = {}
         self.__paths = {}

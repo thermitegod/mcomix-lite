@@ -16,9 +16,6 @@ if TYPE_CHECKING:
 
 
 class DialogChooser:
-
-    __slots__ = ('__dialog', '__dialog_chosen')
-
     def __init__(self, dialog: str):
         super().__init__()
 

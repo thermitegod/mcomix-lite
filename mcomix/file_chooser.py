@@ -27,8 +27,6 @@ class FileChooser(Gtk.Dialog):
     or Gtk.FileChooserAction.SAVE).
     """
 
-    __slots__ = ('__window', '__action', '__last_activated_file', '__filechooser')
-
     def __init__(self, window: MainWindow):
         super().__init__(title='Open')
 

@@ -4,8 +4,6 @@ from mcomix.preferences import config
 
 
 class _ViewState:
-    __slots__ = ('__is_manga_mode', '__is_displaying_double')
-
     def __init__(self):
         super().__init__()
 
