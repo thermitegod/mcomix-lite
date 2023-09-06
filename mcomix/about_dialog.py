@@ -6,8 +6,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from PIL import Image
-from gi.repository import Gtk
+from gi.repository import Gtk, GdkPixbuf
 
 from mcomix.enums import Mcomix
 from mcomix.image_tools import ImageTools
@@ -29,7 +28,7 @@ class AboutDialog(Gtk.AboutDialog):
         self.set_titlebar(Gtk.HeaderBar(title='About'))
 
         logo = Path(__file__).parent / 'images' / 'mcomix.png'
-        self.set_logo(ImageTools.pil_to_pixbuf(Image.open(logo)))
+        self.set_logo(GdkPixbuf.Pixbuf.new_from_file(str(logo)))
 
         self.set_name(Mcomix.APP_NAME.value)
         self.set_program_name(Mcomix.APP_NAME.value)
