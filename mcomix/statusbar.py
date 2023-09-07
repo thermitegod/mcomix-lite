@@ -17,7 +17,7 @@ from typing import Callable
 
 from gi.repository import Gtk
 
-from mcomix.file_size import FileSize
+from mcomix.file_size import format_filesize
 from mcomix.enums import ScalingGDK
 from mcomix.preferences import config
 from mcomix.state.view_state import ViewState
@@ -192,7 +192,7 @@ class Statusbar(Gtk.EventBox):
         Update the filesize
         """
 
-        self.__archive_filesize = FileSize(path)
+        self.__archive_filesize = format_filesize(path)
 
     def update(self):
         """

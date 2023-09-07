@@ -11,6 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+import math
 from pathlib import Path
 
 from loguru import logger
@@ -18,32 +19,23 @@ from loguru import logger
 from mcomix.preferences import config
 
 
-class _FileSize:
-    def __init__(self):
-        super().__init__()
+def format_filesize(path: Path) -> str:
+    if config['SI_UNITS']:
+        unit_size = 1000.0
+        unit_symbols = ('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB', 'RB', 'QB')
+    else:
+        unit_size = 1024.0
+        unit_symbols = ('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB', 'RiB', 'QiB')
 
-        if config['SI_UNITS']:
-            self.__unit_size = 1000.0
-            self.__unit_symbols = ('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB')
-        else:
-            self.__unit_size = 1024.0
-            self.__unit_symbols = ('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB')
+    try:
+        size = Path.stat(path).st_size
+    except (AttributeError, FileNotFoundError):
+        logger.warning(f'failed to get file size for: {path}')
+        return 'unknown'
 
-    def __call__(self, path: Path):
-        try:
-            n = Path.stat(path).st_size
+    log_size = math.log(size) / math.log(unit_size)
+    size_idx = math.floor(log_size)
+    unit_size = math.pow(unit_size, log_size - size_idx)
+    unit_label = unit_symbols[size_idx]
 
-            s = 0
-            while n >= self.__unit_size:
-                s += 1
-                n /= self.__unit_size
-
-            formated_size = f'{n:.3f} {self.__unit_symbols[s]}'
-        except (AttributeError, FileNotFoundError):
-            logger.warning(f'failed to get file size for: {path}')
-            formated_size = 'unknown'
-
-        return formated_size
-
-
-FileSize = _FileSize()
+    return f'{unit_size:.3f} {unit_label}'

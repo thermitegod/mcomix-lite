@@ -20,7 +20,7 @@ from pathlib import Path
 from gi.repository import Gtk
 
 from mcomix.file_handler import FileHandler
-from mcomix.file_size import FileSize
+from mcomix.file_size import format_filesize
 from mcomix.image_handler import ImageHandler
 from mcomix.lib.events import Events, EventType
 from mcomix.properties_page import PropertiesPage
@@ -121,7 +121,7 @@ class PropertiesDialog(Gtk.Dialog):
         stats = Path.stat(path)
         secondary_info = (
             ('Location', Path.resolve(path).parent),
-            ('Size', FileSize(path)),
+            ('Size', format_filesize(path)),
             ('Modified', datetime.fromtimestamp(stats.st_mtime).strftime('%Y-%m-%d %H:%M:%S')),
             ('Accessed', datetime.fromtimestamp(stats.st_atime).strftime('%Y-%m-%d %H:%M:%S')),
             ('Permissions', oct(stat.S_IMODE(stats.st_mode))),

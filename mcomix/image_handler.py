@@ -17,7 +17,7 @@ from pathlib import Path
 
 from loguru import logger
 
-from mcomix.file_size import FileSize
+from mcomix.file_size import format_filesize
 from mcomix.image_files import ImageFiles
 from mcomix.image_tools import ImageTools
 from mcomix.lib.events import Events, EventType
@@ -268,10 +268,10 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         if page is None:
             page = self.get_current_page()
 
-        page_data = [FileSize(self.get_path_to_page(page))]
+        page_data = [format_filesize(self.get_path_to_page(page))]
 
         if ViewState.is_displaying_double:
-            page_data.append(FileSize(self.get_path_to_page(page + 1)))
+            page_data.append(format_filesize(self.get_path_to_page(page + 1)))
 
             if ViewState.is_manga_mode:
                 page_data.reverse()
