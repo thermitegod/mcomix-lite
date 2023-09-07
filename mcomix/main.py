@@ -67,8 +67,6 @@ def main():
         logger.info(f'Loading file from command line: \'{p}\'')
         open_path.append(p)
 
-    Gdk.set_program_class(Mcomix.APP_NAME.value)
-
     from mcomix.main_window import MainWindow
     window = MainWindow(open_path=open_path)
 
