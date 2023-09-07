@@ -41,7 +41,7 @@ class MainWindow(Gtk.ApplicationWindow):
     """
 
     def __init__(self, open_path: list = None):
-        super().__init__(type=Gtk.WindowType.TOPLEVEL)
+        super().__init__()
 
         # Load configuration.
         self.__preference_manager = PreferenceManager()
