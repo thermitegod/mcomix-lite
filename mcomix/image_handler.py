@@ -17,9 +17,10 @@ from pathlib import Path
 
 from loguru import logger
 
+import mcomix.image_tools as image_tools
+
 from mcomix.file_size import format_filesize
 from mcomix.image_files import ImageFiles
-from mcomix.image_tools import ImageTools
 from mcomix.lib.events import Events, EventType
 from mcomix.lib.metaclass import SingleInstanceMetaClass
 from mcomix.lib.threadpool import GlobalThreadPool, Lock
@@ -117,7 +118,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
                     return
             logger.debug(f'Caching page: {page}')
             try:
-                pixbuf = ImageTools.load_pixbuf(self.__image_files.get_path_from_page(page))
+                pixbuf = image_tools.load_pixbuf(self.__image_files.get_path_from_page(page))
             except Exception as ex:
                 logger.error(f'Could not load pixbuf for page: {page}')
                 logger.error(f'Exception: {ex}')
@@ -288,7 +289,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         if not Path.is_file(page_path):
             return 0, 0
 
-        return ImageTools.get_image_size(page_path)
+        return image_tools.get_image_size(page_path)
 
     def get_mime_name(self, page: int = None):
         """
@@ -300,7 +301,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         if not Path.is_file(page_path):
             return None
 
-        return ImageTools.get_image_mime(page_path)
+        return image_tools.get_image_mime(page_path)
 
     def get_thumbnail(self, page: int, size: tuple):
         """

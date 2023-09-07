@@ -13,6 +13,8 @@
 
 from gi.repository import GLib, Gdk, Gtk
 
+import mcomix.image_tools as image_tools
+
 from mcomix.bookmark_backend import BookmarkBackend
 from mcomix.cursor_handler import CursorHandler
 from mcomix.dialog_chooser import DialogChooser
@@ -20,7 +22,6 @@ from mcomix.enums import DialogChoice, DoublePage, Mcomix, PageOrientation, Scal
 from mcomix.file_handler import FileHandler
 from mcomix.filesystem_actions import FileSystemActions
 from mcomix.image_handler import ImageHandler
-from mcomix.image_tools import ImageTools
 from mcomix.input_handler import InputHandler
 from mcomix.keybindings_manager import KeybindingManager
 from mcomix.layout import FiniteLayout
@@ -267,7 +268,7 @@ class MainWindow(Gtk.ApplicationWindow):
         pixbuf_count = 2 if ViewState.is_displaying_double else 1
         pixbuf_count_iter = range(pixbuf_count)
         pixbuf_list = list(self.__image_handler.get_pixbufs(pixbuf_count))
-        do_not_transform = [ImageTools.disable_transform(x) for x in pixbuf_list]
+        do_not_transform = [image_tools.disable_transform(x) for x in pixbuf_list]
         size_list = [[pixbuf.get_width(), pixbuf.get_height()] for pixbuf in pixbuf_list]
 
         # Rotation handling:
@@ -298,9 +299,9 @@ class MainWindow(Gtk.ApplicationWindow):
         for i in pixbuf_count_iter:
             rotation_list[i] = rotation
 
-            pixbuf_list[i] = ImageTools.fit_pixbuf_to_rectangle(pixbuf_list[i], scaled_sizes[i], rotation_list[i])
+            pixbuf_list[i] = image_tools.fit_pixbuf_to_rectangle(pixbuf_list[i], scaled_sizes[i], rotation_list[i])
 
-            ImageTools.set_from_pixbuf(self.__images[i], pixbuf_list[i])
+            image_tools.set_from_pixbuf(self.__images[i], pixbuf_list[i])
 
             self.__main_layout.move(self.__images[i], *content_boxes[i].get_position())
             self.__images[i].show()

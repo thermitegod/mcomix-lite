@@ -17,7 +17,7 @@ from gi.repository import GdkPixbuf
 
 from loguru import logger
 
-from mcomix.image_tools import ImageTools
+import mcomix.image_tools as image_tools
 
 class Thumbnailer:
     def __init__(self):
@@ -55,7 +55,7 @@ class Thumbnailer:
 
             # alpha background
             if pixbuf.get_has_alpha():
-                pixbuf = ImageTools.add_alpha_background(pixbuf, new_width, new_height, GdkPixbuf.InterpType.BILINEAR)
+                pixbuf = image_tools.add_alpha_background(pixbuf, new_width, new_height, GdkPixbuf.InterpType.BILINEAR)
 
             else:
                 pixbuf = pixbuf.scale_simple(new_width, new_height, GdkPixbuf.InterpType.BILINEAR)
@@ -64,4 +64,4 @@ class Thumbnailer:
             logger.error(f'Exception: {ex}')
             pixbuf = None
 
-        return ImageTools.add_border_pixbuf(pixbuf)
+        return image_tools.add_border_pixbuf(pixbuf)

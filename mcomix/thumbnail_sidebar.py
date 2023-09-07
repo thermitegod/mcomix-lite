@@ -18,7 +18,6 @@ from loguru import logger
 
 from mcomix.file_handler import FileHandler
 from mcomix.image_handler import ImageHandler
-from mcomix.image_tools import ImageTools
 from mcomix.lib.events import Events, EventType
 from mcomix.preferences import config
 from mcomix.thumbnail_view import ThumbnailTreeView

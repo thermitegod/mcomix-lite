@@ -13,7 +13,7 @@
 
 from gi.repository import Gtk
 
-from mcomix.image_tools import ImageTools
+import mcomix.image_tools as image_tools
 
 
 class PropertiesPage(Gtk.ScrolledWindow):
@@ -59,7 +59,7 @@ class PropertiesPage(Gtk.ScrolledWindow):
         self.__vbox.pack_start(self.__extrabox, False, False, 0)
 
     def set_thumbnail(self, pixbuf):
-        pixbuf = ImageTools.add_border_pixbuf(pixbuf)
+        pixbuf = image_tools.add_border_pixbuf(pixbuf)
         self.__thumb.set_from_pixbuf(pixbuf)
 
     def set_filename(self, filename: str):
