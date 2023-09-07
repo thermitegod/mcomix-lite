@@ -388,7 +388,7 @@ class PreferencesDialog(Gtk.Dialog):
 
         sortorder_box = self._create_combobox(sortorder_items, 'SORT_ORDER')
 
-        box = Gtk.HBox()
+        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         box.pack_start(sortkey_box, True, True, 0)
         box.pack_start(sortorder_box, True, True, 0)
 
@@ -412,7 +412,7 @@ class PreferencesDialog(Gtk.Dialog):
 
         sortorder_box = self._create_combobox(sortorder_items, 'SORT_ARCHIVE_ORDER')
 
-        box = Gtk.HBox()
+        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         box.pack_start(sortkey_box, True, True, 0)
         box.pack_start(sortorder_box, True, True, 0)
 

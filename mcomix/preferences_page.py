@@ -16,7 +16,7 @@ from gi.repository import Gtk
 from mcomix.preferences_section import PreferenceSection
 
 
-class PreferencePage(Gtk.VBox):
+class PreferencePage(Gtk.Box):
     """
     The _PreferencePage is a conveniece class for making one "page"
     in a preferences-style dialog that contains one or more _PreferenceSections
@@ -27,7 +27,7 @@ class PreferencePage(Gtk.VBox):
         Create a new page where any possible right columns have the width request <right_column_width>
         """
 
-        super().__init__(homogeneous=False, spacing=12)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, homogeneous=False, spacing=12)
 
         self.set_border_width(12)
         self.__right_column_width = right_column_width

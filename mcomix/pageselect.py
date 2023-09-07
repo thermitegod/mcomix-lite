@@ -72,13 +72,13 @@ class Pageselector(Gtk.Dialog):
         self.__image_preview = Gtk.Image()
 
         # Group preview image and page selector next to each other
-        preview_box = Gtk.HBox()
+        preview_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         preview_box.set_border_width(5)
         preview_box.set_spacing(5)
         preview_box.pack_start(self.__image_preview, True, True, 0)
         preview_box.pack_end(page_selector, False, True, 0)
         # Below them, group selection spinner and current page label
-        selection_box = Gtk.HBox()
+        selection_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         selection_box.set_border_width(5)
         selection_box.pack_start(page_spinner, True, True, 0)
         selection_box.pack_end(pages_label, False, True, 0)

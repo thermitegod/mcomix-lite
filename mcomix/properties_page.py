@@ -25,11 +25,11 @@ class PropertiesPage(Gtk.ScrolledWindow):
         super().__init__()
 
         self.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        self.__vbox = Gtk.VBox(homogeneous=False, spacing=12)
+        self.__vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, homogeneous=False, spacing=12)
         self.add(self.__vbox)
 
         self.set_border_width(12)
-        topbox = Gtk.HBox(homogeneous=False, spacing=12)
+        topbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, homogeneous=False, spacing=12)
         self.__vbox.pack_start(topbox, True, True, 0)
         self.__thumb = Gtk.Image()
         self.__thumb.set_size_request(128, 128)
@@ -50,12 +50,12 @@ class PropertiesPage(Gtk.ScrolledWindow):
         self.__thumb.clear()
         if self.__mainbox is not None:
             self.__mainbox.destroy()
-        self.__mainbox = Gtk.VBox(homogeneous=False, spacing=5)
+        self.__mainbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, homogeneous=False, spacing=5)
         self.__mainbox.set_border_width(10)
         self.__insidebox.add(self.__mainbox)
         if self.__extrabox is not None:
             self.__extrabox.destroy()
-        self.__extrabox = Gtk.HBox(homogeneous=False, spacing=10)
+        self.__extrabox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, homogeneous=False, spacing=10)
         self.__vbox.pack_start(self.__extrabox, False, False, 0)
 
     def set_thumbnail(self, pixbuf):
@@ -74,7 +74,7 @@ class PropertiesPage(Gtk.ScrolledWindow):
         label.set_selectable(True)
         label.set_line_wrap(True)
         self.__mainbox.pack_start(label, False, False, 0)
-        self.__mainbox.pack_start(Gtk.VBox(homogeneous=True, spacing=0), True, True, 0)
+        self.__mainbox.pack_start(Gtk.Box(orientation=Gtk.Orientation.VERTICAL, homogeneous=True, spacing=0), True, True, 0)
 
     def set_main_info(self, info: tuple):
         """
@@ -94,8 +94,8 @@ class PropertiesPage(Gtk.ScrolledWindow):
         sequence <info>. Each entry in info should be a tuple (desc, value)
         """
 
-        left_box = Gtk.VBox(homogeneous=True, spacing=8)
-        right_box = Gtk.VBox(homogeneous=True, spacing=8)
+        left_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, homogeneous=True, spacing=8)
+        right_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, homogeneous=True, spacing=8)
         self.__extrabox.pack_start(left_box, False, False, 0)
         self.__extrabox.pack_start(right_box, False, False, 0)
         for desc, value in info:
