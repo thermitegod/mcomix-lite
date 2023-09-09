@@ -258,7 +258,7 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
         if config['SORT_ARCHIVE_ORDER'] == FileSortDirection.DESCENDING.value:
             filelist.reverse()
 
-    def get_file_loaded(self):
+    def is_file_loaded(self) -> bool:
         return self.__file_loaded
 
     def is_archive(self):

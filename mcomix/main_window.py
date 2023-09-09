@@ -248,7 +248,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def _draw_pages(self, scroll_to: int):
         self._hide_images()
 
-        if not self.__file_handler.get_file_loaded():
+        if not self.__file_handler.is_file_loaded():
             self.__thumbnailsidebar.hide()
             self.__waiting_for_redraw = False
             return
@@ -448,7 +448,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self._new_page(at_bottom=at_bottom)
 
     def flip_page(self, number_of_pages: int, single_step: bool = False):
-        if not self.__file_handler.get_file_loaded():
+        if not self.__file_handler.is_file_loaded():
             return
 
         current_page = self.__image_handler.get_current_page()
