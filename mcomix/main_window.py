@@ -303,7 +303,6 @@ class MainWindow(Gtk.ApplicationWindow):
             image_tools.set_from_pixbuf(self.__images[i], pixbuf_list[i])
 
             self.__main_layout.move(self.__images[i], *content_boxes[i].get_position())
-            self.__images[i].show()
 
         # Reset orientation so scrolling behaviour is sane.
         self.__layout.set_orientation(self.__page_orientation)
