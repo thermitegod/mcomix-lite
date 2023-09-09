@@ -41,27 +41,29 @@ class Thumbnailer:
 
         try:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file(str(filepath))
-            original_width = pixbuf.get_width()
-            original_height = pixbuf.get_height()
-
-            # Calculate the new dimensions while preserving the aspect ratio
-            aspect_ratio = original_width / original_height
-            if original_width > original_height:
-                new_width = max_size
-                new_height = int(max_size / aspect_ratio)
-            else:
-                new_height = max_size
-                new_width = int(max_size * aspect_ratio)
-
-            # alpha background
-            if pixbuf.get_has_alpha():
-                pixbuf = image_tools.add_alpha_background(pixbuf, new_width, new_height, GdkPixbuf.InterpType.BILINEAR)
-
-            else:
-                pixbuf = pixbuf.scale_simple(new_width, new_height, GdkPixbuf.InterpType.BILINEAR)
         except Exception as ex:
             logger.error(f'Failed to create thumbnail for image: \'{filepath}\'')
             logger.error(f'Exception: {ex}')
-            pixbuf = None
+            return None
 
-        return image_tools.add_border_pixbuf(pixbuf)
+        original_width = pixbuf.get_width()
+        original_height = pixbuf.get_height()
+
+        # Calculate the new dimensions while preserving the aspect ratio
+        aspect_ratio = original_width / original_height
+        if original_width > original_height:
+            new_width = max_size
+            new_height = int(max_size / aspect_ratio)
+        else:
+            new_height = max_size
+            new_width = int(max_size * aspect_ratio)
+
+        # alpha background
+        if pixbuf.get_has_alpha():
+            pixbuf = image_tools.add_alpha_background(pixbuf, new_width, new_height, GdkPixbuf.InterpType.BILINEAR)
+        else:
+            pixbuf = pixbuf.scale_simple(new_width, new_height, GdkPixbuf.InterpType.BILINEAR)
+
+        pixbuf = image_tools.add_border_pixbuf(pixbuf)
+
+        return pixbuf
