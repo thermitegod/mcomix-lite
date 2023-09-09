@@ -11,6 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+import mimetypes
 from pathlib import Path
 
 from typing import Callable
@@ -211,11 +212,7 @@ def get_image_mime(path: Path):
     Return image informations: (format)
     """
 
-    pixbuf = GdkPixbuf.Pixbuf.new_from_file(str(path))
-    formats = GdkPixbuf.Pixbuf.get_formats()
-    for format_info in formats:
-        if format_info.is_disabled():
-            continue
-        if format_info.get_name().lower() == pixbuf.get_file_info().get_mime_type().lower():
-            return format_info.get_mime_types()[0]
+    mime_type, _ = mimetypes.guess_type(path)
+    if mime_type:
+        return mime_type
     return None
