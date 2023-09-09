@@ -303,7 +303,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
 
         return image_tools.get_image_mime(page_path)
 
-    def get_thumbnail(self, page: int, size: tuple):
+    def get_thumbnail(self, page: int, size: int):
         """
         Return a thumbnail pixbuf of <page> that fit in a box with
         dimensions <width>x<height>. Return a thumbnail for the current
@@ -319,7 +319,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         if not Path.is_file(path):
             return None
 
-        return self.__thumbnailer(max_size=size[0], filepath=path)
+        return self.__thumbnailer(size=size, filepath=path)
 
     def _is_page_extracted(self, page: int):
         if page is None:

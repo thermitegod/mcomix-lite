@@ -197,11 +197,9 @@ class ThumbnailSidebar(Gtk.ScrolledWindow):
         Generate the pixbuf for C{path} at demand
         """
 
-        size = config['THUMBNAIL_SIZE']
-        pixbuf = self.__image_handler.get_thumbnail(page=uid, size=(size, size))
+        pixbuf = self.__image_handler.get_thumbnail(page=uid, size=config['THUMBNAIL_SIZE'])
         if pixbuf is None:
             return None
-
         return pixbuf
 
     def _set_selected_row(self, row: int, scroll: bool = True):

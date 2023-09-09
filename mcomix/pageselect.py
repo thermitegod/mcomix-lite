@@ -133,18 +133,20 @@ class Pageselector(Gtk.Dialog):
 
         width = self.__image_preview.get_allocation().width
         height = self.__image_preview.get_allocation().height
+        size = height if height > width else width
+
         self.__thumbnail_page = page
         self.__threadpool.apply_async(
-            self._generate_thumbnail, args=(page, width, height),
+            self._generate_thumbnail, args=(page, size),
             callback=self._generate_thumbnail_cb)
 
-    def _generate_thumbnail(self, page: int, width: int, height: int):
+    def _generate_thumbnail(self, page: int, size: int):
         """
         Generate the preview thumbnail for the page selector.
         A transparent image will be used if the page is not yet available
         """
 
-        return page, self.__image_handler.get_thumbnail(page=page, size=(width, height))
+        return page, self.__image_handler.get_thumbnail(page=page, size=size)
 
     def _generate_thumbnail_cb(self, params):
         page, pixbuf = params

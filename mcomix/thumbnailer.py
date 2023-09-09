@@ -29,7 +29,7 @@ class Thumbnailer:
 
         super().__init__()
 
-    def __call__(self, max_size: int, filepath: Path):
+    def __call__(self, size: int, filepath: Path):
         """
         Returns a thumbnail pixbuf for <filepath>, transparently handling
         both normal image files and archives. Returns None if thumbnail creation
@@ -52,11 +52,11 @@ class Thumbnailer:
         # Calculate the new dimensions while preserving the aspect ratio
         aspect_ratio = original_width / original_height
         if original_width > original_height:
-            new_width = max_size
-            new_height = int(max_size / aspect_ratio)
+            new_width = size
+            new_height = int(size / aspect_ratio)
         else:
-            new_height = max_size
-            new_width = int(max_size * aspect_ratio)
+            new_height = size
+            new_width = int(size * aspect_ratio)
 
         # alpha background
         if pixbuf.get_has_alpha():
