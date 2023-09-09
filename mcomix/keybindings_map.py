@@ -511,28 +511,6 @@ class KeyBindingsMap(metaclass=SingleInstanceMetaClass):
                         None,
                     ),
                 ),
-
-            # Image Scaling
-            'scaling_inc':
-                MAP(
-                    INFO(group_scale, 'Cycle GDK Image scaling forward'),
-                    KEYBINDINGS(['z']),
-                    KEY_EVENT(
-                        events.run_events,
-                        EventType.KB_IMAGE_SCALING_CHANGE,
-                        {'step': 1},
-                    ),
-                ),
-            'scaling_dec':
-                MAP(
-                    INFO(group_scale, 'Cycle GDK Image scaling backwards'),
-                    KEYBINDINGS(['x']),
-                    KEY_EVENT(
-                        events.run_events,
-                        EventType.KB_IMAGE_SCALING_CHANGE,
-                        {'step': -1},
-                    ),
-                ),
         }
 
     @property

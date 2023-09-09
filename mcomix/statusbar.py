@@ -18,7 +18,6 @@ from typing import Callable
 from gi.repository import Gtk
 
 from mcomix.file_size import format_filesize
-from mcomix.enums import ScalingGDK
 from mcomix.preferences import config
 from mcomix.state.view_state import ViewState
 
@@ -73,9 +72,6 @@ class Statusbar(Gtk.EventBox):
             STATUSBAR('Show archive filesize',
                       'STATUSBAR_FIELD_ARCHIVE_FILESIZE',
                       self._toggle_status_visibility),
-            STATUSBAR('Show page scaling',
-                      'STATUSBAR_FIELD_PAGE_SCALING',
-                      self._toggle_status_visibility),
             STATUSBAR('Show current mode',
                       'STATUSBAR_FIELD_VIEW_MODE',
                       self._toggle_status_visibility),
@@ -95,17 +91,9 @@ class Statusbar(Gtk.EventBox):
         self.__page_filename = ''
         self.__page_filesize = ''
         self.__archive_filesize = ''
-        self.__image_scaling = ''
         self.__current_view_mode = ''
 
         self.show_all()
-
-        self.update_image_scaling()
-
-    def update_image_scaling(self):
-        # is initalized here and only updated if the
-        # scaling algos get changed
-        self.__image_scaling = f'GDK: {ScalingGDK(config["GDK_SCALING_FILTER"]).name}'
 
     def set_message(self, message: str):
         """
@@ -215,8 +203,6 @@ class Statusbar(Gtk.EventBox):
             text += f'{self.__page_filesize}{self.__sep}'
         if config['STATUSBAR_FIELD_ARCHIVE_FILESIZE']:
             text += f'{self.__archive_filesize}{self.__sep}'
-        if config['STATUSBAR_FIELD_PAGE_SCALING']:
-            text += f'{self.__image_scaling}{self.__sep}'
         if config['STATUSBAR_FIELD_VIEW_MODE']:
             text += f'{self.__current_view_mode}{self.__sep}'
 

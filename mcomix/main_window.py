@@ -18,7 +18,7 @@ import mcomix.image_tools as image_tools
 from mcomix.bookmark_backend import BookmarkBackend
 from mcomix.cursor_handler import CursorHandler
 from mcomix.dialog_chooser import DialogChooser
-from mcomix.enums import DialogChoice, DoublePage, Mcomix, PageOrientation, ScalingGDK, Scroll, ZoomAxis
+from mcomix.enums import DialogChoice, DoublePage, Mcomix, PageOrientation, Scroll, ZoomAxis
 from mcomix.file_handler import FileHandler
 from mcomix.filesystem_actions import FileSystemActions
 from mcomix.image_handler import ImageHandler
@@ -63,7 +63,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__events.add_event(EventType.KB_MINIMIZE, self.minimize)
         self.__events.add_event(EventType.KB_OPEN_DIALOG, self.open_dialog)
         self.__events.add_event(EventType.KB_EXIT, self.terminate_program)
-        self.__events.add_event(EventType.KB_IMAGE_SCALING_CHANGE, self.change_image_scaling)
         self.__events.add_event(EventType.KB_OPEN_PAGESELECTOR, self.page_select)
         self.__events.add_event(EventType.KB_PAGE_ROTATE, self.rotate_x)
         self.__events.add_event(EventType.KB_CHANGE_STRETCH, self.change_stretch)
@@ -549,14 +548,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__zoom.set_fit_mode(config['ZOOM_MODE'])
         self.__zoom.set_scale_up(config['STRETCH'])
         self.__zoom.reset_user_zoom()
-        self.__events.run_events(EventType.DRAW_PAGE)
-
-    def change_image_scaling(self, step: int):
-        # inc/dec active algo, modulus loops algos to start on overflow
-        # and end on underflow
-        config['GDK_SCALING_FILTER'] = ScalingGDK((config['GDK_SCALING_FILTER'] + step) % len(ScalingGDK)).value
-
-        self.__statusbar.update_image_scaling()
         self.__events.run_events(EventType.DRAW_PAGE)
 
     def change_stretch(self):

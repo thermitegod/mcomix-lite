@@ -13,7 +13,7 @@
 
 # must not depend on GTK, or any other optional libraries.
 
-from mcomix.enums import Animation, ConfigPaths, DoublePage, FileSortDirection, FileSortType, ScalingGDK, ZoomModes
+from mcomix.enums import Animation, ConfigPaths, DoublePage, FileSortDirection, FileSortType, ZoomModes
 
 # All preferences are stored here.
 config = {
@@ -53,14 +53,12 @@ config = {
     'STATUSBAR_FIELD_PAGE_FILENAME': True,
     'STATUSBAR_FIELD_PAGE_FILESIZE': True,
     'STATUSBAR_FIELD_ARCHIVE_FILESIZE': True,
-    'STATUSBAR_FIELD_PAGE_SCALING': True,
     'STATUSBAR_FIELD_VIEW_MODE': True,
     'STATUSBAR_FULLPATH': True,
     'STATUSBAR_SHOW_SCALE': True,
     'BOOKMARK_SHOW_PATH': False,
     'SI_UNITS': False,
     'MAX_THREADS': 16,
-    'GDK_SCALING_FILTER': ScalingGDK.Bilinear.value,
     'ESCAPE_QUITS': True,
     'FIT_TO_SIZE_MODE': ZoomModes.HEIGHT.value,
     'FIT_TO_SIZE_PX': 1800,

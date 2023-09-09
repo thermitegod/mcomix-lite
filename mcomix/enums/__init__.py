@@ -5,7 +5,6 @@ from mcomix._enums.dialog_choice import DialogChoice
 from mcomix._enums.double_page import DoublePage
 from mcomix._enums.file_sort import FileSortDirection, FileSortType
 from mcomix._enums.file_types import FileTypes
-from mcomix._enums.image_scaling import ScalingGDK
 from mcomix._enums.mcomix import Mcomix
 from mcomix._enums.page_orientation import PageOrientation
 from mcomix._enums.scroll import Scroll

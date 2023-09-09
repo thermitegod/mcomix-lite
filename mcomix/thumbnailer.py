@@ -60,7 +60,7 @@ class Thumbnailer:
 
         # alpha background
         if pixbuf.get_has_alpha():
-            pixbuf = image_tools.add_alpha_background(pixbuf, new_width, new_height, GdkPixbuf.InterpType.BILINEAR)
+            pixbuf = image_tools.add_alpha_background(pixbuf, new_width, new_height)
         else:
             pixbuf = pixbuf.scale_simple(new_width, new_height, GdkPixbuf.InterpType.BILINEAR)
 

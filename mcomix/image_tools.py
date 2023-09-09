@@ -86,8 +86,7 @@ def fit_pixbuf_to_rectangle(src, rect: tuple, rotation: int):
         return frame_executor(src, fit_pixbuf_to_rectangle,args=(rect, rotation))
     return fit_in_rectangle(src, rect[0], rect[1], rotation=rotation, keep_ratio=False, scale_up=True)
 
-def fit_in_rectangle(src, width: int, height: int, keep_ratio: bool = True,
-                     scale_up: bool = False, rotation: int = 0, scaling_quality=None):
+def fit_in_rectangle(src, width: int, height: int, keep_ratio: bool = True, scale_up: bool = False, rotation: int = 0):
     """
     Scale (and return) a pixbuf so that it fits in a rectangle with
     dimensions <width> x <height>. A negative <width> or <height>
@@ -106,12 +105,8 @@ def fit_in_rectangle(src, width: int, height: int, keep_ratio: bool = True,
     """
 
     rotation %= 360
-
     if rotation in (90, 270):
         width, height = height, width
-
-    if scaling_quality is None:
-        scaling_quality = config['GDK_SCALING_FILTER']
 
     src_width = src.get_width()
     src_height = src.get_height()
@@ -120,17 +115,13 @@ def fit_in_rectangle(src, width: int, height: int, keep_ratio: bool = True,
                                      keep_ratio=keep_ratio, scale_up=scale_up)
 
     if src.get_has_alpha():
-        if (width, height) == (src_width, src_height):
-            # Using anything other than nearest interpolation will result in a
-            # modified image if no resizing takes place (even if it's opaque).
-            scaling_quality = GdkPixbuf.InterpType.NEAREST
-        src = add_alpha_background(src, width, height, scaling_quality)
+        src = add_alpha_background(src, width, height)
     elif (width, height) != (src_width, src_height):
-        src = src.scale_simple(width, height, scaling_quality)
+        src = src.scale_simple(width, height, GdkPixbuf.InterpType.BILINEAR)
 
     return rotate_pixbuf(src, rotation)
 
-def add_alpha_background(pixbuf, width: int, height: int, scaling_quality):
+def add_alpha_background(pixbuf, width: int, height: int):
     if config['CHECKERED_BG_FOR_TRANSPARENT_IMAGES']:
         check_size = config['CHECKERED_BG_SIZE']
         color1 = 0x777777
@@ -140,7 +131,7 @@ def add_alpha_background(pixbuf, width: int, height: int, scaling_quality):
         color1 = 0xFFFFFF
         color2 = 0xFFFFFF
 
-    return pixbuf.composite_color_simple(width, height, scaling_quality, 255, check_size, color1, color2)
+    return pixbuf.composite_color_simple(width, height, GdkPixbuf.InterpType.BILINEAR, 255, check_size, color1, color2)
 
 def add_border_pixbuf(pixbuf):
     """

@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from gi.repository import GObject, Gtk
 
-from mcomix.enums import Animation, DoublePage, FileSortDirection, FileSortType, ScalingGDK, ZoomModes
+from mcomix.enums import Animation, DoublePage, FileSortDirection, FileSortType, ZoomModes
 from mcomix.file_handler import FileHandler
 from mcomix.image_handler import ImageHandler
 from mcomix.lib.events import Events, EventType
@@ -213,11 +213,6 @@ class PreferencesDialog(Gtk.Dialog):
         page.add_row(self._create_pref_check_button(
             'Keep manual rotation on page change',
             'KEEP_TRANSFORMATION'))
-
-        page.new_section('Image Scaling Quality')
-
-        page.add_row(Gtk.Label(label='GDK image scaling'),
-                     self._create_combobox_scaling_quality())
 
         page.new_section('Statusbar')
 
@@ -418,19 +413,6 @@ class PreferencesDialog(Gtk.Dialog):
 
         return box
 
-    def _create_combobox_scaling_quality(self):
-        """
-        Creates combo box for image scaling quality
-        """
-
-        items = (
-            ('Nearest', ScalingGDK.Nearest.value),
-            ('Tiles', ScalingGDK.Tiles.value),
-            ('Bilinear', ScalingGDK.Bilinear.value),
-        )
-
-        return self._create_combobox(items, 'GDK_SCALING_FILTER')
-
     def _create_combobox_animation_mode(self):
         """
         Creates combo box for animation mode
@@ -462,9 +444,6 @@ class PreferencesDialog(Gtk.Dialog):
         match preference:
             case ('ANIMATION_MODE' | 'SORT_ARCHIVE_ORDER' | 'SORT_ARCHIVE_BY' | 'SORT_ORDER' | 'SORT_BY'):
                 self.__file_handler.refresh_file()
-            case ('GDK_SCALING_FILTER'):
-                self.__window.statusbar.update_image_scaling()
-                self.__events.run_events(EventType.DRAW_PAGE)
             case ('VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES' | 'CHECKERED_BG_SIZE'):
                 self.__events.run_events(EventType.DRAW_PAGE)
             case ('FIT_TO_SIZE_MODE' | 'ZOOM_MODE'):
