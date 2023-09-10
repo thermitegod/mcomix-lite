@@ -52,18 +52,13 @@ class Thumbnailer:
         # Calculate the new dimensions while preserving the aspect ratio
         aspect_ratio = original_width / original_height
         if original_width > original_height:
-            new_width = size
-            new_height = int(size / aspect_ratio)
+            width = size
+            height = int(size / aspect_ratio)
         else:
-            new_height = size
-            new_width = int(size * aspect_ratio)
+            height = size
+            width = int(size * aspect_ratio)
 
-        # alpha background
-        if pixbuf.get_has_alpha():
-            pixbuf = image_tools.add_alpha_background(pixbuf, new_width, new_height)
-        else:
-            pixbuf = pixbuf.scale_simple(new_width, new_height, GdkPixbuf.InterpType.BILINEAR)
-
+        pixbuf = image_tools.fit_pixbuf_to_rectangle(pixbuf, width, height, 0)
         pixbuf = image_tools.add_border_pixbuf(pixbuf)
 
         return pixbuf

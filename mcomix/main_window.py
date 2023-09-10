@@ -298,7 +298,7 @@ class MainWindow(Gtk.ApplicationWindow):
         for i in pixbuf_count_iter:
             rotation_list[i] = rotation
 
-            pixbuf_list[i] = image_tools.fit_pixbuf_to_rectangle(pixbuf_list[i], scaled_sizes[i], rotation_list[i])
+            pixbuf_list[i] = image_tools.fit_pixbuf_to_rectangle(pixbuf_list[i], scaled_sizes[i][0], scaled_sizes[i][1], rotation_list[i])
 
             image_tools.set_from_pixbuf(self.__images[i], pixbuf_list[i])
 

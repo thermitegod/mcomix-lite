@@ -81,10 +81,10 @@ def frame_executor(animation, function: Callable, args: tuple = None, kwargs: di
     return framebuffer.copy(lambda pb: function(pb, *args, **kwargs)).create_animation()
 
 
-def fit_pixbuf_to_rectangle(src, rect: tuple, rotation: int):
+def fit_pixbuf_to_rectangle(src, width: int, height: int, rotation: int):
     if is_animation(src):
-        return frame_executor(src, fit_pixbuf_to_rectangle,args=(rect, rotation))
-    return fit_in_rectangle(src, rect[0], rect[1], rotation=rotation, keep_ratio=False, scale_up=True)
+        return frame_executor(src, fit_pixbuf_to_rectangle, args=(width, height, rotation))
+    return fit_in_rectangle(src, width, height, rotation=rotation, keep_ratio=False, scale_up=True)
 
 def fit_in_rectangle(src, width: int, height: int, keep_ratio: bool = True, scale_up: bool = False, rotation: int = 0):
     """
