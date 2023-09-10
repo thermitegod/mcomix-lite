@@ -146,7 +146,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         self.__available_images.clear()
         self.__raw_pixbufs.clear()
 
-    def page_is_available(self, page: int = None):
+    def is_page_available(self, page: int = None):
         """
         Returns True if <page> is available and calls to get_pixbufs
         would not block. If <page> is None, the current page(s) are assumed
@@ -239,7 +239,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
             [page, page + 1] if ViewState.displayed_double is True else return [page]
         """
 
-        if not self.page_is_available(page=page):
+        if not self.is_page_available(page=page):
             return self._get_page_unknown()
 
         if page is None:
@@ -263,7 +263,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
             [page, page + 1] if ViewState.displayed_double is True else return [page]
         """
 
-        if not self.page_is_available(page=page):
+        if not self.is_page_available(page=page):
             return self._get_page_unknown()
 
         if page is None:
@@ -288,7 +288,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         if page is None:
             page = self.get_current_page()
 
-        if not self.page_is_available(page):
+        if not self.is_page_available(page):
             return 0, 0
         pixbuf = self.get_pixbuf(page)
         return (pixbuf.get_width(), pixbuf.get_height())

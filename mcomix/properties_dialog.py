@@ -100,7 +100,7 @@ class PropertiesDialog(Gtk.Dialog):
     def _update_image_page(self):
         page = self.__image_page
         page.reset()
-        if not self.__image_handler.page_is_available():
+        if not self.__image_handler.is_page_available():
             return
         self._update_page_image(page)
         path = self.__image_handler.get_path_to_page()
@@ -112,7 +112,7 @@ class PropertiesDialog(Gtk.Dialog):
         page.show_all()
 
     def _update_page_image(self, page, page_number: int = None):
-        if not self.__image_handler.page_is_available(page_number):
+        if not self.__image_handler.is_page_available(page_number):
             return
         thumb = self.__image_handler.get_thumbnail(page=page_number, size=256)
         page.set_thumbnail(thumb)
