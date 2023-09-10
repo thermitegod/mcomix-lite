@@ -15,6 +15,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from gi.repository import GdkPixbuf
+
 from loguru import logger
 
 import mcomix.image_tools as image_tools
@@ -53,17 +55,17 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         self.__lock = Lock()
         self.__cache_lock = {}
         #: Current page
-        self.__current_image = None
+        self.__current_image: int = None
         #: Set of images reading for decoding (i.e. already extracted)
         self.__available_images = set()
         #: List of pixbufs we want to cache
-        self.__wanted_pixbufs = []
+        self.__wanted_pixbufs: list[int] = []
         #: Pixbuf map from page > Pixbuf
-        self.__raw_pixbufs = {}
+        self.__raw_pixbufs: dict[int, GdkPixbuf] = {}
 
         self.__thumbnailer = Thumbnailer()
 
-    def get_pixbuf(self, page: int):
+    def _get_pixbuf(self, page: int) -> GdkPixbuf:
         """
         Return the pixbuf indexed by <page> from cache.
         Pixbufs not found in cache are fetched from disk first
@@ -72,16 +74,16 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         self._cache_pixbuf(page, force_return=False)
         return self.__raw_pixbufs[page]
 
-    def get_pixbufs(self, number_of_bufs: int):
+    def get_pixbufs(self, number_of_bufs: int) -> list[GdkPixbuf]:
         """
         Returns number_of_bufs pixbufs for the image(s) that should be
         currently displayed. This method might fetch images from disk, so make
         sure that number_of_bufs is as small as possible
         """
 
-        return [self.get_pixbuf(self.__current_image + i) for i in range(number_of_bufs)]
+        return [self._get_pixbuf(self.__current_image + i) for i in range(number_of_bufs)]
 
-    def do_caching(self):
+    def do_caching(self) -> None:
         """
         Make sure that the correct pixbufs are stored in cache. These
         are (in the current implementation) the current image(s), and
@@ -109,7 +111,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
 
         self.__lock.release()
 
-    def _cache_pixbuf(self, page: int, force_return: bool = True):
+    def _cache_pixbuf(self, page: int, force_return: bool = True) -> None:
         with self.__cache_lock[page]:
             if page in self.__raw_pixbufs:
                 return
@@ -125,7 +127,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
                 pixbuf = None
             self.__raw_pixbufs[page] = pixbuf
 
-    def set_page(self, page: int):
+    def set_page(self, page: int) -> None:
         """
         Set up filehandler to the page <page_num>
         """
@@ -133,7 +135,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         self.__current_image = page
         self.do_caching()
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         """
         Run clean-up tasks. Should be called prior to exit
         """
@@ -146,7 +148,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         self.__available_images.clear()
         self.__raw_pixbufs.clear()
 
-    def is_page_available(self, page: int = None):
+    def is_page_available(self, page: int = None) -> bool:
         """
         Returns True if <page> is available and calls to get_pixbufs
         would not block. If <page> is None, the current page(s) are assumed
@@ -165,7 +167,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
 
         return True
 
-    def page_available(self, page: int):
+    def page_available(self, page: int) -> None:
         """
         Called whenever a new page becomes available, i.e. the corresponding file has been extracted
         """
@@ -181,7 +183,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
 
         self.__events.run_events(EventType.PAGE_AVAILABLE, {'page': page})
 
-    def file_available(self, filename: Path):
+    def file_available(self, filename: Path) -> None:
         """
         Called by the filehandler when a new file becomes available
         """
@@ -189,14 +191,14 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         # Find the page that corresponds to <filename>
         self.page_available(self.__image_files.get_page_from_path(filename))
 
-    def get_number_of_pages(self):
+    def get_number_of_pages(self) -> int:
         """
         Return the number of pages in the current archive/directory
         """
 
         return self.__image_files.get_total_pages()
 
-    def get_current_page(self):
+    def get_current_page(self) -> int:
         """
         Return the current page number (starting from 1), or 0 if no file is loaded
         """
@@ -206,7 +208,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
 
         return self.__current_image
 
-    def is_last_page(self, page: int = None):
+    def is_last_page(self, page: int = None) -> bool:
         """
         is <page> the last in a book, if page is None use current page
         """
@@ -216,7 +218,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
 
         return page == self.__image_files.get_total_pages()
 
-    def get_path_to_page(self, page: int = None):
+    def get_path_to_page(self, page: int = None) -> Path:
         """
         Return the full path to the image file for <page>, or the current page if <page> is None
         """
@@ -226,12 +228,12 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
 
         return self.__image_files.get_path_from_page(page)
 
-    def _get_page_unknown(self):
+    def _get_page_unknown(self) -> str:
         if ViewState.is_displaying_double:
             return ['unknown', 'unknown']
         return ['unknown']
 
-    def get_page_filename(self, page: int = None):
+    def get_page_filename(self, page: int = None) -> str:
         """
         :param page
             A page number or if None the current page
@@ -255,7 +257,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
 
         return page_data
 
-    def get_page_filesize(self, page: int = None):
+    def get_page_filesize(self, page: int = None) -> list[str]:
         """
         :param page
             A page number or if None the current page
@@ -279,7 +281,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
 
         return page_data
 
-    def get_page_size(self, page: int = None):
+    def get_page_size(self, page: int = None) -> tuple[int, int]:
         """
         Return a tuple (width, height) with the size of <page>. If <page>
         is None, return the size of the current page
@@ -290,10 +292,10 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
 
         if not self.is_page_available(page):
             return 0, 0
-        pixbuf = self.get_pixbuf(page)
+        pixbuf = self._get_pixbuf(page)
         return (pixbuf.get_width(), pixbuf.get_height())
 
-    def get_mime_name(self, page: int = None):
+    def get_mime_name(self, page: int = None) -> str:
         """
         Return a string with the name of the mime type of <page>. If
         <page> is None, return the mime type name of the current page
@@ -305,7 +307,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
 
         return image_tools.get_image_mime(page_path)
 
-    def get_thumbnail(self, page: int, size: int):
+    def get_thumbnail(self, page: int, size: int) -> GdkPixbuf:
         """
         Return a thumbnail pixbuf of <page> that fit in a box with
         dimensions <width>x<height>. Return a thumbnail for the current
@@ -323,7 +325,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
 
         return self.__thumbnailer(size=size, filepath=path)
 
-    def _is_page_extracted(self, page: int):
+    def _is_page_extracted(self, page: int) -> bool:
         if page is None:
             page = self.get_current_page()
 
@@ -334,7 +336,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         # page is not extracted
         return False
 
-    def _ask_for_pages(self, page: int):
+    def _ask_for_pages(self, page: int) -> list[int]:
         """
         Ask for pages around <page> to be given priority extraction
         """
