@@ -147,4 +147,4 @@ class _EventMainthread:
             function(**function_kwargs)
         except Exception as ex:
             logger.error(f'Event failed: {function}')
-            logger.error(f'Exception: {ex}')
+            logger.debug(f'Exception: {ex}')

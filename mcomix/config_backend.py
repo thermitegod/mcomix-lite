@@ -52,7 +52,7 @@ class _ConfigBackend:
                 saved_prefs.update(yaml.safe_load(fd))
         except Exception as ex:
             logger.error('Loading config failed, exiting')
-            logger.error(f'Exception: {ex}')
+            logger.debug(f'Exception: {ex}')
             raise SystemExit
 
     def write_config(self, config: dict, config_path: Path, module: str):

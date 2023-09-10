@@ -231,7 +231,7 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
             self.__extractor.list_contents()
         except Exception as ex:
             logger.error(f'failed to open archive: {path}')
-            logger.error(f'Exception: {ex}')
+            logger.debug(f'Exception: {ex}')
             raise
 
     def _file_listed(self, files: list):

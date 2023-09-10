@@ -121,7 +121,7 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
                 pixbuf = image_tools.load_pixbuf(self.__image_files.get_path_from_page(page))
             except Exception as ex:
                 logger.error(f'Could not load pixbuf for page: {page}')
-                logger.error(f'Exception: {ex}')
+                logger.debug(f'Exception: {ex}')
                 pixbuf = None
             self.__raw_pixbufs[page] = pixbuf
 

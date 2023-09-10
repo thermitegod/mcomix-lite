@@ -174,7 +174,7 @@ class BookmarkBackend:
                                                   total_pages=total_pages, date_added=date_added))
         except Exception as ex:
             logger.error(f'Could not parse bookmarks file: \'{self.__bookmark_path}\'')
-            logger.error(f'Exception: {ex}')
+            logger.debug(f'Exception: {ex}')
 
         return bookmarks
 
