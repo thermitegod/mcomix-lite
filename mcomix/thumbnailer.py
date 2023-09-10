@@ -13,10 +13,6 @@
 
 from pathlib import Path
 
-from gi.repository import GdkPixbuf
-
-from loguru import logger
-
 import mcomix.image_tools as image_tools
 
 class Thumbnailer:
@@ -39,11 +35,8 @@ class Thumbnailer:
         :param filepath: Path to the image that the thumbnail is generated from.
         """
 
-        try:
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file(str(filepath))
-        except Exception as ex:
-            logger.error(f'Failed to create thumbnail for image: \'{filepath}\'')
-            logger.error(f'Exception: {ex}')
+        pixbuf = image_tools.load_pixbuf(filepath, force_static=True)
+        if pixbuf is None:
             return None
 
         original_width = pixbuf.get_width()

@@ -15,7 +15,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from gi.repository import Gtk, GdkPixbuf
+from gi.repository import Gtk
+
+import mcomix.image_tools as image_tools
 
 from mcomix.enums import Mcomix
 
@@ -36,7 +38,10 @@ class AboutDialog(Gtk.AboutDialog):
         self.set_titlebar(Gtk.HeaderBar(title='About'))
 
         logo = Path(__file__).parent / 'images' / 'mcomix.png'
-        self.set_logo(GdkPixbuf.Pixbuf.new_from_file(str(logo)))
+
+        pixbuf_logo = image_tools.load_pixbuf(logo, force_static=True)
+        if pixbuf_logo is not None:
+            self.set_logo(pixbuf_logo)
 
         self.set_name(Mcomix.APP_NAME.value)
         self.set_program_name(Mcomix.APP_NAME.value)

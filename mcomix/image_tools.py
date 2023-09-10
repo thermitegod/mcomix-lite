@@ -18,6 +18,8 @@ from typing import Callable
 
 from gi.repository import GdkPixbuf
 
+from loguru import logger
+
 from mcomix.enums import Animation
 from mcomix.preferences import config
 
@@ -175,28 +177,47 @@ def set_from_pixbuf(image, pixbuf):
         return image.set_from_animation(pixbuf)
     return image.set_from_pixbuf(pixbuf)
 
-def load_pixbuf(path: Path):
+def load_pixbuf(path: Path, force_static: bool = False):
     """
     Loads a pixbuf from a given image file
     """
 
     enable_anime = config['ANIMATION_MODE'] != Animation.DISABLED.value
 
-    if not enable_anime:
-        return GdkPixbuf.Pixbuf.new_from_file(str(path))
+    if not enable_anime or force_static:
+        try:
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file(str(path))
+        except Exception as ex:
+            logger.error(f'Failed to load static image: \'{path}\'')
+            logger.debug(f'Exception: {ex}')
+            return None
 
-    pixbuf = GdkPixbuf.PixbufAnimation.new_from_file(str(path))
-    if pixbuf.is_static_image():
-        return pixbuf.get_static_image()
-    return pixbuf
+        return pixbuf
+    else:
+        try:
+            pixbuf = GdkPixbuf.PixbufAnimation.new_from_file(str(path))
+        except Exception as ex:
+            logger.error(f'Failed to load animated image: \'{path}\'')
+            logger.debug(f'Exception: {ex}')
+            return None
+
+        if pixbuf.is_static_image():
+            return pixbuf.get_static_image()
+
+        return pixbuf
 
 def get_image_size(path: Path):
     """
     Return image informations: (width, height)
     """
 
-    pixbuf = GdkPixbuf.Pixbuf.new_from_file(str(path))
-    return (pixbuf.get_width(), pixbuf.get_height())
+    # TODO think of a way to get this without
+    # having to read the image again
+    pixbuf = load_pixbuf(path, force_static=True)
+    if pixbuf is not None:
+        return (pixbuf.get_width(), pixbuf.get_height())
+    else:
+        return (0, 0)
 
 def get_image_mime(path: Path):
     """
