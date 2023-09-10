@@ -206,19 +206,6 @@ def load_pixbuf(path: Path, force_static: bool = False):
 
         return pixbuf
 
-def get_image_size(path: Path):
-    """
-    Return image informations: (width, height)
-    """
-
-    # TODO think of a way to get this without
-    # having to read the image again
-    pixbuf = load_pixbuf(path, force_static=True)
-    if pixbuf is not None:
-        return (pixbuf.get_width(), pixbuf.get_height())
-    else:
-        return (0, 0)
-
 def get_image_mime(path: Path):
     """
     Return image informations: (format)

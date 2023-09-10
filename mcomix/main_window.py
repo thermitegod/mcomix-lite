@@ -366,8 +366,8 @@ class MainWindow(Gtk.ApplicationWindow):
         for page in (page, page + 1):
             if not self.__image_handler.page_is_available(page):
                 return False
-            pixbuf = self.__image_handler.get_pixbuf(page)
-            if pixbuf.get_width() > pixbuf.get_height():
+            width, height = self.__image_handler.get_page_size(page)
+            if width > height:
                 return True
 
         return False

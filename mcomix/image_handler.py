@@ -279,17 +279,19 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
 
         return page_data
 
-    def get_size(self, page: int = None):
+    def get_page_size(self, page: int = None):
         """
         Return a tuple (width, height) with the size of <page>. If <page>
         is None, return the size of the current page
         """
 
-        page_path = self.get_path_to_page(page)
-        if not Path.is_file(page_path):
-            return 0, 0
+        if page is None:
+            page = self.get_current_page()
 
-        return image_tools.get_image_size(page_path)
+        if not self.page_is_available(page):
+            return 0, 0
+        pixbuf = self.get_pixbuf(page)
+        return (pixbuf.get_width(), pixbuf.get_height())
 
     def get_mime_name(self, page: int = None):
         """

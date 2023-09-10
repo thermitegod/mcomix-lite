@@ -105,7 +105,7 @@ class PropertiesDialog(Gtk.Dialog):
         self._update_page_image(page)
         path = self.__image_handler.get_path_to_page()
         page.set_filename(path.name)
-        width, height = self.__image_handler.get_size()
+        width, height = self.__image_handler.get_page_size()
         main_info = (f'{width}x{height} px', self.__image_handler.get_mime_name(),)
         page.set_main_info(main_info)
         self._update_page_secondary_info(page, path)
