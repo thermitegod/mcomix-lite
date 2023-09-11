@@ -19,7 +19,6 @@ from urllib.request import url2pathname
 
 from gi.repository import Gdk, Gtk
 
-from mcomix.file_handler import FileHandler
 from mcomix.lib.events import Events, EventType
 from mcomix.preferences import config
 from mcomix.state.view_state import ViewState
@@ -34,7 +33,6 @@ class InputHandler:
         super().__init__()
 
         self.__window = window
-        self.__file_handler = FileHandler(None)
 
         self.__events = Events()
         self.__events.add_event(EventType.KB_ESCAPE, self.escape_event)
@@ -199,7 +197,7 @@ class InputHandler:
             return
 
         paths = [Path(url2pathname(urlparse(uri).path)) for uri in uris]
-        self.__file_handler.open_file_init(paths)
+        self.__window.file_handler.open_file_init(paths)
 
     def scroll_with_flipping(self, x: int, y: int):
         """

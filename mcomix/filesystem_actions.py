@@ -20,8 +20,6 @@ from gi.repository import Gtk
 from loguru import logger
 from send2trash import send2trash
 
-from mcomix.file_handler import FileHandler
-from mcomix.image_handler import ImageHandler
 from mcomix.message_dialog.info import MessageDialogInfo
 from mcomix.message_dialog.remember import MessageDialogRemember
 from mcomix.lib.events import Events, EventType
@@ -44,16 +42,13 @@ class FileSystemActions:
         self.__events.add_event(EventType.KB_FILE_MOVE, self.move_file)
         self.__events.add_event(EventType.KB_FILE_TRASH, self.trash_file)
 
-        self.__file_handler = FileHandler(None)
-        self.__image_handler = ImageHandler()
-
     def extract_page(self):
         """
         Derive some sensible filename (the filename should do) and offer
         the user the choice to save the current page with the selected name
         """
 
-        page = self.__image_handler.get_current_page()
+        page = self.__window.image_handler.get_current_page()
 
         if ViewState.is_displaying_double:
             # asks for left or right page if in double page mode
@@ -80,8 +75,8 @@ class FileSystemActions:
                 if not ViewState.is_manga_mode:
                     page += 1
 
-        page_name = self.__image_handler.get_page_filename(page=page)[0]
-        page_path = self.__image_handler.get_path_to_page(page=page)
+        page_name = self.__window.image_handler.get_page_filename(page=page)[0]
+        page_path = self.__window.image_handler.get_path_to_page(page=page)
 
         save_dialog = Gtk.FileChooserDialog(title='Save page as', action=Gtk.FileChooserAction.SAVE)
         save_dialog.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT)
@@ -101,7 +96,7 @@ class FileSystemActions:
         The currently opened file/archive will be moved to prefs['MOVE_FILE']
         """
 
-        current_file = self.__file_handler.get_real_path()
+        current_file = self.__window.file_handler.get_real_path()
 
         target_dir = Path() / current_file.parent / config['MOVE_FILE']
         target_file = Path() / target_dir / current_file.name
@@ -127,7 +122,7 @@ class FileSystemActions:
         The currently opened file/archive will be trashed after showing a confirmation dialog
         """
 
-        current_file = self.__file_handler.get_real_path()
+        current_file = self.__window.file_handler.get_real_path()
 
         dialog = MessageDialogRemember()
         dialog.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.OK)
@@ -158,21 +153,21 @@ class FileSystemActions:
         Shared logic for move_file() and trash_file()
         """
 
-        if self.__file_handler.is_archive():
-            next_opened = self.__file_handler.open_archive_direction(forward=True)
+        if self.__window.file_handler.is_archive():
+            next_opened = self.__window.file_handler.open_archive_direction(forward=True)
             if not next_opened:
-                next_opened = self.__file_handler.open_archive_direction(forward=False)
+                next_opened = self.__window.file_handler.open_archive_direction(forward=False)
             if not next_opened:
-                self.__file_handler.close_file()
+                self.__window.file_handler.close_file()
         else:
-            if self.__image_handler.get_number_of_pages() > 1:
+            if self.__window.image_handler.get_number_of_pages() > 1:
                 # Open the next/previous file
-                if self.__image_handler.is_last_page():
+                if self.__window.image_handler.is_last_page():
                     self.__events.run_events(EventType.KB_PAGE_FLIP, {'number_of_pages': -1})
                 else:
                     self.__events.run_events(EventType.KB_PAGE_FLIP, {'number_of_pages': 1})
 
                 # Refresh the directory
-                self.__file_handler.refresh_file()
+                self.__window.file_handler.refresh_file()
             else:
-                self.__file_handler.close_file()
+                self.__window.file_handler.close_file()

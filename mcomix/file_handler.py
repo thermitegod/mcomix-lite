@@ -21,7 +21,6 @@ from mcomix.archive_extractor import Extractor
 from mcomix.enums import FileSortDirection, FileSortType, FileTypes
 from mcomix.formats.archive import ArchiveSupported
 from mcomix.file_provider import GetFileProvider
-from mcomix.image_files import ImageFiles
 from mcomix.image_handler import ImageHandler
 from mcomix.lib.events import Events, EventType
 from mcomix.lib.metaclass import SingleInstanceMetaClass
@@ -51,8 +50,7 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
         self.__events.add_event(EventType.KB_FILE_REFRESH, self.refresh_file)
         self.__events.add_event(EventType.KB_OPEN_ARCHIVE_DIRECTION, self.open_archive_direction)
 
-        self.__image_handler = ImageHandler()
-        self.__image_files = ImageFiles()
+        self.__image_handler: ImageHandler = None
 
         #: Indicates if files/archives are currently loaded/loading.
         self.__file_loaded = False
@@ -79,6 +77,10 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
 
         self.update_opening_behavior()
 
+    @property
+    def image_handler(self):
+        return self.__image_handler
+
     def update_opening_behavior(self):
         self.__open_first_page = 1 if config['OPEN_FIRST_PAGE'] else -1
 
@@ -95,6 +97,7 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
             start_page = self.__image_handler.get_current_page()
         else:
             start_page = 1
+
         self.open_file(current_file, start_page)
 
     def open_file_init(self, paths: list, start_page: int = 1):
@@ -120,6 +123,8 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
 
         self._close()
 
+        self.__image_handler = ImageHandler()
+
         self.__is_archive = ArchiveSupported.is_archive_file(path)
         self.__start_page = start_page
         self.__current_file = path
@@ -142,7 +147,7 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
         Called once the archive has been opened and its contents listed
         """
 
-        self.__image_files.set_image_files(image_files)
+        self.__image_handler.image_files.set_image_files(image_files)
         self.file_opened()
 
         if not image_files:
@@ -163,7 +168,7 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
                 start_page = 1
             else:
                 # Set start_page to the same as current_file.
-                start_page = self.__image_files.get_page_from_path(self.__current_file)
+                start_page = self.__image_handler.image_files.get_page_from_path(self.__current_file)
 
         self.__window.set_page(start_page)
 
@@ -200,12 +205,16 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
                 self.__file_provider = None
             if self.__is_archive:
                 self.__extractor.close()
+
             self.__image_handler.cleanup()
+            self.__image_handler = None
+
             self.__file_loaded = False
             self.__file_loading = False
             self.__is_archive = False
             self.__current_file = None
             self.__base_path = None
+
             self.file_closed()
 
     def _initialize_fileprovider(self, paths: list):

@@ -16,8 +16,6 @@ from __future__ import annotations
 from gi.repository import GObject, Gtk
 
 from mcomix.enums import Animation, DoublePage, FileSortDirection, FileSortType, ZoomModes
-from mcomix.file_handler import FileHandler
-from mcomix.image_handler import ImageHandler
 from mcomix.lib.events import Events, EventType
 from mcomix.preferences import config
 from mcomix.preferences_page import PreferencePage
@@ -39,9 +37,6 @@ class PreferencesDialog(Gtk.Dialog):
         self.__window = window
 
         self.__events = Events()
-
-        self.__file_handler = FileHandler(None)
-        self.__image_handler = ImageHandler()
 
         self.set_modal(True)
         self.set_transient_for(window)
@@ -443,7 +438,7 @@ class PreferencesDialog(Gtk.Dialog):
 
         match preference:
             case ('ANIMATION_MODE' | 'SORT_ARCHIVE_ORDER' | 'SORT_ARCHIVE_BY' | 'SORT_ORDER' | 'SORT_BY'):
-                self.__file_handler.refresh_file()
+                self.__window.file_handler.refresh_file()
             case ('VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES' | 'CHECKERED_BG_SIZE'):
                 self.__events.run_events(EventType.DRAW_PAGE)
             case ('FIT_TO_SIZE_MODE' | 'ZOOM_MODE'):
@@ -501,9 +496,9 @@ class PreferencesDialog(Gtk.Dialog):
                 self.__events.run_events(EventType.DRAW_PAGE)
             case ('ANIMATION_BACKGROUND' | 'ANIMATION_TRANSFORM'):
                 self.__window.thumbnailsidebar.toggle_page_numbers_visible()
-                self.__file_handler.refresh_file()
+                self.__window.file_handler.refresh_file()
             case ('OPEN_FIRST_PAGE'):
-                self.__file_handler.update_opening_behavior()
+                self.__window.file_handler.update_opening_behavior()
 
     def _create_pref_spinner(self, prefkey: str, scale: float, lower: float, upper: float,
                              step_incr: float, page_incr: float, digits: float):
@@ -528,7 +523,7 @@ class PreferencesDialog(Gtk.Dialog):
                 self.__window.thumbnailsidebar.resize()
                 self.__events.run_events(EventType.DRAW_PAGE)
             case ('PAGE_CACHE_FORWARD' | 'PAGE_CACHE_BEHIND'):
-                self.__image_handler.do_caching()
+                self.__window.image_handler.do_caching()
             case ('FIT_TO_SIZE_PX'):
                 self.__window.change_zoom_mode()
 

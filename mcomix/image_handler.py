@@ -24,20 +24,19 @@ import mcomix.image_tools as image_tools
 from mcomix.file_size import format_filesize
 from mcomix.image_files import ImageFiles
 from mcomix.lib.events import Events, EventType
-from mcomix.lib.metaclass import SingleInstanceMetaClass
 from mcomix.lib.threadpool import GlobalThreadPool, Lock
 from mcomix.preferences import config
 from mcomix.state.view_state import ViewState
 from mcomix.thumbnailer import Thumbnailer
 
 
-class ImageHandler(metaclass=SingleInstanceMetaClass):
+class ImageHandler():
     """
-    The FileHandler keeps track of images, pages, caches and reads files.
+    The ImageHandler keeps track of images, pages, caches and reads files.
     When the Filehandler's methods refer to pages, they are indexed from 1,
     i.e. the first page is page 1 etc.
     Other modules should *never* read directly from the files pointed to by
-    paths given by the FileHandler's methods. The files are not even
+    paths given by the ImageHandler's methods. The files are not even
     guaranteed to exist at all times since the extraction of archives is
     threaded
     """
@@ -64,6 +63,14 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
         self.__raw_pixbufs: dict[int, GdkPixbuf] = {}
 
         self.__thumbnailer = Thumbnailer()
+
+    @property
+    def image_files(self):
+        return self.__image_files
+
+    def cleanup(self):
+        # __del__ does not work for this, and there are no cpp like destructors
+        self.__events.remove_event(EventType.FILE_AVAILABLE, self.file_available)
 
     def _get_pixbuf(self, page: int) -> GdkPixbuf:
         """
@@ -134,19 +141,6 @@ class ImageHandler(metaclass=SingleInstanceMetaClass):
 
         self.__current_image = page
         self.do_caching()
-
-    def cleanup(self) -> None:
-        """
-        Run clean-up tasks. Should be called prior to exit
-        """
-
-        self.__threadpool.renew()
-        self.__wanted_pixbufs.clear()
-        self.__cache_lock.clear()
-        self.__image_files.cleanup()
-        self.__current_image = None
-        self.__available_images.clear()
-        self.__raw_pixbufs.clear()
 
     def is_page_available(self, page: int = None) -> bool:
         """

@@ -21,7 +21,6 @@ from mcomix.dialog_chooser import DialogChooser
 from mcomix.enums import DialogChoice, DoublePage, Mcomix, PageOrientation, Scroll, ZoomAxis
 from mcomix.file_handler import FileHandler
 from mcomix.filesystem_actions import FileSystemActions
-from mcomix.image_handler import ImageHandler
 from mcomix.input_handler import InputHandler
 from mcomix.keybindings_manager import KeybindingManager
 from mcomix.layout import FiniteLayout
@@ -83,7 +82,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.__file_handler = FileHandler(self)
         self.__filesystem_actions = FileSystemActions(self)
-        self.__image_handler = ImageHandler()
         self.__bookmark_backend = BookmarkBackend(self)
 
         self.__thumbnailsidebar = ThumbnailSidebar(self)
@@ -162,46 +160,34 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.show_all()
 
-        self.__file_handler.open_file_init(open_path)
+        self.file_handler.open_file_init(open_path)
+
+    @property
+    def file_handler(self):
+        return self.__file_handler
+
+    @property
+    def image_handler(self):
+        return self.file_handler.image_handler
 
     @property
     def bookmark_backend(self):
-        """
-        Interface for BookmarkBackend
-        """
-
         return self.__bookmark_backend
 
     @property
     def thumbnailsidebar(self):
-        """
-        Interface for ThumbnailSidebar
-        """
-
         return self.__thumbnailsidebar
 
     @property
     def statusbar(self):
-        """
-        Interface for Statusbar
-        """
-
         return self.__statusbar
 
     @property
     def keybindings(self):
-        """
-        Interface for KeybindingManager
-        """
-
         return self.__keybindings
 
     @property
     def cursor_handler(self):
-        """
-        Interface for CursorHandler
-        """
-
         return self.__cursor_handler
 
     @property
@@ -248,14 +234,14 @@ class MainWindow(Gtk.ApplicationWindow):
     def _draw_pages(self, scroll_to: int):
         self._hide_images()
 
-        if not self.__file_handler.is_file_loaded():
+        if not self.file_handler.is_file_loaded():
             self.__thumbnailsidebar.hide()
             self.__waiting_for_redraw = False
             return
 
         self.__thumbnailsidebar.show()
 
-        if not self.__image_handler.is_page_available():
+        if not self.image_handler.is_page_available():
             # Save scroll destination for when the page becomes available.
             self.__last_scroll_destination = scroll_to
             self.__waiting_for_redraw = False
@@ -266,7 +252,7 @@ class MainWindow(Gtk.ApplicationWindow):
         # XXX limited to at most 2 pages
         pixbuf_count = 2 if ViewState.is_displaying_double else 1
         pixbuf_count_iter = range(pixbuf_count)
-        pixbuf_list = list(self.__image_handler.get_pixbufs(pixbuf_count))
+        pixbuf_list = list(self.image_handler.get_pixbufs(pixbuf_count))
         do_not_transform = [image_tools.disable_transform(x) for x in pixbuf_list]
         size_list = [[pixbuf.get_width(), pixbuf.get_height()] for pixbuf in pixbuf_list]
 
@@ -323,17 +309,17 @@ class MainWindow(Gtk.ApplicationWindow):
         even when the page pixbuf(s) aren't ready yet
         """
 
-        page = self.__image_handler.get_current_page()
+        page = self.image_handler.get_current_page()
         if not page:
             return
 
-        filenames = self.__image_handler.get_page_filename(page=page)
-        filesizes = self.__image_handler.get_page_filesize(page=page)
+        filenames = self.image_handler.get_page_filename(page=page)
+        filesizes = self.image_handler.get_page_filesize(page=page)
 
         filename = ', '.join(filenames)
         filesize = ', '.join(filesizes)
 
-        self.__statusbar.set_page_number(page, self.__image_handler.get_number_of_pages())
+        self.__statusbar.set_page_number(page, self.image_handler.get_number_of_pages())
         self.__statusbar.set_filename(filename)
         self.__statusbar.set_filesize(filesize)
 
@@ -351,22 +337,22 @@ class MainWindow(Gtk.ApplicationWindow):
         """
 
         if page is None:
-            page = self.__image_handler.get_current_page()
+            page = self.image_handler.get_current_page()
 
         if (page == 1 and
                 config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & DoublePage.AS_ONE_TITLE.value and
-                self.__file_handler.is_archive()):
+                self.file_handler.is_archive()):
             return True
 
         if (not config['DEFAULT_DOUBLE_PAGE'] or
                 not config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & DoublePage.AS_ONE_WIDE.value or
-                self.__image_handler.is_last_page(page)):
+                self.image_handler.is_last_page(page)):
             return False
 
         for page in (page, page + 1):
-            if not self.__image_handler.is_page_available(page):
+            if not self.image_handler.is_page_available(page):
                 return False
-            width, height = self.__image_handler.get_page_size(page)
+            width, height = self.image_handler.get_page_size(page)
             if width > height:
                 return True
 
@@ -378,7 +364,7 @@ class MainWindow(Gtk.ApplicationWindow):
         """
 
         # Refresh display when currently opened page becomes available.
-        current_page = self.__image_handler.get_current_page()
+        current_page = self.image_handler.get_current_page()
         nb_pages = 2 if ViewState.is_displaying_double else 1
         if current_page <= page < (current_page + nb_pages):
             self._displayed_double()
@@ -390,12 +376,12 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__thumbnailsidebar.show()
 
         if config['STATUSBAR_FULLPATH']:
-            self.__statusbar.set_archive_filename(self.__file_handler.get_base_path())
+            self.__statusbar.set_archive_filename(self.file_handler.get_base_path())
         else:
-            self.__statusbar.set_archive_filename(self.__file_handler.get_base_path().name)
+            self.__statusbar.set_archive_filename(self.file_handler.get_base_path().name)
         self.__statusbar.set_view_mode()
-        self.__statusbar.set_filesize_archive(self.__file_handler.get_base_path())
-        self.__statusbar.set_file_number(*self.__file_handler.get_file_number())
+        self.__statusbar.set_filesize_archive(self.file_handler.get_base_path())
+        self.__statusbar.set_file_number(*self.file_handler.get_file_number())
         self.__statusbar.update()
 
         self._update_title()
@@ -440,19 +426,19 @@ class MainWindow(Gtk.ApplicationWindow):
         Draws a *new* page (as opposed to redrawing the same image with a new size or whatever)
         """
 
-        if num == self.__image_handler.get_current_page():
+        if num == self.image_handler.get_current_page():
             return
 
-        self.__image_handler.set_page(num)
+        self.image_handler.set_page(num)
         self.page_changed()
         self._new_page(at_bottom=at_bottom)
 
     def flip_page(self, number_of_pages: int, single_step: bool = False):
-        if not self.__file_handler.is_file_loaded():
+        if not self.file_handler.is_file_loaded():
             return
 
-        current_page = self.__image_handler.get_current_page()
-        current_number_of_pages = self.__image_handler.get_number_of_pages()
+        current_page = self.image_handler.get_current_page()
+        current_number_of_pages = self.image_handler.get_number_of_pages()
 
         new_page = current_page + number_of_pages
         if (abs(number_of_pages) == 1 and
@@ -469,23 +455,23 @@ class MainWindow(Gtk.ApplicationWindow):
             # first one. (Note: check for (page number <= 1) to handle empty
             # archive case).
             if number_of_pages == -1 and current_page <= 1:
-                return self.__file_handler.open_archive_direction(forward=False)
+                return self.file_handler.open_archive_direction(forward=False)
             # Handle empty archive case.
             new_page = min(1, current_number_of_pages)
         elif new_page > current_number_of_pages:
             if number_of_pages == 1:
-                return self.__file_handler.open_archive_direction(forward=True)
+                return self.file_handler.open_archive_direction(forward=True)
             new_page = current_number_of_pages
 
         if new_page != current_page:
             self.set_page(new_page, at_bottom=(-1 == number_of_pages))
 
     def first_page(self):
-        if self.__image_handler.get_number_of_pages():
+        if self.image_handler.get_number_of_pages():
             self.set_page(1)
 
     def last_page(self):
-        number_of_pages = self.__image_handler.get_number_of_pages()
+        number_of_pages = self.image_handler.get_number_of_pages()
         if number_of_pages:
             self.set_page(number_of_pages)
 
@@ -589,10 +575,10 @@ class MainWindow(Gtk.ApplicationWindow):
         """
 
         ViewState.is_displaying_double = (
-            self.__image_handler.get_current_page() and
+            self.image_handler.get_current_page() and
             config['DEFAULT_DOUBLE_PAGE'] and
             not self._get_virtual_double_page() and
-            not self.__image_handler.is_last_page()
+            not self.image_handler.is_last_page()
         )
 
     def get_visible_area_size(self):
@@ -619,7 +605,7 @@ class MainWindow(Gtk.ApplicationWindow):
         Set the title acording to current state
         """
 
-        self.set_title(f'{Mcomix.APP_NAME.value} [{self.__file_handler.get_real_path()}]')
+        self.set_title(f'{Mcomix.APP_NAME.value} [{self.file_handler.get_real_path()}]')
 
     def minimize(self):
         """
@@ -668,4 +654,4 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__keybindings.write_keybindings_file()
         self.__bookmark_backend.write_bookmarks_file()
 
-        self.__file_handler.close_file()
+        self.file_handler.close_file()

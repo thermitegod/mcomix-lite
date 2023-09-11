@@ -13,10 +13,8 @@
 
 from pathlib import Path
 
-from mcomix.lib.metaclass import SingleInstanceMetaClass
 
-
-class ImageFiles(metaclass=SingleInstanceMetaClass):
+class ImageFiles():
     def __init__(self) -> None:
         self.__pages = {}
         self.__paths = {}

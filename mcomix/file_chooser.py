@@ -18,7 +18,6 @@ from pathlib import Path
 
 from gi.repository import Gtk
 
-from mcomix.file_handler import FileHandler
 from mcomix.formats.archive import ArchiveSupported
 from mcomix.formats.image import ImageSupported
 from mcomix.preferences import config
@@ -40,8 +39,6 @@ class FileChooser(Gtk.Dialog):
         super().__init__(title='Open')
 
         self.__window = window
-
-        self.__file_handler = FileHandler(None)
 
         self.__action = Gtk.FileChooserAction.OPEN
         self.__last_activated_file = None
@@ -68,7 +65,7 @@ class FileChooser(Gtk.Dialog):
         filters = self.__filechooser.list_filters()
         self.__filechooser.set_filter(filters[config['FILECHOOSER_LAST_FILTER']])
 
-        current_file = self.__file_handler.get_base_path()
+        current_file = self.__window.file_handler.get_base_path()
         try:
             if current_file is not None:
                 # If a file is currently open, use its path
@@ -134,7 +131,7 @@ class FileChooser(Gtk.Dialog):
             filter_index = self.__filechooser.list_filters().index(self.__filechooser.get_filter())
             config['FILECHOOSER_LAST_FILTER'] = filter_index
 
-            self.__file_handler.open_file_init(paths)
+            self.__window.file_handler.open_file_init(paths)
 
         self.destroy()
 
