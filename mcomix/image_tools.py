@@ -58,32 +58,9 @@ def get_fitting_size(src_width: int, src_height: int, width: int, height: int,
                 width = max(src_width * height // src_height, 1)
     return width, height
 
-def frame_executor(animation, function: Callable, args: tuple = None, kwargs: dict = None):
-    if function is None:
-        # function is not a function, do nothing
-        return animation
-
-    if args is None:
-        args = ()
-    if kwargs is None:
-        kwargs = {}
-
-    if not config['ANIMATION_TRANSFORM']:
-        # transform disabled, do nothing
-        return animation
-
-    try:
-        framebuffer = animation.framebuffer
-    except AttributeError:
-        # animation does not have AnimeFrameBuffer, do nothing
-        return animation
-
-    return framebuffer.copy(lambda pb: function(pb, *args, **kwargs)).create_animation()
-
-
 def fit_pixbuf_to_rectangle(src, width: int, height: int, rotation: int = 0):
     if is_animation(src):
-        return frame_executor(src, fit_pixbuf_to_rectangle, args=(width, height, rotation))
+        return src
     return fit_in_rectangle(src, width, height, False, True, rotation,)
 
 def fit_in_rectangle(src, width: int, height: int, keep_ratio: bool = True, scale_up: bool = False, rotation: int = 0):
