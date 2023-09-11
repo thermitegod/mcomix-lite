@@ -37,7 +37,8 @@ def rotate_pixbuf(src, rotation: int):
         case _:
             raise ValueError(f'unsupported rotation: {rotation}')
 
-def get_fitting_size(source_size: tuple, target_size: tuple, keep_ratio: bool = True, scale_up: bool = False):
+def get_fitting_size(src_width: int, src_height: int, width: int, height: int,
+                     keep_ratio: bool = True, scale_up: bool = False):
     """
     Return a scaled version of <source_size>
     small enough to fit in <target_size>.
@@ -48,8 +49,6 @@ def get_fitting_size(source_size: tuple, target_size: tuple, keep_ratio: bool = 
     when smaller than <target_size>
     """
 
-    width, height = target_size
-    src_width, src_height = source_size
     if not scale_up and src_width <= width and src_height <= height:
         width, height = src_width, src_height
     else:
@@ -83,10 +82,10 @@ def frame_executor(animation, function: Callable, args: tuple = None, kwargs: di
     return framebuffer.copy(lambda pb: function(pb, *args, **kwargs)).create_animation()
 
 
-def fit_pixbuf_to_rectangle(src, width: int, height: int, rotation: int):
+def fit_pixbuf_to_rectangle(src, width: int, height: int, rotation: int = 0):
     if is_animation(src):
         return frame_executor(src, fit_pixbuf_to_rectangle, args=(width, height, rotation))
-    return fit_in_rectangle(src, width, height, rotation=rotation, keep_ratio=False, scale_up=True)
+    return fit_in_rectangle(src, width, height, False, True, rotation,)
 
 def fit_in_rectangle(src, width: int, height: int, keep_ratio: bool = True, scale_up: bool = False, rotation: int = 0):
     """
@@ -106,15 +105,13 @@ def fit_in_rectangle(src, width: int, height: int, keep_ratio: bool = True, scal
     If <src> has an alpha channel it gets a checkboard background
     """
 
-    rotation %= 360
     if rotation in (90, 270):
         width, height = height, width
 
     src_width = src.get_width()
     src_height = src.get_height()
 
-    width, height = get_fitting_size((src_width, src_height), (width, height),
-                                     keep_ratio=keep_ratio, scale_up=scale_up)
+    width, height = get_fitting_size(src_width, src_height, width, height, keep_ratio, scale_up)
 
     if src.get_has_alpha():
         src = add_alpha_background(src, width, height)
@@ -215,3 +212,34 @@ def get_image_mime(path: Path):
     if mime_type:
         return mime_type
     return None
+
+def create_thumbnail(path: Path, size: int):
+    """
+    Returns a thumbnail pixbuf for <path>, transparently handling
+    both normal image files and archives. Returns None if thumbnail creation
+    failed, or if the thumbnail creation is run asynchrounosly
+
+    :param filepath: Path to the image that the thumbnail is generated from.
+    :param size: The max size of any one side for the created thumbnails.
+    """
+
+    pixbuf = load_pixbuf(path, force_static=True)
+    if pixbuf is None:
+        return None
+
+    original_width = pixbuf.get_width()
+    original_height = pixbuf.get_height()
+
+    # Calculate the new dimensions while preserving the aspect ratio
+    aspect_ratio = original_width / original_height
+    if original_width > original_height:
+        width = size
+        height = int(size / aspect_ratio)
+    else:
+        height = size
+        width = int(size * aspect_ratio)
+
+    pixbuf = fit_pixbuf_to_rectangle(pixbuf, width, height)
+    pixbuf = add_border_pixbuf(pixbuf)
+
+    return pixbuf

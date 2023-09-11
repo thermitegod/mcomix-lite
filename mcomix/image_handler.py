@@ -27,7 +27,6 @@ from mcomix.lib.events import Events, EventType
 from mcomix.lib.threadpool import GlobalThreadPool, Lock
 from mcomix.preferences import config
 from mcomix.state.view_state import ViewState
-from mcomix.thumbnailer import Thumbnailer
 
 
 class ImageHandler():
@@ -61,8 +60,6 @@ class ImageHandler():
         self.__wanted_pixbufs: list[int] = []
         #: Pixbuf map from page > Pixbuf
         self.__raw_pixbufs: dict[int, GdkPixbuf] = {}
-
-        self.__thumbnailer = Thumbnailer()
 
     @property
     def image_files(self):
@@ -314,10 +311,7 @@ class ImageHandler():
             return None
 
         path = self.get_path_to_page(page)
-        if not Path.is_file(path):
-            return None
-
-        return self.__thumbnailer(size=size, filepath=path)
+        return image_tools.create_thumbnail(path=path, size=size)
 
     def _is_page_extracted(self, page: int) -> bool:
         if page is None:
