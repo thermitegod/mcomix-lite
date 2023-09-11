@@ -11,7 +11,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import mimetypes
 from pathlib import Path
 
 from typing import Callable
@@ -202,16 +201,6 @@ def load_pixbuf(path: Path, force_static: bool = False):
             return pixbuf.get_static_image()
 
         return pixbuf
-
-def get_image_mime(path: Path):
-    """
-    Return image informations: (format)
-    """
-
-    mime_type, _ = mimetypes.guess_type(path)
-    if mime_type:
-        return mime_type
-    return None
 
 def create_thumbnail(path: Path, size: int):
     """

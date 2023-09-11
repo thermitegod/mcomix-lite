@@ -13,6 +13,7 @@
 
 from __future__ import annotations
 
+import mimetypes
 from pathlib import Path
 
 from gi.repository import GdkPixbuf
@@ -296,7 +297,10 @@ class ImageHandler():
         if not Path.is_file(page_path):
             return None
 
-        return image_tools.get_image_mime(page_path)
+        mime_type, _ = mimetypes.guess_type(page_path)
+        if mime_type:
+            return mime_type
+        return None
 
     def get_thumbnail(self, page: int, size: int) -> GdkPixbuf:
         """
