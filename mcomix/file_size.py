@@ -11,8 +11,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import math
 from pathlib import Path
+
+from bytesize import Size
 
 from loguru import logger
 
@@ -20,22 +21,10 @@ from mcomix.preferences import config
 
 
 def format_filesize(path: Path) -> str:
-    if config['SI_UNITS']:
-        unit_size = 1000.0
-        unit_symbols = ('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB', 'RB', 'QB')
-    else:
-        unit_size = 1024.0
-        unit_symbols = ('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB', 'RiB', 'QiB')
-
     try:
         size = Path.stat(path).st_size
     except (AttributeError, FileNotFoundError):
         logger.warning(f'failed to get file size for: {path}')
         return 'unknown'
 
-    log_size = math.log(size) / math.log(unit_size)
-    size_idx = math.floor(log_size)
-    unit_size = math.pow(unit_size, log_size - size_idx)
-    unit_label = unit_symbols[size_idx]
-
-    return f'{unit_size:.3f} {unit_label}'
+    return f'{Size(size).human_readable(max_places=3)}'

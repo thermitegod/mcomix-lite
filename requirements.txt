@@ -1,3 +1,4 @@
+bytesize
 libarchive-c
 loguru
 pygobject
