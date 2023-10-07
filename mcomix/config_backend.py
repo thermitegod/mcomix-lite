@@ -11,10 +11,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+import hashlib
+from datetime import datetime
 from pathlib import Path
 
-import hashlib
-import yaml
+import tomli, tomli_w
+
 from loguru import logger
 
 from mcomix.enums import ConfigPaths, ConfigType
@@ -44,16 +46,25 @@ class _ConfigBackend:
         return hashlib.sha1(self._dump_config(config).encode('utf8')).hexdigest()
 
     def _dump_config(self, config: dict):
-        return yaml.dump(config, Dumper=yaml.CSafeDumper, sort_keys=False)
+        return tomli_w.dumps({'Config': config})
 
     def load_config(self, config: Path, saved_prefs: dict):
         try:
-            with Path.open(config, mode='rt', encoding='utf8') as fd:
-                saved_prefs.update(yaml.safe_load(fd))
-        except Exception as ex:
+            contents: str
+            with config.open(mode='rt') as fd:
+                # not using 'contents' will throw
+                # Exception: '_io.TextIOWrapper' object has no attribute 'replace'
+                contents = fd.read()
+            saved_prefs.update(tomli.loads(contents)['Config'])
+        except tomli.TOMLDecodeError as e:
+            logger.error('Could not parse TOML config file')
+            logger.debug(f'Exception: {e}')
+            config.rename(f'{config}.bak-{int(datetime.timestamp(datetime.now()))}')
+            return
+        except Exception as e:
             logger.error('Loading config failed, exiting')
-            logger.debug(f'Exception: {ex}')
-            raise SystemExit
+            logger.debug(f'Exception: {e}')
+            config.rename(f'{config}.bak-{int(datetime.timestamp(datetime.now()))}')
 
     def write_config(self, config: dict, config_path: Path, module: str):
         if self._hash_config(config=config) == self.__stored_config_hash[module]:

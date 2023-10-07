@@ -35,9 +35,9 @@ except KeyError:
 
 
 class ConfigFiles(Enum):
-    CONFIG = ConfigPaths.CONFIG.value / 'mcomix.conf'
-    KEYBINDINGS = ConfigPaths.CONFIG.value / 'input.conf'
-    BOOKMARK = ConfigPaths.DATA.value / 'bookmarks.yml'
+    CONFIG = ConfigPaths.CONFIG.value / 'mcomix.toml'
+    KEYBINDINGS = ConfigPaths.CONFIG.value / 'input.toml'
+    BOOKMARK = ConfigPaths.DATA.value / 'bookmarks.toml'
 
 class ConfigType(Enum):
     CONFIG = auto()

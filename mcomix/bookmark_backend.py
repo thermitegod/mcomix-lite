@@ -16,7 +16,8 @@ from __future__ import annotations
 from datetime import datetime
 from pathlib import Path
 
-import yaml
+import tomli, tomli_w
+
 from gi.repository import Gtk
 from loguru import logger
 
@@ -44,7 +45,7 @@ class BookmarkBackend:
 
         self.__events = Events()
 
-        self.__bookmark_path = ConfigFiles.BOOKMARK.value
+        self.__bookmark_path: Path = ConfigFiles.BOOKMARK.value
         self.__bookmark_state_dirty = False
 
         #: List of bookmarks
@@ -157,27 +158,40 @@ class BookmarkBackend:
         """
 
         bookmarks = []
+        bookmarks_raw = dict()
 
-        if not Path.is_file(self.__bookmark_path):
+        if not self.__bookmark_path.is_file():
+            return bookmarks
+        try:
+            contents: str
+            with self.__bookmark_path.open(mode='rt') as fd:
+                # not using 'contents' will throw
+                # Exception: '_io.TextIOWrapper' object has no attribute 'replace'
+                contents = fd.read()
+            bookmarks_raw = tomli.loads(contents)['Bookmarks']
+        except tomli.TOMLDecodeError as e:
+            logger.error(f'Could not parse TOML bookmarks file: \'{self.__bookmark_path}\'')
+            logger.debug(f'Exception: {e}')
+            self.__bookmark_path.rename(f'{self.__bookmark_path}.bak-{int(datetime.timestamp(datetime.now()))}')
+            return bookmarks
+        except Exception as e:
+            logger.error(f'Could load bookmarks file: \'{self.__bookmark_path}\'')
+            logger.debug(f'Exception: {e}')
+            self.__bookmark_path.rename(f'{self.__bookmark_path}.bak-{int(datetime.timestamp(datetime.now()))}')
             return bookmarks
 
-        try:
-            with Path.open(self.__bookmark_path, mode='rt', encoding='utf8') as fd:
-                for bookmark in yaml.safe_load(fd):
-                    for item in bookmark:
-                        path = Path(bookmark[item]['path'], item)
-                        current_page = bookmark[item]['current_page']
-                        total_pages = bookmark[item]['total_pages']
-                        date_added = bookmark[item]['created']
+        for bookmark in bookmarks_raw:
+            for item in bookmark:
+                path = Path(bookmark[item]['path'], item)
+                current_page = bookmark[item]['current_page']
+                total_pages = bookmark[item]['total_pages']
+                date_added = bookmark[item]['created']
 
-                        # if not path.is_file():
-                        #     logger.warning(f'Missing bookmark: {path}')
+                # if not path.is_file():
+                #     logger.warning(f'Missing bookmark: {path}')
 
-                        bookmarks.append(Bookmark(self.__window, path=path, current_page=current_page,
-                                                  total_pages=total_pages, date_added=date_added))
-        except Exception as ex:
-            logger.error(f'Could not parse bookmarks file: \'{self.__bookmark_path}\'')
-            logger.debug(f'Exception: {ex}')
+                bookmarks.append(Bookmark(self.__window, path=path, current_page=current_page,
+                                          total_pages=total_pages, date_added=date_added))
 
         return bookmarks
 
@@ -189,13 +203,9 @@ class BookmarkBackend:
 
         return {
             bookmark.bookmark_name: {
-                # YAML does not work with Pathlike objects
-                # when using CSafeDumper
                 'path': str(Path(bookmark.bookmark_path).parent),
                 'current_page': bookmark.bookmark_current_page,
                 'total_pages': bookmark.bookmark_total_pages,
-                # archive_type is deprecated, to be removed before next release
-                'archive_type': 0,
                 'created': bookmark.bookmark_date_added
             }
         }
@@ -231,8 +241,7 @@ class BookmarkBackend:
             self.__bookmarks = list(set(self.__bookmarks + new_bookmarks))
 
         packs = [self.bookmark_pack(bookmark) for bookmark in self.__bookmarks]
-        bookmarks = yaml.dump(packs, Dumper=yaml.CSafeDumper, sort_keys=False,
-                              allow_unicode=True, width=2147483647)
+        bookmarks = tomli_w.dumps({'Bookmarks': packs})
         self.__bookmark_path.write_text(bookmarks)
         self.__bookmarks_size = self.get_bookmarks_file_size()
 
