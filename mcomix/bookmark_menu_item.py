@@ -32,11 +32,11 @@ class Bookmark(Gtk.MenuItem):
     def __init__(self, window: MainWindow, path: Path, current_page: int, total_pages: int, date_added: float):
         self.__window = window
 
-        self.__name = path.name
-        self.__path = path
-        self.__current_page = current_page
-        self.__total_pages = total_pages
-        self.__date_added = date_added
+        self.__name: str = path.name
+        self.__path: Path = path
+        self.__current_page: int = current_page
+        self.__total_pages: int = total_pages
+        self.__date_added: float = date_added
 
         self.__row_format = (
             self.__name,

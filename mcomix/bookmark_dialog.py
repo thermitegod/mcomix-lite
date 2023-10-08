@@ -32,6 +32,8 @@ class BookmarksDialog(Gtk.Dialog):
     def __init__(self, window: MainWindow, bookmarks_store: BookmarkBackend):
         super().__init__(title='Edit Bookmarks', destroy_with_parent=True)
 
+        self.__window = window
+
         self.set_transient_for(window)
 
         self.add_buttons(Gtk.STOCK_REMOVE, Gtk.ResponseType.REJECT)
@@ -149,7 +151,8 @@ class BookmarksDialog(Gtk.Dialog):
         bookmark = treeview.get_model().get_value(_iter, self.__total_pos_sort)
 
         self._close()
-        bookmark.load()
+
+        self.__window.bookmark_backend.open_bookmark(path=bookmark.bookmark_path, current_page=bookmark.bookmark_current_page)
 
     def _sort_model(self, treemodel, iter1, iter2, user_data):
         """

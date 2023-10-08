@@ -58,7 +58,7 @@ class BookmarkBackend:
         """
 
         self.__bookmarks.append(bookmark)
-        self.write_bookmarks_file()
+        self.write_bookmarks_file(force_write=True)
 
         self.__events.run_events(EventType.BOOKMARK_ADD)
 
@@ -68,7 +68,7 @@ class BookmarkBackend:
         """
 
         self.__bookmarks.remove(bookmark)
-        self.write_bookmarks_file()
+        self.write_bookmarks_file(force_write=True)
 
         self.__events.run_events(EventType.BOOKMARK_REMOVE)
 
@@ -87,7 +87,13 @@ class BookmarkBackend:
         for bookmark in self.__bookmarks:
             if Path(bookmark.bookmark_path) == path:
                 if bookmark.bookmark_current_page == current_page:
-                    logger.info(f'Bookmark already exists for file \'{path}\' on page \'{current_page}\'')
+                    message = f'Bookmark already exists for file \'{path}\' on page \'{current_page}\''
+                    logger.info(message)
+
+                    dialog = MessageDialogInfo()
+                    dialog.set_text(primary='Already Bookmarked', secondary=message)
+                    dialog.run()
+
                     return
 
                 same_file_bookmarks.append(bookmark)
@@ -112,6 +118,8 @@ class BookmarkBackend:
         """
         Open the file and page the bookmark represents
         """
+
+        path = Path(path)
 
         if not path.is_file():
             dialog = MessageDialogInfo()
@@ -204,13 +212,16 @@ class BookmarkBackend:
 
         return False
 
-    def write_bookmarks_file(self, force_write: bool = False):
+    def write_bookmarks_file(self, *, force_write: bool = False):
         """
         Store relevant bookmark info in the mcomix directory
         """
 
+        if force_write:
+            self.__bookmark_state_dirty = True
+
         # Merge changes in case file was modified from within other instances
-        if not self.__bookmark_state_dirty or force_write:
+        if not self.__bookmark_state_dirty:
             logger.info('No changes to write for bookmarks')
             return
         logger.info('Writing changes to bookmarks')
