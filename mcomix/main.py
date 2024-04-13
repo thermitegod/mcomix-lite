@@ -27,6 +27,7 @@ except (ValueError, ImportError):
     raise SystemExit('GTK+ 3.0 import error')
 
 from mcomix.enums import Mcomix
+from mcomix.main_window import MainWindow
 
 
 def main():
@@ -67,7 +68,6 @@ def main():
         logger.info(f'Loading file from command line: \'{p}\'')
         open_path.append(p)
 
-    from mcomix.main_window import MainWindow
     window = MainWindow(open_path=open_path)
 
     try:
