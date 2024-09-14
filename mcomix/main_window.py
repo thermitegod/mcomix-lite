@@ -102,7 +102,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.__cursor_handler = CursorHandler(self)
 
-        self.__main_layout = Gtk.Layout()
+        self.__main_layout = Gtk.Fixed()
         self.__main_scrolled_window = Gtk.ScrolledWindow()
         self.__main_scrolled_window.add(self.__main_layout)
         self.__main_scrolled_window.set_hexpand(True)
@@ -276,8 +276,6 @@ class MainWindow(Gtk.ApplicationWindow):
         scaled_sizes = self.__zoom.get_zoomed_size(size_list, zoom_dummy_size, distribution_axis, do_not_transform)
 
         self.__layout = FiniteLayout(scaled_sizes, viewport_size, orientation, distribution_axis, alignment_axis)
-
-        self.__main_layout.set_size(*self.__layout.get_union_box().get_size())
 
         content_boxes = self.__layout.get_content_boxes()
 
