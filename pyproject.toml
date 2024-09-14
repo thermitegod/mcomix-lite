@@ -1,9 +1,20 @@
+[project]
+name = "mcomix-lite"
+version = "3.4.0-dev"
+description = ""
+requires-python = ">=3.12"
+
 [build-system]
-requires = ["setuptools>=51.0"]
-build-backend = "setuptools.build_meta"
+requires = [
+    "meson-python",
+    "pybind11",
+]
+build-backend = "mesonpy"
+
+[project.scripts]
+mcomix = "mcomix.main:main"
 
 [tool.pytest.ini_options]
-#addopts = "--cov=mcomix"
 testpaths = [
     "tests",
 ]

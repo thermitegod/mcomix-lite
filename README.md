@@ -8,6 +8,15 @@ MComix-Lite is a fork of MComix3 which is a fork of MComix which is a fork of Co
 
 The main focus is **ONLY** on the reader and all other features, i.e. library, have been removed or could be subject to a future removal.
 
+## Building the CPP module
+
+This is optional, if this is not built there is a fallback python implementations
+
+```bash
+meson setup ./build
+ninja -C build
+```
+
 ## Usage
 
 ```bash

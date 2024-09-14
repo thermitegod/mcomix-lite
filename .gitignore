@@ -3,13 +3,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Cython
-cython_debug/
-*.c
-*.cpp
-*.so
-*.html
-
 # Distribution / packaging
 .Python
 build/
