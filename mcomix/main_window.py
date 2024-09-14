@@ -23,7 +23,6 @@ from mcomix.file_handler import FileHandler
 from mcomix.filesystem_actions import FileSystemActions
 from mcomix.input_handler import InputHandler
 from mcomix.keybindings_manager import KeybindingManager
-from mcomix.layout import FiniteLayout
 from mcomix.lib.events import Events, EventType
 from mcomix.menubar import Menubar
 from mcomix.pageselect import Pageselector
@@ -32,7 +31,20 @@ from mcomix.preferences_manager import PreferenceManager
 from mcomix.state.view_state import ViewState
 from mcomix.statusbar import Statusbar
 from mcomix.thumbnail_sidebar import ThumbnailSidebar
-from mcomix.zoom import ZoomModel
+
+try:
+    from mcomix_compiled import Layout
+except ImportError:
+    from loguru import logger
+    logger.warning("Failed to load compiled Layout() module")
+    from mcomix.fallback.layout import Layout
+
+try:
+    from mcomix_compiled import ZoomModel
+except ImportError:
+    from loguru import logger
+    logger.warning("Failed to load compiled ZoomModel() module")
+    from mcomix.fallback.zoom import ZoomModel
 
 
 class MainWindow(Gtk.ApplicationWindow):
@@ -75,8 +87,7 @@ class MainWindow(Gtk.ApplicationWindow):
         # Remember last scroll destination.
         self.__last_scroll_destination = Scroll.START.value
 
-        self.__dummy_layout = FiniteLayout([(1, 1)], (1, 1), [1, 1], 0, 0)
-        self.__layout = self.__dummy_layout
+        self.__layout = Layout([[1, 1]], (1, 1), [1, 1], 0, 0)
         self.__waiting_for_redraw = False
         self.__page_orientation = self._page_orientation()
 
@@ -268,7 +279,7 @@ class MainWindow(Gtk.ApplicationWindow):
         zoom_dummy_size = list(viewport_size)
         scaled_sizes = self.__zoom.get_zoomed_size(size_list, zoom_dummy_size, distribution_axis, do_not_transform)
 
-        self.__layout = FiniteLayout(scaled_sizes, viewport_size, orientation, distribution_axis, alignment_axis)
+        self.__layout = Layout(scaled_sizes, viewport_size, orientation, distribution_axis, alignment_axis)
 
         content_boxes = self.__layout.get_content_boxes()
 

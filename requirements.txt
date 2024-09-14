@@ -1,10 +1,11 @@
 bytesize
 libarchive-c
 loguru
+pybind11
 pygobject
-tomli
-tomli-w
 regex
 send2trash
 setuptools
+tomli
+tomli-w
 urllib3

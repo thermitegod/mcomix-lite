@@ -71,7 +71,7 @@ class ZoomModel:
 
         prefscale = self._preferred_scale(union_size, limits, distribution_axis)
         preferred_scales = [(self.__identity_zoom if dnt else prefscale) for dnt in do_not_transform]
-        prescaled = [tuple(self._scale_image_size(size, scale))
+        prescaled = [list(self._scale_image_size(size, scale))
                      for size, scale in zip(fitted_image_sizes, preferred_scales, strict=True)]
         prescaled_union_size = self._union_size(prescaled, distribution_axis)
 
@@ -103,7 +103,7 @@ class ZoomModel:
         res_scales = [preferred_scales[idx] * (user_scale if not do_not_transform[idx] else self.__identity_zoom)
                       for idx, item in enumerate(preferred_scales)]
 
-        return [tuple(self._scale_image_size(size, scale))
+        return [list(self._scale_image_size(size, scale))
                 for size, scale in zip(fitted_image_sizes, res_scales, strict=True)]
 
     def _preferred_scale(self, image_size: list, limits: list, distribution_axis: int):
@@ -296,10 +296,10 @@ class ZoomModel:
         return [[int(x * ratios[n]), int(y * ratios[n])]
                 for n, (x, y) in enumerate(image_sizes)]  # scale every page
 
-    def _union_size(self, image_sizes: list, distribution_axis: int):
+    def _union_size(self, image_sizes: list[list[int]], distribution_axis: int):
         if not image_sizes:
             return []
         n = len(image_sizes[0])
         union_size = list(map(lambda i: reduce(max, map(lambda x: x[i], image_sizes)), range(n)))
-        union_size[distribution_axis] = sum(tuple(map(lambda x: x[distribution_axis], image_sizes)))
+        union_size[distribution_axis] = sum(list(map(lambda x: x[distribution_axis], image_sizes)))
         return union_size

@@ -12,10 +12,12 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 from mcomix.enums import Scroll
-from mcomix.hyperrectangles import Box
+
+# from mcomix_compiled import Box
+from mcomix.fallback.box import Box
 
 
-class FiniteLayout:  # 2D only
+class Layout:
     def __init__(self, content_sizes: list[tuple], viewport_size: tuple, orientation: list,
                  distribution_axis: int, alignment_axis: int):
         """
@@ -32,29 +34,27 @@ class FiniteLayout:  # 2D only
 
         # reverse order if necessary
         if orientation[distribution_axis] == -1:
-            content_sizes = tuple(reversed(content_sizes))
-        temp_cb_list = tuple(map(Box, content_sizes))
+            content_sizes = list(reversed(content_sizes))
+        self.__content_boxes = list(map(Box, content_sizes))
 
         # align to center
-        temp_cb_list = Box.align_center(temp_cb_list, alignment_axis, 0, orientation[alignment_axis])
+        self.__content_boxes = Box.align_center(self.__content_boxes, alignment_axis, 0, orientation[alignment_axis])
 
         # distribute
-        temp_cb_list = Box.distribute(temp_cb_list, distribution_axis, 0)
-        temp_bb = Box.bounding_box(temp_cb_list).wrapper_box(viewport_size, orientation)
+        self.__content_boxes = Box.distribute(self.__content_boxes, distribution_axis, 0)
+        self.__union_box = Box.bounding_box(self.__content_boxes).wrapper_box(viewport_size, orientation)
 
         # move to global origin
-        bbp = temp_bb.get_position()
-        for idx, item in enumerate(temp_cb_list):
-            temp_cb_list[idx] = temp_cb_list[idx].translate_opposite(bbp)
+        bbp = self.__union_box.get_position()
+        for idx, item in enumerate(self.__content_boxes):
+            self.__content_boxes[idx] = self.__content_boxes[idx].translate_opposite(bbp)
 
-        temp_bb = temp_bb.translate_opposite(bbp)
+        self.__union_box = self.__union_box.translate_opposite(bbp)
         # reverse order again, if necessary
         if orientation[distribution_axis] == -1:
-            temp_cb_list = tuple(reversed(temp_cb_list))
+            self.__content_boxes = list(reversed(self.__content_boxes))
 
         # done
-        self.__content_boxes = temp_cb_list
-        self.__union_box = temp_bb
         self.__viewport_box = Box(viewport_size)
         self.__orientation = orientation
 

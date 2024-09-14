@@ -11,22 +11,27 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-from pathlib import Path
+# from mcomix.fallback.box import Box
 
-from mcomix.file_provider import GetFileProvider, OrderedFileProvider, PreDefinedFileProvider
+from mcomix_compiled import Box
 
+def test_box_equal_empty():
+    box1 = Box()
+    box2 = Box()
+    assert box1 == box2
 
-def test_file_provider_ordered():
-    filelist = [Path('test_01.zip')]
-    get_provider = GetFileProvider()
-    provider = get_provider.get_file_provider(filelist)
+def test_box_equal():
+    box1 = Box([2417, 1363])
+    box2 = Box([2417, 1363])
+    assert box1 == box2
 
-    assert isinstance(provider, OrderedFileProvider)
+def test_box_test01():
+    box = Box([2417, 1363])
 
+    assert box.get_position() == [0, 0]
+    assert box.get_size() == [2417, 1363]
 
-def test_file_provider_predefined():
-    filelist = [Path('test_01.zip'), Path('test_02.zip')]
-    get_provider = GetFileProvider()
-    provider = get_provider.get_file_provider(filelist)
+    box.set_position((0, 0))
 
-    assert isinstance(provider, PreDefinedFileProvider)
+    assert box.get_position() == [0, 0]
+    assert box.get_size() == [2417, 1363]

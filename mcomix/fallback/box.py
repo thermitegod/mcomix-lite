@@ -30,11 +30,11 @@ class Box:
         super().__init__()
 
         if size is None:
-            self.__position = (0, 0)
-            self.__size = position
+            self.__position = [0, 0]
+            self.__size = list(position)
         else:
-            self.__position = position
-            self.__size = size
+            self.__position = list(position)
+            self.__size = list(size)
         if len(self.__position) != len(self.__size):
             raise ValueError(f'different dimensions: {len(self.__position)} != {len(self.__size)}')
 
@@ -82,7 +82,7 @@ class Box:
 
         return self.__position
 
-    def set_position(self, position: tuple):
+    def set_position(self, position: list[int]):
         """
         Returns a new Box that has the same size as this Box and the specified position.
 
@@ -91,7 +91,7 @@ class Box:
 
         return Box(position, self.get_size())
 
-    def translate_opposite(self, delta: tuple):
+    def translate_opposite(self, delta: list[int]):
         """
         Returns a new Box that has the same size as this Box and a
         oppositely translated position as specified by delta.
@@ -100,7 +100,7 @@ class Box:
         :return: A new Box as specified above
         """
 
-        return Box(tuple(map(operator.sub, self.get_position(), delta)), self.get_size())
+        return Box(list(map(operator.sub, self.get_position(), delta)), self.get_size())
 
     @staticmethod
     def box_to_center_offset_1d(box_size_delta: int, orientation: int):
@@ -109,7 +109,7 @@ class Box:
         return box_size_delta >> 1
 
     @staticmethod
-    def align_center(boxes: tuple, axis: int, fix: int, orientation: int):
+    def align_center(boxes: list, axis: int, fix: int, orientation: int):
         """
         Aligns Boxes so that the center of each Box appears on the same line.
 
@@ -132,7 +132,7 @@ class Box:
             s = b.get_size()
             p = list(b.get_position())
             p[axis] = cp + Box.box_to_center_offset_1d(cs - s[axis], orientation)
-            result.append(Box(tuple(p), s))
+            result.append(Box(p, s))
         return result
 
     @staticmethod
@@ -158,7 +158,7 @@ class Box:
             s = b.get_size()
             p = list(b.get_position())
             p[axis] = partial_sum
-            result[bi] = Box(tuple(p), s)
+            result[bi] = Box(p, s)
             partial_sum += s[axis] + spacing
         partial_sum = initial_sum
         for bi in range(fix - 1, -1, -1):
@@ -167,11 +167,11 @@ class Box:
             p = list(b.get_position())
             partial_sum -= s[axis] + spacing
             p[axis] = partial_sum
-            result[bi] = Box(tuple(p), s)
+            result[bi] = Box(p, s)
 
         return result
 
-    def wrapper_box(self, viewport_size: tuple, orientation: list):
+    def wrapper_box(self, viewport_size: list, orientation: list):
         """
         Returns a Box that covers the same area that is covered by a
         scrollable viewport showing this Box.
@@ -190,7 +190,7 @@ class Box:
             v = viewport_size[idx]
             result_size[idx] = max(c, v)
             result_position[idx] = Box.box_to_center_offset_1d(c - result_size[idx], orientation[idx]) + position[idx]
-        return Box(tuple(result_position), tuple(result_size))
+        return Box(result_position, result_size)
 
     @staticmethod
     def bounding_box(boxes: list):
@@ -215,4 +215,4 @@ class Box:
                 ps = p[idx] + s[idx]
                 if (maxes[idx] is None) or (ps > maxes[idx]):
                     maxes[idx] = ps
-        return Box(tuple(mins), tuple(map(operator.sub, maxes, mins)))
+        return Box(mins, list(map(operator.sub, maxes, mins)))

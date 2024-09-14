@@ -13,6 +13,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), 'build'))
+
 from mcomix.main import main
 
 main()
