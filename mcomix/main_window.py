@@ -122,13 +122,6 @@ class MainWindow(Gtk.ApplicationWindow):
         for img in self.__images:
             self.__main_layout.put(img, 0, 0)
 
-        # Each widget "eats" part of the main layout visible area.
-        self.__toggle_axis = {
-            self.__thumbnailsidebar: ZoomAxis.WIDTH.value,
-            self.__statusbar: ZoomAxis.HEIGHT.value,
-            self.__menubar: ZoomAxis.HEIGHT.value,
-        }
-
         self.__main_layout.set_events(Gdk.EventMask.BUTTON1_MOTION_MASK |
                                       Gdk.EventMask.BUTTON2_MOTION_MASK |
                                       Gdk.EventMask.BUTTON_PRESS_MASK |
@@ -585,18 +578,22 @@ class MainWindow(Gtk.ApplicationWindow):
         """
 
         dimensions = list(self.get_size())
-        size = 0
 
-        for widget, axis in self.__toggle_axis.items():
-            size = widget.get_preferred_size()
-            match axis:
-                case ZoomAxis.WIDTH.value:
-                    size = size.natural_size.width
-                case ZoomAxis.HEIGHT.value:
-                    size = size.natural_size.height
-            dimensions[axis] -= size
+        # Each widget "eats" part of the main layout visible area.
 
-        return tuple(dimensions)
+        # this widget eats width
+        size = self.__thumbnailsidebar.get_preferred_size().natural_size.width
+        dimensions[0] -= size
+
+        # this widget eats height
+        size = self.__menubar.get_preferred_size().natural_size.height
+        dimensions[1] -= size
+
+        # this widget eats height
+        size = self.__statusbar.get_preferred_size().natural_size.height
+        dimensions[1] -= size
+
+        return dimensions
 
     def _update_title(self):
         """
