@@ -35,6 +35,11 @@ py.extension_module(
 
 subdir('mcomix')
 
+if get_option('tests')
+    pytest = find_program('pytest', required : true)
+    test('pytest', pytest, args : [meson.project_source_root()])
+endif
+
 # meson-python requires all files to be installed in the wheel.
 # workaround this by installing system config files in the ebuild
 
