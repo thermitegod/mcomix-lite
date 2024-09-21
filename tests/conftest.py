@@ -14,7 +14,7 @@
 import sys
 import os
 from pathlib import Path
-sys.path.append(os.path.join(os.path.dirname(Path(__file__).parent), 'build'))
+sys.path.insert(0, os.path.join(os.path.dirname(Path(__file__).parent), 'build'))
 
 import pytest
 

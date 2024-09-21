@@ -15,7 +15,7 @@
 
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), 'build'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'build'))
 
 from mcomix.main import main
 
