@@ -25,7 +25,7 @@ from mcomix.image_handler import ImageHandler
 from mcomix.lib.events import Events, EventType
 from mcomix.lib.metaclass import SingleInstanceMetaClass
 from mcomix.preferences import config
-from mcomix.sort.sort_alphanumeric import SortAlphanumeric
+from mcomix.sort.sort_alphanumeric import sort_alphanumeric
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -259,7 +259,7 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
         # sort files
         match config['SORT_ARCHIVE_BY']:
             case FileSortType.NAME.value:
-                SortAlphanumeric(filelist)
+                filelist = sort_alphanumeric(filelist)
             case FileSortType.NAME_LITERAL.value:
                 filelist.sort()
 
