@@ -18,7 +18,7 @@ from mcomix.formats.archive import ArchiveSupported
 from mcomix.formats.image import ImageSupported
 from mcomix.preferences import config
 from mcomix.providers.file_provider_base import FileProviderBase
-from mcomix.sort.sort_alphanumeric import SortAlphanumeric
+from mcomix.sort.sort_alphanumeric import sort_alphanumeric
 
 
 class OrderedFileProvider(FileProviderBase):
@@ -72,7 +72,7 @@ class OrderedFileProvider(FileProviderBase):
 
         match config['SORT_BY']:
             case FileSortType.NAME.value:
-                SortAlphanumeric(self.files)
+                self.files = sort_alphanumeric(self.files)
             case FileSortType.LAST_MODIFIED.value:
                 # Most recently modified file first
                 self.files.sort(key=lambda filename: Path.stat(filename).st_mtime * -1)

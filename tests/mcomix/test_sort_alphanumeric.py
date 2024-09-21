@@ -14,7 +14,7 @@
 import pytest
 from pathlib import Path
 
-from mcomix.sort.sort_alphanumeric import SortAlphanumeric
+from mcomix.sort.sort_alphanumeric import sort_alphanumeric
 
 
 @pytest.mark.parametrize('unsorted_file_list,sorted_file_list', [
@@ -33,6 +33,6 @@ from mcomix.sort.sort_alphanumeric import SortAlphanumeric
 ])
 def test_sort_alphanumeric(unsorted_file_list: list, sorted_file_list: list):
 
-    SortAlphanumeric(unsorted_file_list)
+    unsorted_file_list = sort_alphanumeric(unsorted_file_list)
 
     assert unsorted_file_list == sorted_file_list
