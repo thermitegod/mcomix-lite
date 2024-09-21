@@ -593,16 +593,19 @@ class MainWindow(Gtk.ApplicationWindow):
         # Each widget "eats" part of the main layout visible area.
 
         # this widget eats width
-        size = self.__thumbnailsidebar.get_preferred_size().natural_size.width
-        dimensions[0] -= size
+        if self.__thumbnailsidebar.is_visible():
+            size = self.__thumbnailsidebar.get_allocated_width()
+            dimensions[0] -= size
 
         # this widget eats height
-        size = self.__menubar.get_preferred_size().natural_size.height
-        dimensions[1] -= size
+        if self.__menubar.is_visible():
+            size = self.__menubar.get_allocated_height()
+            dimensions[1] -= size
 
         # this widget eats height
-        size = self.__statusbar.get_preferred_size().natural_size.height
-        dimensions[1] -= size
+        if self.__statusbar.is_visible():
+            size = self.__statusbar.get_allocated_height()
+            dimensions[1] -= size
 
         return dimensions
 
