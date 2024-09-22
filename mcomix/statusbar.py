@@ -11,9 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable
 
 from gi.repository import Gtk
 
@@ -22,7 +20,7 @@ from mcomix.preferences import config
 from mcomix.state.view_state import ViewState
 
 
-class Statusbar(Gtk.EventBox):
+class Statusbar(Gtk.Box):
     def __init__(self):
         super().__init__()
 
@@ -33,55 +31,13 @@ class Statusbar(Gtk.EventBox):
         # page number, file number, page resolution, archive filename,
         # page filename, page filesize, archive filesize, view mode
         self.__status = Gtk.Statusbar()
+        self.__context_id = self.__status.get_context_id('statusbar')
 
         # margin padding, gtk3 defaults are too large
         self.__status.set_margin_top(2)
         self.__status.set_margin_bottom(2)
 
         self.add(self.__status)
-
-        self.__context_id = self.__status.get_context_id('statusbar')
-
-        self.__context_menu = Gtk.Menu()
-
-        @dataclass(frozen=True)
-        class STATUSBAR:
-            label: str
-            config_key: str
-            callback: Callable
-
-        context_menu_items = (
-            STATUSBAR('Show page numbers',
-                      'STATUSBAR_FIELD_PAGE_NUMBERS',
-                      self._toggle_status_visibility),
-            STATUSBAR('Show file numbers',
-                      'STATUSBAR_FIELD_FILE_NUMBERS',
-                      self._toggle_status_visibility),
-            STATUSBAR('Show page resolution',
-                      'STATUSBAR_FIELD_PAGE_RESOLUTION',
-                      self._toggle_status_visibility),
-            STATUSBAR('Show archive filename',
-                      'STATUSBAR_FIELD_ARCHIVE_NAME',
-                      self._toggle_status_visibility),
-            STATUSBAR('Show page filename',
-                      'STATUSBAR_FIELD_PAGE_FILENAME',
-                      self._toggle_status_visibility),
-            STATUSBAR('Show page filesize',
-                      'STATUSBAR_FIELD_PAGE_FILESIZE',
-                      self._toggle_status_visibility),
-            STATUSBAR('Show archive filesize',
-                      'STATUSBAR_FIELD_ARCHIVE_FILESIZE',
-                      self._toggle_status_visibility),
-            STATUSBAR('Show current mode',
-                      'STATUSBAR_FIELD_VIEW_MODE',
-                      self._toggle_status_visibility),
-        )
-
-        for item in context_menu_items:
-            self._populate_context_menu(label=item.label, config_key=item.config_key, callback=item.callback)
-
-        # Hook mouse release event
-        self.connect('button-press-event', self._button_released)
 
         # Default status information
         self.__total_page_numbers = ''
@@ -136,7 +92,7 @@ class Statusbar(Gtk.EventBox):
 
         self.__total_file_numbers = f'{fileno} / {total}'
 
-    def set_resolution(self, scaled_sizes: list, size_list: list):
+    def set_resolution(self, scaled_sizes: list[list[int]], size_list: list[list[int]]):
         """
         Update the resolution data.
         Takes an iterable of tuples, (x, y, scale), describing the original
@@ -207,23 +163,3 @@ class Statusbar(Gtk.EventBox):
             text += f'{self.__current_view_mode}{self.__sep}'
 
         self.set_message(message=text.strip(self.__sep))
-
-    def _populate_context_menu(self, label: str, config_key: str, callback: Callable):
-        item = Gtk.CheckMenuItem(label=label)
-        item.set_active(config[config_key])
-        item.connect('activate', callback, config_key)
-        item.show_all()
-        self.__context_menu.append(item)
-
-    def _toggle_status_visibility(self, widget, config_statusbar):
-        """
-        Called when status entries visibility is to be changed
-        """
-
-        config[config_statusbar] = not config[config_statusbar]
-
-        self.update()
-
-    def _button_released(self, widget, event, *args):
-        if event.button == 3:
-            self.__context_menu.popup(None, None, None, None, event.button, event.time)
