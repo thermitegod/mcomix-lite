@@ -65,6 +65,9 @@ class PreferencesDialog(Gtk.Dialog):
         notebook.append_page(self._init_display_tab(),
                              Gtk.Label(label='Display'))
 
+        notebook.append_page(self._init_statusbar_tab(),
+                             Gtk.Label(label='Statusbar'))
+
         notebook.append_page(self._init_animation_tab(),
                              Gtk.Label(label='Animation'))
 
@@ -219,6 +222,46 @@ class PreferencesDialog(Gtk.Dialog):
         page.add_row(self._create_pref_check_button(
             'Show bookmark path in bookmark menu',
             'BOOKMARK_SHOW_PATH'))
+
+        return page
+
+    def _init_statusbar_tab(self):
+
+        page = PreferencePage()
+
+        page.new_section('Statusbar')
+
+        page.add_row(self._create_pref_check_button(
+            'Show page numbers',
+            'STATUSBAR_FIELD_PAGE_NUMBERS'))
+
+        page.add_row(self._create_pref_check_button(
+            'Show file numbers',
+            'STATUSBAR_FIELD_FILE_NUMBERS'))
+
+        page.add_row(self._create_pref_check_button(
+            'Show page resolution',
+            'STATUSBAR_FIELD_PAGE_RESOLUTION'))
+
+        page.add_row(self._create_pref_check_button(
+            'Show archive filename',
+            'STATUSBAR_FIELD_ARCHIVE_NAME'))
+
+        page.add_row(self._create_pref_check_button(
+            'Show page filename',
+            'STATUSBAR_FIELD_PAGE_FILENAME'))
+
+        page.add_row(self._create_pref_check_button(
+            'Show page filesize',
+            'STATUSBAR_FIELD_PAGE_FILESIZE'))
+
+        page.add_row(self._create_pref_check_button(
+            'Show archive filesize',
+            'STATUSBAR_FIELD_ARCHIVE_FILESIZE'))
+
+        page.add_row(self._create_pref_check_button(
+            'Show current mode',
+            'STATUSBAR_FIELD_VIEW_MODE'))
 
         return page
 
