@@ -70,11 +70,6 @@ config = {
     'ANIMATION_TRANSFORM': True,
     'MOVE_FILE': 'keep',
     'OPEN_FIRST_PAGE': True,
-    'WINDOW_SAVE': True,
-    'WINDOW_X': 0,
-    'WINDOW_Y': 0,
-    'WINDOW_HEIGHT': 600,
-    'WINDOW_WIDTH': 640,
     'BOOKMARK_WIDTH': 1300,
     'BOOKMARK_HEIGHT': 650,
 }

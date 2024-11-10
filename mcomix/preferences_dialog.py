@@ -167,12 +167,6 @@ class PreferencesDialog(Gtk.Dialog):
         # ----------------------------------------------------------------
         page = PreferencePage()
 
-        page.new_section('Window')
-
-        page.add_row(self._create_pref_check_button(
-            'Save main window size',
-            'WINDOW_SAVE'))
-
         page.new_section('Fullscreen')
 
         page.add_row(self._create_pref_check_button(

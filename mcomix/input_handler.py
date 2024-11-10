@@ -67,15 +67,9 @@ class InputHandler:
         if self.__was_fullscreen != is_fullscreen:
             # Fullscreen state changed.
             self.__was_fullscreen = is_fullscreen
-            # Re-enable control, now that transition is complete.
-            if is_fullscreen:
-                redraw = True
-            else:
-                # Only redraw if we don't need to restore geometry.
-                redraw = not self.__window.restore_window_geometry()
-            if redraw:
-                self.__previous_size = self.__window.get_size()
-                self.__events.run_events(EventType.DRAW_PAGE)
+
+            self.__previous_size = self.__window.get_size()
+            self.__events.run_events(EventType.DRAW_PAGE)
 
     def key_press_event(self, widget, event, *args):
         """

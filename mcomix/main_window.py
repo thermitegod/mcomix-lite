@@ -158,7 +158,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__main_layout.connect('motion-notify-event', self.__cursor_handler.refresh)
 
         self.set_title(PackageInfo.APP_NAME)
-        self.restore_window_geometry()
 
         if config['DEFAULT_FULLSCREEN']:
             self.change_fullscreen()
@@ -516,7 +515,6 @@ class MainWindow(Gtk.ApplicationWindow):
             self.__statusbar.show()
             self.__menubar.show()
         else:
-            self.save_window_geometry()
             self.fullscreen()
 
             self.__cursor_handler.auto_hide_on()
@@ -624,35 +622,10 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.iconify()
 
-    def get_window_geometry(self):
-        return self.get_position() + self.get_size()
-
-    def save_window_geometry(self):
-        if config['WINDOW_SAVE']:
-            (
-                config['WINDOW_X'],
-                config['WINDOW_Y'],
-                config['WINDOW_WIDTH'],
-                config['WINDOW_HEIGHT'],
-            ) = self.get_window_geometry()
-
-    def restore_window_geometry(self):
-        if self.get_window_geometry() == (config['WINDOW_X'],
-                                          config['WINDOW_Y'],
-                                          config['WINDOW_WIDTH'],
-                                          config['WINDOW_HEIGHT']):
-            return False
-        self.resize(config['WINDOW_WIDTH'], config['WINDOW_HEIGHT'])
-        self.move(config['WINDOW_X'], config['WINDOW_Y'])
-        return True
-
     def terminate_program(self, *args):
         """
         Run clean-up tasks and exit the program
         """
-
-        if not self.is_fullscreen():
-            self.save_window_geometry()
 
         self.hide()
 
