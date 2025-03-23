@@ -18,7 +18,6 @@ import mcomix.image_tools as image_tools
 from mcomix.bookmark_backend import BookmarkBackend
 from mcomix.cursor_handler import CursorHandler
 from mcomix.dialog_chooser import DialogChooser
-from mcomix.enums import DialogChoice, DoublePage, Mcomix, PageOrientation, Scroll, ZoomAxis
 from mcomix.file_handler import FileHandler
 from mcomix.filesystem_actions import FileSystemActions
 from mcomix.input_handler import InputHandler
@@ -31,6 +30,8 @@ from mcomix.preferences_manager import PreferenceManager
 from mcomix.state.view_state import ViewState
 from mcomix.statusbar import Statusbar
 from mcomix.thumbnail_sidebar import ThumbnailSidebar
+
+from mcomix_compiled import DialogChoice, DoublePage, PackageInfo, Scroll, ZoomAxis
 
 try:
     from mcomix_compiled import Layout
@@ -85,7 +86,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__events.add_event(EventType.KB_CHANGE_KEEP_TRANSFORMATION, self.change_keep_transformation)
 
         # Remember last scroll destination.
-        self.__last_scroll_destination = Scroll.START.value
+        self.__last_scroll_destination = Scroll.START
 
         self.__layout = Layout([[1, 1]], (1, 1), [1, 1], 0, 0)
         self.__waiting_for_redraw = False
@@ -156,7 +157,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__main_layout.connect('drag_data_received', self.__input_handler.drag_n_drop_event)
         self.__main_layout.connect('motion-notify-event', self.__cursor_handler.refresh)
 
-        self.set_title(Mcomix.APP_NAME.value)
+        self.set_title(PackageInfo.APP_NAME)
         self.restore_window_geometry()
 
         if config['DEFAULT_FULLSCREEN']:
@@ -212,9 +213,9 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def _page_orientation(self):
         if ViewState.is_manga_mode:
-            return PageOrientation.MANGA.value
+            return [-1, 1] # R->L
         else:
-            return PageOrientation.WESTERN.value
+            return [1, 1] # L->R
 
     def _hide_images(self):
         # hides old images before showing new ones
@@ -251,8 +252,8 @@ class MainWindow(Gtk.ApplicationWindow):
             self.__waiting_for_redraw = False
             return
 
-        distribution_axis = ZoomAxis.DISTRIBUTION.value
-        alignment_axis = ZoomAxis.ALIGNMENT.value
+        distribution_axis = ZoomAxis.DISTRIBUTION
+        alignment_axis = ZoomAxis.ALIGNMENT
         # XXX limited to at most 2 pages
         pixbuf_count = 2 if ViewState.is_displaying_double else 1
         pixbuf_count_iter = range(pixbuf_count)
@@ -342,12 +343,12 @@ class MainWindow(Gtk.ApplicationWindow):
             page = self.image_handler.get_current_page()
 
         if (page == 1 and
-                config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & DoublePage.AS_ONE_TITLE.value and
+                config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & DoublePage.AS_ONE_TITLE and
                 self.file_handler.is_archive()):
             return True
 
         if (not config['DEFAULT_DOUBLE_PAGE'] or
-                not config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & DoublePage.AS_ONE_WIDE.value or
+                not config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & DoublePage.AS_ONE_WIDE or
                 self.image_handler.is_last_page(page)):
             return False
 
@@ -389,7 +390,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self._update_title()
 
     def _on_file_closed(self):
-        self.set_title(Mcomix.APP_NAME.value)
+        self.set_title(PackageInfo.APP_NAME)
         self._hide_images()
         self.__statusbar.set_message('')
         self.__thumbnailsidebar.hide()
@@ -404,9 +405,9 @@ class MainWindow(Gtk.ApplicationWindow):
             config['ROTATION'] = 0
 
         if at_bottom:
-            scroll_to = Scroll.END.value
+            scroll_to = Scroll.END
         else:
-            scroll_to = Scroll.START.value
+            scroll_to = Scroll.START
 
         self.__events.run_events(EventType.DRAW_PAGE, {'scroll_to': scroll_to})
 
@@ -614,7 +615,7 @@ class MainWindow(Gtk.ApplicationWindow):
         Set the title acording to current state
         """
 
-        self.set_title(f'{Mcomix.APP_NAME.value} [{self.file_handler.get_real_path()}]')
+        self.set_title(f'{PackageInfo.APP_NAME} [{self.file_handler.get_real_path()}]')
 
     def minimize(self):
         """

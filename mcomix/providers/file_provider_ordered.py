@@ -13,11 +13,12 @@
 
 from pathlib import Path
 
-from mcomix.enums import FileSortDirection, FileSortType, FileTypes
 from mcomix.formats.archive import ArchiveSupported
 from mcomix.formats.image import ImageSupported
 from mcomix.preferences import config
 from mcomix.providers.file_provider_base import FileProviderBase
+
+from mcomix_compiled import FileSortDirection, FileSortType, FileTypes
 
 try:
     from mcomix_compiled import sort_alphanumeric
@@ -76,15 +77,15 @@ class OrderedFileProvider(FileProviderBase):
         """
 
         match config['SORT_BY']:
-            case FileSortType.NAME.value:
+            case FileSortType.NAME:
                 self.files = sort_alphanumeric(self.files)
-            case FileSortType.LAST_MODIFIED.value:
+            case FileSortType.LAST_MODIFIED:
                 # Most recently modified file first
                 self.files.sort(key=lambda filename: Path.stat(filename).st_mtime * -1)
-            case FileSortType.SIZE.value:
+            case FileSortType.SIZE:
                 # Smallest file first
                 self.files.sort(key=lambda filename: Path.stat(filename).st_size)
 
         # Default is ascending.
-        if config['SORT_ORDER'] == FileSortDirection.DESCENDING.value:
+        if config['SORT_ORDER'] == FileSortDirection.DESCENDING:
             self.files.reverse()

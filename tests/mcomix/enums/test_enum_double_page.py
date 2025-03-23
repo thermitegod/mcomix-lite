@@ -11,20 +11,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-from mcomix.enums import DoublePage
+from mcomix_compiled import DoublePage
 
 
 def test_doublepage_never():
-    assert DoublePage.NEVER.value == 0
+    assert DoublePage.NEVER == 0
 
 
 def test_doublepage_title():
-    assert DoublePage.AS_ONE_TITLE.value == 1
+    assert DoublePage.AS_ONE_TITLE == 1
 
 
 def test_doublepage_wide():
-    assert DoublePage.AS_ONE_WIDE.value == 2
+    assert DoublePage.AS_ONE_WIDE == 2
 
 
 def test_doublepage_always():
-    assert DoublePage.ALWAYS.value == 3
+    assert DoublePage.ALWAYS == 3

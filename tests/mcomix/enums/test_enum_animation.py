@@ -11,12 +11,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-from mcomix.enums import Animation
+from mcomix_compiled import Animation
 
 
 def test_animation_disabled():
-    assert Animation.DISABLED.value == 1
+    assert Animation.DISABLED == 1
 
 
 def test_animation_normal():
-    assert Animation.NORMAL.value == 2
+    assert Animation.NORMAL == 2

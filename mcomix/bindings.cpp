@@ -14,8 +14,10 @@
  */
 
 #include "box.hpp"
+#include "enums.hpp"
 #include "layout.hpp"
 #include "zoom.hpp"
+#include "package.hpp"
 #include "sort/sort.hpp"
 
 #include <pybind11/pybind11.h>
@@ -25,6 +27,190 @@
 
 namespace pybind11::detail
 {
+template<> struct type_caster<Animation>
+{
+  public:
+    PYBIND11_TYPE_CASTER(Animation, _("Animation"));
+
+    bool
+    load(handle src, bool)
+    {
+        if (!src || !PyLong_Check(src.ptr()))
+        {
+            return false;
+        }
+        value = static_cast<Animation>(PyLong_AsLong(src.ptr()));
+        return true;
+    }
+
+    static handle
+    cast(Animation src, return_value_policy, handle)
+    {
+        return PyLong_FromLong(static_cast<long>(src));
+    }
+};
+
+template<> struct type_caster<ConfigType>
+{
+  public:
+    PYBIND11_TYPE_CASTER(ConfigType, _("ConfigType"));
+
+    bool
+    load(handle src, bool)
+    {
+        if (!src || !PyLong_Check(src.ptr()))
+        {
+            return false;
+        }
+        value = static_cast<ConfigType>(PyLong_AsLong(src.ptr()));
+        return true;
+    }
+
+    static handle
+    cast(ConfigType src, return_value_policy, handle)
+    {
+        return PyLong_FromLong(static_cast<long>(src));
+    }
+};
+
+template<> struct type_caster<DialogChoice>
+{
+  public:
+    PYBIND11_TYPE_CASTER(DialogChoice, _("DialogChoice"));
+
+    bool
+    load(handle src, bool)
+    {
+        if (!src || !PyLong_Check(src.ptr()))
+        {
+            return false;
+        }
+        value = static_cast<DialogChoice>(PyLong_AsLong(src.ptr()));
+        return true;
+    }
+
+    static handle
+    cast(DialogChoice src, return_value_policy, handle)
+    {
+        return PyLong_FromLong(static_cast<long>(src));
+    }
+};
+
+template<> struct type_caster<DoublePage>
+{
+  public:
+    PYBIND11_TYPE_CASTER(DoublePage, _("DoublePage"));
+
+    bool
+    load(handle src, bool)
+    {
+        if (!src || !PyLong_Check(src.ptr()))
+        {
+            return false;
+        }
+        value = static_cast<DoublePage>(PyLong_AsLong(src.ptr()));
+        return true;
+    }
+
+    static handle
+    cast(DoublePage src, return_value_policy, handle)
+    {
+        return PyLong_FromLong(static_cast<long>(src));
+    }
+};
+
+template<> struct type_caster<FileSortType>
+{
+  public:
+    PYBIND11_TYPE_CASTER(FileSortType, _("FileSortType"));
+
+    bool
+    load(handle src, bool)
+    {
+        if (!src || !PyLong_Check(src.ptr()))
+        {
+            return false;
+        }
+        value = static_cast<FileSortType>(PyLong_AsLong(src.ptr()));
+        return true;
+    }
+
+    static handle
+    cast(FileSortType src, return_value_policy, handle)
+    {
+        return PyLong_FromLong(static_cast<long>(src));
+    }
+};
+
+template<> struct type_caster<FileSortDirection>
+{
+  public:
+    PYBIND11_TYPE_CASTER(FileSortDirection, _("FileSortDirection"));
+
+    bool
+    load(handle src, bool)
+    {
+        if (!src || !PyLong_Check(src.ptr()))
+        {
+            return false;
+        }
+        value = static_cast<FileSortDirection>(PyLong_AsLong(src.ptr()));
+        return true;
+    }
+
+    static handle
+    cast(FileSortDirection src, return_value_policy, handle)
+    {
+        return PyLong_FromLong(static_cast<long>(src));
+    }
+};
+
+template<> struct type_caster<FileTypes>
+{
+  public:
+    PYBIND11_TYPE_CASTER(FileTypes, _("FileTypes"));
+
+    bool
+    load(handle src, bool)
+    {
+        if (!src || !PyLong_Check(src.ptr()))
+        {
+            return false;
+        }
+        value = static_cast<FileTypes>(PyLong_AsLong(src.ptr()));
+        return true;
+    }
+
+    static handle
+    cast(FileTypes src, return_value_policy, handle)
+    {
+        return PyLong_FromLong(static_cast<long>(src));
+    }
+};
+
+template<> struct type_caster<Scroll>
+{
+  public:
+    PYBIND11_TYPE_CASTER(Scroll, _("Scroll"));
+
+    bool
+    load(handle src, bool)
+    {
+        if (!src || !PyLong_Check(src.ptr()))
+        {
+            return false;
+        }
+        value = static_cast<Scroll>(PyLong_AsLong(src.ptr()));
+        return true;
+    }
+
+    static handle
+    cast(Scroll src, return_value_policy, handle)
+    {
+        return PyLong_FromLong(static_cast<long>(src));
+    }
+};
+
 template<> struct type_caster<ZoomModes>
 {
   public:
@@ -47,12 +233,105 @@ template<> struct type_caster<ZoomModes>
         return PyLong_FromLong(static_cast<long>(src));
     }
 };
+
+template<> struct type_caster<ZoomAxis>
+{
+  public:
+    PYBIND11_TYPE_CASTER(ZoomAxis, _("ZoomAxis"));
+
+    bool
+    load(handle src, bool)
+    {
+        if (!src || !PyLong_Check(src.ptr()))
+        {
+            return false;
+        }
+        value = static_cast<ZoomAxis>(PyLong_AsLong(src.ptr()));
+        return true;
+    }
+
+    static handle
+    cast(ZoomAxis src, return_value_policy, handle)
+    {
+        return PyLong_FromLong(static_cast<long>(src));
+    }
+};
 } // namespace pybind11::detail
 
 namespace py = pybind11;
 
 PYBIND11_MODULE(mcomix_compiled, m)
 {
+    py::enum_<Animation>(m, "Animation")
+        .value("DISABLED", Animation::DISABLED)
+        .value("NORMAL", Animation::NORMAL)
+        .export_values();
+
+    py::enum_<ConfigType>(m, "ConfigType")
+        .value("CONFIG", ConfigType::CONFIG)
+        .value("KEYBINDINGS", ConfigType::KEYBINDINGS)
+        .export_values();
+
+    py::enum_<DialogChoice>(m, "DialogChoice")
+        .value("ABOUT", DialogChoice::ABOUT)
+        .value("ENHANCE", DialogChoice::ENHANCE)
+        .value("FILECHOOSER", DialogChoice::FILECHOOSER)
+        .value("KEYBINDINGS", DialogChoice::KEYBINDINGS)
+        .value("PREFERENCES", DialogChoice::PREFERENCES)
+        .value("PROPERTIES", DialogChoice::PROPERTIES)
+        .export_values();
+
+    py::enum_<DoublePage>(m, "DoublePage")
+        .value("NEVER", DoublePage::NEVER)
+        .value("AS_ONE_TITLE", DoublePage::AS_ONE_TITLE)
+        .value("AS_ONE_WIDE", DoublePage::AS_ONE_WIDE)
+        .value("ALWAYS", DoublePage::ALWAYS)
+        .export_values();
+
+    py::enum_<FileSortType>(m, "FileSortType")
+        .value("NONE", FileSortType::NONE)
+        .value("NAME", FileSortType::NAME)
+        .value("SIZE", FileSortType::SIZE)
+        .value("LAST_MODIFIED", FileSortType::LAST_MODIFIED)
+        .value("NAME_LITERAL", FileSortType::NAME_LITERAL)
+        .export_values();
+
+    py::enum_<FileSortDirection>(m, "FileSortDirection")
+        .value("DESCENDING", FileSortDirection::DESCENDING)
+        .value("ASCENDING", FileSortDirection::ASCENDING)
+        .export_values();
+
+    py::enum_<FileTypes>(m, "FileTypes")
+        .value("IMAGES", FileTypes::IMAGES)
+        .value("ARCHIVES", FileTypes::ARCHIVES)
+        .export_values();
+
+    py::enum_<Scroll>(m, "Scroll")
+        .value("END", Scroll::END)
+        .value("START", Scroll::START)
+        .value("CENTER", Scroll::CENTER)
+        .export_values();
+
+    py::enum_<ZoomModes>(m, "ZoomModes")
+        .value("BEST", ZoomModes::BEST)
+        .value("WIDTH", ZoomModes::WIDTH)
+        .value("HEIGHT", ZoomModes::HEIGHT)
+        .value("MANUAL", ZoomModes::MANUAL)
+        .value("SIZE", ZoomModes::SIZE)
+        .export_values();
+
+    py::enum_<ZoomAxis>(m, "ZoomAxis")
+        .value("DISTRIBUTION", ZoomAxis::DISTRIBUTION)
+        .value("ALIGNMENT", ZoomAxis::ALIGNMENT)
+        .value("WIDTH", ZoomAxis::WIDTH)
+        .value("HEIGHT", ZoomAxis::HEIGHT)
+        .export_values();
+
+    py::class_<PackageInfo>(m, "PackageInfo")
+        .def_readonly_static("APP_NAME", &PackageInfo::APP_NAME)
+        .def_readonly_static("PROG_NAME", &PackageInfo::PROG_NAME)
+        .def_readonly_static("VERSION", &PackageInfo::VERSION);
+
     py::class_<Box>(m, "Box")
         .def(py::init<>())
         .def(py::init<const std::vector<std::int32_t>&, const std::vector<std::int32_t>&>(),

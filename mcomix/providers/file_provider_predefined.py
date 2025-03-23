@@ -13,12 +13,12 @@
 
 from pathlib import Path
 
-from mcomix.enums import FileTypes
 from mcomix.formats.archive import ArchiveSupported
 from mcomix.formats.image import ImageSupported
 from mcomix.providers.file_provider_base import FileProviderBase
 from mcomix.providers.file_provider_ordered import OrderedFileProvider
 
+from mcomix_compiled import FileTypes
 
 class PreDefinedFileProvider(FileProviderBase):
     """

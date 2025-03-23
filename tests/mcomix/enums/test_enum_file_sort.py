@@ -11,32 +11,32 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-from mcomix.enums import FileSortType, FileSortDirection
+from mcomix_compiled import FileSortDirection, FileSortType
 
 
 def test_file_sort_none():
-    assert FileSortType.NONE.value == 0
+    assert FileSortType.NONE == 0
 
 
 def test_file_sort_name():
-    assert FileSortType.NAME.value == 1
+    assert FileSortType.NAME == 1
 
 
 def test_file_sort_size():
-    assert FileSortType.SIZE.value == 2
+    assert FileSortType.SIZE == 2
 
 
 def test_file_sort_last_mod():
-    assert FileSortType.LAST_MODIFIED.value == 3
+    assert FileSortType.LAST_MODIFIED == 3
 
 
 def test_file_sort_literal():
-    assert FileSortType.NAME_LITERAL.value == 4
+    assert FileSortType.NAME_LITERAL == 4
 
 
 def test_file_sort_descending():
-    assert FileSortDirection.DESCENDING.value == 0
+    assert FileSortDirection.DESCENDING == 0
 
 
 def test_file_sort_ascending():
-    assert FileSortDirection.ASCENDING.value == 1
+    assert FileSortDirection.ASCENDING == 1

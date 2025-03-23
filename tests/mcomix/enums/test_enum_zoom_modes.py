@@ -11,40 +11,40 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-from mcomix.enums import ZoomModes, ZoomAxis
+from mcomix_compiled import ZoomModes, ZoomAxis
 
 
 def test_zoom_modes_best():
-    assert ZoomModes.BEST.value == 0
+    assert ZoomModes.BEST == 0
 
 
 def test_zoom_modes_width():
-    assert ZoomModes.WIDTH.value == 1
+    assert ZoomModes.WIDTH == 1
 
 
 def test_zoom_modes_height():
-    assert ZoomModes.HEIGHT.value == 2
+    assert ZoomModes.HEIGHT == 2
 
 
 def test_zoom_modes_manual():
-    assert ZoomModes.MANUAL.value == 3
+    assert ZoomModes.MANUAL == 3
 
 
 def test_zoom_modes_size():
-    assert ZoomModes.SIZE.value == 4
+    assert ZoomModes.SIZE == 4
 
 
 def test_zoom_axis_distribution():
-    assert ZoomAxis.DISTRIBUTION.value == 0
+    assert ZoomAxis.DISTRIBUTION == 0
 
 
 def test_zoom_axis_alignment():
-    assert ZoomAxis.ALIGNMENT.value == 1
+    assert ZoomAxis.ALIGNMENT == 1
 
 
 def test_zoom_axis_width():
-    assert ZoomAxis.WIDTH.value == 0
+    assert ZoomAxis.WIDTH == 0
 
 
 def test_zoom_axis_height():
-    assert ZoomAxis.HEIGHT.value == 1
+    assert ZoomAxis.HEIGHT == 1

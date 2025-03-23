@@ -21,11 +21,14 @@ import tomli, tomli_w
 from gi.repository import Gtk
 from loguru import logger
 
+from platformdirs import *
+
 from mcomix.bookmark_menu_item import Bookmark
-from mcomix.enums import ConfigFiles
 from mcomix.lib.events import Events, EventType
 from mcomix.message_dialog.info import MessageDialogInfo
 from mcomix.message_dialog.remember import MessageDialogRemember
+
+from mcomix_compiled import PackageInfo
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -45,7 +48,7 @@ class BookmarkBackend:
 
         self.__events = Events()
 
-        self.__bookmark_path: Path = ConfigFiles.BOOKMARK.value
+        self.__bookmark_path: Path = Path(user_config_dir(PackageInfo.PROG_NAME)) / 'bookmarks.toml'
         self.__bookmark_state_dirty = False
 
         #: List of bookmarks

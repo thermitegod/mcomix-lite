@@ -19,22 +19,7 @@
 
 #include <cstdint>
 
-enum class ZoomModes
-{ // MUST match the python enum
-    BEST = 0,
-    WIDTH = 1,
-    HEIGHT = 2,
-    MANUAL = 3,
-    SIZE = 4,
-};
-
-enum class ZoomAxis
-{ // MUST match the python enum
-    DISTRIBUTION = 0,
-    ALIGNMENT = 1,
-    WIDTH = 0,
-    HEIGHT = 1,
-};
+#include "enums.hpp"
 
 class ZoomModel
 {

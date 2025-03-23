@@ -18,13 +18,14 @@ from pathlib import Path
 from loguru import logger
 
 from mcomix.archive_extractor import Extractor
-from mcomix.enums import FileSortDirection, FileSortType, FileTypes
 from mcomix.formats.archive import ArchiveSupported
 from mcomix.file_provider import GetFileProvider
 from mcomix.image_handler import ImageHandler
 from mcomix.lib.events import Events, EventType
 from mcomix.lib.metaclass import SingleInstanceMetaClass
 from mcomix.preferences import config
+
+from mcomix_compiled import FileSortDirection, FileSortType, FileTypes
 
 try:
     from mcomix_compiled import sort_alphanumeric
@@ -263,13 +264,13 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
 
         # sort files
         match config['SORT_ARCHIVE_BY']:
-            case FileSortType.NAME.value:
+            case FileSortType.NAME:
                 filelist = sort_alphanumeric(filelist)
-            case FileSortType.NAME_LITERAL.value:
+            case FileSortType.NAME_LITERAL:
                 filelist.sort()
 
         # sort files order
-        if config['SORT_ARCHIVE_ORDER'] == FileSortDirection.DESCENDING.value:
+        if config['SORT_ARCHIVE_ORDER'] == FileSortDirection.DESCENDING:
             filelist.reverse()
 
     def is_file_loaded(self) -> bool:

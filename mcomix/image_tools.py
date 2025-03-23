@@ -19,8 +19,9 @@ from gi.repository import GdkPixbuf
 
 from loguru import logger
 
-from mcomix.enums import Animation
 from mcomix.preferences import config
+
+from mcomix_compiled import Animation
 
 
 def rotate_pixbuf(src, rotation: int):
@@ -155,7 +156,7 @@ def load_pixbuf(path: Path, force_static: bool = False):
     Loads a pixbuf from a given image file
     """
 
-    enable_anime = config['ANIMATION_MODE'] != Animation.DISABLED.value
+    enable_anime = config['ANIMATION_MODE'] != Animation.DISABLED
 
     if not enable_anime or force_static:
         try:

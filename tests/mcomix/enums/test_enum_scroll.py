@@ -11,16 +11,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-from mcomix.enums import Scroll
+from mcomix_compiled import Scroll
 
 
 def test_scroll_end():
-    assert Scroll.END.value == -4
+    assert Scroll.END == -4
 
 
 def test_scroll_start():
-    assert Scroll.START.value == -3
+    assert Scroll.START == -3
 
 
 def test_scroll_center():
-    assert Scroll.CENTER.value == -2
+    assert Scroll.CENTER == -2

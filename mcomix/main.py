@@ -26,9 +26,9 @@ try:
 except (ValueError, ImportError):
     raise SystemExit('GTK+ 3.0 import error')
 
-from mcomix.enums import Mcomix
 from mcomix.main_window import MainWindow
 
+from mcomix_compiled import PackageInfo
 
 def main():
     parser = argparse.ArgumentParser(usage='%%(prog)s %s' % '[OPTION...] [PATH]',
@@ -53,7 +53,7 @@ def main():
     args = parser.parse_args()
 
     if args.version:
-        raise SystemExit(f'{Mcomix.APP_NAME.value} {Mcomix.VERSION.value}')
+        raise SystemExit(f'{PackageInfo.APP_NAME} {PackageInfo.VERSION}')
 
     # start logger
     logger.remove()
