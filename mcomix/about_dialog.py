@@ -19,7 +19,7 @@ from gi.repository import Gtk
 
 import mcomix.image_tools as image_tools
 
-from mcomix.enums import Mcomix
+from mcomix_compiled import PackageInfo
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -43,18 +43,18 @@ class AboutDialog(Gtk.AboutDialog):
         if pixbuf_logo is not None:
             self.set_logo(pixbuf_logo)
 
-        self.set_name(Mcomix.APP_NAME.value)
-        self.set_program_name(Mcomix.APP_NAME.value)
-        self.set_version(f'Version {Mcomix.VERSION.value}')
+        self.set_name(PackageInfo.APP_NAME)
+        self.set_program_name(PackageInfo.APP_NAME)
+        self.set_version(f'Version {PackageInfo.VERSION}')
         self.set_copyright('Copyright (C) 2005-2023')
 
         self.set_license_type(Gtk.License.GPL_2_0)
 
-        link = f'https://github.com/thermitegod/{Mcomix.PROG_NAME.value}'
+        link = f'https://github.com/thermitegod/{PackageInfo.PROG_NAME}'
         self.set_website(link)
         self.set_website_label(link)
 
-        self.set_comments(f'{Mcomix.APP_NAME.value} is an image viewer specifically designed '
+        self.set_comments(f'{PackageInfo.APP_NAME} is an image viewer specifically designed '
                           f'to handle manga, comics, and image files.')
 
         self.show_all()

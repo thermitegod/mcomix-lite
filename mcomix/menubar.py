@@ -19,8 +19,9 @@ from typing import Callable
 from gi.repository import Gtk
 
 from mcomix.bookmark_menu import BookmarksMenu
-from mcomix.enums import DialogChoice, ZoomModes
 from mcomix.lib.events import Events, EventType
+
+from mcomix_compiled import DialogChoice, ZoomModes
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -87,11 +88,11 @@ class Menubar(Gtk.EventBox):
         memu_edit_items = (
             MENUBAR('Stretch Small Images', self._create_submenu_item, events.run_events_gui, EventType.KB_CHANGE_STRETCH, None),
             MENUBAR('separator', self._create_separator, None, None, None),
-            MENUBAR('Best Fit Mode', self._create_submenu_item, events.run_events_gui, EventType.KB_CHANGE_ZOOM_MODE, {'dialog': ZoomModes.BEST.value}),
-            MENUBAR('Fit Width Mode', self._create_submenu_item, events.run_events_gui, EventType.KB_CHANGE_ZOOM_MODE, {'dialog': ZoomModes.WIDTH.value}),
-            MENUBAR('Fit Height Mode', self._create_submenu_item, events.run_events_gui, EventType.KB_CHANGE_ZOOM_MODE, {'dialog': ZoomModes.HEIGHT.value}),
-            MENUBAR('Fit Size Mode', self._create_submenu_item, events.run_events_gui, EventType.KB_CHANGE_ZOOM_MODE, {'dialog': ZoomModes.SIZE.value}),
-            MENUBAR('Manual Zoom Mode', self._create_submenu_item, events.run_events_gui, EventType.KB_CHANGE_ZOOM_MODE, {'dialog': ZoomModes.MANUAL.value}),
+            MENUBAR('Best Fit Mode', self._create_submenu_item, events.run_events_gui, EventType.KB_CHANGE_ZOOM_MODE, {'dialog': ZoomModes.BEST}),
+            MENUBAR('Fit Width Mode', self._create_submenu_item, events.run_events_gui, EventType.KB_CHANGE_ZOOM_MODE, {'dialog': ZoomModes.WIDTH}),
+            MENUBAR('Fit Height Mode', self._create_submenu_item, events.run_events_gui, EventType.KB_CHANGE_ZOOM_MODE, {'dialog': ZoomModes.HEIGHT}),
+            MENUBAR('Fit Size Mode', self._create_submenu_item, events.run_events_gui, EventType.KB_CHANGE_ZOOM_MODE, {'dialog': ZoomModes.SIZE}),
+            MENUBAR('Manual Zoom Mode', self._create_submenu_item, events.run_events_gui, EventType.KB_CHANGE_ZOOM_MODE, {'dialog': ZoomModes.MANUAL}),
         )
 
         self._populate_menu(items=memu_edit_items, menu=menu_view)

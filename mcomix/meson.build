@@ -41,8 +41,6 @@ python_sources = [
 py.install_sources(python_sources, subdir: 'mcomix')
 
 subdir('archive')
-subdir('enums')
-subdir('_enums')
 subdir('fallback')
 subdir('formats')
 subdir('images')

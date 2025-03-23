@@ -15,6 +15,16 @@ datadir = join_paths(prefix, get_option('datadir'))
 pybind11_dep = dependency('pybind11', required : true)
 magic_enum_dep = dependency('magic_enum', required : true, version: '>=0.9.7')
 
+preprocessor = [
+    '-DPACKAGE_NAME="mcomix-lite"',
+    '-DPACKAGE_NAME_FANCY="MComix-Lite"',
+    '-DPACKAGE_VERSION="@0@"'.format(meson.project_version()),
+]
+
+foreach a: preprocessor
+    add_project_arguments(a, language: ['c', 'cpp'])
+endforeach
+
 py = import('python').find_installation(pure: false)
 py.extension_module(
     'mcomix_compiled',

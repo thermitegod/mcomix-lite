@@ -39,9 +39,12 @@ from pathlib import Path
 
 from gi.repository import Gtk
 
+from platformdirs import *
+
 from mcomix.config_backend import ConfigBackend
-from mcomix.enums import ConfigFiles, ConfigType
 from mcomix.keybindings_map import KeyBindingsMap
+
+from mcomix_compiled import ConfigType, PackageInfo
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -67,7 +70,7 @@ class KeybindingManager:
         self.__keybindings_map = KeyBindingsMap().bindings
 
         self.__config_manager = ConfigBackend
-        self.__keybindings_path = ConfigFiles.KEYBINDINGS.value
+        self.__keybindings_path = Path(user_config_dir(PackageInfo.PROG_NAME)) / 'input.toml'
 
         self._load_keybindings_file()
         self._register_keybindings()

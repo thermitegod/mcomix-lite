@@ -15,8 +15,9 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from loguru import logger
+from platformdirs import *
 
-from mcomix.enums import ConfigPaths
+from mcomix_compiled import PackageInfo
 
 
 class BaseArchive:
@@ -29,10 +30,10 @@ class BaseArchive:
 
         self.archive = archive
 
-        if not Path.exists(ConfigPaths.CACHE.value):
-            ConfigPaths.CACHE.value.mkdir(parents=True, exist_ok=True)
+        if not Path.exists(Path(user_cache_dir(PackageInfo.PROG_NAME))):
+            Path(user_cache_dir(PackageInfo.PROG_NAME)).mkdir(parents=True, exist_ok=True)
 
-        self.tempdir = TemporaryDirectory(dir=ConfigPaths.CACHE.value)
+        self.tempdir = TemporaryDirectory(dir=Path(user_cache_dir(PackageInfo.PROG_NAME)))
         self.destination_path = Path() / self.tempdir.name / 'main_archive'
 
     def iter_contents(self):

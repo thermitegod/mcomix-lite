@@ -15,10 +15,11 @@ from __future__ import annotations
 
 from gi.repository import GObject, Gtk
 
-from mcomix.enums import Animation, DoublePage, FileSortDirection, FileSortType, ZoomModes
 from mcomix.lib.events import Events, EventType
 from mcomix.preferences import config
 from mcomix.preferences_page import PreferencePage
+
+from mcomix_compiled import Animation, DoublePage, FileSortDirection, FileSortType, ZoomModes
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -329,11 +330,11 @@ class PreferencesDialog(Gtk.Dialog):
         """
 
         items = (
-            ('Best fit', ZoomModes.BEST.value),
-            ('Fit to width', ZoomModes.WIDTH.value),
-            ('Fit to height', ZoomModes.HEIGHT.value),
-            ('Fit to size', ZoomModes.SIZE.value),
-            ('Manual fit', ZoomModes.MANUAL.value),
+            ('Best fit', ZoomModes.BEST),
+            ('Fit to width', ZoomModes.WIDTH),
+            ('Fit to height', ZoomModes.HEIGHT),
+            ('Fit to size', ZoomModes.SIZE),
+            ('Manual fit', ZoomModes.MANUAL),
         )
 
         return self._create_combobox(items, 'ZOOM_MODE')
@@ -344,18 +345,18 @@ class PreferencesDialog(Gtk.Dialog):
         """
 
         items = (
-            ('Never', DoublePage.NEVER.value),
-            ('Only for title pages', DoublePage.AS_ONE_TITLE.value),
-            ('Only for wide images', DoublePage.AS_ONE_WIDE.value),
-            ('Always', DoublePage.ALWAYS.value))
+            ('Never', DoublePage.NEVER),
+            ('Only for title pages', DoublePage.AS_ONE_TITLE),
+            ('Only for wide images', DoublePage.AS_ONE_WIDE),
+            ('Always', DoublePage.ALWAYS))
 
         return self._create_combobox(items, 'VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES')
 
     def _create_combobox_fitmode(self):
         """Combobox for fit to size mode"""
         items = (
-            ('Fit to width', ZoomModes.WIDTH.value),
-            ('Fit to height', ZoomModes.HEIGHT.value))
+            ('Fit to width', ZoomModes.WIDTH),
+            ('Fit to height', ZoomModes.HEIGHT))
 
         return self._create_combobox(items, 'FIT_TO_SIZE_MODE')
 
@@ -365,16 +366,16 @@ class PreferencesDialog(Gtk.Dialog):
         """
 
         sortkey_items = (
-            ('No sorting', FileSortType.NONE.value),
-            ('File name', FileSortType.NAME.value),
-            ('File size', FileSortType.SIZE.value),
-            ('Last modified', FileSortType.LAST_MODIFIED.value))
+            ('No sorting', FileSortType.NONE),
+            ('File name', FileSortType.NAME),
+            ('File size', FileSortType.SIZE),
+            ('Last modified', FileSortType.LAST_MODIFIED))
 
         sortkey_box = self._create_combobox(sortkey_items, 'SORT_BY')
 
         sortorder_items = (
-            ('Ascending', FileSortDirection.ASCENDING.value),
-            ('Descending', FileSortDirection.DESCENDING.value))
+            ('Ascending', FileSortDirection.ASCENDING),
+            ('Descending', FileSortDirection.DESCENDING))
 
         sortorder_box = self._create_combobox(sortorder_items, 'SORT_ORDER')
 
@@ -390,15 +391,15 @@ class PreferencesDialog(Gtk.Dialog):
         """
 
         sortkey_items = (
-            ('No sorting', FileSortType.NONE.value),
-            ('Natural order', FileSortType.NAME.value),
-            ('Literal order', FileSortType.NAME_LITERAL.value))
+            ('No sorting', FileSortType.NONE),
+            ('Natural order', FileSortType.NAME),
+            ('Literal order', FileSortType.NAME_LITERAL))
 
         sortkey_box = self._create_combobox(sortkey_items, 'SORT_ARCHIVE_BY')
 
         sortorder_items = (
-            ('Ascending', FileSortDirection.ASCENDING.value),
-            ('Descending', FileSortDirection.DESCENDING.value))
+            ('Ascending', FileSortDirection.ASCENDING),
+            ('Descending', FileSortDirection.DESCENDING))
 
         sortorder_box = self._create_combobox(sortorder_items, 'SORT_ARCHIVE_ORDER')
 
@@ -414,8 +415,8 @@ class PreferencesDialog(Gtk.Dialog):
         """
 
         items = (
-            ('Never', Animation.DISABLED.value),
-            ('Normal', Animation.NORMAL.value),
+            ('Never', Animation.DISABLED),
+            ('Normal', Animation.NORMAL),
         )
 
         return self._create_combobox(items, 'ANIMATION_MODE')

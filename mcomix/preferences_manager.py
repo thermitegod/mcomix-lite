@@ -15,17 +15,19 @@
 
 from pathlib import Path
 
-from mcomix.config_backend import ConfigBackend, ConfigType
-from mcomix.enums import ConfigFiles
+from platformdirs import *
+
+from mcomix.config_backend import ConfigBackend
 from mcomix.preferences import config
 
+from mcomix_compiled import ConfigType, PackageInfo
 
 class PreferenceManager:
     def __init__(self):
         super().__init__()
 
         self.__config_manager = ConfigBackend
-        self.__config_path = ConfigFiles.CONFIG.value
+        self.__config_path = Path(user_config_dir(PackageInfo.PROG_NAME)) / 'mcomix.toml'
 
     def load_config_file(self):
         if Path.is_file(self.__config_path):

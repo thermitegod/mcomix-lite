@@ -13,14 +13,17 @@
 
 # must not depend on GTK, or any other optional libraries.
 
-from mcomix.enums import Animation, ConfigPaths, DoublePage, FileSortDirection, FileSortType, ZoomModes
+from pathlib import Path
+from platformdirs import *
+
+from mcomix_compiled import Animation, DoublePage, FileSortDirection, FileSortType, PackageInfo, ZoomModes
 
 # All preferences are stored here.
 config = {
-    'SORT_BY': FileSortType.NAME.value,  # Normal files obtained by directory listing
-    'SORT_ORDER': FileSortDirection.ASCENDING.value,
-    'SORT_ARCHIVE_BY': FileSortType.NAME.value,  # Files in archives
-    'SORT_ARCHIVE_ORDER': FileSortDirection.ASCENDING.value,
+    'SORT_BY': FileSortType.NAME,  # Normal files obtained by directory listing
+    'SORT_ORDER': FileSortDirection.ASCENDING,
+    'SORT_ARCHIVE_BY': FileSortType.NAME,  # Files in archives
+    'SORT_ARCHIVE_ORDER': FileSortDirection.ASCENDING,
     'CHECKERED_BG_FOR_TRANSPARENT_IMAGES': True,
     'CHECKERED_BG_SIZE': 16,
     'STRETCH': True,
@@ -28,18 +31,18 @@ config = {
     'DEFAULT_FULLSCREEN': False,
     'FULLSCREEN_HIDE_MENUBAR': False,
     'FULLSCREEN_HIDE_STATUSBAR': False,
-    'ZOOM_MODE': ZoomModes.BEST.value,
+    'ZOOM_MODE': ZoomModes.BEST,
     'DEFAULT_MANGA_MODE': True,
     'PAGE_FF_STEP': 10,
     'ENHANCE_EXTRA': True,
-    'VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES': DoublePage.ALWAYS.value,
+    'VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES': DoublePage.ALWAYS,
     'DOUBLE_STEP_IN_DOUBLE_PAGE_MODE': True,
     'SHOW_PAGE_NUMBERS_ON_THUMBNAILS': True,
     'THUMBNAIL_SIZE': 80,
     'PIXELS_TO_SCROLL_PER_KEY_EVENT': 50,
     'PIXELS_TO_SCROLL_PER_MOUSE_WHEEL_EVENT': 50,
     'FLIP_WITH_WHEEL': True,
-    'FILECHOOSER_LAST_BROWSED_PATH': str(ConfigPaths.HOME.value),
+    'FILECHOOSER_LAST_BROWSED_PATH': str(Path().home()),
     'FILECHOOSER_LAST_FILTER': 0,
     'ROTATION': 0,
     'KEEP_TRANSFORMATION': False,
@@ -60,9 +63,9 @@ config = {
     'SI_UNITS': False,
     'MAX_THREADS': 16,
     'ESCAPE_QUITS': True,
-    'FIT_TO_SIZE_MODE': ZoomModes.HEIGHT.value,
+    'FIT_TO_SIZE_MODE': ZoomModes.HEIGHT,
     'FIT_TO_SIZE_PX': 1800,
-    'ANIMATION_MODE': Animation.NORMAL.value,
+    'ANIMATION_MODE': Animation.NORMAL,
     'ANIMATION_BACKGROUND': True,
     'ANIMATION_TRANSFORM': True,
     'MOVE_FILE': 'keep',

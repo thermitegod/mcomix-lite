@@ -11,9 +11,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-from mcomix.enums import FileTypes
+from mcomix_compiled import FileTypes
 
 
-def test_file_types():
-    for f in FileTypes:
-        assert isinstance(f.value, int)
+def test_file_types_images():
+    assert FileTypes.IMAGES == 0
+
+
+def test_file_types_archives():
+    assert FileTypes.ARCHIVES == 1

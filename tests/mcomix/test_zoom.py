@@ -11,17 +11,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-from mcomix.enums import ZoomModes
-
 # from mcomix.fallback.zoom import ZoomModel
 
-from mcomix_compiled import ZoomModel
+from mcomix_compiled import ZoomModel, ZoomAxis, ZoomModes
 
 # Best with stretching
 
 def test_zoom__single_page__best_stretch():
     zoom = ZoomModel()
-    zoom.set_fit_mode(ZoomModes.BEST.value)
+    zoom.set_fit_mode(ZoomModes.BEST)
     zoom.set_scale_up(True)
     zoom.reset_user_zoom()
 
@@ -31,7 +29,7 @@ def test_zoom__single_page__best_stretch():
 
 def test_zoom__double_page__best_stretch():
     zoom = ZoomModel()
-    zoom.set_fit_mode(ZoomModes.BEST.value)
+    zoom.set_fit_mode(ZoomModes.BEST)
     zoom.set_scale_up(True)
     zoom.reset_user_zoom()
 
@@ -43,7 +41,7 @@ def test_zoom__double_page__best_stretch():
 
 def test_zoom__single_page__width_stretch():
     zoom = ZoomModel()
-    zoom.set_fit_mode(ZoomModes.WIDTH.value)
+    zoom.set_fit_mode(ZoomModes.WIDTH)
     zoom.set_scale_up(True)
     zoom.reset_user_zoom()
 
@@ -53,7 +51,7 @@ def test_zoom__single_page__width_stretch():
 
 def test_zoom__double_page__width_stretch():
     zoom = ZoomModel()
-    zoom.set_fit_mode(ZoomModes.WIDTH.value)
+    zoom.set_fit_mode(ZoomModes.WIDTH)
     zoom.set_scale_up(True)
     zoom.reset_user_zoom()
 
@@ -65,7 +63,7 @@ def test_zoom__double_page__width_stretch():
 
 def test_zoom__single_page__height_stretch():
     zoom = ZoomModel()
-    zoom.set_fit_mode(ZoomModes.HEIGHT.value)
+    zoom.set_fit_mode(ZoomModes.HEIGHT)
     zoom.set_scale_up(True)
     zoom.reset_user_zoom()
 
@@ -75,7 +73,7 @@ def test_zoom__single_page__height_stretch():
 
 def test_zoom__double_page__height_stretch():
     zoom = ZoomModel()
-    zoom.set_fit_mode(ZoomModes.HEIGHT.value)
+    zoom.set_fit_mode(ZoomModes.HEIGHT)
     zoom.set_scale_up(True)
     zoom.reset_user_zoom()
 
@@ -87,7 +85,7 @@ def test_zoom__double_page__height_stretch():
 
 def test_zoom__single_page__manual_stretch():
     zoom = ZoomModel()
-    zoom.set_fit_mode(ZoomModes.MANUAL.value)
+    zoom.set_fit_mode(ZoomModes.MANUAL)
     zoom.set_scale_up(True)
     zoom.reset_user_zoom()
 
@@ -97,7 +95,7 @@ def test_zoom__single_page__manual_stretch():
 
 def test_zoom__double_page__manual_stretch():
     zoom = ZoomModel()
-    zoom.set_fit_mode(ZoomModes.MANUAL.value)
+    zoom.set_fit_mode(ZoomModes.MANUAL)
     zoom.set_scale_up(True)
     zoom.reset_user_zoom()
 
@@ -111,7 +109,7 @@ def test_zoom__double_page__manual_stretch():
 
 #def test_zoom__single_page__size_stretch():
 #    zoom = ZoomModel()
-#    zoom.set_fit_mode(ZoomModes.SIZE.value)
+#    zoom.set_fit_mode(ZoomModes.SIZE)
 #    zoom.set_scale_up(True)
 #    zoom.reset_user_zoom()
 #
@@ -121,7 +119,7 @@ def test_zoom__double_page__manual_stretch():
 
 #def test_zoom__double_page__size_stretch():
 #    zoom = ZoomModel()
-#    zoom.set_fit_mode(ZoomModes.SIZE.value)
+#    zoom.set_fit_mode(ZoomModes.SIZE)
 #    zoom.set_scale_up(True)
 #    zoom.reset_user_zoom()
 #

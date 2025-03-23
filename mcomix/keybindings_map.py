@@ -17,11 +17,11 @@
 from dataclasses import dataclass
 from typing import Callable
 
-from mcomix.dialog_chooser import DialogChoice
-from mcomix.enums import ZoomModes
 from mcomix.lib.events import Events, EventType
 from mcomix.lib.metaclass import SingleInstanceMetaClass
 from mcomix.preferences import config
+
+from mcomix_compiled import DialogChoice, ZoomModes
 
 
 class KeyBindingsMap(metaclass=SingleInstanceMetaClass):
@@ -332,7 +332,7 @@ class KeyBindingsMap(metaclass=SingleInstanceMetaClass):
                     KEY_EVENT(
                         events.run_events,
                         EventType.KB_CHANGE_ZOOM_MODE,
-                        {'value': ZoomModes.BEST.value},
+                        {'value': ZoomModes.BEST},
                     ),
                 ),
             'fit_width_mode':
@@ -342,7 +342,7 @@ class KeyBindingsMap(metaclass=SingleInstanceMetaClass):
                     KEY_EVENT(
                         events.run_events,
                         EventType.KB_CHANGE_ZOOM_MODE,
-                        {'value': ZoomModes.WIDTH.value},
+                        {'value': ZoomModes.WIDTH},
                     ),
                 ),
             'fit_height_mode':
@@ -352,7 +352,7 @@ class KeyBindingsMap(metaclass=SingleInstanceMetaClass):
                     KEY_EVENT(
                         events.run_events,
                         EventType.KB_CHANGE_ZOOM_MODE,
-                        {'value': ZoomModes.HEIGHT.value},
+                        {'value': ZoomModes.HEIGHT},
                     ),
                 ),
             'fit_size_mode':
@@ -362,7 +362,7 @@ class KeyBindingsMap(metaclass=SingleInstanceMetaClass):
                     KEY_EVENT(
                         events.run_events,
                         EventType.KB_CHANGE_ZOOM_MODE,
-                        {'value': ZoomModes.SIZE.value},
+                        {'value': ZoomModes.SIZE},
                     ),
                 ),
             'fit_manual_mode':
@@ -372,7 +372,7 @@ class KeyBindingsMap(metaclass=SingleInstanceMetaClass):
                     KEY_EVENT(
                         events.run_events,
                         EventType.KB_CHANGE_ZOOM_MODE,
-                        {'value': ZoomModes.MANUAL.value},
+                        {'value': ZoomModes.MANUAL},
                     ),
                 ),
 

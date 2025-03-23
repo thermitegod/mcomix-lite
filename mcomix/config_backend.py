@@ -18,9 +18,9 @@ from pathlib import Path
 import tomli, tomli_w
 
 from loguru import logger
+from platformdirs import *
 
-from mcomix.enums import ConfigPaths, ConfigType
-
+from mcomix_compiled import ConfigType, PackageInfo
 
 class _ConfigBackend:
     def __init__(self):
@@ -31,13 +31,13 @@ class _ConfigBackend:
             ConfigType.KEYBINDINGS: None,
         }
 
-        if not Path.exists(ConfigPaths.CONFIG.value):
+        if not Path.exists(Path(user_config_dir(PackageInfo.PROG_NAME))):
             logger.info('Creating missing config dir')
-            ConfigPaths.CONFIG.value.mkdir()
+            Path(user_config_dir(PackageInfo.PROG_NAME)).mkdir()
 
-        if not Path.exists(ConfigPaths.DATA.value):
+        if not Path.exists(Path(user_data_dir(PackageInfo.PROG_NAME))):
             logger.info('Creating missing data dir')
-            ConfigPaths.DATA.value.mkdir()
+            Path(user_data_dir(PackageInfo.PROG_NAME)).mkdir()
 
     def update_config_hash(self, config: dict, module: str):
         self.__stored_config_hash[module] = self._hash_config(config=config)
