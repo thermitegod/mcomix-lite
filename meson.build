@@ -13,7 +13,7 @@ prefix = get_option('prefix')
 datadir = join_paths(prefix, get_option('datadir'))
 
 pybind11_dep = dependency('pybind11', required : true)
-magic_enum_dep = dependency('magic_enum', required : true)
+magic_enum_dep = dependency('magic_enum', required : true, version: '>=0.9.7')
 
 py = import('python').find_installation(pure: false)
 py.extension_module(
