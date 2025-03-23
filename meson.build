@@ -24,6 +24,10 @@ py.extension_module(
         'mcomix/box.cpp',
         'mcomix/layout.cpp',
         'mcomix/zoom.cpp',
+
+        'mcomix/sort/sort.cpp',
+        'mcomix/sort/utils.cpp',
+        'mcomix/sort/natsort/strnatcmp.cpp',
     ],
     include_directories: incdir,
     install: true,

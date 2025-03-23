@@ -16,10 +16,12 @@
 #include "box.hpp"
 #include "layout.hpp"
 #include "zoom.hpp"
+#include "sort/sort.hpp"
 
 #include <pybind11/pybind11.h>
 #include <pybind11/operators.h>
 #include <pybind11/stl.h>
+#include <pybind11/stl/filesystem.h>
 
 namespace pybind11::detail
 {
@@ -132,4 +134,6 @@ PYBIND11_MODULE(mcomix_compiled, m)
              py::arg("distribution_axis"),
              py::arg("do_not_transform"))
         .def("union_size", &ZoomModel::union_size, py::arg("image_sizes"), py::arg("distribution_axis"));
+
+    m.def("sort_alphanumeric", &sort_alphanumeric, "sort filelist");
 }

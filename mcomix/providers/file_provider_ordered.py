@@ -18,8 +18,13 @@ from mcomix.formats.archive import ArchiveSupported
 from mcomix.formats.image import ImageSupported
 from mcomix.preferences import config
 from mcomix.providers.file_provider_base import FileProviderBase
-from mcomix.sort.sort_alphanumeric import sort_alphanumeric
 
+try:
+    from mcomix_compiled import sort_alphanumeric
+except ImportError:
+    from loguru import logger
+    logger.warning("Failed to load compiled sort_alphanumeric() module")
+    from mcomix.fallback.sort import sort_alphanumeric
 
 class OrderedFileProvider(FileProviderBase):
     """

@@ -2,6 +2,7 @@ python_sources = [
     '__init__.py',
     'box.py',
     'layout.py',
+    'sort.py',
     'zoom.py',
 ]
 

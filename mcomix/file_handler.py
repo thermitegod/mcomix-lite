@@ -25,7 +25,12 @@ from mcomix.image_handler import ImageHandler
 from mcomix.lib.events import Events, EventType
 from mcomix.lib.metaclass import SingleInstanceMetaClass
 from mcomix.preferences import config
-from mcomix.sort.sort_alphanumeric import sort_alphanumeric
+
+try:
+    from mcomix_compiled import sort_alphanumeric
+except ImportError:
+    logger.warning("Failed to load compiled sort_alphanumeric() module")
+    from mcomix.fallback.sort import sort_alphanumeric
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
