@@ -20,7 +20,6 @@ from loguru import logger
 from mcomix.archive_extractor import Extractor
 from mcomix.image_handler import ImageHandler
 from mcomix.lib.events import Events, EventType
-from mcomix.lib.metaclass import SingleInstanceMetaClass
 from mcomix.preferences import config
 
 from mcomix_compiled import FileSortDirection, FileSortType, FileTypes, FileProvider, sort_alphanumeric, is_archive
@@ -30,7 +29,7 @@ if TYPE_CHECKING:
     from mcomix.gui.main_window import MainWindow
 
 
-class FileHandler(metaclass=SingleInstanceMetaClass):
+class FileHandler():
     """
     The FileHandler keeps track of the actual files/archives opened.
     While ImageHandler takes care of pages/images, this class provides
