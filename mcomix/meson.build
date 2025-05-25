@@ -21,7 +21,6 @@ python_sources = [
 py.install_sources(python_sources, subdir: 'mcomix')
 
 subdir('archive')
-subdir('fallback')
 subdir('formats')
 subdir('gui')
 subdir('lib')

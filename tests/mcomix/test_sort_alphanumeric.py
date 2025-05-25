@@ -14,10 +14,9 @@
 import pytest
 from pathlib import Path
 
-try:
-    from mcomix_compiled import sort_alphanumeric
-except ImportError:
-    from mcomix.fallback.sort import sort_alphanumeric
+# from mcomix.fallback.sort import sort_alphanumeric
+
+from mcomix_compiled import sort_alphanumeric
 
 
 @pytest.mark.parametrize('unsorted_file_list,sorted_file_list', [
