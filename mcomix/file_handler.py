@@ -18,14 +18,13 @@ from pathlib import Path
 from loguru import logger
 
 from mcomix.archive_extractor import Extractor
-from mcomix.formats.archive import ArchiveSupported
 from mcomix.file_provider import GetFileProvider
 from mcomix.image_handler import ImageHandler
 from mcomix.lib.events import Events, EventType
 from mcomix.lib.metaclass import SingleInstanceMetaClass
 from mcomix.preferences import config
 
-from mcomix_compiled import FileSortDirection, FileSortType, FileTypes, sort_alphanumeric
+from mcomix_compiled import FileSortDirection, FileSortType, FileTypes, sort_alphanumeric, is_archive
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -125,7 +124,7 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
 
         self.__image_handler = ImageHandler()
 
-        self.__is_archive = ArchiveSupported.is_archive_file(path)
+        self.__is_archive = is_archive(path)
         self.__start_page = start_page
         self.__current_file = path
 

@@ -16,7 +16,8 @@ import os
 from pathlib import Path
 
 from mcomix.archive.archive_base import BaseArchive
-from mcomix.formats.image import ImageSupported
+
+from mcomix_compiled import is_image
 
 
 class LibarchiveExtractor(BaseArchive):
@@ -37,7 +38,7 @@ class LibarchiveExtractor(BaseArchive):
                 if not filename.isfile:
                     continue
                 filepath = Path(filename.pathname)
-                if not ImageSupported.is_image_file(filepath):
+                if not is_image(filepath):
                     continue
                 yield filepath
 
@@ -57,7 +58,7 @@ class LibarchiveExtractor(BaseArchive):
                     # as needed by _create_file()
                     continue
                 filepath = Path(filename.pathname)
-                if not ImageSupported.is_image_file(filepath):
+                if not is_image(filepath):
                     continue
                 destination_filepath = Path() / self.destination_path / filepath
                 with self._create_file(destination_filepath) as image:

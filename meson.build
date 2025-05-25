@@ -31,6 +31,8 @@ py.extension_module(
     [
         'mcomix/bindings.cpp',
 
+        'mcomix/supported.cpp',
+
         'mcomix/gui/lib/box.cpp',
         'mcomix/gui/lib/layout.cpp',
         'mcomix/gui/lib/zoom.cpp',

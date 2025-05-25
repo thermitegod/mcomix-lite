@@ -14,7 +14,7 @@
 import pytest
 from pathlib import Path
 
-from mcomix.formats.image import ImageSupported
+from mcomix_compiled import is_image
 
 
 @pytest.mark.parametrize('image', [
@@ -26,7 +26,7 @@ from mcomix.formats.image import ImageSupported
     # Path('test.ppn'),
 ])
 def test_is_archive(image: Path):
-    assert ImageSupported.is_image_file(image)
+    assert is_image(image)
 
 
 @pytest.mark.parametrize('not_image', [
@@ -38,4 +38,4 @@ def test_is_archive(image: Path):
     Path('test.file'),
 ])
 def test_is_not_archive(not_image: Path):
-    assert not ImageSupported.is_image_file(not_image)
+    assert not is_image(not_image)

@@ -14,6 +14,7 @@
  */
 
 #include "enums.hpp"
+#include "supported.hpp"
 #include "package.hpp"
 #include "sort/sort.hpp"
 
@@ -416,4 +417,21 @@ PYBIND11_MODULE(mcomix_compiled, m)
         .def("union_size", &ZoomModel::union_size, py::arg("image_sizes"), py::arg("distribution_axis"));
 
     m.def("sort_alphanumeric", &sort_alphanumeric, "sort filelist");
+
+    m.def("is_archive", &is_archive);
+    m.def("is_image", &is_image);
+
+    m.def("supported_archive_extensions",
+          []()
+          {
+              static const auto exts = supported_archive_extensions();
+              return std::vector<std::string>(exts.begin(), exts.end());
+          });
+
+    m.def("supported_image_extensions",
+          []()
+          {
+              static const auto exts = supported_image_extensions();
+              return std::vector<std::string>(exts.begin(), exts.end());
+          });
 }
