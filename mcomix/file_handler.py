@@ -18,13 +18,12 @@ from pathlib import Path
 from loguru import logger
 
 from mcomix.archive_extractor import Extractor
-from mcomix.file_provider import GetFileProvider
 from mcomix.image_handler import ImageHandler
 from mcomix.lib.events import Events, EventType
 from mcomix.lib.metaclass import SingleInstanceMetaClass
 from mcomix.preferences import config
 
-from mcomix_compiled import FileSortDirection, FileSortType, FileTypes, sort_alphanumeric, is_archive
+from mcomix_compiled import FileSortDirection, FileSortType, FileTypes, FileProvider, sort_alphanumeric, is_archive
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -67,7 +66,6 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
         #: Archive extractor.
         self.__extractor = None
         #: Provides a list of available files/archives in the open directory.
-        self.__file_provider_chooser = GetFileProvider()
         self.__file_provider = None
 
         self.__start_page = 1
@@ -134,7 +132,7 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
             self._open_archive(self.__current_file)
             self.__file_loading = True
         else:
-            image_files = self.__file_provider.list_files(mode=FileTypes.IMAGES)
+            image_files = self.__file_provider.list_files(FileTypes.IMAGES, config['SORT_BY'], config['SORT_ORDER'])
             if self.__current_file.is_dir():
                 self.__base_path = self.__current_file
             else:
@@ -227,7 +225,7 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
         :param path: List of file names, or single file/directory as string.
         """
 
-        self.__file_provider = self.__file_provider_chooser.get_file_provider(paths)
+        self.__file_provider = FileProvider(paths)
 
     def _open_archive(self, path: Path):
         """
@@ -288,7 +286,7 @@ class FileHandler(metaclass=SingleInstanceMetaClass):
         Get a list of all archives in the same diretory as the opened archive
         """
 
-        return self.__file_provider.list_files(mode=FileTypes.ARCHIVES)
+        return self.__file_provider.list_files(FileTypes.ARCHIVES, config['SORT_BY'], config['SORT_ORDER'])
 
     def get_file_number(self):
         """

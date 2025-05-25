@@ -404,9 +404,7 @@ class PreferencesDialog(Gtk.Dialog):
 
         sortkey_items = (
             ('No sorting', FileSortType.NONE),
-            ('File name', FileSortType.NAME),
-            ('File size', FileSortType.SIZE),
-            ('Last modified', FileSortType.LAST_MODIFIED))
+            ('File name', FileSortType.NAME))
 
         sortkey_box = self._create_combobox(sortkey_items, 'SORT_BY')
 
