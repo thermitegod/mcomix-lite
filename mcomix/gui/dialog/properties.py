@@ -21,11 +21,11 @@ from gi.repository import Gtk
 
 from mcomix.file_size import format_filesize
 from mcomix.lib.events import Events, EventType
-from mcomix.properties_page import PropertiesPage
+from mcomix.gui.dialog.properties_page import PropertiesPage
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from mcomix.main_window import MainWindow
+    from mcomix.gui.main_window import MainWindow
 
 
 class PropertiesDialog(Gtk.Dialog):

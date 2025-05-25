@@ -31,9 +31,9 @@ py.extension_module(
     [
         'mcomix/bindings.cpp',
 
-        'mcomix/box.cpp',
-        'mcomix/layout.cpp',
-        'mcomix/zoom.cpp',
+        'mcomix/gui/lib/box.cpp',
+        'mcomix/gui/lib/layout.cpp',
+        'mcomix/gui/lib/zoom.cpp',
 
         'mcomix/sort/sort.cpp',
         'mcomix/sort/utils.cpp',

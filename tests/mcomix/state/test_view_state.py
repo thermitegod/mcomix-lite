@@ -12,7 +12,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import pytest
-from mcomix.state.view_state import ViewState
+from mcomix.view_state import ViewState
 
 
 @pytest.mark.parametrize('set,get', [

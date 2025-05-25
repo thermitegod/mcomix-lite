@@ -23,16 +23,16 @@ from loguru import logger
 
 from platformdirs import *
 
-from mcomix.bookmark_menu_item import Bookmark
+from mcomix.gui.bookmark_menu_item import Bookmark
 from mcomix.lib.events import Events, EventType
-from mcomix.message_dialog.info import MessageDialogInfo
-from mcomix.message_dialog.remember import MessageDialogRemember
+from mcomix.gui.dialog.info import MessageDialogInfo
+from mcomix.gui.dialog.remember import MessageDialogRemember
 
 from mcomix_compiled import PackageInfo
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from mcomix.main_window import MainWindow
+    from mcomix.gui.main_window import MainWindow
 
 
 class BookmarkBackend:

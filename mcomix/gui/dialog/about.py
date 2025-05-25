@@ -23,7 +23,7 @@ from mcomix_compiled import PackageInfo
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from mcomix.main_window import MainWindow
+    from mcomix.gui.main_window import MainWindow
 
 
 class AboutDialog(Gtk.AboutDialog):
@@ -37,7 +37,7 @@ class AboutDialog(Gtk.AboutDialog):
 
         self.set_titlebar(Gtk.HeaderBar(title='About'))
 
-        logo = Path(__file__).parent / 'images' / 'mcomix.png'
+        logo = Path(__file__).parent.parent / 'images' / 'mcomix.png'
 
         pixbuf_logo = image_tools.load_pixbuf(logo, force_static=True)
         if pixbuf_logo is not None:

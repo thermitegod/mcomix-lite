@@ -17,7 +17,7 @@ from gi.repository import Gtk
 
 from mcomix.file_size import format_filesize
 from mcomix.preferences import config
-from mcomix.state.view_state import ViewState
+from mcomix.view_state import ViewState
 
 
 class Statusbar(Gtk.Box):

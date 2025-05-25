@@ -18,14 +18,14 @@ from typing import Callable
 
 from gi.repository import Gtk
 
-from mcomix.bookmark_menu import BookmarksMenu
+from mcomix.gui.bookmark_menu import BookmarksMenu
 from mcomix.lib.events import Events, EventType
 
 from mcomix_compiled import DialogChoice, ZoomModes
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from mcomix.main_window import MainWindow
+    from mcomix.gui.main_window import MainWindow
 
 
 class Menubar(Gtk.EventBox):

@@ -13,7 +13,7 @@
 
 from gi.repository import Gtk
 
-from mcomix.preferences_section import PreferenceSection
+from mcomix.gui.dialog.preferences_section import PreferenceSection
 
 
 class PreferencePage(Gtk.Box):

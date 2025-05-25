@@ -17,13 +17,13 @@ from gi.repository import GObject, Gtk
 
 from mcomix.lib.events import Events, EventType
 from mcomix.preferences import config
-from mcomix.preferences_page import PreferencePage
+from mcomix.gui.dialog.preferences_page import PreferencePage
 
 from mcomix_compiled import Animation, DoublePage, FileSortDirection, FileSortType, ZoomModes
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from mcomix.main_window import MainWindow
+    from mcomix.gui.main_window import MainWindow
 
 
 class PreferencesDialog(Gtk.Dialog):

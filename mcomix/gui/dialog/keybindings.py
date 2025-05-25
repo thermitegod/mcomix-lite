@@ -15,11 +15,11 @@ from __future__ import annotations
 
 from gi.repository import Gtk
 
-from mcomix.keybindings_editor import KeybindingEditorWindow
+from mcomix.gui.dialog.keybindings_editor import KeybindingEditorWindow
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from mcomix.main_window import MainWindow
+    from mcomix.gui.main_window import MainWindow
 
 
 class KeybindingEditorDialog(Gtk.Dialog):

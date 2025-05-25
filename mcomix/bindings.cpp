@@ -13,12 +13,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "box.hpp"
 #include "enums.hpp"
-#include "layout.hpp"
-#include "zoom.hpp"
 #include "package.hpp"
 #include "sort/sort.hpp"
+
+#include "gui/lib/box.hpp"
+#include "gui/lib/layout.hpp"
+#include "gui/lib/zoom.hpp"
 
 #include <pybind11/pybind11.h>
 #include <pybind11/operators.h>

@@ -1,15 +1,8 @@
 python_sources = [
     '__init__.py',
-    'about_dialog.py',
     'archive_extractor.py',
     'bookmark_backend.py',
-    'bookmark_dialog.py',
-    'bookmark_menu_item.py',
-    'bookmark_menu.py',
     'config_backend.py',
-    'cursor_handler.py',
-    'dialog_chooser.py',
-    'file_chooser.py',
     'file_handler.py',
     'file_provider.py',
     'file_size.py',
@@ -17,25 +10,12 @@ python_sources = [
     'image_files.py',
     'image_handler.py',
     'image_tools.py',
-    'input_handler.py',
-    'keybindings_dialog.py',
-    'keybindings_editor.py',
     'keybindings_manager.py',
     'keybindings_map.py',
     'main.py',
-    'main_window.py',
-    'menubar.py',
-    'pageselect.py',
-    'preferences_dialog.py',
     'preferences_manager.py',
-    'preferences_page.py',
     'preferences.py',
-    'preferences_section.py',
-    'properties_dialog.py',
-    'properties_page.py',
-    'statusbar.py',
-    'thumbnail_sidebar.py',
-    'thumbnail_view.py',
+    'view_state.py',
 ]
 
 py.install_sources(python_sources, subdir: 'mcomix')
@@ -43,8 +23,6 @@ py.install_sources(python_sources, subdir: 'mcomix')
 subdir('archive')
 subdir('fallback')
 subdir('formats')
-subdir('images')
+subdir('gui')
 subdir('lib')
-subdir('message_dialog')
 subdir('providers')
-subdir('state')
