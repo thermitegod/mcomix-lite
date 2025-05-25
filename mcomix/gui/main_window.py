@@ -31,22 +31,7 @@ from mcomix.view_state import ViewState
 from mcomix.gui.statusbar import Statusbar
 from mcomix.gui.thumbnail_sidebar import ThumbnailSidebar
 
-from mcomix_compiled import DialogChoice, DoublePage, PackageInfo, Scroll, ZoomAxis
-
-try:
-    from mcomix_compiled import Layout
-except ImportError:
-    from loguru import logger
-    logger.warning("Failed to load compiled Layout() module")
-    from mcomix.fallback.layout import Layout
-
-try:
-    from mcomix_compiled import ZoomModel
-except ImportError:
-    from loguru import logger
-    logger.warning("Failed to load compiled ZoomModel() module")
-    from mcomix.fallback.zoom import ZoomModel
-
+from mcomix_compiled import Layout, ZoomModel, DialogChoice, DoublePage, PackageInfo, Scroll, ZoomAxis
 
 class MainWindow(Gtk.ApplicationWindow):
     """
