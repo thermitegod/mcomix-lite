@@ -18,9 +18,9 @@ from pathlib import Path
 
 from gi.repository import Gtk
 
-from mcomix.formats.archive import ArchiveSupported
-from mcomix.formats.image import ImageSupported
 from mcomix.preferences import config
+
+from mcomix_compiled import supported_archive_extensions, supported_image_extensions
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -111,7 +111,7 @@ class FileChooser(Gtk.Dialog):
         ffilter.set_name('All archives')
         self.__filechooser.add_filter(ffilter)
 
-        for ext in ArchiveSupported.EXTS.value:
+        for ext in supported_archive_extensions():
             ffilter.add_pattern(f'*{ext}')
 
     def add_image_filters(self):
@@ -123,7 +123,7 @@ class FileChooser(Gtk.Dialog):
         ffilter.set_name('All images')
         self.__filechooser.add_filter(ffilter)
 
-        for ext in ImageSupported.EXTS.value:
+        for ext in supported_image_extensions():
             ffilter.add_pattern(f'*{ext}')
 
     def files_chosen(self, paths: list):
