@@ -27,7 +27,7 @@ from mcomix.image_files import ImageFiles
 from mcomix.lib.events import Events, EventType
 from mcomix.lib.threadpool import GlobalThreadPool, Lock
 from mcomix.preferences import config
-from mcomix.state.view_state import ViewState
+from mcomix.view_state import ViewState
 
 
 class ImageHandler():

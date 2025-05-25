@@ -16,20 +16,20 @@ from gi.repository import GLib, Gdk, Gtk
 import mcomix.image_tools as image_tools
 
 from mcomix.bookmark_backend import BookmarkBackend
-from mcomix.cursor_handler import CursorHandler
-from mcomix.dialog_chooser import DialogChooser
+from mcomix.gui.cursor_handler import CursorHandler
+from mcomix.gui.dialog_chooser import DialogChooser
 from mcomix.file_handler import FileHandler
 from mcomix.filesystem_actions import FileSystemActions
-from mcomix.input_handler import InputHandler
+from mcomix.gui.input_handler import InputHandler
 from mcomix.keybindings_manager import KeybindingManager
 from mcomix.lib.events import Events, EventType
-from mcomix.menubar import Menubar
-from mcomix.pageselect import Pageselector
+from mcomix.gui.menubar import Menubar
+from mcomix.gui.dialog.pageselect import Pageselector
 from mcomix.preferences import config
 from mcomix.preferences_manager import PreferenceManager
-from mcomix.state.view_state import ViewState
-from mcomix.statusbar import Statusbar
-from mcomix.thumbnail_sidebar import ThumbnailSidebar
+from mcomix.view_state import ViewState
+from mcomix.gui.statusbar import Statusbar
+from mcomix.gui.thumbnail_sidebar import ThumbnailSidebar
 
 from mcomix_compiled import DialogChoice, DoublePage, PackageInfo, Scroll, ZoomAxis
 

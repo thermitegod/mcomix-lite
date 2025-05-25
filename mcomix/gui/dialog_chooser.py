@@ -13,17 +13,17 @@
 
 from __future__ import annotations
 
-from mcomix.about_dialog import AboutDialog
-from mcomix.file_chooser import FileChooser
-from mcomix.keybindings_dialog import KeybindingEditorDialog
-from mcomix.preferences_dialog import PreferencesDialog
-from mcomix.properties_dialog import PropertiesDialog
+from mcomix.gui.dialog.about import AboutDialog
+from mcomix.gui.dialog.file_chooser import FileChooser
+from mcomix.gui.dialog.keybindings import KeybindingEditorDialog
+from mcomix.gui.dialog.preferences import PreferencesDialog
+from mcomix.gui.dialog.properties import PropertiesDialog
 
 from mcomix_compiled import DialogChoice
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from mcomix.main_window import MainWindow
+    from mcomix.gui.main_window import MainWindow
 
 
 class DialogChooser:

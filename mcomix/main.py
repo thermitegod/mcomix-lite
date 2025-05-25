@@ -26,7 +26,7 @@ try:
 except (ValueError, ImportError):
     raise SystemExit('GTK+ 3.0 import error')
 
-from mcomix.main_window import MainWindow
+from mcomix.gui.main_window import MainWindow
 
 from mcomix_compiled import PackageInfo
 

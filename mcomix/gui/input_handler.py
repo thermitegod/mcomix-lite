@@ -21,11 +21,11 @@ from gi.repository import Gdk, Gtk
 
 from mcomix.lib.events import Events, EventType
 from mcomix.preferences import config
-from mcomix.state.view_state import ViewState
+from mcomix.view_state import ViewState
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from mcomix.main_window import MainWindow
+    from mcomix.gui.main_window import MainWindow
 
 
 class InputHandler:

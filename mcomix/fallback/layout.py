@@ -14,7 +14,7 @@
 from mcomix.enums import Scroll
 
 # from mcomix_compiled import Box
-from mcomix.fallback.box import Box
+from mcomix.gui.box_fallback import Box
 
 
 class Layout:

@@ -20,15 +20,15 @@ from gi.repository import Gtk
 from loguru import logger
 from send2trash import send2trash
 
-from mcomix.message_dialog.info import MessageDialogInfo
-from mcomix.message_dialog.remember import MessageDialogRemember
+from mcomix.gui.dialog.info import MessageDialogInfo
+from mcomix.gui.dialog.remember import MessageDialogRemember
 from mcomix.lib.events import Events, EventType
 from mcomix.preferences import config
-from mcomix.state.view_state import ViewState
+from mcomix.view_state import ViewState
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from mcomix.main_window import MainWindow
+    from mcomix.gui.main_window import MainWindow
 
 
 class FileSystemActions:

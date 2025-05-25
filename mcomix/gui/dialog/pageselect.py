@@ -20,7 +20,7 @@ from mcomix.lib.threadpool import GlobalThreadPool
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from mcomix.main_window import MainWindow
+    from mcomix.gui.main_window import MainWindow
 
 
 class Pageselector(Gtk.Dialog):

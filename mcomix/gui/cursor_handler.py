@@ -19,7 +19,7 @@ from gi.repository import GLib, Gdk
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from mcomix.main_window import MainWindow
+    from mcomix.gui.main_window import MainWindow
 
 
 class CursorModes(Enum):

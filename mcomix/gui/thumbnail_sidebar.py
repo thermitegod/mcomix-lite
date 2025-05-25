@@ -18,11 +18,11 @@ from loguru import logger
 
 from mcomix.lib.events import Events, EventType
 from mcomix.preferences import config
-from mcomix.thumbnail_view import ThumbnailTreeView
+from mcomix.gui.thumbnail_view import ThumbnailTreeView
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from mcomix.main_window import MainWindow
+    from mcomix.gui.main_window import MainWindow
 
 
 class ThumbnailSidebar(Gtk.ScrolledWindow):

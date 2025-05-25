@@ -24,7 +24,7 @@ from mcomix.preferences import config
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from mcomix.main_window import MainWindow
+    from mcomix.gui.main_window import MainWindow
 
 
 class FileChooser(Gtk.Dialog):
