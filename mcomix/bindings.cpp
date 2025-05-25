@@ -14,6 +14,7 @@
  */
 
 #include "enums.hpp"
+#include "file_provider.hpp"
 #include "supported.hpp"
 #include "package.hpp"
 #include "sort/sort.hpp"
@@ -355,6 +356,11 @@ PYBIND11_MODULE(mcomix_compiled, m)
         .def("wrapper_box", &Box::wrapper_box)
         .def_static("bounding_box", &Box::bounding_box)
         .def(py::self == py::self);
+
+    py::class_<file_provider>(m, "FileProvider")
+        .def(py::init<>())
+        .def(py::init<const std::vector<std::filesystem::path>&>())
+        .def("list_files", &file_provider::list_files);
 
     py::class_<Layout>(m, "Layout")
         .def(py::init<const std::vector<std::array<std::int32_t, 2>>&,

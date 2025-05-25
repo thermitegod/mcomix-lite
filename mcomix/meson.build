@@ -4,7 +4,6 @@ python_sources = [
     'bookmark_backend.py',
     'config_backend.py',
     'file_handler.py',
-    'file_provider.py',
     'file_size.py',
     'filesystem_actions.py',
     'image_files.py',
@@ -23,4 +22,3 @@ py.install_sources(python_sources, subdir: 'mcomix')
 subdir('archive')
 subdir('gui')
 subdir('lib')
-subdir('providers')

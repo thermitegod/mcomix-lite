@@ -17,12 +17,10 @@
 #include <filesystem>
 #include <vector>
 
-#include <cstdlib>
-
 #include "natsort/strnatcmp.hpp"
 #include "sort.hpp"
 
-std::vector<std::filesystem::path>
+[[nodiscard]] std::vector<std::filesystem::path>
 sort_alphanumeric(std::vector<std::filesystem::path>& filenames) noexcept
 {
     std::ranges::sort(filenames, [](const auto& a, const auto& b) { return strnatcmp(a.string(), b.string()) < 0; });
