@@ -23,323 +23,92 @@
 #include "gui/lib/layout.hpp"
 #include "gui/lib/zoom.hpp"
 
-#include <pybind11/pybind11.h>
-#include <pybind11/operators.h>
-#include <pybind11/stl.h>
-#include <pybind11/stl/filesystem.h>
+#include <nanobind/nanobind.h>
+#include <nanobind/stl/array.h>
+#include <nanobind/stl/filesystem.h>
+#include <nanobind/stl/string.h>
+#include <nanobind/stl/vector.h>
 
-namespace pybind11::detail
+namespace nb = nanobind;
+using namespace nb::literals;
+
+NB_MODULE(mcomix_compiled, m)
 {
-template<> struct type_caster<Animation>
-{
-  public:
-    PYBIND11_TYPE_CASTER(Animation, _("Animation"));
+    nb::set_leak_warnings(false);
 
-    bool
-    load(handle src, bool)
-    {
-        if (!src || !PyLong_Check(src.ptr()))
-        {
-            return false;
-        }
-        value = static_cast<Animation>(PyLong_AsLong(src.ptr()));
-        return true;
-    }
-
-    static handle
-    cast(Animation src, return_value_policy, handle)
-    {
-        return PyLong_FromLong(static_cast<long>(src));
-    }
-};
-
-template<> struct type_caster<ConfigType>
-{
-  public:
-    PYBIND11_TYPE_CASTER(ConfigType, _("ConfigType"));
-
-    bool
-    load(handle src, bool)
-    {
-        if (!src || !PyLong_Check(src.ptr()))
-        {
-            return false;
-        }
-        value = static_cast<ConfigType>(PyLong_AsLong(src.ptr()));
-        return true;
-    }
-
-    static handle
-    cast(ConfigType src, return_value_policy, handle)
-    {
-        return PyLong_FromLong(static_cast<long>(src));
-    }
-};
-
-template<> struct type_caster<DialogChoice>
-{
-  public:
-    PYBIND11_TYPE_CASTER(DialogChoice, _("DialogChoice"));
-
-    bool
-    load(handle src, bool)
-    {
-        if (!src || !PyLong_Check(src.ptr()))
-        {
-            return false;
-        }
-        value = static_cast<DialogChoice>(PyLong_AsLong(src.ptr()));
-        return true;
-    }
-
-    static handle
-    cast(DialogChoice src, return_value_policy, handle)
-    {
-        return PyLong_FromLong(static_cast<long>(src));
-    }
-};
-
-template<> struct type_caster<DoublePage>
-{
-  public:
-    PYBIND11_TYPE_CASTER(DoublePage, _("DoublePage"));
-
-    bool
-    load(handle src, bool)
-    {
-        if (!src || !PyLong_Check(src.ptr()))
-        {
-            return false;
-        }
-        value = static_cast<DoublePage>(PyLong_AsLong(src.ptr()));
-        return true;
-    }
-
-    static handle
-    cast(DoublePage src, return_value_policy, handle)
-    {
-        return PyLong_FromLong(static_cast<long>(src));
-    }
-};
-
-template<> struct type_caster<FileSortType>
-{
-  public:
-    PYBIND11_TYPE_CASTER(FileSortType, _("FileSortType"));
-
-    bool
-    load(handle src, bool)
-    {
-        if (!src || !PyLong_Check(src.ptr()))
-        {
-            return false;
-        }
-        value = static_cast<FileSortType>(PyLong_AsLong(src.ptr()));
-        return true;
-    }
-
-    static handle
-    cast(FileSortType src, return_value_policy, handle)
-    {
-        return PyLong_FromLong(static_cast<long>(src));
-    }
-};
-
-template<> struct type_caster<FileSortDirection>
-{
-  public:
-    PYBIND11_TYPE_CASTER(FileSortDirection, _("FileSortDirection"));
-
-    bool
-    load(handle src, bool)
-    {
-        if (!src || !PyLong_Check(src.ptr()))
-        {
-            return false;
-        }
-        value = static_cast<FileSortDirection>(PyLong_AsLong(src.ptr()));
-        return true;
-    }
-
-    static handle
-    cast(FileSortDirection src, return_value_policy, handle)
-    {
-        return PyLong_FromLong(static_cast<long>(src));
-    }
-};
-
-template<> struct type_caster<FileTypes>
-{
-  public:
-    PYBIND11_TYPE_CASTER(FileTypes, _("FileTypes"));
-
-    bool
-    load(handle src, bool)
-    {
-        if (!src || !PyLong_Check(src.ptr()))
-        {
-            return false;
-        }
-        value = static_cast<FileTypes>(PyLong_AsLong(src.ptr()));
-        return true;
-    }
-
-    static handle
-    cast(FileTypes src, return_value_policy, handle)
-    {
-        return PyLong_FromLong(static_cast<long>(src));
-    }
-};
-
-template<> struct type_caster<Scroll>
-{
-  public:
-    PYBIND11_TYPE_CASTER(Scroll, _("Scroll"));
-
-    bool
-    load(handle src, bool)
-    {
-        if (!src || !PyLong_Check(src.ptr()))
-        {
-            return false;
-        }
-        value = static_cast<Scroll>(PyLong_AsLong(src.ptr()));
-        return true;
-    }
-
-    static handle
-    cast(Scroll src, return_value_policy, handle)
-    {
-        return PyLong_FromLong(static_cast<long>(src));
-    }
-};
-
-template<> struct type_caster<ZoomModes>
-{
-  public:
-    PYBIND11_TYPE_CASTER(ZoomModes, _("ZoomModes"));
-
-    bool
-    load(handle src, bool)
-    {
-        if (!src || !PyLong_Check(src.ptr()))
-        {
-            return false;
-        }
-        value = static_cast<ZoomModes>(PyLong_AsLong(src.ptr()));
-        return true;
-    }
-
-    static handle
-    cast(ZoomModes src, return_value_policy, handle)
-    {
-        return PyLong_FromLong(static_cast<long>(src));
-    }
-};
-
-template<> struct type_caster<ZoomAxis>
-{
-  public:
-    PYBIND11_TYPE_CASTER(ZoomAxis, _("ZoomAxis"));
-
-    bool
-    load(handle src, bool)
-    {
-        if (!src || !PyLong_Check(src.ptr()))
-        {
-            return false;
-        }
-        value = static_cast<ZoomAxis>(PyLong_AsLong(src.ptr()));
-        return true;
-    }
-
-    static handle
-    cast(ZoomAxis src, return_value_policy, handle)
-    {
-        return PyLong_FromLong(static_cast<long>(src));
-    }
-};
-} // namespace pybind11::detail
-
-namespace py = pybind11;
-
-PYBIND11_MODULE(mcomix_compiled, m)
-{
-    py::enum_<Animation>(m, "Animation")
+    nb::enum_<Animation>(m, "Animation")
+        .def("__int__", [](Animation v) { return static_cast<std::int32_t>(v); })
         .value("DISABLED", Animation::DISABLED)
-        .value("NORMAL", Animation::NORMAL)
-        .export_values();
+        .value("NORMAL", Animation::NORMAL);
 
-    py::enum_<ConfigType>(m, "ConfigType")
+    nb::enum_<ConfigType>(m, "ConfigType")
         .value("CONFIG", ConfigType::CONFIG)
-        .value("KEYBINDINGS", ConfigType::KEYBINDINGS)
-        .export_values();
+        .value("KEYBINDINGS", ConfigType::KEYBINDINGS);
 
-    py::enum_<DialogChoice>(m, "DialogChoice")
+    nb::enum_<DialogChoice>(m, "DialogChoice")
         .value("ABOUT", DialogChoice::ABOUT)
         .value("ENHANCE", DialogChoice::ENHANCE)
         .value("FILECHOOSER", DialogChoice::FILECHOOSER)
         .value("KEYBINDINGS", DialogChoice::KEYBINDINGS)
         .value("PREFERENCES", DialogChoice::PREFERENCES)
-        .value("PROPERTIES", DialogChoice::PROPERTIES)
-        .export_values();
+        .value("PROPERTIES", DialogChoice::PROPERTIES);
 
-    py::enum_<DoublePage>(m, "DoublePage")
+    nb::enum_<DoublePage>(m, "DoublePage")
+        .def("__int__", [](DoublePage v) { return static_cast<std::int32_t>(v); })
         .value("NEVER", DoublePage::NEVER)
         .value("AS_ONE_TITLE", DoublePage::AS_ONE_TITLE)
         .value("AS_ONE_WIDE", DoublePage::AS_ONE_WIDE)
-        .value("ALWAYS", DoublePage::ALWAYS)
-        .export_values();
+        .value("ALWAYS", DoublePage::ALWAYS);
 
-    py::enum_<FileSortType>(m, "FileSortType")
+    nb::enum_<FileSortType>(m, "FileSortType")
+        .def("__int__", [](FileSortType v) { return static_cast<std::int32_t>(v); })
         .value("NONE", FileSortType::NONE)
         .value("NAME", FileSortType::NAME)
         .value("SIZE", FileSortType::SIZE)
         .value("LAST_MODIFIED", FileSortType::LAST_MODIFIED)
-        .value("NAME_LITERAL", FileSortType::NAME_LITERAL)
-        .export_values();
+        .value("NAME_LITERAL", FileSortType::NAME_LITERAL);
 
-    py::enum_<FileSortDirection>(m, "FileSortDirection")
+    nb::enum_<FileSortDirection>(m, "FileSortDirection")
+        .def("__int__", [](FileSortDirection v) { return static_cast<std::int32_t>(v); })
         .value("DESCENDING", FileSortDirection::DESCENDING)
-        .value("ASCENDING", FileSortDirection::ASCENDING)
-        .export_values();
+        .value("ASCENDING", FileSortDirection::ASCENDING);
 
-    py::enum_<FileTypes>(m, "FileTypes")
+    nb::enum_<FileTypes>(m, "FileTypes")
+        .def("__int__", [](FileTypes v) { return static_cast<std::int32_t>(v); })
         .value("IMAGES", FileTypes::IMAGES)
-        .value("ARCHIVES", FileTypes::ARCHIVES)
-        .export_values();
+        .value("ARCHIVES", FileTypes::ARCHIVES);
 
-    py::enum_<Scroll>(m, "Scroll")
+    nb::enum_<Scroll>(m, "Scroll")
+        .def("__int__", [](Scroll v) { return static_cast<std::int32_t>(v); })
         .value("END", Scroll::END)
         .value("START", Scroll::START)
-        .value("CENTER", Scroll::CENTER)
-        .export_values();
+        .value("CENTER", Scroll::CENTER);
 
-    py::enum_<ZoomModes>(m, "ZoomModes")
+    nb::enum_<ZoomModes>(m, "ZoomModes")
+        .def("__int__", [](ZoomModes v) { return static_cast<std::int32_t>(v); })
         .value("BEST", ZoomModes::BEST)
         .value("WIDTH", ZoomModes::WIDTH)
         .value("HEIGHT", ZoomModes::HEIGHT)
         .value("MANUAL", ZoomModes::MANUAL)
-        .value("SIZE", ZoomModes::SIZE)
-        .export_values();
+        .value("SIZE", ZoomModes::SIZE);
 
-    py::enum_<ZoomAxis>(m, "ZoomAxis")
+    nb::enum_<ZoomAxis>(m, "ZoomAxis")
+        .def("__int__", [](ZoomAxis v) { return static_cast<std::int32_t>(v); })
         .value("DISTRIBUTION", ZoomAxis::DISTRIBUTION)
         .value("ALIGNMENT", ZoomAxis::ALIGNMENT)
         .value("WIDTH", ZoomAxis::WIDTH)
-        .value("HEIGHT", ZoomAxis::HEIGHT)
-        .export_values();
+        .value("HEIGHT", ZoomAxis::HEIGHT);
 
-    py::class_<PackageInfo>(m, "PackageInfo")
-        .def_readonly_static("APP_NAME", &PackageInfo::APP_NAME)
-        .def_readonly_static("PROG_NAME", &PackageInfo::PROG_NAME)
-        .def_readonly_static("VERSION", &PackageInfo::VERSION);
+    nb::class_<PackageInfo>(m, "PackageInfo")
+        .def_prop_ro_static("APP_NAME", [](nb::handle) { return PackageInfo::APP_NAME; })
+        .def_prop_ro_static("PROG_NAME", [](nb::handle) { return PackageInfo::PROG_NAME; })
+        .def_prop_ro_static("VERSION", [](nb::handle) { return PackageInfo::VERSION; });
 
-    py::class_<Box>(m, "Box")
-        .def(py::init<>())
-        .def(py::init<const std::vector<std::int32_t>&, const std::vector<std::int32_t>&>(),
-             py::arg("position"),
-             py::arg("size") = std::vector<std::int32_t>{})
+    nb::class_<Box>(m, "Box")
+        .def(nb::init<>())
+        .def(nb::init<const std::vector<std::int32_t>&, const std::vector<std::int32_t>&>(),
+             "position"_a,
+             "size"_a = std::vector<std::int32_t>{})
         .def("dimensions", &Box::dimensions)
         .def("get_size", &Box::get_size)
         .def("get_position", &Box::get_position)
@@ -347,83 +116,64 @@ PYBIND11_MODULE(mcomix_compiled, m)
         .def("translate_opposite", &Box::translate_opposite)
         .def_static("box_to_center_offset_1d", &Box::box_to_center_offset_1d)
         .def_static("align_center", &Box::align_center)
-        .def_static("distribute",
-                    &Box::distribute,
-                    py::arg("boxes"),
-                    py::arg("axis"),
-                    py::arg("fit"),
-                    py::arg("spacing") = 2)
+        .def_static("distribute", &Box::distribute, "boxes"_a, "axis"_a, "fit"_a, "spacing"_a = 2)
         .def("wrapper_box", &Box::wrapper_box)
         .def_static("bounding_box", &Box::bounding_box)
-        .def(py::self == py::self);
+        .def("__eq__", [](const Box& a, const Box& b) { return a == b; });
 
-    py::class_<file_provider>(m, "FileProvider")
-        .def(py::init<>())
-        .def(py::init<const std::vector<std::filesystem::path>&>())
+    nb::class_<file_provider>(m, "FileProvider")
+        .def(nb::init<>())
+        .def(nb::init<const std::vector<std::filesystem::path>&>())
         .def("list_files", &file_provider::list_files);
 
-    py::class_<Layout>(m, "Layout")
-        .def(py::init<const std::vector<std::array<std::int32_t, 2>>&,
+    nb::class_<Layout>(m, "Layout")
+        .def(nb::init<const std::vector<std::array<std::int32_t, 2>>&,
                       const std::array<std::int32_t, 2>&,
                       const std::array<std::int32_t, 2>&,
-                      std::int32_t,
-                      std::int32_t>(),
-             py::arg("content_sizes"),
-             py::arg("viewport_size"),
-             py::arg("orientation"),
-             py::arg("distribution_axis"),
-             py::arg("alignment_axis"))
-        .def("scroll_to_predefined", &Layout::scroll_to_predefined, py::arg("destination"))
+                      ZoomAxis,
+                      ZoomAxis>(),
+             "content_sizes"_a,
+             "viewport_size"_a,
+             "orientation"_a,
+             "distribution_axis"_a,
+             "alignment_axis"_a)
+        .def("scroll_to_predefined", &Layout::scroll_to_predefined, "destination"_a)
         .def("get_content_boxes", &Layout::get_content_boxes)
         .def("get_union_box", &Layout::get_union_box)
         .def("get_viewport_box", &Layout::get_viewport_box)
         .def("get_orientation", &Layout::get_orientation)
-        .def("set_orientation", &Layout::set_orientation, py::arg("new_orientation"));
+        .def("set_orientation", &Layout::set_orientation, "new_orientation"_a);
 
-    py::class_<ZoomModel>(m, "ZoomModel")
-        .def(py::init<>())
-        .def("set_fit_mode", &ZoomModel::set_fit_mode, py::arg("fitmode"))
-        .def("set_scale_up", &ZoomModel::set_scale_up, py::arg("scale_up"))
-        .def("set_user_zoom_log", &ZoomModel::set_user_zoom_log, py::arg("zoom_log"))
+    nb::class_<ZoomModel>(m, "ZoomModel")
+        .def(nb::init<>())
+        .def("set_fit_mode", &ZoomModel::set_fit_mode, "fitmode"_a)
+        .def("set_scale_up", &ZoomModel::set_scale_up, "scale_up"_a)
+        .def("set_user_zoom_log", &ZoomModel::set_user_zoom_log, "zoom_log"_a)
         .def("zoom_in", &ZoomModel::zoom_in)
         .def("zoom_out", &ZoomModel::zoom_out)
         .def("reset_user_zoom", &ZoomModel::reset_user_zoom)
-        .def("scale", &ZoomModel::scale, py::arg("t"), py::arg("factor"))
+        .def("scale", &ZoomModel::scale, "t"_a, "factor"_a)
         .def("get_zoomed_size",
              &ZoomModel::get_zoomed_size,
-             py::arg("image_sizes"),
-             py::arg("screen_size"),
-             py::arg("distribution_axis"),
-             py::arg("do_not_transform"))
-        .def("preferred_scale",
-             &ZoomModel::preferred_scale,
-             py::arg("image_size"),
-             py::arg("limits"),
-             py::arg("distribution_axis"))
-        .def("calc_limits",
-             &ZoomModel::calc_limits,
-             py::arg("union_size"),
-             py::arg("screen_size"),
-             py::arg("fitmode"),
-             py::arg("allow_upscaling"))
+             "image_sizes"_a,
+             "screen_size"_a,
+             "distribution_axis"_a,
+             "do_not_transform"_a)
+        .def("preferred_scale", &ZoomModel::preferred_scale, "image_size"_a, "limits"_a, "distribution_axis"_a)
+        .def("calc_limits", &ZoomModel::calc_limits, "union_size"_a, "screen_size"_a, "fitmode"_a, "allow_upscaling"_a)
         .def("scale_distributed",
              &ZoomModel::scale_distributed,
-             py::arg("sizes"),
-             py::arg("axis"),
-             py::arg("max_size"),
-             py::arg("allow_upscaling"),
-             py::arg("do_not_transform"))
-        .def("scale_image_size", &ZoomModel::scale_image_size, py::arg("size"), py::arg("scale"))
-        .def("round_nonempty", &ZoomModel::round_nonempty, py::arg("t"))
-        .def("fix_page_sizes",
-             &ZoomModel::fix_page_sizes,
-             py::arg("image_sizes"),
-             py::arg("distribution_axis"),
-             py::arg("do_not_transform"))
-        .def("union_size", &ZoomModel::union_size, py::arg("image_sizes"), py::arg("distribution_axis"));
+             "sizes"_a,
+             "axis"_a,
+             "max_size"_a,
+             "allow_upscaling"_a,
+             "do_not_transform"_a)
+        .def("scale_image_size", &ZoomModel::scale_image_size, "size"_a, "scale"_a)
+        .def("round_nonempty", &ZoomModel::round_nonempty, "t"_a)
+        .def("fix_page_sizes", &ZoomModel::fix_page_sizes, "image_sizes"_a, "distribution_axis"_a, "do_not_transform"_a)
+        .def("union_size", &ZoomModel::union_size, "image_sizes"_a, "distribution_axis"_a);
 
-    m.def("sort_alphanumeric", &sort_alphanumeric, "sort filelist");
-
+    m.def("sort_alphanumeric", &sort_alphanumeric);
     m.def("is_archive", &is_archive);
     m.def("is_image", &is_image);
 

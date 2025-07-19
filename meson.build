@@ -1,9 +1,11 @@
 project(
     'mcomix-lite',
     'cpp',
-    version: '3.4.0-dev',
+    version: '3.5.0-dev',
+    meson_version: '>=1.0.0',
     default_options: [
-        'cpp_std=c++23',
+        'cpp_std=c++26',
+        'b_ndebug=if-release'
     ],
 )
 
@@ -12,8 +14,16 @@ incdir = include_directories(['mcomix'])
 prefix = get_option('prefix')
 datadir = join_paths(prefix, get_option('datadir'))
 
-pybind11_dep = dependency('pybind11', required : true)
 magic_enum_dep = dependency('magic_enum', required : true, version: '>=0.9.7')
+
+cmake = import('cmake')
+cmake_opt = cmake.subproject_options()
+cmake_opt.add_cmake_defines({'DNB_CREATE_INSTALL_RULES': 'OFF'})
+cmake_opt.add_cmake_defines({'DNB_USE_SUBMODULE_DEPS': 'OFF'})
+cmake_opt.add_cmake_defines({'DNB_TEST': 'OFF'})
+nanobind_proj = cmake.subproject('nanobind', required: true, options: cmake_opt)
+#message('CMake targets:\n - ' + '\n - '.join(nanobind_proj.target_list()))
+nanobind_dep = nanobind_proj.dependency('nanobind-static')
 
 preprocessor = [
     '-DPACKAGE_NAME="mcomix-lite"',
@@ -26,6 +36,8 @@ foreach a: preprocessor
 endforeach
 
 py = import('python').find_installation(pure: false)
+py_dep = py.dependency()
+
 py.extension_module(
     'mcomix_compiled',
     [
@@ -43,11 +55,11 @@ py.extension_module(
         'mcomix/sort/natsort/strnatcmp.cpp',
     ],
     include_directories: incdir,
-    install: true,
     dependencies : [
-        pybind11_dep,
+        nanobind_dep,
         magic_enum_dep,
     ],
+    install: true,
 )
 
 subdir('mcomix')

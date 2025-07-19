@@ -13,34 +13,24 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <format>
-
 #include <array>
 #include <vector>
 
 #include <ranges>
 #include <algorithm>
 
-#include <stdexcept>
-
 #include <cassert>
 
 #include "box.hpp"
+#include "enums.hpp"
 #include "layout.hpp"
 
-enum Scroll
-{ // MUST match the python enum
-    END = -4,
-    START = -3,
-    CENTER = -2,
-};
-
 Layout::Layout(std::vector<std::array<std::int32_t, 2>> content_sizes, const std::array<std::int32_t, 2>& viewport_size,
-               const std::array<std::int32_t, 2>& orientation, const std::int32_t distribution_axis,
-               const std::int32_t alignment_axis)
+               const std::array<std::int32_t, 2>& orientation, const ZoomAxis distribution_axis,
+               const ZoomAxis alignment_axis)
 {
     // Reverse order if necessary
-    if (orientation[distribution_axis] == -1)
+    if (orientation[static_cast<std::int32_t>(distribution_axis)] == -1)
     {
         std::ranges::reverse(content_sizes);
     }
@@ -51,10 +41,13 @@ Layout::Layout(std::vector<std::array<std::int32_t, 2>> content_sizes, const std
     }
 
     // Align to center
-    this->content_boxes_ = Box::align_center(this->content_boxes_, alignment_axis, 0, orientation[alignment_axis]);
+    this->content_boxes_ = Box::align_center(this->content_boxes_,
+                                             static_cast<std::int32_t>(alignment_axis),
+                                             0,
+                                             orientation[static_cast<std::int32_t>(alignment_axis)]);
 
     // Distribute
-    this->content_boxes_ = Box::distribute(this->content_boxes_, distribution_axis, 0);
+    this->content_boxes_ = Box::distribute(this->content_boxes_, static_cast<std::int32_t>(distribution_axis), 0);
     this->union_box_ =
         Box::bounding_box(this->content_boxes_).wrapper_box({viewport_size[0], viewport_size[1]}, orientation);
 
@@ -68,7 +61,7 @@ Layout::Layout(std::vector<std::array<std::int32_t, 2>> content_sizes, const std
 
     this->union_box_ = this->union_box_.translate_opposite(bbp);
     // Reverse order again, if necessary
-    if (orientation[distribution_axis] == -1)
+    if (orientation[static_cast<std::int32_t>(distribution_axis)] == -1)
     {
         std::ranges::reverse(this->content_boxes_);
     }
@@ -78,7 +71,7 @@ Layout::Layout(std::vector<std::array<std::int32_t, 2>> content_sizes, const std
 }
 
 void
-Layout::scroll_to_predefined(const std::array<std::int32_t, 2>& destination)
+Layout::scroll_to_predefined(const std::array<Scroll, 2>& destination)
 {
     const auto content_position = this->union_box_.get_position();
     const auto content_size = this->union_box_.get_size();
@@ -88,21 +81,18 @@ Layout::scroll_to_predefined(const std::array<std::int32_t, 2>& destination)
     for (std::size_t idx = 0; idx < content_size.size(); ++idx)
     {
         std::int32_t o = this->orientation_[idx];
-        std::int32_t d = destination[idx];
+        std::int32_t d = static_cast<std::int32_t>(destination[idx]);
 
         if (d == 0)
         {
             continue;
         }
-        else if (d < Scroll::END || d > 1)
+
+        if (d == static_cast<std::int32_t>(Scroll::END))
         {
-            throw std::invalid_argument(std::format("Invalid destination {} at index {}", d, idx));
+            d = static_cast<std::int32_t>(o);
         }
-        else if (d == Scroll::END)
-        {
-            d = o;
-        }
-        else if (d == Scroll::START)
+        else if (d == static_cast<std::int32_t>(Scroll::START))
         {
             d = -o;
         }
@@ -112,7 +102,7 @@ Layout::scroll_to_predefined(const std::array<std::int32_t, 2>& destination)
         std::int32_t invisible_size = c - v;
         std::int32_t offset;
 
-        if (d == Scroll::CENTER)
+        if (d == static_cast<std::int32_t>(Scroll::CENTER))
         {
             offset = Box::box_to_center_offset_1d(invisible_size, o);
         }

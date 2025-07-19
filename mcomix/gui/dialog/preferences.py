@@ -367,11 +367,11 @@ class PreferencesDialog(Gtk.Dialog):
         """
 
         items = (
-            ('Best fit', ZoomModes.BEST),
-            ('Fit to width', ZoomModes.WIDTH),
-            ('Fit to height', ZoomModes.HEIGHT),
-            ('Fit to size', ZoomModes.SIZE),
-            ('Manual fit', ZoomModes.MANUAL),
+            ('Best fit', int(ZoomModes.BEST)),
+            ('Fit to width', int(ZoomModes.WIDTH)),
+            ('Fit to height', int(ZoomModes.HEIGHT)),
+            ('Fit to size', int(ZoomModes.SIZE)),
+            ('Manual fit', int(ZoomModes.MANUAL)),
         )
 
         return self._create_combobox(items, 'ZOOM_MODE')
@@ -382,18 +382,18 @@ class PreferencesDialog(Gtk.Dialog):
         """
 
         items = (
-            ('Never', DoublePage.NEVER),
-            ('Only for title pages', DoublePage.AS_ONE_TITLE),
-            ('Only for wide images', DoublePage.AS_ONE_WIDE),
-            ('Always', DoublePage.ALWAYS))
+            ('Never', int(DoublePage.NEVER)),
+            ('Only for title pages', int(DoublePage.AS_ONE_TITLE)),
+            ('Only for wide images', int(DoublePage.AS_ONE_WIDE)),
+            ('Always', int(DoublePage.ALWAYS)))
 
         return self._create_combobox(items, 'VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES')
 
     def _create_combobox_fitmode(self):
         """Combobox for fit to size mode"""
         items = (
-            ('Fit to width', ZoomModes.WIDTH),
-            ('Fit to height', ZoomModes.HEIGHT))
+            ('Fit to width', int(ZoomModes.WIDTH)),
+            ('Fit to height', int(ZoomModes.HEIGHT)))
 
         return self._create_combobox(items, 'FIT_TO_SIZE_MODE')
 
@@ -403,14 +403,14 @@ class PreferencesDialog(Gtk.Dialog):
         """
 
         sortkey_items = (
-            ('No sorting', FileSortType.NONE),
-            ('File name', FileSortType.NAME))
+            ('No sorting', int(FileSortType.NONE)),
+            ('File name', int(FileSortType.NAME)))
 
         sortkey_box = self._create_combobox(sortkey_items, 'SORT_BY')
 
         sortorder_items = (
-            ('Ascending', FileSortDirection.ASCENDING),
-            ('Descending', FileSortDirection.DESCENDING))
+            ('Ascending', int(FileSortDirection.ASCENDING)),
+            ('Descending', int(FileSortDirection.DESCENDING)))
 
         sortorder_box = self._create_combobox(sortorder_items, 'SORT_ORDER')
 
@@ -426,15 +426,15 @@ class PreferencesDialog(Gtk.Dialog):
         """
 
         sortkey_items = (
-            ('No sorting', FileSortType.NONE),
-            ('Natural order', FileSortType.NAME),
-            ('Literal order', FileSortType.NAME_LITERAL))
+            ('No sorting', int(FileSortType.NONE)),
+            ('Natural order', int(FileSortType.NAME)),
+            ('Literal order', int(FileSortType.NAME_LITERAL)))
 
         sortkey_box = self._create_combobox(sortkey_items, 'SORT_ARCHIVE_BY')
 
         sortorder_items = (
-            ('Ascending', FileSortDirection.ASCENDING),
-            ('Descending', FileSortDirection.DESCENDING))
+            ('Ascending', int(FileSortDirection.ASCENDING)),
+            ('Descending', int(FileSortDirection.DESCENDING)))
 
         sortorder_box = self._create_combobox(sortorder_items, 'SORT_ARCHIVE_ORDER')
 
@@ -450,8 +450,8 @@ class PreferencesDialog(Gtk.Dialog):
         """
 
         items = (
-            ('Never', Animation.DISABLED),
-            ('Normal', Animation.NORMAL),
+            ('Never', int(Animation.DISABLED)),
+            ('Normal', int(Animation.NORMAL)),
         )
 
         return self._create_combobox(items, 'ANIMATION_MODE')

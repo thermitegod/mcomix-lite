@@ -2,7 +2,6 @@ bytesize
 libarchive-c
 loguru
 platformdirs
-pybind11
 pygobject
 regex
 send2trash
