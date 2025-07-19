@@ -3,7 +3,6 @@ python_sources = [
     'bookmark_menu.py',
     'bookmark_menu_item.py',
     'cursor_handler.py',
-    'dialog_chooser.py',
     'main_window.py',
     'menubar.py',
     'input_handler.py',

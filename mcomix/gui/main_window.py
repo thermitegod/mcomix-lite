@@ -17,7 +17,6 @@ import mcomix.image_tools as image_tools
 
 from mcomix.bookmark_backend import BookmarkBackend
 from mcomix.gui.cursor_handler import CursorHandler
-from mcomix.gui.dialog_chooser import DialogChooser
 from mcomix.file_handler import FileHandler
 from mcomix.filesystem_actions import FileSystemActions
 from mcomix.gui.input_handler import InputHandler
@@ -30,8 +29,13 @@ from mcomix.preferences_manager import PreferenceManager
 from mcomix.view_state import ViewState
 from mcomix.gui.statusbar import Statusbar
 from mcomix.gui.thumbnail_sidebar import ThumbnailSidebar
+from mcomix.gui.dialog.about import AboutDialog
+from mcomix.gui.dialog.file_chooser import FileChooser
+from mcomix.gui.dialog.keybindings import KeybindingEditorDialog
+from mcomix.gui.dialog.preferences import PreferencesDialog
+from mcomix.gui.dialog.properties import PropertiesDialog
 
-from mcomix_compiled import Layout, ZoomModel, DialogChoice, DoublePage, PackageInfo, Scroll, ZoomAxis
+from mcomix_compiled import Layout, ZoomModel, DoublePage, PackageInfo, Scroll, ZoomAxis
 
 class MainWindow(Gtk.ApplicationWindow):
     """
@@ -58,7 +62,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__events.add_event(EventType.KB_CHANGE_ZOOM_MODE, self.change_zoom_mode)
         self.__events.add_event(EventType.KB_CHANGE_FULLSCREEN, self.change_fullscreen)
         self.__events.add_event(EventType.KB_MINIMIZE, self.minimize)
-        self.__events.add_event(EventType.KB_OPEN_DIALOG, self.open_dialog)
         self.__events.add_event(EventType.KB_EXIT, self.terminate_program)
         self.__events.add_event(EventType.KB_OPEN_PAGESELECTOR, self.page_select)
         self.__events.add_event(EventType.KB_PAGE_ROTATE, self.rotate_x)
@@ -69,6 +72,12 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__events.add_event(EventType.KB_ZOOM_OUT, self.manual_zoom_out)
         self.__events.add_event(EventType.KB_ZOOM_ORIGINAL, self.manual_zoom_original)
         self.__events.add_event(EventType.KB_CHANGE_KEEP_TRANSFORMATION, self.change_keep_transformation)
+        # Open Dialog
+        self.__events.add_event(EventType.KB_OPEN_DIALOG_ABOUT, self.open_dialog_about)
+        self.__events.add_event(EventType.KB_OPEN_DIALOG_FILECHOOSER, self.open_dialog_filechooser)
+        self.__events.add_event(EventType.KB_OPEN_DIALOG_KEYBINDINGS, self.open_dialog_keybindings)
+        self.__events.add_event(EventType.KB_OPEN_DIALOG_PREFERENCES, self.open_dialog_preferences)
+        self.__events.add_event(EventType.KB_OPEN_DIALOG_PROPERTIES, self.open_dialog_properties)
 
         # Remember last scroll destination.
         self.__last_scroll_destination = Scroll.START
@@ -530,9 +539,20 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__zoom.set_scale_up(config['STRETCH'])
         self.__events.run_events(EventType.DRAW_PAGE)
 
-    def open_dialog(self, dialog: DialogChoice):
-        dialog = DialogChooser(dialog)
-        dialog.open_dialog(self)
+    def open_dialog_about(self):
+        AboutDialog(self)
+
+    def open_dialog_filechooser(self):
+        FileChooser(self)
+
+    def open_dialog_keybindings(self):
+        KeybindingEditorDialog(self)
+
+    def open_dialog_preferences(self):
+        PreferencesDialog(self)
+
+    def open_dialog_properties(self):
+        PropertiesDialog(self)
 
     def change_keep_transformation(self):
         config['KEEP_TRANSFORMATION'] = not config['KEEP_TRANSFORMATION']

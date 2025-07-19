@@ -45,14 +45,6 @@ NB_MODULE(mcomix_compiled, m)
         .value("CONFIG", ConfigType::CONFIG)
         .value("KEYBINDINGS", ConfigType::KEYBINDINGS);
 
-    nb::enum_<DialogChoice>(m, "DialogChoice")
-        .value("ABOUT", DialogChoice::ABOUT)
-        .value("ENHANCE", DialogChoice::ENHANCE)
-        .value("FILECHOOSER", DialogChoice::FILECHOOSER)
-        .value("KEYBINDINGS", DialogChoice::KEYBINDINGS)
-        .value("PREFERENCES", DialogChoice::PREFERENCES)
-        .value("PROPERTIES", DialogChoice::PROPERTIES);
-
     nb::enum_<DoublePage>(m, "DoublePage")
         .def("__int__", [](DoublePage v) { return static_cast<std::int32_t>(v); })
         .value("NEVER", DoublePage::NEVER)

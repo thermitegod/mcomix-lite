@@ -41,7 +41,6 @@ class EventType(Enum):
     KB_ESCAPE = auto()
     KB_CHANGE_FULLSCREEN = auto()
     KB_MINIMIZE = auto()
-    KB_OPEN_DIALOG = auto()
     KB_FILE_CLOSE = auto()
     KB_FILE_TRASH = auto()
     KB_FILE_MOVE = auto()
@@ -59,7 +58,12 @@ class EventType(Enum):
     KB_ZOOM_OUT = auto()
     KB_ZOOM_ORIGINAL = auto()
     KB_CHANGE_KEEP_TRANSFORMATION = auto()
-
+    # Dialog
+    KB_OPEN_DIALOG_ABOUT = auto()
+    KB_OPEN_DIALOG_FILECHOOSER = auto()
+    KB_OPEN_DIALOG_KEYBINDINGS = auto()
+    KB_OPEN_DIALOG_PREFERENCES = auto()
+    KB_OPEN_DIALOG_PROPERTIES = auto()
 
 class Events(metaclass=SingleInstanceMetaClass):
     def __init__(self) -> None:
