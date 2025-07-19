@@ -27,16 +27,6 @@ enum class ConfigType
     KEYBINDINGS,
 };
 
-enum class DialogChoice
-{
-    ABOUT,
-    ENHANCE,
-    FILECHOOSER,
-    KEYBINDINGS,
-    PREFERENCES,
-    PROPERTIES,
-};
-
 enum class DoublePage
 {
     NEVER = 0,

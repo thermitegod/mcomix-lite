@@ -21,7 +21,7 @@ from mcomix.lib.events import Events, EventType
 from mcomix.lib.metaclass import SingleInstanceMetaClass
 from mcomix.preferences import config
 
-from mcomix_compiled import DialogChoice, ZoomModes
+from mcomix_compiled import ZoomModes
 
 
 class KeyBindingsMap(metaclass=SingleInstanceMetaClass):
@@ -415,8 +415,8 @@ class KeyBindingsMap(metaclass=SingleInstanceMetaClass):
                     KEYBINDINGS(['F1']),
                     KEY_EVENT(
                         events.run_events,
-                        EventType.KB_OPEN_DIALOG,
-                        {'dialog': DialogChoice.ABOUT},
+                        EventType.KB_OPEN_DIALOG_ABOUT,
+                        None,
                     ),
                 ),
 
@@ -467,8 +467,8 @@ class KeyBindingsMap(metaclass=SingleInstanceMetaClass):
                     KEYBINDINGS(['<Control>O']),
                     KEY_EVENT(
                         events.run_events,
-                        EventType.KB_OPEN_DIALOG,
-                        {'dialog': DialogChoice.FILECHOOSER},
+                        EventType.KB_OPEN_DIALOG_FILECHOOSER,
+                        None,
                     ),
                 ),
             'preferences':
@@ -477,8 +477,8 @@ class KeyBindingsMap(metaclass=SingleInstanceMetaClass):
                     KEYBINDINGS(['F12']),
                     KEY_EVENT(
                         events.run_events,
-                        EventType.KB_OPEN_DIALOG,
-                        {'dialog': DialogChoice.PREFERENCES},
+                        EventType.KB_OPEN_DIALOG_PREFERENCES,
+                        None,
                     ),
                 ),
             'properties':
@@ -487,8 +487,8 @@ class KeyBindingsMap(metaclass=SingleInstanceMetaClass):
                     KEYBINDINGS(['<Alt>Return']),
                     KEY_EVENT(
                         events.run_events,
-                        EventType.KB_OPEN_DIALOG,
-                        {'dialog': DialogChoice.PROPERTIES},
+                        EventType.KB_OPEN_DIALOG_PROPERTIES,
+                        None,
                     ),
                 ),
             'quit':

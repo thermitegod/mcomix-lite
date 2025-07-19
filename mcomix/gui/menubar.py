@@ -21,7 +21,7 @@ from gi.repository import Gtk
 from mcomix.gui.bookmark_menu import BookmarksMenu
 from mcomix.lib.events import Events, EventType
 
-from mcomix_compiled import DialogChoice, ZoomModes
+from mcomix_compiled import ZoomModes
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -51,11 +51,11 @@ class Menubar(Gtk.EventBox):
         menuitem_file.set_submenu(menu_file)
 
         memu_file_items = (
-            MENUBAR('Open', self._create_submenu_item, events.run_events_gui, EventType.KB_OPEN_DIALOG, {'dialog': DialogChoice.FILECHOOSER}),
+            MENUBAR('Open', self._create_submenu_item, events.run_events_gui, EventType.KB_OPEN_DIALOG_FILECHOOSER, None,),
             MENUBAR('separator', self._create_separator, None, None, None),
             MENUBAR('Save Page As', self._create_submenu_item, events.run_events_gui, EventType.KB_EXTRACT_PAGE, None),
             MENUBAR('Refresh', self._create_submenu_item, events.run_events_gui, EventType.KB_FILE_REFRESH, None),
-            MENUBAR('Properties', self._create_submenu_item, events.run_events_gui, EventType.KB_OPEN_DIALOG, {'dialog': DialogChoice.PROPERTIES}),
+            MENUBAR('Properties', self._create_submenu_item, events.run_events_gui, EventType.KB_OPEN_DIALOG_PROPERTIES, None,),
             MENUBAR('separator', self._create_separator, None, None, None),
             MENUBAR('Trash', self._create_submenu_item, events.run_events_gui, EventType.KB_FILE_TRASH, None),
             MENUBAR('separator', self._create_separator, None, None, None),
@@ -73,8 +73,8 @@ class Menubar(Gtk.EventBox):
         menuitem_edit.set_submenu(menu_edit)
 
         memu_edit_items = (
-            MENUBAR('Preference', self._create_submenu_item, events.run_events_gui, EventType.KB_OPEN_DIALOG, {'dialog': DialogChoice.PREFERENCES}),
-            MENUBAR('Keybindings', self._create_submenu_item, events.run_events_gui, EventType.KB_OPEN_DIALOG, {'dialog': DialogChoice.KEYBINDINGS}),
+            MENUBAR('Preference', self._create_submenu_item, events.run_events_gui, EventType.KB_OPEN_DIALOG_PREFERENCES, None,),
+            MENUBAR('Keybindings', self._create_submenu_item, events.run_events_gui, EventType.KB_OPEN_DIALOG_KEYBINDINGS, None,),
         )
 
         self._populate_menu(items=memu_edit_items, menu=menu_edit)
@@ -88,11 +88,11 @@ class Menubar(Gtk.EventBox):
         memu_edit_items = (
             MENUBAR('Stretch Small Images', self._create_submenu_item, events.run_events_gui, EventType.KB_CHANGE_STRETCH, None),
             MENUBAR('separator', self._create_separator, None, None, None),
-            MENUBAR('Best Fit Mode', self._create_submenu_item, events.run_events_gui, EventType.KB_CHANGE_ZOOM_MODE, {'dialog': ZoomModes.BEST}),
-            MENUBAR('Fit Width Mode', self._create_submenu_item, events.run_events_gui, EventType.KB_CHANGE_ZOOM_MODE, {'dialog': ZoomModes.WIDTH}),
-            MENUBAR('Fit Height Mode', self._create_submenu_item, events.run_events_gui, EventType.KB_CHANGE_ZOOM_MODE, {'dialog': ZoomModes.HEIGHT}),
-            MENUBAR('Fit Size Mode', self._create_submenu_item, events.run_events_gui, EventType.KB_CHANGE_ZOOM_MODE, {'dialog': ZoomModes.SIZE}),
-            MENUBAR('Manual Zoom Mode', self._create_submenu_item, events.run_events_gui, EventType.KB_CHANGE_ZOOM_MODE, {'dialog': ZoomModes.MANUAL}),
+            MENUBAR('Best Fit Mode', self._create_submenu_item, events.run_events_gui, EventType.KB_CHANGE_ZOOM_MODE, {'value': ZoomModes.BEST}),
+            MENUBAR('Fit Width Mode', self._create_submenu_item, events.run_events_gui, EventType.KB_CHANGE_ZOOM_MODE, {'value': ZoomModes.WIDTH}),
+            MENUBAR('Fit Height Mode', self._create_submenu_item, events.run_events_gui, EventType.KB_CHANGE_ZOOM_MODE, {'value': ZoomModes.HEIGHT}),
+            MENUBAR('Fit Size Mode', self._create_submenu_item, events.run_events_gui, EventType.KB_CHANGE_ZOOM_MODE, {'value': ZoomModes.SIZE}),
+            MENUBAR('Manual Zoom Mode', self._create_submenu_item, events.run_events_gui, EventType.KB_CHANGE_ZOOM_MODE, {'value': ZoomModes.MANUAL}),
         )
 
         self._populate_menu(items=memu_edit_items, menu=menu_view)
@@ -125,7 +125,7 @@ class Menubar(Gtk.EventBox):
         menuitem_help.set_submenu(menu_help)
 
         memu_help_items = (
-            MENUBAR('About', self._create_submenu_item, events.run_events_gui, EventType.KB_OPEN_DIALOG, {'dialog': DialogChoice.ABOUT}),
+            MENUBAR('About', self._create_submenu_item, events.run_events_gui, EventType.KB_OPEN_DIALOG_ABOUT, None),
         )
 
         self._populate_menu(items=memu_help_items, menu=menu_help)
