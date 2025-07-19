@@ -37,7 +37,7 @@ class ZoomModel
 
     [[nodiscard]] std::vector<std::array<std::int32_t, 2>>
     get_zoomed_size(const std::vector<std::array<std::int32_t, 2>>& image_sizes,
-                    const std::array<std::int32_t, 2>& screen_size, const std::int32_t distribution_axis,
+                    const std::array<std::int32_t, 2>& screen_size, const ZoomAxis distribution_axis,
                     const std::vector<bool>& do_not_transform) const noexcept;
 
     /**
@@ -47,7 +47,7 @@ class ZoomModel
      */
     [[nodiscard]] double preferred_scale(const std::array<std::int32_t, 2>& image_size,
                                          const std::vector<std::int32_t>& limits,
-                                         const std::int32_t distribution_axis) const noexcept;
+                                         const ZoomAxis distribution_axis) const noexcept;
 
     /**
      * Returns a list or a tuple with the i-th element set to int x if
@@ -73,7 +73,7 @@ class ZoomModel
      * :returns: A list of scales where the i-th scale belongs to the i-th box size.
      */
     [[nodiscard]] std::vector<double> scale_distributed(const std::vector<std::array<std::int32_t, 2>>& sizes,
-                                                        const std::int32_t axis, const std::int32_t max_size,
+                                                        const ZoomAxis axis, const std::int32_t max_size,
                                                         const bool allow_upscaling,
                                                         const std::vector<bool>& do_not_transform) const noexcept;
 
@@ -90,7 +90,7 @@ class ZoomModel
      * Adjusts the sizes of pages to fit the larger page in a double-page mode by scaling smaller pages.
      */
     [[nodiscard]] std::vector<std::array<std::int32_t, 2>>
-    fix_page_sizes(const std::vector<std::array<std::int32_t, 2>>& image_sizes, const std::int32_t distribution_axis,
+    fix_page_sizes(const std::vector<std::array<std::int32_t, 2>>& image_sizes, const ZoomAxis distribution_axis,
                    const std::vector<bool>& do_not_transform) const noexcept;
 
     /**
@@ -98,7 +98,7 @@ class ZoomModel
      * The size along the distribution_axis is the sum of all image sizes in that axis.
      */
     [[nodiscard]] std::array<std::int32_t, 2> union_size(const std::vector<std::array<std::int32_t, 2>>& image_sizes,
-                                                         const std::int32_t distribution_axis) const noexcept;
+                                                         const ZoomAxis distribution_axis) const noexcept;
 
   private:
     double identity_zoom_ = 1.0;

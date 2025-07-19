@@ -23,6 +23,7 @@
 #include <magic_enum/magic_enum.hpp>
 
 #include "zoom.hpp"
+#include "enums.hpp"
 
 // ZoomModel::ZoomModel(const std::shared_ptr<Settings>& settings) : settings(settings) {}
 
@@ -75,7 +76,7 @@ ZoomModel::scale(const std::array<std::int32_t, 2>& t, const double factor) cons
 
 std::vector<std::array<std::int32_t, 2>>
 ZoomModel::get_zoomed_size(const std::vector<std::array<std::int32_t, 2>>& image_sizes,
-                           const std::array<std::int32_t, 2>& screen_size, const std::int32_t distribution_axis,
+                           const std::array<std::int32_t, 2>& screen_size, const ZoomAxis distribution_axis,
                            const std::vector<bool>& do_not_transform) const noexcept
 {
     const auto fitted_image_sizes = this->fix_page_sizes(image_sizes, distribution_axis, do_not_transform);
@@ -106,7 +107,7 @@ ZoomModel::get_zoomed_size(const std::vector<std::array<std::int32_t, 2>>& image
     bool other_preferences = false;
     for (std::size_t idx = 0; idx < limits.size(); ++idx)
     {
-        if (static_cast<std::int32_t>(idx) == distribution_axis)
+        if (static_cast<std::int32_t>(idx) == magic_enum::enum_integer(distribution_axis))
         {
             continue;
         }
@@ -117,12 +118,14 @@ ZoomModel::get_zoomed_size(const std::vector<std::array<std::int32_t, 2>>& image
         }
     }
 
-    if (limits[distribution_axis] != -1 &&
-        (prescaled_union_size[distribution_axis] > screen_size[distribution_axis] || !other_preferences))
+    if (limits[static_cast<std::int32_t>(distribution_axis)] != -1 &&
+        (prescaled_union_size[static_cast<std::int32_t>(distribution_axis)] >
+             screen_size[static_cast<std::int32_t>(distribution_axis)] ||
+         !other_preferences))
     {
         auto distributed_scales = this->scale_distributed(fitted_image_sizes,
                                                           distribution_axis,
-                                                          limits[distribution_axis],
+                                                          limits[static_cast<std::int32_t>(distribution_axis)],
                                                           this->scale_up_,
                                                           do_not_transform);
         if (other_preferences)
@@ -160,12 +163,12 @@ ZoomModel::get_zoomed_size(const std::vector<std::array<std::int32_t, 2>>& image
 
 double
 ZoomModel::preferred_scale(const std::array<std::int32_t, 2>& image_size, const std::vector<std::int32_t>& limits,
-                           const std::int32_t distribution_axis) const noexcept
+                           const ZoomAxis distribution_axis) const noexcept
 {
     double min_scale = -1;
     for (std::size_t idx = 0; idx < limits.size(); ++idx)
     {
-        if (static_cast<std::int32_t>(idx) == distribution_axis)
+        if (static_cast<std::int32_t>(idx) == magic_enum::enum_integer(distribution_axis))
         {
             continue;
         }
@@ -233,7 +236,7 @@ ZoomModel::calc_limits(const std::array<std::int32_t, 2>& union_size, const std:
 }
 
 std::vector<double>
-ZoomModel::scale_distributed(const std::vector<std::array<std::int32_t, 2>>& sizes, const std::int32_t axis,
+ZoomModel::scale_distributed(const std::vector<std::array<std::int32_t, 2>>& sizes, const ZoomAxis axis,
                              const std::int32_t max_size, const bool allow_upscaling,
                              const std::vector<bool>& do_not_transform) const noexcept
 {
@@ -251,7 +254,7 @@ ZoomModel::scale_distributed(const std::vector<std::array<std::int32_t, 2>>& siz
         for (const auto& size : sizes)
         {
             // FIXME ignores do_not_transform
-            result.push_back(1.0f / size[axis]);
+            result.push_back(1.0f / size[static_cast<std::int32_t>(axis)]);
         }
         return result;
     }
@@ -259,7 +262,7 @@ ZoomModel::scale_distributed(const std::vector<std::array<std::int32_t, 2>>& siz
     std::int32_t total_axis_size = 0;
     for (const auto& size : sizes)
     {
-        total_axis_size += size[axis];
+        total_axis_size += size[static_cast<std::int32_t>(axis)];
     }
     if (total_axis_size <= max_size && !allow_upscaling)
     {
@@ -282,7 +285,7 @@ ZoomModel::scale_distributed(const std::vector<std::array<std::int32_t, 2>>& siz
         // Shortcut: If the size cannot be changed, accept the original size.
         if (do_not_transform[i])
         {
-            total_axis_size += this_size[axis];
+            total_axis_size += this_size[static_cast<std::int32_t>(axis)];
             scaling_data[i] = {this->identity_zoom_, this->identity_zoom_, 0.0f, this->identity_zoom_, 0.0f};
             continue;
         }
@@ -296,8 +299,8 @@ ZoomModel::scale_distributed(const std::vector<std::array<std::int32_t, 2>>& siz
         // later. This rescaling is necessary to ensure that the sizes in ALL
         // dimensions are monotonically scaled (with respect to local_scale).
         // A nice side effect of this is that it keeps the aspect ratio better.
-        const auto dummy_approx = this->round_nonempty({ideal[axis]})[0];
-        const auto local_scale = static_cast<double>(dummy_approx) / this_size[axis];
+        const auto dummy_approx = this->round_nonempty({ideal[static_cast<std::int32_t>(axis)]})[0];
+        const auto local_scale = static_cast<double>(dummy_approx) / this_size[static_cast<std::int32_t>(axis)];
         total_axis_size += dummy_approx;
         const bool can_be_downscaled = dummy_approx > 1;
 
@@ -306,7 +309,7 @@ ZoomModel::scale_distributed(const std::vector<std::array<std::int32_t, 2>>& siz
         if (can_be_downscaled)
         {
             const auto forced_size = dummy_approx - 1;
-            forced_scale = static_cast<double>(forced_size) / this_size[axis];
+            forced_scale = static_cast<double>(forced_size) / this_size[static_cast<std::int32_t>(axis)];
             const auto forced_approx = this->scale_image_size(this_size, forced_scale);
             forced_vol_err =
                 (std::accumulate(forced_approx.cbegin(), forced_approx.cend(), 1.0f, std::multiplies<double>()) -
@@ -396,8 +399,7 @@ ZoomModel::round_nonempty(const std::vector<double>& t) const noexcept
 }
 
 std::vector<std::array<std::int32_t, 2>>
-ZoomModel::fix_page_sizes(const std::vector<std::array<std::int32_t, 2>>& image_sizes,
-                          const std::int32_t distribution_axis,
+ZoomModel::fix_page_sizes(const std::vector<std::array<std::int32_t, 2>>& image_sizes, const ZoomAxis distribution_axis,
                           const std::vector<bool>& do_not_transform) const noexcept
 {
     if (image_sizes.size() < 2)
@@ -418,7 +420,7 @@ ZoomModel::fix_page_sizes(const std::vector<std::array<std::int32_t, 2>>& image_
     }
 
     // Use axis else of distribution_axis
-    std::vector<std::int32_t> axis_sizes = sizes[distribution_axis == 0 ? 1 : 0];
+    std::vector<std::int32_t> axis_sizes = sizes[distribution_axis == ZoomAxis::ALIGNMENT ? 1 : 0];
     //Max size of pages
     const auto max_size = *std::max_element(axis_sizes.cbegin(), axis_sizes.cend());
 
@@ -447,7 +449,7 @@ ZoomModel::fix_page_sizes(const std::vector<std::array<std::int32_t, 2>>& image_
 
 std::array<std::int32_t, 2>
 ZoomModel::union_size(const std::vector<std::array<std::int32_t, 2>>& image_sizes,
-                      const std::int32_t distribution_axis) const noexcept
+                      const ZoomAxis distribution_axis) const noexcept
 {
     if (image_sizes.empty())
     {
@@ -466,12 +468,12 @@ ZoomModel::union_size(const std::vector<std::array<std::int32_t, 2>>& image_size
                                         { return std::max<std::int32_t>(current_max, size[i]); });
     }
 
-    union_size[distribution_axis] =
+    union_size[static_cast<std::int32_t>(distribution_axis)] =
         std::accumulate(image_sizes.cbegin(),
                         image_sizes.cend(),
                         0,
                         [distribution_axis](const std::int32_t total, const std::array<std::int32_t, 2>& size)
-                        { return total + size[distribution_axis]; });
+                        { return total + size[static_cast<std::int32_t>(distribution_axis)]; });
 
     return union_size;
 }

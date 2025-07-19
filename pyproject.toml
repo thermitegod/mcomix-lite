@@ -1,20 +1,19 @@
 [project]
-name = "mcomix-lite"
-version = "3.4.0-dev"
-description = ""
-requires-python = ">=3.12"
+name = 'mcomix-lite'
+dynamic = ['version']
+description = ''
+requires-python = '>=3.12'
 
 [build-system]
 requires = [
-    "meson-python",
-    "pybind11",
+    'meson-python',
 ]
-build-backend = "mesonpy"
+build-backend = 'mesonpy'
 
 [project.scripts]
-mcomix = "mcomix.main:main"
+mcomix = 'mcomix.main:main'
 
 [tool.pytest.ini_options]
 testpaths = [
-    "tests",
+    'tests',
 ]

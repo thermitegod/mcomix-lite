@@ -21,6 +21,7 @@
 #include <cstdint>
 
 #include "box.hpp"
+#include "enums.hpp"
 
 class Layout
 {
@@ -37,8 +38,8 @@ class Layout
      * @param alignment_axis: The axis to center.
      */
     Layout(std::vector<std::array<std::int32_t, 2>> content_sizes, const std::array<std::int32_t, 2>& viewport_size,
-           const std::array<std::int32_t, 2>& orientation, const std::int32_t distribution_axis,
-           const std::int32_t alignment_axis);
+           const std::array<std::int32_t, 2>& orientation, const ZoomAxis distribution_axis,
+           const ZoomAxis alignment_axis);
 
     /**
      * Returns a new viewport position when scrolling towards a predefined destination.
@@ -51,7 +52,7 @@ class Layout
      * or SCROLL_TO_END (scroll to where the content ends in this dimension).
      * @returns: A new viewport position as specified above.
      */
-    void scroll_to_predefined(const std::array<std::int32_t, 2>& destination);
+    void scroll_to_predefined(const std::array<Scroll, 2>& destination);
 
     /**
      * Returns the Boxes as they are arranged in this layout.

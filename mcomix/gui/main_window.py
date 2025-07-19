@@ -326,14 +326,14 @@ class MainWindow(Gtk.ApplicationWindow):
         if page is None:
             page = self.image_handler.get_current_page()
 
-        if (page == 1 and
-                config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & DoublePage.AS_ONE_TITLE and
-                self.file_handler.is_archive()):
+        if (page == 1
+                and int(config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES']) & int(DoublePage.AS_ONE_TITLE)
+                and self.file_handler.is_archive()):
             return True
 
-        if (not config['DEFAULT_DOUBLE_PAGE'] or
-                not config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES'] & DoublePage.AS_ONE_WIDE or
-                self.image_handler.is_last_page(page)):
+        if (not config['DEFAULT_DOUBLE_PAGE']
+                or not int(config['VIRTUAL_DOUBLE_PAGE_FOR_FITTING_IMAGES']) & int(DoublePage.AS_ONE_WIDE)
+                or self.image_handler.is_last_page(page)):
             return False
 
         for page in (page, page + 1):
@@ -549,7 +549,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.__zoom.reset_user_zoom()
         self.__events.run_events(EventType.DRAW_PAGE)
 
-    def scroll_to_predefined(self, destination: tuple):
+    def scroll_to_predefined(self, destination: tuple[Scroll]):
         self.__layout.scroll_to_predefined(destination)
         viewport_position = self.__layout.get_viewport_box().get_position()
         self.__hadjust.set_value(viewport_position[0])  # 2D only
