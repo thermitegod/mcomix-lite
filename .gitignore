@@ -1,0 +1,12 @@
+# Meson
+build/
+build2/
+build3/
+
+# VSCode
+.vscode
+
+# test
+test/
+TEST_FILES/
+
