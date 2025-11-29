@@ -82,33 +82,21 @@ class file_handler
         return static_cast<std::size_t>(it - v.cbegin());
     }
 
-    // functions for event handler
     void extracted_file(const std::filesystem::path& filename) noexcept;
 
   private:
-    // Image handler.
     std::shared_ptr<vfs::image_handler> image_handler_;
-    // image_files image_files;
-    // Archive extractor.
     std::unique_ptr<vfs::extractor> extractor_;
-    // Provides a list of available files/archives in the open directory.
     std::unique_ptr<vfs::file_provider> file_provider_;
 
-    // Event Handler
     std::shared_ptr<config::settings> settings;
-    std::shared_ptr<gui::lib::view_state>
-        view_state; // Not used here only passed into image_handler
+    std::shared_ptr<gui::lib::view_state> view_state;
 
-    // Indicates if files/archives are currently loaded/loading.
     bool file_loaded_{false};
     bool file_loading_{false};
-    // False if current file is not an archive, or unrecognized format.
     bool is_archive_{false};
 
-    // Either path to the current archive, or first file in image list.
-    // This is B{not} the path to the currently open page.
     std::filesystem::path current_file_path_;
-
     std::filesystem::path current_file_;
     std::filesystem::path base_path_;
 

@@ -148,18 +148,13 @@ class image_handler
 
   private:
     std::shared_ptr<vfs::image_files> image_files_;
-    // Thumbnailer* thumbnailer{nullptr};
 
-    // Current page
     std::optional<page_t> current_image_ = std::nullopt;
-    // Set of images reading for decoding (i.e. already extracted)
     std::set<page_t> available_images_;
 
-    // Current displayed Pixbufs
     std::unordered_map<page_t, Glib::RefPtr<Gdk::Pixbuf>> raw_pixbufs_;
     std::unordered_map<page_t, std::array<std::int32_t, 2>> pixbufs_dimensions_;
 
-    // Event Handler
     std::shared_ptr<config::settings> settings;
     std::shared_ptr<gui::lib::view_state> view_state;
 

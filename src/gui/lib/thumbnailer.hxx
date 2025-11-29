@@ -55,7 +55,6 @@ class thumbnailer
     std::mutex mutex_;
     std::condition_variable_any cv_;
 
-    // Signals
     sigc::signal<void(page_t, Glib::RefPtr<Gdk::Pixbuf>)> signal_thumbnail_created_;
 };
 } // namespace gui::lib

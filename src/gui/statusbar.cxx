@@ -41,7 +41,6 @@ gui::statusbar::statusbar(const std::shared_ptr<config::settings>& settings,
 
     this->statusbar_.set_margin_top(5);
     this->statusbar_.set_margin_bottom(5);
-    // Bellow allow resizing the window to be smaller than the statusbar text width
     this->statusbar_.set_ellipsize(Pango::EllipsizeMode::END);
     this->statusbar_.set_hexpand(true);
     this->statusbar_.set_halign(Gtk::Align::START);
@@ -52,7 +51,6 @@ void
 gui::statusbar::set_message(const std::string_view message) noexcept
 {
     this->statusbar_.set_label(std::format("    {}", message));
-    // this->statusbar_.set_markup(std::format("    <span>{}</span>", message));
 }
 
 void

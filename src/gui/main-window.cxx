@@ -853,9 +853,6 @@ gui::main_window::draw_pages() noexcept
     Glib::signal_idle().connect([this]() { return this->_draw_pages(); }, Glib::PRIORITY_HIGH_IDLE);
 }
 
-/**
- * Internal function to handle the drawing of pages.
- */
 bool
 gui::main_window::_draw_pages() noexcept
 {
@@ -950,12 +947,12 @@ gui::main_window::_draw_pages() noexcept
                                                                         scaled_sizes[i][1],
                                                                         rotation_list[i]);
 
-        if (i == 0) // Left Page
+        if (i == 0)
         {
             this->image_left_.set_pixbuf(pixbuf_list[i]);
             this->image_left_.set_visible(true);
         }
-        else // Right Page
+        else
         {
             this->image_right_.set_pixbuf(pixbuf_list[i]);
             this->image_right_.set_visible(true);
@@ -967,7 +964,7 @@ gui::main_window::_draw_pages() noexcept
 
     this->waiting_for_redraw_ = false;
 
-    return false; // Return false to remove the idle callback
+    return false;
 }
 
 void

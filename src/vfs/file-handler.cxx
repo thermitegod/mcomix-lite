@@ -223,7 +223,6 @@ vfs::file_handler::open_archive(const std::filesystem::path& archive) noexcept
             { this->file_listed(files); });
 
         this->extractor_->list();
-        // this->extractor_->extract();
     }
     catch (const std::exception& ex)
     {

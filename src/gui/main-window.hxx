@@ -121,7 +121,6 @@ class main_window : public Gtk::ApplicationWindow
     }
 
   private:
-    // Signals
     sigc::signal<void()> signal_draw_page_;
 };
 } // namespace gui
