@@ -757,10 +757,79 @@ gui::main_window::on_open_page_extractor() noexcept
 void
 gui::main_window::on_open_filechooser() noexcept
 {
-    auto dialog = Gtk::AlertDialog::create("Not Implemented");
-    dialog->set_detail("gui::main_window::on_open_filechooser()");
+    auto filter_image = Gtk::FileFilter::create();
+    filter_image->set_name("All image files");
+    filter_image->add_mime_type("image/*");
+
+    auto filter_archive = Gtk::FileFilter::create();
+    filter_archive->set_name("All archive files");
+    // filter_archive->add_suffix("zip");
+    filter_archive->add_mime_type("application/zip");
+    filter_archive->add_mime_type("application/x-7z-compressed");
+    filter_archive->add_mime_type("application/vnd.rar");
+    filter_archive->add_mime_type("application/x-tar");
+
+    auto dialog = Gtk::FileDialog::create();
+
+    dialog->set_title("Open files");
     dialog->set_modal(true);
-    dialog->show(*this);
+
+    auto filters = Gio::ListStore<Gtk::FileFilter>::create();
+    filters->append(filter_image);
+    filters->append(filter_archive);
+
+    dialog->set_default_filter(filter_archive);
+    dialog->set_filters(filters);
+
+    const auto open_path = [this]()
+    {
+        std::filesystem::path path;
+        if (this->file_handler_->is_file_loaded())
+        {
+            if (this->file_handler_->is_archive())
+            {
+                return this->file_handler_->get_base_path().parent_path();
+            }
+            else
+            {
+                return this->file_handler_->get_base_path();
+            }
+        }
+        else
+        {
+            return vfs::user::home();
+        }
+    }();
+
+    dialog->set_initial_folder(Gio::File::create_for_path(open_path));
+
+    dialog->open_multiple(
+        *this,
+        [this, dialog](const Glib::RefPtr<Gio::AsyncResult>& result)
+        {
+            try
+            {
+                auto files = dialog->open_multiple_finish(result);
+                if (files.empty())
+                {
+                    return;
+                }
+                std::vector<std::filesystem::path> paths;
+                for (const auto& file : files)
+                {
+                    paths.push_back(file->get_path());
+                }
+                this->file_handler_->open_file_init(paths);
+            }
+            catch (const Gtk::DialogError& err)
+            {
+                logger::error<logger::gui>("Gtk::FileDialog error: {}", err.what());
+            }
+            catch (const Glib::Error& err)
+            {
+                logger::error<logger::gui>("Unexpected exception: {}", err.what());
+            }
+        });
 }
 
 void

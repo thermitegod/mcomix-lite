@@ -312,7 +312,6 @@ sources = files(
   'src/gui/dialog/about.cxx',
   'src/gui/dialog/bookmark.cxx',
   'src/gui/dialog/donate.cxx',
-  'src/gui/dialog/file.cxx',
   'src/gui/dialog/pageselect.cxx',
   'src/gui/dialog/preferences.cxx',
   'src/gui/dialog/properties.cxx',
