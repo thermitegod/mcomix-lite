@@ -42,12 +42,10 @@ class file_provider
 
     enum class open_mode : std::uint8_t
     {
-        none,
         browse,
         predefined,
     };
-
-    open_mode open_mode_ = open_mode::none;
+    open_mode open_mode_;
 
     std::vector<std::filesystem::path> files_;
     std::filesystem::path base_dir_;

@@ -46,7 +46,7 @@ vfs::file_provider::file_provider(const std::span<const std::filesystem::path> f
     }
     else
     {
-        // Predefined mode: Only open files passed from command line
+        // Predefined mode: Only open files passed from the commandline, in order passed
         this->open_mode_ = open_mode::predefined;
     }
 }
@@ -68,63 +68,52 @@ vfs::file_provider::list_files(const vfs::file_provider::file_type mode) noexcep
     auto should_accept = [](const std::filesystem::path& file,
                             const vfs::file_provider::file_type mode) -> bool
     {
-        switch (mode)
+        if (mode == vfs::file_provider::file_type::archives)
         {
-            case vfs::file_provider::file_type::archives:
-                return vfs::is_archive(file);
-            case vfs::file_provider::file_type::images:
-                return vfs::is_image(file);
-            default:
-                std::unreachable();
+            return vfs::is_archive(file);
         }
+        else if (mode == vfs::file_provider::file_type::images)
+        {
+            return vfs::is_image(file);
+        }
+        std::unreachable();
     };
 
-    std::vector<std::filesystem::path> filelist;
-
-    switch (this->open_mode_)
+    if (this->open_mode_ == open_mode::browse)
     {
-        case open_mode::browse:
-            for (const auto& dfile : std::filesystem::directory_iterator(this->base_dir_))
+        this->files_.clear();
+        for (const auto& dfile : std::filesystem::directory_iterator(this->base_dir_))
+        {
+            if (dfile.is_directory())
             {
-                if (dfile.is_directory())
-                {
-                    continue;
-                }
-
-                const auto& file = dfile.path();
-
-                if (should_accept(file, mode))
-                {
-                    filelist.push_back(file);
-                }
+                continue;
             }
-            this->files_ = filelist;
-            this->sort_files();
-            break;
-        case open_mode::predefined:
-            for (const auto& file : this->files_)
+
+            const auto& file = dfile.path();
+
+            if (should_accept(file, mode))
             {
-                if (std::filesystem::is_directory(file))
-                {
-                    continue;
-                }
-
-                if (!std::filesystem::exists(file))
-                {
-                    continue;
-                }
-
-                if (should_accept(file, mode))
-                {
-                    filelist.push_back(file);
-                }
+                this->files_.push_back(file);
             }
-            this->files_ = filelist;
-            break;
-        case open_mode::none:
-            break;
-        default:
-            std::unreachable();
+        }
+        this->sort_files();
+    }
+    else if (this->open_mode_ == open_mode::predefined)
+    {
+        std::vector<std::filesystem::path> filelist;
+        for (const auto& file : this->files_)
+        {
+            if (std::filesystem::is_directory(file))
+            {
+                continue;
+            }
+
+            if (should_accept(file, mode))
+            {
+                filelist.push_back(file);
+            }
+        }
+        this->files_ = filelist;
     }
 
     return this->files_;
