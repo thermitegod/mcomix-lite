@@ -1361,11 +1361,13 @@ gui::main_window::on_move_current_file() noexcept
     std::filesystem::rename(current_file, target, ec);
     if (ec)
     {
-        auto dialog = Gtk::AlertDialog::create("Failed To Move File!");
-        dialog->set_detail(
-            std::format("From: {}\nTo:   {}", current_file.string(), target.string()));
-        dialog->set_modal(true);
-        dialog->show(*this);
+        auto alert = Gtk::AlertDialog::create("Failed To Move File!");
+        alert->set_detail(std::format("From: {}\nTo:   {}\nReason: {}",
+                                      current_file.string(),
+                                      target.string(),
+                                      ec.message()));
+        alert->set_modal(true);
+        alert->show(*this);
     }
 }
 
