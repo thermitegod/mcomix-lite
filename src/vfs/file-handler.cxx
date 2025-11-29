@@ -270,7 +270,7 @@ vfs::file_handler::get_base_path() noexcept
     return this->base_path_;
 }
 
-const std::vector<std::filesystem::path>
+std::span<const std::filesystem::path>
 vfs::file_handler::get_file_list() noexcept
 {
     return this->file_provider_->list_files(vfs::file_provider::file_type::archives);
@@ -286,9 +286,14 @@ vfs::file_handler::get_file_number() noexcept
     }
 
     const auto files = this->get_file_list();
-    const auto current_pos = ztd::index(files, this->current_file_);
+    const auto current_index = current_file_index(files, this->current_file_);
 
-    return {static_cast<std::int32_t>(current_pos + 1), static_cast<std::int32_t>(files.size())};
+    if (!current_index)
+    {
+        return {-1, -1};
+    }
+
+    return {static_cast<std::int32_t>(*current_index + 1), static_cast<std::int32_t>(files.size())};
 }
 
 const std::filesystem::path
@@ -315,14 +320,14 @@ vfs::file_handler::open_next_archive() noexcept
         return false;
     }
 
-    const auto current_index = ztd::index(files, this->current_file_);
+    const auto current_index = current_file_index(files, this->current_file_);
 
-    if ((current_index + 1) >= files.size())
+    if (!current_index || (*current_index + 1) == files.size())
     {
         return false;
     }
 
-    const auto next_file = files.at(current_index + 1);
+    const auto next_file = files.at(*current_index + 1);
     const page_t next_page = 1;
 
     this->close();
@@ -344,14 +349,14 @@ vfs::file_handler::open_prev_archive() noexcept
         return false;
     }
 
-    const auto current_index = ztd::index(files, this->current_file_);
+    const auto current_index = current_file_index(files, this->current_file_);
 
-    if (current_index == 0)
+    if (!current_index || *current_index == 0)
     {
         return false;
     }
 
-    const auto next_file = files.at(current_index - 1);
+    const auto next_file = files.at(*current_index - 1);
     const page_t next_page = 1;
 
     this->close();

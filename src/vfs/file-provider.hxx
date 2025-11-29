@@ -35,7 +35,7 @@ class file_provider
         archives,
     };
 
-    [[nodiscard]] std::vector<std::filesystem::path> list_files(const file_type mode) noexcept;
+    [[nodiscard]] std::span<const std::filesystem::path> list_files(const file_type mode) noexcept;
 
   private:
     void sort_files() noexcept;

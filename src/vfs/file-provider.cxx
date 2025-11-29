@@ -62,7 +62,7 @@ vfs::file_provider::sort_files() noexcept
     vfs::utils::sort_alphanumeric(this->files_);
 }
 
-std::vector<std::filesystem::path>
+std::span<const std::filesystem::path>
 vfs::file_provider::list_files(const vfs::file_provider::file_type mode) noexcept
 {
     auto should_accept = [](const std::filesystem::path& file,

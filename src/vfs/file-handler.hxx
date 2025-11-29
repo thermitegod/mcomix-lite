@@ -17,6 +17,7 @@
 
 #include <filesystem>
 #include <memory>
+#include <optional>
 #include <span>
 #include <vector>
 
@@ -68,7 +69,18 @@ class file_handler
     void file_listed(const std::span<const std::filesystem::path> files) noexcept;
     [[nodiscard]] std::vector<std::filesystem::path>
     sort_archive_images(const std::span<const std::filesystem::path> files) noexcept;
-    [[nodiscard]] const std::vector<std::filesystem::path> get_file_list() noexcept;
+    [[nodiscard]] std::span<const std::filesystem::path> get_file_list() noexcept;
+
+    [[nodiscard]] static std::optional<std::size_t>
+    current_file_index(auto&& v, auto& e) noexcept
+    {
+        const auto it = std::ranges::find(v.cbegin(), v.cend(), e);
+        if (it == v.cend())
+        {
+            return std::nullopt;
+        }
+        return static_cast<std::size_t>(it - v.cbegin());
+    }
 
     // functions for event handler
     void extracted_file(const std::filesystem::path& filename) noexcept;
