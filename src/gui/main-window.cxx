@@ -38,6 +38,7 @@
 
 #include "gui/dialog/about.hxx"
 #include "gui/dialog/donate.hxx"
+#include "gui/dialog/pageselect.hxx"
 
 #include "gui/lib/image-tools.hxx"
 
@@ -77,7 +78,7 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
     app->add_action("page_prev_ff", [this]() { this->flip_page(-this->settings->page_ff_step); });
     app->add_action("page_first", [this]() { this->first_page(); });
     app->add_action("page_last", [this]() { this->last_page(); });
-    app->add_action("page_select", [this]() { this->page_select(); });
+    app->add_action("page_select", [this]() { this->on_open_page_select(); });
 
     app->add_action("archive_next",
                     [this]() { auto _ = this->file_handler_->open_next_archive(); });
@@ -790,6 +791,14 @@ gui::main_window::on_open_properties() noexcept
 }
 
 void
+gui::main_window::on_open_page_select() noexcept
+{
+    auto selector = Gtk::make_managed<gui::dialog::pageselect>(*this, this->file_handler_);
+    selector->signal_selected_page().connect([this](const std::int32_t page)
+                                             { this->set_page(page); });
+}
+
+void
 gui::main_window::on_open_about() noexcept
 {
     Gtk::make_managed<gui::dialog::about>(*this);
@@ -1186,15 +1195,6 @@ gui::main_window::last_page() noexcept
     {
         this->set_page(number_of_pages);
     }
-}
-
-void
-gui::main_window::page_select() noexcept
-{
-    auto dialog = Gtk::AlertDialog::create("Not Implemented");
-    dialog->set_detail("gui::main_window::page_select()");
-    dialog->set_modal(true);
-    dialog->show(*this);
 }
 
 void

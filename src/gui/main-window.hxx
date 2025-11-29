@@ -52,7 +52,6 @@ class main_window : public Gtk::ApplicationWindow
     bool flip_page(const page_t number_of_pages, bool single_step = false) noexcept;
     void first_page() noexcept;
     void last_page() noexcept;
-    void page_select() noexcept;
     void rotate_x(const std::int32_t rotation) noexcept;
     void change_double_page() noexcept;
     void change_manga_mode() noexcept;
@@ -82,6 +81,7 @@ class main_window : public Gtk::ApplicationWindow
     void on_open_keybindings() noexcept;
     void on_open_preferences() noexcept;
     void on_open_properties() noexcept;
+    void on_open_page_select() noexcept;
     void on_open_about() noexcept;
     void on_open_donate() noexcept;
 
