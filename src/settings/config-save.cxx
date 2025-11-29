@@ -47,7 +47,6 @@ pack_settings(const std::shared_ptr<config::settings>& settings) noexcept
     s.rotation = settings->rotation;
     s.si_units = settings->si_units;
     s.move_file = settings->move_file;
-    s.open_first_page = settings->open_first_page;
 
     s.statusbar.page_numbers = settings->statusbar.page_numbers;
     s.statusbar.file_numbers = settings->statusbar.file_numbers;

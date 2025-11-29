@@ -48,7 +48,6 @@ parse_settings(const u64 version, const config::settings& loaded,
     settings->rotation = loaded.rotation;
     settings->si_units = loaded.si_units;
     settings->move_file = loaded.move_file;
-    settings->open_first_page = loaded.open_first_page;
 
     settings->statusbar.page_numbers = loaded.statusbar.page_numbers;
     settings->statusbar.file_numbers = loaded.statusbar.file_numbers;

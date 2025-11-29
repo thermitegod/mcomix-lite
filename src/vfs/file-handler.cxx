@@ -37,13 +37,6 @@ vfs::file_handler::file_handler(const std::shared_ptr<config::settings>& setting
                                 const std::shared_ptr<gui::lib::view_state>& view_state)
     : settings(settings), view_state(view_state)
 {
-    this->update_opening_behavior();
-}
-
-void
-vfs::file_handler::update_opening_behavior() noexcept
-{
-    this->open_first_page_ = this->settings->open_first_page ? 1 : -1;
 }
 
 void
@@ -360,7 +353,7 @@ vfs::file_handler::open_prev_archive() noexcept
     }
 
     const auto next_file = files.at(current_index - 1);
-    const page_t next_page = this->open_first_page_ ? 1 : -1;
+    const page_t next_page = 1;
 
     this->close();
     this->open_file(next_file, next_page);

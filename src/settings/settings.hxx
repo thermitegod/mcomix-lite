@@ -46,7 +46,6 @@ struct settings final
     std::int32_t rotation = 0;
     bool si_units = false;
     std::string move_file = "keep";
-    bool open_first_page = true;
 
     struct statusbar
     {

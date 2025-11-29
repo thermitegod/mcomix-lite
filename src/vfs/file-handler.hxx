@@ -52,8 +52,6 @@ class file_handler
     [[nodiscard]] bool open_next_archive() noexcept;
     [[nodiscard]] bool open_prev_archive() noexcept;
 
-    void update_opening_behavior() noexcept;
-
     [[nodiscard]] std::filesystem::path current_file() noexcept;
 
     [[nodiscard]] const std::shared_ptr<vfs::image_handler>
@@ -103,7 +101,6 @@ class file_handler
     std::filesystem::path base_path_;
 
     page_t default_start_page_{1};
-    bool open_first_page_{true};
 
   public:
     [[nodiscard]] auto
