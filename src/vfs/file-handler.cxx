@@ -346,8 +346,7 @@ vfs::file_handler::open_prev_archive() noexcept
 
     const auto current_index = ztd::index(files, this->current_file_);
 
-    // ztd::reverse(files);
-    if ((current_index - 1) < 0)
+    if (current_index == 0)
     {
         return false;
     }
