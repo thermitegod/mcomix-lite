@@ -192,7 +192,7 @@ gui::main_window::setup_menubar() noexcept
         section_1->append("Open", "app.open");
 
         auto section_2 = Gio::Menu::create();
-        section_2->append("Save AS", "app.page_extract");
+        section_2->append("Save Page As", "app.page_extract");
         section_2->append("Refresh", "app.refresh");
         section_2->append("Properties", "app.properties");
 
@@ -748,10 +748,49 @@ gui::main_window::on_bookmark_manager() noexcept
 void
 gui::main_window::on_open_page_extractor() noexcept
 {
-    auto dialog = Gtk::AlertDialog::create("Not Implemented");
-    dialog->set_detail("gui::main_window::on_open_page_extractor()");
+    auto page = this->file_handler_->image_handler()->get_current_page();
+    auto path = this->file_handler_->image_handler()->image_files()->path_from_page(page);
+
+    auto dialog = Gtk::FileDialog::create();
+
+    dialog->set_title("Extract Image To");
     dialog->set_modal(true);
-    dialog->show(*this);
+    dialog->set_initial_name(path.filename());
+    dialog->set_initial_folder(Gio::File::create_for_path(vfs::user::home()));
+
+    auto slot = [this, dialog, path](const Glib::RefPtr<Gio::AsyncResult>& result)
+    {
+        try
+        {
+            auto file = dialog->save_finish(result);
+            if (!file)
+            {
+                return;
+            }
+
+            std::error_code ec;
+            std::filesystem::copy_file(path, file->get_path(), ec);
+            if (ec)
+            {
+                auto alert = Gtk::AlertDialog::create("Failed To Extract File!");
+                alert->set_detail(std::format("From: {}\nTo:   {}\nReason: {}",
+                                              path.string(),
+                                              file->get_path(),
+                                              ec.message()));
+                alert->set_modal(true);
+                alert->show(*this);
+            }
+        }
+        catch (const Gtk::DialogError& err)
+        {
+            logger::error<logger::gui>("Gtk::FileDialog error: {}", err.what());
+        }
+        catch (const Glib::Error& err)
+        {
+            logger::error<logger::gui>("Unexpected exception: {}", err.what());
+        }
+    };
+    dialog->save(*this, slot);
 }
 
 void
