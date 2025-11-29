@@ -803,33 +803,32 @@ gui::main_window::on_open_filechooser() noexcept
 
     dialog->set_initial_folder(Gio::File::create_for_path(open_path));
 
-    dialog->open_multiple(
-        *this,
-        [this, dialog](const Glib::RefPtr<Gio::AsyncResult>& result)
+    auto slot = [this, dialog](const Glib::RefPtr<Gio::AsyncResult>& result)
+    {
+        try
         {
-            try
+            auto files = dialog->open_multiple_finish(result);
+            if (files.empty())
             {
-                auto files = dialog->open_multiple_finish(result);
-                if (files.empty())
-                {
-                    return;
-                }
-                std::vector<std::filesystem::path> paths;
-                for (const auto& file : files)
-                {
-                    paths.push_back(file->get_path());
-                }
-                this->file_handler_->open_file_init(paths);
+                return;
             }
-            catch (const Gtk::DialogError& err)
+            std::vector<std::filesystem::path> paths;
+            for (const auto& file : files)
             {
-                logger::error<logger::gui>("Gtk::FileDialog error: {}", err.what());
+                paths.push_back(file->get_path());
             }
-            catch (const Glib::Error& err)
-            {
-                logger::error<logger::gui>("Unexpected exception: {}", err.what());
-            }
-        });
+            this->file_handler_->open_file_init(paths);
+        }
+        catch (const Gtk::DialogError& err)
+        {
+            logger::error<logger::gui>("Gtk::FileDialog error: {}", err.what());
+        }
+        catch (const Glib::Error& err)
+        {
+            logger::error<logger::gui>("Unexpected exception: {}", err.what());
+        }
+    };
+    dialog->open_multiple(*this, slot);
 }
 
 void
@@ -1383,36 +1382,34 @@ gui::main_window::on_trash_current_file() noexcept
     dialog->set_cancel_button(0);
     dialog->set_default_button(0);
 
-    dialog->choose(*this,
-                   [this, current_file, dialog](Glib::RefPtr<Gio::AsyncResult>& result) mutable
-                   {
-                       try
-                       {
-                           switch (const auto response = dialog->choose_finish(result))
-                           {
-                               case 0: // Cancel
-                                   break;
-                               case 1: // Confirm
-                                   this->on_trash_or_move_load_next_file();
-                                   // TODO - handle error case
-                                   (void)vfs::trash_can::trash(current_file);
-                                   break;
-                               default:
-                                   logger::warn<logger::gui>("Unexpected response: {}", response);
-                                   break;
-                           }
-                       }
-                       catch (const Gtk::DialogError& err)
-                       {
-                           logger::error<logger::gui>("Gtk::AlertDialog error: {}", err.what());
-                       }
-                       catch (const Glib::Error& err)
-                       {
-                           logger::error<logger::gui>("Unexpected exception: {}", err.what());
-                       }
-                   });
-
-    return;
+    auto slot = [this, current_file, dialog](Glib::RefPtr<Gio::AsyncResult>& result) mutable
+    {
+        try
+        {
+            switch (const auto response = dialog->choose_finish(result))
+            {
+                case 0: // Cancel
+                    break;
+                case 1: // Confirm
+                    this->on_trash_or_move_load_next_file();
+                    // TODO - handle error case
+                    (void)vfs::trash_can::trash(current_file);
+                    break;
+                default:
+                    logger::warn<logger::gui>("Unexpected response: {}", response);
+                    break;
+            }
+        }
+        catch (const Gtk::DialogError& err)
+        {
+            logger::error<logger::gui>("Gtk::AlertDialog error: {}", err.what());
+        }
+        catch (const Glib::Error& err)
+        {
+            logger::error<logger::gui>("Unexpected exception: {}", err.what());
+        }
+    };
+    dialog->choose(*this, slot);
 }
 
 void
