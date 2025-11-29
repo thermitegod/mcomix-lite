@@ -1386,18 +1386,18 @@ gui::main_window::on_trash_current_file() noexcept
     {
         try
         {
-            switch (const auto response = dialog->choose_finish(result))
-            {
-                case 0: // Cancel
-                    break;
-                case 1: // Confirm
-                    this->on_trash_or_move_load_next_file();
-                    // TODO - handle error case
-                    (void)vfs::trash_can::trash(current_file);
-                    break;
-                default:
-                    logger::warn<logger::gui>("Unexpected response: {}", response);
-                    break;
+            const auto response = dialog->choose_finish(result);
+            if (response == 1)
+            { // Confirm Button
+                this->on_trash_or_move_load_next_file();
+                auto trash_result = vfs::trash_can::trash(current_file);
+                if (!trash_result)
+                {
+                    auto alert = Gtk::AlertDialog::create("Failed To Trash File!");
+                    alert->set_detail(std::format("File: {}", current_file.string()));
+                    alert->set_modal(true);
+                    alert->show(*this);
+                }
             }
         }
         catch (const Gtk::DialogError& err)
