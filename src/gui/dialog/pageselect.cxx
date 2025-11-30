@@ -93,10 +93,8 @@ gui::dialog::pageselect::pageselect(Gtk::ApplicationWindow& parent,
     this->button_box_.append(this->button_cancel_);
     this->button_box_.append(this->button_ok_);
 
-    this->button_cancel_.signal_clicked().connect(
-        sigc::mem_fun(*this, &pageselect::on_button_cancel_clicked));
-    this->button_ok_.signal_clicked().connect(
-        sigc::mem_fun(*this, &pageselect::on_button_ok_clicked));
+    this->button_ok_.signal_clicked().connect([this]() { this->on_button_ok_clicked(); });
+    this->button_cancel_.signal_clicked().connect([this]() { this->on_button_cancel_clicked(); });
 
     this->box_.append(this->button_box_);
 

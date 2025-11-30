@@ -92,9 +92,7 @@ gui::dialog::donate::donate(Gtk::ApplicationWindow& parent)
 
     this->button_box_ = Gtk::Box(Gtk::Orientation::HORIZONTAL, 0);
     this->button_close_ = Gtk::Button("_Close", true);
-
-    this->button_close_.signal_clicked().connect(
-        sigc::mem_fun(*this, &donate::on_button_close_clicked));
+    this->button_close_.signal_clicked().connect([this]() { this->on_button_close_clicked(); });
 
     this->box_.append(this->button_box_);
     this->button_box_.set_halign(Gtk::Align::END);
