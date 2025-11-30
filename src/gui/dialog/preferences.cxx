@@ -354,6 +354,19 @@ gui::dialog::preferences::init_display_tab() noexcept
         page.add_row("Thumbnail size (pixels)", *button);
     }
 
+    page.add_section("Bookmark Manager");
+
+    {
+        auto& opt = this->settings_->bookmark_manager_fullpath;
+
+        auto button = Gtk::make_managed<Gtk::CheckButton>();
+        button->set_label("Show full bookmark path");
+        button->set_active(opt);
+        button->signal_toggled().connect([&opt]() { opt = !opt; });
+
+        page.add_row(*button);
+    }
+
     page.add_section("General");
 
     {

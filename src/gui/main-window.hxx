@@ -32,6 +32,7 @@
 
 #include "gui/lib/view-state.hxx"
 
+#include "vfs/bookmarks.hxx"
 #include "vfs/file-handler.hxx"
 
 #include "types.hxx"
@@ -96,6 +97,8 @@ class main_window : public Gtk::ApplicationWindow
 
     std::shared_ptr<vfs::file_handler> file_handler_ =
         std::make_shared<vfs::file_handler>(this->settings, this->view_state);
+
+    std::shared_ptr<vfs::bookmarks> bookmarks_ = std::make_shared<vfs::bookmarks>();
 
     bool waiting_for_redraw_{false};
 

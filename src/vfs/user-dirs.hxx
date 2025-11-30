@@ -121,6 +121,13 @@ namespace vfs::program
 [[nodiscard]] std::filesystem::path config() noexcept;
 
 /**
+ * @brief Programs data directory
+ *
+ * @return The Programs data directory.
+ */
+[[nodiscard]] std::filesystem::path data() noexcept;
+
+/**
  * @brief Programs tmp directory
  *
  * @return The Programs tmp directory.

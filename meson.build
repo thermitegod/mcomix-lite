@@ -310,7 +310,7 @@ sources = files(
   'src/gui/thumbbar.cxx',
 
   'src/gui/dialog/about.cxx',
-  'src/gui/dialog/bookmark.cxx',
+  'src/gui/dialog/bookmarks.cxx',
   'src/gui/dialog/donate.cxx',
   'src/gui/dialog/pageselect.cxx',
   'src/gui/dialog/preferences.cxx',
@@ -320,6 +320,7 @@ sources = files(
   'src/gui/lib/thumbnailer.cxx',
   'src/gui/lib/view-state.cxx',
 
+  'src/vfs/bookmarks.cxx',
   'src/vfs/error.cxx',
   'src/vfs/extractor.cxx',
   'src/vfs/file-handler.cxx',

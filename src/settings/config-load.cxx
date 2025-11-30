@@ -47,6 +47,8 @@ parse_settings(const u64 version, const config::settings& loaded,
     settings->si_units = loaded.si_units;
     settings->move_file = loaded.move_file;
 
+    settings->bookmark_manager_fullpath = loaded.bookmark_manager_fullpath;
+
     settings->hide_thumbar = loaded.hide_thumbar;
     settings->hide_menubar = loaded.hide_menubar;
     settings->hide_statusbar = loaded.hide_statusbar;

@@ -13,6 +13,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <chrono>
 #include <filesystem>
 #include <format>
 #include <optional>
@@ -37,6 +38,7 @@
 #include "gui/thumbbar.hxx"
 
 #include "gui/dialog/about.hxx"
+#include "gui/dialog/bookmarks.hxx"
 #include "gui/dialog/donate.hxx"
 #include "gui/dialog/pageselect.hxx"
 #include "gui/dialog/preferences.hxx"
@@ -62,6 +64,24 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
     this->set_visible(true);
 
     config::load(vfs::program::config(), this->settings);
+
+    this->bookmarks_->signal_load_error().connect(
+        [this](std::string msg)
+        {
+            auto dialog = Gtk::AlertDialog::create("Bookmark Load Error");
+            dialog->set_detail(msg);
+            dialog->set_modal(true);
+            dialog->show(*this);
+        });
+    this->bookmarks_->signal_save_error().connect(
+        [this](std::string msg)
+        {
+            auto dialog = Gtk::AlertDialog::create("Bookmark Save Error");
+            dialog->set_detail(msg);
+            dialog->set_modal(true);
+            dialog->show(*this);
+        });
+    this->bookmarks_->load();
 
     this->file_handler_->signal_file_opened().connect([this]() { this->on_file_opened(); });
     this->file_handler_->signal_file_closed().connect([this]() { this->on_file_closed(); });
@@ -764,19 +784,21 @@ gui::main_window::add_shortcuts() noexcept
 void
 gui::main_window::on_bookmark_add() noexcept
 {
-    auto dialog = Gtk::AlertDialog::create("Not Implemented");
-    dialog->set_detail("gui::main_window::on_bookmark_add()");
-    dialog->set_modal(true);
-    dialog->show(*this);
+    const auto image_handler = this->file_handler_->image_handler();
+
+    this->bookmarks_->add({this->file_handler_->get_real_path(),
+                           image_handler->get_current_page(),
+                           image_handler->get_number_of_pages(),
+                           std::chrono::system_clock::to_time_t(std::chrono::system_clock::now())});
 }
 
 void
 gui::main_window::on_bookmark_manager() noexcept
 {
-    auto dialog = Gtk::AlertDialog::create("Not Implemented");
-    dialog->set_detail("gui::main_window::on_bookmark_manager()");
-    dialog->set_modal(true);
-    dialog->show(*this);
+    Gtk::make_managed<gui::dialog::bookmarks>(*this,
+                                              this->file_handler_,
+                                              this->bookmarks_,
+                                              this->settings);
 }
 
 void

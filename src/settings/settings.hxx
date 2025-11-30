@@ -45,6 +45,8 @@ struct settings final
     bool si_units = false;
     std::string move_file = "keep";
 
+    bool bookmark_manager_fullpath = true;
+
     bool hide_thumbar = false;
     bool hide_menubar = false;
     bool hide_statusbar = false;

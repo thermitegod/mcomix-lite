@@ -46,6 +46,8 @@ pack_settings(const std::shared_ptr<config::settings>& settings) noexcept
     s.si_units = settings->si_units;
     s.move_file = settings->move_file;
 
+    s.bookmark_manager_fullpath = settings->bookmark_manager_fullpath;
+
     s.hide_thumbar = settings->hide_thumbar;
     s.hide_menubar = settings->hide_menubar;
     s.hide_statusbar = settings->hide_statusbar;
