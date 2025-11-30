@@ -31,6 +31,19 @@ vfs::utils::file_size(const std::filesystem::path& path, const bool use_si_units
     return ztd::format_filesize(file_size, use_si_units ? ztd::base::si : ztd::base::iec);
 }
 
+std::string
+vfs::utils::file_size(u64 size_in_bytes, const bool use_si_units) noexcept
+{
+    if (use_si_units)
+    {
+        return ztd::format_filesize(size_in_bytes, ztd::base::si);
+    }
+    else
+    {
+        return ztd::format_filesize(size_in_bytes, ztd::base::iec);
+    }
+}
+
 std::array<std::string, 2>
 vfs::utils::filename_stem_and_extension(const std::filesystem::path& filename) noexcept
 {

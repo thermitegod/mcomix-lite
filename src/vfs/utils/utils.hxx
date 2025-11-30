@@ -25,6 +25,8 @@ namespace vfs::utils
 [[nodiscard]] std::string file_size(const std::filesystem::path& path,
                                     const bool use_si_units) noexcept;
 
+[[nodiscard]] std::string file_size(u64 size_in_bytes, const bool use_si_units) noexcept;
+
 /**
  * Split a filename into its stem and extension,
  * unlike using std::filesystem::path::stem/std::filesystem::path::extension

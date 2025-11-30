@@ -40,6 +40,7 @@
 #include "gui/dialog/donate.hxx"
 #include "gui/dialog/pageselect.hxx"
 #include "gui/dialog/preferences.hxx"
+#include "gui/dialog/properties.hxx"
 
 #include "gui/lib/image-tools.hxx"
 
@@ -929,10 +930,10 @@ gui::main_window::on_open_preferences() noexcept
 void
 gui::main_window::on_open_properties() noexcept
 {
-    auto dialog = Gtk::AlertDialog::create("Not Implemented");
-    dialog->set_detail("gui::main_window::on_open_properties()");
-    dialog->set_modal(true);
-    dialog->show(*this);
+    Gtk::make_managed<gui::dialog::properties>(*this,
+                                               this->file_handler_,
+                                               this->view_state,
+                                               this->settings);
 }
 
 void

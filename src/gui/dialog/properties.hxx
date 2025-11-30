@@ -14,3 +14,43 @@
  */
 
 #pragma once
+
+#include <filesystem>
+#include <memory>
+
+#include <gtkmm.h>
+
+#include "vfs/file-handler.hxx"
+
+namespace gui::dialog
+{
+class properties : public Gtk::ApplicationWindow
+{
+  public:
+    properties(Gtk::ApplicationWindow& parent,
+               const std::shared_ptr<vfs::file_handler>& file_handler,
+               const std::shared_ptr<gui::lib::view_state>& view_state,
+               const std::shared_ptr<config::settings>& settings);
+
+  private:
+    bool on_key_press(std::uint32_t keyval, std::uint32_t keycode,
+                      Gdk::ModifierType state) noexcept;
+    void on_button_close_clicked() noexcept;
+
+    void init_archive_tab() noexcept;
+    void init_image_tab(const page_t page, std::string_view label) noexcept;
+
+    std::vector<std::array<std::string, 2>>
+    secondary_info(const std::filesystem::path& path) noexcept;
+
+    Gtk::Box box_;
+    Gtk::Notebook notebook_;
+
+    Gtk::Box button_box_;
+    Gtk::Button button_close_;
+
+    std::shared_ptr<vfs::file_handler> file_handler_;
+    std::shared_ptr<gui::lib::view_state> view_state_;
+    std::shared_ptr<config::settings> settings_;
+};
+} // namespace gui::dialog
