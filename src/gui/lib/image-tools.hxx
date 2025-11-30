@@ -116,4 +116,7 @@ fit_pixbuf_to_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf, std::int32_t wi
  */
 [[nodiscard]] Glib::RefPtr<Gdk::Pixbuf> create_thumbnail(const std::filesystem::path& path,
                                                          std::int32_t size) noexcept;
+
+[[nodiscard]] Glib::RefPtr<Gdk::Pixbuf> create_thumbnail(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf,
+                                                         std::int32_t size) noexcept;
 } // namespace gui::lib::image_tools

@@ -17,6 +17,7 @@
 #include <filesystem>
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include <cassert>
@@ -47,38 +48,42 @@ vfs::image_handler::image_files() const noexcept
     return this->image_files_;
 }
 
-std::vector<Glib::RefPtr<Gdk::Pixbuf>>
-vfs::image_handler::get_pixbufs(const std::int32_t number_of_bufs) noexcept
+Glib::RefPtr<Gdk::Pixbuf>
+vfs::image_handler::get_pixbuf(const page_t page) noexcept
 {
-    assert(number_of_bufs >= 1);
-    assert(number_of_bufs <= 2);
-
-    this->raw_pixbufs_.clear();
-
-    std::vector<Glib::RefPtr<Gdk::Pixbuf>> pixbufs;
-    for (auto i = 0; i < number_of_bufs; ++i)
+    if (this->raw_pixbufs_.contains(page))
     {
-        auto page = *this->current_image_ + i;
-
-        const auto page_path = this->image_files_->path_from_page(page);
-        // logger::debug<logger::vfs>("reading page {} from disk: '{}'", page, page_path.string());
-        Glib::RefPtr<Gdk::Pixbuf> pixbuf;
-        try
-        {
-            pixbuf = gui::lib::image_tools::load_pixbuf(page_path);
-            assert(pixbuf != nullptr);
-        }
-        catch (const std::exception& ex)
-        {
-            logger::error<logger::vfs>("Could not load pixbuf for page: {}", page);
-            logger::debug<logger::vfs>("{}", ex.what());
-            pixbuf.reset();
-        }
-        this->raw_pixbufs_.insert({page, pixbuf});
-
-        pixbufs.push_back(pixbuf);
+        // logger::trace<logger::vfs>("pixbuf for page {} in cache", page);
+        return this->raw_pixbufs_[page];
     }
-    return pixbufs;
+
+    const auto path = this->image_files_->path_from_page(page);
+
+    // logger::trace<logger::vfs>("reading page {} from disk: '{}'", page, path.string());
+    auto pixbuf = gui::lib::image_tools::load_pixbuf(path);
+    if (!pixbuf)
+    {
+        return nullptr;
+    }
+
+    this->raw_pixbufs_.insert({page, pixbuf});
+    // logger::trace<logger::vfs>("pixbuf cache new size {}", this->raw_pixbufs_.size());
+    return this->raw_pixbufs_[page];
+}
+
+std::vector<Glib::RefPtr<Gdk::Pixbuf>>
+vfs::image_handler::get_pixbufs(const std::int32_t number) noexcept
+{
+    if (number == 1)
+    {
+        return {vfs::image_handler::get_pixbuf(*this->current_image_)};
+    }
+    else if (number == 2)
+    {
+        return {vfs::image_handler::get_pixbuf(*this->current_image_),
+                vfs::image_handler::get_pixbuf(*this->current_image_ + 1)};
+    }
+    std::unreachable();
 }
 
 void
@@ -217,28 +222,30 @@ vfs::image_handler::get_page_filesize(const std::optional<page_t> query) const n
 }
 
 std::array<std::int32_t, 2>
-vfs::image_handler::get_page_size(const std::optional<page_t> query) const noexcept
+vfs::image_handler::get_page_size(const std::optional<page_t> query) noexcept
 {
     const auto page = query.value_or(this->get_current_page());
 
-    if (!this->is_page_available(page))
+    if (this->pixbufs_dimensions_.contains(page))
     {
-        return {0, 0};
+        return this->pixbufs_dimensions_.at(page);
     }
 
-    if (this->raw_pixbufs_.contains(page))
+    std::array<std::int32_t, 2> dimensions = {0, 0};
+
+    if (!this->is_page_available(page))
     {
-        auto pixbuf = this->raw_pixbufs_.at(page);
-        return {pixbuf->get_width(), pixbuf->get_height()};
+        return dimensions;
     }
-    else
+
+    auto pixbuf = this->get_pixbuf(page);
+    if (!pixbuf)
     {
-        // logger::warn<logger::vfs>("pixbuf for page {} not in cache", page);
-        // return {0, 0};
-        auto path = this->image_files_->path_from_page(page);
-        auto pixbuf = gui::lib::image_tools::load_pixbuf(path);
-        return {pixbuf->get_width(), pixbuf->get_height()};
+        return dimensions;
     }
+
+    this->pixbufs_dimensions_[page] = {pixbuf->get_width(), pixbuf->get_height()};
+    return this->pixbufs_dimensions_[page];
 }
 
 std::string
@@ -251,15 +258,14 @@ vfs::image_handler::get_mime_name(const std::optional<page_t> query) const noexc
 }
 
 Glib::RefPtr<Gdk::Pixbuf>
-vfs::image_handler::get_thumbnail(const page_t page, const std::int32_t size) const noexcept
+vfs::image_handler::get_thumbnail(const page_t page, const std::int32_t size) noexcept
 {
     if (!this->is_page_extracted(page))
     {
         return nullptr;
     }
 
-    const auto path = this->get_path_to_page(page);
-    return gui::lib::image_tools::create_thumbnail(path, size);
+    return gui::lib::image_tools::create_thumbnail(this->get_pixbuf(page), size);
 }
 
 bool

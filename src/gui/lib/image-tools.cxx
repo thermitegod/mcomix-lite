@@ -188,6 +188,13 @@ gui::lib::image_tools::create_thumbnail(const std::filesystem::path& path,
         return nullptr;
     }
 
+    return create_thumbnail(pixbuf, size);
+}
+
+[[nodiscard]] Glib::RefPtr<Gdk::Pixbuf>
+gui::lib::image_tools::create_thumbnail(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf,
+                                        std::int32_t size) noexcept
+{
     const auto original_width = pixbuf->get_width();
     const auto original_height = pixbuf->get_height();
 
@@ -205,8 +212,5 @@ gui::lib::image_tools::create_thumbnail(const std::filesystem::path& path,
         width = static_cast<std::int32_t>(size * aspect_ratio);
     }
 
-    pixbuf = fit_pixbuf_to_rectangle(pixbuf, width, height);
-    pixbuf = add_border_pixbuf(pixbuf);
-
-    return pixbuf;
+    return add_border_pixbuf(fit_pixbuf_to_rectangle(pixbuf, width, height));
 }

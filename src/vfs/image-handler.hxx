@@ -57,7 +57,7 @@ class image_handler
      * currently displayed.
      */
     [[nodiscard]] std::vector<Glib::RefPtr<Gdk::Pixbuf>>
-    get_pixbufs(const std::int32_t number_of_bufs) noexcept;
+    get_pixbufs(const std::int32_t number) noexcept;
 
     /**
      * Set up file handler to the page <page>.
@@ -123,7 +123,7 @@ class image_handler
      * If <page> is std::nullopt, return the size of the current page.
      */
     [[nodiscard]] std::array<std::int32_t, 2>
-    get_page_size(const std::optional<page_t> query = std::nullopt) const noexcept;
+    get_page_size(const std::optional<page_t> query = std::nullopt) noexcept;
 
     /**
      * Return a string with the name of the mime type of <page>.
@@ -139,7 +139,7 @@ class image_handler
      * If <nowait> is True, don't wait for <page> to be available.
      */
     [[nodiscard]] Glib::RefPtr<Gdk::Pixbuf> get_thumbnail(const page_t page,
-                                                          const std::int32_t size) const noexcept;
+                                                          const std::int32_t size) noexcept;
 
     /**
      * Checks if the specified page has been extracted.
@@ -147,6 +147,8 @@ class image_handler
     [[nodiscard]] bool is_page_extracted(const std::optional<page_t> query) const noexcept;
 
   private:
+    [[nodiscard]] Glib::RefPtr<Gdk::Pixbuf> get_pixbuf(const page_t page) noexcept;
+
     std::shared_ptr<vfs::image_files> image_files_;
 
     std::optional<page_t> current_image_ = std::nullopt;
