@@ -10,7 +10,7 @@ project(
         'prefix=/usr',
         'sysconfdir=/etc',
     ],
-    meson_version : '>= 1.9.0'
+    meson_version : '>= 1.7.0'
 )
 
 build_root = meson.project_build_root()
