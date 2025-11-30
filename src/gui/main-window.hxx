@@ -91,11 +91,10 @@ class main_window : public Gtk::ApplicationWindow
 
     std::array<std::int32_t, 2> get_visible_area_size() noexcept;
 
-    const std::shared_ptr<config::settings> settings = std::make_shared<config::settings>();
-    const std::shared_ptr<gui::lib::view_state> view_state =
-        std::make_shared<gui::lib::view_state>();
+    std::shared_ptr<config::settings> settings = std::make_shared<config::settings>();
+    std::shared_ptr<gui::lib::view_state> view_state = std::make_shared<gui::lib::view_state>();
 
-    const std::shared_ptr<vfs::file_handler> file_handler_ =
+    std::shared_ptr<vfs::file_handler> file_handler_ =
         std::make_shared<vfs::file_handler>(this->settings, this->view_state);
 
     bool waiting_for_redraw_{false};

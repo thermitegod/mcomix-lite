@@ -39,6 +39,7 @@
 #include "gui/dialog/about.hxx"
 #include "gui/dialog/donate.hxx"
 #include "gui/dialog/pageselect.hxx"
+#include "gui/dialog/preferences.hxx"
 
 #include "gui/lib/image-tools.hxx"
 
@@ -914,10 +915,15 @@ gui::main_window::on_open_keybindings() noexcept
 void
 gui::main_window::on_open_preferences() noexcept
 {
-    auto dialog = Gtk::AlertDialog::create("Not Implemented");
-    dialog->set_detail("gui::main_window::on_open_preferences()");
-    dialog->set_modal(true);
-    dialog->show(*this);
+    auto dialog = Gtk::make_managed<gui::dialog::preferences>(*this, this->settings);
+    dialog->signal_destroy().connect(
+        [this]()
+        {
+            auto alert = Gtk::AlertDialog::create("Restart To Apply Settings");
+            alert->set_detail("You may need to restart to apply some settings");
+            alert->set_modal(true);
+            alert->show(*this);
+        });
 }
 
 void

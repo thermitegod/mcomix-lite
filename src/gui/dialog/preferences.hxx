@@ -14,3 +14,58 @@
  */
 
 #pragma once
+
+#include <string_view>
+
+#include <gtkmm.h>
+
+#include "settings/settings.hxx"
+
+namespace gui::dialog
+{
+class preferences : public Gtk::ApplicationWindow
+{
+  public:
+    preferences(Gtk::ApplicationWindow& parent, const std::shared_ptr<config::settings>& settings);
+
+  private:
+    class ListColumns : public Glib::Object
+    {
+      public:
+        std::string entry_;
+        std::uint32_t value_;
+
+        static Glib::RefPtr<ListColumns>
+        create(const std::string_view entry, const std::uint32_t value)
+        {
+            return Glib::make_refptr_for_instance<ListColumns>(new ListColumns(entry, value));
+        }
+
+      protected:
+        ListColumns(const std::string_view entry, const std::uint32_t value)
+            : entry_(entry), value_(value)
+        {
+        }
+    };
+
+    bool on_key_press(std::uint32_t keyval, std::uint32_t keycode,
+                      Gdk::ModifierType state) noexcept;
+    void on_button_close_clicked() noexcept;
+
+    void init_behaviour_tab() noexcept;
+    void init_display_tab() noexcept;
+    void init_statusbar_tab() noexcept;
+    void init_advanced_tab() noexcept;
+
+    void setup_listitem(const Glib::RefPtr<Gtk::ListItem>& list_item) noexcept;
+    void bind_listitem(const Glib::RefPtr<Gtk::ListItem>& list_item) noexcept;
+
+    Gtk::Box box_;
+    Gtk::Notebook notebook_;
+
+    Gtk::Box button_box_;
+    Gtk::Button button_close_;
+
+    std::shared_ptr<config::settings> settings_;
+};
+} // namespace gui::dialog

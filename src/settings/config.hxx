@@ -16,9 +16,6 @@
 #pragma once
 
 #include <filesystem>
-#include <map>
-#include <string>
-#include <string_view>
 
 #include <ztd/ztd.hxx>
 
@@ -41,6 +38,6 @@ const std::filesystem::path filename{"config.json"};
 
 namespace disk_format
 {
-constexpr u64 version{1}; // 1.0.0
+constexpr u64 version = 1_u64; // 1.0.0
 } // namespace disk_format
 } // namespace config
