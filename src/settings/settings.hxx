@@ -34,8 +34,6 @@ enum double_page
 struct settings final
 {
     bool default_double_page = true;
-    bool fullscreen_hide_menubar = true;
-    bool fullscreen_hide_statusbar = true;
     bool default_manga_mode = true;
     page_t page_ff_step = 10;
     double_page virtual_double_page_for_fitting_images = double_page::always;
@@ -46,6 +44,17 @@ struct settings final
     std::int32_t rotation = 0;
     bool si_units = false;
     std::string move_file = "keep";
+
+    bool hide_thumbar = false;
+    bool hide_menubar = false;
+    bool hide_statusbar = false;
+
+    struct fullscreen
+    {
+        bool hide_thumbar = false;
+        bool hide_menubar = true;
+        bool hide_statusbar = true;
+    } fullscreen;
 
     struct statusbar
     {

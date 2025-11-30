@@ -35,8 +35,6 @@ pack_settings(const std::shared_ptr<config::settings>& settings) noexcept
 
     // clang-format off
     s.default_double_page = settings->default_double_page;
-    s.fullscreen_hide_menubar = settings->fullscreen_hide_menubar;
-    s.fullscreen_hide_statusbar = settings->fullscreen_hide_statusbar;
     s.default_manga_mode = settings->default_manga_mode;
     s.page_ff_step = settings->page_ff_step;
     s.virtual_double_page_for_fitting_images = settings->virtual_double_page_for_fitting_images;
@@ -47,6 +45,14 @@ pack_settings(const std::shared_ptr<config::settings>& settings) noexcept
     s.rotation = settings->rotation;
     s.si_units = settings->si_units;
     s.move_file = settings->move_file;
+
+    s.hide_thumbar = settings->hide_thumbar;
+    s.hide_menubar = settings->hide_menubar;
+    s.hide_statusbar = settings->hide_statusbar;
+
+    s.fullscreen.hide_thumbar = settings->fullscreen.hide_thumbar;
+    s.fullscreen.hide_menubar = settings->fullscreen.hide_menubar;
+    s.fullscreen.hide_statusbar = settings->fullscreen.hide_statusbar;
 
     s.statusbar.page_numbers = settings->statusbar.page_numbers;
     s.statusbar.file_numbers = settings->statusbar.file_numbers;

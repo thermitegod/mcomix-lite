@@ -36,8 +36,6 @@ parse_settings(const u64 version, const config::settings& loaded,
 
     // clang-format off
     settings->default_double_page = loaded.default_double_page;
-    settings->fullscreen_hide_menubar = loaded.fullscreen_hide_menubar;
-    settings->fullscreen_hide_statusbar = loaded.fullscreen_hide_statusbar;
     settings->default_manga_mode = loaded.default_manga_mode;
     settings->page_ff_step = loaded.page_ff_step;
     settings->virtual_double_page_for_fitting_images = loaded.virtual_double_page_for_fitting_images;
@@ -48,6 +46,14 @@ parse_settings(const u64 version, const config::settings& loaded,
     settings->rotation = loaded.rotation;
     settings->si_units = loaded.si_units;
     settings->move_file = loaded.move_file;
+
+    settings->hide_thumbar = loaded.hide_thumbar;
+    settings->hide_menubar = loaded.hide_menubar;
+    settings->hide_statusbar = loaded.hide_statusbar;
+
+    settings->fullscreen.hide_thumbar = loaded.fullscreen.hide_thumbar;
+    settings->fullscreen.hide_menubar = loaded.fullscreen.hide_menubar;
+    settings->fullscreen.hide_statusbar = loaded.fullscreen.hide_statusbar;
 
     settings->statusbar.page_numbers = loaded.statusbar.page_numbers;
     settings->statusbar.file_numbers = loaded.statusbar.file_numbers;

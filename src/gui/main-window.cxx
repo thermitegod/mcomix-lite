@@ -95,6 +95,24 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
     app->add_action("view_double", [this]() { this->change_double_page(); });
     app->add_action("view_manga", [this]() { this->change_manga_mode(); });
 
+    app->add_action("toggle_thumbar",
+                    [this]()
+                    {
+                        this->settings->hide_thumbar = !this->settings->hide_thumbar;
+                        this->thumb_sidebar_.set_visible(!this->settings->hide_thumbar);
+                    });
+    app->add_action("toggle_menubar",
+                    [this]()
+                    {
+                        this->settings->hide_menubar = !this->settings->hide_menubar;
+                        this->menubar_.set_visible(!this->settings->hide_menubar);
+                    });
+    app->add_action("toggle_statusbar",
+                    [this]()
+                    {
+                        this->settings->hide_statusbar = !this->settings->hide_statusbar;
+                        this->statusbar_.set_visible(!this->settings->hide_statusbar);
+                    });
     app->add_action("page_center_space", [this]() { this->toggle_page_padding(); });
 
     app->add_action("escape", [this]() { this->on_escape_event(); });
@@ -164,7 +182,18 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
     this->image_box_.append(this->image_left_);
     this->image_box_.append(this->image_right_);
 
-    this->set_visible(true);
+    if (this->settings->hide_thumbar)
+    {
+        this->thumb_sidebar_.set_visible(false);
+    }
+    if (this->settings->hide_statusbar)
+    {
+        this->statusbar_.set_visible(false);
+    }
+    if (this->settings->hide_menubar)
+    {
+        this->menubar_.set_visible(false);
+    }
 
     // Use idle signal to start filehandler otherwise the
     // window will not get displayed until after open_file_init()
@@ -221,6 +250,9 @@ gui::main_window::setup_menubar() noexcept
 
     { // "View"
         auto view_menu = Gio::Menu::create();
+        view_menu->append("Toggle Thumbnail Sidebar", "app.toggle_thumbar");
+        view_menu->append("Toggle Menubar", "app.toggle_menubar");
+        view_menu->append("Toggle Statusbar", "app.toggle_statusbar");
         view_menu->append("Toggle Center Spacing", "app.page_center_space");
         menu->append_submenu("View", view_menu);
     }
@@ -974,7 +1006,10 @@ gui::main_window::_draw_pages() noexcept
         return false;
     }
 
-    this->thumb_sidebar_.set_visible(true);
+    if (!this->settings->hide_thumbar)
+    {
+        this->thumb_sidebar_.set_visible(true);
+    }
 
     if (!image_handler->is_page_available())
     {
@@ -1163,7 +1198,11 @@ void
 gui::main_window::on_file_opened() noexcept
 {
     this->displayed_double();
-    this->thumb_sidebar_.set_visible(true);
+
+    if (!this->settings->hide_thumbar)
+    {
+        this->thumb_sidebar_.set_visible(true);
+    }
 
     if (this->settings->statusbar.archive_filename_fullpath)
     {
@@ -1339,19 +1378,32 @@ gui::main_window::change_fullscreen() noexcept
     {
         this->unfullscreen();
 
-        // menu/status can only be hidden in fullscreen
-        this->statusbar_.set_visible(true);
-        this->menubar_.set_visible(true);
+        if (this->settings->fullscreen.hide_thumbar && !this->settings->hide_thumbar)
+        {
+            this->thumb_sidebar_.set_visible(true);
+        }
+        if (this->settings->fullscreen.hide_statusbar && !this->settings->hide_statusbar)
+        {
+            this->statusbar_.set_visible(true);
+        }
+        if (this->settings->fullscreen.hide_menubar && !this->settings->hide_menubar)
+        {
+            this->menubar_.set_visible(true);
+        }
     }
     else
     {
         this->fullscreen();
 
-        if (this->settings->fullscreen_hide_statusbar)
+        if (this->settings->fullscreen.hide_thumbar || this->settings->hide_thumbar)
+        {
+            this->thumb_sidebar_.set_visible(false);
+        }
+        if (this->settings->fullscreen.hide_statusbar || this->settings->hide_statusbar)
         {
             this->statusbar_.set_visible(false);
         }
-        if (this->settings->fullscreen_hide_menubar)
+        if (this->settings->fullscreen.hide_menubar || this->settings->hide_menubar)
         {
             this->menubar_.set_visible(false);
         }
