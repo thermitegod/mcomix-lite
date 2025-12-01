@@ -45,6 +45,9 @@ struct settings final
     bool si_units = false;
     std::string move_file = "keep";
 
+    std::int32_t cache_forward = 5;
+    std::int32_t cache_behind = 5;
+
     bool bookmark_manager_fullpath = true;
 
     bool hide_thumbar = false;

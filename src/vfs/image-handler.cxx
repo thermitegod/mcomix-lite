@@ -48,6 +48,23 @@ vfs::image_handler::image_files() const noexcept
     return this->image_files_;
 }
 
+void
+vfs::image_handler::prune() noexcept
+{
+    const auto keep_start =
+        std::max<std::int32_t>(*this->current_image_ - this->settings->cache_behind, 0);
+    const auto keep_end =
+        std::min<std::int32_t>(*this->current_image_ + this->settings->cache_forward,
+                               this->get_number_of_pages());
+
+    std::erase_if(this->raw_pixbufs_,
+                  [keep_start, keep_end](const auto& entry)
+                  {
+                      const auto key = entry.first;
+                      return (key < keep_start || key > keep_end);
+                  });
+}
+
 Glib::RefPtr<Gdk::Pixbuf>
 vfs::image_handler::get_pixbuf(const page_t page) noexcept
 {
@@ -56,6 +73,8 @@ vfs::image_handler::get_pixbuf(const page_t page) noexcept
         // logger::trace<logger::vfs>("pixbuf for page {} in cache", page);
         return this->raw_pixbufs_[page];
     }
+
+    this->prune();
 
     const auto path = this->image_files_->path_from_page(page);
 

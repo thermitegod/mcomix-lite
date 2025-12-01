@@ -558,6 +558,40 @@ gui::dialog::preferences::init_advanced_tab() noexcept
 {
     auto page = PreferencePage();
 
+    page.add_section("Page Cache");
+
+    {
+        auto& opt = this->settings_->cache_behind;
+
+        auto adjust = Gtk::Adjustment::create(opt, 1, 100);
+        adjust->set_step_increment(1);
+        adjust->set_page_increment(1);
+        adjust->signal_value_changed().connect(
+            [&opt, adjust]() { opt = static_cast<std::int32_t>(adjust->get_value()); });
+
+        auto button = Gtk::make_managed<Gtk::SpinButton>();
+        button->set_value(opt);
+        button->set_adjustment(adjust);
+
+        page.add_row("Pages to cache behind", *button);
+    }
+
+    {
+        auto& opt = this->settings_->cache_forward;
+
+        auto adjust = Gtk::Adjustment::create(opt, 1, 100);
+        adjust->set_step_increment(1);
+        adjust->set_page_increment(1);
+        adjust->signal_value_changed().connect(
+            [&opt, adjust]() { opt = static_cast<std::int32_t>(adjust->get_value()); });
+
+        auto button = Gtk::make_managed<Gtk::SpinButton>();
+        button->set_value(opt);
+        button->set_adjustment(adjust);
+
+        page.add_row("Pages to cache ahead", *button);
+    }
+
     page.add_section("Moving Files");
 
     {

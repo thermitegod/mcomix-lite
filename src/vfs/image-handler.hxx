@@ -149,6 +149,8 @@ class image_handler
   private:
     [[nodiscard]] Glib::RefPtr<Gdk::Pixbuf> get_pixbuf(const page_t page) noexcept;
 
+    void prune() noexcept;
+
     std::shared_ptr<vfs::image_files> image_files_;
 
     std::optional<page_t> current_image_ = std::nullopt;
