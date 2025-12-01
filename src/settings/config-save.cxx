@@ -84,10 +84,13 @@ config::save(const std::filesystem::path& path,
         config_file_data{config::disk_format::version, pack_settings(settings)};
 
     std::string buffer;
+    // TODO prettify=true segfaults when used in Gtk::Window destructor,
+    // it was not doing it earlier need to investigate.
+    // std::basic_string<char>::operator[](size_type): Assertion '__pos <= size()' failed.
     const auto ec =
-        glz::write_file_json<glz::opts{.prettify = true}>(config_data,
-                                                          (path / config::filename).c_str(),
-                                                          buffer);
+        glz::write_file_json<glz::opts{.prettify = false}>(config_data,
+                                                           (path / config::filename).c_str(),
+                                                           buffer);
 
     logger::error_if(ec, "Failed to write config file: {}", glz::format_error(ec, buffer));
 }
