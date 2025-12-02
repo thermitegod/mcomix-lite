@@ -88,12 +88,8 @@ gui::thumbbar::request(const page_t page, const std::filesystem::path& filename)
 void
 gui::thumbbar::add_item(const page_t page, const Glib::RefPtr<Gdk::Pixbuf>& pixbuf) noexcept
 {
-    this->idle_signals_.push_back(Glib::signal_idle().connect(
-        [this, page, pixbuf]()
-        {
-            this->liststore_->append(ModelList::create(page, pixbuf));
-            return false;
-        }));
+    Glib::signal_idle().connect_once(
+        [this, page, pixbuf]() { this->liststore_->append(ModelList::create(page, pixbuf)); });
 }
 
 void
@@ -113,11 +109,6 @@ gui::thumbbar::on_selection_changed(std::uint32_t position, std::uint32_t n_item
 void
 gui::thumbbar::clear() noexcept
 {
-    // TODO - the idle handler does not get cleared when changing
-    // archives before all thumbnails have loaded resulting in extra
-    // thumbnails from the old archive being in the sidebar for the
-    // archive being opened.
-
     // simply restarting the thumbnailer is the best way to
     // clear out the request queue. the queue is only a problem
     // when changing archives before all thumbnails have been loaded.
@@ -127,14 +118,6 @@ gui::thumbbar::clear() noexcept
     this->thumbnailer_thread_ =
         std::jthread([this](const std::stop_token& stoken) { this->thumbnailer_.run(stoken); });
     pthread_setname_np(this->thumbnailer_thread_.native_handle(), "thumbnailer");
-
-    std::ranges::for_each(this->idle_signals_,
-                          [](auto connection)
-                          {
-                              connection.block();
-                              connection.disconnect();
-                          });
-    this->idle_signals_.clear();
 
     this->liststore_->remove_all();
 }

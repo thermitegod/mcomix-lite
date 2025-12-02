@@ -91,7 +91,5 @@ class thumbbar : public Gtk::ScrolledWindow
 
   private:
     sigc::signal<void(page_t)> signal_page_selected_;
-
-    std::vector<sigc::connection> idle_signals_;
 };
 } // namespace gui
