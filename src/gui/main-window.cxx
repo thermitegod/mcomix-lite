@@ -189,8 +189,7 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
 
     if (this->settings->double_page_center_space)
     {
-        this->image_left_.set_margin_end(1);
-        this->image_right_.set_margin_start(1);
+        this->image_box_.set_spacing(2);
     }
 
     this->image_right_.set_content_fit(Gtk::ContentFit::CONTAIN);
@@ -1032,15 +1031,13 @@ void
 gui::main_window::toggle_page_padding() noexcept
 {
     this->settings->double_page_center_space = !this->settings->double_page_center_space;
-    if (this->image_left_.get_margin_end() == 1)
+    if (this->image_box_.get_spacing() != 0)
     {
-        this->image_left_.set_margin_end(0);
-        this->image_right_.set_margin_start(0);
+        this->image_box_.set_spacing(0);
     }
     else
     {
-        this->image_left_.set_margin_end(1);
-        this->image_right_.set_margin_start(1);
+        this->image_box_.set_spacing(2);
     }
 }
 
