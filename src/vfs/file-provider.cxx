@@ -79,6 +79,11 @@ vfs::file_provider::list_files(const vfs::file_provider::file_type mode) noexcep
         std::unreachable();
     };
 
+    if (!std::filesystem::exists(this->base_dir_))
+    {
+        return {};
+    }
+
     if (this->open_mode_ == open_mode::browse)
     {
         this->files_.clear();
