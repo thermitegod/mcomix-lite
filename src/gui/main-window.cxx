@@ -27,8 +27,6 @@
 #include <gtkmm.h>
 #include <sigc++/sigc++.h>
 
-#include <magic_enum/magic_enum.hpp>
-
 #include <ztd/ztd.hxx>
 
 #include "settings/config.hxx"

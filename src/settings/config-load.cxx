@@ -18,8 +18,6 @@
 
 #include <glaze/glaze.hpp>
 
-#include <magic_enum/magic_enum.hpp>
-
 #include <ztd/extra/glaze.hxx>
 #include <ztd/ztd.hxx>
 
