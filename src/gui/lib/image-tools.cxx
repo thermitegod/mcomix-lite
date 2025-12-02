@@ -158,7 +158,7 @@ gui::lib::image_tools::load_pixbuf(const std::filesystem::path& path) noexcept
     catch (const Glib::Error& ex)
     {
         logger::error<logger::gui>("Failed to load image: {} ", path.string());
-        logger::debug<logger::gui>("Error: {} ", ex.what());
+        // logger::debug<logger::gui>("Error: {} ", ex.what());
         return nullptr;
     }
 }
