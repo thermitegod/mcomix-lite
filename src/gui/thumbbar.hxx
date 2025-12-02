@@ -39,7 +39,7 @@ class thumbbar : public Gtk::ScrolledWindow
     ~thumbbar();
 
     void request(const page_t page, const std::filesystem::path& filename) noexcept;
-    void select_page(const page_t page) noexcept;
+    void set_page(const page_t page) noexcept;
     void clear() noexcept;
 
   protected:
@@ -71,6 +71,8 @@ class thumbbar : public Gtk::ScrolledWindow
     Gtk::ListView listview_;
     Glib::RefPtr<Gio::ListStore<ModelList>> liststore_;
     Glib::RefPtr<Gtk::SingleSelection> selection_model_;
+
+    Glib::RefPtr<Gtk::ScrollInfo> scroll_info_;
 
     void on_selection_changed(std::uint32_t position, std::uint32_t n_items) noexcept;
 

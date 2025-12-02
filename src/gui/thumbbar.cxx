@@ -37,7 +37,10 @@ gui::thumbbar::thumbbar(const std::shared_ptr<config::settings>& settings) : set
     this->set_hexpand(false);
     this->set_vexpand(true);
     this->set_overlay_scrolling(false);
-    // this->set_focusable(false);
+    this->set_focusable(false);
+
+    this->scroll_info_ = Gtk::ScrollInfo::create();
+    this->scroll_info_->set_enable_vertical(true);
 
     this->liststore_ = Gio::ListStore<ModelList>::create();
 
@@ -57,6 +60,7 @@ gui::thumbbar::thumbbar(const std::shared_ptr<config::settings>& settings) : set
     this->listview_ = Gtk::ListView(Gtk::SingleSelection::create(this->selection_model_), factory);
     this->listview_.set_single_click_activate(true);
     this->listview_.signal_activate().connect(sigc::mem_fun(*this, &thumbbar::activate));
+    this->listview_.set_focusable(false);
 
     this->set_child(this->listview_);
 
@@ -93,7 +97,7 @@ gui::thumbbar::add_item(const page_t page, const Glib::RefPtr<Gdk::Pixbuf>& pixb
 }
 
 void
-gui::thumbbar::select_page(const page_t page) noexcept
+gui::thumbbar::set_page(const page_t page) noexcept
 {
     this->selection_model_->set_selected(static_cast<std::uint32_t>(page - 1));
 }
@@ -102,7 +106,8 @@ void
 gui::thumbbar::on_selection_changed(std::uint32_t position, std::uint32_t n_items) noexcept
 {
     (void)n_items;
-    this->listview_.scroll_to(position, Gtk::ListScrollFlags::FOCUS, nullptr);
+
+    this->listview_.scroll_to(position, Gtk::ListScrollFlags::SELECT, this->scroll_info_);
 }
 
 void

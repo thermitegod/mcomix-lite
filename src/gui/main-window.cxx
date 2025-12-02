@@ -1346,7 +1346,7 @@ gui::main_window::set_page(const page_t page) noexcept
 
     this->displayed_double();
 
-    this->thumb_sidebar_.select_page(page);
+    this->thumb_sidebar_.set_page(page);
 
     this->update_page_information();
 
