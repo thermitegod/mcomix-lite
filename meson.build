@@ -308,6 +308,7 @@ sources = files(
   'src/gui/main-window.cxx',
   'src/gui/statusbar.cxx',
   'src/gui/thumbbar.cxx',
+  'src/gui/viewport.cxx',
 
   'src/gui/dialog/about.cxx',
   'src/gui/dialog/bookmarks.cxx',

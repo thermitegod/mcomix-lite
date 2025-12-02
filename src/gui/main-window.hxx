@@ -29,6 +29,7 @@
 
 #include "gui/statusbar.hxx"
 #include "gui/thumbbar.hxx"
+#include "gui/viewport.hxx"
 
 #include "gui/lib/view-state.hxx"
 
@@ -67,9 +68,6 @@ class main_window : public Gtk::ApplicationWindow
 
     void page_available(const page_t page) noexcept;
 
-    void toggle_page_padding() noexcept;
-    void hide_images() noexcept;
-
     void setup_menubar() noexcept;
     void add_shortcuts() noexcept;
 
@@ -104,15 +102,12 @@ class main_window : public Gtk::ApplicationWindow
 
     std::array<std::filesystem::path, 2> current_images_;
 
-    Gtk::Grid grid_;
-
     Gtk::Box box_;
-    Gtk::Box image_box_; // Need to use two boxes to get images to stay connected
-    Gtk::Picture image_left_;
-    Gtk::Picture image_right_;
+    Gtk::Box center_box_;
 
     Gtk::PopoverMenuBar menubar_;
     gui::thumbbar thumb_sidebar_ = gui::thumbbar(this->settings);
+    gui::viewport viewport_ = gui::viewport(this->settings);
     gui::statusbar statusbar_ = gui::statusbar(this->settings, this->view_state);
 
   public:

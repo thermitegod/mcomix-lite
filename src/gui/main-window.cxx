@@ -135,7 +135,7 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
                         this->settings->hide_statusbar = !this->settings->hide_statusbar;
                         this->statusbar_.set_visible(!this->settings->hide_statusbar);
                     });
-    app->add_action("page_center_space", [this]() { this->toggle_page_padding(); });
+    app->add_action("page_center_space", [this]() { this->viewport_.toggle_page_padding(); });
 
     app->add_action("escape", [this]() { this->on_escape_event(); });
     app->add_action("fullscreen", [this]() { this->change_fullscreen(); });
@@ -166,42 +166,23 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
 
     this->setup_menubar();
 
-    this->grid_.attach(this->menubar_, 0, 0, 2, 1);
-    this->grid_.attach(this->thumb_sidebar_, 0, 1, 1, 1);
-    this->grid_.attach_next_to(this->box_, this->thumb_sidebar_, Gtk::PositionType::RIGHT, 1, 1);
-    this->grid_.attach(this->statusbar_, 0, 2, 2, 1);
-    this->set_child(this->grid_);
-
-    this->box_.append(this->image_box_);
-    this->box_.set_halign(Gtk::Align::CENTER);
-    this->box_.set_valign(Gtk::Align::CENTER);
+    this->box_.set_orientation(Gtk::Orientation::VERTICAL);
     this->box_.set_hexpand(true);
     this->box_.set_vexpand(true);
 
-    this->image_box_.set_halign(Gtk::Align::CENTER);
-    this->image_box_.set_valign(Gtk::Align::CENTER);
-    this->image_box_.set_hexpand(false);
-    this->image_box_.set_vexpand(false);
+    this->box_.append(this->menubar_);
 
-    this->image_left_.set_content_fit(Gtk::ContentFit::CONTAIN);
-    this->image_left_.set_hexpand(true);
-    this->image_left_.set_vexpand(true);
-    this->image_left_.set_halign(Gtk::Align::CENTER);
-    this->image_left_.set_valign(Gtk::Align::CENTER);
+    this->center_box_.set_orientation(Gtk::Orientation::HORIZONTAL);
+    this->center_box_.set_hexpand(true);
+    this->center_box_.set_vexpand(true);
+    this->box_.append(this->center_box_);
 
-    if (this->settings->double_page_center_space)
-    {
-        this->image_box_.set_spacing(2);
-    }
+    this->center_box_.append(this->thumb_sidebar_);
+    this->center_box_.append(this->viewport_);
 
-    this->image_right_.set_content_fit(Gtk::ContentFit::CONTAIN);
-    this->image_right_.set_hexpand(true);
-    this->image_right_.set_vexpand(true);
-    this->image_right_.set_halign(Gtk::Align::CENTER);
-    this->image_right_.set_valign(Gtk::Align::CENTER);
+    this->box_.append(this->statusbar_);
 
-    this->image_box_.append(this->image_left_);
-    this->image_box_.append(this->image_right_);
+    this->set_child(this->box_);
 
     if (this->settings->hide_thumbar)
     {
@@ -1029,30 +1010,6 @@ gui::main_window::on_open_donate() noexcept
     Gtk::make_managed<gui::dialog::donate>(*this);
 }
 
-void
-gui::main_window::toggle_page_padding() noexcept
-{
-    this->settings->double_page_center_space = !this->settings->double_page_center_space;
-    if (this->image_box_.get_spacing() != 0)
-    {
-        this->image_box_.set_spacing(0);
-    }
-    else
-    {
-        this->image_box_.set_spacing(2);
-    }
-}
-
-void
-gui::main_window::hide_images() noexcept
-{
-    // hides old images before showing new ones
-    // also if in double page mode and only a single
-    // image is going to be shown, prevents a ghost second image
-    this->image_left_.set_visible(false);
-    this->image_right_.set_visible(false);
-}
-
 /**
  * Draw the current pages and update the titlebar and statusbar.
  */
@@ -1075,7 +1032,7 @@ gui::main_window::_draw_pages() noexcept
 {
     const auto image_handler = this->file_handler_->image_handler();
 
-    this->hide_images();
+    this->viewport_.hide_images();
 
     if (!this->file_handler_->is_file_loaded())
     {
@@ -1116,21 +1073,18 @@ gui::main_window::_draw_pages() noexcept
     {
         case 0:
         {
-            this->box_.set_orientation(Gtk::Orientation::HORIZONTAL);
-            this->image_box_.set_orientation(Gtk::Orientation::HORIZONTAL);
+            this->viewport_.set_orientation(Gtk::Orientation::HORIZONTAL);
             break;
         }
         case 90:
         {
-            this->box_.set_orientation(Gtk::Orientation::VERTICAL);
-            this->image_box_.set_orientation(Gtk::Orientation::VERTICAL);
+            this->viewport_.set_orientation(Gtk::Orientation::VERTICAL);
             std::ranges::for_each(size_list, [](auto& list) { std::ranges::reverse(list); });
             break;
         }
         case 180:
         {
-            this->box_.set_orientation(Gtk::Orientation::HORIZONTAL);
-            this->image_box_.set_orientation(Gtk::Orientation::HORIZONTAL);
+            this->viewport_.set_orientation(Gtk::Orientation::HORIZONTAL);
             if (this->view_state->is_displaying_double())
             {
                 std::swap(pixbuf_list[0], pixbuf_list[1]);
@@ -1139,8 +1093,7 @@ gui::main_window::_draw_pages() noexcept
         }
         case 270:
         {
-            this->box_.set_orientation(Gtk::Orientation::VERTICAL);
-            this->image_box_.set_orientation(Gtk::Orientation::VERTICAL);
+            this->viewport_.set_orientation(Gtk::Orientation::VERTICAL);
             std::ranges::for_each(size_list, [](auto& list) { std::ranges::reverse(list); });
             if (this->view_state->is_displaying_double())
             {
@@ -1187,13 +1140,11 @@ gui::main_window::_draw_pages() noexcept
 
         if (i == 0)
         {
-            this->image_left_.set_pixbuf(pixbuf_list[i]);
-            this->image_left_.set_visible(true);
+            this->viewport_.set_pixbuf_left(pixbuf_list[i]);
         }
         else
         {
-            this->image_right_.set_pixbuf(pixbuf_list[i]);
-            this->image_right_.set_visible(true);
+            this->viewport_.set_pixbuf_right(pixbuf_list[i]);
         }
     }
 
@@ -1326,7 +1277,7 @@ gui::main_window::on_file_closed() noexcept
         this->set_title(PACKAGE_NAME);
     }
 
-    this->hide_images();
+    this->viewport_.hide_images();
     this->statusbar_.set_message("");
     this->thumb_sidebar_.set_visible(false);
     this->thumb_sidebar_.clear();
