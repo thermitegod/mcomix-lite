@@ -105,8 +105,8 @@ class main_window : public Gtk::ApplicationWindow
     std::array<std::filesystem::path, 2> current_images_;
 
     Gtk::Grid grid_;
-    Gtk::Box box_;
 
+    Gtk::Box box_;
     Gtk::Box image_box_; // Need to use two boxes to get images to stay connected
     Gtk::Picture image_left_;
     Gtk::Picture image_right_;

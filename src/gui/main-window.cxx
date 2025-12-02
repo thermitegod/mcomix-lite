@@ -13,12 +13,14 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <algorithm>
 #include <chrono>
 #include <filesystem>
 #include <format>
 #include <optional>
 #include <string>
 #include <system_error>
+#include <utility>
 
 #include <cmath>
 
@@ -1114,22 +1116,46 @@ gui::main_window::_draw_pages() noexcept
     }
 
     // Rotation handling
-    // apply manual rotation on whole page
     std::vector<std::int32_t> rotation_list(static_cast<std::size_t>(pixbuf_count), 0);
     const auto rotation = this->settings->rotation % 360;
     switch (rotation)
     {
+        case 0:
+        {
+            this->box_.set_orientation(Gtk::Orientation::HORIZONTAL);
+            this->image_box_.set_orientation(Gtk::Orientation::HORIZONTAL);
+            break;
+        }
         case 90:
-        case 270:
-            for (std::size_t i = 0; std::cmp_less(i, pixbuf_count); ++i)
+        {
+            this->box_.set_orientation(Gtk::Orientation::VERTICAL);
+            this->image_box_.set_orientation(Gtk::Orientation::VERTICAL);
+            std::ranges::for_each(size_list, [](auto& list) { std::ranges::reverse(list); });
+            break;
+        }
+        case 180:
+        {
+            this->box_.set_orientation(Gtk::Orientation::HORIZONTAL);
+            this->image_box_.set_orientation(Gtk::Orientation::HORIZONTAL);
+            if (this->view_state->is_displaying_double())
             {
-                std::ranges::reverse(size_list[i]);
+                std::swap(pixbuf_list[0], pixbuf_list[1]);
             }
             break;
-        case 180:
+        }
+        case 270:
+        {
+            this->box_.set_orientation(Gtk::Orientation::VERTICAL);
+            this->image_box_.set_orientation(Gtk::Orientation::VERTICAL);
+            std::ranges::for_each(size_list, [](auto& list) { std::ranges::reverse(list); });
+            if (this->view_state->is_displaying_double())
+            {
+                std::swap(pixbuf_list[0], pixbuf_list[1]);
+            }
             break;
+        }
         default:
-            break;
+            std::unreachable();
     }
 
     auto scale_to_size = [this](std::int32_t width,
