@@ -141,13 +141,6 @@ gui::lib::image_tools::add_border_pixbuf(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf
     return canvas;
 }
 
-bool
-gui::lib::image_tools::disable_transform(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf) noexcept
-{
-    (void)pixbuf;
-    return false;
-}
-
 void
 gui::lib::image_tools::set_from_pixbuf(Gtk::Picture& picture,
                                        const Glib::RefPtr<Gdk::Pixbuf>& pixbuf) noexcept

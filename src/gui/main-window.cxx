@@ -1103,12 +1103,6 @@ gui::main_window::_draw_pages() noexcept
         std::swap(pixbuf_list[0], pixbuf_list[1]);
     }
 
-    std::vector<bool> do_not_transform;
-    for (auto& pixbuf : pixbuf_list)
-    {
-        do_not_transform.push_back(gui::lib::image_tools::disable_transform(pixbuf));
-    }
-
     std::vector<std::array<std::int32_t, 2>> size_list;
     for (const auto& pixbuf : pixbuf_list)
     {

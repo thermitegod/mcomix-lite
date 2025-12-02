@@ -90,8 +90,6 @@ fit_in_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& src, std::int32_t width, std::
 [[nodiscard]] Glib::RefPtr<Gdk::Pixbuf>
 add_border_pixbuf(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf) noexcept;
 
-[[nodiscard]] bool disable_transform(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf) noexcept;
-
 void set_from_pixbuf(Gtk::Picture& picture, const Glib::RefPtr<Gdk::Pixbuf>& pixbuf) noexcept;
 
 /**
