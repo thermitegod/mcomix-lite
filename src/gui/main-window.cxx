@@ -333,9 +333,32 @@ gui::main_window::add_shortcuts() noexcept
         controller->add_shortcut(
             Gtk::Shortcut::create(Gtk::KeyvalTrigger::create(GDK_KEY_Down), action));
         controller->add_shortcut(
+            Gtk::Shortcut::create(Gtk::KeyvalTrigger::create(GDK_KEY_KP_Down), action));
+        controller->add_shortcut(
             Gtk::Shortcut::create(Gtk::KeyvalTrigger::create(GDK_KEY_Page_Down), action));
         controller->add_shortcut(
             Gtk::Shortcut::create(Gtk::KeyvalTrigger::create(GDK_KEY_KP_Page_Down), action));
+    }
+
+    { // Next Page Dynamic
+        auto action = Gtk::CallbackAction::create(
+            [this](Gtk::Widget&, const Glib::VariantBase&)
+            {
+                if (this->view_state->is_manga_mode())
+                {
+                    this->activate_action("app.page_prev");
+                }
+                else
+                {
+                    this->activate_action("app.page_next");
+                }
+                return true;
+            });
+
+        controller->add_shortcut(
+            Gtk::Shortcut::create(Gtk::KeyvalTrigger::create(GDK_KEY_Right), action));
+        controller->add_shortcut(
+            Gtk::Shortcut::create(Gtk::KeyvalTrigger::create(GDK_KEY_KP_Right), action));
     }
 
     { // Previous Page
@@ -349,9 +372,32 @@ gui::main_window::add_shortcuts() noexcept
         controller->add_shortcut(
             Gtk::Shortcut::create(Gtk::KeyvalTrigger::create(GDK_KEY_Up), action));
         controller->add_shortcut(
+            Gtk::Shortcut::create(Gtk::KeyvalTrigger::create(GDK_KEY_KP_Up), action));
+        controller->add_shortcut(
             Gtk::Shortcut::create(Gtk::KeyvalTrigger::create(GDK_KEY_Page_Up), action));
         controller->add_shortcut(
             Gtk::Shortcut::create(Gtk::KeyvalTrigger::create(GDK_KEY_KP_Page_Up), action));
+    }
+
+    { // Previous Page Dynamic
+        auto action = Gtk::CallbackAction::create(
+            [this](Gtk::Widget&, const Glib::VariantBase&)
+            {
+                if (this->view_state->is_manga_mode())
+                {
+                    this->activate_action("app.page_next");
+                }
+                else
+                {
+                    this->activate_action("app.page_prev");
+                }
+                return true;
+            });
+
+        controller->add_shortcut(
+            Gtk::Shortcut::create(Gtk::KeyvalTrigger::create(GDK_KEY_Left), action));
+        controller->add_shortcut(
+            Gtk::Shortcut::create(Gtk::KeyvalTrigger::create(GDK_KEY_KP_Left), action));
     }
 
     { // Next Page Singlestep
@@ -364,6 +410,9 @@ gui::main_window::add_shortcuts() noexcept
 
         controller->add_shortcut(Gtk::Shortcut::create(
             Gtk::KeyvalTrigger::create(GDK_KEY_Down, Gdk::ModifierType::CONTROL_MASK),
+            action));
+        controller->add_shortcut(Gtk::Shortcut::create(
+            Gtk::KeyvalTrigger::create(GDK_KEY_KP_Down, Gdk::ModifierType::CONTROL_MASK),
             action));
         controller->add_shortcut(Gtk::Shortcut::create(
             Gtk::KeyvalTrigger::create(GDK_KEY_Page_Down, Gdk::ModifierType::CONTROL_MASK),
@@ -383,6 +432,9 @@ gui::main_window::add_shortcuts() noexcept
 
         controller->add_shortcut(Gtk::Shortcut::create(
             Gtk::KeyvalTrigger::create(GDK_KEY_Up, Gdk::ModifierType::CONTROL_MASK),
+            action));
+        controller->add_shortcut(Gtk::Shortcut::create(
+            Gtk::KeyvalTrigger::create(GDK_KEY_KP_Up, Gdk::ModifierType::CONTROL_MASK),
             action));
         controller->add_shortcut(Gtk::Shortcut::create(
             Gtk::KeyvalTrigger::create(GDK_KEY_Page_Up, Gdk::ModifierType::CONTROL_MASK),
