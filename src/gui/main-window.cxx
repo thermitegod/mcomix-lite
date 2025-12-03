@@ -107,6 +107,12 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
     app->add_action("archive_prev",
                     [this]() { auto _ = this->file_handler_->open_prev_archive(); });
 
+    app->add_action("rotate_reset",
+                    [this]()
+                    {
+                        this->settings->rotation = 0;
+                        this->rotate_x(0);
+                    });
     app->add_action("rotate_90", [this]() { this->rotate_x(90); });
     app->add_action("rotate_180", [this]() { this->rotate_x(180); });
     app->add_action("rotate_270", [this]() { this->rotate_x(270); });
@@ -268,6 +274,7 @@ gui::main_window::setup_menubar() noexcept
 
     { // "Tools"
         auto tools_menu = Gio::Menu::create();
+        tools_menu->append("Reset Rotation", "app.rotate_reset");
         tools_menu->append("Rotate 90°", "app.rotate_90");
         tools_menu->append("Rotate 180°", "app.rotate_180");
         tools_menu->append("Rotate 270°", "app.rotate_270");
