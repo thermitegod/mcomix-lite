@@ -151,7 +151,9 @@ gui::dialog::bookmarks::create_model() noexcept
             this->settings_->bookmark_manager_fullpath ? data.path : data.path.filename(),
             data.current_page,
             data.total_pages,
-            std::format("{}", std::chrono::system_clock::from_time_t(data.created)));
+            std::format("{}",
+                        std::chrono::floor<std::chrono::seconds>(
+                            std::chrono::system_clock::from_time_t(data.created))));
     }
 }
 
