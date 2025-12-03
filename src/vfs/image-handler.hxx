@@ -138,8 +138,8 @@ class image_handler
      * page if <page> is None.
      * If <nowait> is True, don't wait for <page> to be available.
      */
-    [[nodiscard]] Glib::RefPtr<Gdk::Pixbuf> get_thumbnail(const page_t page,
-                                                          const std::int32_t size) noexcept;
+    [[nodiscard]] Glib::RefPtr<Gdk::Paintable> get_thumbnail(const page_t page,
+                                                             const std::int32_t size) noexcept;
 
     /**
      * Checks if the specified page has been extracted.

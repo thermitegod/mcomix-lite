@@ -49,26 +49,20 @@ gui::lib::image_tools::rotate_pixbuf(const Glib::RefPtr<Gdk::Pixbuf>& src,
 std::array<std::int32_t, 2>
 gui::lib::image_tools::get_fitting_size(const std::int32_t src_width, const std::int32_t src_height,
                                         std::int32_t width, std::int32_t height,
-                                        const bool keep_ratio, const bool scale_up) noexcept
+                                        const bool scale_up) noexcept
 {
     if (!scale_up && src_width <= width && src_height <= height)
     {
-        width = src_width;
-        height = src_height;
+        return {width, height};
+    }
+
+    if ((src_width / width) > (src_height / height))
+    {
+        height = std::max(src_height * width / src_width, 1);
     }
     else
     {
-        if (keep_ratio)
-        {
-            if ((src_width / width) > (src_height / height))
-            {
-                height = std::max(src_height * width / src_width, 1);
-            }
-            else
-            {
-                width = std::max(src_width * height / src_height, 1);
-            }
-        }
+        width = std::max(src_width * height / src_height, 1);
     }
     return {width, height};
 }
@@ -92,9 +86,36 @@ gui::lib::image_tools::add_alpha_background(const Glib::RefPtr<Gdk::Pixbuf>& pix
 }
 
 Glib::RefPtr<Gdk::Pixbuf>
-gui::lib::image_tools::fit_in_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& src, std::int32_t width,
-                                        std::int32_t height, bool keep_ratio, bool scale_up,
-                                        std::int32_t rotation) noexcept
+gui::lib::image_tools::load_pixbuf(const std::filesystem::path& path) noexcept
+{
+    try
+    {
+        return Gdk::Pixbuf::create_from_file(path);
+    }
+    catch (const Glib::Error& ex)
+    {
+        logger::error<logger::gui>("Failed to load image: {} ", path.string());
+        return nullptr;
+    }
+}
+
+Glib::RefPtr<Gdk::Texture>
+gui::lib::image_tools::load_texture(const std::filesystem::path& path) noexcept
+{
+    try
+    {
+        return Gdk::Texture::create_from_filename(path);
+    }
+    catch (const Glib::Error& ex)
+    {
+        logger::error<logger::gui>("Failed to load image: {} ", path.string());
+        return nullptr;
+    }
+}
+
+Glib::RefPtr<Gdk::Paintable>
+gui::lib::image_tools::fit_to_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& src, std::int32_t width,
+                                        std::int32_t height, std::int32_t rotation) noexcept
 {
     // logger::info<logger::gui>("new {}x{}", width, height);
 
@@ -107,7 +128,7 @@ gui::lib::image_tools::fit_in_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& src, st
     const auto src_height = src->get_height();
 
     const auto [new_width, new_height] =
-        get_fitting_size(src_width, src_height, width, height, keep_ratio, scale_up);
+        get_fitting_size(src_width, src_height, width, height, true);
 
     // logger::info<logger::gui>("new {}x{} | src {}x{}", new_width, new_height, src_width, src_height);
 
@@ -125,53 +146,10 @@ gui::lib::image_tools::fit_in_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& src, st
         new_pixbuf = src;
     }
 
-    return rotate_pixbuf(new_pixbuf, rotation);
+    return Gdk::Texture::create_for_pixbuf(rotate_pixbuf(new_pixbuf, rotation));
 }
 
-Glib::RefPtr<Gdk::Pixbuf>
-gui::lib::image_tools::add_border_pixbuf(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf) noexcept
-{
-    const auto width = pixbuf->get_width();
-    const auto height = pixbuf->get_height();
-
-    auto canvas = Gdk::Pixbuf::create(Gdk::Colorspace::RGB, true, 8, width + 2, height + 2);
-    canvas->fill(0x000000FF); // black
-
-    pixbuf->copy_area(0, 0, width, height, canvas, 1, 1);
-    return canvas;
-}
-
-void
-gui::lib::image_tools::set_from_pixbuf(Gtk::Picture& picture,
-                                       const Glib::RefPtr<Gdk::Pixbuf>& pixbuf) noexcept
-{
-    picture.set_pixbuf(pixbuf);
-}
-
-Glib::RefPtr<Gdk::Pixbuf>
-gui::lib::image_tools::load_pixbuf(const std::filesystem::path& path) noexcept
-{
-    try
-    {
-        return Gdk::Pixbuf::create_from_file(path);
-    }
-    catch (const Glib::Error& ex)
-    {
-        logger::error<logger::gui>("Failed to load image: {} ", path.string());
-        // logger::debug<logger::gui>("Error: {} ", ex.what());
-        return nullptr;
-    }
-}
-
-Glib::RefPtr<Gdk::Pixbuf>
-gui::lib::image_tools::fit_pixbuf_to_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf,
-                                               std::int32_t width, std::int32_t height,
-                                               std::int32_t rotation) noexcept
-{
-    return gui::lib::image_tools::fit_in_rectangle(pixbuf, width, height, false, true, rotation);
-}
-
-Glib::RefPtr<Gdk::Pixbuf>
+Glib::RefPtr<Gdk::Paintable>
 gui::lib::image_tools::create_thumbnail(const std::filesystem::path& path,
                                         std::int32_t size) noexcept
 {
@@ -184,26 +162,14 @@ gui::lib::image_tools::create_thumbnail(const std::filesystem::path& path,
     return create_thumbnail(pixbuf, size);
 }
 
-[[nodiscard]] Glib::RefPtr<Gdk::Pixbuf>
-gui::lib::image_tools::create_thumbnail(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf,
+[[nodiscard]] Glib::RefPtr<Gdk::Paintable>
+gui::lib::image_tools::create_thumbnail(const Glib::RefPtr<Gdk::Pixbuf>& src,
                                         std::int32_t size) noexcept
 {
-    const auto original_width = pixbuf->get_width();
-    const auto original_height = pixbuf->get_height();
+    const auto src_width = src->get_width();
+    const auto src_height = src->get_height();
 
-    const double aspect_ratio =
-        static_cast<double>(original_width) / static_cast<double>(original_height);
-    std::int32_t width, height;
-    if (original_width > original_height)
-    {
-        width = size;
-        height = static_cast<std::int32_t>(size / aspect_ratio);
-    }
-    else
-    {
-        height = size;
-        width = static_cast<std::int32_t>(size * aspect_ratio);
-    }
+    const auto [new_width, new_height] = get_fitting_size(src_width, src_height, size, size, false);
 
-    return add_border_pixbuf(fit_pixbuf_to_rectangle(pixbuf, width, height));
+    return fit_to_rectangle(src, new_width, new_height);
 }

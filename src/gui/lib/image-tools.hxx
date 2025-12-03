@@ -50,8 +50,7 @@ namespace gui::lib::image_tools
 [[nodiscard]] std::array<std::int32_t, 2> get_fitting_size(const std::int32_t src_width,
                                                            const std::int32_t src_height,
                                                            std::int32_t width, std::int32_t height,
-                                                           const bool keep_ratio = true,
-                                                           const bool scale_up = false) noexcept;
+                                                           const bool scale_up = true) noexcept;
 
 /**
  * Adds a checkerboard background to a pixbuf with an alpha channel.
@@ -66,43 +65,17 @@ add_alpha_background(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf, const std::int32_t
                      const std::int32_t height) noexcept;
 
 /**
- * Scale (and return) a pixbuf so that it fits in a rectangle with dimensions <width> x <height>.
- * If rotation is 90, 180, or 270, rotates src first so that the rotated pixbuf fits in the rectangle.
- *
- * @param src: Source pixbuf to fit.
- * @param width: Target width.
- * @param height: Target height.
- * @param keep_ratio: Maintain aspect ratio.
- * @param scale_up: Allow scaling up.
- * @param rotation: Rotation angle (0, 90, 180, 270).
- * @returns: A new pixbuf scaled and rotated to fit within the target dimensions.
- */
-[[nodiscard]] Glib::RefPtr<Gdk::Pixbuf>
-fit_in_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& src, std::int32_t width, std::int32_t height,
-                 bool keep_ratio = true, bool scale_up = false, std::int32_t rotation = 0) noexcept;
-
-/**
- * Return a pixbuf from the source with a black 1 px border.
- *
- * @param pixbuf: Source pixbuf.
- * @returns: A new pixbuf with a 1 px black border.
- */
-[[nodiscard]] Glib::RefPtr<Gdk::Pixbuf>
-add_border_pixbuf(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf) noexcept;
-
-void set_from_pixbuf(Gtk::Picture& picture, const Glib::RefPtr<Gdk::Pixbuf>& pixbuf) noexcept;
-
-/**
  * Loads a pixbuf from a given image file.
  *
  * @param path: Path to the image file.
  * @returns: A new pixbuf or nullptr on failure.
  */
 [[nodiscard]] Glib::RefPtr<Gdk::Pixbuf> load_pixbuf(const std::filesystem::path& path) noexcept;
+[[nodiscard]] Glib::RefPtr<Gdk::Texture> load_texture(const std::filesystem::path& path) noexcept;
 
-[[nodiscard]] Glib::RefPtr<Gdk::Pixbuf>
-fit_pixbuf_to_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf, std::int32_t width,
-                        std::int32_t height, std::int32_t rotation = 0) noexcept;
+[[nodiscard]] Glib::RefPtr<Gdk::Paintable> fit_to_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf,
+                                                            std::int32_t width, std::int32_t height,
+                                                            std::int32_t rotation = 0) noexcept;
 
 /**
  * Returns a thumbnail pixbuf for a given path.
@@ -112,9 +85,9 @@ fit_pixbuf_to_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf, std::int32_t wi
  * @param size: Maximum size of any one side of the created thumbnails.
  * @returns: A new thumbnail pixbuf or nullptr on failure.
  */
-[[nodiscard]] Glib::RefPtr<Gdk::Pixbuf> create_thumbnail(const std::filesystem::path& path,
-                                                         std::int32_t size) noexcept;
+[[nodiscard]] Glib::RefPtr<Gdk::Paintable> create_thumbnail(const std::filesystem::path& path,
+                                                            std::int32_t size) noexcept;
 
-[[nodiscard]] Glib::RefPtr<Gdk::Pixbuf> create_thumbnail(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf,
-                                                         std::int32_t size) noexcept;
+[[nodiscard]] Glib::RefPtr<Gdk::Paintable> create_thumbnail(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf,
+                                                            std::int32_t size) noexcept;
 } // namespace gui::lib::image_tools

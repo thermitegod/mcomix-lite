@@ -61,10 +61,10 @@ gui::lib::thumbnailer::run_once(const std::stop_token& stoken) noexcept
         }
     }
 
-    auto pixbuf = gui::lib::image_tools::create_thumbnail(request.file, request.thumb_size);
+    auto thumb = gui::lib::image_tools::create_thumbnail(request.file, request.thumb_size);
 
-    if (pixbuf && !stoken.stop_requested())
+    if (thumb && !stoken.stop_requested())
     {
-        this->signal_thumbnail_created().emit(request.page, pixbuf);
+        this->signal_thumbnail_created().emit(request.page, thumb);
     }
 }

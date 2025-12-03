@@ -63,16 +63,16 @@ gui::viewport::viewport(const std::shared_ptr<config::settings>& settings) : set
 }
 
 void
-gui::viewport::set_pixbuf_left(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf) noexcept
+gui::viewport::set_left(const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept
 {
-    this->image_left_.set_pixbuf(pixbuf);
+    this->image_left_.set_paintable(paintable);
     this->image_left_.set_visible(true);
 }
 
 void
-gui::viewport::set_pixbuf_right(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf) noexcept
+gui::viewport::set_right(const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept
 {
-    this->image_right_.set_pixbuf(pixbuf);
+    this->image_right_.set_paintable(paintable);
     this->image_right_.set_visible(true);
 }
 

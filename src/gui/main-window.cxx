@@ -1140,18 +1140,18 @@ gui::main_window::_draw_pages() noexcept
 
         // logger::debug<logger::gui>("scaled_sizes[{}] {}x{}", i, scaled_sizes[i][0], scaled_sizes[i][1]);
 
-        pixbuf_list[i] = gui::lib::image_tools::fit_pixbuf_to_rectangle(pixbuf_list[i],
-                                                                        scaled_sizes[i][0],
-                                                                        scaled_sizes[i][1],
-                                                                        rotation_list[i]);
+        auto paintable = gui::lib::image_tools::fit_to_rectangle(pixbuf_list[i],
+                                                                 scaled_sizes[i][0],
+                                                                 scaled_sizes[i][1],
+                                                                 rotation_list[i]);
 
         if (i == 0)
         {
-            this->viewport_.set_pixbuf_left(pixbuf_list[i]);
+            this->viewport_.set_left(paintable);
         }
         else
         {
-            this->viewport_.set_pixbuf_right(pixbuf_list[i]);
+            this->viewport_.set_right(paintable);
         }
     }
 

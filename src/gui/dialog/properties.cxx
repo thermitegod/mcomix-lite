@@ -130,9 +130,9 @@ class PropertiesPage : public Gtk::Box
     }
 
     void
-    set_thumbnail(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf) noexcept
+    set_thumbnail(const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept
     {
-        this->image_.set_pixbuf(pixbuf);
+        this->image_.set_paintable(paintable);
     }
 
   private:
@@ -256,8 +256,8 @@ gui::dialog::properties::init_archive_tab() noexcept
 
     page.set_filename(this->file_handler_->get_real_path().filename());
 
-    auto pixbuf = this->file_handler_->image_handler()->get_thumbnail(1, 256);
-    page.set_thumbnail(pixbuf);
+    auto thumb = this->file_handler_->image_handler()->get_thumbnail(1, 256);
+    page.set_thumbnail(thumb);
 
     page.set_main_info(
         {std::format("{} pages", this->file_handler_->image_handler()->get_number_of_pages()),
@@ -278,8 +278,8 @@ gui::dialog::properties::init_image_tab(const page_t p, std::string_view label) 
 
     page.set_filename(path.filename());
 
-    auto pixbuf = this->file_handler_->image_handler()->get_thumbnail(p, 256);
-    page.set_thumbnail(pixbuf);
+    auto thumb = this->file_handler_->image_handler()->get_thumbnail(p, 256);
+    page.set_thumbnail(thumb);
 
     const auto [width, height] = this->file_handler_->image_handler()->get_page_size(p);
 

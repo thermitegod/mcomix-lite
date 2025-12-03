@@ -66,7 +66,7 @@ gui::thumbbar::thumbbar(const std::shared_ptr<config::settings>& settings) : set
 
     // thumbnail create thread
     this->thumbnailer_.signal_thumbnail_created().connect(
-        [this](const auto page, const auto& pixbuf) { this->add_item(page, pixbuf); });
+        [this](const auto page, const auto& paintable) { this->add_item(page, paintable); });
 
     this->thumbnailer_thread_ =
         std::jthread([this](const std::stop_token& stoken) { this->thumbnailer_.run(stoken); });
@@ -86,10 +86,11 @@ gui::thumbbar::request(const page_t page, const std::filesystem::path& filename)
 }
 
 void
-gui::thumbbar::add_item(const page_t page, const Glib::RefPtr<Gdk::Pixbuf>& pixbuf) noexcept
+gui::thumbbar::add_item(const page_t page, const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept
 {
     Glib::signal_idle().connect_once(
-        [this, page, pixbuf]() { this->liststore_->append(ModelList::create(page, pixbuf)); });
+        [this, page, paintable]()
+        { this->liststore_->append(ModelList::create(page, paintable)); });
 }
 
 void
@@ -160,7 +161,7 @@ gui::thumbbar::bind_listitem(const Glib::RefPtr<Gtk::ListItem>& list_item) noexc
             if (auto data = std::dynamic_pointer_cast<ModelList>(list_item->get_item()))
             {
                 label->set_label(ztd::rjust(std::format("{}", data->page), 4));
-                image->set_pixbuf(data->pixbuf);
+                image->set_paintable(data->paintable);
             }
         }
     }

@@ -276,7 +276,7 @@ vfs::image_handler::get_mime_name(const std::optional<page_t> query) const noexc
     return "";
 }
 
-Glib::RefPtr<Gdk::Pixbuf>
+Glib::RefPtr<Gdk::Paintable>
 vfs::image_handler::get_thumbnail(const page_t page, const std::int32_t size) noexcept
 {
     if (!this->is_page_extracted(page))

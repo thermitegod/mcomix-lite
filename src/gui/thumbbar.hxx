@@ -47,22 +47,22 @@ class thumbbar : public Gtk::ScrolledWindow
     {
       public:
         page_t page;
-        Glib::RefPtr<Gdk::Pixbuf> pixbuf;
+        Glib::RefPtr<Gdk::Paintable> paintable;
 
         static Glib::RefPtr<ModelList>
-        create(const page_t page, const Glib::RefPtr<Gdk::Pixbuf>& pixbuf)
+        create(const page_t page, const Glib::RefPtr<Gdk::Paintable>& paintable)
         {
-            return Glib::make_refptr_for_instance<ModelList>(new ModelList(page, pixbuf));
+            return Glib::make_refptr_for_instance<ModelList>(new ModelList(page, paintable));
         }
 
       protected:
-        ModelList(const page_t page, const Glib::RefPtr<Gdk::Pixbuf>& pixbuf)
-            : Glib::ObjectBase(typeid(ModelList)), page(page), pixbuf(pixbuf)
+        ModelList(const page_t page, const Glib::RefPtr<Gdk::Paintable>& paintable)
+            : Glib::ObjectBase(typeid(ModelList)), page(page), paintable(paintable)
         {
         }
     };
 
-    void add_item(const page_t page, const Glib::RefPtr<Gdk::Pixbuf>& pixbuf) noexcept;
+    void add_item(const page_t page, const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept;
 
     void setup_listitem(const Glib::RefPtr<Gtk::ListItem>& list_item) noexcept;
     void bind_listitem(const Glib::RefPtr<Gtk::ListItem>& list_item) noexcept;

@@ -30,8 +30,8 @@ class viewport : public Gtk::Box
   public:
     viewport(const std::shared_ptr<config::settings>& settings);
 
-    void set_pixbuf_left(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf) noexcept;
-    void set_pixbuf_right(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf) noexcept;
+    void set_left(const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept;
+    void set_right(const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept;
 
     void hide_images() noexcept;
     void toggle_page_padding() noexcept;
