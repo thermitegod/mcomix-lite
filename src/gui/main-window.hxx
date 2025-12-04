@@ -109,15 +109,5 @@ class main_window : public Gtk::ApplicationWindow
     gui::thumbbar thumb_sidebar_ = gui::thumbbar(this->settings);
     gui::viewport viewport_ = gui::viewport(this->settings);
     gui::statusbar statusbar_ = gui::statusbar(this->settings, this->view_state);
-
-  public:
-    [[nodiscard]] auto
-    signal_draw_page() noexcept
-    {
-        return this->signal_draw_page_;
-    }
-
-  private:
-    sigc::signal<void()> signal_draw_page_;
 };
 } // namespace gui

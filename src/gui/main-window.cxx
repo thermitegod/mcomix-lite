@@ -90,8 +90,6 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
     this->file_handler_->signal_page_set().connect([this](const page_t page)
                                                    { this->set_page(page); });
 
-    this->signal_draw_page().connect([this]() { this->draw_pages(); });
-
     app->add_action("page_next", [this]() { this->flip_page(1); });
     app->add_action("page_prev", [this]() { this->flip_page(-1); });
     app->add_action("page_next_single", [this]() { this->flip_page(1, true); });
@@ -1243,7 +1241,7 @@ gui::main_window::page_available(const page_t page) noexcept
     if (current_page <= page && page < (current_page + nb_pages))
     {
         this->displayed_double();
-        this->signal_draw_page().emit();
+        this->draw_pages();
         this->update_page_information();
     }
 }
@@ -1313,7 +1311,7 @@ gui::main_window::set_page(const page_t page) noexcept
         this->settings->rotation = 0;
     }
 
-    this->signal_draw_page().emit();
+    this->draw_pages();
 }
 
 bool
@@ -1399,7 +1397,7 @@ gui::main_window::rotate_x(const std::int32_t rotation) noexcept
 {
     this->settings->rotation = (this->settings->rotation + rotation) % 360;
 
-    this->signal_draw_page().emit();
+    this->draw_pages();
 }
 
 void
@@ -1409,7 +1407,7 @@ gui::main_window::change_double_page() noexcept
     this->displayed_double();
     this->update_page_information();
 
-    this->signal_draw_page().emit();
+    this->draw_pages();
 }
 
 void
@@ -1422,7 +1420,7 @@ gui::main_window::change_manga_mode() noexcept
     this->statusbar_.set_view_mode();
     this->update_page_information();
 
-    this->signal_draw_page().emit();
+    this->draw_pages();
 }
 
 void
