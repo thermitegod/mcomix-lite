@@ -48,23 +48,23 @@ gui::lib::image_tools::rotate_pixbuf(const Glib::RefPtr<Gdk::Pixbuf>& src,
 
 std::array<std::int32_t, 2>
 gui::lib::image_tools::get_fitting_size(const std::int32_t src_width, const std::int32_t src_height,
-                                        std::int32_t width, std::int32_t height,
+                                        std::int32_t max_width, std::int32_t max_height,
                                         const bool scale_up) noexcept
 {
-    if (!scale_up && src_width <= width && src_height <= height)
+    if (!scale_up && src_width <= max_width && src_height <= max_height)
     {
-        return {width, height};
+        return {max_width, max_height};
     }
 
-    if ((src_width / width) > (src_height / height))
+    if ((src_width / max_width) > (src_height / max_height))
     {
-        height = std::max(src_height * width / src_width, 1);
+        max_height = std::max(src_height * max_width / src_width, 1);
     }
     else
     {
-        width = std::max(src_width * height / src_height, 1);
+        max_width = std::max(src_width * max_height / src_height, 1);
     }
-    return {width, height};
+    return {max_width, max_height};
 }
 
 Glib::RefPtr<Gdk::Pixbuf>
@@ -114,21 +114,22 @@ gui::lib::image_tools::load_texture(const std::filesystem::path& path) noexcept
 }
 
 Glib::RefPtr<Gdk::Paintable>
-gui::lib::image_tools::fit_to_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& src, std::int32_t width,
-                                        std::int32_t height, std::int32_t rotation) noexcept
+gui::lib::image_tools::fit_to_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& src,
+                                        std::int32_t max_width, std::int32_t max_height,
+                                        std::int32_t rotation) noexcept
 {
     // logger::info<logger::gui>("new {}x{}", width, height);
 
     if (rotation == 90 || rotation == 270)
     {
-        std::swap(width, height);
+        std::swap(max_width, max_height);
     }
 
     const auto src_width = src->get_width();
     const auto src_height = src->get_height();
 
     const auto [new_width, new_height] =
-        get_fitting_size(src_width, src_height, width, height, true);
+        get_fitting_size(src_width, src_height, max_width, max_height, true);
 
     // logger::info<logger::gui>("new {}x{} | src {}x{}", new_width, new_height, src_width, src_height);
 

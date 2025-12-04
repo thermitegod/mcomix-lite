@@ -1072,7 +1072,6 @@ gui::main_window::_draw_pages() noexcept
     }
 
     // Rotation handling
-    std::vector<std::int32_t> rotation_list(static_cast<std::size_t>(pixbuf_count), 0);
     const auto rotation = this->settings->rotation % 360;
     switch (rotation)
     {
@@ -1110,38 +1109,20 @@ gui::main_window::_draw_pages() noexcept
             std::unreachable();
     }
 
-    auto scale_to_size = [this](std::int32_t width,
-                                std::int32_t height) -> std::array<std::int32_t, 2>
-    {
-        // const auto max_width = static_cast<std::float_t>(this->image_box_.get_width());
-        // const auto max_height = static_cast<std::float_t>(this->image_box_.get_height());
-
-        const auto [max_width, max_height] = this->get_visible_area_size();
-
-        const auto scale_width =
-            static_cast<std::float_t>(max_width) / static_cast<std::float_t>(width);
-        const auto scale_height =
-            static_cast<std::float_t>(max_height) / static_cast<std::float_t>(height);
-        const auto scale = std::min(scale_width, scale_height);
-
-        return {static_cast<std::int32_t>(width * scale),
-                static_cast<std::int32_t>(height * scale)};
-    };
+    const auto [max_width, max_height] = this->get_visible_area_size();
 
     std::vector<std::array<std::int32_t, 2>> scaled_sizes;
 
     for (std::size_t i = 0; std::cmp_less(i, pixbuf_count); ++i)
     {
-        scaled_sizes.push_back(scale_to_size(size_list[i][0], size_list[i][1]));
-
-        rotation_list[i] = rotation;
-
-        // logger::debug<logger::gui>("scaled_sizes[{}] {}x{}", i, scaled_sizes[i][0], scaled_sizes[i][1]);
-
         auto paintable = gui::lib::image_tools::fit_to_rectangle(pixbuf_list[i],
-                                                                 scaled_sizes[i][0],
-                                                                 scaled_sizes[i][1],
-                                                                 rotation_list[i]);
+                                                                 max_width,
+                                                                 max_height,
+                                                                 rotation);
+
+        scaled_sizes.push_back(
+            {paintable->get_intrinsic_width(), paintable->get_intrinsic_height()});
+        // logger::debug<logger::gui>("scaled_sizes[{}] {}x{}", i, scaled_sizes[i][0], scaled_sizes[i][1]);
 
         if (i == 0)
         {

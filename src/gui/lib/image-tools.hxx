@@ -49,7 +49,8 @@ namespace gui::lib::image_tools
  */
 [[nodiscard]] std::array<std::int32_t, 2> get_fitting_size(const std::int32_t src_width,
                                                            const std::int32_t src_height,
-                                                           std::int32_t width, std::int32_t height,
+                                                           std::int32_t max_width,
+                                                           std::int32_t max_height,
                                                            const bool scale_up = true) noexcept;
 
 /**
@@ -74,7 +75,8 @@ add_alpha_background(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf, const std::int32_t
 [[nodiscard]] Glib::RefPtr<Gdk::Texture> load_texture(const std::filesystem::path& path) noexcept;
 
 [[nodiscard]] Glib::RefPtr<Gdk::Paintable> fit_to_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf,
-                                                            std::int32_t width, std::int32_t height,
+                                                            std::int32_t max_width,
+                                                            std::int32_t max_height,
                                                             std::int32_t rotation = 0) noexcept;
 
 /**
