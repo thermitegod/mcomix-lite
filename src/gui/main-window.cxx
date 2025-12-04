@@ -1527,7 +1527,7 @@ gui::main_window::on_trash_current_file() noexcept
     dialog->set_cancel_button(0);
     dialog->set_default_button(0);
 
-    auto slot = [this, current_file, dialog](Glib::RefPtr<Gio::AsyncResult>& result) mutable
+    auto slot = [this, current_file, dialog](Glib::RefPtr<Gio::AsyncResult>& result)
     {
         try
         {
