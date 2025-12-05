@@ -1072,8 +1072,7 @@ gui::main_window::_draw_pages() noexcept
     }
 
     // Rotation handling
-    const auto rotation = this->settings->rotation % 360;
-    switch (rotation)
+    switch (this->settings->rotation)
     {
         case 0:
         {
@@ -1118,7 +1117,7 @@ gui::main_window::_draw_pages() noexcept
         auto paintable = gui::lib::image_tools::fit_to_rectangle(pixbuf_list[i],
                                                                  max_width,
                                                                  max_height,
-                                                                 rotation);
+                                                                 this->settings->rotation);
 
         scaled_sizes.push_back(
             {paintable->get_intrinsic_width(), paintable->get_intrinsic_height()});
