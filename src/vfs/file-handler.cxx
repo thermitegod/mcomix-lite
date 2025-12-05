@@ -63,7 +63,8 @@ vfs::file_handler::refresh_opened() noexcept
 }
 
 void
-vfs::file_handler::open_file_init(const std::span<const std::filesystem::path> filelist) noexcept
+vfs::file_handler::open_file_init(const std::span<const std::filesystem::path> filelist,
+                                  const page_t start_page) noexcept
 {
     if (filelist.empty())
     {
@@ -71,7 +72,7 @@ vfs::file_handler::open_file_init(const std::span<const std::filesystem::path> f
     }
 
     this->initialize_fileprovider(filelist);
-    this->open_file(filelist.front(), this->default_start_page_);
+    this->open_file(filelist.front(), start_page);
 }
 
 void

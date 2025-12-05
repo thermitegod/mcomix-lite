@@ -117,7 +117,7 @@ gui::dialog::bookmarks::on_button_ok_clicked() noexcept
     if (auto selected =
             std::dynamic_pointer_cast<ModelColumns>(this->selection_model_->get_selected_item()))
     {
-        this->file_handler_->open_file(selected->path_, selected->current_page_);
+        this->file_handler_->open_file_init({selected->path_}, selected->current_page_);
     }
 
     this->close();
