@@ -306,6 +306,7 @@ sources = files(
   'src/commandline/commandline.cxx',
 
   'src/gui/main-window.cxx',
+  'src/gui/menubar.cxx',
   'src/gui/statusbar.cxx',
   'src/gui/thumbbar.cxx',
   'src/gui/viewport.cxx',

@@ -34,6 +34,7 @@
 #include "settings/config.hxx"
 
 #include "gui/main-window.hxx"
+#include "gui/menubar.hxx"
 #include "gui/statusbar.hxx"
 #include "gui/thumbbar.hxx"
 
@@ -173,8 +174,6 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
     this->thumb_sidebar_.signal_page_selected().connect([this](const auto page)
                                                         { this->set_page(page); });
 
-    this->setup_menubar();
-
     this->box_.set_orientation(Gtk::Orientation::VERTICAL);
     this->box_.set_hexpand(true);
     this->box_.set_vexpand(true);
@@ -219,79 +218,6 @@ gui::main_window::~main_window()
     config::save(vfs::program::config(), this->settings);
 
     this->file_handler_->close_file();
-}
-
-void
-gui::main_window::setup_menubar() noexcept
-{
-    auto app = this->get_application();
-    auto menu = Gio::Menu::create();
-
-    { // "File"
-        auto section_1 = Gio::Menu::create();
-        section_1->append("Open", "app.open");
-
-        auto section_2 = Gio::Menu::create();
-        section_2->append("Save Page As", "app.page_extract");
-        section_2->append("Refresh", "app.refresh");
-        section_2->append("Properties", "app.properties");
-
-        auto section_3 = Gio::Menu::create();
-        section_3->append("Trash", "app.trash");
-
-        auto section_4 = Gio::Menu::create();
-        section_4->append("Minimize", "app.minimize");
-        section_4->append("Close", "app.close");
-        section_4->append("Quit", "app.quit");
-
-        auto file_menu = Gio::Menu::create();
-        file_menu->append_section(section_1);
-        file_menu->append_section(section_2);
-        file_menu->append_section(section_3);
-        file_menu->append_section(section_4);
-        menu->append_submenu("File", file_menu);
-    }
-
-    { // "Edit"
-        auto edit_menu = Gio::Menu::create();
-        edit_menu->append("Keybindings", "app.keybindings");
-        edit_menu->append("Preferences", "app.preferences");
-        menu->append_submenu("Edit", edit_menu);
-    }
-
-    { // "View"
-        auto view_menu = Gio::Menu::create();
-        view_menu->append("Toggle Thumbnail Sidebar", "app.toggle_thumbar");
-        view_menu->append("Toggle Menubar", "app.toggle_menubar");
-        view_menu->append("Toggle Statusbar", "app.toggle_statusbar");
-        view_menu->append("Toggle Center Spacing", "app.page_center_space");
-        menu->append_submenu("View", view_menu);
-    }
-
-    { // "Bookmarks"
-        auto book_menu = Gio::Menu::create();
-        book_menu->append("Add Bookmark", "app.bookmark_add");
-        book_menu->append("Open Bookmark Manager", "app.bookmark_manager");
-        menu->append_submenu("Bookmarks", book_menu);
-    }
-
-    { // "Tools"
-        auto tools_menu = Gio::Menu::create();
-        tools_menu->append("Reset Rotation", "app.rotate_reset");
-        tools_menu->append("Rotate 90°", "app.rotate_90");
-        tools_menu->append("Rotate 180°", "app.rotate_180");
-        tools_menu->append("Rotate 270°", "app.rotate_270");
-        menu->append_submenu("Tools", tools_menu);
-    }
-
-    { // "Help"
-        auto help_menu = Gio::Menu::create();
-        help_menu->append("About", "app.about");
-        help_menu->append("Donate", "app.donate");
-        menu->append_submenu("Help", help_menu);
-    }
-
-    this->menubar_.set_menu_model(menu);
 }
 
 void

@@ -27,6 +27,7 @@
 
 #include "settings/settings.hxx"
 
+#include "gui/menubar.hxx"
 #include "gui/statusbar.hxx"
 #include "gui/thumbbar.hxx"
 #include "gui/viewport.hxx"
@@ -68,7 +69,6 @@ class main_window : public Gtk::ApplicationWindow
 
     void page_available(const page_t page) noexcept;
 
-    void setup_menubar() noexcept;
     void add_shortcuts() noexcept;
 
     void on_bookmark_add() noexcept;
@@ -105,7 +105,7 @@ class main_window : public Gtk::ApplicationWindow
     Gtk::Box box_;
     Gtk::Box center_box_;
 
-    Gtk::PopoverMenuBar menubar_;
+    gui::menubar menubar_ = gui::menubar();
     gui::thumbbar thumb_sidebar_ = gui::thumbbar(this->settings);
     gui::viewport viewport_ = gui::viewport(this->settings);
     gui::statusbar statusbar_ = gui::statusbar(this->settings, this->view_state);
