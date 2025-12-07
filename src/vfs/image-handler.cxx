@@ -115,15 +115,9 @@ vfs::image_handler::is_page_available(const std::optional<page_t> query) const n
         page_list.push_back(page + 1);
     }
 
-    for (const auto p : page_list)
-    {
-        if (!this->available_images_.contains(p))
-        {
-            return false;
-        }
-    }
-
-    return true;
+    return std::ranges::all_of(page_list,
+                               [this](const page_t page)
+                               { return this->available_images_.contains(page); });
 }
 
 void
