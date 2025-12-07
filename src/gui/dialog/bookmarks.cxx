@@ -78,15 +78,19 @@ gui::dialog::bookmarks::bookmarks(Gtk::ApplicationWindow& parent,
     this->button_box_ = Gtk::Box(Gtk::Orientation::HORIZONTAL, 5);
     this->button_ok_ = Gtk::Button("Open", true);
     this->button_ok_.signal_clicked().connect([this]() { this->on_button_ok_clicked(); });
-    this->button_remove_ = Gtk::Button("Remove", true);
-    this->button_remove_.signal_clicked().connect([this]() { this->on_button_remove_clicked(); });
     this->button_close_ = Gtk::Button("Close", true);
     this->button_close_.signal_clicked().connect([this]() { this->on_button_close_clicked(); });
+    this->button_remove_ = Gtk::Button("Remove", true);
+    this->button_remove_.signal_clicked().connect([this]() { this->on_button_remove_clicked(); });
+    this->button_remove_all_ = Gtk::Button("Remove All", true);
+    this->button_remove_all_.signal_clicked().connect([this]()
+                                                      { this->on_button_remove_all_clicked(); });
 
     this->box_.append(this->button_box_);
     this->button_box_.set_halign(Gtk::Align::END);
-    this->button_box_.append(this->button_close_);
+    this->button_box_.append(this->button_remove_all_);
     this->button_box_.append(this->button_remove_);
+    this->button_box_.append(this->button_close_);
     this->button_box_.append(this->button_ok_);
 
     this->set_child(this->box_);
@@ -132,6 +136,35 @@ gui::dialog::bookmarks::on_button_remove_clicked() noexcept
         this->bookmarks_->remove(selected->path_);
         this->liststore_->remove(selection_model_->get_selected());
     }
+}
+
+void
+gui::dialog::bookmarks::on_button_remove_all_clicked() noexcept
+{
+    auto dialog = Gtk::AlertDialog::create("Remove All Bookmarks?");
+    dialog->set_detail(
+        std::format("This will remove '{}' bookmarks", this->bookmarks_->get_bookmarks().size()));
+    dialog->set_modal(true);
+    dialog->set_buttons({"Cancel", "Confirm"});
+    dialog->set_cancel_button(0);
+    dialog->set_default_button(0);
+
+    auto slot = [this, dialog](Glib::RefPtr<Gio::AsyncResult>& result)
+    {
+        try
+        {
+            const auto response = dialog->choose_finish(result);
+            if (response == 1)
+            { // Confirm Button
+                this->bookmarks_->remove_all();
+                this->liststore_->remove_all();
+            }
+        }
+        catch (...)
+        {
+        }
+    };
+    dialog->choose(*this, slot);
 }
 
 void

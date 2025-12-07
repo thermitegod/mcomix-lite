@@ -122,6 +122,13 @@ vfs::bookmarks::remove(const std::filesystem::path& path) noexcept
     this->save();
 }
 
+void
+vfs::bookmarks::remove_all() noexcept
+{
+    this->bookmarks_.clear();
+    this->save();
+}
+
 std::span<const vfs::bookmarks::bookmark_data>
 vfs::bookmarks::get_bookmarks() noexcept
 {

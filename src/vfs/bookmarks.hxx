@@ -43,6 +43,7 @@ class bookmarks
 
     void add(const bookmark_data& new_bookmark) noexcept;
     void remove(const std::filesystem::path& path) noexcept;
+    void remove_all() noexcept;
 
     [[nodiscard]] std::span<const bookmark_data> get_bookmarks() noexcept;
 

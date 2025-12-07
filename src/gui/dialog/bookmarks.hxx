@@ -67,8 +67,9 @@ class bookmarks : public Gtk::ApplicationWindow
 
     Gtk::Box button_box_;
     Gtk::Button button_ok_;
-    Gtk::Button button_remove_;
     Gtk::Button button_close_;
+    Gtk::Button button_remove_;
+    Gtk::Button button_remove_all_;
 
     std::shared_ptr<vfs::file_handler> file_handler_;
     std::shared_ptr<vfs::bookmarks> bookmarks_;
@@ -83,8 +84,9 @@ class bookmarks : public Gtk::ApplicationWindow
     bool on_key_press(std::uint32_t keyval, std::uint32_t keycode,
                       Gdk::ModifierType state) noexcept;
     void on_button_ok_clicked() noexcept;
-    void on_button_remove_clicked() noexcept;
     void on_button_close_clicked() noexcept;
+    void on_button_remove_clicked() noexcept;
+    void on_button_remove_all_clicked() noexcept;
 
     void on_setup_label(const Glib::RefPtr<Gtk::ListItem>& list_item, Gtk::Align halign) noexcept;
 
