@@ -157,7 +157,7 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
     app->add_action("page_extract", [this]() { this->on_open_page_extractor(); });
 
     app->add_action("open", [this]() { this->on_open_filechooser(); });
-    app->add_action("quit", [this]() { this->close(); });
+    app->add_action("quit", [this]() { this->on_quit(); });
     app->add_action("refresh", [this]() { this->file_handler_->refresh_opened(); });
     app->add_action("keybindings", [this]() { this->on_open_keybindings(); });
     app->add_action("preferences", [this]() { this->on_open_preferences(); });
@@ -213,11 +213,6 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
                                      { this->file_handler_->open_file_init(filelist); });
 }
 
-gui::main_window::~main_window()
-{
-    config::save(vfs::program::config(), this->settings);
-}
-
 void
 gui::main_window::add_shortcuts() noexcept
 {
@@ -227,7 +222,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->close();
+                this->activate_action("app.quit");
                 return true;
             });
 
@@ -775,6 +770,14 @@ gui::main_window::add_shortcuts() noexcept
     }
 
     this->add_controller(controller);
+}
+
+void
+gui::main_window::on_quit() noexcept
+{
+    config::save(vfs::program::config(), this->settings);
+
+    this->close();
 }
 
 void

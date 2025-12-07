@@ -46,7 +46,6 @@ class main_window : public Gtk::ApplicationWindow
   public:
     main_window(const Glib::RefPtr<Gtk::Application>& app,
                 const std::vector<std::filesystem::path>& filelist);
-    virtual ~main_window();
 
   private:
     void draw_pages() noexcept;
@@ -74,6 +73,7 @@ class main_window : public Gtk::ApplicationWindow
     void on_bookmark_add() noexcept;
     void on_bookmark_manager() noexcept;
 
+    void on_quit() noexcept;
     void on_escape_event() noexcept;
     void on_open_page_extractor() noexcept;
     void on_open_filechooser() noexcept;
