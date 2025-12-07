@@ -24,10 +24,6 @@
 
 #include "gui/dialog/bookmarks.hxx"
 
-// TODO
-// - Gtk::ColumnView not getting key presses or click events,
-//      have to use 'Open' button to open bookmark
-
 gui::dialog::bookmarks::bookmarks(Gtk::ApplicationWindow& parent,
                                   const std::shared_ptr<vfs::file_handler>& file_handler,
                                   const std::shared_ptr<vfs::bookmarks>& bookmarks,
@@ -61,10 +57,10 @@ gui::dialog::bookmarks::bookmarks(Gtk::ApplicationWindow& parent,
     this->columnview_.set_reorderable(false);
     // this->columnview_.set_single_click_activate(true);
     this->columnview_.add_css_class("data-table");
+    this->columnview_.signal_activate().connect([this]([[maybe_unused]] auto i)
+                                                { this->on_button_ok_clicked(); });
     this->add_columns();
     this->scrolled_window_.set_child(this->columnview_);
-
-    selection_model_->signal_selection_changed();
 
     // keybindings //
 
@@ -104,10 +100,6 @@ gui::dialog::bookmarks::on_key_press(std::uint32_t keyval, std::uint32_t keycode
 {
     (void)keycode;
     (void)state;
-    if (keyval == GDK_KEY_Return || keyval == GDK_KEY_KP_Enter)
-    {
-        this->on_button_ok_clicked();
-    }
     if (keyval == GDK_KEY_Escape)
     {
         this->on_button_close_clicked();
