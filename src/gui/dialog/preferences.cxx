@@ -558,6 +558,7 @@ gui::dialog::preferences::init_advanced_tab() noexcept
 {
     auto page = PreferencePage();
 
+#if 0
     page.add_section("Page Cache");
 
     {
@@ -591,6 +592,7 @@ gui::dialog::preferences::init_advanced_tab() noexcept
 
         page.add_row("Pages to cache ahead", *button);
     }
+#endif
 
     page.add_section("Moving Files");
 

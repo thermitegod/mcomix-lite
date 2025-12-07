@@ -16,8 +16,8 @@
 #include <algorithm>
 #include <filesystem>
 #include <memory>
+#include <ranges>
 #include <string>
-#include <utility>
 #include <vector>
 
 #include <cassert>
@@ -49,19 +49,13 @@ vfs::image_handler::image_files() const noexcept
 }
 
 void
-vfs::image_handler::prune() noexcept
+vfs::image_handler::prune(const std::int32_t start, const std::int32_t size) noexcept
 {
-    const auto keep_start =
-        std::max<std::int32_t>(*this->current_image_ - this->settings->cache_behind, 0);
-    const auto keep_end =
-        std::min<std::int32_t>(*this->current_image_ + this->settings->cache_forward,
-                               this->get_number_of_pages());
-
     std::erase_if(this->raw_pixbufs_,
-                  [keep_start, keep_end](const auto& entry)
+                  [start, size](const auto& entry)
                   {
                       const auto key = entry.first;
-                      return (key < keep_start || key > keep_end);
+                      return (key < start || key > (start + size));
                   });
 }
 
@@ -73,8 +67,6 @@ vfs::image_handler::get_pixbuf(const page_t page) noexcept
         // logger::trace<logger::vfs>("pixbuf for page {} in cache", page);
         return this->raw_pixbufs_[page];
     }
-
-    this->prune();
 
     const auto path = this->image_files_->path_from_page(page);
 
@@ -93,16 +85,17 @@ vfs::image_handler::get_pixbuf(const page_t page) noexcept
 std::vector<Glib::RefPtr<Gdk::Pixbuf>>
 vfs::image_handler::get_pixbufs(const std::int32_t number) noexcept
 {
-    if (number == 1)
+    assert(number > 0);
+
+    std::vector<Glib::RefPtr<Gdk::Pixbuf>> pixbufs;
+    for (const auto& i : std::views::iota(*this->current_image_) | std::views::take(number))
     {
-        return {vfs::image_handler::get_pixbuf(*this->current_image_)};
+        pixbufs.push_back(vfs::image_handler::get_pixbuf(i));
     }
-    else if (number == 2)
-    {
-        return {vfs::image_handler::get_pixbuf(*this->current_image_),
-                vfs::image_handler::get_pixbuf(*this->current_image_ + 1)};
-    }
-    std::unreachable();
+
+    this->prune(*this->current_image_, static_cast<std::int32_t>(pixbufs.size()));
+
+    return pixbufs;
 }
 
 void
