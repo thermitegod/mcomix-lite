@@ -137,7 +137,7 @@ void
 gui::dialog::pageselect::set_thumbnail(const page_t page) noexcept
 {
     auto paintable = gui::lib::image_tools::create_thumbnail(
-        this->file_handler_->image_handler()->image_files()->path_from_page(page),
+        this->file_handler_->image_handler()->get_path_to_page(page),
         800);
 
     this->image_.set_paintable(paintable);

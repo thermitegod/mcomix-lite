@@ -841,8 +841,7 @@ gui::main_window::on_bookmark_manager() noexcept
 void
 gui::main_window::on_open_page_extractor() noexcept
 {
-    auto page = this->file_handler_->image_handler()->get_current_page();
-    auto path = this->file_handler_->image_handler()->image_files()->path_from_page(page);
+    const auto path = this->file_handler_->image_handler()->get_path_to_page();
 
     auto dialog = Gtk::FileDialog::create();
 
@@ -1212,7 +1211,7 @@ gui::main_window::page_available(const page_t page) noexcept
     // Called whenever a new page is ready for displaying
     const auto image_handler = this->file_handler_->image_handler();
 
-    this->thumb_sidebar_.request(page, image_handler->image_files()->path_from_page(page));
+    this->thumb_sidebar_.request(page, image_handler->get_path_to_page(page));
 
     // Refresh display when currently opened page becomes available.
     const auto current_page = image_handler->get_current_page();
