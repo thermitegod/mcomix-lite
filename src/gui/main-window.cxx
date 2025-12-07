@@ -105,6 +105,11 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
     app->add_action("archive_prev",
                     [this]() { auto _ = this->file_handler_->open_prev_archive(); });
 
+    app->add_action("archive_first",
+                    [this]() { auto _ = this->file_handler_->open_first_archive(); });
+    app->add_action("archive_last",
+                    [this]() { auto _ = this->file_handler_->open_last_archive(); });
+
     app->add_action("rotate_reset",
                     [this]()
                     {
@@ -521,6 +526,36 @@ gui::main_window::add_shortcuts() noexcept
         controller->add_shortcut(Gtk::Shortcut::create(
             Gtk::KeyvalTrigger::create(GDK_KEY_Left, Gdk::ModifierType::CONTROL_MASK),
             action));
+    }
+
+    { // First Archive
+        auto action = Gtk::CallbackAction::create(
+            [this](Gtk::Widget&, const Glib::VariantBase&)
+            {
+                this->activate_action("app.archive_first");
+                return true;
+            });
+
+        controller->add_shortcut(
+            Gtk::Shortcut::create(Gtk::KeyvalTrigger::create(GDK_KEY_Left,
+                                                             Gdk::ModifierType::CONTROL_MASK |
+                                                                 Gdk::ModifierType::SHIFT_MASK),
+                                  action));
+    }
+
+    { // Last Archive
+        auto action = Gtk::CallbackAction::create(
+            [this](Gtk::Widget&, const Glib::VariantBase&)
+            {
+                this->activate_action("app.archive_last");
+                return true;
+            });
+
+        controller->add_shortcut(
+            Gtk::Shortcut::create(Gtk::KeyvalTrigger::create(GDK_KEY_Right,
+                                                             Gdk::ModifierType::CONTROL_MASK |
+                                                                 Gdk::ModifierType::SHIFT_MASK),
+                                  action));
     }
 
     // View //

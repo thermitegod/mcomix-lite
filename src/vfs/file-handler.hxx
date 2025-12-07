@@ -53,6 +53,8 @@ class file_handler
     [[nodiscard]] const std::filesystem::path get_real_path() noexcept;
     [[nodiscard]] bool open_next_archive() noexcept;
     [[nodiscard]] bool open_prev_archive() noexcept;
+    [[nodiscard]] bool open_first_archive() noexcept;
+    [[nodiscard]] bool open_last_archive() noexcept;
 
     [[nodiscard]] std::filesystem::path current_file() noexcept;
 

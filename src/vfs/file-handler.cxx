@@ -315,23 +315,15 @@ vfs::file_handler::open_next_archive() noexcept
     }
 
     const auto files = this->get_file_list();
-    if (!std::ranges::contains(files, this->current_file_))
-    {
-        return false;
-    }
-
     const auto current_index = current_file_index(files, this->current_file_);
-
     if (!current_index || (*current_index + 1) == files.size())
     {
         return false;
     }
 
     const auto next_file = files.at(*current_index + 1);
-    const page_t next_page = 1;
 
-    this->close();
-    this->open_file(next_file, next_page);
+    this->open_file(next_file, 1);
     return true;
 }
 
@@ -344,23 +336,45 @@ vfs::file_handler::open_prev_archive() noexcept
     }
 
     const auto files = this->get_file_list();
-    if (!std::ranges::contains(files, this->current_file_))
-    {
-        return false;
-    }
-
     const auto current_index = current_file_index(files, this->current_file_);
-
     if (!current_index || *current_index == 0)
     {
         return false;
     }
 
     const auto next_file = files.at(*current_index - 1);
-    const page_t next_page = 1;
 
-    this->close();
-    this->open_file(next_file, next_page);
+    this->open_file(next_file, 1);
+    return true;
+}
+
+bool
+vfs::file_handler::open_first_archive() noexcept
+{
+    if (!this->is_archive())
+    {
+        return false;
+    }
+
+    const auto files = this->get_file_list();
+    const auto next_file = files.front();
+
+    this->open_file(next_file, 1);
+    return true;
+}
+
+bool
+vfs::file_handler::open_last_archive() noexcept
+{
+    if (!this->is_archive())
+    {
+        return false;
+    }
+
+    const auto files = this->get_file_list();
+    const auto next_file = files.back();
+
+    this->open_file(next_file, 1);
     return true;
 }
 
