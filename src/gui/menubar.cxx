@@ -64,6 +64,36 @@ gui::menubar::menubar()
         menu->append_submenu("View", view_menu);
     }
 
+    { // "Navigation"
+        auto section_1 = Gio::Menu::create();
+        section_1->append("Next Page", "app.page_next");
+        section_1->append("Previous Page", "app.page_prev");
+        section_1->append("Single Step Next Page", "app.page_next_single");
+        section_1->append("Single Step Previous Page", "app.page_prev_single");
+        section_1->append("Fast Forward Next Page", "app.page_next_ff");
+        section_1->append("Fast Forward Previous Page", "app.page_prev_ff");
+        section_1->append("First Page", "app.page_first");
+        section_1->append("Last Page", "app.page_last");
+
+        auto section_2 = Gio::Menu::create();
+        section_2->append("Page Selector", "app.page_select");
+
+        auto section_3 = Gio::Menu::create();
+        section_3->append("Next Archive", "app.archive_next");
+        section_3->append("Previous Archive", "app.archive_prev");
+
+        auto section_4 = Gio::Menu::create();
+        section_4->append("First Archive", "app.archive_first");
+        section_4->append("Last Archive", "app.archive_last");
+
+        auto nav_menu = Gio::Menu::create();
+        nav_menu->append_section(section_1);
+        nav_menu->append_section(section_2);
+        nav_menu->append_section(section_3);
+        nav_menu->append_section(section_4);
+        menu->append_submenu("Navigation", nav_menu);
+    }
+
     { // "Bookmarks"
         auto book_menu = Gio::Menu::create();
         book_menu->append("Add Bookmark", "app.bookmark_add");
