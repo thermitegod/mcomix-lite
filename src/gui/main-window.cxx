@@ -216,8 +216,6 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
 gui::main_window::~main_window()
 {
     config::save(vfs::program::config(), this->settings);
-
-    this->file_handler_->close_file();
 }
 
 void
@@ -1214,13 +1212,7 @@ gui::main_window::on_file_opened() noexcept
 void
 gui::main_window::on_file_closed() noexcept
 {
-    if (GTK_IS_WINDOW(this->gobj()))
-    {
-        // this will get called during program shutdown
-        // then 'this' is no longer a Window, so need to
-        // check if the Window is still valid first.
-        this->set_title(PACKAGE_NAME);
-    }
+    this->set_title(PACKAGE_NAME_FANCY);
 
     this->viewport_.hide_images();
     this->statusbar_.set_message("");
