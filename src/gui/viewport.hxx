@@ -16,6 +16,7 @@
 #pragma once
 
 #include <memory>
+#include <span>
 
 #include <gdkmm.h>
 #include <glibmm.h>
@@ -30,13 +31,15 @@ class viewport : public Gtk::Box
   public:
     viewport(const std::shared_ptr<config::settings>& settings);
 
-    void set_left(const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept;
-    void set_right(const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept;
+    void set(const std::span<Glib::RefPtr<Gdk::Paintable>>& paintables) noexcept;
 
     void hide_images() noexcept;
     void toggle_page_padding() noexcept;
 
   private:
+    void set_left(const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept;
+    void set_right(const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept;
+
     // Need to use two boxes to get images to stay connected
     Gtk::Box image_box_;
     Gtk::Picture image_left_;

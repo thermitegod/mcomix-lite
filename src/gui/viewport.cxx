@@ -14,6 +14,10 @@
  */
 
 #include <memory>
+#include <span>
+#include <utility>
+
+#include <cassert>
 
 #include <gdkmm.h>
 #include <glibmm.h>
@@ -60,6 +64,26 @@ gui::viewport::viewport(const std::shared_ptr<config::settings>& settings) : set
 
     this->property_orientation().signal_changed().connect(
         [this]() { this->image_box_.set_orientation(this->get_orientation()); });
+}
+
+void
+gui::viewport::set(const std::span<Glib::RefPtr<Gdk::Paintable>>& paintables) noexcept
+{
+    assert(paintables.size() == 1 || paintables.size() == 2);
+
+    if (paintables.size() == 1)
+    {
+        this->set_left(paintables[0]);
+    }
+    else if (paintables.size() == 2)
+    {
+        this->set_left(paintables[0]);
+        this->set_right(paintables[1]);
+    }
+    else
+    {
+        std::unreachable();
+    }
 }
 
 void

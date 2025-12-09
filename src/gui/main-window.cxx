@@ -18,9 +18,11 @@
 #include <filesystem>
 #include <format>
 #include <optional>
+#include <ranges>
 #include <string>
 #include <system_error>
 #include <utility>
+#include <vector>
 
 #include <cmath>
 
@@ -1072,27 +1074,21 @@ gui::main_window::_draw_pages() noexcept
     const auto [max_width, max_height] = this->get_visible_area_size();
 
     std::vector<std::array<std::int32_t, 2>> scaled_sizes;
-
-    for (std::size_t i = 0; std::cmp_less(i, pixbuf_count); ++i)
+    std::vector<Glib::RefPtr<Gdk::Paintable>> paintables;
+    for (const auto& [idx, pixbuf] : std::views::enumerate(pixbuf_list))
     {
-        auto paintable = gui::lib::image_tools::fit_to_rectangle(pixbuf_list[i],
+        auto paintable = gui::lib::image_tools::fit_to_rectangle(pixbuf,
                                                                  max_width,
                                                                  max_height,
                                                                  this->settings->rotation);
 
         scaled_sizes.push_back(
             {paintable->get_intrinsic_width(), paintable->get_intrinsic_height()});
-        // logger::debug<logger::gui>("scaled_sizes[{}] {}x{}", i, scaled_sizes[i][0], scaled_sizes[i][1]);
+        // logger::debug<logger::gui>("scaled_sizes[{}] {}x{}", idx, scaled_sizes[idx][0], scaled_sizes[idx][1]);
 
-        if (i == 0)
-        {
-            this->viewport_.set_left(paintable);
-        }
-        else
-        {
-            this->viewport_.set_right(paintable);
-        }
+        paintables.push_back(paintable);
     }
+    this->viewport_.set(paintables);
 
     this->statusbar_.set_resolution(scaled_sizes, size_list);
     this->statusbar_.update();
