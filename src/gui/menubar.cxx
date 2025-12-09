@@ -56,11 +56,19 @@ gui::menubar::menubar()
     }
 
     { // "View"
+        auto section_1 = Gio::Menu::create();
+        section_1->append("Toggle Double Page", "app.view_double");
+        section_1->append("Toggle Manga Mode", "app.view_manga");
+
+        auto section_2 = Gio::Menu::create();
+        section_2->append("Toggle Thumbnail Sidebar", "app.toggle_thumbar");
+        section_2->append("Toggle Menubar", "app.toggle_menubar");
+        section_2->append("Toggle Statusbar", "app.toggle_statusbar");
+        section_2->append("Toggle Center Spacing", "app.page_center_space");
+
         auto view_menu = Gio::Menu::create();
-        view_menu->append("Toggle Thumbnail Sidebar", "app.toggle_thumbar");
-        view_menu->append("Toggle Menubar", "app.toggle_menubar");
-        view_menu->append("Toggle Statusbar", "app.toggle_statusbar");
-        view_menu->append("Toggle Center Spacing", "app.page_center_space");
+        view_menu->append_section(section_1);
+        view_menu->append_section(section_2);
         menu->append_submenu("View", view_menu);
     }
 
