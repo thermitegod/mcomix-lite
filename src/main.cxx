@@ -35,6 +35,7 @@ main(int argc, char* argv[])
     Glib::set_prgname(PACKAGE_NAME);
 
     // command line is not handled by GTK
-    auto app = Gtk::Application::create("org.thermitegod.mcomix");
+    auto app =
+        Gtk::Application::create("org.thermitegod.mcomix", Gio::Application::Flags::NON_UNIQUE);
     return app->make_window_and_run<gui::main_window>(0, nullptr, app, opt->files);
 }
