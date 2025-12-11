@@ -15,7 +15,7 @@
 
 #pragma once
 
-#include <ctime>
+#include <chrono>
 #include <filesystem>
 #include <vector>
 
@@ -49,6 +49,7 @@ class bookmarks
 
   private:
     std::vector<bookmark_data> bookmarks_;
+    std::chrono::system_clock::time_point bookmark_mtime_;
 
   public:
     [[nodiscard]] auto

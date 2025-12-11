@@ -71,6 +71,13 @@ vfs::bookmarks::load() noexcept
         return;
     }
 
+    const auto statx = ztd::stat::create(bookmark_disk_format::path);
+    if (statx->mtime() == this->bookmark_mtime_)
+    { // Bookmark file has not been modified since last read
+        return;
+    }
+    this->bookmark_mtime_ = statx->mtime();
+
     bookmark_disk_format::bookmark_data config_data;
     std::string buffer;
     const auto ec = glz::read_file_json<glz::opts{.error_on_unknown_keys = false}>(
@@ -91,7 +98,6 @@ vfs::bookmarks::load() noexcept
 void
 vfs::bookmarks::add(const bookmark_data& new_bookmark) noexcept
 {
-    // TODO only reload if mtime has changed
     this->load();
 
     for (auto& bookmark : this->bookmarks_)
@@ -113,7 +119,6 @@ vfs::bookmarks::add(const bookmark_data& new_bookmark) noexcept
 void
 vfs::bookmarks::remove(const std::filesystem::path& path) noexcept
 {
-    // TODO only reload if mtime has changed
     this->load();
 
     std::erase_if(this->bookmarks_,
@@ -132,7 +137,6 @@ vfs::bookmarks::remove_all() noexcept
 std::span<const vfs::bookmarks::bookmark_data>
 vfs::bookmarks::get_bookmarks() noexcept
 {
-    // TODO only reload if mtime has changed
     this->load();
 
     return this->bookmarks_;
