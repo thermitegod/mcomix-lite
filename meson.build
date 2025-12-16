@@ -339,13 +339,6 @@ sources = files(
 
   'src/settings/config-load.cxx',
   'src/settings/config-save.cxx',
-
-  # third_party - libarchive_wrapper
-  'src/vfs/libarchive/archive_entry.cxx',
-  'src/vfs/libarchive/archive_exception.cxx',
-  'src/vfs/libarchive/archive_reader.cxx',
-  'src/vfs/libarchive/archive_reader_entry_buffer.cxx',
-  'src/vfs/libarchive/archive_reader_iterator.cxx',
 )
 
 spacefm = build_target(
