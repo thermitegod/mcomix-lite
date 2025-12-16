@@ -339,6 +339,9 @@ sources = files(
 
   'src/settings/config-load.cxx',
   'src/settings/config-save.cxx',
+
+  'src/vfs/libarchive/entry.cxx',
+  'src/vfs/libarchive/reader.cxx',
 )
 
 spacefm = build_target(

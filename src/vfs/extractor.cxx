@@ -15,14 +15,11 @@
 
 #include <filesystem>
 #include <format>
-#include <fstream>
-#include <stdexcept>
 
 #include <ztd/ztd.hxx>
 
 #include "vfs/extractor.hxx"
-#include "vfs/libarchive/archive_exception.hxx"
-#include "vfs/libarchive/archive_reader.hxx"
+#include "vfs/libarchive/reader.hxx"
 #include "vfs/user-dirs.hxx"
 
 #include "logger.hxx"
@@ -57,76 +54,57 @@ vfs::extractor::close() const noexcept
 }
 
 void
-vfs::extractor::list()
+vfs::extractor::list() noexcept
 {
-    namespace ar = ns_archive::ns_reader;
-
-    try
+    auto reader = vfs::libarchive::reader::create(this->archive_);
+    if (!reader)
     {
-        std::fstream fs(this->archive_);
-        ns_archive::reader reader =
-            ns_archive::reader::make_reader<ar::format::_ALL, ar::filter::_ALL>(fs, 10240);
-
-        std::vector<std::filesystem::path> listed;
-        for (auto entry : reader)
-        {
-            // std::filesystem::path filename = entry->get_header_value_pathname();
-
-            std::filesystem::path filename =
-                this->destination_ / entry->get_header_value_pathname();
-
-            if (std::filesystem::is_directory(filename))
-            {
-                continue;
-            }
-
-            // logger::trace<logger::vfs>("archive file: {}", entry->get_header_value_pathname());
-
-            listed.push_back(filename);
-        }
-
-        this->signal_file_listed().emit(listed);
-    }
-    catch (const ns_archive::archive_exception& e)
-    {
-        logger::error<logger::vfs>("Extraction error: {}", e.what());
         return;
     }
+
+    std::vector<std::filesystem::path> listed;
+    for (auto entry_result : *reader)
+    {
+        if (!entry_result)
+        {
+            logger::critical<logger::vfs>("Extraction error: {}", entry_result.error().message());
+            return;
+        }
+        auto entry = *entry_result;
+
+        listed.push_back(this->destination_ / entry->get_pathname());
+    }
+
+    this->signal_file_listed().emit(listed);
 }
 
 void
-vfs::extractor::extract()
+vfs::extractor::extract() noexcept
 {
-    namespace ar = ns_archive::ns_reader;
-
-    try
+    auto reader = vfs::libarchive::reader::create(this->archive_);
+    if (!reader)
     {
-        std::fstream fs(this->archive_);
-        ns_archive::reader reader =
-            ns_archive::reader::make_reader<ar::format::_ALL, ar::filter::_ALL>(fs, 10240);
-
-        for (auto entry : reader)
-        {
-            std::filesystem::path filename =
-                this->destination_ / entry->get_header_value_pathname();
-
-            std::ofstream file(filename);
-            if (!file.is_open())
-            {
-                throw std::runtime_error(
-                    std::format("Error opening file for writing: {}", filename.string()));
-            }
-
-            // logger::trace<logger::vfs>("Extracting to: {}", filename.string());
-
-            file << entry->get_stream().rdbuf();
-            file.close();
-
-            this->signal_file_extracted().emit(filename);
-        }
+        return;
     }
-    catch (const ns_archive::archive_exception& e)
+
+    for (auto entry_result : *reader)
     {
-        logger::error<logger::vfs>("Extraction error: {}", e.what());
+        if (!entry_result)
+        {
+            logger::critical<logger::vfs>("Extraction error: {}", entry_result.error().message());
+            return;
+        }
+        auto entry = *entry_result;
+
+        const auto path = this->destination_ / entry->get_pathname();
+
+        const auto result = entry->extract(path);
+        if (!result)
+        {
+            logger::critical<logger::vfs>("Extraction error: {}", result.error().message());
+            return;
+        }
+
+        this->signal_file_extracted().emit(path);
     }
 }

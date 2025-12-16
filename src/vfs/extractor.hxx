@@ -27,8 +27,8 @@ class extractor
     extractor(const std::filesystem::path& archive);
     ~extractor();
 
-    void list();
-    void extract();
+    void list() noexcept;
+    void extract() noexcept;
 
     [[nodiscard]] const std::filesystem::path path() const noexcept;
 
