@@ -342,6 +342,8 @@ sources = files(
 
   'src/vfs/libarchive/entry.cxx',
   'src/vfs/libarchive/reader.cxx',
+
+  'src/crash/crash.cxx',
 )
 
 spacefm = build_target(

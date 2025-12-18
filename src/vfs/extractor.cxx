@@ -20,6 +20,8 @@
 
 #include <glibmm.h>
 
+#include <glaze/glaze.hpp>
+
 #include "vfs/extractor.hxx"
 #include "vfs/file-supported.hxx"
 #include "vfs/libarchive/reader.hxx"
@@ -27,6 +29,7 @@
 
 #include "vfs/utils/utils.hxx"
 
+#include "crash/crash.hxx"
 #include "logger.hxx"
 
 vfs::extractor::extractor(const std::filesystem::path& archive) noexcept : archive_(archive)
@@ -48,6 +51,8 @@ vfs::extractor::extractor(const std::filesystem::path& archive) noexcept : archi
     {
         std::filesystem::create_directories(this->destination_);
     }
+
+    crash::create(this->destination_, archive);
 }
 
 vfs::extractor::~extractor() noexcept

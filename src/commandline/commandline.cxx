@@ -23,11 +23,24 @@
 
 #include "commandline/commandline.hxx"
 
+#include "crash/crash.hxx"
 #include "logger.hxx"
 
 void
 run_commandline(const commandline_opt_data_t& opt) noexcept
 {
+    if (opt->crash_list)
+    {
+        crash::list();
+        std::exit(EXIT_SUCCESS);
+    }
+
+    if (opt->crash_recover)
+    {
+        crash::recover();
+        std::exit(EXIT_SUCCESS);
+    }
+
     if (opt->version)
     {
         std::println("{} {}", PACKAGE_NAME_FANCY, PACKAGE_VERSION);
@@ -40,6 +53,11 @@ run_commandline(const commandline_opt_data_t& opt) noexcept
 void
 setup_commandline(CLI::App& app, const commandline_opt_data_t& opt) noexcept
 {
+    app.add_flag("--crash-list", opt->crash_list, "List all crash files");
+    app.add_flag("--crash-recover",
+                 opt->crash_recover,
+                 "Reopen archives using crash files (check with --crash-list first)");
+
     app.add_option("--loglevel", opt->raw_log_levels, "Set the loglevel. Format: domain=level")
         ->check(
             [&opt](const auto& value)
