@@ -151,7 +151,6 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
 
     app->add_action("escape", [this]() { this->on_escape_event(); });
     app->add_action("fullscreen", [this]() { this->change_fullscreen(); });
-    app->add_action("minimize", [this]() { this->minimize(); });
 
     app->add_action("close", [this]() { this->file_handler_->close_file(); });
     app->add_action("trash", [this]() { this->on_trash_current_file(); });
@@ -595,18 +594,6 @@ gui::main_window::add_shortcuts() noexcept
             Gtk::Shortcut::create(Gtk::KeyvalTrigger::create(GDK_KEY_f), action));
         controller->add_shortcut(
             Gtk::Shortcut::create(Gtk::KeyvalTrigger::create(GDK_KEY_F11), action));
-    }
-
-    { // Minimize
-        auto action = Gtk::CallbackAction::create(
-            [this](Gtk::Widget&, const Glib::VariantBase&)
-            {
-                this->activate_action("app.minimize");
-                return true;
-            });
-
-        controller->add_shortcut(
-            Gtk::Shortcut::create(Gtk::KeyvalTrigger::create(GDK_KEY_m), action));
     }
 
     // Info //

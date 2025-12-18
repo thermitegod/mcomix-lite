@@ -37,7 +37,6 @@ gui::menubar::menubar()
         section_3->append("Trash", "app.trash");
 
         auto section_4 = Gio::Menu::create();
-        section_4->append("Minimize", "app.minimize");
         section_4->append("Exit", "app.exit");
 
         auto file_menu = Gio::Menu::create();
