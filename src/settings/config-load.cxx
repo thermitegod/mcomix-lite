@@ -32,43 +32,7 @@ parse_settings(const u64 version, const config::settings& loaded,
 {
     (void)version;
 
-    // clang-format off
-    settings->default_double_page = loaded.default_double_page;
-    settings->default_manga_mode = loaded.default_manga_mode;
-    settings->page_ff_step = loaded.page_ff_step;
-    settings->virtual_double_page_for_fitting_images = loaded.virtual_double_page_for_fitting_images;
-    settings->double_step_in_double_page_mode = loaded.double_step_in_double_page_mode;
-    settings->double_page_center_space = loaded.double_page_center_space;
-    settings->thumbnail_size = loaded.thumbnail_size;
-    settings->keep_transformation = loaded.keep_transformation;
-    settings->rotation = loaded.rotation;
-    settings->si_units = loaded.si_units;
-    settings->move_file = loaded.move_file;
-
-    settings->cache_forward = loaded.cache_forward;
-    settings->cache_behind = loaded.cache_behind;
-
-    settings->bookmark_manager_fullpath = loaded.bookmark_manager_fullpath;
-
-    settings->hide_thumbar = loaded.hide_thumbar;
-    settings->hide_menubar = loaded.hide_menubar;
-    settings->hide_statusbar = loaded.hide_statusbar;
-
-    settings->fullscreen.hide_thumbar = loaded.fullscreen.hide_thumbar;
-    settings->fullscreen.hide_menubar = loaded.fullscreen.hide_menubar;
-    settings->fullscreen.hide_statusbar = loaded.fullscreen.hide_statusbar;
-
-    settings->statusbar.page_numbers = loaded.statusbar.page_numbers;
-    settings->statusbar.file_numbers = loaded.statusbar.file_numbers;
-    settings->statusbar.page_resolution = loaded.statusbar.page_resolution;
-    settings->statusbar.page_resolution_zoom_scale = loaded.statusbar.page_resolution_zoom_scale;
-    settings->statusbar.archive_filename = loaded.statusbar.archive_filename;
-    settings->statusbar.archive_filename_fullpath = loaded.statusbar.archive_filename_fullpath;
-    settings->statusbar.page_filename = loaded.statusbar.page_filename;
-    settings->statusbar.page_filesize = loaded.statusbar.page_filesize;
-    settings->statusbar.archive_filesize = loaded.statusbar.archive_filesize;
-    settings->statusbar.view_mode = loaded.statusbar.view_mode;
-    // clang-format on
+    *settings = loaded;
 }
 
 void

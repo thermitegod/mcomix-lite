@@ -29,45 +29,7 @@
 [[nodiscard]] static config::settings
 pack_settings(const std::shared_ptr<config::settings>& settings) noexcept
 {
-    config::settings s;
-
-    // clang-format off
-    s.default_double_page = settings->default_double_page;
-    s.default_manga_mode = settings->default_manga_mode;
-    s.page_ff_step = settings->page_ff_step;
-    s.virtual_double_page_for_fitting_images = settings->virtual_double_page_for_fitting_images;
-    s.double_step_in_double_page_mode = settings->double_step_in_double_page_mode;
-    s.double_page_center_space = settings->double_page_center_space;
-    s.thumbnail_size = settings->thumbnail_size;
-    s.keep_transformation = settings->keep_transformation;
-    s.rotation = settings->rotation;
-    s.si_units = settings->si_units;
-    s.move_file = settings->move_file;
-
-    s.cache_forward = settings->cache_forward;
-    s.cache_behind = settings->cache_behind;
-
-    s.bookmark_manager_fullpath = settings->bookmark_manager_fullpath;
-
-    s.hide_thumbar = settings->hide_thumbar;
-    s.hide_menubar = settings->hide_menubar;
-    s.hide_statusbar = settings->hide_statusbar;
-
-    s.fullscreen.hide_thumbar = settings->fullscreen.hide_thumbar;
-    s.fullscreen.hide_menubar = settings->fullscreen.hide_menubar;
-    s.fullscreen.hide_statusbar = settings->fullscreen.hide_statusbar;
-
-    s.statusbar.page_numbers = settings->statusbar.page_numbers;
-    s.statusbar.file_numbers = settings->statusbar.file_numbers;
-    s.statusbar.page_resolution = settings->statusbar.page_resolution;
-    s.statusbar.page_resolution_zoom_scale = settings->statusbar.page_resolution_zoom_scale;
-    s.statusbar.archive_filename = settings->statusbar.archive_filename;
-    s.statusbar.archive_filename_fullpath = settings->statusbar.archive_filename_fullpath;
-    s.statusbar.page_filename = settings->statusbar.page_filename;
-    s.statusbar.page_filesize = settings->statusbar.page_filesize;
-    s.statusbar.archive_filesize = settings->statusbar.archive_filesize;
-    s.statusbar.view_mode = settings->statusbar.view_mode;
-    // clang-format on
+    config::settings s = *settings;
 
     return s;
 }
