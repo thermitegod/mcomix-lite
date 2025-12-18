@@ -51,7 +51,7 @@ class main_window : public Gtk::ApplicationWindow
     void draw_pages() noexcept;
     bool _draw_pages() noexcept;
     void set_page(const page_t page) noexcept;
-    bool flip_page(const page_t number_of_pages, bool single_step = false) noexcept;
+    void flip_page(const page_t number_of_pages, bool single_step = false) noexcept;
     void first_page() noexcept;
     void last_page() noexcept;
     void rotate_x(const std::int32_t rotation) noexcept;

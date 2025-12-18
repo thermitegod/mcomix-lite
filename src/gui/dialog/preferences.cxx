@@ -250,6 +250,19 @@ gui::dialog::preferences::init_behaviour_tab() noexcept
         page.add_row("Pages to change when fast forwarding", *button);
     }
 
+    page.add_section("Navigation");
+
+    {
+        auto& opt = this->settings_->confirm_archive_change;
+
+        auto button = Gtk::make_managed<Gtk::CheckButton>();
+        button->set_label("Prompt before auto opening next/prev archive");
+        button->set_active(opt);
+        button->signal_toggled().connect([&opt]() { opt = !opt; });
+
+        page.add_row(*button);
+    }
+
     auto tab_label = Gtk::Label("Behaviour");
     this->notebook_.append_page(page, tab_label);
 }

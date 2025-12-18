@@ -1232,12 +1232,12 @@ gui::main_window::set_page(const page_t page) noexcept
     this->draw_pages();
 }
 
-bool
+void
 gui::main_window::flip_page(const page_t number_of_pages, bool single_step) noexcept
 {
     if (!this->file_handler_->is_file_loaded())
     {
-        return false;
+        return;
     }
 
     const auto image_handler = this->file_handler_->image_handler();
@@ -1266,7 +1266,36 @@ gui::main_window::flip_page(const page_t number_of_pages, bool single_step) noex
         // archive case).
         if (number_of_pages == -1 && current_page <= 1)
         {
-            return this->file_handler_->open_prev_archive();
+            if (this->settings->confirm_archive_change)
+            {
+                auto dialog = Gtk::AlertDialog::create("Open Previous Archive?");
+                dialog->set_modal(true);
+                dialog->set_buttons({"Cancel", "Confirm"});
+                dialog->set_cancel_button(0);
+                dialog->set_default_button(1);
+
+                auto slot = [this, dialog](Glib::RefPtr<Gio::AsyncResult>& result)
+                {
+                    try
+                    {
+                        const auto response = dialog->choose_finish(result);
+                        if (response == 1)
+                        { // Confirm Button
+                            auto _ = this->file_handler_->open_prev_archive();
+                        }
+                    }
+                    catch (...)
+                    {
+                        //
+                    }
+                };
+                dialog->choose(*this, slot);
+            }
+            else
+            {
+                auto _ = this->file_handler_->open_prev_archive();
+            }
+            return;
         }
         // Handle empty archive case.
         new_page = std::min<page_t>(1, current_number_of_pages);
@@ -1275,7 +1304,36 @@ gui::main_window::flip_page(const page_t number_of_pages, bool single_step) noex
     {
         if (number_of_pages == 1)
         {
-            return this->file_handler_->open_next_archive();
+            if (this->settings->confirm_archive_change)
+            {
+                auto dialog = Gtk::AlertDialog::create("Open Next Archive?");
+                dialog->set_modal(true);
+                dialog->set_buttons({"Cancel", "Confirm"});
+                dialog->set_cancel_button(0);
+                dialog->set_default_button(1);
+
+                auto slot = [this, dialog](Glib::RefPtr<Gio::AsyncResult>& result)
+                {
+                    try
+                    {
+                        const auto response = dialog->choose_finish(result);
+                        if (response == 1)
+                        { // Confirm Button
+                            auto _ = this->file_handler_->open_next_archive();
+                        }
+                    }
+                    catch (...)
+                    {
+                        //
+                    }
+                };
+                dialog->choose(*this, slot);
+            }
+            else
+            {
+                auto _ = this->file_handler_->open_next_archive();
+            }
+            return;
         }
         new_page = current_number_of_pages;
     }
@@ -1283,9 +1341,7 @@ gui::main_window::flip_page(const page_t number_of_pages, bool single_step) noex
     if (new_page != current_page)
     {
         this->set_page(new_page);
-        return true;
     }
-    return false;
 }
 
 void

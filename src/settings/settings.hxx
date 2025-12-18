@@ -44,6 +44,7 @@ struct settings final
     std::int32_t rotation = 0;
     bool si_units = false;
     std::string move_file = "keep";
+    bool confirm_archive_change = false;
 
     std::int32_t cache_forward = 5;
     std::int32_t cache_behind = 5;
