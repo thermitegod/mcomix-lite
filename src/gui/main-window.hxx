@@ -73,7 +73,7 @@ class main_window : public Gtk::ApplicationWindow
     void on_bookmark_add() noexcept;
     void on_bookmark_manager() noexcept;
 
-    void on_quit() noexcept;
+    void on_exit() noexcept;
     void on_escape_event() noexcept;
     void on_open_page_extractor() noexcept;
     void on_open_filechooser() noexcept;

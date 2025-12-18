@@ -26,6 +26,7 @@ gui::menubar::menubar()
     { // "File"
         auto section_1 = Gio::Menu::create();
         section_1->append("Open", "app.open");
+        section_1->append("Close", "app.close");
 
         auto section_2 = Gio::Menu::create();
         section_2->append("Save Page As", "app.page_extract");
@@ -37,8 +38,7 @@ gui::menubar::menubar()
 
         auto section_4 = Gio::Menu::create();
         section_4->append("Minimize", "app.minimize");
-        section_4->append("Close", "app.close");
-        section_4->append("Quit", "app.quit");
+        section_4->append("Exit", "app.exit");
 
         auto file_menu = Gio::Menu::create();
         file_menu->append_section(section_1);
