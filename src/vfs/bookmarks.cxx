@@ -29,7 +29,7 @@
 
 namespace bookmark_disk_format
 {
-constexpr u64 version = 1_u64;
+constexpr u64 version = 2_u64;
 const std::filesystem::path path = vfs::program::data() / "bookmarks.json";
 
 struct bookmark_data final

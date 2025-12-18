@@ -35,7 +35,7 @@ class bookmarks
         std::filesystem::path path;
         std::int32_t current_page;
         std::int32_t total_pages;
-        std::time_t created;
+        std::chrono::system_clock::time_point created;
     };
 
     void load() noexcept;

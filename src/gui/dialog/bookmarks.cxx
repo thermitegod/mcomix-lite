@@ -14,7 +14,6 @@
  */
 
 #include <chrono>
-#include <string_view>
 
 #include <glibmm.h>
 #include <gtkmm.h>
@@ -172,21 +171,18 @@ gui::dialog::bookmarks::create_model() noexcept
 
     for (const auto& data : this->bookmarks_->get_bookmarks())
     {
-        this->liststore_add_item(
-            this->settings_->bookmark_manager_fullpath ? data.path : data.path.filename(),
-            data.current_page,
-            data.total_pages,
-            std::format("{}",
-                        std::chrono::floor<std::chrono::seconds>(
-                            std::chrono::system_clock::from_time_t(data.created))));
+        this->liststore_add_item(this->settings_->bookmark_manager_fullpath ? data.path
+                                                                            : data.path.filename(),
+                                 data.current_page,
+                                 data.total_pages,
+                                 data.created);
     }
 }
 
 void
-gui::dialog::bookmarks::liststore_add_item(const std::filesystem::path path,
-                                           const std::int32_t current_page,
-                                           const std::int32_t total_pages,
-                                           const std::string_view created) noexcept
+gui::dialog::bookmarks::liststore_add_item(
+    const std::filesystem::path path, const std::int32_t current_page,
+    const std::int32_t total_pages, const std::chrono::system_clock::time_point created) noexcept
 {
     this->liststore_->append(ModelColumns::create(path, current_page, total_pages, created));
 }
@@ -300,5 +296,5 @@ gui::dialog::bookmarks::on_bind_created(const Glib::RefPtr<Gtk::ListItem>& list_
     {
         return;
     }
-    label->set_text(col->created_);
+    label->set_text(std::format("{}", std::chrono::floor<std::chrono::seconds>(col->created_)));
 }

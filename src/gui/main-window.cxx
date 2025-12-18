@@ -777,7 +777,7 @@ gui::main_window::on_bookmark_add() noexcept
     this->bookmarks_->add({this->file_handler_->get_real_path(),
                            image_handler->get_current_page(),
                            image_handler->get_number_of_pages(),
-                           std::chrono::system_clock::to_time_t(std::chrono::system_clock::now())});
+                           std::chrono::system_clock::now()});
 }
 
 void

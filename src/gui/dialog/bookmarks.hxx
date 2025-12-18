@@ -15,7 +15,7 @@
 
 #pragma once
 
-#include <string_view>
+#include <chrono>
 
 #include <gtkmm.h>
 
@@ -39,11 +39,11 @@ class bookmarks : public Gtk::ApplicationWindow
         std::filesystem::path path_;
         std::int32_t current_page_;
         std::int32_t total_pages_;
-        std::string created_;
+        std::chrono::system_clock::time_point created_;
 
         static Glib::RefPtr<ModelColumns>
         create(const std::filesystem::path path, const std::int32_t current_page,
-               const std::int32_t total_pages, const std::string_view created)
+               const std::int32_t total_pages, const std::chrono::system_clock::time_point created)
         {
             return Glib::make_refptr_for_instance<ModelColumns>(
                 new ModelColumns(path, current_page, total_pages, created));
@@ -51,7 +51,8 @@ class bookmarks : public Gtk::ApplicationWindow
 
       protected:
         ModelColumns(const std::filesystem::path path, const std::int32_t current_page,
-                     const std::int32_t total_pages, const std::string_view created)
+                     const std::int32_t total_pages,
+                     const std::chrono::system_clock::time_point created)
             : Glib::ObjectBase(typeid(ModelColumns)), path_(path), current_page_(current_page),
               total_pages_(total_pages), created_(created)
         {
@@ -79,7 +80,7 @@ class bookmarks : public Gtk::ApplicationWindow
     void add_columns() noexcept;
     void liststore_add_item(const std::filesystem::path path, const std::int32_t current_page,
                             const std::int32_t total_pages,
-                            const std::string_view created) noexcept;
+                            const std::chrono::system_clock::time_point created) noexcept;
 
     bool on_key_press(std::uint32_t keyval, std::uint32_t keycode,
                       Gdk::ModifierType state) noexcept;
