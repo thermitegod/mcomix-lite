@@ -24,8 +24,8 @@ namespace vfs
 class extractor
 {
   public:
-    extractor(const std::filesystem::path& archive);
-    ~extractor();
+    extractor(const std::filesystem::path& archive) noexcept;
+    ~extractor() noexcept;
 
     void list() noexcept;
     void extract() noexcept;

@@ -14,26 +14,40 @@
  */
 
 #include <filesystem>
-#include <format>
 
-#include <ztd/ztd.hxx>
+#include <botan/hash.h>
+#include <botan/hex.h>
+
+#include <glibmm.h>
 
 #include "vfs/extractor.hxx"
 #include "vfs/libarchive/reader.hxx"
 #include "vfs/user-dirs.hxx"
 
+#include "vfs/utils/utils.hxx"
+
 #include "logger.hxx"
 
-vfs::extractor::extractor(const std::filesystem::path& archive)
-    : archive_(archive), destination_(vfs::user::cache() / PACKAGE_NAME / ztd::random_hex())
+vfs::extractor::extractor(const std::filesystem::path& archive) noexcept : archive_(archive)
 {
+    const auto hash = [](const auto& path)
+    {
+        const auto uri = Glib::filename_to_uri(path.string());
+
+        const auto md5 = Botan::HashFunction::create("MD5");
+        md5->update(uri.data());
+        return Botan::hex_encode(md5->final(), false);
+    }(archive);
+
+    this->destination_ = vfs::utils::unique_path(vfs::user::cache() / PACKAGE_NAME, hash, "_");
+
     if (!std::filesystem::exists(this->destination_))
     {
         std::filesystem::create_directories(this->destination_);
     }
 }
 
-vfs::extractor::~extractor()
+vfs::extractor::~extractor() noexcept
 {
     this->close();
 }

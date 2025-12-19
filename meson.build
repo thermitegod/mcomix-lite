@@ -206,6 +206,7 @@ add_global_link_arguments(link_flags, language: ['c', 'cpp'])
 
 ## dependencies
 
+botan_dep = dependency('botan-3', required: true)
 cli11_dep = dependency('CLI11', required: true)
 libarchive_dep = dependency('libarchive', required : true)
 magic_enum_dep = dependency('magic_enum', required: true, version: '>=0.9.7')
@@ -222,6 +223,7 @@ dependencies = [
     glibmm_dep,
     sigc_dep,
 
+    botan_dep,
     cli11_dep,
     magic_enum_dep,
     libarchive_dep,
