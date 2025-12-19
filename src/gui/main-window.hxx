@@ -44,8 +44,8 @@ namespace gui
 class main_window : public Gtk::ApplicationWindow
 {
   public:
-    main_window(const Glib::RefPtr<Gtk::Application>& app,
-                const std::vector<std::filesystem::path>& filelist);
+    explicit main_window(const Glib::RefPtr<Gtk::Application>& app,
+                         const std::vector<std::filesystem::path>& filelist) noexcept;
 
   private:
     void draw_pages() noexcept;

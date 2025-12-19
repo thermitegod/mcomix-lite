@@ -34,8 +34,8 @@ namespace vfs
 class file_handler
 {
   public:
-    file_handler(const std::shared_ptr<config::settings>& settings,
-                 const std::shared_ptr<gui::lib::view_state>& view_state);
+    explicit file_handler(const std::shared_ptr<config::settings>& settings,
+                          const std::shared_ptr<gui::lib::view_state>& view_state) noexcept;
 
     void open_file_init(const std::span<const std::filesystem::path> filelist,
                         const page_t start_page = 1) noexcept;

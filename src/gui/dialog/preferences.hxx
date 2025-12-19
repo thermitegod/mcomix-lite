@@ -26,7 +26,8 @@ namespace gui::dialog
 class preferences : public Gtk::ApplicationWindow
 {
   public:
-    preferences(Gtk::ApplicationWindow& parent, const std::shared_ptr<config::settings>& settings);
+    explicit preferences(Gtk::ApplicationWindow& parent,
+                         const std::shared_ptr<config::settings>& settings) noexcept;
 
   private:
     class ListColumns : public Glib::Object
@@ -36,13 +37,13 @@ class preferences : public Gtk::ApplicationWindow
         std::uint32_t value_;
 
         static Glib::RefPtr<ListColumns>
-        create(const std::string_view entry, const std::uint32_t value)
+        create(const std::string_view entry, const std::uint32_t value) noexcept
         {
             return Glib::make_refptr_for_instance<ListColumns>(new ListColumns(entry, value));
         }
 
       protected:
-        ListColumns(const std::string_view entry, const std::uint32_t value)
+        explicit ListColumns(const std::string_view entry, const std::uint32_t value) noexcept
             : entry_(entry), value_(value)
         {
         }

@@ -24,7 +24,7 @@
 #include "file-provider.hxx"
 #include "file-supported.hxx"
 
-vfs::file_provider::file_provider(const std::span<const std::filesystem::path> files)
+vfs::file_provider::file_provider(const std::span<const std::filesystem::path> files) noexcept
     : files_(files.cbegin(), files.cend())
 {
     if (files.empty())

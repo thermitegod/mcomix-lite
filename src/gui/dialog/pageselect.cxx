@@ -24,7 +24,7 @@
 #include "vfs/file-handler.hxx"
 
 gui::dialog::pageselect::pageselect(Gtk::ApplicationWindow& parent,
-                                    const std::shared_ptr<vfs::file_handler>& file_handler)
+                                    const std::shared_ptr<vfs::file_handler>& file_handler) noexcept
     : file_handler_(file_handler)
 {
     const auto image_handler = this->file_handler_->image_handler();

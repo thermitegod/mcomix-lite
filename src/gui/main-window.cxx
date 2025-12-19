@@ -56,7 +56,7 @@
 #include "types.hxx"
 
 gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
-                              const std::vector<std::filesystem::path>& filelist)
+                              const std::vector<std::filesystem::path>& filelist) noexcept
 {
     this->set_application(app);
     assert(this->get_application() != nullptr);

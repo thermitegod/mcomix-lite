@@ -27,10 +27,10 @@ namespace gui::dialog
 class properties : public Gtk::ApplicationWindow
 {
   public:
-    properties(Gtk::ApplicationWindow& parent,
-               const std::shared_ptr<vfs::file_handler>& file_handler,
-               const std::shared_ptr<gui::lib::view_state>& view_state,
-               const std::shared_ptr<config::settings>& settings);
+    explicit properties(Gtk::ApplicationWindow& parent,
+                        const std::shared_ptr<vfs::file_handler>& file_handler,
+                        const std::shared_ptr<gui::lib::view_state>& view_state,
+                        const std::shared_ptr<config::settings>& settings) noexcept;
 
   private:
     bool on_key_press(std::uint32_t keyval, std::uint32_t keycode,

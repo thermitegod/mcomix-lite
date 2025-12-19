@@ -36,7 +36,7 @@ namespace vfs
 class trash_can final
 {
   public:
-    trash_can() noexcept;
+    explicit trash_can() noexcept;
     [[nodiscard]] static std::shared_ptr<vfs::trash_can> create() noexcept;
 
     // Move a file or directory into the trash.

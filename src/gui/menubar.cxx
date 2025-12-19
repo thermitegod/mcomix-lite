@@ -19,7 +19,7 @@
 
 #include "gui/menubar.hxx"
 
-gui::menubar::menubar()
+gui::menubar::menubar() noexcept
 {
     auto menu = Gio::Menu::create();
 

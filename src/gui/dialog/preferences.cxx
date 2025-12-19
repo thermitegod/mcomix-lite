@@ -27,7 +27,7 @@
 class PreferencePage : public Gtk::Box
 {
   public:
-    PreferencePage()
+    explicit PreferencePage() noexcept
     {
         this->set_orientation(Gtk::Orientation::VERTICAL);
         this->set_margin(6);
@@ -90,7 +90,7 @@ class PreferencePage : public Gtk::Box
 };
 
 gui::dialog::preferences::preferences(Gtk::ApplicationWindow& parent,
-                                      const std::shared_ptr<config::settings>& settings)
+                                      const std::shared_ptr<config::settings>& settings) noexcept
     : settings_(settings)
 {
     this->set_transient_for(parent);

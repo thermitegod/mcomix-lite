@@ -47,8 +47,8 @@ namespace vfs
 class image_handler
 {
   public:
-    image_handler(const std::shared_ptr<config::settings>& settings,
-                  const std::shared_ptr<gui::lib::view_state>& view_state);
+    explicit image_handler(const std::shared_ptr<config::settings>& settings,
+                           const std::shared_ptr<gui::lib::view_state>& view_state) noexcept;
 
     [[nodiscard]] std::shared_ptr<vfs::image_files> image_files() const noexcept;
 

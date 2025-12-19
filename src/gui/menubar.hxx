@@ -24,6 +24,6 @@ namespace gui
 class menubar : public Gtk::PopoverMenuBar
 {
   public:
-    menubar();
+    explicit menubar() noexcept;
 };
 } // namespace gui

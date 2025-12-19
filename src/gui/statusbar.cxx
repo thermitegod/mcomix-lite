@@ -31,7 +31,7 @@
 #include "vfs/utils/utils.hxx"
 
 gui::statusbar::statusbar(const std::shared_ptr<config::settings>& settings,
-                          const std::shared_ptr<gui::lib::view_state>& view_state)
+                          const std::shared_ptr<gui::lib::view_state>& view_state) noexcept
     : settings(settings), view_state(view_state)
 {
     this->set_halign(Gtk::Align::START);

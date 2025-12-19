@@ -36,7 +36,7 @@
 #include "types.hxx"
 
 vfs::image_handler::image_handler(const std::shared_ptr<config::settings>& settings,
-                                  const std::shared_ptr<gui::lib::view_state>& view_state)
+                                  const std::shared_ptr<gui::lib::view_state>& view_state) noexcept
     : settings(settings), view_state(view_state)
 {
     this->image_files_ = std::make_shared<vfs::image_files>();

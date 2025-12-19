@@ -15,6 +15,8 @@
 
 #pragma once
 
+#include <functional>
+
 #include <gdkmm.h>
 #include <glibmm.h>
 #include <gtkmm.h>
@@ -28,8 +30,8 @@ namespace gui::dialog
 class pageselect final : public Gtk::Window
 {
   public:
-    pageselect(Gtk::ApplicationWindow& parent,
-               const std::shared_ptr<vfs::file_handler>& file_handler);
+    explicit pageselect(Gtk::ApplicationWindow& parent,
+                        const std::shared_ptr<vfs::file_handler>& file_handler) noexcept;
 
   private:
     Gtk::Box box_;

@@ -35,8 +35,8 @@ namespace gui
 class thumbbar : public Gtk::ScrolledWindow
 {
   public:
-    thumbbar(const std::shared_ptr<config::settings>& settings);
-    ~thumbbar();
+    explicit thumbbar(const std::shared_ptr<config::settings>& settings) noexcept;
+    ~thumbbar() noexcept;
 
     void request(const page_t page, const std::filesystem::path& filename) noexcept;
     void set_page(const page_t page) noexcept;
@@ -50,13 +50,14 @@ class thumbbar : public Gtk::ScrolledWindow
         Glib::RefPtr<Gdk::Paintable> paintable;
 
         static Glib::RefPtr<ModelList>
-        create(const page_t page, const Glib::RefPtr<Gdk::Paintable>& paintable)
+        create(const page_t page, const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept
         {
             return Glib::make_refptr_for_instance<ModelList>(new ModelList(page, paintable));
         }
 
       protected:
-        ModelList(const page_t page, const Glib::RefPtr<Gdk::Paintable>& paintable)
+        explicit ModelList(const page_t page,
+                           const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept
             : Glib::ObjectBase(typeid(ModelList)), page(page), paintable(paintable)
         {
         }

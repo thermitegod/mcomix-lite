@@ -33,7 +33,7 @@
 class PropertiesPage : public Gtk::Box
 {
   public:
-    PropertiesPage()
+    explicit PropertiesPage() noexcept
     {
         this->set_orientation(Gtk::Orientation::VERTICAL);
         this->set_margin(6);
@@ -62,7 +62,7 @@ class PropertiesPage : public Gtk::Box
     }
 
     void
-    set_filename(const std::filesystem::path& filename)
+    set_filename(const std::filesystem::path& filename) noexcept
     {
         auto label = Gtk::make_managed<Gtk::Label>();
         label->set_markup(std::format("<b>{}</b>", filename.string()));
@@ -79,7 +79,7 @@ class PropertiesPage : public Gtk::Box
     }
 
     void
-    set_main_info(std::vector<std::string> info)
+    set_main_info(std::vector<std::string> info) noexcept
     {
         for (const auto& text : info)
         {
@@ -92,7 +92,7 @@ class PropertiesPage : public Gtk::Box
     }
 
     void
-    set_secondary_info(const std::vector<std::array<std::string, 2>>& info)
+    set_secondary_info(const std::vector<std::array<std::string, 2>>& info) noexcept
     {
         auto lbox = Gtk::make_managed<Gtk::Box>();
         lbox->set_orientation(Gtk::Orientation::VERTICAL);
@@ -149,7 +149,7 @@ class PropertiesPage : public Gtk::Box
 gui::dialog::properties::properties(Gtk::ApplicationWindow& parent,
                                     const std::shared_ptr<vfs::file_handler>& file_handler,
                                     const std::shared_ptr<gui::lib::view_state>& view_state,
-                                    const std::shared_ptr<config::settings>& settings)
+                                    const std::shared_ptr<config::settings>& settings) noexcept
     : file_handler_(file_handler), view_state_(view_state), settings_(settings)
 {
     this->set_transient_for(parent);

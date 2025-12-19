@@ -30,7 +30,8 @@
 // very helpful, used as the template for this widget.
 // https://github.com/GNOME/gtkmm/blob/master/demos/gtk-demo/example_listview_applauncher.cc
 
-gui::thumbbar::thumbbar(const std::shared_ptr<config::settings>& settings) : settings(settings)
+gui::thumbbar::thumbbar(const std::shared_ptr<config::settings>& settings) noexcept
+    : settings(settings)
 {
     this->set_has_frame(true);
     this->set_policy(Gtk::PolicyType::NEVER, Gtk::PolicyType::AUTOMATIC);
@@ -73,7 +74,7 @@ gui::thumbbar::thumbbar(const std::shared_ptr<config::settings>& settings) : set
     pthread_setname_np(this->thumbnailer_thread_.native_handle(), "thumbnailer");
 }
 
-gui::thumbbar::~thumbbar()
+gui::thumbbar::~thumbbar() noexcept
 {
     this->thumbnailer_thread_.request_stop();
     this->thumbnailer_thread_.join();

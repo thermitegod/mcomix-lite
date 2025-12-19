@@ -34,8 +34,8 @@ namespace gui
 class statusbar : public Gtk::Box
 {
   public:
-    statusbar(const std::shared_ptr<config::settings>& settings,
-              const std::shared_ptr<gui::lib::view_state>& view_state);
+    explicit statusbar(const std::shared_ptr<config::settings>& settings,
+                       const std::shared_ptr<gui::lib::view_state>& view_state) noexcept;
 
     void set_message(const std::string_view message) noexcept;
     void set_page_number(const page_t page, const std::int32_t total_pages) noexcept;

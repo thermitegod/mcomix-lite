@@ -25,7 +25,7 @@ namespace gui::dialog
 class donate final : public Gtk::Window
 {
   public:
-    donate(Gtk::ApplicationWindow& parent);
+    explicit donate(Gtk::ApplicationWindow& parent) noexcept;
 
   protected:
     Gtk::Box box_;
@@ -45,7 +45,8 @@ class donate final : public Gtk::Window
     Gtk::Button button_close_;
 
     // Signal Handlers
-    bool on_key_press(std::uint32_t keyval, std::uint32_t keycode, Gdk::ModifierType state);
-    void on_button_close_clicked();
+    bool on_key_press(std::uint32_t keyval, std::uint32_t keycode,
+                      Gdk::ModifierType state) noexcept;
+    void on_button_close_clicked() noexcept;
 };
 } // namespace gui::dialog

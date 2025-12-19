@@ -20,7 +20,7 @@
 
 #include "gui/dialog/about.hxx"
 
-gui::dialog::about::about(Gtk::ApplicationWindow& parent)
+gui::dialog::about::about(Gtk::ApplicationWindow& parent) noexcept
 {
     this->set_transient_for(parent);
     this->set_modal(true);

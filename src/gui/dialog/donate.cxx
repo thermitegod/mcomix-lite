@@ -24,7 +24,7 @@
 
 #include "gui/dialog/donate.hxx"
 
-gui::dialog::donate::donate(Gtk::ApplicationWindow& parent)
+gui::dialog::donate::donate(Gtk::ApplicationWindow& parent) noexcept
 {
     this->set_transient_for(parent);
     this->set_modal(true);
@@ -106,7 +106,7 @@ gui::dialog::donate::donate(Gtk::ApplicationWindow& parent)
 
 bool
 gui::dialog::donate::on_key_press(std::uint32_t keyval, std::uint32_t keycode,
-                                  Gdk::ModifierType state)
+                                  Gdk::ModifierType state) noexcept
 {
     (void)keycode;
     (void)state;
@@ -118,7 +118,7 @@ gui::dialog::donate::on_key_press(std::uint32_t keyval, std::uint32_t keycode,
 }
 
 void
-gui::dialog::donate::on_button_close_clicked()
+gui::dialog::donate::on_button_close_clicked() noexcept
 {
     this->close();
 }

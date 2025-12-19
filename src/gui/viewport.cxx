@@ -27,7 +27,8 @@
 
 #include "gui/viewport.hxx"
 
-gui::viewport::viewport(const std::shared_ptr<config::settings>& settings) : settings_(settings)
+gui::viewport::viewport(const std::shared_ptr<config::settings>& settings) noexcept
+    : settings_(settings)
 {
     this->set_orientation(Gtk::Orientation::HORIZONTAL);
     this->set_halign(Gtk::Align::CENTER);

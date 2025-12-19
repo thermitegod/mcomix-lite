@@ -22,6 +22,6 @@ namespace gui::dialog
 class about final : public Gtk::AboutDialog
 {
   public:
-    about(Gtk::ApplicationWindow& parent);
+    explicit about(Gtk::ApplicationWindow& parent) noexcept;
 };
 } // namespace gui::dialog

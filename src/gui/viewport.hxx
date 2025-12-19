@@ -29,7 +29,7 @@ namespace gui
 class viewport : public Gtk::Box
 {
   public:
-    viewport(const std::shared_ptr<config::settings>& settings);
+    explicit viewport(const std::shared_ptr<config::settings>& settings) noexcept;
 
     void set(const std::span<Glib::RefPtr<Gdk::Paintable>>& paintables) noexcept;
 

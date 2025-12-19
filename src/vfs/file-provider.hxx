@@ -26,8 +26,8 @@ namespace vfs
 class file_provider
 {
   public:
-    file_provider() = default;
-    file_provider(const std::span<const std::filesystem::path> files);
+    explicit file_provider() = default;
+    explicit file_provider(const std::span<const std::filesystem::path> files) noexcept;
 
     enum class file_type
     {
