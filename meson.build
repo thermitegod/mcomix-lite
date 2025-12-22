@@ -290,8 +290,6 @@ if get_option('dev')
         # '-DGDKMM_DISABLE_DEPRECATED', # TODO Gdk::Pixbuf
         '-DGLIBMM_DISABLE_DEPRECATED',
         '-DGIOMM_DISABLE_DEPRECATED',
-        # ASIO
-        '-DASIO_NO_DEPRECATED',
     ]
 endif
 
