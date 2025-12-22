@@ -30,14 +30,16 @@
 
 vfs::extractor::extractor(const std::filesystem::path& archive) noexcept : archive_(archive)
 {
-    const auto hash = [](const auto& path)
-    {
-        const auto uri = Glib::filename_to_uri(path.string());
+    const auto hash = std::invoke(
+        [](const auto& path)
+        {
+            const auto uri = Glib::filename_to_uri(path.string());
 
-        const auto md5 = Botan::HashFunction::create("MD5");
-        md5->update(uri.data());
-        return Botan::hex_encode(md5->final(), false);
-    }(archive);
+            const auto md5 = Botan::HashFunction::create("MD5");
+            md5->update(uri.data());
+            return Botan::hex_encode(md5->final(), false);
+        },
+        archive);
 
     this->destination_ = vfs::utils::unique_path(vfs::user::cache() / PACKAGE_NAME, hash, "_");
 

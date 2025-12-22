@@ -863,25 +863,26 @@ gui::main_window::on_open_filechooser() noexcept
     dialog->set_default_filter(filter_archive);
     dialog->set_filters(filters);
 
-    const auto open_path = [this]()
-    {
-        std::filesystem::path path;
-        if (this->file_handler_->is_file_loaded())
+    const auto open_path = std::invoke(
+        [this]()
         {
-            if (this->file_handler_->is_archive())
+            std::filesystem::path path;
+            if (this->file_handler_->is_file_loaded())
             {
-                return this->file_handler_->get_base_path().parent_path();
+                if (this->file_handler_->is_archive())
+                {
+                    return this->file_handler_->get_base_path().parent_path();
+                }
+                else
+                {
+                    return this->file_handler_->get_base_path();
+                }
             }
             else
             {
-                return this->file_handler_->get_base_path();
+                return vfs::user::home();
             }
-        }
-        else
-        {
-            return vfs::user::home();
-        }
-    }();
+        });
 
     dialog->set_initial_folder(Gio::File::create_for_path(open_path));
 
