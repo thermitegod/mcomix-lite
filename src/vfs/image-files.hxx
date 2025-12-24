@@ -16,8 +16,8 @@
 #pragma once
 
 #include <filesystem>
+#include <flat_map>
 #include <span>
-#include <unordered_map>
 
 #include "types.hxx"
 
@@ -34,8 +34,8 @@ class image_files
     [[nodiscard]] page_t page_from_path(const std::filesystem::path& path) const noexcept;
 
   private:
-    std::unordered_map<std::filesystem::path, page_t> pages_;
-    std::unordered_map<page_t, std::filesystem::path> paths_;
+    std::flat_map<std::filesystem::path, page_t> pages_;
+    std::flat_map<page_t, std::filesystem::path> paths_;
     page_t total_pages_{0};
 };
 } // namespace vfs

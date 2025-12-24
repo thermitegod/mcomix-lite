@@ -16,8 +16,8 @@
 #pragma once
 
 #include <filesystem>
+#include <flat_map>
 #include <memory>
-#include <unordered_map>
 #include <vector>
 
 #include <CLI/CLI.hpp>
@@ -27,7 +27,7 @@ struct commandline_opt_data : public std::enable_shared_from_this<commandline_op
     std::vector<std::filesystem::path> files;
 
     std::vector<std::string> raw_log_levels;
-    std::unordered_map<std::string, std::string> log_levels;
+    std::flat_map<std::string, std::string> log_levels;
     // std::filesystem::path logfile{"/tmp/test.log"};
     std::filesystem::path logfile;
 

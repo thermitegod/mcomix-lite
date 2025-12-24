@@ -17,9 +17,9 @@
 
 #include <array>
 #include <filesystem>
+#include <flat_map>
+#include <flat_set>
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
 
 #include <gdkmm.h>
@@ -154,10 +154,10 @@ class image_handler
     std::shared_ptr<vfs::image_files> image_files_;
 
     std::optional<page_t> current_image_ = std::nullopt;
-    std::unordered_set<page_t> available_images_;
+    std::flat_set<page_t> available_images_;
 
-    std::unordered_map<page_t, Glib::RefPtr<Gdk::Pixbuf>> raw_pixbufs_;
-    std::unordered_map<page_t, std::array<std::int32_t, 2>> pixbufs_dimensions_;
+    std::flat_map<page_t, Glib::RefPtr<Gdk::Pixbuf>> raw_pixbufs_;
+    std::flat_map<page_t, std::array<std::int32_t, 2>> pixbufs_dimensions_;
 
     std::shared_ptr<config::settings> settings;
     std::shared_ptr<gui::lib::view_state> view_state;
