@@ -21,6 +21,7 @@
 #include <glibmm.h>
 
 #include "vfs/extractor.hxx"
+#include "vfs/file-supported.hxx"
 #include "vfs/libarchive/reader.hxx"
 #include "vfs/user-dirs.hxx"
 
@@ -88,6 +89,11 @@ vfs::extractor::list() noexcept
         }
         auto entry = *entry_result;
 
+        if (!vfs::is_image(entry->get_pathname()))
+        {
+            continue;
+        }
+
         listed.push_back(this->destination_ / entry->get_pathname());
     }
 
@@ -111,6 +117,11 @@ vfs::extractor::extract() noexcept
             return;
         }
         auto entry = *entry_result;
+
+        if (!vfs::is_image(entry->get_pathname()))
+        {
+            continue;
+        }
 
         const auto path = this->destination_ / entry->get_pathname();
 

@@ -16,7 +16,11 @@
 #include <algorithm>
 #include <array>
 #include <filesystem>
+#include <flat_set>
 #include <string_view>
+
+#include <gdkmm.h>
+#include <glibmm.h>
 
 #include "vfs/file-supported.hxx"
 
@@ -36,19 +40,29 @@ vfs::is_archive(const std::filesystem::path& filename) noexcept
 
     return std::ranges::any_of(extensions,
                                [&filename](const std::string_view ext)
-                               { return filename.extension().string().contains(ext); });
+                               { return filename.extension() == ext; });
 }
 
 bool
 vfs::is_image(const std::filesystem::path& filename) noexcept
 {
-    static constexpr std::array<std::string_view, 27> extensions{
-        ".tga",   ".svgz", ".pbm",  ".svg", ".jpeg",   ".icns", ".ani", ".ppm", ".bmp",
-        ".targa", ".tif",  ".pnm",  ".gif", ".svg.gz", ".pgm",  ".jpe", ".ico", ".qif",
-        ".jpg",   ".xpm",  ".tiff", ".png", ".xbm",    ".qtif", ".jxl", ".cur", ".webp",
-    };
+    static const auto extensions = std::invoke(
+        []()
+        {
+            using namespace std::string_literals;
+            std::flat_set<std::string> extensions;
+            for (const auto& format : Gdk::Pixbuf::get_formats())
+            {
+                for (const auto& ext : format.get_extensions())
+                {
+                    extensions.emplace("."s += ext.data());
+                }
+            }
+            // std::println("{}", extensions);
+            return extensions;
+        });
 
     return std::ranges::any_of(extensions,
                                [&filename](const std::string_view ext)
-                               { return filename.extension().string().contains(ext); });
+                               { return filename.extension() == ext; });
 }
