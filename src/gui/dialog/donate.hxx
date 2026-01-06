@@ -15,6 +15,9 @@
 
 #pragma once
 
+#include <filesystem>
+#include <string_view>
+
 #include <cstdint>
 
 #include <gdkmm.h>
@@ -31,15 +34,18 @@ class donate final : public Gtk::Window
     Gtk::Box box_;
     Gtk::Notebook notebook_;
 
-    // BTC tab
-    Gtk::Box btc_box_;
-    Gtk::Picture btc_img_;
-    Gtk::Label btc_label_;
+    class page : public Gtk::Box
+    {
+      public:
+        page() noexcept;
 
-    // ETH tab
-    Gtk::Box eth_box_;
-    Gtk::Picture eth_img_;
-    Gtk::Label eth_label_;
+        void set_image(const std::filesystem::path& path) noexcept;
+        void set_label(const std::string_view text) noexcept;
+
+      private:
+        Gtk::Picture img_;
+        Gtk::Label label_;
+    };
 
     Gtk::Box button_box_;
     Gtk::Button button_close_;

@@ -14,6 +14,7 @@
  */
 
 #include <filesystem>
+#include <string_view>
 
 #include <cstdint>
 
@@ -23,6 +24,35 @@
 #include <sigc++/sigc++.h>
 
 #include "gui/dialog/donate.hxx"
+
+#include "gui/lib/image-tools.hxx"
+
+gui::dialog::donate::page::page() noexcept
+{
+    this->set_orientation(Gtk::Orientation::VERTICAL);
+    this->set_spacing(5);
+
+    this->img_.set_hexpand(true);
+    this->img_.set_vexpand(true);
+
+    this->label_.set_selectable(true);
+    this->label_.set_margin(5);
+
+    this->append(this->img_);
+    this->append(this->label_);
+}
+
+void
+gui::dialog::donate::page::set_image(const std::filesystem::path& path) noexcept
+{
+    this->img_.set_paintable(gui::lib::image_tools::load_texture(path));
+}
+
+void
+gui::dialog::donate::page::set_label(const std::string_view text) noexcept
+{
+    this->label_.set_markup(std::format("<big>{}</big>", text));
+}
 
 gui::dialog::donate::donate(Gtk::ApplicationWindow& parent) noexcept
 {
@@ -44,49 +74,33 @@ gui::dialog::donate::donate(Gtk::ApplicationWindow& parent) noexcept
                                                  false);
     this->add_controller(key_controller);
 
-    // BTC //
+    { // BTC //
+        auto img = std::filesystem::path(PACKAGE_IMAGES) / "btc.png";
+        if (!std::filesystem::exists(img))
+        { // Could not find image in system path, use image in repo.
+            img = std::filesystem::path(PACKAGE_IMAGES_LOCAL) / "btc.png";
+        }
 
-    std::filesystem::path btc_img = std::format("{}/{}", PACKAGE_IMAGES, "btc.png");
-    if (!std::filesystem::exists(btc_img))
-    { // Could not find image in system path, use image in repo.
-        btc_img = std::format("{}/{}", PACKAGE_IMAGES_LOCAL, "btc.png");
+        auto page = donate::page();
+        page.set_image(img);
+        page.set_label("bc1qzus6vvyzvgqjxw8mxnj65fapjrmwuzvtlmpw72");
+
+        this->notebook_.append_page(page, "BTC");
     }
 
-    this->btc_img_ = Gtk::Picture(btc_img.string());
-    this->btc_img_.set_hexpand(true);
-    this->btc_img_.set_vexpand(true);
+    { // ETH //
+        auto img = std::filesystem::path(PACKAGE_IMAGES) / "eth.png";
+        if (!std::filesystem::exists(img))
+        { // Could not find image in system path, use image in repo.
+            img = std::filesystem::path(PACKAGE_IMAGES_LOCAL) / "eth.png";
+        }
 
-    this->btc_label_.set_markup("<big>bc1qzus6vvyzvgqjxw8mxnj65fapjrmwuzvtlmpw72</big>");
-    this->btc_label_.set_selectable(true);
-    this->btc_label_.set_margin(5);
+        auto page = donate::page();
+        page.set_image(img);
+        page.set_label("0x056d6eC68806Ab139C15B4Dd5736C45295AF0d32");
 
-    this->btc_box_ = Gtk::Box(Gtk::Orientation::VERTICAL, 5);
-    this->btc_box_.append(this->btc_img_);
-    this->btc_box_.append(this->btc_label_);
-
-    this->notebook_.append_page(this->btc_box_, "BTC");
-
-    // ETH //
-
-    std::filesystem::path eth_img = std::format("{}/{}", PACKAGE_IMAGES, "eth.png");
-    if (!std::filesystem::exists(eth_img))
-    { // Could not find image in system path, use image in repo.
-        eth_img = std::format("{}/{}", PACKAGE_IMAGES_LOCAL, "eth.png");
+        this->notebook_.append_page(page, "ETH");
     }
-
-    this->eth_img_ = Gtk::Picture(eth_img.string());
-    this->eth_img_.set_hexpand(true);
-    this->eth_img_.set_vexpand(true);
-
-    this->eth_label_.set_markup("<big>0x056d6eC68806Ab139C15B4Dd5736C45295AF0d32</big>");
-    this->eth_label_.set_selectable(true);
-    this->eth_label_.set_margin(5);
-
-    this->eth_box_ = Gtk::Box(Gtk::Orientation::VERTICAL, 5);
-    this->eth_box_.append(this->eth_img_);
-    this->eth_box_.append(this->eth_label_);
-
-    this->notebook_.append_page(this->eth_box_, "ETH");
 
     // Buttons //
 
