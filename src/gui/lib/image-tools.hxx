@@ -37,6 +37,11 @@ namespace gui::lib::image_tools
                                                             std::int32_t max_height,
                                                             std::int32_t rotation = 0) noexcept;
 
+[[nodiscard]] Glib::RefPtr<Gdk::Paintable> fit_to_rectangle(const Glib::RefPtr<Gdk::Texture>& src,
+                                                            std::int32_t max_width,
+                                                            std::int32_t max_height,
+                                                            std::int32_t rotation = 0) noexcept;
+
 /**
  * Returns a thumbnail pixbuf for a given path.
  * Transparently handles both normal image files and archives.
@@ -50,4 +55,7 @@ namespace gui::lib::image_tools
 
 [[nodiscard]] Glib::RefPtr<Gdk::Paintable> create_thumbnail(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf,
                                                             std::int32_t size) noexcept;
+
+[[nodiscard]] Glib::RefPtr<Gdk::Paintable>
+create_thumbnail(const Glib::RefPtr<Gdk::Texture>& texture, std::int32_t size) noexcept;
 } // namespace gui::lib::image_tools

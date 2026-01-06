@@ -60,7 +60,7 @@ gui::lib::image_tools::fit_to_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& src,
                                         std::int32_t max_width, std::int32_t max_height,
                                         std::int32_t rotation) noexcept
 {
-    // logger::info<logger::gui>("new {}x{}", width, height);
+    // return fit_to_rectangle(Gdk::Texture::create_for_pixbuf(src), max_width, max_height);
 
     static auto get_fitting_size = [](const std::int32_t src_width,
                                       const std::int32_t src_height,
@@ -81,7 +81,8 @@ gui::lib::image_tools::fit_to_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& src,
         }
     };
 
-    if (rotation == 90 || rotation == 270)
+    const auto is_sideways = (rotation == 90 || rotation == 270);
+    if (is_sideways)
     {
         std::swap(max_width, max_height);
     }
@@ -133,6 +134,59 @@ gui::lib::image_tools::fit_to_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& src,
 }
 
 Glib::RefPtr<Gdk::Paintable>
+gui::lib::image_tools::fit_to_rectangle(const Glib::RefPtr<Gdk::Texture>& src,
+                                        std::int32_t max_width, std::int32_t max_height,
+                                        std::int32_t rotation) noexcept
+{
+    const auto is_sideways = (rotation == 90 || rotation == 270);
+    if (is_sideways)
+    {
+        std::swap(max_width, max_height);
+    }
+
+    const auto src_width = static_cast<std::float_t>(src->get_width());
+    const auto src_height = static_cast<std::float_t>(src->get_height());
+
+    const auto scale = std::min(static_cast<std::float_t>(max_width) / src_width,
+                                static_cast<std::float_t>(max_height) / src_height);
+
+    const auto scaled_width = src_width * scale;
+    const auto scaled_height = src_height * scale;
+
+    const auto final_width = is_sideways ? scaled_height : scaled_width;
+    const auto final_height = is_sideways ? scaled_width : scaled_height;
+
+    // logger::info<logger::gui>("new {}x{} | src {}x{}", final_width, final_height, src_width, src_height);
+
+    auto snapshot = Gtk::Snapshot::create();
+
+    switch (rotation)
+    {
+        case 0:
+            break;
+        case 90:
+            snapshot->translate(Gdk::Graphene::Point(final_width, 0.0f));
+            snapshot->rotate(90.0f);
+            break;
+        case 180:
+            snapshot->translate(Gdk::Graphene::Point(final_width, final_height));
+            snapshot->rotate(180.0f);
+            break;
+        case 270:
+            snapshot->translate(Gdk::Graphene::Point(0.0f, final_height));
+            snapshot->rotate(270.0f);
+            break;
+        default:
+            std::unreachable();
+    }
+
+    snapshot->scale(scale, scale);
+    snapshot->append_texture(src, Gdk::Graphene::Rect(0.0f, 0.0f, src_width, src_height));
+
+    return snapshot->to_paintable(Gdk::Graphene::Size(final_width, final_height));
+}
+
+Glib::RefPtr<Gdk::Paintable>
 gui::lib::image_tools::create_thumbnail(const std::filesystem::path& path,
                                         std::int32_t size) noexcept
 {
@@ -149,5 +203,13 @@ gui::lib::image_tools::create_thumbnail(const std::filesystem::path& path,
 gui::lib::image_tools::create_thumbnail(const Glib::RefPtr<Gdk::Pixbuf>& src,
                                         std::int32_t size) noexcept
 {
+    // return create_thumbnail(Gdk::Texture::create_for_pixbuf(src), size);
     return fit_to_rectangle(src, size, size);
+}
+
+[[nodiscard]] Glib::RefPtr<Gdk::Paintable>
+gui::lib::image_tools::create_thumbnail(const Glib::RefPtr<Gdk::Texture>& texture,
+                                        std::int32_t size) noexcept
+{
+    return fit_to_rectangle(texture, size, size);
 }
