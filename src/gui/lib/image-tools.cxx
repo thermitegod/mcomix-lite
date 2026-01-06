@@ -15,6 +15,7 @@
 
 #include <filesystem>
 #include <format>
+#include <utility>
 
 #include <gdkmm.h>
 #include <glibmm.h>
@@ -25,65 +26,6 @@
 #include "gui/lib/image-tools.hxx"
 
 #include "logger.hxx"
-
-Glib::RefPtr<Gdk::Pixbuf>
-gui::lib::image_tools::rotate_pixbuf(const Glib::RefPtr<Gdk::Pixbuf>& src,
-                                     std::int32_t rotation) noexcept
-{
-    switch (rotation)
-    {
-        case 0:
-            return src->rotate_simple(Gdk::Pixbuf::Rotation::NONE);
-        case 90:
-            return src->rotate_simple(Gdk::Pixbuf::Rotation::CLOCKWISE);
-        case 180:
-            return src->rotate_simple(Gdk::Pixbuf::Rotation::UPSIDEDOWN);
-        case 270:
-            return src->rotate_simple(Gdk::Pixbuf::Rotation::COUNTERCLOCKWISE);
-        default:
-            logger::error("bad rotation value: {}", rotation);
-            return src->rotate_simple(Gdk::Pixbuf::Rotation::NONE);
-    }
-}
-
-std::array<std::int32_t, 2>
-gui::lib::image_tools::get_fitting_size(const std::int32_t src_width, const std::int32_t src_height,
-                                        std::int32_t max_width, std::int32_t max_height,
-                                        const bool scale_up) noexcept
-{
-    if (!scale_up && src_width <= max_width && src_height <= max_height)
-    {
-        return {max_width, max_height};
-    }
-
-    if ((src_width / max_width) > (src_height / max_height))
-    {
-        max_height = std::max(src_height * max_width / src_width, 1);
-    }
-    else
-    {
-        max_width = std::max(src_width * max_height / src_height, 1);
-    }
-    return {max_width, max_height};
-}
-
-Glib::RefPtr<Gdk::Pixbuf>
-gui::lib::image_tools::add_alpha_background(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf,
-                                            const std::int32_t width,
-                                            const std::int32_t height) noexcept
-{
-    const auto check_size = 16;
-    const auto color1 = 0x777777;
-    const auto color2 = 0x999999;
-
-    return pixbuf->composite_color_simple(width,
-                                          height,
-                                          Gdk::InterpType::BILINEAR,
-                                          255,
-                                          check_size,
-                                          color1,
-                                          color2);
-}
 
 Glib::RefPtr<Gdk::Pixbuf>
 gui::lib::image_tools::load_pixbuf(const std::filesystem::path& path) noexcept
@@ -120,6 +62,25 @@ gui::lib::image_tools::fit_to_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& src,
 {
     // logger::info<logger::gui>("new {}x{}", width, height);
 
+    static auto get_fitting_size = [](const std::int32_t src_width,
+                                      const std::int32_t src_height,
+                                      const std::int32_t max_width,
+                                      const std::int32_t max_height) -> std::array<std::int32_t, 2>
+    {
+        const auto use_width =
+            static_cast<std::int64_t>(src_width) * static_cast<std::int64_t>(max_height) >
+            static_cast<std::int64_t>(max_width) * static_cast<std::int64_t>(src_height);
+
+        if (use_width)
+        {
+            return {max_width, std::max(1, (src_height * max_width) / src_width)};
+        }
+        else
+        {
+            return {std::max(1, (src_width * max_height) / src_height), max_height};
+        }
+    };
+
     if (rotation == 90 || rotation == 270)
     {
         std::swap(max_width, max_height);
@@ -129,14 +90,20 @@ gui::lib::image_tools::fit_to_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& src,
     const auto src_height = src->get_height();
 
     const auto [new_width, new_height] =
-        get_fitting_size(src_width, src_height, max_width, max_height, true);
+        get_fitting_size(src_width, src_height, max_width, max_height);
 
     // logger::info<logger::gui>("new {}x{} | src {}x{}", new_width, new_height, src_width, src_height);
 
     Glib::RefPtr<Gdk::Pixbuf> new_pixbuf;
     if (src->get_has_alpha())
     {
-        new_pixbuf = add_alpha_background(src, new_width, new_height);
+        new_pixbuf = src->composite_color_simple(new_width,
+                                                 new_height,
+                                                 Gdk::InterpType::BILINEAR,
+                                                 255,
+                                                 16,
+                                                 0x777777,
+                                                 0x999999);
     }
     else if (new_width != src_width || new_height != src_height)
     {
@@ -147,7 +114,22 @@ gui::lib::image_tools::fit_to_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& src,
         new_pixbuf = src;
     }
 
-    return Gdk::Texture::create_for_pixbuf(rotate_pixbuf(new_pixbuf, rotation));
+    switch (rotation)
+    {
+        case 0:
+            return Gdk::Texture::create_for_pixbuf(new_pixbuf);
+        case 90:
+            return Gdk::Texture::create_for_pixbuf(
+                new_pixbuf->rotate_simple(Gdk::Pixbuf::Rotation::CLOCKWISE));
+        case 180:
+            return Gdk::Texture::create_for_pixbuf(
+                new_pixbuf->rotate_simple(Gdk::Pixbuf::Rotation::UPSIDEDOWN));
+        case 270:
+            return Gdk::Texture::create_for_pixbuf(
+                new_pixbuf->rotate_simple(Gdk::Pixbuf::Rotation::COUNTERCLOCKWISE));
+        default:
+            std::unreachable();
+    }
 }
 
 Glib::RefPtr<Gdk::Paintable>
@@ -167,10 +149,5 @@ gui::lib::image_tools::create_thumbnail(const std::filesystem::path& path,
 gui::lib::image_tools::create_thumbnail(const Glib::RefPtr<Gdk::Pixbuf>& src,
                                         std::int32_t size) noexcept
 {
-    const auto src_width = src->get_width();
-    const auto src_height = src->get_height();
-
-    const auto [new_width, new_height] = get_fitting_size(src_width, src_height, size, size, false);
-
-    return fit_to_rectangle(src, new_width, new_height);
+    return fit_to_rectangle(src, size, size);
 }
