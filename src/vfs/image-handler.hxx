@@ -33,6 +33,9 @@
 
 #include "types.hxx"
 
+// #define PIXBUF_BACKEND
+// #undef PIXBUF_BACKEND
+
 namespace vfs
 {
 /**
@@ -52,12 +55,13 @@ class image_handler
 
     [[nodiscard]] std::shared_ptr<vfs::image_files> image_files() const noexcept;
 
-    /**
-     * Returns number_of_bufs pixbufs for the image(s) that should be
-     * currently displayed.
-     */
+#if defined(PIXBUF_BACKEND)
     [[nodiscard]] std::vector<Glib::RefPtr<Gdk::Pixbuf>>
-    get_pixbufs(const std::int32_t number) noexcept;
+    get_images(const std::int32_t number) noexcept;
+#else
+    [[nodiscard]] std::vector<Glib::RefPtr<Gdk::Texture>>
+    get_images(const std::int32_t number) noexcept;
+#endif
 
     /**
      * Set up file handler to the page <page>.
@@ -147,7 +151,11 @@ class image_handler
     [[nodiscard]] bool is_page_extracted(const std::optional<page_t> query) const noexcept;
 
   private:
-    [[nodiscard]] Glib::RefPtr<Gdk::Pixbuf> get_pixbuf(const page_t page) noexcept;
+#if defined(PIXBUF_BACKEND)
+    [[nodiscard]] Glib::RefPtr<Gdk::Pixbuf> get_image(const page_t page) noexcept;
+#else
+    [[nodiscard]] Glib::RefPtr<Gdk::Texture> get_image(const page_t page) noexcept;
+#endif
 
     void prune(const std::int32_t start, const std::int32_t size) noexcept;
 
@@ -156,8 +164,11 @@ class image_handler
     std::optional<page_t> current_image_ = std::nullopt;
     std::flat_set<page_t> available_images_;
 
-    std::flat_map<page_t, Glib::RefPtr<Gdk::Pixbuf>> raw_pixbufs_;
-    std::flat_map<page_t, std::array<std::int32_t, 2>> pixbufs_dimensions_;
+#if defined(PIXBUF_BACKEND)
+    std::flat_map<page_t, Glib::RefPtr<Gdk::Pixbuf>> cache_;
+#else
+    std::flat_map<page_t, Glib::RefPtr<Gdk::Texture>> cache_;
+#endif
 
     std::shared_ptr<config::settings> settings;
     std::shared_ptr<gui::lib::view_state> view_state;

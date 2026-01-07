@@ -265,6 +265,14 @@ if get_option('dev')
     features += '-DDEV_MODE'
 endif
 
+if get_option('use-pixbuf-backend')
+    features += '-DPIXBUF_BACKEND'
+endif
+
+foreach a: features
+    add_project_arguments(a, language: ['c', 'cpp'])
+endforeach
+
 ## preprocessor static
 
 preprocessor = [

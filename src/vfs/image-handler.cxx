@@ -51,7 +51,7 @@ vfs::image_handler::image_files() const noexcept
 void
 vfs::image_handler::prune(const std::int32_t start, const std::int32_t size) noexcept
 {
-    std::erase_if(this->raw_pixbufs_,
+    std::erase_if(this->cache_,
                   [start, size](const auto& entry)
                   {
                       const auto key = entry.first;
@@ -59,43 +59,59 @@ vfs::image_handler::prune(const std::int32_t start, const std::int32_t size) noe
                   });
 }
 
+#if defined(PIXBUF_BACKEND)
 Glib::RefPtr<Gdk::Pixbuf>
-vfs::image_handler::get_pixbuf(const page_t page) noexcept
+#else
+Glib::RefPtr<Gdk::Texture>
+#endif
+vfs::image_handler::get_image(const page_t page) noexcept
 {
-    if (this->raw_pixbufs_.contains(page))
+    if (this->cache_.contains(page))
     {
-        // logger::trace<logger::vfs>("pixbuf for page {} in cache", page);
-        return this->raw_pixbufs_[page];
+        // logger::trace<logger::vfs>("page {} in cache", page);
+        return this->cache_[page];
     }
 
     const auto path = this->image_files_->path_from_page(page);
 
     // logger::trace<logger::vfs>("reading page {} from disk: '{}'", page, path.string());
-    auto pixbuf = gui::lib::image_tools::load_pixbuf(path);
-    if (!pixbuf)
+#if defined(PIXBUF_BACKEND)
+    auto image = gui::lib::image_tools::load_pixbuf(path);
+#else
+    auto image = gui::lib::image_tools::load_texture(path);
+#endif
+    if (!image)
     {
         return nullptr;
     }
 
-    this->raw_pixbufs_.insert({page, pixbuf});
-    // logger::trace<logger::vfs>("pixbuf cache new size {}", this->raw_pixbufs_.size());
-    return this->raw_pixbufs_[page];
+    this->cache_.insert({page, image});
+    // logger::trace<logger::vfs>("cache new size {}", this->cache_.size());
+    return this->cache_[page];
 }
 
+#if defined(PIXBUF_BACKEND)
 std::vector<Glib::RefPtr<Gdk::Pixbuf>>
-vfs::image_handler::get_pixbufs(const std::int32_t number) noexcept
+#else
+std::vector<Glib::RefPtr<Gdk::Texture>>
+#endif
+vfs::image_handler::get_images(const std::int32_t number) noexcept
 {
     assert(number > 0);
 
-    std::vector<Glib::RefPtr<Gdk::Pixbuf>> pixbufs;
+#if defined(PIXBUF_BACKEND)
+    std::vector<Glib::RefPtr<Gdk::Pixbuf>> images;
+#else
+    std::vector<Glib::RefPtr<Gdk::Texture>> images;
+#endif
     for (const auto& i : std::views::iota(*this->current_image_) | std::views::take(number))
     {
-        pixbufs.push_back(vfs::image_handler::get_pixbuf(i));
+        images.push_back(vfs::image_handler::get_image(i));
     }
 
-    this->prune(*this->current_image_, static_cast<std::int32_t>(pixbufs.size()));
+    this->prune(*this->current_image_, static_cast<std::int32_t>(images.size()));
 
-    return pixbufs;
+    return images;
 }
 
 void
@@ -232,11 +248,6 @@ vfs::image_handler::get_page_size(const std::optional<page_t> query) noexcept
 {
     const auto page = query.value_or(this->get_current_page());
 
-    if (this->pixbufs_dimensions_.contains(page))
-    {
-        return this->pixbufs_dimensions_.at(page);
-    }
-
     std::array<std::int32_t, 2> dimensions = {0, 0};
 
     if (!this->is_page_available(page))
@@ -244,14 +255,13 @@ vfs::image_handler::get_page_size(const std::optional<page_t> query) noexcept
         return dimensions;
     }
 
-    auto pixbuf = this->get_pixbuf(page);
-    if (!pixbuf)
+    auto image = this->get_image(page);
+    if (!image)
     {
         return dimensions;
     }
 
-    this->pixbufs_dimensions_[page] = {pixbuf->get_width(), pixbuf->get_height()};
-    return this->pixbufs_dimensions_[page];
+    return {image->get_width(), image->get_height()};
 }
 
 std::string
@@ -271,7 +281,7 @@ vfs::image_handler::get_thumbnail(const page_t page, const std::int32_t size) no
         return nullptr;
     }
 
-    return gui::lib::image_tools::create_thumbnail(this->get_pixbuf(page), size);
+    return gui::lib::image_tools::create_thumbnail(this->get_image(page), size);
 }
 
 bool

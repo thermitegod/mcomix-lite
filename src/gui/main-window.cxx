@@ -1010,7 +1010,7 @@ gui::main_window::_draw_pages() noexcept
 
     // Limited to at most 2 pages
     const auto pixbuf_count = this->view_state->is_displaying_double() ? 2 : 1;
-    auto pixbuf_list = image_handler->get_pixbufs(pixbuf_count);
+    auto pixbuf_list = image_handler->get_images(pixbuf_count);
     if (this->settings->default_manga_mode && this->view_state->is_displaying_double())
     {
         std::swap(pixbuf_list[0], pixbuf_list[1]);

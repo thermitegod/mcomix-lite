@@ -13,6 +13,13 @@ option(
 )
 
 option(
+    'use-pixbuf-backend',
+    type : 'boolean',
+    value: true,
+    description : 'Use the deprecated Gdk::Pixbuf backend, otherwise use the new Gdk::Texture backend'
+)
+
+option(
     'with-system-glaze',
     type : 'boolean',
     value: false,
