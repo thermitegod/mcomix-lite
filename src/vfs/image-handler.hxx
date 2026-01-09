@@ -63,91 +63,40 @@ class image_handler
     get_images(const std::int32_t number) noexcept;
 #endif
 
-    /**
-     * Set up file handler to the page <page>.
-     */
     void set_page(const page_t page) noexcept;
 
-    /**
-     * Returns true if <page> is available and calls to get_pixbufs
-     * would not block. If <page> is std::nullopt, the current page(s) are assumed.
-     */
     [[nodiscard]] bool
     is_page_available(const std::optional<page_t> query = std::nullopt) const noexcept;
 
-    /**
-     * Called whenever a new page becomes available, i.e. the corresponding file has been extracted.
-     */
     void page_available(const page_t page) noexcept;
 
-    /**
-     * Called by the file handler when a new file becomes available.
-     */
     void file_available(const std::filesystem::path& filename) noexcept;
 
-    /**
-     * Return the number of pages in the current archive/directory.
-     */
     [[nodiscard]] page_t get_number_of_pages() const noexcept;
 
-    /**
-     * Return the current page number (starting from 1), or 0 if no file is loaded.
-     */
     [[nodiscard]] page_t get_current_page() const noexcept;
 
-    /**
-     * Is <page> the last in a book, if page is std::nullopt use current page.
-     */
     [[nodiscard]] bool
     is_last_page(const std::optional<page_t> query = std::nullopt) const noexcept;
 
-    /**
-     * Return the full path to the image file for <page>, or the current page if <page> is std::nullopt.
-     */
     [[nodiscard]] std::filesystem::path
     get_path_to_page(const std::optional<page_t> query = std::nullopt) const noexcept;
 
-    /**
-     * Return a string with the name of the page file.
-     */
     [[nodiscard]] const std::vector<std::string>
     get_page_filename(const std::optional<page_t> query = std::nullopt) const noexcept;
 
-    /**
-     * Return a list of strings representing the file sizes of the specified pages.
-     *
-     * @param page: A page number or std::nullopt for the current page.
-     * @returns: A list containing the sizes of the specified pages.
-     */
     [[nodiscard]] const std::vector<std::string>
     get_page_filesize(const std::optional<page_t> query = std::nullopt) const noexcept;
 
-    /**
-     * Return a tuple (width, height) with the size of <page>.
-     * If <page> is std::nullopt, return the size of the current page.
-     */
     [[nodiscard]] std::array<std::int32_t, 2>
     get_page_size(const std::optional<page_t> query = std::nullopt) noexcept;
 
-    /**
-     * Return a string with the name of the mime type of <page>.
-     * If <page> is std::nullopt, return the mime type name of the current page.
-     */
     [[nodiscard]] std::string
     get_mime_name(const std::optional<page_t> query = std::nullopt) const noexcept;
 
-    /**
-     * Return a thumbnail pixbuf of <page> that fits in a box with
-     * dimensions <size>x<size>. Return a thumbnail for the current
-     * page if <page> is None.
-     * If <nowait> is True, don't wait for <page> to be available.
-     */
     [[nodiscard]] Glib::RefPtr<Gdk::Paintable> get_thumbnail(const page_t page,
                                                              const std::int32_t size) noexcept;
 
-    /**
-     * Checks if the specified page has been extracted.
-     */
     [[nodiscard]] bool is_page_extracted(const std::optional<page_t> query) const noexcept;
 
   private:
