@@ -33,7 +33,7 @@ gui::dialog::about::about(Gtk::ApplicationWindow& parent) noexcept
     this->set_version(PACKAGE_VERSION);
     this->set_comments("MComix is an image viewer specifically designed to handle manga, comics, "
                        "and image files.");
-    this->set_copyright("Copyright (C) 2005-2025");
+    this->set_copyright("Copyright (C) 2005-2026");
     this->set_license_type(Gtk::License::GPL_3_0);
 
     this->set_website(PACKAGE_GITHUB);
