@@ -37,10 +37,8 @@ vfs::extractor::extractor(const std::filesystem::path& archive) noexcept : archi
     const auto hash = std::invoke(
         [](const auto& path)
         {
-            const auto uri = Glib::filename_to_uri(path.string());
-
             const auto md5 = Botan::HashFunction::create("MD5");
-            md5->update(uri.data());
+            md5->update(path.string());
             return Botan::hex_encode(md5->final(), false);
         },
         archive);
