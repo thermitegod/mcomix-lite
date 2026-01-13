@@ -13,8 +13,6 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <algorithm>
-
 #include <pthread.h>
 
 #include <gdkmm.h>
@@ -49,10 +47,6 @@ gui::thumbbar::thumbbar(const std::shared_ptr<config::settings>& settings) noexc
     this->selection_model_->set_autoselect(false);
     // this->selection_model_->set_selected(1);
     this->selection_model_->set_can_unselect(false);
-
-    this->selection_model_->signal_selection_changed().connect(
-        sigc::mem_fun(*this, &thumbbar::on_selection_changed),
-        false);
 
     auto factory = Gtk::SignalListItemFactory::create();
     factory->signal_setup().connect(sigc::mem_fun(*this, &thumbbar::setup_listitem));
@@ -97,15 +91,16 @@ gui::thumbbar::add_item(const page_t page, const Glib::RefPtr<Gdk::Paintable>& p
 void
 gui::thumbbar::set_page(const page_t page) noexcept
 {
-    this->selection_model_->set_selected(static_cast<std::uint32_t>(page - 1));
-}
+    const auto position = static_cast<std::uint32_t>(page - 1);
 
-void
-gui::thumbbar::on_selection_changed(std::uint32_t position, std::uint32_t n_items) noexcept
-{
-    (void)n_items;
+    this->selection_model_->set_selected(position);
 
-    this->listview_.scroll_to(position, Gtk::ListScrollFlags::SELECT, this->scroll_info_);
+    auto item = std::dynamic_pointer_cast<Gio::ListModel>(this->listview_.get_model())
+                    ->get_object(position);
+    if (item)
+    {
+        this->listview_.scroll_to(position, Gtk::ListScrollFlags::SELECT, this->scroll_info_);
+    }
 }
 
 void

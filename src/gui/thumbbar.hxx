@@ -75,8 +75,6 @@ class thumbbar : public Gtk::ScrolledWindow
 
     Glib::RefPtr<Gtk::ScrollInfo> scroll_info_;
 
-    void on_selection_changed(std::uint32_t position, std::uint32_t n_items) noexcept;
-
     //
     std::jthread thumbnailer_thread_;
     gui::lib::thumbnailer thumbnailer_;
