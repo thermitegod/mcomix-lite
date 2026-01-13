@@ -45,7 +45,11 @@ gui::dialog::donate::page::page() noexcept
 void
 gui::dialog::donate::page::set_image(const std::filesystem::path& path) noexcept
 {
+#if defined(PIXBUF_BACKEND)
+    this->img_.set_pixbuf(gui::lib::image_tools::load_pixbuf(path));
+#else
     this->img_.set_paintable(gui::lib::image_tools::load_texture(path));
+#endif
 }
 
 void

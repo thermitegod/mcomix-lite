@@ -23,24 +23,21 @@
 
 namespace gui::lib::image_tools
 {
-/**
- * Loads a pixbuf from a given image file.
- *
- * @param path: Path to the image file.
- * @returns: A new pixbuf or nullptr on failure.
- */
+#if defined(PIXBUF_BACKEND)
 [[nodiscard]] Glib::RefPtr<Gdk::Pixbuf> load_pixbuf(const std::filesystem::path& path) noexcept;
-[[nodiscard]] Glib::RefPtr<Gdk::Texture> load_texture(const std::filesystem::path& path) noexcept;
 
-[[nodiscard]] Glib::RefPtr<Gdk::Paintable> fit_to_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf,
+[[nodiscard]] Glib::RefPtr<Gdk::Paintable> fit_to_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& src,
                                                             std::int32_t max_width,
                                                             std::int32_t max_height,
                                                             std::int32_t rotation = 0) noexcept;
+#else
+[[nodiscard]] Glib::RefPtr<Gdk::Texture> load_texture(const std::filesystem::path& path) noexcept;
 
 [[nodiscard]] Glib::RefPtr<Gdk::Paintable> fit_to_rectangle(const Glib::RefPtr<Gdk::Texture>& src,
                                                             std::int32_t max_width,
                                                             std::int32_t max_height,
                                                             std::int32_t rotation = 0) noexcept;
+#endif
 
 /**
  * Returns a thumbnail pixbuf for a given path.
@@ -53,9 +50,11 @@ namespace gui::lib::image_tools
 [[nodiscard]] Glib::RefPtr<Gdk::Paintable> create_thumbnail(const std::filesystem::path& path,
                                                             std::int32_t size) noexcept;
 
-[[nodiscard]] Glib::RefPtr<Gdk::Paintable> create_thumbnail(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf,
+#if defined(PIXBUF_BACKEND)
+[[nodiscard]] Glib::RefPtr<Gdk::Paintable> create_thumbnail(const Glib::RefPtr<Gdk::Pixbuf>& src,
                                                             std::int32_t size) noexcept;
-
-[[nodiscard]] Glib::RefPtr<Gdk::Paintable>
-create_thumbnail(const Glib::RefPtr<Gdk::Texture>& texture, std::int32_t size) noexcept;
+#else
+[[nodiscard]] Glib::RefPtr<Gdk::Paintable> create_thumbnail(const Glib::RefPtr<Gdk::Texture>& src,
+                                                            std::int32_t size) noexcept;
+#endif
 } // namespace gui::lib::image_tools

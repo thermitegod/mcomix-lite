@@ -27,26 +27,14 @@
 
 #include "logger.hxx"
 
+#if defined(PIXBUF_BACKEND)
+
 Glib::RefPtr<Gdk::Pixbuf>
 gui::lib::image_tools::load_pixbuf(const std::filesystem::path& path) noexcept
 {
     try
     {
         return Gdk::Pixbuf::create_from_file(path);
-    }
-    catch (const Glib::Error& ex)
-    {
-        logger::error<logger::gui>("Failed to load image: {} ", path.string());
-        return nullptr;
-    }
-}
-
-Glib::RefPtr<Gdk::Texture>
-gui::lib::image_tools::load_texture(const std::filesystem::path& path) noexcept
-{
-    try
-    {
-        return Gdk::Texture::create_from_filename(path);
     }
     catch (const Glib::Error& ex)
     {
@@ -133,6 +121,22 @@ gui::lib::image_tools::fit_to_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& src,
     }
 }
 
+#else
+
+Glib::RefPtr<Gdk::Texture>
+gui::lib::image_tools::load_texture(const std::filesystem::path& path) noexcept
+{
+    try
+    {
+        return Gdk::Texture::create_from_filename(path);
+    }
+    catch (const Glib::Error& ex)
+    {
+        logger::error<logger::gui>("Failed to load image: {} ", path.string());
+        return nullptr;
+    }
+}
+
 Glib::RefPtr<Gdk::Paintable>
 gui::lib::image_tools::fit_to_rectangle(const Glib::RefPtr<Gdk::Texture>& src,
                                         std::int32_t max_width, std::int32_t max_height,
@@ -186,18 +190,26 @@ gui::lib::image_tools::fit_to_rectangle(const Glib::RefPtr<Gdk::Texture>& src,
     return snapshot->to_paintable(Gdk::Graphene::Size(final_width, final_height));
 }
 
+#endif
+
 Glib::RefPtr<Gdk::Paintable>
 gui::lib::image_tools::create_thumbnail(const std::filesystem::path& path,
                                         std::int32_t size) noexcept
 {
-    auto pixbuf = gui::lib::image_tools::load_pixbuf(path);
-    if (!pixbuf)
+#if defined(PIXBUF_BACKEND)
+    auto image = gui::lib::image_tools::load_pixbuf(path);
+#else
+    auto image = gui::lib::image_tools::load_texture(path);
+#endif
+    if (!image)
     {
         return nullptr;
     }
 
-    return create_thumbnail(pixbuf, size);
+    return create_thumbnail(image, size);
 }
+
+#if defined(PIXBUF_BACKEND)
 
 [[nodiscard]] Glib::RefPtr<Gdk::Paintable>
 gui::lib::image_tools::create_thumbnail(const Glib::RefPtr<Gdk::Pixbuf>& src,
@@ -207,9 +219,13 @@ gui::lib::image_tools::create_thumbnail(const Glib::RefPtr<Gdk::Pixbuf>& src,
     return fit_to_rectangle(src, size, size);
 }
 
+#else
+
 [[nodiscard]] Glib::RefPtr<Gdk::Paintable>
-gui::lib::image_tools::create_thumbnail(const Glib::RefPtr<Gdk::Texture>& texture,
+gui::lib::image_tools::create_thumbnail(const Glib::RefPtr<Gdk::Texture>& src,
                                         std::int32_t size) noexcept
 {
-    return fit_to_rectangle(texture, size, size);
+    return fit_to_rectangle(src, size, size);
 }
+
+#endif

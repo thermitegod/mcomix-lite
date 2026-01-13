@@ -46,6 +46,7 @@ vfs::is_archive(const std::filesystem::path& filename) noexcept
 bool
 vfs::is_image(const std::filesystem::path& filename) noexcept
 {
+#if defined(PIXBUF_BACKEND)
     static const auto extensions = std::invoke(
         []()
         {
@@ -61,6 +62,13 @@ vfs::is_image(const std::filesystem::path& filename) noexcept
             // std::println("{}", extensions);
             return extensions;
         });
+#else
+    static constexpr std::array<std::string_view, 27> extensions{
+        ".tga",   ".svgz", ".pbm",  ".svg", ".jpeg",   ".icns", ".ani", ".ppm", ".bmp",
+        ".targa", ".tif",  ".pnm",  ".gif", ".svg.gz", ".pgm",  ".jpe", ".ico", ".qif",
+        ".jpg",   ".xpm",  ".tiff", ".png", ".xbm",    ".qtif", ".jxl", ".cur", ".webp",
+    };
+#endif
 
     return std::ranges::any_of(extensions,
                                [&filename](const std::string_view ext)

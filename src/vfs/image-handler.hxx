@@ -57,11 +57,10 @@ class image_handler
 
 #if defined(PIXBUF_BACKEND)
     [[nodiscard]] std::vector<Glib::RefPtr<Gdk::Pixbuf>>
-    get_images(const std::int32_t number) noexcept;
 #else
     [[nodiscard]] std::vector<Glib::RefPtr<Gdk::Texture>>
-    get_images(const std::int32_t number) noexcept;
 #endif
+    get_images(const std::int32_t number) noexcept;
 
     void set_page(const page_t page) noexcept;
 
@@ -101,10 +100,11 @@ class image_handler
 
   private:
 #if defined(PIXBUF_BACKEND)
-    [[nodiscard]] Glib::RefPtr<Gdk::Pixbuf> get_image(const page_t page) noexcept;
+    [[nodiscard]] Glib::RefPtr<Gdk::Pixbuf>
 #else
-    [[nodiscard]] Glib::RefPtr<Gdk::Texture> get_image(const page_t page) noexcept;
+    [[nodiscard]] Glib::RefPtr<Gdk::Texture>
 #endif
+    get_image(const page_t page) noexcept;
 
     void prune(const std::int32_t start, const std::int32_t size) noexcept;
 
