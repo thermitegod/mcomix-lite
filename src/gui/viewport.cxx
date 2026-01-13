@@ -118,6 +118,9 @@ gui::viewport::toggle_page_padding() noexcept
 void
 gui::viewport::hide_images() noexcept
 {
+    this->image_left_.set_paintable(nullptr);
+    this->image_right_.set_paintable(nullptr);
+
     // hides old images before showing new ones
     // also if in double page mode and only a single
     // image is going to be shown, prevents a ghost second image
