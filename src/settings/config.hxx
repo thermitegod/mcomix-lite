@@ -17,27 +17,49 @@
 
 #include <filesystem>
 
+#include <sigc++/sigc++.h>
+
 #include <ztd/ztd.hxx>
 
 #include "settings/settings.hxx"
 
+#include "vfs/user-dirs.hxx"
+
 namespace config
 {
-struct config_file_data final
+struct config_file_format final
 {
-    u64 version;
+    u64 version{version};
     config::settings settings;
 };
 
-void load(const std::filesystem::path& path,
-          const std::shared_ptr<config::settings>& settings) noexcept;
-void save(const std::filesystem::path& path,
-          const std::shared_ptr<config::settings>& settings) noexcept;
-
-const std::filesystem::path filename{"config.json"};
-
-namespace disk_format
+class manager
 {
-constexpr u64 version = 1_u64; // 1.0.0
-} // namespace disk_format
+  public:
+    manager(const std::shared_ptr<config::settings>& settings);
+    void load() noexcept;
+    void save() noexcept;
+
+  private:
+    std::shared_ptr<config::settings> settings_;
+    std::filesystem::path file_ = vfs::program::config() / "config.json";
+    u64 version_ = 1_u64; // 1.0.0
+
+  public:
+    [[nodiscard]] auto
+    signal_load_error() noexcept
+    {
+        return this->signal_load_error_;
+    }
+
+    [[nodiscard]] auto
+    signal_save_error() noexcept
+    {
+        return this->signal_save_error_;
+    }
+
+  private:
+    sigc::signal<void(std::string)> signal_load_error_;
+    sigc::signal<void(std::string)> signal_save_error_;
+};
 } // namespace config

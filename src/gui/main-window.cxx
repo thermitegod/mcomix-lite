@@ -33,8 +33,6 @@
 
 #include <ztd/ztd.hxx>
 
-#include "settings/config.hxx"
-
 #include "gui/main-window.hxx"
 #include "gui/menubar.hxx"
 #include "gui/statusbar.hxx"
@@ -66,7 +64,23 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
     this->set_resizable(true);
     this->set_visible(true);
 
-    config::load(vfs::program::config(), this->settings);
+    this->config_manager_->signal_load_error().connect(
+        [this](const std::string& msg)
+        {
+            auto dialog = Gtk::AlertDialog::create("Config Load Error");
+            dialog->set_detail(msg);
+            dialog->set_modal(true);
+            dialog->show(*this);
+        });
+    this->config_manager_->signal_save_error().connect(
+        [this](const std::string& msg)
+        {
+            auto dialog = Gtk::AlertDialog::create("Config Save Error");
+            dialog->set_detail(msg);
+            dialog->set_modal(true);
+            dialog->show(*this);
+        });
+    this->config_manager_->load();
 
     this->bookmarks_->signal_load_error().connect(
         [this](std::string msg)
@@ -764,7 +778,7 @@ gui::main_window::add_shortcuts() noexcept
 void
 gui::main_window::on_exit() noexcept
 {
-    config::save(vfs::program::config(), this->settings);
+    this->config_manager_->save();
 
     this->close();
 }

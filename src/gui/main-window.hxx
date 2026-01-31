@@ -25,6 +25,7 @@
 #include <glibmm.h>
 #include <gtkmm.h>
 
+#include "settings/config.hxx"
 #include "settings/settings.hxx"
 
 #include "gui/menubar.hxx"
@@ -91,6 +92,8 @@ class main_window : public Gtk::ApplicationWindow
     std::array<std::int32_t, 2> get_visible_area_size() noexcept;
 
     std::shared_ptr<config::settings> settings = std::make_shared<config::settings>();
+    std::shared_ptr<config::manager> config_manager_ =
+        std::make_shared<config::manager>(this->settings);
     std::shared_ptr<gui::lib::view_state> view_state = std::make_shared<gui::lib::view_state>();
 
     std::shared_ptr<vfs::file_handler> file_handler_ =

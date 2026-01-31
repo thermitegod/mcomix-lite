@@ -345,8 +345,7 @@ sources = files(
   'src/vfs/utils/utils.cxx',
   'src/vfs/utils/natsort/strnatcmp.cxx',
 
-  'src/settings/config-load.cxx',
-  'src/settings/config-save.cxx',
+  'src/settings/config.cxx',
 
   'src/vfs/libarchive/entry.cxx',
   'src/vfs/libarchive/reader.cxx',
