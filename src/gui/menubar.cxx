@@ -22,107 +22,286 @@
 gui::menubar::menubar() noexcept
 {
     auto menu = Gio::Menu::create();
-
-    { // "File"
-        auto section_1 = Gio::Menu::create();
-        section_1->append("Open", "app.open");
-        section_1->append("Close", "app.close");
-
-        auto section_2 = Gio::Menu::create();
-        section_2->append("Save Page As", "app.page_extract");
-        section_2->append("Refresh", "app.refresh");
-        section_2->append("Properties", "app.properties");
-
-        auto section_3 = Gio::Menu::create();
-        section_3->append("Trash", "app.trash");
-
-        auto section_4 = Gio::Menu::create();
-        section_4->append("Exit", "app.exit");
-
-        auto file_menu = Gio::Menu::create();
-        file_menu->append_section(section_1);
-        file_menu->append_section(section_2);
-        file_menu->append_section(section_3);
-        file_menu->append_section(section_4);
-        menu->append_submenu("File", file_menu);
-    }
-
-    { // "Edit"
-        auto edit_menu = Gio::Menu::create();
-        edit_menu->append("Keybindings", "app.keybindings");
-        edit_menu->append("Preferences", "app.preferences");
-        menu->append_submenu("Edit", edit_menu);
-    }
-
-    { // "View"
-        auto section_1 = Gio::Menu::create();
-        section_1->append("Toggle Double Page", "app.view_double");
-        section_1->append("Toggle Manga Mode", "app.view_manga");
-
-        auto section_2 = Gio::Menu::create();
-        section_2->append("Toggle Thumbnail Sidebar", "app.toggle_thumbar");
-        section_2->append("Toggle Menubar", "app.toggle_menubar");
-        section_2->append("Toggle Statusbar", "app.toggle_statusbar");
-        section_2->append("Toggle Center Spacing", "app.page_center_space");
-
-        auto view_menu = Gio::Menu::create();
-        view_menu->append_section(section_1);
-        view_menu->append_section(section_2);
-        menu->append_submenu("View", view_menu);
-    }
-
-    { // "Navigation"
-        auto section_1 = Gio::Menu::create();
-        section_1->append("Next Page", "app.page_next");
-        section_1->append("Previous Page", "app.page_prev");
-        section_1->append("Single Step Next Page", "app.page_next_single");
-        section_1->append("Single Step Previous Page", "app.page_prev_single");
-        section_1->append("Fast Forward Next Page", "app.page_next_ff");
-        section_1->append("Fast Forward Previous Page", "app.page_prev_ff");
-        section_1->append("First Page", "app.page_first");
-        section_1->append("Last Page", "app.page_last");
-
-        auto section_2 = Gio::Menu::create();
-        section_2->append("Page Selector", "app.page_select");
-
-        auto section_3 = Gio::Menu::create();
-        section_3->append("Next Archive", "app.archive_next");
-        section_3->append("Previous Archive", "app.archive_prev");
-
-        auto section_4 = Gio::Menu::create();
-        section_4->append("First Archive", "app.archive_first");
-        section_4->append("Last Archive", "app.archive_last");
-
-        auto nav_menu = Gio::Menu::create();
-        nav_menu->append_section(section_1);
-        nav_menu->append_section(section_2);
-        nav_menu->append_section(section_3);
-        nav_menu->append_section(section_4);
-        menu->append_submenu("Navigation", nav_menu);
-    }
-
-    { // "Bookmarks"
-        auto book_menu = Gio::Menu::create();
-        book_menu->append("Add Bookmark", "app.bookmark_add");
-        book_menu->append("Open Bookmark Manager", "app.bookmark_manager");
-        menu->append_submenu("Bookmarks", book_menu);
-    }
-
-    { // "Tools"
-        auto tools_menu = Gio::Menu::create();
-        tools_menu->append("Reset Rotation", "app.rotate_reset");
-        tools_menu->append("Rotate 90°", "app.rotate_90");
-        tools_menu->append("Rotate 180°", "app.rotate_180");
-        tools_menu->append("Rotate 270°", "app.rotate_270");
-        menu->append_submenu("Tools", tools_menu);
-    }
-
-    { // "Help"
-        auto help_menu = Gio::Menu::create();
-        help_menu->append("About", "app.about");
-        help_menu->append("Donate", "app.donate");
-        menu->append_submenu("Help", help_menu);
-    }
+    menu->append_submenu("File", create_file());
+    menu->append_submenu("Edit", create_edit());
+    menu->append_submenu("View", create_view());
+    menu->append_submenu("Navigation", create_navigation());
+    menu->append_submenu("Bookmarks", create_bookmarks());
+    menu->append_submenu("Tools", create_tools());
+    menu->append_submenu("Help", create_help());
 
     this->set_menu_model(menu);
+}
+
+Glib::RefPtr<Gio::Menu>
+gui::menubar::create_file() noexcept
+{
+    auto menu = Gio::Menu::create();
+    Glib::RefPtr<Gio::MenuItem> item;
+
+    {
+        auto section = Gio::Menu::create();
+
+        item = Gio::MenuItem::create("Open", "app.open");
+        item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("<Control>O"));
+        section->append_item(item);
+
+        item = Gio::MenuItem::create("Close", "app.close");
+        item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("<Control>W"));
+        section->append_item(item);
+
+        menu->append_section(section);
+    }
+
+    {
+        auto section = Gio::Menu::create();
+
+        item = Gio::MenuItem::create("Save Page As", "app.page_extract");
+        item->set_attribute_value("accel",
+                                  Glib::Variant<Glib::ustring>::create("<Shift><Control>S"));
+        section->append_item(item);
+
+        item = Gio::MenuItem::create("Refresh", "app.refresh");
+        item->set_attribute_value("accel",
+                                  Glib::Variant<Glib::ustring>::create("<Shift><Control>R"));
+        section->append_item(item);
+
+        item = Gio::MenuItem::create("Properties", "app.properties");
+        item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("<Alt>Return"));
+        section->append_item(item);
+
+        menu->append_section(section);
+    }
+
+    {
+        auto section = Gio::Menu::create();
+
+        item = Gio::MenuItem::create("Trash", "app.trash");
+        item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("Delete"));
+        section->append_item(item);
+
+        menu->append_section(section);
+    }
+
+    {
+        auto section = Gio::Menu::create();
+
+        item = Gio::MenuItem::create("Exit", "app.exit");
+        item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("<Control>Q"));
+        section->append_item(item);
+
+        menu->append_section(section);
+    }
+
+    return menu;
+}
+
+Glib::RefPtr<Gio::Menu>
+gui::menubar::create_edit() noexcept
+{
+    auto menu = Gio::Menu::create();
+    Glib::RefPtr<Gio::MenuItem> item;
+
+    menu->append("Keybindings", "app.keybindings");
+
+    item = Gio::MenuItem::create("Preferences", "app.preferences");
+    item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("F12"));
+    menu->append_item(item);
+
+    return menu;
+}
+Glib::RefPtr<Gio::Menu>
+gui::menubar::create_view() noexcept
+{
+    auto menu = Gio::Menu::create();
+    Glib::RefPtr<Gio::MenuItem> item;
+
+    {
+        auto section = Gio::Menu::create();
+
+        item = Gio::MenuItem::create("Toggle Double Page", "app.view_double");
+        item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("D"));
+        section->append_item(item);
+
+        item = Gio::MenuItem::create("Toggle Manga Mode", "app.view_manga");
+        item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("M"));
+        section->append_item(item);
+
+        menu->append_section(section);
+    }
+
+    {
+        auto section = Gio::Menu::create();
+
+        section->append("Toggle Thumbnail Sidebar", "app.toggle_thumbar");
+        section->append("Toggle Menubar", "app.toggle_menubar");
+        section->append("Toggle Statusbar", "app.toggle_statusbar");
+
+        item = Gio::MenuItem::create("Toggle Center Spacing", "app.page_center_space");
+        item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("<Shift>D"));
+        section->append_item(item);
+
+        menu->append_section(section);
+    }
+
+    return menu;
+}
+Glib::RefPtr<Gio::Menu>
+gui::menubar::create_navigation() noexcept
+{
+    auto menu = Gio::Menu::create();
+    Glib::RefPtr<Gio::MenuItem> item;
+
+    {
+        auto section = Gio::Menu::create();
+
+        item = Gio::MenuItem::create("Next Page", "app.page_next");
+        item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("Down"));
+        section->append_item(item);
+
+        item = Gio::MenuItem::create("Previous Page", "app.page_prev");
+        item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("Up"));
+        section->append_item(item);
+
+        menu->append_section(section);
+    }
+
+    {
+        auto section = Gio::Menu::create();
+
+        item = Gio::MenuItem::create("Single Step Next Page", "app.page_next_single");
+        item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("<Control>Down"));
+        section->append_item(item);
+
+        item = Gio::MenuItem::create("Single Step Previous Page", "app.page_prev_single");
+        item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("<Control>Up"));
+        section->append_item(item);
+
+        menu->append_section(section);
+    }
+
+    {
+        auto section = Gio::Menu::create();
+
+        item = Gio::MenuItem::create("Fast Forward Next Page", "app.page_next_ff");
+        item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("<Shift>Down"));
+        section->append_item(item);
+
+        item = Gio::MenuItem::create("Fast Forward Previous Page", "app.page_prev_ff");
+        item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("<Shift>Up"));
+        section->append_item(item);
+
+        menu->append_section(section);
+    }
+
+    {
+        auto section = Gio::Menu::create();
+
+        item = Gio::MenuItem::create("First Page", "app.page_first");
+        item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("Home"));
+        section->append_item(item);
+
+        item = Gio::MenuItem::create("Last Page", "app.page_last");
+        item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("End"));
+        section->append_item(item);
+
+        menu->append_section(section);
+    }
+
+    {
+        auto section = Gio::Menu::create();
+
+        item = Gio::MenuItem::create("Page Selector", "app.page_select");
+        item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("G"));
+        section->append_item(item);
+
+        menu->append_section(section);
+    }
+
+    {
+        auto section = Gio::Menu::create();
+
+        item = Gio::MenuItem::create("Next Archive", "app.archive_next");
+        item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("<Control>Right"));
+        section->append_item(item);
+
+        item = Gio::MenuItem::create("Previous Archive", "app.archive_prev");
+        item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("<Control>Left"));
+        section->append_item(item);
+
+        menu->append_section(section);
+    }
+
+    {
+        auto section = Gio::Menu::create();
+
+        item = Gio::MenuItem::create("First Archive", "app.archive_first");
+        item->set_attribute_value("accel",
+                                  Glib::Variant<Glib::ustring>::create("<Shift><Control>Left"));
+        section->append_item(item);
+
+        item = Gio::MenuItem::create("Last Archive", "app.archive_last");
+        item->set_attribute_value("accel",
+                                  Glib::Variant<Glib::ustring>::create("<Shift><Control>Right"));
+        section->append_item(item);
+
+        menu->append_section(section);
+    }
+
+    return menu;
+}
+
+Glib::RefPtr<Gio::Menu>
+gui::menubar::create_bookmarks() noexcept
+{
+    auto menu = Gio::Menu::create();
+    Glib::RefPtr<Gio::MenuItem> item;
+
+    item = Gio::MenuItem::create("Add Bookmark", "app.bookmark_add");
+    item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("<Control>D"));
+    menu->append_item(item);
+
+    item = Gio::MenuItem::create("Open Bookmark Manager", "app.bookmark_manager");
+    item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("<Shift><Control>O"));
+    menu->append_item(item);
+
+    return menu;
+}
+
+Glib::RefPtr<Gio::Menu>
+gui::menubar::create_tools() noexcept
+{
+    auto menu = Gio::Menu::create();
+    Glib::RefPtr<Gio::MenuItem> item;
+
+    menu->append("Reset Rotation", "app.rotate_reset");
+
+    item = Gio::MenuItem::create("Rotate 90°", "app.rotate_90");
+    item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("R"));
+    menu->append_item(item);
+
+    item = Gio::MenuItem::create("Rotate 180°", "app.rotate_180");
+    item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("<Shift>R"));
+    menu->append_item(item);
+
+    item = Gio::MenuItem::create("Rotate 270°", "app.rotate_270");
+    item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("<Control>R"));
+    menu->append_item(item);
+
+    return menu;
+}
+
+Glib::RefPtr<Gio::Menu>
+gui::menubar::create_help() noexcept
+{
+    auto menu = Gio::Menu::create();
+    Glib::RefPtr<Gio::MenuItem> item;
+
+    item = Gio::MenuItem::create("About", "app.about");
+    item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("F1"));
+    menu->append_item(item);
+
+    menu->append("Donate", "app.donate");
+
+    return menu;
 }
