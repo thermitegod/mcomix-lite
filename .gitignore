@@ -1,7 +1,7 @@
 # Meson
-build/
-build2/
-build3/
+build
+build-clang
+build-gcc
 
 # VSCode
 .vscode
@@ -9,4 +9,3 @@ build3/
 # test
 test/
 TEST_FILES/
-
