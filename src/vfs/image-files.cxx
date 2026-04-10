@@ -27,39 +27,39 @@ void
 vfs::image_files::set_image_files(const std::span<const std::filesystem::path> filelist) noexcept
 {
     assert(!filelist.empty());
-    assert(this->pages_.empty());
-    assert(this->paths_.empty());
+    assert(pages_.empty());
+    assert(paths_.empty());
 
     for (const auto [idx, file] : std::ranges::views::enumerate(filelist))
     {
-        this->pages_.insert({file, idx + 1});
-        this->paths_.insert({idx + 1, file});
+        pages_.insert({file, idx + 1});
+        paths_.insert({idx + 1, file});
     }
-    this->total_pages_ = static_cast<page_t>(filelist.size());
+    total_pages_ = static_cast<page_t>(filelist.size());
 }
 
 void
 vfs::image_files::cleanup() noexcept
 {
-    this->pages_.clear();
-    this->paths_.clear();
-    this->total_pages_ = 0;
+    pages_.clear();
+    paths_.clear();
+    total_pages_ = 0;
 }
 
 page_t
 vfs::image_files::total_pages() const noexcept
 {
-    return this->total_pages_;
+    return total_pages_;
 }
 
 const std::filesystem::path
 vfs::image_files::path_from_page(const page_t page) const noexcept
 {
-    return this->paths_.at(page);
+    return paths_.at(page);
 }
 
 page_t
 vfs::image_files::page_from_path(const std::filesystem::path& path) const noexcept
 {
-    return this->pages_.at(path);
+    return pages_.at(path);
 }

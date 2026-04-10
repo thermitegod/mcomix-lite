@@ -30,7 +30,7 @@ gui::menubar::menubar() noexcept
     menu->append_submenu("Tools", create_tools());
     menu->append_submenu("Help", create_help());
 
-    this->set_menu_model(menu);
+    set_menu_model(menu);
 }
 
 Glib::RefPtr<Gio::Menu>

@@ -29,68 +29,67 @@ gui::dialog::bookmarks::bookmarks(Gtk::ApplicationWindow& parent,
                                   const std::shared_ptr<config::settings>& settings) noexcept
     : file_handler_(file_handler), bookmarks_(bookmarks), settings_(settings)
 {
-    this->set_transient_for(parent);
-    this->set_modal(true);
+    set_transient_for(parent);
+    set_modal(true);
 
-    this->set_size_request(800, 800);
-    this->set_title("Bookmark Manager");
-    this->set_resizable(false);
+    set_size_request(800, 800);
+    set_title("Bookmark Manager");
+    set_resizable(false);
 
     // Content //
 
-    this->box_ = Gtk::Box(Gtk::Orientation::VERTICAL, 5);
-    this->box_.set_margin(5);
-    this->set_child(this->box_);
+    box_ = Gtk::Box(Gtk::Orientation::VERTICAL, 5);
+    box_.set_margin(5);
+    set_child(box_);
 
-    this->scrolled_window_.set_has_frame(true);
-    this->scrolled_window_.set_policy(Gtk::PolicyType::NEVER, Gtk::PolicyType::AUTOMATIC);
-    this->scrolled_window_.set_expand(true);
-    this->box_.append(this->scrolled_window_);
+    scrolled_window_.set_has_frame(true);
+    scrolled_window_.set_policy(Gtk::PolicyType::NEVER, Gtk::PolicyType::AUTOMATIC);
+    scrolled_window_.set_expand(true);
+    box_.append(scrolled_window_);
 
-    this->create_model();
+    create_model();
 
-    this->selection_model_ = Gtk::SingleSelection::create(this->liststore_);
-    this->selection_model_->set_autoselect(true);
-    this->selection_model_->set_can_unselect(true);
-    this->columnview_.set_model(this->selection_model_);
-    this->columnview_.set_reorderable(false);
-    // this->columnview_.set_single_click_activate(true);
-    this->columnview_.add_css_class("data-table");
-    this->columnview_.signal_activate().connect([this]([[maybe_unused]] auto i)
-                                                { this->on_button_ok_clicked(); });
-    this->add_columns();
-    this->scrolled_window_.set_child(this->columnview_);
+    selection_model_ = Gtk::SingleSelection::create(liststore_);
+    selection_model_->set_autoselect(true);
+    selection_model_->set_can_unselect(true);
+    columnview_.set_model(selection_model_);
+    columnview_.set_reorderable(false);
+    // columnview_.set_single_click_activate(true);
+    columnview_.add_css_class("data-table");
+    columnview_.signal_activate().connect([this]([[maybe_unused]] auto i)
+                                          { on_button_ok_clicked(); });
+    add_columns();
+    scrolled_window_.set_child(columnview_);
 
     // keybindings //
 
     auto key_controller = Gtk::EventControllerKey::create();
     key_controller->signal_key_pressed().connect(sigc::mem_fun(*this, &bookmarks::on_key_press),
                                                  false);
-    this->add_controller(key_controller);
+    add_controller(key_controller);
 
     // Buttons //
 
-    this->button_box_ = Gtk::Box(Gtk::Orientation::HORIZONTAL, 5);
-    this->button_ok_ = Gtk::Button("Open", true);
-    this->button_ok_.signal_clicked().connect([this]() { this->on_button_ok_clicked(); });
-    this->button_close_ = Gtk::Button("Close", true);
-    this->button_close_.signal_clicked().connect([this]() { this->on_button_close_clicked(); });
-    this->button_remove_ = Gtk::Button("Remove", true);
-    this->button_remove_.signal_clicked().connect([this]() { this->on_button_remove_clicked(); });
-    this->button_remove_all_ = Gtk::Button("Remove All", true);
-    this->button_remove_all_.signal_clicked().connect([this]()
-                                                      { this->on_button_remove_all_clicked(); });
+    button_box_ = Gtk::Box(Gtk::Orientation::HORIZONTAL, 5);
+    button_ok_ = Gtk::Button("Open", true);
+    button_ok_.signal_clicked().connect([this]() { on_button_ok_clicked(); });
+    button_close_ = Gtk::Button("Close", true);
+    button_close_.signal_clicked().connect([this]() { on_button_close_clicked(); });
+    button_remove_ = Gtk::Button("Remove", true);
+    button_remove_.signal_clicked().connect([this]() { on_button_remove_clicked(); });
+    button_remove_all_ = Gtk::Button("Remove All", true);
+    button_remove_all_.signal_clicked().connect([this]() { on_button_remove_all_clicked(); });
 
-    this->box_.append(this->button_box_);
-    this->button_box_.set_halign(Gtk::Align::END);
-    this->button_box_.append(this->button_remove_all_);
-    this->button_box_.append(this->button_remove_);
-    this->button_box_.append(this->button_close_);
-    this->button_box_.append(this->button_ok_);
+    box_.append(button_box_);
+    button_box_.set_halign(Gtk::Align::END);
+    button_box_.append(button_remove_all_);
+    button_box_.append(button_remove_);
+    button_box_.append(button_close_);
+    button_box_.append(button_ok_);
 
-    this->set_child(this->box_);
+    set_child(box_);
 
-    this->set_visible(true);
+    set_visible(true);
 }
 
 bool
@@ -101,7 +100,7 @@ gui::dialog::bookmarks::on_key_press(std::uint32_t keyval, std::uint32_t keycode
     (void)state;
     if (keyval == GDK_KEY_Escape)
     {
-        this->on_button_close_clicked();
+        on_button_close_clicked();
     }
     return false;
 }
@@ -110,22 +109,22 @@ void
 gui::dialog::bookmarks::on_button_ok_clicked() noexcept
 {
     if (auto selected =
-            std::dynamic_pointer_cast<ModelColumns>(this->selection_model_->get_selected_item()))
+            std::dynamic_pointer_cast<ModelColumns>(selection_model_->get_selected_item()))
     {
-        this->file_handler_->open_file_init({selected->path_}, selected->current_page_);
+        file_handler_->open_file_init({selected->path_}, selected->current_page_);
     }
 
-    this->close();
+    close();
 }
 
 void
 gui::dialog::bookmarks::on_button_remove_clicked() noexcept
 {
     if (auto selected =
-            std::dynamic_pointer_cast<ModelColumns>(this->selection_model_->get_selected_item()))
+            std::dynamic_pointer_cast<ModelColumns>(selection_model_->get_selected_item()))
     {
-        this->bookmarks_->remove(selected->path_);
-        this->liststore_->remove(selection_model_->get_selected());
+        bookmarks_->remove(selected->path_);
+        liststore_->remove(selection_model_->get_selected());
     }
 }
 
@@ -134,7 +133,7 @@ gui::dialog::bookmarks::on_button_remove_all_clicked() noexcept
 {
     auto dialog = Gtk::AlertDialog::create("Remove All Bookmarks?");
     dialog->set_detail(
-        std::format("This will remove '{}' bookmarks", this->bookmarks_->get_bookmarks().size()));
+        std::format("This will remove '{}' bookmarks", bookmarks_->get_bookmarks().size()));
     dialog->set_modal(true);
     dialog->set_buttons({"Cancel", "Confirm"});
     dialog->set_cancel_button(0);
@@ -147,8 +146,8 @@ gui::dialog::bookmarks::on_button_remove_all_clicked() noexcept
             const auto response = dialog->choose_finish(result);
             if (response == 1)
             { // Confirm Button
-                this->bookmarks_->remove_all();
-                this->liststore_->remove_all();
+                bookmarks_->remove_all();
+                liststore_->remove_all();
             }
         }
         catch (...)
@@ -161,21 +160,20 @@ gui::dialog::bookmarks::on_button_remove_all_clicked() noexcept
 void
 gui::dialog::bookmarks::on_button_close_clicked() noexcept
 {
-    this->close();
+    close();
 }
 
 void
 gui::dialog::bookmarks::create_model() noexcept
 {
-    this->liststore_ = Gio::ListStore<ModelColumns>::create();
+    liststore_ = Gio::ListStore<ModelColumns>::create();
 
-    for (const auto& data : this->bookmarks_->get_bookmarks())
+    for (const auto& data : bookmarks_->get_bookmarks())
     {
-        this->liststore_add_item(this->settings_->bookmark_manager_fullpath ? data.path
-                                                                            : data.path.filename(),
-                                 data.current_page,
-                                 data.total_pages,
-                                 data.created);
+        liststore_add_item(settings_->bookmark_manager_fullpath ? data.path : data.path.filename(),
+                           data.current_page,
+                           data.total_pages,
+                           data.created);
     }
 }
 
@@ -184,7 +182,7 @@ gui::dialog::bookmarks::liststore_add_item(
     const std::filesystem::path path, const std::int32_t current_page,
     const std::int32_t total_pages, const std::chrono::system_clock::time_point created) noexcept
 {
-    this->liststore_->append(ModelColumns::create(path, current_page, total_pages, created));
+    liststore_->append(ModelColumns::create(path, current_page, total_pages, created));
 }
 
 void
@@ -197,7 +195,7 @@ gui::dialog::bookmarks::add_columns() noexcept
         factory->signal_bind().connect(sigc::mem_fun(*this, &bookmarks::on_bind_path));
         auto column = Gtk::ColumnViewColumn::create("Path", factory);
         column->set_expand(true);
-        this->columnview_.append_column(column);
+        columnview_.append_column(column);
     }
 
     { // current page
@@ -206,7 +204,7 @@ gui::dialog::bookmarks::add_columns() noexcept
             sigc::bind(sigc::mem_fun(*this, &bookmarks::on_setup_label), Gtk::Align::END));
         factory->signal_bind().connect(sigc::mem_fun(*this, &bookmarks::on_bind_current_page));
         auto column = Gtk::ColumnViewColumn::create("Current Page", factory);
-        this->columnview_.append_column(column);
+        columnview_.append_column(column);
     }
 
     { // total pages
@@ -215,7 +213,7 @@ gui::dialog::bookmarks::add_columns() noexcept
             sigc::bind(sigc::mem_fun(*this, &bookmarks::on_setup_label), Gtk::Align::END));
         factory->signal_bind().connect(sigc::mem_fun(*this, &bookmarks::on_bind_total_pages));
         auto column = Gtk::ColumnViewColumn::create("Total Pages", factory);
-        this->columnview_.append_column(column);
+        columnview_.append_column(column);
     }
 
     { // file sizes
@@ -224,7 +222,7 @@ gui::dialog::bookmarks::add_columns() noexcept
             sigc::bind(sigc::mem_fun(*this, &bookmarks::on_setup_label), Gtk::Align::END));
         factory->signal_bind().connect(sigc::mem_fun(*this, &bookmarks::on_bind_created));
         auto column = Gtk::ColumnViewColumn::create("Created", factory);
-        this->columnview_.append_column(column);
+        columnview_.append_column(column);
     }
 }
 

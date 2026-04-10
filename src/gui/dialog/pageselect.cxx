@@ -27,24 +27,24 @@ gui::dialog::pageselect::pageselect(Gtk::ApplicationWindow& parent,
                                     const std::shared_ptr<vfs::file_handler>& file_handler) noexcept
     : file_handler_(file_handler)
 {
-    const auto image_handler = this->file_handler_->image_handler();
+    const auto image_handler = file_handler_->image_handler();
 
-    this->set_transient_for(parent);
-    this->set_modal(true);
+    set_transient_for(parent);
+    set_modal(true);
 
-    this->set_size_request(560, 820);
-    this->set_resizable(false);
+    set_size_request(560, 820);
+    set_resizable(false);
 
-    this->set_title("Page Select");
+    set_title("Page Select");
 
     auto key_controller = Gtk::EventControllerKey::create();
     key_controller->signal_key_pressed().connect(sigc::mem_fun(*this, &pageselect::on_key_press),
                                                  false);
-    this->add_controller(key_controller);
+    add_controller(key_controller);
 
-    this->box_.set_orientation(Gtk::Orientation::VERTICAL);
-    this->box_.set_margin(5);
-    this->set_child(this->box_);
+    box_.set_orientation(Gtk::Orientation::VERTICAL);
+    box_.set_margin(5);
+    set_child(box_);
 
     auto adjust = Gtk::Adjustment::create(image_handler->get_current_page(),
                                           1,
@@ -52,68 +52,68 @@ gui::dialog::pageselect::pageselect(Gtk::ApplicationWindow& parent,
     adjust->set_step_increment(1);
     adjust->set_page_increment(1);
     adjust->signal_value_changed().connect(
-        [this, adjust]() { this->set_thumbnail(static_cast<std::int32_t>(adjust->get_value())); });
+        [this, adjust]() { set_thumbnail(static_cast<std::int32_t>(adjust->get_value())); });
 
-    this->image_box_.set_orientation(Gtk::Orientation::HORIZONTAL);
-    this->image_box_.append(this->image_);
-    this->image_.set_content_fit(Gtk::ContentFit::CONTAIN);
-    this->image_.set_hexpand(true);
-    this->image_.set_vexpand(true);
-    this->image_.set_halign(Gtk::Align::CENTER);
-    this->image_.set_valign(Gtk::Align::CENTER);
-    this->scale_.set_orientation(Gtk::Orientation::VERTICAL);
-    this->scale_.set_value(image_handler->get_current_page());
-    this->scale_.set_draw_value(false);
-    this->scale_.set_digits(0);
-    this->scale_.set_adjustment(adjust);
-    this->image_box_.append(this->scale_);
-    this->box_.append(this->image_box_);
+    image_box_.set_orientation(Gtk::Orientation::HORIZONTAL);
+    image_box_.append(image_);
+    image_.set_content_fit(Gtk::ContentFit::CONTAIN);
+    image_.set_hexpand(true);
+    image_.set_vexpand(true);
+    image_.set_halign(Gtk::Align::CENTER);
+    image_.set_valign(Gtk::Align::CENTER);
+    scale_.set_orientation(Gtk::Orientation::VERTICAL);
+    scale_.set_value(image_handler->get_current_page());
+    scale_.set_draw_value(false);
+    scale_.set_digits(0);
+    scale_.set_adjustment(adjust);
+    image_box_.append(scale_);
+    box_.append(image_box_);
 
-    this->spin_box_.set_orientation(Gtk::Orientation::HORIZONTAL);
-    this->spin_.set_hexpand(true);
-    this->spin_.set_value(image_handler->get_current_page());
-    this->spin_.set_activates_default(true);
-    this->spin_.set_numeric(true);
-    this->spin_.set_adjustment(adjust);
-    this->spin_box_.append(this->spin_);
-    this->spin_label.set_text(std::format(" of {}", image_handler->get_number_of_pages()));
-    this->spin_label.set_xalign(0.0);
-    this->spin_label.set_yalign(0.5);
-    this->spin_box_.set_margin_top(5);
-    this->spin_box_.set_margin_bottom(5);
-    this->spin_box_.append(this->spin_label);
-    this->box_.append(this->spin_box_);
+    spin_box_.set_orientation(Gtk::Orientation::HORIZONTAL);
+    spin_.set_hexpand(true);
+    spin_.set_value(image_handler->get_current_page());
+    spin_.set_activates_default(true);
+    spin_.set_numeric(true);
+    spin_.set_adjustment(adjust);
+    spin_box_.append(spin_);
+    spin_label.set_text(std::format(" of {}", image_handler->get_number_of_pages()));
+    spin_label.set_xalign(0.0);
+    spin_label.set_yalign(0.5);
+    spin_box_.set_margin_top(5);
+    spin_box_.set_margin_bottom(5);
+    spin_box_.append(spin_label);
+    box_.append(spin_box_);
 
-    this->button_box_ = Gtk::Box(Gtk::Orientation::HORIZONTAL, 5);
-    this->button_cancel_ = Gtk::Button("Cancel", true);
-    this->button_cancel_.set_focus_on_click(false);
-    this->button_ok_ = Gtk::Button("Go", true);
-    this->button_ok_.set_focus_on_click(false);
-    this->button_box_.set_halign(Gtk::Align::END);
-    this->button_box_.append(this->button_cancel_);
-    this->button_box_.append(this->button_ok_);
+    button_box_ = Gtk::Box(Gtk::Orientation::HORIZONTAL, 5);
+    button_cancel_ = Gtk::Button("Cancel", true);
+    button_cancel_.set_focus_on_click(false);
+    button_ok_ = Gtk::Button("Go", true);
+    button_ok_.set_focus_on_click(false);
+    button_box_.set_halign(Gtk::Align::END);
+    button_box_.append(button_cancel_);
+    button_box_.append(button_ok_);
 
-    this->button_ok_.signal_clicked().connect([this]() { this->on_button_ok_clicked(); });
-    this->button_cancel_.signal_clicked().connect([this]() { this->on_button_cancel_clicked(); });
+    button_ok_.signal_clicked().connect([this]() { on_button_ok_clicked(); });
+    button_cancel_.signal_clicked().connect([this]() { on_button_cancel_clicked(); });
 
-    this->box_.append(this->button_box_);
+    box_.append(button_box_);
 
-    this->set_thumbnail(image_handler->get_current_page());
+    set_thumbnail(image_handler->get_current_page());
 
-    this->set_visible(true);
+    set_visible(true);
 }
 
 void
 gui::dialog::pageselect::on_button_cancel_clicked() noexcept
 {
-    this->close();
+    close();
 }
 
 void
 gui::dialog::pageselect::on_button_ok_clicked() noexcept
 {
-    this->signal_selected_page().emit(this->spin_.get_value_as_int());
-    this->close();
+    signal_selected_page().emit(spin_.get_value_as_int());
+    close();
 }
 
 bool
@@ -124,11 +124,11 @@ gui::dialog::pageselect::on_key_press(std::uint32_t keyval, std::uint32_t keycod
     (void)state;
     if (keyval == GDK_KEY_Return)
     {
-        this->on_button_ok_clicked();
+        on_button_ok_clicked();
     }
     if (keyval == GDK_KEY_Escape)
     {
-        this->on_button_cancel_clicked();
+        on_button_cancel_clicked();
     }
     return false;
 }
@@ -137,8 +137,8 @@ void
 gui::dialog::pageselect::set_thumbnail(const page_t page) noexcept
 {
     auto paintable = gui::lib::image_tools::create_thumbnail(
-        this->file_handler_->image_handler()->get_path_to_page(page),
+        file_handler_->image_handler()->get_path_to_page(page),
         800);
 
-    this->image_.set_paintable(paintable);
+    image_.set_paintable(paintable);
 }

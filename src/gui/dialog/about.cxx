@@ -22,22 +22,22 @@
 
 gui::dialog::about::about(Gtk::ApplicationWindow& parent) noexcept
 {
-    this->set_transient_for(parent);
-    this->set_modal(true);
+    set_transient_for(parent);
+    set_modal(true);
 
-    this->set_logo_icon_name("TODO"); // show the broken icon for now
+    set_logo_icon_name("TODO"); // show the broken icon for now
     // TODO - need to make a logo
-    // this->set_logo(Gdk::Texture::create_from_filename(""));
+    // set_logo(Gdk::Texture::create_from_filename(""));
 
-    this->set_program_name(PACKAGE_NAME_FANCY);
-    this->set_version(PACKAGE_VERSION);
-    this->set_comments("MComix is an image viewer specifically designed to handle manga, comics, "
-                       "and image files.");
-    this->set_copyright("Copyright (C) 2005-2026");
-    this->set_license_type(Gtk::License::GPL_3_0);
+    set_program_name(PACKAGE_NAME_FANCY);
+    set_version(PACKAGE_VERSION);
+    set_comments("MComix is an image viewer specifically designed to handle manga, comics, "
+                 "and image files.");
+    set_copyright("Copyright (C) 2005-2026");
+    set_license_type(Gtk::License::GPL_3_0);
 
-    this->set_website(PACKAGE_GITHUB);
-    this->set_website_label(PACKAGE_GITHUB);
+    set_website(PACKAGE_GITHUB);
+    set_website_label(PACKAGE_GITHUB);
 
     const std::vector<Glib::ustring> authors{
         "",
@@ -48,12 +48,12 @@ gui::dialog::about::about(Gtk::ApplicationWindow& parent) noexcept
         "https://github.com/sourcefrog/natsort",
         "https://github.com/do-m-en/libarchive_cpp_wrapper",
     };
-    this->set_authors(authors);
+    set_authors(authors);
 
     const std::vector<Glib::ustring> artists = {
         "TODO",
     };
-    this->set_artists(artists);
+    set_artists(artists);
 
-    this->present();
+    present();
 }

@@ -37,13 +37,13 @@ class extractor
     [[nodiscard]] auto
     signal_file_listed() noexcept
     {
-        return this->signal_file_listed_;
+        return signal_file_listed_;
     }
 
     [[nodiscard]] auto
     signal_file_extracted() noexcept
     {
-        return this->signal_file_extracted_;
+        return signal_file_extracted_;
     }
 
   private:

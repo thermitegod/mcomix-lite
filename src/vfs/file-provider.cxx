@@ -34,32 +34,31 @@ vfs::file_provider::file_provider(const std::span<const std::filesystem::path> f
 
     // Open the first file, before sorting, from the command line.
     // also sets the mode based on file type.
-    const auto& open_file = this->files_.front();
+    const auto& open_file = files_.front();
 
-    this->base_dir_ =
-        std::filesystem::is_directory(open_file) ? open_file : open_file.parent_path();
+    base_dir_ = std::filesystem::is_directory(open_file) ? open_file : open_file.parent_path();
 
     if (files.size() == 1)
     {
         // Browse mode: open all files in dir
-        this->open_mode_ = open_mode::browse;
+        open_mode_ = open_mode::browse;
     }
     else
     {
         // Predefined mode: Only open files passed from the commandline, in order passed
-        this->open_mode_ = open_mode::predefined;
+        open_mode_ = open_mode::predefined;
     }
 }
 
 void
 vfs::file_provider::sort_files() noexcept
 {
-    if (this->files_.empty())
+    if (files_.empty())
     {
         return;
     }
 
-    vfs::utils::sort_alphanumeric(this->files_);
+    vfs::utils::sort_alphanumeric(files_);
 }
 
 std::span<const std::filesystem::path>
@@ -79,15 +78,15 @@ vfs::file_provider::list_files(const vfs::file_provider::file_type mode) noexcep
         std::unreachable();
     };
 
-    if (!std::filesystem::exists(this->base_dir_))
+    if (!std::filesystem::exists(base_dir_))
     {
         return {};
     }
 
-    if (this->open_mode_ == open_mode::browse)
+    if (open_mode_ == open_mode::browse)
     {
-        this->files_.clear();
-        for (const auto& dfile : std::filesystem::directory_iterator(this->base_dir_))
+        files_.clear();
+        for (const auto& dfile : std::filesystem::directory_iterator(base_dir_))
         {
             if (dfile.is_directory())
             {
@@ -98,15 +97,15 @@ vfs::file_provider::list_files(const vfs::file_provider::file_type mode) noexcep
 
             if (should_accept(file, mode))
             {
-                this->files_.push_back(file);
+                files_.push_back(file);
             }
         }
-        this->sort_files();
+        sort_files();
     }
-    else if (this->open_mode_ == open_mode::predefined)
+    else if (open_mode_ == open_mode::predefined)
     {
         std::vector<std::filesystem::path> filelist;
-        for (const auto& file : this->files_)
+        for (const auto& file : files_)
         {
             if (std::filesystem::is_directory(file))
             {
@@ -118,8 +117,8 @@ vfs::file_provider::list_files(const vfs::file_provider::file_type mode) noexcep
                 filelist.push_back(file);
             }
         }
-        this->files_ = filelist;
+        files_ = filelist;
     }
 
-    return this->files_;
+    return files_;
 }

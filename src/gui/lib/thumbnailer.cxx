@@ -26,10 +26,10 @@ void
 gui::lib::thumbnailer::request(const request_data& request) noexcept
 {
     {
-        std::lock_guard<std::mutex> lock(this->mutex_);
-        this->queue_.push(request);
+        std::lock_guard<std::mutex> lock(mutex_);
+        queue_.push(request);
     }
-    this->cv_.notify_one();
+    cv_.notify_one();
 }
 
 void
@@ -37,7 +37,7 @@ gui::lib::thumbnailer::run(const std::stop_token& stoken) noexcept
 {
     while (!stoken.stop_requested())
     {
-        this->run_once(stoken);
+        run_once(stoken);
     }
 }
 
@@ -46,18 +46,18 @@ gui::lib::thumbnailer::run_once(const std::stop_token& stoken) noexcept
 {
     request_data request;
     {
-        std::unique_lock<std::mutex> lock(this->mutex_);
-        this->cv_.wait(lock, stoken, [this] { return !queue_.empty(); });
+        std::unique_lock<std::mutex> lock(mutex_);
+        cv_.wait(lock, stoken, [this] { return !queue_.empty(); });
 
         if (stoken.stop_requested())
         {
             return;
         }
 
-        if (!this->queue_.empty())
+        if (!queue_.empty())
         {
-            request = this->queue_.front();
-            this->queue_.pop();
+            request = queue_.front();
+            queue_.pop();
         }
     }
 
@@ -65,6 +65,6 @@ gui::lib::thumbnailer::run_once(const std::stop_token& stoken) noexcept
 
     if (thumb && !stoken.stop_requested())
     {
-        this->signal_thumbnail_created().emit(request.page, thumb);
+        signal_thumbnail_created().emit(request.page, thumb);
     }
 }

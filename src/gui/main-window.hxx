@@ -92,12 +92,11 @@ class main_window : public Gtk::ApplicationWindow
     std::array<std::int32_t, 2> get_visible_area_size() noexcept;
 
     std::shared_ptr<config::settings> settings = std::make_shared<config::settings>();
-    std::shared_ptr<config::manager> config_manager_ =
-        std::make_shared<config::manager>(this->settings);
+    std::shared_ptr<config::manager> config_manager_ = std::make_shared<config::manager>(settings);
     std::shared_ptr<gui::lib::view_state> view_state = std::make_shared<gui::lib::view_state>();
 
     std::shared_ptr<vfs::file_handler> file_handler_ =
-        std::make_shared<vfs::file_handler>(this->settings, this->view_state);
+        std::make_shared<vfs::file_handler>(settings, view_state);
 
     std::shared_ptr<vfs::bookmarks> bookmarks_ = std::make_shared<vfs::bookmarks>();
 
@@ -109,8 +108,8 @@ class main_window : public Gtk::ApplicationWindow
     Gtk::Box center_box_;
 
     gui::menubar menubar_ = gui::menubar();
-    gui::thumbbar thumb_sidebar_ = gui::thumbbar(this->settings);
-    gui::viewport viewport_ = gui::viewport(this->settings);
-    gui::statusbar statusbar_ = gui::statusbar(this->settings, this->view_state);
+    gui::thumbbar thumb_sidebar_ = gui::thumbbar(settings);
+    gui::viewport viewport_ = gui::viewport(settings);
+    gui::statusbar statusbar_ = gui::statusbar(settings, view_state);
 };
 } // namespace gui

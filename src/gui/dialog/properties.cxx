@@ -35,30 +35,30 @@ class PropertiesPage : public Gtk::Box
   public:
     explicit PropertiesPage() noexcept
     {
-        this->set_orientation(Gtk::Orientation::VERTICAL);
-        this->set_margin(6);
-        this->set_homogeneous(false);
-        this->set_vexpand(true);
+        set_orientation(Gtk::Orientation::VERTICAL);
+        set_margin(6);
+        set_homogeneous(false);
+        set_vexpand(true);
 
-        this->image_box_.set_orientation(Gtk::Orientation::HORIZONTAL);
-        this->image_box_.set_margin(5);
-        this->image_.set_content_fit(Gtk::ContentFit::CONTAIN);
-        this->image_.set_hexpand(false);
-        this->image_.set_vexpand(false);
-        this->image_.set_halign(Gtk::Align::CENTER);
-        this->image_.set_valign(Gtk::Align::CENTER);
-        this->image_box_.append(this->image_);
-        this->border_frame_.set_size_request(-1, 130);
-        this->border_frame_.set_child(this->image_info_box_);
-        this->image_info_box_.set_orientation(Gtk::Orientation::VERTICAL);
-        this->image_info_box_.set_margin(5);
-        this->image_info_box_.set_spacing(0);
-        this->image_box_.append(this->border_frame_);
-        this->append(this->image_box_);
+        image_box_.set_orientation(Gtk::Orientation::HORIZONTAL);
+        image_box_.set_margin(5);
+        image_.set_content_fit(Gtk::ContentFit::CONTAIN);
+        image_.set_hexpand(false);
+        image_.set_vexpand(false);
+        image_.set_halign(Gtk::Align::CENTER);
+        image_.set_valign(Gtk::Align::CENTER);
+        image_box_.append(image_);
+        border_frame_.set_size_request(-1, 130);
+        border_frame_.set_child(image_info_box_);
+        image_info_box_.set_orientation(Gtk::Orientation::VERTICAL);
+        image_info_box_.set_margin(5);
+        image_info_box_.set_spacing(0);
+        image_box_.append(border_frame_);
+        append(image_box_);
 
-        this->info_box_.set_orientation(Gtk::Orientation::HORIZONTAL);
-        this->info_box_.set_margin(5);
-        this->append(this->info_box_);
+        info_box_.set_orientation(Gtk::Orientation::HORIZONTAL);
+        info_box_.set_margin(5);
+        append(info_box_);
     }
 
     void
@@ -70,12 +70,12 @@ class PropertiesPage : public Gtk::Box
         label->set_yalign(0.5);
         label->set_selectable(true);
         label->set_wrap(true);
-        this->image_info_box_.append(*label);
+        image_info_box_.append(*label);
 
         auto box = Gtk::make_managed<Gtk::Box>();
         box->set_hexpand(true);
         box->set_vexpand(true);
-        this->image_info_box_.append(*box);
+        image_info_box_.append(*box);
     }
 
     void
@@ -87,7 +87,7 @@ class PropertiesPage : public Gtk::Box
             label->set_text(text);
             label->set_xalign(0.0);
             label->set_yalign(0.5);
-            this->image_info_box_.append(*label);
+            image_info_box_.append(*label);
         }
     }
 
@@ -105,8 +105,8 @@ class PropertiesPage : public Gtk::Box
         rbox->set_homogeneous(true);
         rbox->set_spacing(8);
 
-        this->info_box_.append(*lbox);
-        this->info_box_.append(*rbox);
+        info_box_.append(*lbox);
+        info_box_.append(*rbox);
 
         for (const auto& [desc, value] : info)
         {
@@ -132,7 +132,7 @@ class PropertiesPage : public Gtk::Box
     void
     set_thumbnail(const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept
     {
-        this->image_.set_paintable(paintable);
+        image_.set_paintable(paintable);
     }
 
   private:
@@ -152,60 +152,60 @@ gui::dialog::properties::properties(Gtk::ApplicationWindow& parent,
                                     const std::shared_ptr<config::settings>& settings) noexcept
     : file_handler_(file_handler), view_state_(view_state), settings_(settings)
 {
-    this->set_transient_for(parent);
-    this->set_modal(true);
+    set_transient_for(parent);
+    set_modal(true);
 
-    this->set_size_request(470, 400);
-    this->set_title("Preferences");
-    this->set_resizable(false);
+    set_size_request(470, 400);
+    set_title("Preferences");
+    set_resizable(false);
 
-    this->box_ = Gtk::Box(Gtk::Orientation::VERTICAL, 5);
-    this->box_.set_margin(5);
+    box_ = Gtk::Box(Gtk::Orientation::VERTICAL, 5);
+    box_.set_margin(5);
 
-    this->box_.append(this->notebook_);
+    box_.append(notebook_);
 
-    if (this->file_handler_->is_archive())
+    if (file_handler_->is_archive())
     {
-        this->init_archive_tab();
+        init_archive_tab();
     }
 
-    if (this->view_state_->is_displaying_double())
+    if (view_state_->is_displaying_double())
     {
-        const auto p = this->file_handler_->image_handler()->get_current_page();
+        const auto p = file_handler_->image_handler()->get_current_page();
 
-        if (this->view_state_->is_manga_mode())
+        if (view_state_->is_manga_mode())
         {
-            this->init_image_tab(p + 1, "Left Image");
-            this->init_image_tab(p, "Right Image");
+            init_image_tab(p + 1, "Left Image");
+            init_image_tab(p, "Right Image");
         }
         else
         {
-            this->init_image_tab(p, "Left Image");
-            this->init_image_tab(p + 1, "Right Image");
+            init_image_tab(p, "Left Image");
+            init_image_tab(p + 1, "Right Image");
         }
     }
     else
     {
-        const auto p = this->file_handler_->image_handler()->get_current_page();
+        const auto p = file_handler_->image_handler()->get_current_page();
 
-        this->init_image_tab(p, "Image");
+        init_image_tab(p, "Image");
     }
 
     auto key_controller = Gtk::EventControllerKey::create();
     key_controller->signal_key_pressed().connect(sigc::mem_fun(*this, &properties::on_key_press),
                                                  false);
-    this->add_controller(key_controller);
+    add_controller(key_controller);
 
-    this->button_box_ = Gtk::Box(Gtk::Orientation::HORIZONTAL, 5);
-    this->button_close_ = Gtk::Button("Close", true);
-    this->button_close_.signal_clicked().connect([this]() { this->on_button_close_clicked(); });
-    this->button_box_.set_halign(Gtk::Align::END);
-    this->button_box_.append(this->button_close_);
-    this->box_.append(this->button_box_);
+    button_box_ = Gtk::Box(Gtk::Orientation::HORIZONTAL, 5);
+    button_close_ = Gtk::Button("Close", true);
+    button_close_.signal_clicked().connect([this]() { on_button_close_clicked(); });
+    button_box_.set_halign(Gtk::Align::END);
+    button_box_.append(button_close_);
+    box_.append(button_box_);
 
-    this->set_child(this->box_);
+    set_child(box_);
 
-    this->set_visible(true);
+    set_visible(true);
 }
 
 bool
@@ -216,7 +216,7 @@ gui::dialog::properties::on_key_press(std::uint32_t keyval, std::uint32_t keycod
     (void)state;
     if (keyval == GDK_KEY_Escape)
     {
-        this->on_button_close_clicked();
+        on_button_close_clicked();
     }
     return false;
 }
@@ -224,7 +224,7 @@ gui::dialog::properties::on_key_press(std::uint32_t keyval, std::uint32_t keycod
 void
 gui::dialog::properties::on_button_close_clicked() noexcept
 {
-    this->close();
+    close();
 }
 
 std::vector<std::array<std::string, 2>>
@@ -238,7 +238,7 @@ gui::dialog::properties::secondary_info(const std::filesystem::path& path) noexc
 
     return {
         {"Location", path.parent_path()},
-        {"Size", std::format("{}", vfs::utils::file_size(stat->size(), this->settings_->si_units))},
+        {"Size", std::format("{}", vfs::utils::file_size(stat->size(), settings_->si_units))},
         {"Accessed", std::format("{}", std::chrono::floor<std::chrono::seconds>(stat->atime()))},
         {"Created", std::format("{}", std::chrono::floor<std::chrono::seconds>(stat->btime()))},
         {"Metadata", std::format("{}", std::chrono::floor<std::chrono::seconds>(stat->ctime()))},
@@ -254,19 +254,19 @@ gui::dialog::properties::init_archive_tab() noexcept
 {
     auto page = PropertiesPage();
 
-    page.set_filename(this->file_handler_->get_real_path().filename());
+    page.set_filename(file_handler_->get_real_path().filename());
 
-    auto thumb = this->file_handler_->image_handler()->get_thumbnail(1, 256);
+    auto thumb = file_handler_->image_handler()->get_thumbnail(1, 256);
     page.set_thumbnail(thumb);
 
     page.set_main_info(
-        {std::format("{} pages", this->file_handler_->image_handler()->get_number_of_pages()),
-         this->file_handler_->is_archive() ? "Archive File" : "Image File"});
+        {std::format("{} pages", file_handler_->image_handler()->get_number_of_pages()),
+         file_handler_->is_archive() ? "Archive File" : "Image File"});
 
-    page.set_secondary_info(this->secondary_info(this->file_handler_->get_real_path()));
+    page.set_secondary_info(secondary_info(file_handler_->get_real_path()));
 
     auto tab_label = Gtk::Label("Archive");
-    this->notebook_.append_page(page, tab_label);
+    notebook_.append_page(page, tab_label);
 }
 
 void
@@ -274,20 +274,20 @@ gui::dialog::properties::init_image_tab(const page_t p, std::string_view label) 
 {
     auto page = PropertiesPage();
 
-    const auto path = this->file_handler_->image_handler()->get_path_to_page(p);
+    const auto path = file_handler_->image_handler()->get_path_to_page(p);
 
     page.set_filename(path.filename());
 
-    auto thumb = this->file_handler_->image_handler()->get_thumbnail(p, 256);
+    auto thumb = file_handler_->image_handler()->get_thumbnail(p, 256);
     page.set_thumbnail(thumb);
 
-    const auto [width, height] = this->file_handler_->image_handler()->get_page_size(p);
+    const auto [width, height] = file_handler_->image_handler()->get_page_size(p);
 
-    page.set_main_info({std::format("{}x{}", width, height),
-                        this->file_handler_->image_handler()->get_mime_name(p)});
+    page.set_main_info(
+        {std::format("{}x{}", width, height), file_handler_->image_handler()->get_mime_name(p)});
 
-    page.set_secondary_info(this->secondary_info(path));
+    page.set_secondary_info(secondary_info(path));
 
     auto tab_label = Gtk::Label(label.data());
-    this->notebook_.append_page(page, tab_label);
+    notebook_.append_page(page, tab_label);
 }

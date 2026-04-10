@@ -43,40 +43,40 @@ vfs::extractor::extractor(const std::filesystem::path& archive) noexcept : archi
         },
         archive);
 
-    this->destination_ = vfs::utils::unique_path(vfs::user::cache() / PACKAGE_NAME, hash, "_");
+    destination_ = vfs::utils::unique_path(vfs::user::cache() / PACKAGE_NAME, hash, "_");
 
-    if (!std::filesystem::exists(this->destination_))
+    if (!std::filesystem::exists(destination_))
     {
-        std::filesystem::create_directories(this->destination_);
+        std::filesystem::create_directories(destination_);
     }
 
-    crash::create(this->destination_, archive);
+    crash::create(destination_, archive);
 }
 
 vfs::extractor::~extractor() noexcept
 {
-    this->close();
+    close();
 }
 
 const std::filesystem::path
 vfs::extractor::path() const noexcept
 {
-    return this->destination_;
+    return destination_;
 }
 
 void
 vfs::extractor::close() const noexcept
 {
-    if (std::filesystem::exists(this->destination_))
+    if (std::filesystem::exists(destination_))
     {
-        std::filesystem::remove_all(this->destination_);
+        std::filesystem::remove_all(destination_);
     }
 }
 
 void
 vfs::extractor::list() noexcept
 {
-    auto reader = vfs::libarchive::reader::create(this->archive_);
+    auto reader = vfs::libarchive::reader::create(archive_);
     if (!reader)
     {
         return;
@@ -97,16 +97,16 @@ vfs::extractor::list() noexcept
             continue;
         }
 
-        listed.push_back(this->destination_ / entry->get_pathname());
+        listed.push_back(destination_ / entry->get_pathname());
     }
 
-    this->signal_file_listed().emit(listed);
+    signal_file_listed().emit(listed);
 }
 
 void
 vfs::extractor::extract() noexcept
 {
-    auto reader = vfs::libarchive::reader::create(this->archive_);
+    auto reader = vfs::libarchive::reader::create(archive_);
     if (!reader)
     {
         return;
@@ -126,7 +126,7 @@ vfs::extractor::extract() noexcept
             continue;
         }
 
-        const auto path = this->destination_ / entry->get_pathname();
+        const auto path = destination_ / entry->get_pathname();
 
         const auto result = entry->extract(path);
         if (!result)
@@ -135,6 +135,6 @@ vfs::extractor::extract() noexcept
             return;
         }
 
-        this->signal_file_extracted().emit(path);
+        signal_file_extracted().emit(path);
     }
 }

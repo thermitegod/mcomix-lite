@@ -29,10 +29,10 @@ class PreferencePage : public Gtk::Box
   public:
     explicit PreferencePage() noexcept
     {
-        this->set_orientation(Gtk::Orientation::VERTICAL);
-        this->set_margin(6);
-        this->set_homogeneous(false);
-        this->set_vexpand(true);
+        set_orientation(Gtk::Orientation::VERTICAL);
+        set_margin(6);
+        set_homogeneous(false);
+        set_vexpand(true);
     }
 
     void
@@ -41,7 +41,7 @@ class PreferencePage : public Gtk::Box
         Gtk::Label label;
         label.set_markup(std::format("<b>{}</b>", header.data()));
         label.set_xalign(0.0f);
-        this->append(label);
+        append(label);
     }
 
     void
@@ -51,7 +51,7 @@ class PreferencePage : public Gtk::Box
 
         Gtk::Box left_box;
         Gtk::Box right_box;
-        this->new_split_vboxes(left_box, right_box);
+        new_split_vboxes(left_box, right_box);
         left_box.append(left_item);
         right_box.append(right_item);
     }
@@ -61,7 +61,7 @@ class PreferencePage : public Gtk::Box
     {
         Gtk::Box left_box;
         Gtk::Box right_box;
-        this->new_split_vboxes(left_box, right_box);
+        new_split_vboxes(left_box, right_box);
         left_box.append(left_item);
         right_box.append(right_item);
     }
@@ -69,7 +69,7 @@ class PreferencePage : public Gtk::Box
     void
     add_row(Gtk::Widget& item) noexcept
     {
-        this->append(item);
+        append(item);
     }
 
   private:
@@ -85,7 +85,7 @@ class PreferencePage : public Gtk::Box
         Gtk::Box hbox = Gtk::Box(Gtk::Orientation::HORIZONTAL, 12);
         hbox.append(left_box);
         hbox.append(right_box);
-        this->append(hbox);
+        append(hbox);
     }
 };
 
@@ -93,39 +93,39 @@ gui::dialog::preferences::preferences(Gtk::ApplicationWindow& parent,
                                       const std::shared_ptr<config::settings>& settings) noexcept
     : settings_(settings)
 {
-    this->set_transient_for(parent);
-    this->set_modal(true);
+    set_transient_for(parent);
+    set_modal(true);
 
-    this->set_size_request(470, 400);
-    this->set_title("Preferences");
-    this->set_resizable(false);
+    set_size_request(470, 400);
+    set_title("Preferences");
+    set_resizable(false);
 
-    this->box_ = Gtk::Box(Gtk::Orientation::VERTICAL, 5);
-    this->box_.set_margin(5);
+    box_ = Gtk::Box(Gtk::Orientation::VERTICAL, 5);
+    box_.set_margin(5);
 
-    this->box_.append(this->notebook_);
+    box_.append(notebook_);
 
-    this->init_behaviour_tab();
-    this->init_display_tab();
-    this->init_statusbar_tab();
-    this->init_advanced_tab();
+    init_behaviour_tab();
+    init_display_tab();
+    init_statusbar_tab();
+    init_advanced_tab();
 
     auto key_controller = Gtk::EventControllerKey::create();
     key_controller->signal_key_pressed().connect(
         sigc::mem_fun(*this, &gui::dialog::preferences::on_key_press),
         false);
-    this->add_controller(key_controller);
+    add_controller(key_controller);
 
-    this->button_box_ = Gtk::Box(Gtk::Orientation::HORIZONTAL, 5);
-    this->button_close_ = Gtk::Button("Close", true);
-    this->button_close_.signal_clicked().connect([this]() { this->on_button_close_clicked(); });
-    this->button_box_.set_halign(Gtk::Align::END);
-    this->button_box_.append(this->button_close_);
-    this->box_.append(this->button_box_);
+    button_box_ = Gtk::Box(Gtk::Orientation::HORIZONTAL, 5);
+    button_close_ = Gtk::Button("Close", true);
+    button_close_.signal_clicked().connect([this]() { on_button_close_clicked(); });
+    button_box_.set_halign(Gtk::Align::END);
+    button_box_.append(button_close_);
+    box_.append(button_box_);
 
-    this->set_child(this->box_);
+    set_child(box_);
 
-    this->set_visible(true);
+    set_visible(true);
 }
 
 bool
@@ -136,7 +136,7 @@ gui::dialog::preferences::on_key_press(std::uint32_t keyval, std::uint32_t keyco
     (void)state;
     if (keyval == GDK_KEY_Escape)
     {
-        this->on_button_close_clicked();
+        on_button_close_clicked();
     }
     return false;
 }
@@ -144,7 +144,7 @@ gui::dialog::preferences::on_key_press(std::uint32_t keyval, std::uint32_t keyco
 void
 gui::dialog::preferences::on_button_close_clicked() noexcept
 {
-    this->close();
+    close();
 }
 
 void
@@ -174,7 +174,7 @@ gui::dialog::preferences::init_behaviour_tab() noexcept
     page.add_section("Page orientation");
 
     {
-        auto& opt = this->settings_->default_manga_mode;
+        auto& opt = settings_->default_manga_mode;
 
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Set page orientation for manga");
@@ -187,7 +187,7 @@ gui::dialog::preferences::init_behaviour_tab() noexcept
     page.add_section("Double Page Mode");
 
     {
-        auto& opt = this->settings_->default_double_page;
+        auto& opt = settings_->default_double_page;
 
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Show two pages at a time");
@@ -198,7 +198,7 @@ gui::dialog::preferences::init_behaviour_tab() noexcept
     }
 
     {
-        auto& opt = this->settings_->double_step_in_double_page_mode;
+        auto& opt = settings_->double_step_in_double_page_mode;
 
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Change two pages at a time");
@@ -209,7 +209,7 @@ gui::dialog::preferences::init_behaviour_tab() noexcept
     }
 
     {
-        auto& opt = this->settings_->virtual_double_page_for_fitting_images;
+        auto& opt = settings_->virtual_double_page_for_fitting_images;
 
         auto factory = Gtk::SignalListItemFactory::create();
         factory->signal_setup().connect(sigc::mem_fun(*this, &preferences::setup_listitem));
@@ -235,7 +235,7 @@ gui::dialog::preferences::init_behaviour_tab() noexcept
     page.add_section("Page Selection");
 
     {
-        auto& opt = this->settings_->page_ff_step;
+        auto& opt = settings_->page_ff_step;
 
         auto adjust = Gtk::Adjustment::create(opt, 1, 100);
         adjust->set_step_increment(1);
@@ -253,7 +253,7 @@ gui::dialog::preferences::init_behaviour_tab() noexcept
     page.add_section("Navigation");
 
     {
-        auto& opt = this->settings_->confirm_archive_change;
+        auto& opt = settings_->confirm_archive_change;
 
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Prompt before auto opening next/prev archive");
@@ -264,7 +264,7 @@ gui::dialog::preferences::init_behaviour_tab() noexcept
     }
 
     auto tab_label = Gtk::Label("Behaviour");
-    this->notebook_.append_page(page, tab_label);
+    notebook_.append_page(page, tab_label);
 }
 
 void
@@ -275,7 +275,7 @@ gui::dialog::preferences::init_display_tab() noexcept
     page.add_section("Image Layout");
 
     {
-        auto& opt = this->settings_->double_page_center_space;
+        auto& opt = settings_->double_page_center_space;
 
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Show a page break between pages");
@@ -288,7 +288,7 @@ gui::dialog::preferences::init_display_tab() noexcept
     page.add_section("Image Rotation");
 
     {
-        auto& opt = this->settings_->rotation;
+        auto& opt = settings_->rotation;
 
         auto factory = Gtk::SignalListItemFactory::create();
         factory->signal_setup().connect(sigc::mem_fun(*this, &preferences::setup_listitem));
@@ -339,7 +339,7 @@ gui::dialog::preferences::init_display_tab() noexcept
     }
 
     {
-        auto& opt = this->settings_->keep_transformation;
+        auto& opt = settings_->keep_transformation;
 
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Keep rotation between page changes");
@@ -352,7 +352,7 @@ gui::dialog::preferences::init_display_tab() noexcept
     page.add_section("Thumbnails");
 
     {
-        auto& opt = this->settings_->thumbnail_size;
+        auto& opt = settings_->thumbnail_size;
 
         auto adjust = Gtk::Adjustment::create(opt, 50, 500);
         adjust->set_step_increment(1);
@@ -370,7 +370,7 @@ gui::dialog::preferences::init_display_tab() noexcept
     page.add_section("Bookmark Manager");
 
     {
-        auto& opt = this->settings_->bookmark_manager_fullpath;
+        auto& opt = settings_->bookmark_manager_fullpath;
 
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Show full bookmark path");
@@ -383,7 +383,7 @@ gui::dialog::preferences::init_display_tab() noexcept
     page.add_section("General");
 
     {
-        auto& opt = this->settings_->hide_thumbar;
+        auto& opt = settings_->hide_thumbar;
 
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Always hide thumbnail sidebar");
@@ -394,7 +394,7 @@ gui::dialog::preferences::init_display_tab() noexcept
     }
 
     {
-        auto& opt = this->settings_->hide_menubar;
+        auto& opt = settings_->hide_menubar;
 
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Always hide menubar");
@@ -405,7 +405,7 @@ gui::dialog::preferences::init_display_tab() noexcept
     }
 
     {
-        auto& opt = this->settings_->hide_statusbar;
+        auto& opt = settings_->hide_statusbar;
 
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Always hide statusbar");
@@ -418,7 +418,7 @@ gui::dialog::preferences::init_display_tab() noexcept
     page.add_section("Fullscreen");
 
     {
-        auto& opt = this->settings_->fullscreen.hide_thumbar;
+        auto& opt = settings_->fullscreen.hide_thumbar;
 
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Hide thumbnail sidebar when fullscreen");
@@ -429,7 +429,7 @@ gui::dialog::preferences::init_display_tab() noexcept
     }
 
     {
-        auto& opt = this->settings_->fullscreen.hide_menubar;
+        auto& opt = settings_->fullscreen.hide_menubar;
 
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Hide menubar when fullscreen");
@@ -440,7 +440,7 @@ gui::dialog::preferences::init_display_tab() noexcept
     }
 
     {
-        auto& opt = this->settings_->fullscreen.hide_statusbar;
+        auto& opt = settings_->fullscreen.hide_statusbar;
 
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Hide statusbar when fullscreen");
@@ -451,7 +451,7 @@ gui::dialog::preferences::init_display_tab() noexcept
     }
 
     auto tab_label = Gtk::Label("Display");
-    this->notebook_.append_page(page, tab_label);
+    notebook_.append_page(page, tab_label);
 }
 
 void
@@ -462,7 +462,7 @@ gui::dialog::preferences::init_statusbar_tab() noexcept
     page.add_section("Statusbar Fields");
 
     {
-        auto& opt = this->settings_->statusbar.page_numbers;
+        auto& opt = settings_->statusbar.page_numbers;
 
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Show page numbers");
@@ -473,7 +473,7 @@ gui::dialog::preferences::init_statusbar_tab() noexcept
     }
 
     {
-        auto& opt = this->settings_->statusbar.file_numbers;
+        auto& opt = settings_->statusbar.file_numbers;
 
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Show file numbers");
@@ -484,7 +484,7 @@ gui::dialog::preferences::init_statusbar_tab() noexcept
     }
 
     {
-        auto& opt = this->settings_->statusbar.page_resolution;
+        auto& opt = settings_->statusbar.page_resolution;
 
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Show page resolution");
@@ -495,7 +495,7 @@ gui::dialog::preferences::init_statusbar_tab() noexcept
     }
 
     {
-        auto& opt = this->settings_->statusbar.archive_filename;
+        auto& opt = settings_->statusbar.archive_filename;
 
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Show archive filename");
@@ -506,7 +506,7 @@ gui::dialog::preferences::init_statusbar_tab() noexcept
     }
 
     {
-        auto& opt = this->settings_->statusbar.page_filesize;
+        auto& opt = settings_->statusbar.page_filesize;
 
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Show page filesize");
@@ -517,7 +517,7 @@ gui::dialog::preferences::init_statusbar_tab() noexcept
     }
 
     {
-        auto& opt = this->settings_->statusbar.archive_filesize;
+        auto& opt = settings_->statusbar.archive_filesize;
 
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Show archive filesize");
@@ -528,7 +528,7 @@ gui::dialog::preferences::init_statusbar_tab() noexcept
     }
 
     {
-        auto& opt = this->settings_->statusbar.view_mode;
+        auto& opt = settings_->statusbar.view_mode;
 
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Show current view mode");
@@ -541,7 +541,7 @@ gui::dialog::preferences::init_statusbar_tab() noexcept
     page.add_section("Statusbar Field Modifiers");
 
     {
-        auto& opt = this->settings_->statusbar.page_resolution_zoom_scale;
+        auto& opt = settings_->statusbar.page_resolution_zoom_scale;
 
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Show page scaling percent");
@@ -552,7 +552,7 @@ gui::dialog::preferences::init_statusbar_tab() noexcept
     }
 
     {
-        auto& opt = this->settings_->statusbar.archive_filename_fullpath;
+        auto& opt = settings_->statusbar.archive_filename_fullpath;
 
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Show full path of current file");
@@ -563,7 +563,7 @@ gui::dialog::preferences::init_statusbar_tab() noexcept
     }
 
     auto tab_label = Gtk::Label("Statusbar");
-    this->notebook_.append_page(page, tab_label);
+    notebook_.append_page(page, tab_label);
 }
 
 void
@@ -575,7 +575,7 @@ gui::dialog::preferences::init_advanced_tab() noexcept
     page.add_section("Page Cache");
 
     {
-        auto& opt = this->settings_->cache_behind;
+        auto& opt = settings_->cache_behind;
 
         auto adjust = Gtk::Adjustment::create(opt, 1, 100);
         adjust->set_step_increment(1);
@@ -591,7 +591,7 @@ gui::dialog::preferences::init_advanced_tab() noexcept
     }
 
     {
-        auto& opt = this->settings_->cache_forward;
+        auto& opt = settings_->cache_forward;
 
         auto adjust = Gtk::Adjustment::create(opt, 1, 100);
         adjust->set_step_increment(1);
@@ -610,8 +610,8 @@ gui::dialog::preferences::init_advanced_tab() noexcept
     page.add_section("Moving Files");
 
     {
-        const auto current = this->settings_->move_file;
-        auto& opt = this->settings_->move_file;
+        const auto current = settings_->move_file;
+        auto& opt = settings_->move_file;
 
         auto entry = Gtk::make_managed<Gtk::Entry>();
         entry->set_text(current);
@@ -622,7 +622,7 @@ gui::dialog::preferences::init_advanced_tab() noexcept
     }
 
     {
-        auto& opt = this->settings_->si_units;
+        auto& opt = settings_->si_units;
 
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Use SI units");
@@ -633,5 +633,5 @@ gui::dialog::preferences::init_advanced_tab() noexcept
     }
 
     auto tab_label = Gtk::Label("Advanced");
-    this->notebook_.append_page(page, tab_label);
+    notebook_.append_page(page, tab_label);
 }

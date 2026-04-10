@@ -61,7 +61,7 @@ class pageselect final : public Gtk::Window
     [[nodiscard]] auto
     signal_selected_page() noexcept
     {
-        return this->signal_selected_page_;
+        return signal_selected_page_;
     }
 
   private:

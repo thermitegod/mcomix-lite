@@ -31,61 +31,60 @@
 gui::thumbbar::thumbbar(const std::shared_ptr<config::settings>& settings) noexcept
     : settings(settings)
 {
-    this->set_has_frame(true);
-    this->set_policy(Gtk::PolicyType::NEVER, Gtk::PolicyType::AUTOMATIC);
-    this->set_hexpand(false);
-    this->set_vexpand(true);
-    this->set_overlay_scrolling(false);
-    this->set_focusable(false);
+    set_has_frame(true);
+    set_policy(Gtk::PolicyType::NEVER, Gtk::PolicyType::AUTOMATIC);
+    set_hexpand(false);
+    set_vexpand(true);
+    set_overlay_scrolling(false);
+    set_focusable(false);
 
-    this->scroll_info_ = Gtk::ScrollInfo::create();
-    this->scroll_info_->set_enable_vertical(true);
+    scroll_info_ = Gtk::ScrollInfo::create();
+    scroll_info_->set_enable_vertical(true);
 
-    this->liststore_ = Gio::ListStore<ModelList>::create();
+    liststore_ = Gio::ListStore<ModelList>::create();
 
-    this->selection_model_ = Gtk::SingleSelection::create(this->liststore_);
-    this->selection_model_->set_autoselect(false);
-    // this->selection_model_->set_selected(1);
-    this->selection_model_->set_can_unselect(false);
+    selection_model_ = Gtk::SingleSelection::create(liststore_);
+    selection_model_->set_autoselect(false);
+    // selection_model_->set_selected(1);
+    selection_model_->set_can_unselect(false);
 
     auto factory = Gtk::SignalListItemFactory::create();
     factory->signal_setup().connect(sigc::mem_fun(*this, &thumbbar::setup_listitem));
     factory->signal_bind().connect(sigc::mem_fun(*this, &thumbbar::bind_listitem));
 
-    this->listview_ = Gtk::ListView(Gtk::SingleSelection::create(this->selection_model_), factory);
-    this->listview_.set_single_click_activate(true);
-    this->listview_.signal_activate().connect(sigc::mem_fun(*this, &thumbbar::activate));
-    this->listview_.set_focusable(false);
+    listview_ = Gtk::ListView(Gtk::SingleSelection::create(selection_model_), factory);
+    listview_.set_single_click_activate(true);
+    listview_.signal_activate().connect(sigc::mem_fun(*this, &thumbbar::activate));
+    listview_.set_focusable(false);
 
-    this->set_child(this->listview_);
+    set_child(listview_);
 
     // thumbnail create thread
-    this->thumbnailer_.signal_thumbnail_created().connect(
-        [this](const auto page, const auto& paintable) { this->add_item(page, paintable); });
+    thumbnailer_.signal_thumbnail_created().connect([this](const auto page, const auto& paintable)
+                                                    { add_item(page, paintable); });
 
-    this->thumbnailer_thread_ =
-        std::jthread([this](const std::stop_token& stoken) { this->thumbnailer_.run(stoken); });
-    pthread_setname_np(this->thumbnailer_thread_.native_handle(), "thumbnailer");
+    thumbnailer_thread_ =
+        std::jthread([this](const std::stop_token& stoken) { thumbnailer_.run(stoken); });
+    pthread_setname_np(thumbnailer_thread_.native_handle(), "thumbnailer");
 }
 
 gui::thumbbar::~thumbbar() noexcept
 {
-    this->thumbnailer_thread_.request_stop();
-    this->thumbnailer_thread_.join();
+    thumbnailer_thread_.request_stop();
+    thumbnailer_thread_.join();
 }
 
 void
 gui::thumbbar::request(const page_t page, const std::filesystem::path& filename) noexcept
 {
-    this->thumbnailer_.request({page, filename, this->settings->thumbnail_size});
+    thumbnailer_.request({page, filename, settings->thumbnail_size});
 }
 
 void
 gui::thumbbar::add_item(const page_t page, const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept
 {
-    Glib::signal_idle().connect_once(
-        [this, page, paintable]()
-        { this->liststore_->append(ModelList::create(page, paintable)); });
+    Glib::signal_idle().connect_once([this, page, paintable]()
+                                     { liststore_->append(ModelList::create(page, paintable)); });
 }
 
 void
@@ -93,13 +92,13 @@ gui::thumbbar::set_page(const page_t page) noexcept
 {
     const auto position = static_cast<std::uint32_t>(page - 1);
 
-    this->selection_model_->set_selected(position);
+    selection_model_->set_selected(position);
 
-    auto item = std::dynamic_pointer_cast<Gio::ListModel>(this->listview_.get_model())
-                    ->get_object(position);
+    auto item =
+        std::dynamic_pointer_cast<Gio::ListModel>(listview_.get_model())->get_object(position);
     if (item)
     {
-        this->listview_.scroll_to(position, Gtk::ListScrollFlags::SELECT, this->scroll_info_);
+        listview_.scroll_to(position, Gtk::ListScrollFlags::SELECT, scroll_info_);
     }
 }
 
@@ -109,14 +108,14 @@ gui::thumbbar::clear() noexcept
     // simply restarting the thumbnailer is the best way to
     // clear out the request queue. the queue is only a problem
     // when changing archives before all thumbnails have been loaded.
-    this->thumbnailer_thread_.request_stop();
-    this->thumbnailer_thread_.join();
+    thumbnailer_thread_.request_stop();
+    thumbnailer_thread_.join();
 
-    this->thumbnailer_thread_ =
-        std::jthread([this](const std::stop_token& stoken) { this->thumbnailer_.run(stoken); });
-    pthread_setname_np(this->thumbnailer_thread_.native_handle(), "thumbnailer");
+    thumbnailer_thread_ =
+        std::jthread([this](const std::stop_token& stoken) { thumbnailer_.run(stoken); });
+    pthread_setname_np(thumbnailer_thread_.native_handle(), "thumbnailer");
 
-    this->liststore_->remove_all();
+    liststore_->remove_all();
 }
 
 void
@@ -166,10 +165,10 @@ gui::thumbbar::bind_listitem(const Glib::RefPtr<Gtk::ListItem>& list_item) noexc
 void
 gui::thumbbar::activate(const std::uint32_t position) noexcept
 {
-    auto item = std::dynamic_pointer_cast<Gio::ListModel>(this->listview_.get_model())
-                    ->get_object(position);
+    auto item =
+        std::dynamic_pointer_cast<Gio::ListModel>(listview_.get_model())->get_object(position);
     if (auto data = std::dynamic_pointer_cast<ModelList>(item))
     {
-        this->signal_page_selected().emit(data->page);
+        signal_page_selected().emit(data->page);
     }
 }

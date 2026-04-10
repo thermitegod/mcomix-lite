@@ -34,32 +34,32 @@ gui::statusbar::statusbar(const std::shared_ptr<config::settings>& settings,
                           const std::shared_ptr<gui::lib::view_state>& view_state) noexcept
     : settings(settings), view_state(view_state)
 {
-    this->set_halign(Gtk::Align::START);
-    this->set_valign(Gtk::Align::END);
-    this->set_hexpand(true);
-    this->set_vexpand(false);
+    set_halign(Gtk::Align::START);
+    set_valign(Gtk::Align::END);
+    set_hexpand(true);
+    set_vexpand(false);
 
-    this->statusbar_.set_margin_top(5);
-    this->statusbar_.set_margin_bottom(5);
-    this->statusbar_.set_ellipsize(Pango::EllipsizeMode::END);
-    this->statusbar_.set_hexpand(true);
-    this->statusbar_.set_halign(Gtk::Align::START);
-    this->append(this->statusbar_);
+    statusbar_.set_margin_top(5);
+    statusbar_.set_margin_bottom(5);
+    statusbar_.set_ellipsize(Pango::EllipsizeMode::END);
+    statusbar_.set_hexpand(true);
+    statusbar_.set_halign(Gtk::Align::START);
+    append(statusbar_);
 }
 
 void
 gui::statusbar::set_message(const std::string_view message) noexcept
 {
-    this->statusbar_.set_label(std::format("    {}", message));
+    statusbar_.set_label(std::format("    {}", message));
 }
 
 void
 gui::statusbar::set_page_number(const page_t page, const std::int32_t total_pages) noexcept
 {
     std::string p;
-    if (this->view_state->is_displaying_double())
+    if (view_state->is_displaying_double())
     {
-        if (this->view_state->is_manga_mode())
+        if (view_state->is_manga_mode())
         {
             p = std::format("{}, {}", page + 1, page);
         }
@@ -73,26 +73,26 @@ gui::statusbar::set_page_number(const page_t page, const std::int32_t total_page
         p = std::format("{}", page);
     }
 
-    this->total_page_numbers_ = std::format("{} / {}", p, total_pages);
+    total_page_numbers_ = std::format("{} / {}", p, total_pages);
 }
 
 void
 gui::statusbar::set_view_mode() noexcept
 {
-    if (this->view_state->is_manga_mode())
+    if (view_state->is_manga_mode())
     {
-        this->current_view_mode_ = "Manga";
+        current_view_mode_ = "Manga";
     }
     else
     {
-        this->current_view_mode_ = "Western";
+        current_view_mode_ = "Western";
     }
 }
 
 void
 gui::statusbar::set_file_number(std::int32_t file_number, std::int32_t total) noexcept
 {
-    this->total_file_numbers_ = std::format("{} / {}", file_number, total);
+    total_file_numbers_ = std::format("{} / {}", file_number, total);
 }
 
 void
@@ -110,7 +110,7 @@ gui::statusbar::set_resolution(std::vector<std::array<std::int32_t, 2>> scaled_s
         resolutions.emplace_back(size[0], size[1], scale);
     }
 
-    if (this->view_state->is_manga_mode())
+    if (view_state->is_manga_mode())
     {
         std::ranges::reverse(resolutions);
     }
@@ -118,7 +118,7 @@ gui::statusbar::set_resolution(std::vector<std::array<std::int32_t, 2>> scaled_s
     std::string page_resolution;
     for (const auto& [x, y, scale] : resolutions)
     {
-        if (this->settings->statusbar.page_resolution_zoom_scale)
+        if (settings->statusbar.page_resolution_zoom_scale)
         {
             page_resolution.append(std::format("{}x{} ({:.2f}%), ", x, y, scale * 100));
         }
@@ -128,25 +128,25 @@ gui::statusbar::set_resolution(std::vector<std::array<std::int32_t, 2>> scaled_s
         }
     }
 
-    this->page_resolution_ = ztd::rstrip(page_resolution, ", ");
+    page_resolution_ = ztd::rstrip(page_resolution, ", ");
 }
 
 void
 gui::statusbar::set_archive_filename(const std::filesystem::path& filename) noexcept
 {
-    this->archive_filename_ = filename.string();
+    archive_filename_ = filename.string();
 }
 
 void
 gui::statusbar::set_filename(std::string filename) noexcept
 {
-    this->page_filename_ = filename;
+    page_filename_ = filename;
 }
 
 void
 gui::statusbar::set_filesize(std::string filesize) noexcept
 {
-    this->page_filesize_ = filesize;
+    page_filesize_ = filesize;
 }
 
 void
@@ -154,11 +154,11 @@ gui::statusbar::set_filesize_archive(const std::filesystem::path& filename) noex
 {
     if (std::filesystem::is_directory(filename))
     {
-        this->archive_filesize_ = "0 B";
+        archive_filesize_ = "0 B";
     }
     else
     {
-        this->archive_filesize_ = vfs::utils::file_size(filename, this->settings->si_units);
+        archive_filesize_ = vfs::utils::file_size(filename, settings->si_units);
     }
 }
 
@@ -167,38 +167,38 @@ gui::statusbar::update() noexcept
 {
     std::string text;
 
-    if (this->settings->statusbar.page_numbers)
+    if (settings->statusbar.page_numbers)
     {
-        text.append(std::format("{}{}", this->total_page_numbers_, this->sep_));
+        text.append(std::format("{}{}", total_page_numbers_, sep_));
     }
-    if (this->settings->statusbar.file_numbers)
+    if (settings->statusbar.file_numbers)
     {
-        text.append(std::format("{}{}", this->total_file_numbers_, this->sep_));
+        text.append(std::format("{}{}", total_file_numbers_, sep_));
     }
-    if (this->settings->statusbar.page_resolution)
+    if (settings->statusbar.page_resolution)
     {
-        text.append(std::format("{}{}", this->page_resolution_, this->sep_));
+        text.append(std::format("{}{}", page_resolution_, sep_));
     }
-    if (this->settings->statusbar.archive_filename)
+    if (settings->statusbar.archive_filename)
     {
-        text.append(std::format("{}{}", this->archive_filename_, this->sep_));
+        text.append(std::format("{}{}", archive_filename_, sep_));
     }
-    if (this->settings->statusbar.page_filename)
+    if (settings->statusbar.page_filename)
     {
-        text.append(std::format("{}{}", this->page_filename_, this->sep_));
+        text.append(std::format("{}{}", page_filename_, sep_));
     }
-    if (this->settings->statusbar.page_filesize)
+    if (settings->statusbar.page_filesize)
     {
-        text.append(std::format("{}{}", this->page_filesize_, this->sep_));
+        text.append(std::format("{}{}", page_filesize_, sep_));
     }
-    if (this->settings->statusbar.archive_filesize)
+    if (settings->statusbar.archive_filesize)
     {
-        text.append(std::format("{}{}", this->archive_filesize_, this->sep_));
+        text.append(std::format("{}{}", archive_filesize_, sep_));
     }
-    if (this->settings->statusbar.view_mode)
+    if (settings->statusbar.view_mode)
     {
-        text.append(std::format("{}{}", this->current_view_mode_, this->sep_));
+        text.append(std::format("{}{}", current_view_mode_, sep_));
     }
 
-    this->set_message(ztd::rstrip(text, this->sep_));
+    set_message(ztd::rstrip(text, sep_));
 }

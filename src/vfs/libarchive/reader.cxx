@@ -71,34 +71,34 @@ reader::create(const std::filesystem::path& path) noexcept
 void
 reader::next_entry() noexcept
 {
-    if (this->is_finished_)
+    if (is_finished_)
     {
         return;
     }
 
     archive_entry* raw_entry = nullptr;
-    const auto result = archive_read_next_header(this->archive_.get(), &raw_entry);
+    const auto result = archive_read_next_header(archive_.get(), &raw_entry);
 
     if (result == ARCHIVE_EOF)
     {
-        this->is_finished_ = true;
-        this->current_entry_ = std::unexpected(std::make_error_code(std::errc::no_message));
+        is_finished_ = true;
+        current_entry_ = std::unexpected(std::make_error_code(std::errc::no_message));
     }
     else if (result < ARCHIVE_OK)
     {
-        this->is_finished_ = true;
-        this->current_entry_ = std::unexpected(std::make_error_code(std::errc::io_error));
+        is_finished_ = true;
+        current_entry_ = std::unexpected(std::make_error_code(std::errc::io_error));
     }
     else
     {
-        this->current_entry_ = std::make_shared<entry>(raw_entry, this->archive_);
+        current_entry_ = std::make_shared<entry>(raw_entry, archive_);
     }
 }
 
 reader::iterator
 reader::begin() noexcept
 {
-    this->next_entry();
+    next_entry();
     return iterator(this);
 }
 
@@ -111,19 +111,19 @@ reader::end() const noexcept
 reader::iterator::reference
 reader::iterator::operator*() const noexcept
 {
-    return this->reader_->current_entry_;
+    return reader_->current_entry_;
 }
 
 reader::iterator&
 reader::iterator::operator++() noexcept
 {
-    this->reader_->next_entry();
+    reader_->next_entry();
     return *this;
 }
 
 bool
 reader::iterator::operator==(std::default_sentinel_t) const noexcept
 {
-    return this->reader_->is_finished_;
+    return reader_->is_finished_;
 }
 } // namespace vfs::libarchive

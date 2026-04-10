@@ -61,7 +61,7 @@ class file_handler
     [[nodiscard]] const std::shared_ptr<vfs::image_handler>
     image_handler() const noexcept
     {
-        return this->image_handler_;
+        return image_handler_;
     }
 
   private:
@@ -109,25 +109,25 @@ class file_handler
     [[nodiscard]] auto
     signal_file_closed() noexcept
     {
-        return this->signal_file_closed_;
+        return signal_file_closed_;
     }
 
     [[nodiscard]] auto
     signal_file_opened() noexcept
     {
-        return this->signal_file_opened_;
+        return signal_file_opened_;
     }
 
     [[nodiscard]] auto
     signal_page_set() noexcept
     {
-        return this->signal_page_set_;
+        return signal_page_set_;
     }
 
     [[nodiscard]] auto
     signal_page_available() noexcept
     {
-        return this->signal_page_available_;
+        return signal_page_available_;
     }
 
   private:

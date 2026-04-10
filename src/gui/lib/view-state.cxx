@@ -18,23 +18,23 @@
 bool
 gui::lib::view_state::is_manga_mode() const noexcept
 {
-    return this->manga_mode_;
+    return manga_mode_;
 }
 
 bool
 gui::lib::view_state::is_displaying_double() const noexcept
 {
-    return this->displaying_double_;
+    return displaying_double_;
 }
 
 void
 gui::lib::view_state::set_manga_mode(const bool bval) noexcept
 {
-    this->manga_mode_ = bval;
+    manga_mode_ = bval;
 }
 
 void
 gui::lib::view_state::set_displaying_double(const bool bval) noexcept
 {
-    this->displaying_double_ = bval;
+    displaying_double_ = bval;
 }

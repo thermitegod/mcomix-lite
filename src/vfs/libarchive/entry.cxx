@@ -56,7 +56,7 @@ entry::extract(const std::filesystem::path& path) noexcept
     std::array<char, BUFFER_SIZE> buffer;
     while (true)
     {
-        const auto size = archive_read_data(this->archive_.get(), buffer.data(), buffer.size());
+        const auto size = archive_read_data(archive_.get(), buffer.data(), buffer.size());
         if (size < 0)
         {
             return std::unexpected(std::make_error_code(std::errc::io_error));
@@ -80,96 +80,96 @@ entry::extract(const std::filesystem::path& path) noexcept
 int64_t
 entry::get_gid() const noexcept
 {
-    return archive_entry_gid(this->entry_.get());
+    return archive_entry_gid(entry_.get());
 }
 
 int64_t
 entry::get_ino() const noexcept
 {
-    return archive_entry_ino(this->entry_.get());
+    return archive_entry_ino(entry_.get());
 }
 
 int64_t
 entry::get_ino64() const noexcept
 {
-    return archive_entry_ino64(this->entry_.get());
+    return archive_entry_ino64(entry_.get());
 }
 
 int64_t
 entry::get_size() const noexcept
 {
-    return archive_entry_size(this->entry_.get());
+    return archive_entry_size(entry_.get());
 }
 
 int64_t
 entry::get_uid() const noexcept
 {
-    return archive_entry_uid(this->entry_.get());
+    return archive_entry_uid(entry_.get());
 }
 
 mode_t
 entry::get_mode() const noexcept
 {
-    return archive_entry_mode(this->entry_.get());
+    return archive_entry_mode(entry_.get());
 }
 
 mode_t
 entry::get_perm() const noexcept
 {
-    return archive_entry_perm(this->entry_.get());
+    return archive_entry_perm(entry_.get());
 }
 
 dev_t
 entry::get_rdev() const noexcept
 {
-    return archive_entry_rdev(this->entry_.get());
+    return archive_entry_rdev(entry_.get());
 }
 
 dev_t
 entry::get_rdevmajor() const noexcept
 {
-    return archive_entry_rdevmajor(this->entry_.get());
+    return archive_entry_rdevmajor(entry_.get());
 }
 
 dev_t
 entry::get_rdevminor() const noexcept
 {
-    return archive_entry_rdevminor(this->entry_.get());
+    return archive_entry_rdevminor(entry_.get());
 }
 
 std::string
 entry::get_hardlink() const noexcept
 {
-    return archive_entry_hardlink(this->entry_.get());
+    return archive_entry_hardlink(entry_.get());
 }
 
 std::string
 entry::get_pathname() const noexcept
 {
-    return archive_entry_pathname(this->entry_.get());
+    return archive_entry_pathname(entry_.get());
 }
 
 std::string
 entry::get_symlink() const noexcept
 {
-    return archive_entry_symlink(this->entry_.get());
+    return archive_entry_symlink(entry_.get());
 }
 
 std::string
 entry::get_user_name() const noexcept
 {
-    return archive_entry_uname(this->entry_.get());
+    return archive_entry_uname(entry_.get());
 }
 
 std::string
 entry::get_group_name() const noexcept
 {
-    return archive_entry_gname(this->entry_.get());
+    return archive_entry_gname(entry_.get());
 }
 
 std::uint32_t
 entry::get_nlink() const noexcept
 {
-    return archive_entry_nlink(this->entry_.get());
+    return archive_entry_nlink(entry_.get());
 }
 } // namespace vfs::libarchive

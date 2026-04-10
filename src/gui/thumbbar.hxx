@@ -85,7 +85,7 @@ class thumbbar : public Gtk::ScrolledWindow
     [[nodiscard]] auto
     signal_page_selected() noexcept
     {
-        return this->signal_page_selected_;
+        return signal_page_selected_;
     }
 
   private:

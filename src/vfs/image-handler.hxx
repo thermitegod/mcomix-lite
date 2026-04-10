@@ -126,7 +126,7 @@ class image_handler
     [[nodiscard]] auto
     signal_page_available() noexcept
     {
-        return this->signal_page_available_;
+        return signal_page_available_;
     }
 
   private:

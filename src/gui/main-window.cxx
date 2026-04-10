@@ -56,15 +56,15 @@
 gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
                               const std::vector<std::filesystem::path>& filelist) noexcept
 {
-    this->set_application(app);
-    assert(this->get_application() != nullptr);
+    set_application(app);
+    assert(get_application() != nullptr);
 
-    this->set_title(PACKAGE_NAME_FANCY);
-    this->set_size_request(500, 500);
-    this->set_resizable(true);
-    this->set_visible(true);
+    set_title(PACKAGE_NAME_FANCY);
+    set_size_request(500, 500);
+    set_resizable(true);
+    set_visible(true);
 
-    this->config_manager_->signal_load_error().connect(
+    config_manager_->signal_load_error().connect(
         [this](const std::string& msg)
         {
             auto dialog = Gtk::AlertDialog::create("Config Load Error");
@@ -72,7 +72,7 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
             dialog->set_modal(true);
             dialog->show(*this);
         });
-    this->config_manager_->signal_save_error().connect(
+    config_manager_->signal_save_error().connect(
         [this](const std::string& msg)
         {
             auto dialog = Gtk::AlertDialog::create("Config Save Error");
@@ -80,9 +80,9 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
             dialog->set_modal(true);
             dialog->show(*this);
         });
-    this->config_manager_->load();
+    config_manager_->load();
 
-    this->bookmarks_->signal_load_error().connect(
+    bookmarks_->signal_load_error().connect(
         [this](std::string msg)
         {
             auto dialog = Gtk::AlertDialog::create("Bookmark Load Error");
@@ -90,7 +90,7 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
             dialog->set_modal(true);
             dialog->show(*this);
         });
-    this->bookmarks_->signal_save_error().connect(
+    bookmarks_->signal_save_error().connect(
         [this](std::string msg)
         {
             auto dialog = Gtk::AlertDialog::create("Bookmark Save Error");
@@ -98,126 +98,120 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
             dialog->set_modal(true);
             dialog->show(*this);
         });
-    this->bookmarks_->load();
+    bookmarks_->load();
 
-    this->file_handler_->signal_file_opened().connect([this]() { this->on_file_opened(); });
-    this->file_handler_->signal_file_closed().connect([this]() { this->on_file_closed(); });
-    this->file_handler_->signal_page_available().connect([this](const page_t page)
-                                                         { this->page_available(page); });
-    this->file_handler_->signal_page_set().connect([this](const page_t page)
-                                                   { this->set_page(page); });
+    file_handler_->signal_file_opened().connect([this]() { on_file_opened(); });
+    file_handler_->signal_file_closed().connect([this]() { on_file_closed(); });
+    file_handler_->signal_page_available().connect([this](const page_t page)
+                                                   { page_available(page); });
+    file_handler_->signal_page_set().connect([this](const page_t page) { set_page(page); });
 
-    app->add_action("page_next", [this]() { this->flip_page(1); });
-    app->add_action("page_prev", [this]() { this->flip_page(-1); });
-    app->add_action("page_next_single", [this]() { this->flip_page(1, true); });
-    app->add_action("page_prev_single", [this]() { this->flip_page(-1, true); });
-    app->add_action("page_next_ff", [this]() { this->flip_page(this->settings->page_ff_step); });
-    app->add_action("page_prev_ff", [this]() { this->flip_page(-this->settings->page_ff_step); });
-    app->add_action("page_first", [this]() { this->first_page(); });
-    app->add_action("page_last", [this]() { this->last_page(); });
-    app->add_action("page_select", [this]() { this->on_open_page_select(); });
+    app->add_action("page_next", [this]() { flip_page(1); });
+    app->add_action("page_prev", [this]() { flip_page(-1); });
+    app->add_action("page_next_single", [this]() { flip_page(1, true); });
+    app->add_action("page_prev_single", [this]() { flip_page(-1, true); });
+    app->add_action("page_next_ff", [this]() { flip_page(settings->page_ff_step); });
+    app->add_action("page_prev_ff", [this]() { flip_page(-settings->page_ff_step); });
+    app->add_action("page_first", [this]() { first_page(); });
+    app->add_action("page_last", [this]() { last_page(); });
+    app->add_action("page_select", [this]() { on_open_page_select(); });
 
-    app->add_action("archive_next",
-                    [this]() { auto _ = this->file_handler_->open_next_archive(); });
-    app->add_action("archive_prev",
-                    [this]() { auto _ = this->file_handler_->open_prev_archive(); });
+    app->add_action("archive_next", [this]() { auto _ = file_handler_->open_next_archive(); });
+    app->add_action("archive_prev", [this]() { auto _ = file_handler_->open_prev_archive(); });
 
-    app->add_action("archive_first",
-                    [this]() { auto _ = this->file_handler_->open_first_archive(); });
-    app->add_action("archive_last",
-                    [this]() { auto _ = this->file_handler_->open_last_archive(); });
+    app->add_action("archive_first", [this]() { auto _ = file_handler_->open_first_archive(); });
+    app->add_action("archive_last", [this]() { auto _ = file_handler_->open_last_archive(); });
 
     app->add_action("rotate_reset",
                     [this]()
                     {
-                        this->settings->rotation = 0;
-                        this->rotate_x(0);
+                        settings->rotation = 0;
+                        rotate_x(0);
                     });
-    app->add_action("rotate_90", [this]() { this->rotate_x(90); });
-    app->add_action("rotate_180", [this]() { this->rotate_x(180); });
-    app->add_action("rotate_270", [this]() { this->rotate_x(270); });
+    app->add_action("rotate_90", [this]() { rotate_x(90); });
+    app->add_action("rotate_180", [this]() { rotate_x(180); });
+    app->add_action("rotate_270", [this]() { rotate_x(270); });
 
-    app->add_action("bookmark_add", [this]() { this->on_bookmark_add(); });
-    app->add_action("bookmark_manager", [this]() { this->on_bookmark_manager(); });
+    app->add_action("bookmark_add", [this]() { on_bookmark_add(); });
+    app->add_action("bookmark_manager", [this]() { on_bookmark_manager(); });
 
-    app->add_action("view_double", [this]() { this->change_double_page(); });
-    app->add_action("view_manga", [this]() { this->change_manga_mode(); });
+    app->add_action("view_double", [this]() { change_double_page(); });
+    app->add_action("view_manga", [this]() { change_manga_mode(); });
 
     app->add_action("toggle_thumbar",
                     [this]()
                     {
-                        this->settings->hide_thumbar = !this->settings->hide_thumbar;
-                        this->thumb_sidebar_.set_visible(!this->settings->hide_thumbar);
+                        settings->hide_thumbar = !settings->hide_thumbar;
+                        thumb_sidebar_.set_visible(!settings->hide_thumbar);
                     });
     app->add_action("toggle_menubar",
                     [this]()
                     {
-                        this->settings->hide_menubar = !this->settings->hide_menubar;
-                        this->menubar_.set_visible(!this->settings->hide_menubar);
+                        settings->hide_menubar = !settings->hide_menubar;
+                        menubar_.set_visible(!settings->hide_menubar);
                     });
     app->add_action("toggle_statusbar",
                     [this]()
                     {
-                        this->settings->hide_statusbar = !this->settings->hide_statusbar;
-                        this->statusbar_.set_visible(!this->settings->hide_statusbar);
+                        settings->hide_statusbar = !settings->hide_statusbar;
+                        statusbar_.set_visible(!settings->hide_statusbar);
                     });
-    app->add_action("page_center_space", [this]() { this->viewport_.toggle_page_padding(); });
+    app->add_action("page_center_space", [this]() { viewport_.toggle_page_padding(); });
 
-    app->add_action("escape", [this]() { this->on_escape_event(); });
-    app->add_action("fullscreen", [this]() { this->change_fullscreen(); });
+    app->add_action("escape", [this]() { on_escape_event(); });
+    app->add_action("fullscreen", [this]() { change_fullscreen(); });
 
-    app->add_action("close", [this]() { this->file_handler_->close_file(); });
-    app->add_action("trash", [this]() { this->on_trash_current_file(); });
-    app->add_action("move", [this]() { this->on_move_current_file(); });
-    app->add_action("page_extract", [this]() { this->on_open_page_extractor(); });
+    app->add_action("close", [this]() { file_handler_->close_file(); });
+    app->add_action("trash", [this]() { on_trash_current_file(); });
+    app->add_action("move", [this]() { on_move_current_file(); });
+    app->add_action("page_extract", [this]() { on_open_page_extractor(); });
 
-    app->add_action("open", [this]() { this->on_open_filechooser(); });
-    app->add_action("exit", [this]() { this->on_exit(); });
-    app->add_action("refresh", [this]() { this->file_handler_->refresh_opened(); });
-    app->add_action("keybindings", [this]() { this->on_open_keybindings(); });
-    app->add_action("preferences", [this]() { this->on_open_preferences(); });
-    app->add_action("properties", [this]() { this->on_open_properties(); });
-    app->add_action("donate", [this]() { this->on_open_donate(); });
-    app->add_action("about", [this]() { this->on_open_about(); });
+    app->add_action("open", [this]() { on_open_filechooser(); });
+    app->add_action("exit", [this]() { on_exit(); });
+    app->add_action("refresh", [this]() { file_handler_->refresh_opened(); });
+    app->add_action("keybindings", [this]() { on_open_keybindings(); });
+    app->add_action("preferences", [this]() { on_open_preferences(); });
+    app->add_action("properties", [this]() { on_open_properties(); });
+    app->add_action("donate", [this]() { on_open_donate(); });
+    app->add_action("about", [this]() { on_open_about(); });
 
-    this->add_shortcuts();
+    add_shortcuts();
 
-    this->view_state->set_manga_mode(this->settings->default_manga_mode);
-    this->view_state->set_displaying_double(false);
+    view_state->set_manga_mode(settings->default_manga_mode);
+    view_state->set_displaying_double(false);
 
-    this->thumb_sidebar_.set_visible(false);
-    this->thumb_sidebar_.signal_page_selected().connect([this](const auto page)
-                                                        { this->set_page(page); });
+    thumb_sidebar_.set_visible(false);
+    thumb_sidebar_.signal_page_selected().connect([this](const auto page) { set_page(page); });
 
-    this->box_.set_orientation(Gtk::Orientation::VERTICAL);
-    this->box_.set_hexpand(true);
-    this->box_.set_vexpand(true);
+    box_.set_orientation(Gtk::Orientation::VERTICAL);
+    box_.set_hexpand(true);
+    box_.set_vexpand(true);
 
-    this->box_.append(this->menubar_);
+    box_.append(menubar_);
 
-    this->center_box_.set_orientation(Gtk::Orientation::HORIZONTAL);
-    this->center_box_.set_hexpand(true);
-    this->center_box_.set_vexpand(true);
-    this->box_.append(this->center_box_);
+    center_box_.set_orientation(Gtk::Orientation::HORIZONTAL);
+    center_box_.set_hexpand(true);
+    center_box_.set_vexpand(true);
+    box_.append(center_box_);
 
-    this->center_box_.append(this->thumb_sidebar_);
-    this->center_box_.append(this->viewport_);
+    center_box_.append(thumb_sidebar_);
+    center_box_.append(viewport_);
 
-    this->box_.append(this->statusbar_);
+    box_.append(statusbar_);
 
-    this->set_child(this->box_);
+    set_child(box_);
 
-    if (this->settings->hide_thumbar)
+    if (settings->hide_thumbar)
     {
-        this->thumb_sidebar_.set_visible(false);
+        thumb_sidebar_.set_visible(false);
     }
-    if (this->settings->hide_statusbar)
+    if (settings->hide_statusbar)
     {
-        this->statusbar_.set_visible(false);
+        statusbar_.set_visible(false);
     }
-    if (this->settings->hide_menubar)
+    if (settings->hide_menubar)
     {
-        this->menubar_.set_visible(false);
+        menubar_.set_visible(false);
     }
 
     // Use idle signal to start filehandler otherwise the
@@ -225,7 +219,7 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
     // has returned. This also causes other problems since the
     // window size will be '1x1' during the initial page draw.
     Glib::signal_idle().connect_once([this, filelist]()
-                                     { this->file_handler_->open_file_init(filelist); });
+                                     { file_handler_->open_file_init(filelist); });
 }
 
 void
@@ -237,7 +231,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.exit");
+                activate_action("app.exit");
                 return true;
             });
 
@@ -252,7 +246,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.page_next");
+                activate_action("app.page_next");
                 return true;
             });
 
@@ -270,13 +264,13 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                if (this->view_state->is_manga_mode())
+                if (view_state->is_manga_mode())
                 {
-                    this->activate_action("app.page_prev");
+                    activate_action("app.page_prev");
                 }
                 else
                 {
-                    this->activate_action("app.page_next");
+                    activate_action("app.page_next");
                 }
                 return true;
             });
@@ -291,7 +285,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.page_prev");
+                activate_action("app.page_prev");
                 return true;
             });
 
@@ -309,13 +303,13 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                if (this->view_state->is_manga_mode())
+                if (view_state->is_manga_mode())
                 {
-                    this->activate_action("app.page_next");
+                    activate_action("app.page_next");
                 }
                 else
                 {
-                    this->activate_action("app.page_prev");
+                    activate_action("app.page_prev");
                 }
                 return true;
             });
@@ -330,7 +324,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.page_next_single");
+                activate_action("app.page_next_single");
                 return true;
             });
 
@@ -352,7 +346,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.page_prev_single");
+                activate_action("app.page_prev_single");
                 return true;
             });
 
@@ -374,7 +368,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.page_next_ff");
+                activate_action("app.page_next_ff");
                 return true;
             });
 
@@ -387,7 +381,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.page_prev_ff");
+                activate_action("app.page_prev_ff");
                 return true;
             });
 
@@ -400,7 +394,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.page_first");
+                activate_action("app.page_first");
                 return true;
             });
 
@@ -414,7 +408,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.page_last");
+                activate_action("app.page_last");
                 return true;
             });
 
@@ -428,7 +422,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.page_select");
+                activate_action("app.page_select");
                 return true;
             });
 
@@ -440,7 +434,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.archive_next");
+                activate_action("app.archive_next");
                 return true;
             });
 
@@ -453,7 +447,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.archive_prev");
+                activate_action("app.archive_prev");
                 return true;
             });
 
@@ -466,7 +460,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.archive_first");
+                activate_action("app.archive_first");
                 return true;
             });
 
@@ -481,7 +475,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.archive_last");
+                activate_action("app.archive_last");
                 return true;
             });
 
@@ -497,7 +491,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.keep_transformation");
+                activate_action("app.keep_transformation");
                 return true;
             });
 
@@ -509,7 +503,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.rotate_90");
+                activate_action("app.rotate_90");
                 return true;
             });
 
@@ -521,7 +515,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.rotate_180");
+                activate_action("app.rotate_180");
                 return true;
             });
 
@@ -534,7 +528,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.rotate_270");
+                activate_action("app.rotate_270");
                 return true;
             });
 
@@ -549,7 +543,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.view_double");
+                activate_action("app.view_double");
                 return true;
             });
 
@@ -561,7 +555,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.view_manga");
+                activate_action("app.view_manga");
                 return true;
             });
 
@@ -573,7 +567,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.page_center_space");
+                activate_action("app.page_center_space");
                 return true;
             });
 
@@ -588,7 +582,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.escape");
+                activate_action("app.escape");
                 return true;
             });
 
@@ -600,7 +594,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.fullscreen");
+                activate_action("app.fullscreen");
                 return true;
             });
 
@@ -616,7 +610,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.donate");
+                activate_action("app.donate");
                 return true;
             });
 
@@ -629,7 +623,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.about");
+                activate_action("app.about");
                 return true;
             });
 
@@ -643,7 +637,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.close");
+                activate_action("app.close");
                 return true;
             });
 
@@ -656,7 +650,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.trash");
+                activate_action("app.trash");
                 return true;
             });
 
@@ -668,7 +662,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.page_extract");
+                activate_action("app.page_extract");
                 return true;
             });
 
@@ -683,7 +677,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.move");
+                activate_action("app.move");
                 return true;
             });
 
@@ -695,7 +689,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.open");
+                activate_action("app.open");
                 return true;
             });
 
@@ -708,7 +702,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.preferences");
+                activate_action("app.preferences");
                 return true;
             });
 
@@ -720,7 +714,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.properties");
+                activate_action("app.properties");
                 return true;
             });
 
@@ -733,7 +727,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.refresh");
+                activate_action("app.refresh");
                 return true;
             });
 
@@ -748,7 +742,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.bookmark_add");
+                activate_action("app.bookmark_add");
                 return true;
             });
 
@@ -761,7 +755,7 @@ gui::main_window::add_shortcuts() noexcept
         auto action = Gtk::CallbackAction::create(
             [this](Gtk::Widget&, const Glib::VariantBase&)
             {
-                this->activate_action("app.bookmark_manager");
+                activate_action("app.bookmark_manager");
                 return true;
             });
 
@@ -772,41 +766,38 @@ gui::main_window::add_shortcuts() noexcept
                                   action));
     }
 
-    this->add_controller(controller);
+    add_controller(controller);
 }
 
 void
 gui::main_window::on_exit() noexcept
 {
-    this->config_manager_->save();
+    config_manager_->save();
 
-    this->close();
+    close();
 }
 
 void
 gui::main_window::on_bookmark_add() noexcept
 {
-    const auto image_handler = this->file_handler_->image_handler();
+    const auto image_handler = file_handler_->image_handler();
 
-    this->bookmarks_->add({this->file_handler_->get_real_path(),
-                           image_handler->get_current_page(),
-                           image_handler->get_number_of_pages(),
-                           std::chrono::system_clock::now()});
+    bookmarks_->add({file_handler_->get_real_path(),
+                     image_handler->get_current_page(),
+                     image_handler->get_number_of_pages(),
+                     std::chrono::system_clock::now()});
 }
 
 void
 gui::main_window::on_bookmark_manager() noexcept
 {
-    Gtk::make_managed<gui::dialog::bookmarks>(*this,
-                                              this->file_handler_,
-                                              this->bookmarks_,
-                                              this->settings);
+    Gtk::make_managed<gui::dialog::bookmarks>(*this, file_handler_, bookmarks_, settings);
 }
 
 void
 gui::main_window::on_open_page_extractor() noexcept
 {
-    const auto path = this->file_handler_->image_handler()->get_path_to_page();
+    const auto path = file_handler_->image_handler()->get_path_to_page();
 
     auto dialog = Gtk::FileDialog::create();
 
@@ -881,15 +872,15 @@ gui::main_window::on_open_filechooser() noexcept
         [this]()
         {
             std::filesystem::path path;
-            if (this->file_handler_->is_file_loaded())
+            if (file_handler_->is_file_loaded())
             {
-                if (this->file_handler_->is_archive())
+                if (file_handler_->is_archive())
                 {
-                    return this->file_handler_->get_base_path().parent_path();
+                    return file_handler_->get_base_path().parent_path();
                 }
                 else
                 {
-                    return this->file_handler_->get_base_path();
+                    return file_handler_->get_base_path();
                 }
             }
             else
@@ -914,7 +905,7 @@ gui::main_window::on_open_filechooser() noexcept
             {
                 paths.push_back(file->get_path());
             }
-            this->file_handler_->open_file_init(paths);
+            file_handler_->open_file_init(paths);
         }
         catch (const Gtk::DialogError& err)
         {
@@ -940,7 +931,7 @@ gui::main_window::on_open_keybindings() noexcept
 void
 gui::main_window::on_open_preferences() noexcept
 {
-    auto dialog = Gtk::make_managed<gui::dialog::preferences>(*this, this->settings);
+    auto dialog = Gtk::make_managed<gui::dialog::preferences>(*this, settings);
     dialog->signal_destroy().connect(
         [this]()
         {
@@ -954,18 +945,14 @@ gui::main_window::on_open_preferences() noexcept
 void
 gui::main_window::on_open_properties() noexcept
 {
-    Gtk::make_managed<gui::dialog::properties>(*this,
-                                               this->file_handler_,
-                                               this->view_state,
-                                               this->settings);
+    Gtk::make_managed<gui::dialog::properties>(*this, file_handler_, view_state, settings);
 }
 
 void
 gui::main_window::on_open_page_select() noexcept
 {
-    auto selector = Gtk::make_managed<gui::dialog::pageselect>(*this, this->file_handler_);
-    selector->signal_selected_page().connect([this](const std::int32_t page)
-                                             { this->set_page(page); });
+    auto selector = Gtk::make_managed<gui::dialog::pageselect>(*this, file_handler_);
+    selector->signal_selected_page().connect([this](const std::int32_t page) { set_page(page); });
 }
 
 void
@@ -986,46 +973,46 @@ gui::main_window::on_open_donate() noexcept
 void
 gui::main_window::draw_pages() noexcept
 {
-    if (this->waiting_for_redraw_)
+    if (waiting_for_redraw_)
     {
         // Don't stack up redraws.
         return;
     }
 
-    this->waiting_for_redraw_ = true;
+    waiting_for_redraw_ = true;
 
-    Glib::signal_idle().connect([this]() { return this->_draw_pages(); }, Glib::PRIORITY_HIGH_IDLE);
+    Glib::signal_idle().connect([this]() { return _draw_pages(); }, Glib::PRIORITY_HIGH_IDLE);
 }
 
 bool
 gui::main_window::_draw_pages() noexcept
 {
-    const auto image_handler = this->file_handler_->image_handler();
+    const auto image_handler = file_handler_->image_handler();
 
-    this->viewport_.hide_images();
+    viewport_.hide_images();
 
-    if (!this->file_handler_->is_file_loaded())
+    if (!file_handler_->is_file_loaded())
     {
-        this->thumb_sidebar_.set_visible(false);
-        this->waiting_for_redraw_ = false;
+        thumb_sidebar_.set_visible(false);
+        waiting_for_redraw_ = false;
         return false;
     }
 
-    if (!this->settings->hide_thumbar)
+    if (!settings->hide_thumbar)
     {
-        this->thumb_sidebar_.set_visible(true);
+        thumb_sidebar_.set_visible(true);
     }
 
     if (!image_handler->is_page_available())
     {
-        this->waiting_for_redraw_ = false;
+        waiting_for_redraw_ = false;
         return false;
     }
 
     // Limited to at most 2 pages
-    const auto pixbuf_count = this->view_state->is_displaying_double() ? 2 : 1;
+    const auto pixbuf_count = view_state->is_displaying_double() ? 2 : 1;
     auto pixbuf_list = image_handler->get_images(pixbuf_count);
-    if (this->settings->default_manga_mode && this->view_state->is_displaying_double())
+    if (settings->default_manga_mode && view_state->is_displaying_double())
     {
         std::swap(pixbuf_list[0], pixbuf_list[1]);
     }
@@ -1037,23 +1024,23 @@ gui::main_window::_draw_pages() noexcept
     }
 
     // Rotation handling
-    switch (this->settings->rotation)
+    switch (settings->rotation)
     {
         case 0:
         {
-            this->viewport_.set_orientation(Gtk::Orientation::HORIZONTAL);
+            viewport_.set_orientation(Gtk::Orientation::HORIZONTAL);
             break;
         }
         case 90:
         {
-            this->viewport_.set_orientation(Gtk::Orientation::VERTICAL);
+            viewport_.set_orientation(Gtk::Orientation::VERTICAL);
             std::ranges::for_each(size_list, [](auto& list) { std::ranges::reverse(list); });
             break;
         }
         case 180:
         {
-            this->viewport_.set_orientation(Gtk::Orientation::HORIZONTAL);
-            if (this->view_state->is_displaying_double())
+            viewport_.set_orientation(Gtk::Orientation::HORIZONTAL);
+            if (view_state->is_displaying_double())
             {
                 std::swap(pixbuf_list[0], pixbuf_list[1]);
             }
@@ -1061,9 +1048,9 @@ gui::main_window::_draw_pages() noexcept
         }
         case 270:
         {
-            this->viewport_.set_orientation(Gtk::Orientation::VERTICAL);
+            viewport_.set_orientation(Gtk::Orientation::VERTICAL);
             std::ranges::for_each(size_list, [](auto& list) { std::ranges::reverse(list); });
-            if (this->view_state->is_displaying_double())
+            if (view_state->is_displaying_double())
             {
                 std::swap(pixbuf_list[0], pixbuf_list[1]);
             }
@@ -1073,7 +1060,7 @@ gui::main_window::_draw_pages() noexcept
             std::unreachable();
     }
 
-    const auto [max_width, max_height] = this->get_visible_area_size();
+    const auto [max_width, max_height] = get_visible_area_size();
 
     std::vector<std::array<std::int32_t, 2>> scaled_sizes;
     std::vector<Glib::RefPtr<Gdk::Paintable>> paintables;
@@ -1082,7 +1069,7 @@ gui::main_window::_draw_pages() noexcept
         auto paintable = gui::lib::image_tools::fit_to_rectangle(pixbuf,
                                                                  max_width,
                                                                  max_height,
-                                                                 this->settings->rotation);
+                                                                 settings->rotation);
 
         scaled_sizes.push_back(
             {paintable->get_intrinsic_width(), paintable->get_intrinsic_height()});
@@ -1090,12 +1077,12 @@ gui::main_window::_draw_pages() noexcept
 
         paintables.push_back(paintable);
     }
-    this->viewport_.set(paintables);
+    viewport_.set(paintables);
 
-    this->statusbar_.set_resolution(scaled_sizes, size_list);
-    this->statusbar_.update();
+    statusbar_.set_resolution(scaled_sizes, size_list);
+    statusbar_.update();
 
-    this->waiting_for_redraw_ = false;
+    waiting_for_redraw_ = false;
 
     return false;
 }
@@ -1103,7 +1090,7 @@ gui::main_window::_draw_pages() noexcept
 void
 gui::main_window::update_page_information() noexcept
 {
-    const auto image_handler = this->file_handler_->image_handler();
+    const auto image_handler = file_handler_->image_handler();
 
     const auto page = image_handler->get_current_page();
     if (page == 0)
@@ -1122,41 +1109,39 @@ gui::main_window::update_page_information() noexcept
     const auto filename = ztd::join(filenames, ", ");
     const auto filesize = ztd::join(filesizes, ", ");
 
-    this->statusbar_.set_page_number(page, image_handler->get_number_of_pages());
-    this->statusbar_.set_filename(filename);
-    this->statusbar_.set_filesize(filesize);
-    this->statusbar_.update();
+    statusbar_.set_page_number(page, image_handler->get_number_of_pages());
+    statusbar_.set_filename(filename);
+    statusbar_.set_filesize(filesize);
+    statusbar_.update();
 }
 
 bool
 gui::main_window::get_virtual_double_page(const std::optional<page_t> query) noexcept
 {
-    const auto page = query.value_or(this->file_handler_->image_handler()->get_current_page());
+    const auto page = query.value_or(file_handler_->image_handler()->get_current_page());
 
     if (page == 1 &&
-        this->settings->virtual_double_page_for_fitting_images &
-            config::double_page::as_one_title &&
+        settings->virtual_double_page_for_fitting_images & config::double_page::as_one_title &&
         file_handler_->is_archive())
     {
         return true;
     }
 
-    if (!this->settings->default_double_page ||
-        !(this->settings->virtual_double_page_for_fitting_images &
-          config::double_page::as_one_wide) ||
-        this->file_handler_->image_handler()->is_last_page(page))
+    if (!settings->default_double_page ||
+        !(settings->virtual_double_page_for_fitting_images & config::double_page::as_one_wide) ||
+        file_handler_->image_handler()->is_last_page(page))
     {
         return false;
     }
 
     for (const auto p : {page, page + 1})
     {
-        if (!this->file_handler_->image_handler()->is_page_available(p))
+        if (!file_handler_->image_handler()->is_page_available(p))
         {
             return false;
         }
 
-        const auto [width, height] = this->file_handler_->image_handler()->get_page_size(p);
+        const auto [width, height] = file_handler_->image_handler()->get_page_size(p);
         if (width > height)
         {
             return true;
@@ -1169,62 +1154,62 @@ void
 gui::main_window::page_available(const page_t page) noexcept
 {
     // Called whenever a new page is ready for displaying
-    const auto image_handler = this->file_handler_->image_handler();
+    const auto image_handler = file_handler_->image_handler();
 
-    this->thumb_sidebar_.request(page, image_handler->get_path_to_page(page));
+    thumb_sidebar_.request(page, image_handler->get_path_to_page(page));
 
     // Refresh display when currently opened page becomes available.
     const auto current_page = image_handler->get_current_page();
-    const auto nb_pages = this->view_state->is_displaying_double() ? 2 : 1;
+    const auto nb_pages = view_state->is_displaying_double() ? 2 : 1;
 
     if (current_page <= page && page < (current_page + nb_pages))
     {
-        this->displayed_double();
-        this->draw_pages();
-        this->update_page_information();
+        displayed_double();
+        draw_pages();
+        update_page_information();
     }
 }
 
 void
 gui::main_window::on_file_opened() noexcept
 {
-    this->displayed_double();
+    displayed_double();
 
-    if (!this->settings->hide_thumbar)
+    if (!settings->hide_thumbar)
     {
-        this->thumb_sidebar_.set_visible(true);
+        thumb_sidebar_.set_visible(true);
     }
 
-    if (this->settings->statusbar.archive_filename_fullpath)
+    if (settings->statusbar.archive_filename_fullpath)
     {
-        this->statusbar_.set_archive_filename(this->file_handler_->get_base_path());
+        statusbar_.set_archive_filename(file_handler_->get_base_path());
     }
     else
     {
-        this->statusbar_.set_archive_filename(this->file_handler_->get_base_path().filename());
+        statusbar_.set_archive_filename(file_handler_->get_base_path().filename());
     }
-    this->statusbar_.set_view_mode();
-    this->statusbar_.set_filesize_archive(this->file_handler_->get_base_path());
-    const auto n = this->file_handler_->get_file_number();
-    this->statusbar_.set_file_number(n[0], n[1]);
-    this->statusbar_.update();
+    statusbar_.set_view_mode();
+    statusbar_.set_filesize_archive(file_handler_->get_base_path());
+    const auto n = file_handler_->get_file_number();
+    statusbar_.set_file_number(n[0], n[1]);
+    statusbar_.update();
 }
 
 void
 gui::main_window::on_file_closed() noexcept
 {
-    this->set_title(PACKAGE_NAME_FANCY);
+    set_title(PACKAGE_NAME_FANCY);
 
-    this->viewport_.hide_images();
-    this->statusbar_.set_message("");
-    this->thumb_sidebar_.set_visible(false);
-    this->thumb_sidebar_.clear();
+    viewport_.hide_images();
+    statusbar_.set_message("");
+    thumb_sidebar_.set_visible(false);
+    thumb_sidebar_.clear();
 }
 
 void
 gui::main_window::set_page(const page_t page) noexcept
 {
-    const auto image_handler = this->file_handler_->image_handler();
+    const auto image_handler = file_handler_->image_handler();
 
     if (page == image_handler->get_current_page())
     {
@@ -1233,42 +1218,42 @@ gui::main_window::set_page(const page_t page) noexcept
 
     image_handler->set_page(page);
 
-    this->displayed_double();
+    displayed_double();
 
-    this->thumb_sidebar_.set_page(page);
+    thumb_sidebar_.set_page(page);
 
-    this->update_page_information();
+    update_page_information();
 
-    if (!this->settings->keep_transformation)
+    if (!settings->keep_transformation)
     {
-        this->settings->rotation = 0;
+        settings->rotation = 0;
     }
 
-    this->draw_pages();
+    draw_pages();
 }
 
 void
 gui::main_window::flip_page(const page_t number_of_pages, bool single_step) noexcept
 {
-    if (!this->file_handler_->is_file_loaded())
+    if (!file_handler_->is_file_loaded())
     {
         return;
     }
 
-    const auto image_handler = this->file_handler_->image_handler();
+    const auto image_handler = file_handler_->image_handler();
 
     const auto current_page = image_handler->get_current_page();
     const auto current_number_of_pages = image_handler->get_number_of_pages();
 
     auto new_page = current_page + number_of_pages;
-    if (std::abs(number_of_pages) == 1 && !single_step && this->settings->default_double_page &&
-        this->settings->double_step_in_double_page_mode)
+    if (std::abs(number_of_pages) == 1 && !single_step && settings->default_double_page &&
+        settings->double_step_in_double_page_mode)
     {
-        if (number_of_pages == 1 && !this->get_virtual_double_page())
+        if (number_of_pages == 1 && !get_virtual_double_page())
         {
             new_page += 1;
         }
-        else if (number_of_pages == -1 && !this->get_virtual_double_page(new_page - 1))
+        else if (number_of_pages == -1 && !get_virtual_double_page(new_page - 1))
         {
             new_page -= 1;
         }
@@ -1281,7 +1266,7 @@ gui::main_window::flip_page(const page_t number_of_pages, bool single_step) noex
         // archive case).
         if (number_of_pages == -1 && current_page <= 1)
         {
-            if (this->settings->confirm_archive_change)
+            if (settings->confirm_archive_change)
             {
                 auto dialog = Gtk::AlertDialog::create("Open Previous Archive?");
                 dialog->set_modal(true);
@@ -1296,7 +1281,7 @@ gui::main_window::flip_page(const page_t number_of_pages, bool single_step) noex
                         const auto response = dialog->choose_finish(result);
                         if (response == 1)
                         { // Confirm Button
-                            auto _ = this->file_handler_->open_prev_archive();
+                            auto _ = file_handler_->open_prev_archive();
                         }
                     }
                     catch (...)
@@ -1308,7 +1293,7 @@ gui::main_window::flip_page(const page_t number_of_pages, bool single_step) noex
             }
             else
             {
-                auto _ = this->file_handler_->open_prev_archive();
+                auto _ = file_handler_->open_prev_archive();
             }
             return;
         }
@@ -1319,7 +1304,7 @@ gui::main_window::flip_page(const page_t number_of_pages, bool single_step) noex
     {
         if (number_of_pages == 1)
         {
-            if (this->settings->confirm_archive_change)
+            if (settings->confirm_archive_change)
             {
                 auto dialog = Gtk::AlertDialog::create("Open Next Archive?");
                 dialog->set_modal(true);
@@ -1334,7 +1319,7 @@ gui::main_window::flip_page(const page_t number_of_pages, bool single_step) noex
                         const auto response = dialog->choose_finish(result);
                         if (response == 1)
                         { // Confirm Button
-                            auto _ = this->file_handler_->open_next_archive();
+                            auto _ = file_handler_->open_next_archive();
                         }
                     }
                     catch (...)
@@ -1346,7 +1331,7 @@ gui::main_window::flip_page(const page_t number_of_pages, bool single_step) noex
             }
             else
             {
-                auto _ = this->file_handler_->open_next_archive();
+                auto _ = file_handler_->open_next_archive();
             }
             return;
         }
@@ -1355,98 +1340,98 @@ gui::main_window::flip_page(const page_t number_of_pages, bool single_step) noex
 
     if (new_page != current_page)
     {
-        this->set_page(new_page);
+        set_page(new_page);
     }
 }
 
 void
 gui::main_window::first_page() noexcept
 {
-    const auto image_handler = this->file_handler_->image_handler();
+    const auto image_handler = file_handler_->image_handler();
     const auto number_of_pages = image_handler->get_number_of_pages();
     if (number_of_pages)
     {
-        this->set_page(1);
+        set_page(1);
     }
 }
 
 void
 gui::main_window::last_page() noexcept
 {
-    const auto image_handler = this->file_handler_->image_handler();
+    const auto image_handler = file_handler_->image_handler();
     const auto number_of_pages = image_handler->get_number_of_pages();
     if (number_of_pages)
     {
-        this->set_page(number_of_pages);
+        set_page(number_of_pages);
     }
 }
 
 void
 gui::main_window::rotate_x(const std::int32_t rotation) noexcept
 {
-    this->settings->rotation = (this->settings->rotation + rotation) % 360;
+    settings->rotation = (settings->rotation + rotation) % 360;
 
-    this->draw_pages();
+    draw_pages();
 }
 
 void
 gui::main_window::change_double_page() noexcept
 {
-    this->settings->default_double_page = !this->settings->default_double_page;
-    this->displayed_double();
-    this->update_page_information();
+    settings->default_double_page = !settings->default_double_page;
+    displayed_double();
+    update_page_information();
 
-    this->draw_pages();
+    draw_pages();
 }
 
 void
 gui::main_window::change_manga_mode() noexcept
 {
-    this->settings->default_manga_mode = !this->settings->default_manga_mode;
+    settings->default_manga_mode = !settings->default_manga_mode;
 
-    this->view_state->set_manga_mode(this->settings->default_manga_mode);
+    view_state->set_manga_mode(settings->default_manga_mode);
 
-    this->statusbar_.set_view_mode();
-    this->update_page_information();
+    statusbar_.set_view_mode();
+    update_page_information();
 
-    this->draw_pages();
+    draw_pages();
 }
 
 void
 gui::main_window::change_fullscreen() noexcept
 {
-    if (this->is_fullscreen())
+    if (is_fullscreen())
     {
-        this->unfullscreen();
+        unfullscreen();
 
-        if (this->settings->fullscreen.hide_thumbar && !this->settings->hide_thumbar)
+        if (settings->fullscreen.hide_thumbar && !settings->hide_thumbar)
         {
-            this->thumb_sidebar_.set_visible(true);
+            thumb_sidebar_.set_visible(true);
         }
-        if (this->settings->fullscreen.hide_statusbar && !this->settings->hide_statusbar)
+        if (settings->fullscreen.hide_statusbar && !settings->hide_statusbar)
         {
-            this->statusbar_.set_visible(true);
+            statusbar_.set_visible(true);
         }
-        if (this->settings->fullscreen.hide_menubar && !this->settings->hide_menubar)
+        if (settings->fullscreen.hide_menubar && !settings->hide_menubar)
         {
-            this->menubar_.set_visible(true);
+            menubar_.set_visible(true);
         }
     }
     else
     {
-        this->fullscreen();
+        fullscreen();
 
-        if (this->settings->fullscreen.hide_thumbar || this->settings->hide_thumbar)
+        if (settings->fullscreen.hide_thumbar || settings->hide_thumbar)
         {
-            this->thumb_sidebar_.set_visible(false);
+            thumb_sidebar_.set_visible(false);
         }
-        if (this->settings->fullscreen.hide_statusbar || this->settings->hide_statusbar)
+        if (settings->fullscreen.hide_statusbar || settings->hide_statusbar)
         {
-            this->statusbar_.set_visible(false);
+            statusbar_.set_visible(false);
         }
-        if (this->settings->fullscreen.hide_menubar || this->settings->hide_menubar)
+        if (settings->fullscreen.hide_menubar || settings->hide_menubar)
         {
-            this->menubar_.set_visible(false);
+            menubar_.set_visible(false);
         }
     }
 }
@@ -1455,18 +1440,18 @@ void
 gui::main_window::displayed_double() noexcept
 {
     // sets True if two pages are currently displayed
-    const auto image_handler = this->file_handler_->image_handler();
+    const auto image_handler = file_handler_->image_handler();
 
-    this->view_state->set_displaying_double(
-        image_handler->get_current_page() != 0 && this->settings->default_double_page &&
-        !this->get_virtual_double_page() && !image_handler->is_last_page());
+    view_state->set_displaying_double(image_handler->get_current_page() != 0 &&
+                                      settings->default_double_page && !get_virtual_double_page() &&
+                                      !image_handler->is_last_page());
 }
 
 std::array<std::int32_t, 2>
 gui::main_window::get_visible_area_size() noexcept
 {
-    const auto display = this->get_display();
-    const auto surface = this->get_surface();
+    const auto display = get_display();
+    const auto surface = get_surface();
     const auto monitor = display->get_monitor_at_surface(surface);
     Gdk::Rectangle geometry;
     monitor->get_geometry(geometry);
@@ -1477,12 +1462,11 @@ gui::main_window::get_visible_area_size() noexcept
 void
 gui::main_window::on_move_current_file() noexcept
 {
-    const auto current_file = this->file_handler_->current_file();
+    const auto current_file = file_handler_->current_file();
 
-    this->on_trash_or_move_load_next_file();
+    on_trash_or_move_load_next_file();
 
-    const auto target =
-        current_file.parent_path() / this->settings->move_file / current_file.filename();
+    const auto target = current_file.parent_path() / settings->move_file / current_file.filename();
     if (!std::filesystem::exists(target.parent_path()))
     {
         std::filesystem::create_directories(target.parent_path());
@@ -1505,7 +1489,7 @@ gui::main_window::on_move_current_file() noexcept
 void
 gui::main_window::on_trash_current_file() noexcept
 {
-    const auto current_file = this->file_handler_->current_file();
+    const auto current_file = file_handler_->current_file();
 
     auto dialog = Gtk::AlertDialog::create("Trash Current File?");
     dialog->set_detail(std::format("{}", current_file.string()));
@@ -1521,7 +1505,7 @@ gui::main_window::on_trash_current_file() noexcept
             const auto response = dialog->choose_finish(result);
             if (response == 1)
             { // Confirm Button
-                this->on_trash_or_move_load_next_file();
+                on_trash_or_move_load_next_file();
                 auto trash_result = vfs::trash_can::trash(current_file);
                 if (!trash_result)
                 {
@@ -1547,35 +1531,35 @@ gui::main_window::on_trash_current_file() noexcept
 void
 gui::main_window::on_trash_or_move_load_next_file() noexcept
 {
-    if (this->file_handler_->is_archive())
+    if (file_handler_->is_archive())
     {
-        bool next_opened = this->file_handler_->open_next_archive();
+        bool next_opened = file_handler_->open_next_archive();
         if (!next_opened)
         {
-            next_opened = this->file_handler_->open_prev_archive();
+            next_opened = file_handler_->open_prev_archive();
         }
         if (!next_opened)
         {
-            this->file_handler_->close_file();
+            file_handler_->close_file();
         }
     }
     else
     {
-        const auto image_handler = this->file_handler_->image_handler();
+        const auto image_handler = file_handler_->image_handler();
         if (image_handler->get_number_of_pages() > 1)
         {
             if (image_handler->is_last_page())
             {
-                this->flip_page(-1);
+                flip_page(-1);
             }
             else
             {
-                this->flip_page(1);
+                flip_page(1);
             }
         }
         else
         {
-            this->file_handler_->close_file();
+            file_handler_->close_file();
         }
     }
 }
@@ -1583,12 +1567,12 @@ gui::main_window::on_trash_or_move_load_next_file() noexcept
 void
 gui::main_window::on_escape_event() noexcept
 {
-    if (this->is_fullscreen())
+    if (is_fullscreen())
     {
-        this->change_fullscreen();
+        change_fullscreen();
     }
     else
     {
-        this->close();
+        close();
     }
 }
