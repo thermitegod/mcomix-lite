@@ -366,9 +366,9 @@ spacefm = build_target(
     cpp_pch: 'pch/pch.hxx',
 )
 
-# if get_option('tests')
-#     subdir('tests')
-# endif
+if get_option('tests')
+    subdir('tests')
+endif
 
 install_subdir('share/applications', install_dir: datadir)
 install_subdir('share/icons', install_dir: datadir)
