@@ -124,6 +124,7 @@ gui::thumbbar::setup_listitem(const Glib::RefPtr<Gtk::ListItem>& list_item) noex
     auto box = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::HORIZONTAL, 5);
     box->set_hexpand(false);
     box->set_vexpand(false);
+    box->set_size_request(-1, settings->thumbnail_size);
     box->set_halign(Gtk::Align::CENTER);
     box->set_valign(Gtk::Align::CENTER);
     box->set_margin_end(20);
