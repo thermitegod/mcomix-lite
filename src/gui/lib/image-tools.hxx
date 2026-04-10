@@ -30,14 +30,14 @@ namespace gui::lib::image_tools
                                                             std::int32_t max_width,
                                                             std::int32_t max_height,
                                                             std::int32_t rotation = 0) noexcept;
-#else
+#endif
+
 [[nodiscard]] Glib::RefPtr<Gdk::Texture> load_texture(const std::filesystem::path& path) noexcept;
 
 [[nodiscard]] Glib::RefPtr<Gdk::Paintable> fit_to_rectangle(const Glib::RefPtr<Gdk::Texture>& src,
                                                             std::int32_t max_width,
                                                             std::int32_t max_height,
                                                             std::int32_t rotation = 0) noexcept;
-#endif
 
 /**
  * Returns a thumbnail pixbuf for a given path.
@@ -53,8 +53,7 @@ namespace gui::lib::image_tools
 #if defined(PIXBUF_BACKEND)
 [[nodiscard]] Glib::RefPtr<Gdk::Paintable> create_thumbnail(const Glib::RefPtr<Gdk::Pixbuf>& src,
                                                             std::int32_t size) noexcept;
-#else
+#endif
 [[nodiscard]] Glib::RefPtr<Gdk::Paintable> create_thumbnail(const Glib::RefPtr<Gdk::Texture>& src,
                                                             std::int32_t size) noexcept;
-#endif
 } // namespace gui::lib::image_tools
