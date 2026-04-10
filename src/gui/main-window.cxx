@@ -923,7 +923,9 @@ void
 gui::main_window::on_open_keybindings() noexcept
 {
     auto dialog = Gtk::AlertDialog::create("Not Implemented");
-    dialog->set_detail("gui::main_window::on_open_keybindings()");
+    dialog->set_detail(
+        "Keybinding are currently static and cannot be changed. Writing a keybinding editor is not "
+        "fun. All keybindings are visible in the menu bar.");
     dialog->set_modal(true);
     dialog->show(*this);
 }
