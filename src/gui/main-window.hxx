@@ -111,5 +111,8 @@ class main_window : public Gtk::ApplicationWindow
     gui::thumbbar thumb_sidebar_ = gui::thumbbar(settings);
     gui::viewport viewport_ = gui::viewport(settings);
     gui::statusbar statusbar_ = gui::statusbar(settings, view_state);
+
+    bool on_drag_data_received(const Glib::ValueBase& value, double x, double y) noexcept;
+    Glib::RefPtr<Gtk::DropTarget> drop_target_;
 };
 } // namespace gui

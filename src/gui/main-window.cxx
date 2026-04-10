@@ -214,6 +214,13 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
         menubar_.set_visible(false);
     }
 
+    // DnD support
+    drop_target_ =
+        Gtk::DropTarget::create(GDK_TYPE_FILE_LIST, Gdk::DragAction::COPY | Gdk::DragAction::MOVE);
+    drop_target_->signal_drop().connect(sigc::mem_fun(*this, &main_window::on_drag_data_received),
+                                        false);
+    add_controller(drop_target_);
+
     // Use idle signal to start filehandler otherwise the
     // window will not get displayed until after open_file_init()
     // has returned. This also causes other problems since the
@@ -1564,6 +1571,30 @@ gui::main_window::on_trash_or_move_load_next_file() noexcept
             file_handler_->close_file();
         }
     }
+}
+
+bool
+gui::main_window::on_drag_data_received(const Glib::ValueBase& value, double x, double y) noexcept
+{
+    (void)x;
+    (void)y;
+
+    Glib::Value<GSList*> gslist_value;
+    gslist_value.init(value.gobj());
+    auto files = Glib::SListHandler<Glib::RefPtr<Gio::File>>::slist_to_vector(
+        gslist_value.get(),
+        Glib::OwnershipType::OWNERSHIP_NONE);
+
+    std::vector<std::filesystem::path> paths;
+    for (const auto& file : files)
+    {
+        // logger::debug<logger::gui>("DnD Source: {}", file->get_path());
+        paths.push_back(file->get_path());
+    }
+
+    Glib::signal_idle().connect_once([this, paths]() { file_handler_->open_file_init(paths); });
+
+    return true;
 }
 
 void
