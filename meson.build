@@ -218,12 +218,14 @@ gtkmm_dep = dependency('gtkmm-4.0', required: true)
 glibmm_dep = dependency('glibmm-2.68', required: true)
 giomm_dep = dependency('giomm-2.68', required: true)
 sigc_dep = dependency('sigc++-3.0', required : true)
+glycin_dep = dependency('glycin-gtk4-2', required: true)
 
 dependencies = [
     gtkmm_dep,
     giomm_dep,
     glibmm_dep,
     sigc_dep,
+    glycin_dep,
 
     botan_dep,
     cli11_dep,

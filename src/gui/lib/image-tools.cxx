@@ -23,6 +23,7 @@
 
 #include <ztd/ztd.hxx>
 
+#include "gui/lib/glycin-wrapper.hxx"
 #include "gui/lib/image-tools.hxx"
 
 #include "logger.hxx"
@@ -126,13 +127,22 @@ gui::lib::image_tools::fit_to_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& src,
 Glib::RefPtr<Gdk::Texture>
 gui::lib::image_tools::load_texture(const std::filesystem::path& path) noexcept
 {
+    // logger::info<logger::gui>("Loading '{}'", path.string());
+
+    auto file = Gio::File::create_for_path(path);
+
     try
     {
-        return Gdk::Texture::create_from_filename(path);
+        auto loader = Gly::Loader::create(file);
+        auto image = loader->load();
+        auto frame = image->next_frame();
+        auto texture = frame->get_texture();
+
+        return texture;
     }
-    catch (const Glib::Error& ex)
+    catch (const Glib::Error& e)
     {
-        logger::error<logger::gui>("Failed to load image: {} ", path.string());
+        logger::error<logger::gui>("Loading '{}' failed with: {}", file->get_path(), e.what());
         return nullptr;
     }
 }
