@@ -106,8 +106,6 @@ class image_handler
 #endif
     get_image(const page_t page) noexcept;
 
-    void prune(const std::int32_t start, const std::int32_t size) noexcept;
-
     std::shared_ptr<vfs::image_files> image_files_;
 
     std::optional<page_t> current_image_ = std::nullopt;

@@ -48,17 +48,6 @@ vfs::image_handler::image_files() const noexcept
     return image_files_;
 }
 
-void
-vfs::image_handler::prune(const std::int32_t start, const std::int32_t size) noexcept
-{
-    std::erase_if(cache_,
-                  [start, size](const auto& entry)
-                  {
-                      const auto key = entry.first;
-                      return (key < start || key > (start + size));
-                  });
-}
-
 #if defined(PIXBUF_BACKEND)
 Glib::RefPtr<Gdk::Pixbuf>
 #else
@@ -109,7 +98,7 @@ vfs::image_handler::get_images(const std::int32_t number) noexcept
         images.push_back(vfs::image_handler::get_image(i));
     }
 
-    prune(*current_image_, static_cast<std::int32_t>(images.size()));
+    cache_.clear();
 
     return images;
 }
