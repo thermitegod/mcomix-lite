@@ -268,7 +268,16 @@ vfs::image_handler::get_thumbnail(const page_t page, const std::int32_t size) no
         return nullptr;
     }
 
-    return gui::lib::image_tools::create_thumbnail(get_image(page), size);
+    const auto path = image_files_->path_from_page(page);
+
+    // logger::trace<logger::vfs>("reading page {} from disk: '{}'", page, path.string());
+    auto image = gui::lib::image_tools::load_image(path);
+    if (!image)
+    {
+        return nullptr;
+    }
+
+    return gui::lib::image_tools::create_thumbnail(image, size);
 }
 
 bool
