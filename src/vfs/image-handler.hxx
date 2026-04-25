@@ -27,6 +27,7 @@
 
 #include "settings/settings.hxx"
 
+#include "gui/lib/glycin-wrapper.hxx"
 #include "gui/lib/view-state.hxx"
 
 #include "vfs/image-files.hxx"
@@ -57,10 +58,11 @@ class image_handler
 
 #if defined(PIXBUF_BACKEND)
     [[nodiscard]] std::vector<Glib::RefPtr<Gdk::Pixbuf>>
-#else
-    [[nodiscard]] std::vector<Glib::RefPtr<Gdk::Texture>>
-#endif
     get_images(const std::int32_t number) noexcept;
+#else
+    [[nodiscard]] std::vector<Glib::RefPtr<Gly::Image>>
+    get_images(const std::int32_t number) noexcept;
+#endif
 
     void set_page(const page_t page) noexcept;
 
@@ -100,11 +102,10 @@ class image_handler
 
   private:
 #if defined(PIXBUF_BACKEND)
-    [[nodiscard]] Glib::RefPtr<Gdk::Pixbuf>
+    [[nodiscard]] Glib::RefPtr<Gdk::Pixbuf> get_image(const page_t page) noexcept;
 #else
-    [[nodiscard]] Glib::RefPtr<Gdk::Texture>
+    [[nodiscard]] Glib::RefPtr<Gly::Image> get_image(const page_t page) noexcept;
 #endif
-    get_image(const page_t page) noexcept;
 
     std::shared_ptr<vfs::image_files> image_files_;
 
@@ -114,7 +115,7 @@ class image_handler
 #if defined(PIXBUF_BACKEND)
     std::flat_map<page_t, Glib::RefPtr<Gdk::Pixbuf>> cache_;
 #else
-    std::flat_map<page_t, Glib::RefPtr<Gdk::Texture>> cache_;
+    std::flat_map<page_t, Glib::RefPtr<Gly::Image>> cache_;
 #endif
 
     std::shared_ptr<config::settings> settings;

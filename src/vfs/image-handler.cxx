@@ -51,7 +51,7 @@ vfs::image_handler::image_files() const noexcept
 #if defined(PIXBUF_BACKEND)
 Glib::RefPtr<Gdk::Pixbuf>
 #else
-Glib::RefPtr<Gdk::Texture>
+Glib::RefPtr<Gly::Image>
 #endif
 vfs::image_handler::get_image(const page_t page) noexcept
 {
@@ -67,7 +67,7 @@ vfs::image_handler::get_image(const page_t page) noexcept
 #if defined(PIXBUF_BACKEND)
     auto image = gui::lib::image_tools::load_pixbuf(path);
 #else
-    auto image = gui::lib::image_tools::load_texture(path);
+    auto image = gui::lib::image_tools::load_image(path);
 #endif
     if (!image)
     {
@@ -82,7 +82,7 @@ vfs::image_handler::get_image(const page_t page) noexcept
 #if defined(PIXBUF_BACKEND)
 std::vector<Glib::RefPtr<Gdk::Pixbuf>>
 #else
-std::vector<Glib::RefPtr<Gdk::Texture>>
+std::vector<Glib::RefPtr<Gly::Image>>
 #endif
 vfs::image_handler::get_images(const std::int32_t number) noexcept
 {
@@ -91,11 +91,11 @@ vfs::image_handler::get_images(const std::int32_t number) noexcept
 #if defined(PIXBUF_BACKEND)
     std::vector<Glib::RefPtr<Gdk::Pixbuf>> images;
 #else
-    std::vector<Glib::RefPtr<Gdk::Texture>> images;
+    std::vector<Glib::RefPtr<Gly::Image>> images;
 #endif
     for (const auto& i : std::views::iota(*current_image_) | std::views::take(number))
     {
-        images.push_back(vfs::image_handler::get_image(i));
+        images.push_back(get_image(i));
     }
 
     cache_.clear();
@@ -248,7 +248,8 @@ vfs::image_handler::get_page_size(const std::optional<page_t> query) noexcept
         return dimensions;
     }
 
-    return {image->get_width(), image->get_height()};
+    return {static_cast<std::int32_t>(image->get_width()),
+            static_cast<std::int32_t>(image->get_height())};
 }
 
 std::string

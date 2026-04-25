@@ -124,11 +124,30 @@ gui::lib::image_tools::fit_to_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& src,
 
 #endif
 
-Glib::RefPtr<Gdk::Texture>
-gui::lib::image_tools::load_texture(const std::filesystem::path& path) noexcept
+Glib::RefPtr<Gly::Image>
+gui::lib::image_tools::load_image(const std::filesystem::path& path) noexcept
 {
     // logger::info<logger::gui>("Loading '{}'", path.string());
 
+    auto file = Gio::File::create_for_path(path);
+
+    try
+    {
+        auto loader = Gly::Loader::create(file);
+        auto image = loader->load();
+
+        return image;
+    }
+    catch (const Glib::Error& e)
+    {
+        logger::error<logger::gui>("Loading '{}' failed with: {}", file->get_path(), e.what());
+        return nullptr;
+    }
+}
+
+Glib::RefPtr<Gdk::Texture>
+gui::lib::image_tools::load_texture(const std::filesystem::path& path) noexcept
+{
     auto file = Gio::File::create_for_path(path);
 
     try
@@ -148,9 +167,8 @@ gui::lib::image_tools::load_texture(const std::filesystem::path& path) noexcept
 }
 
 Glib::RefPtr<Gdk::Paintable>
-gui::lib::image_tools::fit_to_rectangle(const Glib::RefPtr<Gdk::Texture>& src,
-                                        std::int32_t max_width, std::int32_t max_height,
-                                        std::int32_t rotation) noexcept
+gui::lib::image_tools::fit_to_rectangle(const Glib::RefPtr<Gly::Image>& src, std::int32_t max_width,
+                                        std::int32_t max_height, std::int32_t rotation) noexcept
 {
     const auto is_sideways = (rotation == 90 || rotation == 270);
     if (is_sideways)
@@ -195,7 +213,8 @@ gui::lib::image_tools::fit_to_rectangle(const Glib::RefPtr<Gdk::Texture>& src,
     }
 
     snapshot->scale(scale, scale);
-    snapshot->append_texture(src, Gdk::Graphene::Rect(0.0f, 0.0f, src_width, src_height));
+    snapshot->append_texture(src->next_frame()->get_texture(),
+                             Gdk::Graphene::Rect(0.0f, 0.0f, src_width, src_height));
 
     return snapshot->to_paintable(Gdk::Graphene::Size(final_width, final_height));
 }
@@ -207,7 +226,7 @@ gui::lib::image_tools::create_thumbnail(const std::filesystem::path& path,
 #if defined(PIXBUF_BACKEND)
     auto image = gui::lib::image_tools::load_pixbuf(path);
 #else
-    auto image = gui::lib::image_tools::load_texture(path);
+    auto image = gui::lib::image_tools::load_image(path);
 #endif
     if (!image)
     {
@@ -228,7 +247,7 @@ gui::lib::image_tools::create_thumbnail(const Glib::RefPtr<Gdk::Pixbuf>& src,
 #endif
 
 [[nodiscard]] Glib::RefPtr<Gdk::Paintable>
-gui::lib::image_tools::create_thumbnail(const Glib::RefPtr<Gdk::Texture>& src,
+gui::lib::image_tools::create_thumbnail(const Glib::RefPtr<Gly::Image>& src,
                                         std::int32_t size) noexcept
 {
     return fit_to_rectangle(src, size, size);

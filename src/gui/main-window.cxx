@@ -1029,7 +1029,8 @@ gui::main_window::_draw_pages() noexcept
     std::vector<std::array<std::int32_t, 2>> size_list;
     for (const auto& pixbuf : pixbuf_list)
     {
-        size_list.push_back({pixbuf->get_width(), pixbuf->get_height()});
+        size_list.push_back({static_cast<std::int32_t>(pixbuf->get_width()),
+                             static_cast<std::int32_t>(pixbuf->get_height())});
     }
 
     // Rotation handling

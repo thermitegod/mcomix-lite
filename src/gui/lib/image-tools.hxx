@@ -21,6 +21,8 @@
 #include <glibmm.h>
 #include <gtkmm.h>
 
+#include "gui/lib/glycin-wrapper.hxx"
+
 namespace gui::lib::image_tools
 {
 #if defined(PIXBUF_BACKEND)
@@ -32,9 +34,10 @@ namespace gui::lib::image_tools
                                                             std::int32_t rotation = 0) noexcept;
 #endif
 
+[[nodiscard]] Glib::RefPtr<Gly::Image> load_image(const std::filesystem::path& path) noexcept;
 [[nodiscard]] Glib::RefPtr<Gdk::Texture> load_texture(const std::filesystem::path& path) noexcept;
 
-[[nodiscard]] Glib::RefPtr<Gdk::Paintable> fit_to_rectangle(const Glib::RefPtr<Gdk::Texture>& src,
+[[nodiscard]] Glib::RefPtr<Gdk::Paintable> fit_to_rectangle(const Glib::RefPtr<Gly::Image>& src,
                                                             std::int32_t max_width,
                                                             std::int32_t max_height,
                                                             std::int32_t rotation = 0) noexcept;
@@ -54,6 +57,6 @@ namespace gui::lib::image_tools
 [[nodiscard]] Glib::RefPtr<Gdk::Paintable> create_thumbnail(const Glib::RefPtr<Gdk::Pixbuf>& src,
                                                             std::int32_t size) noexcept;
 #endif
-[[nodiscard]] Glib::RefPtr<Gdk::Paintable> create_thumbnail(const Glib::RefPtr<Gdk::Texture>& src,
+[[nodiscard]] Glib::RefPtr<Gdk::Paintable> create_thumbnail(const Glib::RefPtr<Gly::Image>& src,
                                                             std::int32_t size) noexcept;
 } // namespace gui::lib::image_tools
