@@ -16,7 +16,7 @@
 #include <filesystem>
 #include <string>
 
-#include <glaze/glaze.hpp>
+#include <glaze/json.hpp>
 
 #include <ztd/extra/glaze.hxx>
 #include <ztd/ztd.hxx>

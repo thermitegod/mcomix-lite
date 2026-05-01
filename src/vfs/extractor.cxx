@@ -20,7 +20,7 @@
 
 #include <glibmm.h>
 
-#include <glaze/glaze.hpp>
+#include <glaze/json.hpp>
 
 #include "vfs/extractor.hxx"
 #include "vfs/file-supported.hxx"

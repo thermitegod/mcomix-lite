@@ -19,7 +19,7 @@
 
 #include <glibmm.h>
 
-#include <glaze/glaze.hpp>
+#include <glaze/json.hpp>
 
 #include <ztd/ztd.hxx>
 
