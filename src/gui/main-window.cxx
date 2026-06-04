@@ -804,6 +804,11 @@ gui::main_window::on_bookmark_manager() noexcept
 void
 gui::main_window::on_open_page_extractor() noexcept
 {
+    if (!file_handler_->is_file_loaded())
+    {
+        return;
+    }
+
     const auto path = file_handler_->image_handler()->get_path_to_page();
 
     auto dialog = Gtk::FileDialog::create();
