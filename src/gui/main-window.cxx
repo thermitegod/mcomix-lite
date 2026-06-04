@@ -787,6 +787,11 @@ gui::main_window::on_exit() noexcept
 void
 gui::main_window::on_bookmark_add() noexcept
 {
+    if (!file_handler_->is_file_loaded())
+    {
+        return;
+    }
+
     const auto image_handler = file_handler_->image_handler();
 
     bookmarks_->add({file_handler_->get_real_path(),
