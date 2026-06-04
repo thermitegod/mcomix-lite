@@ -4,6 +4,8 @@ project(
     license : 'GPL3',
     default_options : [
         'cpp_std=c++26',
+        # 'cpp_debugstl=true',
+        # 'cpp_importstd=true',
         'buildtype=debugoptimized',
         'warning_level=3',
         'optimization=2',
@@ -37,6 +39,10 @@ cpp = meson.get_compiler('cpp')
 # message(cpp.get_id())
 
 flags = [
+    # modules still dont work
+    # '-fmodules',
+    # '--compile-std-module',
+
     # '-freflection', # very slow builds
 ]
 
