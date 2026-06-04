@@ -965,6 +965,11 @@ gui::main_window::on_open_properties() noexcept
 void
 gui::main_window::on_open_page_select() noexcept
 {
+    if (!file_handler_->is_file_loaded())
+    {
+        return;
+    }
+
     auto selector = Gtk::make_managed<gui::dialog::pageselect>(*this, file_handler_);
     selector->signal_selected_page().connect([this](const std::int32_t page) { set_page(page); });
 }
