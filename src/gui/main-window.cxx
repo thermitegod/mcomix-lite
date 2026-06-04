@@ -954,6 +954,11 @@ gui::main_window::on_open_preferences() noexcept
 void
 gui::main_window::on_open_properties() noexcept
 {
+    if (!file_handler_->is_file_loaded())
+    {
+        return;
+    }
+
     Gtk::make_managed<gui::dialog::properties>(*this, file_handler_, view_state, settings);
 }
 
