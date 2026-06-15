@@ -184,7 +184,7 @@ gui::dialog::preferences::init_behaviour_tab() noexcept
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Set page orientation for manga");
         button->set_active(opt);
-        button->signal_toggled().connect([&opt]() { opt = !opt; });
+        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
 
         page.add_row(*button);
     }
@@ -197,7 +197,7 @@ gui::dialog::preferences::init_behaviour_tab() noexcept
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Show two pages at a time");
         button->set_active(opt);
-        button->signal_toggled().connect([&opt]() { opt = !opt; });
+        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
 
         page.add_row(*button);
     }
@@ -208,7 +208,7 @@ gui::dialog::preferences::init_behaviour_tab() noexcept
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Change two pages at a time");
         button->set_active(opt);
-        button->signal_toggled().connect([&opt]() { opt = !opt; });
+        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
 
         page.add_row(*button);
     }
@@ -263,7 +263,7 @@ gui::dialog::preferences::init_behaviour_tab() noexcept
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Prompt before auto opening next/prev archive");
         button->set_active(opt);
-        button->signal_toggled().connect([&opt]() { opt = !opt; });
+        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
 
         page.add_row(*button);
     }
@@ -285,7 +285,7 @@ gui::dialog::preferences::init_display_tab() noexcept
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Show a page break between pages");
         button->set_active(opt);
-        button->signal_toggled().connect([&opt]() { opt = !opt; });
+        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
 
         page.add_row(*button);
     }
@@ -349,7 +349,7 @@ gui::dialog::preferences::init_display_tab() noexcept
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Keep rotation between page changes");
         button->set_active(opt);
-        button->signal_toggled().connect([&opt]() { opt = !opt; });
+        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
 
         page.add_row(*button);
     }
@@ -380,7 +380,7 @@ gui::dialog::preferences::init_display_tab() noexcept
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Show full bookmark path");
         button->set_active(opt);
-        button->signal_toggled().connect([&opt]() { opt = !opt; });
+        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
 
         page.add_row(*button);
     }
@@ -393,7 +393,7 @@ gui::dialog::preferences::init_display_tab() noexcept
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Always hide thumbnail sidebar");
         button->set_active(opt);
-        button->signal_toggled().connect([&opt]() { opt = !opt; });
+        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
 
         page.add_row(*button);
     }
@@ -404,7 +404,7 @@ gui::dialog::preferences::init_display_tab() noexcept
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Always hide menubar");
         button->set_active(opt);
-        button->signal_toggled().connect([&opt]() { opt = !opt; });
+        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
 
         page.add_row(*button);
     }
@@ -415,7 +415,7 @@ gui::dialog::preferences::init_display_tab() noexcept
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Always hide statusbar");
         button->set_active(opt);
-        button->signal_toggled().connect([&opt]() { opt = !opt; });
+        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
 
         page.add_row(*button);
     }
@@ -428,7 +428,7 @@ gui::dialog::preferences::init_display_tab() noexcept
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Hide thumbnail sidebar when fullscreen");
         button->set_active(opt);
-        button->signal_toggled().connect([&opt]() { opt = !opt; });
+        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
 
         page.add_row(*button);
     }
@@ -439,7 +439,7 @@ gui::dialog::preferences::init_display_tab() noexcept
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Hide menubar when fullscreen");
         button->set_active(opt);
-        button->signal_toggled().connect([&opt]() { opt = !opt; });
+        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
 
         page.add_row(*button);
     }
@@ -450,7 +450,7 @@ gui::dialog::preferences::init_display_tab() noexcept
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Hide statusbar when fullscreen");
         button->set_active(opt);
-        button->signal_toggled().connect([&opt]() { opt = !opt; });
+        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
 
         page.add_row(*button);
     }
@@ -472,7 +472,7 @@ gui::dialog::preferences::init_statusbar_tab() noexcept
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Show page numbers");
         button->set_active(opt);
-        button->signal_toggled().connect([&opt]() { opt = !opt; });
+        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
 
         page.add_row(*button);
     }
@@ -483,7 +483,7 @@ gui::dialog::preferences::init_statusbar_tab() noexcept
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Show file numbers");
         button->set_active(opt);
-        button->signal_toggled().connect([&opt]() { opt = !opt; });
+        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
 
         page.add_row(*button);
     }
@@ -494,7 +494,7 @@ gui::dialog::preferences::init_statusbar_tab() noexcept
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Show page resolution");
         button->set_active(opt);
-        button->signal_toggled().connect([&opt]() { opt = !opt; });
+        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
 
         page.add_row(*button);
     }
@@ -505,7 +505,7 @@ gui::dialog::preferences::init_statusbar_tab() noexcept
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Show archive filename");
         button->set_active(opt);
-        button->signal_toggled().connect([&opt]() { opt = !opt; });
+        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
 
         page.add_row(*button);
     }
@@ -516,7 +516,7 @@ gui::dialog::preferences::init_statusbar_tab() noexcept
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Show page filesize");
         button->set_active(opt);
-        button->signal_toggled().connect([&opt]() { opt = !opt; });
+        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
 
         page.add_row(*button);
     }
@@ -527,7 +527,7 @@ gui::dialog::preferences::init_statusbar_tab() noexcept
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Show archive filesize");
         button->set_active(opt);
-        button->signal_toggled().connect([&opt]() { opt = !opt; });
+        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
 
         page.add_row(*button);
     }
@@ -538,7 +538,7 @@ gui::dialog::preferences::init_statusbar_tab() noexcept
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Show current view mode");
         button->set_active(opt);
-        button->signal_toggled().connect([&opt]() { opt = !opt; });
+        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
 
         page.add_row(*button);
     }
@@ -551,7 +551,7 @@ gui::dialog::preferences::init_statusbar_tab() noexcept
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Show page scaling percent");
         button->set_active(opt);
-        button->signal_toggled().connect([&opt]() { opt = !opt; });
+        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
 
         page.add_row(*button);
     }
@@ -562,7 +562,7 @@ gui::dialog::preferences::init_statusbar_tab() noexcept
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Show full path of current file");
         button->set_active(opt);
-        button->signal_toggled().connect([&opt]() { opt = !opt; });
+        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
 
         page.add_row(*button);
     }
@@ -632,7 +632,7 @@ gui::dialog::preferences::init_advanced_tab() noexcept
         auto button = Gtk::make_managed<Gtk::CheckButton>();
         button->set_label("Use SI units");
         button->set_active(opt);
-        button->signal_toggled().connect([&opt]() { opt = !opt; });
+        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
 
         page.add_row(*button);
     }
