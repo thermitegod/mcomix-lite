@@ -214,6 +214,20 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
         menubar_.set_visible(false);
     }
 
+    // Settings property signals //
+    // Statusbar
+    // TODO, does not work if put in the statusbar constructor
+    // clang-format off
+    settings->statusbar.page_numbers.signal_changed().connect([this]() {statusbar_.update(); });
+    settings->statusbar.file_numbers.signal_changed().connect([this]() {statusbar_.update(); });
+    settings->statusbar.page_resolution.signal_changed().connect([this]() {statusbar_.update(); });
+    settings->statusbar.archive_filename.signal_changed().connect([this]() {statusbar_.update(); });
+    settings->statusbar.page_filename.signal_changed().connect([this]() {statusbar_.update(); });
+    settings->statusbar.page_filesize.signal_changed().connect([this]() {statusbar_.update(); });
+    settings->statusbar.archive_filesize.signal_changed().connect([this]() {statusbar_.update(); });
+    settings->statusbar.view_mode.signal_changed().connect([this]() {statusbar_.update(); });
+    // clang-format on
+
     // DnD support
     drop_target_ =
         Gtk::DropTarget::create(GDK_TYPE_FILE_LIST, Gdk::DragAction::COPY | Gdk::DragAction::MOVE);

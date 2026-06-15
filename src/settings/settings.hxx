@@ -19,6 +19,8 @@
 
 #include <glibmm.h>
 
+#include "settings/property.hxx"
+
 #include "types.hxx"
 
 namespace config
@@ -59,18 +61,18 @@ struct settings final
         bool hide_statusbar = true;
     } fullscreen;
 
-    struct statusbar
+    struct statusbar_t
     {
-        bool page_numbers = true;
-        bool file_numbers = true;
-        bool page_resolution = true;
+        Property<bool> page_numbers = true;
+        Property<bool> file_numbers = true;
+        Property<bool> page_resolution = true;
         bool page_resolution_zoom_scale = true;
-        bool archive_filename = true;
+        Property<bool> archive_filename = true;
         bool archive_filename_fullpath = true;
-        bool page_filename = true;
-        bool page_filesize = true;
-        bool archive_filesize = true;
-        bool view_mode = true;
+        Property<bool> page_filename = true;
+        Property<bool> page_filesize = true;
+        Property<bool> archive_filesize = true;
+        Property<bool> view_mode = true;
     } statusbar;
 };
 } // namespace config
