@@ -19,6 +19,8 @@ test_sources = files(
 test_sources += files(
     'src/main.cxx',
 
+    'src/settings/property.cxx',
+
     'src/vfs/error.cxx',
     'src/vfs/trash.cxx',
 

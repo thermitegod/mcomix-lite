@@ -22,6 +22,7 @@
 #include <ztd/ztd.hxx>
 
 #include "settings/config.hxx"
+#include "settings/extra/glaze.hxx"
 #include "settings/settings.hxx"
 
 #include "logger.hxx"

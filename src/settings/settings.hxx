@@ -52,7 +52,7 @@ struct settings final
     bool hide_menubar = false;
     bool hide_statusbar = false;
 
-    struct fullscreen
+    struct fullscreen_t
     {
         bool hide_thumbar = false;
         bool hide_menubar = true;
