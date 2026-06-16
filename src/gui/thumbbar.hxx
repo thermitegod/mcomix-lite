@@ -65,8 +65,9 @@ class thumbbar : public Gtk::ScrolledWindow
 
     void add_item(const page_t page, const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept;
 
-    void setup_listitem(const Glib::RefPtr<Gtk::ListItem>& list_item) noexcept;
-    void bind_listitem(const Glib::RefPtr<Gtk::ListItem>& list_item) noexcept;
+    void on_setup_item(const Glib::RefPtr<Gtk::ListItem>& item) noexcept;
+    void on_bind_item(const Glib::RefPtr<Gtk::ListItem>& item) noexcept;
+    void on_unbind_item(const Glib::RefPtr<Gtk::ListItem>& item) noexcept;
     void activate(const std::uint32_t position) noexcept;
 
     Gtk::ListView listview_;

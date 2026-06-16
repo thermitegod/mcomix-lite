@@ -49,8 +49,9 @@ gui::thumbbar::thumbbar(const std::shared_ptr<config::settings>& settings) noexc
     selection_model_->set_can_unselect(false);
 
     auto factory = Gtk::SignalListItemFactory::create();
-    factory->signal_setup().connect(sigc::mem_fun(*this, &thumbbar::setup_listitem));
-    factory->signal_bind().connect(sigc::mem_fun(*this, &thumbbar::bind_listitem));
+    factory->signal_setup().connect(sigc::mem_fun(*this, &thumbbar::on_setup_item));
+    factory->signal_bind().connect(sigc::mem_fun(*this, &thumbbar::on_bind_item));
+    factory->signal_unbind().connect(sigc::mem_fun(*this, &thumbbar::on_unbind_item));
 
     listview_ = Gtk::ListView(Gtk::SingleSelection::create(selection_model_), factory);
     listview_.set_single_click_activate(true);
@@ -119,7 +120,7 @@ gui::thumbbar::clear() noexcept
 }
 
 void
-gui::thumbbar::setup_listitem(const Glib::RefPtr<Gtk::ListItem>& list_item) noexcept
+gui::thumbbar::on_setup_item(const Glib::RefPtr<Gtk::ListItem>& item) noexcept
 {
     auto box = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::HORIZONTAL, 5);
     box->set_hexpand(false);
@@ -143,23 +144,33 @@ gui::thumbbar::setup_listitem(const Glib::RefPtr<Gtk::ListItem>& list_item) noex
     image->set_can_shrink(false);
     box->append(*image);
 
-    list_item->set_focusable(false);
-    list_item->set_child(*box);
+    item->set_focusable(false);
+    item->set_child(*box);
 }
 
 void
-gui::thumbbar::bind_listitem(const Glib::RefPtr<Gtk::ListItem>& list_item) noexcept
+gui::thumbbar::on_bind_item(const Glib::RefPtr<Gtk::ListItem>& item) noexcept
 {
-    if (auto label = dynamic_cast<Gtk::Label*>(list_item->get_child()->get_first_child()))
+    if (auto label = dynamic_cast<Gtk::Label*>(item->get_child()->get_first_child()))
     {
         if (auto image = dynamic_cast<Gtk::Picture*>(label->get_next_sibling()))
         {
-            if (auto data = std::dynamic_pointer_cast<ModelList>(list_item->get_item()))
+            if (auto data = std::dynamic_pointer_cast<ModelList>(item->get_item()))
             {
                 label->set_label(ztd::rjust(std::format("{}", data->page), 4));
                 image->set_paintable(data->paintable);
             }
         }
+    }
+}
+
+void
+gui::thumbbar::on_unbind_item(const Glib::RefPtr<Gtk::ListItem>& item) noexcept
+{
+    auto col = std::dynamic_pointer_cast<ModelList>(item->get_item());
+    if (!col)
+    {
+        return;
     }
 }
 
