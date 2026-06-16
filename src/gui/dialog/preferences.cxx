@@ -153,18 +153,18 @@ gui::dialog::preferences::on_button_close_clicked() noexcept
 }
 
 void
-gui::dialog::preferences::setup_listitem(const Glib::RefPtr<Gtk::ListItem>& list_item) noexcept
+gui::dialog::preferences::on_setup_item(const Glib::RefPtr<Gtk::ListItem>& item) noexcept
 {
     auto* label = Gtk::make_managed<Gtk::Label>();
-    list_item->set_child(*label);
+    item->set_child(*label);
 }
 
 void
-gui::dialog::preferences::bind_listitem(const Glib::RefPtr<Gtk::ListItem>& list_item) noexcept
+gui::dialog::preferences::on_bind_item(const Glib::RefPtr<Gtk::ListItem>& item) noexcept
 {
-    if (auto* label = dynamic_cast<Gtk::Label*>(list_item->get_child()))
+    if (auto* label = dynamic_cast<Gtk::Label*>(item->get_child()))
     {
-        if (auto info = std::dynamic_pointer_cast<ListColumns>(list_item->get_item()))
+        if (auto info = std::dynamic_pointer_cast<ListColumns>(item->get_item()))
         {
             label->set_label(info->entry_);
         }
@@ -217,8 +217,8 @@ gui::dialog::preferences::init_behaviour_tab() noexcept
         auto& opt = settings_->virtual_double_page_for_fitting_images;
 
         auto factory = Gtk::SignalListItemFactory::create();
-        factory->signal_setup().connect(sigc::mem_fun(*this, &preferences::setup_listitem));
-        factory->signal_bind().connect(sigc::mem_fun(*this, &preferences::bind_listitem));
+        factory->signal_setup().connect(sigc::mem_fun(*this, &preferences::on_setup_item));
+        factory->signal_bind().connect(sigc::mem_fun(*this, &preferences::on_bind_item));
 
         auto store = Gio::ListStore<ListColumns>::create();
         store->append(ListColumns::create("Never", config::double_page::never));
@@ -296,8 +296,8 @@ gui::dialog::preferences::init_display_tab() noexcept
         auto& opt = settings_->rotation;
 
         auto factory = Gtk::SignalListItemFactory::create();
-        factory->signal_setup().connect(sigc::mem_fun(*this, &preferences::setup_listitem));
-        factory->signal_bind().connect(sigc::mem_fun(*this, &preferences::bind_listitem));
+        factory->signal_setup().connect(sigc::mem_fun(*this, &preferences::on_setup_item));
+        factory->signal_bind().connect(sigc::mem_fun(*this, &preferences::on_bind_item));
 
         auto store = Gio::ListStore<ListColumns>::create();
         store->append(ListColumns::create("0°", 0));
