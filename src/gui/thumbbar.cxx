@@ -135,14 +135,14 @@ gui::thumbbar::on_setup_item(const Glib::RefPtr<Gtk::ListItem>& item) noexcept
     label->set_valign(Gtk::Align::CENTER);
     box->append(*label);
 
-    auto image = Gtk::make_managed<Gtk::Picture>();
-    image->set_content_fit(Gtk::ContentFit::CONTAIN);
-    image->set_hexpand(false);
-    image->set_vexpand(false);
-    image->set_halign(Gtk::Align::CENTER);
-    image->set_valign(Gtk::Align::CENTER);
-    image->set_can_shrink(false);
-    box->append(*image);
+    auto picture = Gtk::make_managed<Gtk::Picture>();
+    picture->set_content_fit(Gtk::ContentFit::CONTAIN);
+    picture->set_hexpand(false);
+    picture->set_vexpand(false);
+    picture->set_halign(Gtk::Align::CENTER);
+    picture->set_valign(Gtk::Align::CENTER);
+    picture->set_can_shrink(false);
+    box->append(*picture);
 
     item->set_focusable(false);
     item->set_child(*box);
@@ -153,12 +153,12 @@ gui::thumbbar::on_bind_item(const Glib::RefPtr<Gtk::ListItem>& item) noexcept
 {
     if (auto label = dynamic_cast<Gtk::Label*>(item->get_child()->get_first_child()))
     {
-        if (auto image = dynamic_cast<Gtk::Picture*>(label->get_next_sibling()))
+        if (auto picture = dynamic_cast<Gtk::Picture*>(label->get_next_sibling()))
         {
             if (auto data = std::dynamic_pointer_cast<ModelList>(item->get_item()))
             {
                 label->set_label(ztd::rjust(std::format("{}", data->page), 4));
-                image->set_paintable(data->paintable);
+                picture->set_paintable(data->paintable);
             }
         }
     }
