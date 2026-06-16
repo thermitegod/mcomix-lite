@@ -151,17 +151,20 @@ gui::thumbbar::on_setup_item(const Glib::RefPtr<Gtk::ListItem>& item) noexcept
 void
 gui::thumbbar::on_bind_item(const Glib::RefPtr<Gtk::ListItem>& item) noexcept
 {
-    if (auto label = dynamic_cast<Gtk::Label*>(item->get_child()->get_first_child()))
+    auto col = std::dynamic_pointer_cast<ModelList>(item->get_item());
+    if (!col)
     {
-        if (auto picture = dynamic_cast<Gtk::Picture*>(label->get_next_sibling()))
-        {
-            if (auto data = std::dynamic_pointer_cast<ModelList>(item->get_item()))
-            {
-                label->set_label(ztd::rjust(std::format("{}", data->page), 4));
-                picture->set_paintable(data->paintable);
-            }
-        }
+        return;
     }
+
+    auto* box = dynamic_cast<Gtk::Box*>(item->get_child());
+    auto* label = dynamic_cast<Gtk::Label*>(box->get_first_child());
+    auto* picture = dynamic_cast<Gtk::Picture*>(label->get_next_sibling());
+
+    auto data = std::dynamic_pointer_cast<ModelList>(item->get_item());
+
+    label->set_label(ztd::rjust(std::format("{}", data->page), 4));
+    picture->set_paintable(data->paintable);
 }
 
 void
