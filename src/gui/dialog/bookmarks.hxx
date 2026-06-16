@@ -90,11 +90,11 @@ class bookmarks : public Gtk::ApplicationWindow
     void on_button_remove_clicked() noexcept;
     void on_button_remove_all_clicked() noexcept;
 
-    void on_setup_label(const Glib::RefPtr<Gtk::ListItem>& list_item, Gtk::Align halign) noexcept;
+    void on_setup_label(const Glib::RefPtr<Gtk::ListItem>& item, Gtk::Align halign) noexcept;
 
-    void on_bind_path(const Glib::RefPtr<Gtk::ListItem>& list_item) noexcept;
-    void on_bind_current_page(const Glib::RefPtr<Gtk::ListItem>& list_item) noexcept;
-    void on_bind_total_pages(const Glib::RefPtr<Gtk::ListItem>& list_item) noexcept;
-    void on_bind_created(const Glib::RefPtr<Gtk::ListItem>& list_item) noexcept;
+    void on_bind_path(const Glib::RefPtr<Gtk::ListItem>& item) noexcept;
+    void on_bind_current_page(const Glib::RefPtr<Gtk::ListItem>& item) noexcept;
+    void on_bind_total_pages(const Glib::RefPtr<Gtk::ListItem>& item) noexcept;
+    void on_bind_created(const Glib::RefPtr<Gtk::ListItem>& item) noexcept;
 };
 } // namespace gui::dialog
