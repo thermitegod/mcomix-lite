@@ -39,7 +39,7 @@ gui::lib::image_tools::load_pixbuf(const std::filesystem::path& path) noexcept
     }
     catch (const Glib::Error& ex)
     {
-        logger::error<logger::gui>("Failed to load image: {} ", path.string());
+        logger::error<logger::gui>("Failed to load image: {} ", path);
         return nullptr;
     }
 }
@@ -127,7 +127,7 @@ gui::lib::image_tools::fit_to_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& src,
 Glib::RefPtr<Gly::Image>
 gui::lib::image_tools::load_image(const std::filesystem::path& path) noexcept
 {
-    // logger::info<logger::gui>("Loading '{}'", path.string());
+    // logger::info<logger::gui>("Loading '{}'", path);
 
     auto file = Gio::File::create_for_path(path);
 

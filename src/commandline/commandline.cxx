@@ -97,7 +97,7 @@ setup_commandline(CLI::App& app, const commandline_opt_data_t& opt) noexcept
                 {
                     return std::string();
                 }
-                return std::format("Logfile path must be absolute: {}", input.string());
+                return std::format("Logfile path must be absolute: {}", input);
             });
 
     app.add_flag("-v,--version", opt->version, "Show version information");

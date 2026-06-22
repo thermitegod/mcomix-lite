@@ -120,19 +120,19 @@ vfs::trash_can::trash(const std::filesystem::path& path) noexcept
         if (path.string().ends_with("/Trash") ||
             path.string().ends_with(std::format("/.Trash-{}", getuid())))
         {
-            logger::warn<logger::vfs>("Refusing to trash the Trash Dir: {}", path.string());
+            logger::warn<logger::vfs>("Refusing to trash the Trash Dir: {}", path);
             return true;
         }
         else if (path.string().ends_with("/Trash/files") ||
                  path.string().ends_with(std::format("/.Trash-{}/files", getuid())))
         {
-            logger::warn<logger::vfs>("Refusing to trash the Trash Files Dir: {}", path.string());
+            logger::warn<logger::vfs>("Refusing to trash the Trash Files Dir: {}", path);
             return true;
         }
         else if (path.string().ends_with("/Trash/info") ||
                  path.string().ends_with(std::format("/.Trash-{}/info", getuid())))
         {
-            logger::warn<logger::vfs>("Refusing to trash the Trash Info Dir: {}", path.string());
+            logger::warn<logger::vfs>("Refusing to trash the Trash Info Dir: {}", path);
             return true;
         }
     }

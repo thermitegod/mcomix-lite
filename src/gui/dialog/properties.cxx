@@ -65,7 +65,7 @@ class PropertiesPage : public Gtk::Box
     set_filename(const std::filesystem::path& filename) noexcept
     {
         auto label = Gtk::make_managed<Gtk::Label>();
-        label->set_markup(std::format("<b>{}</b>", filename.string()));
+        label->set_markup(std::format("<b>{}</b>", filename));
         label->set_xalign(0.0);
         label->set_yalign(0.5);
         label->set_selectable(true);

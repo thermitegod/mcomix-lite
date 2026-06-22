@@ -57,7 +57,7 @@ crash::list() noexcept
             return;
         }
 
-        std::println("{}", data.path.string());
+        std::println("{}", data.path);
     }
 }
 
@@ -79,7 +79,7 @@ crash::recover() noexcept
             return;
         }
 
-        std::println("Opening '{}'", data.path.string());
+        std::println("Opening '{}'", data.path);
         Glib::spawn_command_line_async(std::format("{} {}", PACKAGE_NAME, quote(data.path)));
     }
 }

@@ -117,7 +117,7 @@ vfs::file_handler::archive_opened(const std::span<const std::filesystem::path> i
 
     if (image_files.empty())
     {
-        logger::error<logger::vfs>("No images in {}", current_file_.string());
+        logger::error<logger::vfs>("No images in {}", current_file_);
         return;
     }
 
@@ -225,7 +225,7 @@ vfs::file_handler::open_archive(const std::filesystem::path& archive) noexcept
     }
     catch (const std::exception& ex)
     {
-        logger::error<logger::vfs>("failed to open archive: {}", archive.string());
+        logger::error<logger::vfs>("failed to open archive: {}", archive);
         logger::debug<logger::vfs>("Exception: {}", ex.what());
     }
 }

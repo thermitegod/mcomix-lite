@@ -853,7 +853,7 @@ gui::main_window::on_open_page_extractor() noexcept
             {
                 auto alert = Gtk::AlertDialog::create("Failed To Extract File!");
                 alert->set_detail(std::format("From: {}\nTo:   {}\nReason: {}",
-                                              path.string(),
+                                              path,
                                               file->get_path(),
                                               ec.message()));
                 alert->set_modal(true);
@@ -1521,10 +1521,8 @@ gui::main_window::on_move_current_file() noexcept
     if (ec)
     {
         auto alert = Gtk::AlertDialog::create("Failed To Move File!");
-        alert->set_detail(std::format("From: {}\nTo:   {}\nReason: {}",
-                                      current_file.string(),
-                                      target.string(),
-                                      ec.message()));
+        alert->set_detail(
+            std::format("From: {}\nTo:   {}\nReason: {}", current_file, target, ec.message()));
         alert->set_modal(true);
         alert->show(*this);
     }
@@ -1536,7 +1534,7 @@ gui::main_window::on_trash_current_file() noexcept
     const auto current_file = file_handler_->current_file();
 
     auto dialog = Gtk::AlertDialog::create("Trash Current File?");
-    dialog->set_detail(std::format("{}", current_file.string()));
+    dialog->set_detail(std::format("{}", current_file));
     dialog->set_modal(true);
     dialog->set_buttons({"Cancel", "Confirm"});
     dialog->set_cancel_button(0);
@@ -1554,7 +1552,7 @@ gui::main_window::on_trash_current_file() noexcept
                 if (!trash_result)
                 {
                     auto alert = Gtk::AlertDialog::create("Failed To Trash File!");
-                    alert->set_detail(std::format("File: {}", current_file.string()));
+                    alert->set_detail(std::format("File: {}", current_file));
                     alert->set_modal(true);
                     alert->show(*this);
                 }

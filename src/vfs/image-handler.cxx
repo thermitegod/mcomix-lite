@@ -63,7 +63,7 @@ vfs::image_handler::get_image(const page_t page) noexcept
 
     const auto path = image_files_->path_from_page(page);
 
-    // logger::trace<logger::vfs>("reading page {} from disk: '{}'", page, path.string());
+    // logger::trace<logger::vfs>("reading page {} from disk: '{}'", page, path);
 #if defined(PIXBUF_BACKEND)
     auto image = gui::lib::image_tools::load_pixbuf(path);
 #else
@@ -271,7 +271,7 @@ vfs::image_handler::get_thumbnail(const page_t page, const std::int32_t size) no
 
     const auto path = image_files_->path_from_page(page);
 
-    // logger::trace<logger::vfs>("reading page {} from disk: '{}'", page, path.string());
+    // logger::trace<logger::vfs>("reading page {} from disk: '{}'", page, path);
     auto image = gui::lib::image_tools::load_image(path);
     if (!image)
     {
