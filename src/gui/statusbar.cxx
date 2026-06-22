@@ -134,7 +134,7 @@ gui::statusbar::set_resolution(std::vector<std::array<std::int32_t, 2>> scaled_s
 void
 gui::statusbar::set_archive_filename(const std::filesystem::path& filename) noexcept
 {
-    archive_filename_ = filename.string();
+    archive_filename_ = std::format("{}", filename);
 }
 
 void
