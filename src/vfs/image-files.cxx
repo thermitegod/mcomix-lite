@@ -21,8 +21,6 @@
 
 #include "vfs/image-files.hxx"
 
-#include "types.hxx"
-
 void
 vfs::image_files::set_image_files(const std::span<const std::filesystem::path> filelist) noexcept
 {
@@ -35,7 +33,7 @@ vfs::image_files::set_image_files(const std::span<const std::filesystem::path> f
         pages_.insert({file, idx + 1});
         paths_.insert({idx + 1, file});
     }
-    total_pages_ = static_cast<page_t>(filelist.size());
+    total_pages_ = static_cast<std::int32_t>(filelist.size());
 }
 
 void
@@ -46,19 +44,19 @@ vfs::image_files::cleanup() noexcept
     total_pages_ = 0;
 }
 
-page_t
+std::int32_t
 vfs::image_files::total_pages() const noexcept
 {
     return total_pages_;
 }
 
 const std::filesystem::path
-vfs::image_files::path_from_page(const page_t page) const noexcept
+vfs::image_files::path_from_page(const std::int32_t page) const noexcept
 {
     return paths_.at(page);
 }
 
-page_t
+std::int32_t
 vfs::image_files::page_from_path(const std::filesystem::path& path) const noexcept
 {
     return pages_.at(path);

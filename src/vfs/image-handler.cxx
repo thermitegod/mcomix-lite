@@ -31,7 +31,6 @@
 #include "vfs/utils/utils.hxx"
 
 #include "logger.hxx"
-#include "types.hxx"
 
 vfs::image_handler::image_handler(const std::shared_ptr<gui::lib::view_state>& view_state) noexcept
     : view_state(view_state)
@@ -50,7 +49,7 @@ Glib::RefPtr<Gdk::Pixbuf>
 #else
 Glib::RefPtr<Gly::Image>
 #endif
-vfs::image_handler::get_image(const page_t page) noexcept
+vfs::image_handler::get_image(const std::int32_t page) noexcept
 {
     if (cache_.contains(page))
     {
@@ -101,29 +100,29 @@ vfs::image_handler::get_images(const std::int32_t number) noexcept
 }
 
 void
-vfs::image_handler::set_page(const page_t page) noexcept
+vfs::image_handler::set_page(const std::int32_t page) noexcept
 {
     current_image_ = page;
 }
 
 bool
-vfs::image_handler::is_page_available(const std::optional<page_t> query) const noexcept
+vfs::image_handler::is_page_available(const std::optional<std::int32_t> query) const noexcept
 {
     const auto page = query.value_or(get_current_page());
 
-    std::vector<page_t> page_list = {page};
+    std::vector<std::int32_t> page_list = {page};
     if (view_state->is_displaying_double() && !is_last_page(page))
     {
         page_list.push_back(page + 1);
     }
 
     return std::ranges::all_of(page_list,
-                               [this](const page_t page)
+                               [this](const std::int32_t page)
                                { return available_images_.contains(page); });
 }
 
 void
-vfs::image_handler::page_available(const page_t page) noexcept
+vfs::image_handler::page_available(const std::int32_t page) noexcept
 {
     // logger::debug<logger::vfs>("Page is available: {}", page);
     available_images_.insert(page);
@@ -137,20 +136,20 @@ vfs::image_handler::file_available(const std::filesystem::path& filename) noexce
     page_available(image_files_->page_from_path(filename));
 }
 
-page_t
+std::int32_t
 vfs::image_handler::get_number_of_pages() const noexcept
 {
     return image_files_->total_pages();
 }
 
-page_t
+std::int32_t
 vfs::image_handler::get_current_page() const noexcept
 {
     return current_image_.value_or(0);
 }
 
 bool
-vfs::image_handler::is_last_page(const std::optional<page_t> query) const noexcept
+vfs::image_handler::is_last_page(const std::optional<std::int32_t> query) const noexcept
 {
     const auto page = query.value_or(get_current_page());
 
@@ -158,7 +157,7 @@ vfs::image_handler::is_last_page(const std::optional<page_t> query) const noexce
 }
 
 std::filesystem::path
-vfs::image_handler::get_path_to_page(const std::optional<page_t> query) const noexcept
+vfs::image_handler::get_path_to_page(const std::optional<std::int32_t> query) const noexcept
 {
     const auto page = query.value_or(get_current_page());
 
@@ -166,7 +165,7 @@ vfs::image_handler::get_path_to_page(const std::optional<page_t> query) const no
 }
 
 const std::vector<std::string>
-vfs::image_handler::get_page_filename(const std::optional<page_t> query) const noexcept
+vfs::image_handler::get_page_filename(const std::optional<std::int32_t> query) const noexcept
 {
     const auto page = query.value_or(get_current_page());
 
@@ -197,7 +196,7 @@ vfs::image_handler::get_page_filename(const std::optional<page_t> query) const n
 }
 
 const std::vector<std::string>
-vfs::image_handler::get_page_filesize(const std::optional<page_t> query) const noexcept
+vfs::image_handler::get_page_filesize(const std::optional<std::int32_t> query) const noexcept
 {
     const auto page = query.value_or(get_current_page());
 
@@ -228,7 +227,7 @@ vfs::image_handler::get_page_filesize(const std::optional<page_t> query) const n
 }
 
 std::array<std::int32_t, 2>
-vfs::image_handler::get_page_size(const std::optional<page_t> query) noexcept
+vfs::image_handler::get_page_size(const std::optional<std::int32_t> query) noexcept
 {
     const auto page = query.value_or(get_current_page());
 
@@ -250,7 +249,7 @@ vfs::image_handler::get_page_size(const std::optional<page_t> query) noexcept
 }
 
 std::string
-vfs::image_handler::get_mime_name(const std::optional<page_t> query) const noexcept
+vfs::image_handler::get_mime_name(const std::optional<std::int32_t> query) const noexcept
 {
     // TODO
     const auto page = query.value_or(get_current_page());
@@ -259,7 +258,7 @@ vfs::image_handler::get_mime_name(const std::optional<page_t> query) const noexc
 }
 
 Glib::RefPtr<Gdk::Paintable>
-vfs::image_handler::get_thumbnail(const page_t page, const std::int32_t size) noexcept
+vfs::image_handler::get_thumbnail(const std::int32_t page, const std::int32_t size) noexcept
 {
     if (!is_page_extracted(page))
     {
@@ -279,7 +278,7 @@ vfs::image_handler::get_thumbnail(const page_t page, const std::int32_t size) no
 }
 
 bool
-vfs::image_handler::is_page_extracted(const std::optional<page_t> query) const noexcept
+vfs::image_handler::is_page_extracted(const std::optional<std::int32_t> query) const noexcept
 {
     const auto page = query.value_or(get_current_page());
 

@@ -21,8 +21,6 @@
 
 #include "settings/property.hxx"
 
-#include "types.hxx"
-
 namespace config
 {
 enum double_page
@@ -37,7 +35,7 @@ struct settings final
 {
     bool default_double_page = true;
     bool default_manga_mode = true;
-    page_t page_ff_step = 10;
+    std::int32_t page_ff_step = 10;
     double_page virtual_double_page_for_fitting_images = double_page::always;
     bool double_step_in_double_page_mode = true;
     bool double_page_center_space = true;

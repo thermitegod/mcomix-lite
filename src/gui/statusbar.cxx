@@ -54,7 +54,7 @@ gui::statusbar::set_message(const std::string_view message) noexcept
 }
 
 void
-gui::statusbar::set_page_number(const page_t page, const std::int32_t total_pages) noexcept
+gui::statusbar::set_page_number(const std::int32_t page, const std::int32_t total_pages) noexcept
 {
     std::string p;
     if (view_state->is_displaying_double())

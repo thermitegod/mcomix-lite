@@ -38,7 +38,7 @@ class properties : public Gtk::ApplicationWindow
     void on_button_close_clicked() noexcept;
 
     void init_archive_tab() noexcept;
-    void init_image_tab(const page_t page, std::string_view label) noexcept;
+    void init_image_tab(const std::int32_t page, std::string_view label) noexcept;
 
     std::vector<std::array<std::string, 2>>
     secondary_info(const std::filesystem::path& path) noexcept;

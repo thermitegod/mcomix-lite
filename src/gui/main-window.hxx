@@ -38,8 +38,6 @@
 #include "vfs/bookmarks.hxx"
 #include "vfs/file-handler.hxx"
 
-#include "types.hxx"
-
 namespace gui
 {
 class main_window : public Gtk::ApplicationWindow
@@ -51,8 +49,8 @@ class main_window : public Gtk::ApplicationWindow
   private:
     void draw_pages() noexcept;
     bool _draw_pages() noexcept;
-    void set_page(const page_t page) noexcept;
-    void flip_page(const page_t number_of_pages, bool single_step = false) noexcept;
+    void set_page(const std::int32_t page) noexcept;
+    void flip_page(const std::int32_t number_of_pages, bool single_step = false) noexcept;
     void first_page() noexcept;
     void last_page() noexcept;
     void rotate_x(const std::int32_t rotation) noexcept;
@@ -62,12 +60,12 @@ class main_window : public Gtk::ApplicationWindow
     void displayed_double() noexcept;
 
     void update_page_information() noexcept;
-    bool get_virtual_double_page(const std::optional<page_t> query = std::nullopt) noexcept;
+    bool get_virtual_double_page(const std::optional<std::int32_t> query = std::nullopt) noexcept;
 
     void on_file_opened() noexcept;
     void on_file_closed() noexcept;
 
-    void page_available(const page_t page) noexcept;
+    void page_available(const std::int32_t page) noexcept;
 
     void add_shortcuts() noexcept;
 

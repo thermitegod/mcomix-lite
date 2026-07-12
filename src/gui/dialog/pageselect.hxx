@@ -23,8 +23,6 @@
 
 #include "vfs/file-handler.hxx"
 
-#include "types.hxx"
-
 namespace gui::dialog
 {
 class pageselect final : public Gtk::Window
@@ -53,7 +51,7 @@ class pageselect final : public Gtk::Window
 
     bool on_key_press(std::uint32_t keyval, std::uint32_t keycode, Gdk::ModifierType state);
 
-    void set_thumbnail(const page_t page) noexcept;
+    void set_thumbnail(const std::int32_t page) noexcept;
 
     std::shared_ptr<vfs::file_handler> file_handler_;
 

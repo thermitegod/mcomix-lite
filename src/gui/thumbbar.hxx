@@ -28,8 +28,6 @@
 
 #include "gui/lib/thumbnailer.hxx"
 
-#include "types.hxx"
-
 namespace gui
 {
 class thumbbar : public Gtk::ScrolledWindow
@@ -38,32 +36,32 @@ class thumbbar : public Gtk::ScrolledWindow
     explicit thumbbar(const std::shared_ptr<config::settings>& settings) noexcept;
     ~thumbbar() noexcept;
 
-    void request(const page_t page, const std::filesystem::path& filename) noexcept;
-    void set_page(const page_t page) noexcept;
+    void request(const std::int32_t page, const std::filesystem::path& filename) noexcept;
+    void set_page(const std::int32_t page) noexcept;
     void clear() noexcept;
 
   protected:
     class ModelList : public Glib::Object
     {
       public:
-        page_t page;
+        std::int32_t page;
         Glib::RefPtr<Gdk::Paintable> paintable;
 
         static Glib::RefPtr<ModelList>
-        create(const page_t page, const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept
+        create(const std::int32_t page, const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept
         {
             return Glib::make_refptr_for_instance<ModelList>(new ModelList(page, paintable));
         }
 
       protected:
-        explicit ModelList(const page_t page,
+        explicit ModelList(const std::int32_t page,
                            const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept
             : Glib::ObjectBase(typeid(ModelList)), page(page), paintable(paintable)
         {
         }
     };
 
-    void add_item(const page_t page, const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept;
+    void add_item(const std::int32_t page, const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept;
 
     void on_setup_item(const Glib::RefPtr<Gtk::ListItem>& item) noexcept;
     void on_bind_item(const Glib::RefPtr<Gtk::ListItem>& item) noexcept;
@@ -90,6 +88,6 @@ class thumbbar : public Gtk::ScrolledWindow
     }
 
   private:
-    sigc::signal<void(page_t)> signal_page_selected_;
+    sigc::signal<void(std::int32_t)> signal_page_selected_;
 };
 } // namespace gui

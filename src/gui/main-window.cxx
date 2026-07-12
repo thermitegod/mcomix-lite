@@ -51,7 +51,6 @@
 #include "vfs/user-dirs.hxx"
 
 #include "logger.hxx"
-#include "types.hxx"
 
 gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
                               const std::vector<std::filesystem::path>& filelist) noexcept
@@ -102,9 +101,9 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
 
     file_handler_->signal_file_opened().connect([this]() { on_file_opened(); });
     file_handler_->signal_file_closed().connect([this]() { on_file_closed(); });
-    file_handler_->signal_page_available().connect([this](const page_t page)
+    file_handler_->signal_page_available().connect([this](const std::int32_t page)
                                                    { page_available(page); });
-    file_handler_->signal_page_set().connect([this](const page_t page) { set_page(page); });
+    file_handler_->signal_page_set().connect([this](const std::int32_t page) { set_page(page); });
 
     app->add_action("page_next", [this]() { flip_page(1); });
     app->add_action("page_prev", [this]() { flip_page(-1); });
@@ -1160,7 +1159,7 @@ gui::main_window::update_page_information() noexcept
 }
 
 bool
-gui::main_window::get_virtual_double_page(const std::optional<page_t> query) noexcept
+gui::main_window::get_virtual_double_page(const std::optional<std::int32_t> query) noexcept
 {
     const auto page = query.value_or(file_handler_->image_handler()->get_current_page());
 
@@ -1195,7 +1194,7 @@ gui::main_window::get_virtual_double_page(const std::optional<page_t> query) noe
 }
 
 void
-gui::main_window::page_available(const page_t page) noexcept
+gui::main_window::page_available(const std::int32_t page) noexcept
 {
     // Called whenever a new page is ready for displaying
     const auto image_handler = file_handler_->image_handler();
@@ -1251,7 +1250,7 @@ gui::main_window::on_file_closed() noexcept
 }
 
 void
-gui::main_window::set_page(const page_t page) noexcept
+gui::main_window::set_page(const std::int32_t page) noexcept
 {
     const auto image_handler = file_handler_->image_handler();
 
@@ -1277,7 +1276,7 @@ gui::main_window::set_page(const page_t page) noexcept
 }
 
 void
-gui::main_window::flip_page(const page_t number_of_pages, bool single_step) noexcept
+gui::main_window::flip_page(const std::int32_t number_of_pages, bool single_step) noexcept
 {
     if (!file_handler_->is_file_loaded())
     {
@@ -1342,7 +1341,7 @@ gui::main_window::flip_page(const page_t number_of_pages, bool single_step) noex
             return;
         }
         // Handle empty archive case.
-        new_page = std::min<page_t>(1, current_number_of_pages);
+        new_page = std::min<std::int32_t>(1, current_number_of_pages);
     }
     else if (new_page > current_number_of_pages)
     {

@@ -30,8 +30,6 @@
 
 #include "vfs/image-files.hxx"
 
-#include "types.hxx"
-
 // #define PIXBUF_BACKEND
 // #undef PIXBUF_BACKEND
 
@@ -61,58 +59,58 @@ class image_handler
     get_images(const std::int32_t number) noexcept;
 #endif
 
-    void set_page(const page_t page) noexcept;
+    void set_page(const std::int32_t page) noexcept;
 
     [[nodiscard]] bool
-    is_page_available(const std::optional<page_t> query = std::nullopt) const noexcept;
+    is_page_available(const std::optional<std::int32_t> query = std::nullopt) const noexcept;
 
-    void page_available(const page_t page) noexcept;
+    void page_available(const std::int32_t page) noexcept;
 
     void file_available(const std::filesystem::path& filename) noexcept;
 
-    [[nodiscard]] page_t get_number_of_pages() const noexcept;
+    [[nodiscard]] std::int32_t get_number_of_pages() const noexcept;
 
-    [[nodiscard]] page_t get_current_page() const noexcept;
+    [[nodiscard]] std::int32_t get_current_page() const noexcept;
 
     [[nodiscard]] bool
-    is_last_page(const std::optional<page_t> query = std::nullopt) const noexcept;
+    is_last_page(const std::optional<std::int32_t> query = std::nullopt) const noexcept;
 
     [[nodiscard]] std::filesystem::path
-    get_path_to_page(const std::optional<page_t> query = std::nullopt) const noexcept;
+    get_path_to_page(const std::optional<std::int32_t> query = std::nullopt) const noexcept;
 
     [[nodiscard]] const std::vector<std::string>
-    get_page_filename(const std::optional<page_t> query = std::nullopt) const noexcept;
+    get_page_filename(const std::optional<std::int32_t> query = std::nullopt) const noexcept;
 
     [[nodiscard]] const std::vector<std::string>
-    get_page_filesize(const std::optional<page_t> query = std::nullopt) const noexcept;
+    get_page_filesize(const std::optional<std::int32_t> query = std::nullopt) const noexcept;
 
     [[nodiscard]] std::array<std::int32_t, 2>
-    get_page_size(const std::optional<page_t> query = std::nullopt) noexcept;
+    get_page_size(const std::optional<std::int32_t> query = std::nullopt) noexcept;
 
     [[nodiscard]] std::string
-    get_mime_name(const std::optional<page_t> query = std::nullopt) const noexcept;
+    get_mime_name(const std::optional<std::int32_t> query = std::nullopt) const noexcept;
 
-    [[nodiscard]] Glib::RefPtr<Gdk::Paintable> get_thumbnail(const page_t page,
+    [[nodiscard]] Glib::RefPtr<Gdk::Paintable> get_thumbnail(const std::int32_t page,
                                                              const std::int32_t size) noexcept;
 
-    [[nodiscard]] bool is_page_extracted(const std::optional<page_t> query) const noexcept;
+    [[nodiscard]] bool is_page_extracted(const std::optional<std::int32_t> query) const noexcept;
 
   private:
 #if defined(PIXBUF_BACKEND)
-    [[nodiscard]] Glib::RefPtr<Gdk::Pixbuf> get_image(const page_t page) noexcept;
+    [[nodiscard]] Glib::RefPtr<Gdk::Pixbuf> get_image(const std::int32_t page) noexcept;
 #else
-    [[nodiscard]] Glib::RefPtr<Gly::Image> get_image(const page_t page) noexcept;
+    [[nodiscard]] Glib::RefPtr<Gly::Image> get_image(const std::int32_t page) noexcept;
 #endif
 
     std::shared_ptr<vfs::image_files> image_files_;
 
-    std::optional<page_t> current_image_ = std::nullopt;
-    std::flat_set<page_t> available_images_;
+    std::optional<std::int32_t> current_image_ = std::nullopt;
+    std::flat_set<std::int32_t> available_images_;
 
 #if defined(PIXBUF_BACKEND)
-    std::flat_map<page_t, Glib::RefPtr<Gdk::Pixbuf>> cache_;
+    std::flat_map<std::int32_t, Glib::RefPtr<Gdk::Pixbuf>> cache_;
 #else
-    std::flat_map<page_t, Glib::RefPtr<Gly::Image>> cache_;
+    std::flat_map<std::int32_t, Glib::RefPtr<Gly::Image>> cache_;
 #endif
 
     std::shared_ptr<gui::lib::view_state> view_state;
@@ -125,6 +123,6 @@ class image_handler
     }
 
   private:
-    sigc::signal<void(page_t)> signal_page_available_;
+    sigc::signal<void(std::int32_t)> signal_page_available_;
 };
 } // namespace vfs

@@ -25,8 +25,6 @@
 #include "vfs/file-provider.hxx"
 #include "vfs/image-handler.hxx"
 
-#include "types.hxx"
-
 namespace vfs
 {
 class file_handler
@@ -35,9 +33,9 @@ class file_handler
     explicit file_handler(const std::shared_ptr<gui::lib::view_state>& view_state) noexcept;
 
     void open_file_init(const std::span<const std::filesystem::path> filelist,
-                        const page_t start_page = 1) noexcept;
+                        const std::int32_t start_page = 1) noexcept;
 
-    void open_file(const std::filesystem::path& path, const page_t start_page = 1) noexcept;
+    void open_file(const std::filesystem::path& path, const std::int32_t start_page = 1) noexcept;
 
     void refresh_opened() noexcept;
     void file_opened() noexcept;
@@ -99,7 +97,7 @@ class file_handler
     std::filesystem::path current_file_;
     std::filesystem::path base_path_;
 
-    page_t default_start_page_{1};
+    std::int32_t default_start_page_{1};
 
   public:
     [[nodiscard]] auto
@@ -129,7 +127,7 @@ class file_handler
   private:
     sigc::signal<void()> signal_file_closed_;
     sigc::signal<void()> signal_file_opened_;
-    sigc::signal<void(page_t)> signal_page_set_;
-    sigc::signal<void(page_t)> signal_page_available_;
+    sigc::signal<void(std::int32_t)> signal_page_set_;
+    sigc::signal<void(std::int32_t)> signal_page_available_;
 };
 } // namespace vfs

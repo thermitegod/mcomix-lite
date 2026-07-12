@@ -134,7 +134,7 @@ gui::dialog::pageselect::on_key_press(std::uint32_t keyval, std::uint32_t keycod
 }
 
 void
-gui::dialog::pageselect::set_thumbnail(const page_t page) noexcept
+gui::dialog::pageselect::set_thumbnail(const std::int32_t page) noexcept
 {
     auto paintable = gui::lib::image_tools::create_thumbnail(
         file_handler_->image_handler()->get_path_to_page(page),

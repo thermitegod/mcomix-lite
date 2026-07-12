@@ -44,7 +44,7 @@ vfs::file_handler::refresh_opened() noexcept
         return;
     }
 
-    page_t start_page;
+    std::int32_t start_page;
     const auto current_file = get_real_path();
 
     if (is_archive_)
@@ -61,7 +61,7 @@ vfs::file_handler::refresh_opened() noexcept
 
 void
 vfs::file_handler::open_file_init(const std::span<const std::filesystem::path> filelist,
-                                  const page_t start_page) noexcept
+                                  const std::int32_t start_page) noexcept
 {
     if (filelist.empty())
     {
@@ -73,12 +73,13 @@ vfs::file_handler::open_file_init(const std::span<const std::filesystem::path> f
 }
 
 void
-vfs::file_handler::open_file(const std::filesystem::path& path, const page_t start_page) noexcept
+vfs::file_handler::open_file(const std::filesystem::path& path,
+                             const std::int32_t start_page) noexcept
 {
     close();
 
     image_handler_ = std::make_shared<vfs::image_handler>(view_state);
-    image_handler_->signal_page_available().connect([this](const page_t page)
+    image_handler_->signal_page_available().connect([this](const std::int32_t page)
                                                     { signal_page_available().emit(page); });
 
     is_archive_ = vfs::is_archive(path);
@@ -118,7 +119,7 @@ vfs::file_handler::archive_opened(const std::span<const std::filesystem::path> i
         return;
     }
 
-    page_t start_page = default_start_page_;
+    std::int32_t start_page = default_start_page_;
 
     if (is_archive_)
     {

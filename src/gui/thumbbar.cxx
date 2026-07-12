@@ -76,20 +76,21 @@ gui::thumbbar::~thumbbar() noexcept
 }
 
 void
-gui::thumbbar::request(const page_t page, const std::filesystem::path& filename) noexcept
+gui::thumbbar::request(const std::int32_t page, const std::filesystem::path& filename) noexcept
 {
     thumbnailer_.request({page, filename, settings->thumbnail_size});
 }
 
 void
-gui::thumbbar::add_item(const page_t page, const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept
+gui::thumbbar::add_item(const std::int32_t page,
+                        const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept
 {
     Glib::signal_idle().connect_once([this, page, paintable]()
                                      { liststore_->append(ModelList::create(page, paintable)); });
 }
 
 void
-gui::thumbbar::set_page(const page_t page) noexcept
+gui::thumbbar::set_page(const std::int32_t page) noexcept
 {
     const auto position = static_cast<std::uint32_t>(page - 1);
 

@@ -24,8 +24,6 @@
 
 #include <ztd/ztd.hxx>
 
-#include "types.hxx"
-
 namespace gui::lib
 {
 class thumbnailer
@@ -33,7 +31,7 @@ class thumbnailer
   public:
     struct request_data final
     {
-        page_t page;
+        std::int32_t page;
         std::filesystem::path file;
         std::int32_t thumb_size;
     };
@@ -55,6 +53,6 @@ class thumbnailer
     std::mutex mutex_;
     std::condition_variable_any cv_;
 
-    sigc::signal<void(page_t, Glib::RefPtr<Gdk::Paintable>)> signal_thumbnail_created_;
+    sigc::signal<void(std::int32_t, Glib::RefPtr<Gdk::Paintable>)> signal_thumbnail_created_;
 };
 } // namespace gui::lib

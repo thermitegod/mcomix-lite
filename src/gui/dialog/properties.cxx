@@ -272,7 +272,7 @@ gui::dialog::properties::init_archive_tab() noexcept
 }
 
 void
-gui::dialog::properties::init_image_tab(const page_t p, std::string_view label) noexcept
+gui::dialog::properties::init_image_tab(const std::int32_t p, std::string_view label) noexcept
 {
     auto page = PropertiesPage();
 
