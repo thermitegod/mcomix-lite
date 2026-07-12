@@ -15,50 +15,35 @@
 
 #pragma once
 
-#include <chrono>
 #include <filesystem>
-#include <vector>
-
-#include <cstdint>
 
 #include <sigc++/sigc++.h>
 
 #include <ztd/ztd.hxx>
 
-namespace vfs
+#include "settings/settings.hxx"
+
+#include "vfs/user-dirs.hxx"
+
+namespace config
 {
-class bookmarks
+struct config_file_format final
+{
+    u64 version{version};
+    config::settings settings;
+};
+
+class manager
 {
   public:
-    struct bookmark_data final
-    {
-        std::filesystem::path path;
-        std::int32_t current_page;
-        std::int32_t total_pages;
-        std::chrono::system_clock::time_point created;
-    };
-
-    enum frontend
-    {
-        mcomix,
-        webcomix,
-    };
-
-    explicit bookmarks(const frontend frontend) noexcept;
-
+    manager(const std::shared_ptr<config::settings>& settings);
     void load() noexcept;
     void save() noexcept;
 
-    void add(const bookmark_data& new_bookmark) noexcept;
-    void remove(const std::filesystem::path& path) noexcept;
-    void remove_all() noexcept;
-
-    [[nodiscard]] std::span<const bookmark_data> get_bookmarks() noexcept;
-
   private:
-    std::filesystem::path bookmark_file_;
-    std::vector<bookmark_data> bookmarks_;
-    std::chrono::system_clock::time_point bookmark_mtime_;
+    std::shared_ptr<config::settings> settings_;
+    std::filesystem::path file_ = vfs::program::config() / "webcomix.json";
+    u64 version_ = 1_u64; // 1.0.0
 
   public:
     [[nodiscard]] auto
@@ -77,4 +62,4 @@ class bookmarks
     sigc::signal<void(std::string)> signal_load_error_;
     sigc::signal<void(std::string)> signal_save_error_;
 };
-} // namespace vfs
+} // namespace config

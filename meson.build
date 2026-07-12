@@ -276,7 +276,12 @@ endforeach
 preprocessor = [
     '-DPACKAGE_NAME="mcomix"',
     '-DPACKAGE_NAME_FANCY="MComix"',
+
+    '-DPACKAGE_NAME_WEBCOMIX="webcomix"',
+    '-DPACKAGE_NAME_WEBCOMIX_FANCY="WebComix"',
+
     '-DPACKAGE_VERSION="@0@"'.format(meson.project_version()),
+
     '-DPACKAGE_GITHUB="https://www.github.com/thermitegod/mcomix-lite"',
     '-DPACKAGE_BUGREPORT="https://www.github.com/thermitegod/mcomix-lite/issues"',
     '-DPACKAGE_ONLINE_DOCS="TODO"',

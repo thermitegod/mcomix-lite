@@ -3,3 +3,4 @@ subdir('core')
 
 # Frontends
 subdir('apps/mcomix')
+subdir('apps/webcomix')

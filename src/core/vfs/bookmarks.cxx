@@ -44,6 +44,10 @@ vfs::bookmarks::bookmarks(const frontend frontend) noexcept
     {
         bookmark_file_ = vfs::program::data() / "bookmarks.json";
     }
+    else if (frontend == frontend::webcomix)
+    {
+        bookmark_file_ = vfs::program::data() / "webcomix_bookmarks.json";
+    }
     else
     {
         std::unreachable();
