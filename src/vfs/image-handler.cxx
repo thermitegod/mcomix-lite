@@ -22,8 +22,6 @@
 
 #include <cassert>
 
-#include "settings/settings.hxx"
-
 #include "gui/lib/image-tools.hxx"
 #include "gui/lib/view-state.hxx"
 
@@ -35,9 +33,8 @@
 #include "logger.hxx"
 #include "types.hxx"
 
-vfs::image_handler::image_handler(const std::shared_ptr<config::settings>& settings,
-                                  const std::shared_ptr<gui::lib::view_state>& view_state) noexcept
-    : settings(settings), view_state(view_state)
+vfs::image_handler::image_handler(const std::shared_ptr<gui::lib::view_state>& view_state) noexcept
+    : view_state(view_state)
 {
     image_files_ = std::make_shared<vfs::image_files>();
 }
@@ -216,11 +213,11 @@ vfs::image_handler::get_page_filesize(const std::optional<page_t> query) const n
         return page_data;
     }
 
-    page_data.push_back(vfs::utils::file_size(get_path_to_page(page), settings->si_units));
+    page_data.push_back(vfs::utils::file_size(get_path_to_page(page), false));
 
     if (view_state->is_displaying_double())
     {
-        page_data.push_back(vfs::utils::file_size(get_path_to_page(page + 1), settings->si_units));
+        page_data.push_back(vfs::utils::file_size(get_path_to_page(page + 1), false));
 
         if (view_state->is_manga_mode())
         {

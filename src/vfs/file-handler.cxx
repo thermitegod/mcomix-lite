@@ -21,8 +21,6 @@
 
 #include <ztd/ztd.hxx>
 
-#include "settings/settings.hxx"
-
 #include "vfs/extractor.hxx"
 #include "vfs/file-handler.hxx"
 #include "vfs/file-provider.hxx"
@@ -33,9 +31,8 @@
 
 #include "logger.hxx"
 
-vfs::file_handler::file_handler(const std::shared_ptr<config::settings>& settings,
-                                const std::shared_ptr<gui::lib::view_state>& view_state) noexcept
-    : settings(settings), view_state(view_state)
+vfs::file_handler::file_handler(const std::shared_ptr<gui::lib::view_state>& view_state) noexcept
+    : view_state(view_state)
 {
 }
 
@@ -80,7 +77,7 @@ vfs::file_handler::open_file(const std::filesystem::path& path, const page_t sta
 {
     close();
 
-    image_handler_ = std::make_shared<vfs::image_handler>(settings, view_state);
+    image_handler_ = std::make_shared<vfs::image_handler>(view_state);
     image_handler_->signal_page_available().connect([this](const page_t page)
                                                     { signal_page_available().emit(page); });
 

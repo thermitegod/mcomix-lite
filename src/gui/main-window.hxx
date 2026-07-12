@@ -96,7 +96,7 @@ class main_window : public Gtk::ApplicationWindow
     std::shared_ptr<gui::lib::view_state> view_state = std::make_shared<gui::lib::view_state>();
 
     std::shared_ptr<vfs::file_handler> file_handler_ =
-        std::make_shared<vfs::file_handler>(settings, view_state);
+        std::make_shared<vfs::file_handler>(view_state);
 
     std::shared_ptr<vfs::bookmarks> bookmarks_ = std::make_shared<vfs::bookmarks>();
 

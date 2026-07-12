@@ -25,8 +25,6 @@
 #include <gdkmm.h>
 #include <glibmm.h>
 
-#include "settings/settings.hxx"
-
 #include "gui/lib/glycin-wrapper.hxx"
 #include "gui/lib/view-state.hxx"
 
@@ -51,8 +49,7 @@ namespace vfs
 class image_handler
 {
   public:
-    explicit image_handler(const std::shared_ptr<config::settings>& settings,
-                           const std::shared_ptr<gui::lib::view_state>& view_state) noexcept;
+    explicit image_handler(const std::shared_ptr<gui::lib::view_state>& view_state) noexcept;
 
     [[nodiscard]] std::shared_ptr<vfs::image_files> image_files() const noexcept;
 
@@ -118,7 +115,6 @@ class image_handler
     std::flat_map<page_t, Glib::RefPtr<Gly::Image>> cache_;
 #endif
 
-    std::shared_ptr<config::settings> settings;
     std::shared_ptr<gui::lib::view_state> view_state;
 
   public:

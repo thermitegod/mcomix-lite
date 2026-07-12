@@ -24,6 +24,8 @@
 
 #include <ztd/ztd.hxx>
 
+#include "settings/settings.hxx"
+
 #include "gui/dialog/properties.hxx"
 
 #include "vfs/file-handler.hxx"

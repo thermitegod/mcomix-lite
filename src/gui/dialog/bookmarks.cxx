@@ -21,6 +21,8 @@
 
 #include <ztd/ztd.hxx>
 
+#include "settings/settings.hxx"
+
 #include "gui/dialog/bookmarks.hxx"
 
 gui::dialog::bookmarks::bookmarks(Gtk::ApplicationWindow& parent,

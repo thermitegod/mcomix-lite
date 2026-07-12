@@ -21,8 +21,6 @@
 #include <span>
 #include <vector>
 
-#include "settings/settings.hxx"
-
 #include "vfs/extractor.hxx"
 #include "vfs/file-provider.hxx"
 #include "vfs/image-handler.hxx"
@@ -34,8 +32,7 @@ namespace vfs
 class file_handler
 {
   public:
-    explicit file_handler(const std::shared_ptr<config::settings>& settings,
-                          const std::shared_ptr<gui::lib::view_state>& view_state) noexcept;
+    explicit file_handler(const std::shared_ptr<gui::lib::view_state>& view_state) noexcept;
 
     void open_file_init(const std::span<const std::filesystem::path> filelist,
                         const page_t start_page = 1) noexcept;
@@ -92,7 +89,6 @@ class file_handler
     std::unique_ptr<vfs::extractor> extractor_;
     std::unique_ptr<vfs::file_provider> file_provider_;
 
-    std::shared_ptr<config::settings> settings;
     std::shared_ptr<gui::lib::view_state> view_state;
 
     bool file_loaded_{false};
