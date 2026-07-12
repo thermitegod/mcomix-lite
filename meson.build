@@ -226,46 +226,34 @@ giomm_dep = dependency('giomm-2.68', required: true)
 sigc_dep = dependency('sigc++-3.0', required : true)
 glycin_dep = dependency('glycin-gtk4-2', required: true)
 
-dependencies = [
+gtk_dependencies = [
     gtkmm_dep,
-    giomm_dep,
     glibmm_dep,
+    giomm_dep,
     sigc_dep,
-    glycin_dep,
 
-    botan_dep,
+    glycin_dep,
+]
+
+base_dependencies = [
     cli11_dep,
     magic_enum_dep,
-    libarchive_dep,
 ]
 
 if get_option('with-system-glaze')
     glaze_dep = dependency('glaze', required: true, version: '>=6.3.0')
-    dependencies += glaze_dep
+    base_dependencies += glaze_dep
 else
     incdir += include_directories('subprojects/glaze/include')
 endif
 
-if get_option('with-system-spdlog')
-    spdlog_dep = dependency('spdlog', required: true)
-    dependencies += spdlog_dep
-else
-    cmake = import('cmake')
-    # use std::format over bundled fmt::format
-    cmake_opt_var = cmake.subproject_options()
-    cmake_opt_var.add_cmake_defines({'SPDLOG_USE_STD_FORMAT': '1'})
-    spdlog_proj = cmake.subproject('spdlog', required: true, options: cmake_opt_var)
-    spdlog_dep = spdlog_proj.dependency('spdlog')
-    dependencies += spdlog_dep
-endif
-
 if get_option('with-system-ztd')
     ztd_dep = dependency('ztd', required: true)
-    dependencies += ztd_dep
+    base_dependencies += ztd_dep
 else
     ztd_proj = subproject('ztd', required: true)
     ztd_dep = ztd_proj.get_variable('ztd_dep')
-    dependencies += ztd_dep
+    base_dependencies += ztd_dep
 endif
 
 ## preprocessor features
@@ -315,68 +303,15 @@ foreach a : preprocessor
     add_project_arguments(a, language : ['c', 'cpp'])
 endforeach
 
-## Source files
+# Subdirectories
 
-sources = files(
-  'src/logger.cxx',
-  'src/main.cxx',
-
-  'src/commandline/commandline.cxx',
-
-  'src/gui/main-window.cxx',
-  'src/gui/menubar.cxx',
-  'src/gui/statusbar.cxx',
-  'src/gui/thumbbar.cxx',
-  'src/gui/viewport.cxx',
-
-  'src/gui/dialog/about.cxx',
-  'src/gui/dialog/bookmarks.cxx',
-  'src/gui/dialog/donate.cxx',
-  'src/gui/dialog/pageselect.cxx',
-  'src/gui/dialog/preferences.cxx',
-  'src/gui/dialog/properties.cxx',
-
-  'src/gui/lib/image-tools.cxx',
-  'src/gui/lib/thumbnailer.cxx',
-  'src/gui/lib/view-state.cxx',
-
-  'src/vfs/bookmarks.cxx',
-  'src/vfs/error.cxx',
-  'src/vfs/extractor.cxx',
-  'src/vfs/file-handler.cxx',
-  'src/vfs/file-provider.cxx',
-  'src/vfs/file-supported.cxx',
-  'src/vfs/image-files.cxx',
-  'src/vfs/image-handler.cxx',
-  'src/vfs/trash-can.cxx',
-  'src/vfs/user-dirs.cxx',
-
-  'src/vfs/utils/sort.cxx',
-  'src/vfs/utils/utils.cxx',
-  'src/vfs/utils/natsort/strnatcmp.cxx',
-
-  'src/settings/config.cxx',
-
-  'src/vfs/libarchive/entry.cxx',
-  'src/vfs/libarchive/reader.cxx',
-
-  'src/crash/crash.cxx',
-)
-
-spacefm = build_target(
-    'mcomix',
-    sources,
-    target_type: 'executable',
-    include_directories: incdir,
-    install : true,
-    install_dir : bindir,
-    dependencies: dependencies,
-    cpp_pch: 'pch/pch.hxx',
-)
+subdir('src')
 
 if get_option('tests')
     subdir('tests')
 endif
+
+# Install
 
 install_subdir('share/applications', install_dir: datadir)
 install_subdir('share/icons', install_dir: datadir)

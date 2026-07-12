@@ -19,9 +19,8 @@
 
 #include "gui/dialog/pageselect.hxx"
 
-#include "gui/lib/image-tools.hxx"
-
 #include "vfs/file-handler.hxx"
+#include "vfs/image-tools/image-tools.hxx"
 
 gui::dialog::pageselect::pageselect(Gtk::ApplicationWindow& parent,
                                     const std::shared_ptr<vfs::file_handler>& file_handler) noexcept
@@ -136,9 +135,9 @@ gui::dialog::pageselect::on_key_press(std::uint32_t keyval, std::uint32_t keycod
 void
 gui::dialog::pageselect::set_thumbnail(const std::int32_t page) noexcept
 {
-    auto paintable = gui::lib::image_tools::create_thumbnail(
-        file_handler_->image_handler()->get_path_to_page(page),
-        800);
+    auto paintable =
+        vfs::image_tools::create_thumbnail(file_handler_->image_handler()->get_path_to_page(page),
+                                           800);
 
     image_.set_paintable(paintable);
 }

@@ -23,13 +23,13 @@
 
 #include <ztd/ztd.hxx>
 
+#include "vfs/crash/crash.hxx"
 #include "vfs/user-dirs.hxx"
 
-#include "crash/crash.hxx"
 #include "logger.hxx"
 
 void
-crash::create(const std::filesystem::path& path, const std::filesystem::path& archive) noexcept
+vfs::crash::create(const std::filesystem::path& path, const std::filesystem::path& archive) noexcept
 {
     auto data = crash_info{.path = archive, .opened = std::chrono::system_clock::now()};
 
@@ -43,7 +43,7 @@ crash::create(const std::filesystem::path& path, const std::filesystem::path& ar
 }
 
 void
-crash::list() noexcept
+vfs::crash::list() noexcept
 {
     for (const auto& dfile : std::filesystem::directory_iterator(vfs::user::cache() / PACKAGE_NAME))
     {
@@ -62,7 +62,7 @@ crash::list() noexcept
 }
 
 void
-crash::recover() noexcept
+vfs::crash::recover() noexcept
 {
     static auto quote = [](const std::filesystem::path& path) -> std::string
     { return std::format(R"("{}")", ztd::replace(path.string(), "\"", "\\\"")); };

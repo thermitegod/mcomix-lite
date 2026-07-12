@@ -23,7 +23,8 @@
 
 #include "commandline/commandline.hxx"
 
-#include "crash/crash.hxx"
+#include "vfs/crash/crash.hxx"
+
 #include "logger.hxx"
 
 void
@@ -31,13 +32,13 @@ run_commandline(const commandline_opt_data_t& opt) noexcept
 {
     if (opt->crash_list)
     {
-        crash::list();
+        vfs::crash::list();
         std::exit(EXIT_SUCCESS);
     }
 
     if (opt->crash_recover)
     {
-        crash::recover();
+        vfs::crash::recover();
         std::exit(EXIT_SUCCESS);
     }
 

@@ -13,28 +13,21 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "gui/lib/view-state.hxx"
+#pragma once
 
-bool
-gui::lib::view_state::is_manga_mode() const noexcept
-{
-    return manga_mode_;
-}
+#include <chrono>
+#include <filesystem>
 
-bool
-gui::lib::view_state::is_displaying_double() const noexcept
+namespace vfs::crash
 {
-    return displaying_double_;
-}
+struct crash_info
+{
+    std::filesystem::path path;
+    std::chrono::system_clock::time_point opened;
+};
 
-void
-gui::lib::view_state::set_manga_mode(const bool bval) noexcept
-{
-    manga_mode_ = bval;
-}
+void create(const std::filesystem::path& path, const std::filesystem::path& archive) noexcept;
 
-void
-gui::lib::view_state::set_displaying_double(const bool bval) noexcept
-{
-    displaying_double_ = bval;
-}
+void list() noexcept;
+void recover() noexcept;
+} // namespace vfs::crash

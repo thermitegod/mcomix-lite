@@ -25,10 +25,8 @@
 #include <gdkmm.h>
 #include <glibmm.h>
 
-#include "gui/lib/glycin-wrapper.hxx"
-#include "gui/lib/view-state.hxx"
-
 #include "vfs/image-files.hxx"
+#include "vfs/image-tools/glycin-wrapper.hxx"
 
 // #define PIXBUF_BACKEND
 // #undef PIXBUF_BACKEND
@@ -47,7 +45,7 @@ namespace vfs
 class image_handler
 {
   public:
-    explicit image_handler(const std::shared_ptr<gui::lib::view_state>& view_state) noexcept;
+    explicit image_handler() noexcept;
 
     [[nodiscard]] std::shared_ptr<vfs::image_files> image_files() const noexcept;
 
@@ -95,6 +93,13 @@ class image_handler
 
     [[nodiscard]] bool is_page_extracted(const std::optional<std::int32_t> query) const noexcept;
 
+    struct state_info final
+    {
+        bool is_manga_mode;
+        bool is_displaying_double;
+    };
+    void set_view_state(const state_info& view_state) noexcept;
+
   private:
 #if defined(PIXBUF_BACKEND)
     [[nodiscard]] Glib::RefPtr<Gdk::Pixbuf> get_image(const std::int32_t page) noexcept;
@@ -113,7 +118,7 @@ class image_handler
     std::flat_map<std::int32_t, Glib::RefPtr<Gly::Image>> cache_;
 #endif
 
-    std::shared_ptr<gui::lib::view_state> view_state;
+    state_info view_state_{false, false};
 
   public:
     [[nodiscard]] auto

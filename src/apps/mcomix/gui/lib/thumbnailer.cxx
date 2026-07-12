@@ -19,8 +19,9 @@
 
 #include <ztd/ztd.hxx>
 
-#include "gui/lib/image-tools.hxx"
 #include "gui/lib/thumbnailer.hxx"
+
+#include "vfs/image-tools/image-tools.hxx"
 
 void
 gui::lib::thumbnailer::request(const request_data& request) noexcept
@@ -61,7 +62,7 @@ gui::lib::thumbnailer::run_once(const std::stop_token& stoken) noexcept
         }
     }
 
-    auto thumb = gui::lib::image_tools::create_thumbnail(request.file, request.thumb_size);
+    auto thumb = vfs::image_tools::create_thumbnail(request.file, request.thumb_size);
 
     if (thumb && !stoken.stop_requested())
     {

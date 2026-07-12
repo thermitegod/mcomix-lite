@@ -22,18 +22,15 @@
 
 #include <cassert>
 
-#include "gui/lib/image-tools.hxx"
-#include "gui/lib/view-state.hxx"
-
 #include "vfs/image-files.hxx"
 #include "vfs/image-handler.hxx"
+#include "vfs/image-tools/image-tools.hxx"
 
 #include "vfs/utils/utils.hxx"
 
 #include "logger.hxx"
 
-vfs::image_handler::image_handler(const std::shared_ptr<gui::lib::view_state>& view_state) noexcept
-    : view_state(view_state)
+vfs::image_handler::image_handler() noexcept
 {
     image_files_ = std::make_shared<vfs::image_files>();
 }
@@ -61,9 +58,9 @@ vfs::image_handler::get_image(const std::int32_t page) noexcept
 
     // logger::trace<logger::vfs>("reading page {} from disk: '{}'", page, path);
 #if defined(PIXBUF_BACKEND)
-    auto image = gui::lib::image_tools::load_pixbuf(path);
+    auto image = vfs::image_tools::load_pixbuf(path);
 #else
-    auto image = gui::lib::image_tools::load_image(path);
+    auto image = vfs::image_tools::load_image(path);
 #endif
     if (!image)
     {
@@ -111,7 +108,7 @@ vfs::image_handler::is_page_available(const std::optional<std::int32_t> query) c
     const auto page = query.value_or(get_current_page());
 
     std::vector<std::int32_t> page_list = {page};
-    if (view_state->is_displaying_double() && !is_last_page(page))
+    if (view_state_.is_displaying_double && !is_last_page(page))
     {
         page_list.push_back(page + 1);
     }
@@ -174,7 +171,7 @@ vfs::image_handler::get_page_filename(const std::optional<std::int32_t> query) c
     if (!is_page_available(page))
     {
         page_data.push_back("unknown");
-        if (view_state->is_displaying_double())
+        if (view_state_.is_displaying_double)
         {
             page_data.push_back("unknown");
         }
@@ -183,11 +180,11 @@ vfs::image_handler::get_page_filename(const std::optional<std::int32_t> query) c
 
     page_data.push_back(get_path_to_page(page));
 
-    if (view_state->is_displaying_double())
+    if (view_state_.is_displaying_double)
     {
         page_data.push_back(get_path_to_page(page + 1));
 
-        if (view_state->is_manga_mode())
+        if (view_state_.is_manga_mode)
         {
             std::ranges::reverse(page_data);
         }
@@ -205,7 +202,7 @@ vfs::image_handler::get_page_filesize(const std::optional<std::int32_t> query) c
     if (!is_page_available(page))
     {
         page_data.push_back("unknown");
-        if (view_state->is_displaying_double())
+        if (view_state_.is_displaying_double)
         {
             page_data.push_back("unknown");
         }
@@ -214,11 +211,11 @@ vfs::image_handler::get_page_filesize(const std::optional<std::int32_t> query) c
 
     page_data.push_back(vfs::utils::file_size(get_path_to_page(page), false));
 
-    if (view_state->is_displaying_double())
+    if (view_state_.is_displaying_double)
     {
         page_data.push_back(vfs::utils::file_size(get_path_to_page(page + 1), false));
 
-        if (view_state->is_manga_mode())
+        if (view_state_.is_manga_mode)
         {
             std::ranges::reverse(page_data);
         }
@@ -268,13 +265,13 @@ vfs::image_handler::get_thumbnail(const std::int32_t page, const std::int32_t si
     const auto path = image_files_->path_from_page(page);
 
     // logger::trace<logger::vfs>("reading page {} from disk: '{}'", page, path);
-    auto image = gui::lib::image_tools::load_image(path);
+    auto image = vfs::image_tools::load_image(path);
     if (!image)
     {
         return nullptr;
     }
 
-    return gui::lib::image_tools::create_thumbnail(image, size);
+    return vfs::image_tools::create_thumbnail(image, size);
 }
 
 bool
@@ -283,4 +280,10 @@ vfs::image_handler::is_page_extracted(const std::optional<std::int32_t> query) c
     const auto page = query.value_or(get_current_page());
 
     return std::ranges::contains(available_images_, page);
+}
+
+void
+vfs::image_handler::set_view_state(const state_info& view_state) noexcept
+{
+    view_state_ = view_state;
 }

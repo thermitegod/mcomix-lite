@@ -23,15 +23,15 @@
 
 #include <ztd/ztd.hxx>
 
-#include "gui/lib/glycin-wrapper.hxx"
-#include "gui/lib/image-tools.hxx"
+#include "vfs/image-tools/glycin-wrapper.hxx"
+#include "vfs/image-tools/image-tools.hxx"
 
 #include "logger.hxx"
 
 #if defined(PIXBUF_BACKEND)
 
 Glib::RefPtr<Gdk::Pixbuf>
-gui::lib::image_tools::load_pixbuf(const std::filesystem::path& path) noexcept
+vfs::image_tools::load_pixbuf(const std::filesystem::path& path) noexcept
 {
     try
     {
@@ -45,9 +45,8 @@ gui::lib::image_tools::load_pixbuf(const std::filesystem::path& path) noexcept
 }
 
 Glib::RefPtr<Gdk::Paintable>
-gui::lib::image_tools::fit_to_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& src,
-                                        std::int32_t max_width, std::int32_t max_height,
-                                        std::int32_t rotation) noexcept
+vfs::image_tools::fit_to_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& src, std::int32_t max_width,
+                                   std::int32_t max_height, std::int32_t rotation) noexcept
 {
     // return fit_to_rectangle(Gdk::Texture::create_for_pixbuf(src), max_width, max_height);
 
@@ -125,7 +124,7 @@ gui::lib::image_tools::fit_to_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& src,
 #endif
 
 Glib::RefPtr<Gly::Image>
-gui::lib::image_tools::load_image(const std::filesystem::path& path) noexcept
+vfs::image_tools::load_image(const std::filesystem::path& path) noexcept
 {
     // logger::info<logger::gui>("Loading '{}'", path);
 
@@ -146,7 +145,7 @@ gui::lib::image_tools::load_image(const std::filesystem::path& path) noexcept
 }
 
 Glib::RefPtr<Gdk::Texture>
-gui::lib::image_tools::load_texture(const std::filesystem::path& path) noexcept
+vfs::image_tools::load_texture(const std::filesystem::path& path) noexcept
 {
     auto file = Gio::File::create_for_path(path);
 
@@ -167,8 +166,8 @@ gui::lib::image_tools::load_texture(const std::filesystem::path& path) noexcept
 }
 
 Glib::RefPtr<Gdk::Paintable>
-gui::lib::image_tools::fit_to_rectangle(const Glib::RefPtr<Gly::Image>& src, std::int32_t max_width,
-                                        std::int32_t max_height, std::int32_t rotation) noexcept
+vfs::image_tools::fit_to_rectangle(const Glib::RefPtr<Gly::Image>& src, std::int32_t max_width,
+                                   std::int32_t max_height, std::int32_t rotation) noexcept
 {
     const auto is_sideways = (rotation == 90 || rotation == 270);
     if (is_sideways)
@@ -220,13 +219,12 @@ gui::lib::image_tools::fit_to_rectangle(const Glib::RefPtr<Gly::Image>& src, std
 }
 
 Glib::RefPtr<Gdk::Paintable>
-gui::lib::image_tools::create_thumbnail(const std::filesystem::path& path,
-                                        std::int32_t size) noexcept
+vfs::image_tools::create_thumbnail(const std::filesystem::path& path, std::int32_t size) noexcept
 {
 #if defined(PIXBUF_BACKEND)
-    auto image = gui::lib::image_tools::load_pixbuf(path);
+    auto image = vfs::image_tools::load_pixbuf(path);
 #else
-    auto image = gui::lib::image_tools::load_image(path);
+    auto image = vfs::image_tools::load_image(path);
 #endif
     if (!image)
     {
@@ -238,8 +236,7 @@ gui::lib::image_tools::create_thumbnail(const std::filesystem::path& path,
 
 #if defined(PIXBUF_BACKEND)
 [[nodiscard]] Glib::RefPtr<Gdk::Paintable>
-gui::lib::image_tools::create_thumbnail(const Glib::RefPtr<Gdk::Pixbuf>& src,
-                                        std::int32_t size) noexcept
+vfs::image_tools::create_thumbnail(const Glib::RefPtr<Gdk::Pixbuf>& src, std::int32_t size) noexcept
 {
     // return create_thumbnail(Gdk::Texture::create_for_pixbuf(src), size);
     return fit_to_rectangle(src, size, size);
@@ -247,8 +244,7 @@ gui::lib::image_tools::create_thumbnail(const Glib::RefPtr<Gdk::Pixbuf>& src,
 #endif
 
 [[nodiscard]] Glib::RefPtr<Gdk::Paintable>
-gui::lib::image_tools::create_thumbnail(const Glib::RefPtr<Gly::Image>& src,
-                                        std::int32_t size) noexcept
+vfs::image_tools::create_thumbnail(const Glib::RefPtr<Gly::Image>& src, std::int32_t size) noexcept
 {
     return fit_to_rectangle(src, size, size);
 }

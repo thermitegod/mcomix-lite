@@ -20,6 +20,10 @@
 
 #include <gtkmm.h>
 
+#include "settings/settings.hxx"
+
+#include "gui/lib/view-state.hxx"
+
 #include "vfs/file-handler.hxx"
 
 namespace gui::dialog

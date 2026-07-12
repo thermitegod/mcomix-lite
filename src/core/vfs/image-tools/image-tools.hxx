@@ -21,9 +21,9 @@
 #include <glibmm.h>
 #include <gtkmm.h>
 
-#include "gui/lib/glycin-wrapper.hxx"
+#include "vfs/image-tools/glycin-wrapper.hxx"
 
-namespace gui::lib::image_tools
+namespace vfs::image_tools
 {
 #if defined(PIXBUF_BACKEND)
 [[nodiscard]] Glib::RefPtr<Gdk::Pixbuf> load_pixbuf(const std::filesystem::path& path) noexcept;
@@ -59,4 +59,4 @@ namespace gui::lib::image_tools
 #endif
 [[nodiscard]] Glib::RefPtr<Gdk::Paintable> create_thumbnail(const Glib::RefPtr<Gly::Image>& src,
                                                             std::int32_t size) noexcept;
-} // namespace gui::lib::image_tools
+} // namespace vfs::image_tools

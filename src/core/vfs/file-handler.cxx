@@ -31,11 +31,6 @@
 
 #include "logger.hxx"
 
-vfs::file_handler::file_handler(const std::shared_ptr<gui::lib::view_state>& view_state) noexcept
-    : view_state(view_state)
-{
-}
-
 void
 vfs::file_handler::refresh_opened() noexcept
 {
@@ -78,7 +73,7 @@ vfs::file_handler::open_file(const std::filesystem::path& path,
 {
     close();
 
-    image_handler_ = std::make_shared<vfs::image_handler>(view_state);
+    image_handler_ = std::make_shared<vfs::image_handler>();
     image_handler_->signal_page_available().connect([this](const std::int32_t page)
                                                     { signal_page_available().emit(page); });
 

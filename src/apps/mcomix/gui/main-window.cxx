@@ -45,8 +45,7 @@
 #include "gui/dialog/preferences.hxx"
 #include "gui/dialog/properties.hxx"
 
-#include "gui/lib/image-tools.hxx"
-
+#include "vfs/image-tools/image-tools.hxx"
 #include "vfs/trash-can.hxx"
 #include "vfs/user-dirs.hxx"
 
@@ -1109,10 +1108,8 @@ gui::main_window::_draw_pages() noexcept
     std::vector<Glib::RefPtr<Gdk::Paintable>> paintables;
     for (const auto& [idx, pixbuf] : std::views::enumerate(pixbuf_list))
     {
-        auto paintable = gui::lib::image_tools::fit_to_rectangle(pixbuf,
-                                                                 max_width,
-                                                                 max_height,
-                                                                 settings->rotation);
+        auto paintable =
+            vfs::image_tools::fit_to_rectangle(pixbuf, max_width, max_height, settings->rotation);
 
         scaled_sizes.push_back(
             {paintable->get_intrinsic_width(), paintable->get_intrinsic_height()});

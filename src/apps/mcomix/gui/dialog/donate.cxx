@@ -25,7 +25,7 @@
 
 #include "gui/dialog/donate.hxx"
 
-#include "gui/lib/image-tools.hxx"
+#include "vfs/image-tools/image-tools.hxx"
 
 gui::dialog::donate::page::page() noexcept
 {
@@ -45,7 +45,7 @@ gui::dialog::donate::page::page() noexcept
 void
 gui::dialog::donate::page::set_image(const std::filesystem::path& path) noexcept
 {
-    img_.set_paintable(gui::lib::image_tools::load_texture(path));
+    img_.set_paintable(vfs::image_tools::load_texture(path));
 }
 
 void

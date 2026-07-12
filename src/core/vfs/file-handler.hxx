@@ -30,7 +30,7 @@ namespace vfs
 class file_handler
 {
   public:
-    explicit file_handler(const std::shared_ptr<gui::lib::view_state>& view_state) noexcept;
+    file_handler() = default;
 
     void open_file_init(const std::span<const std::filesystem::path> filelist,
                         const std::int32_t start_page = 1) noexcept;
@@ -86,8 +86,6 @@ class file_handler
     std::shared_ptr<vfs::image_handler> image_handler_;
     std::unique_ptr<vfs::extractor> extractor_;
     std::unique_ptr<vfs::file_provider> file_provider_;
-
-    std::shared_ptr<gui::lib::view_state> view_state;
 
     bool file_loaded_{false};
     bool file_loading_{false};

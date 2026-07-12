@@ -15,11 +15,20 @@
 
 #pragma once
 
+#include <memory>
+
+#include "vfs/file-handler.hxx"
+
 namespace gui::lib
 {
 class view_state
 {
   public:
+    view_state(std::shared_ptr<vfs::file_handler> file_handler) noexcept
+        : file_handler_(file_handler)
+    {
+    }
+
     [[nodiscard]] bool is_manga_mode() const noexcept;
     [[nodiscard]] bool is_displaying_double() const noexcept;
 
@@ -27,6 +36,8 @@ class view_state
     void set_displaying_double(const bool bval) noexcept;
 
   private:
+    std::shared_ptr<vfs::file_handler> file_handler_;
+
     bool manga_mode_{false};
     bool displaying_double_{false};
 };
