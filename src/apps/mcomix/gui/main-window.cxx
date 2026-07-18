@@ -1051,18 +1051,18 @@ gui::main_window::_draw_pages() noexcept
     }
 
     // Limited to at most 2 pages
-    const auto pixbuf_count = view_state->is_displaying_double() ? 2 : 1;
-    auto pixbuf_list = image_handler->get_images(pixbuf_count);
+    const auto image_count = view_state->is_displaying_double() ? 2 : 1;
+    auto images = image_handler->get_images(image_count);
     if (settings->default_manga_mode && view_state->is_displaying_double())
     {
-        std::swap(pixbuf_list[0], pixbuf_list[1]);
+        std::swap(images[0], images[1]);
     }
 
     std::vector<std::array<std::int32_t, 2>> size_list;
-    for (const auto& pixbuf : pixbuf_list)
+    for (const auto& image : images)
     {
-        size_list.push_back({static_cast<std::int32_t>(pixbuf->get_width()),
-                             static_cast<std::int32_t>(pixbuf->get_height())});
+        size_list.push_back({static_cast<std::int32_t>(image->get_width()),
+                             static_cast<std::int32_t>(image->get_height())});
     }
 
     // Rotation handling
@@ -1084,7 +1084,7 @@ gui::main_window::_draw_pages() noexcept
             viewport_.set_orientation(Gtk::Orientation::HORIZONTAL);
             if (view_state->is_displaying_double())
             {
-                std::swap(pixbuf_list[0], pixbuf_list[1]);
+                std::swap(images[0], images[1]);
             }
             break;
         }
@@ -1094,7 +1094,7 @@ gui::main_window::_draw_pages() noexcept
             std::ranges::for_each(size_list, [](auto& list) { std::ranges::reverse(list); });
             if (view_state->is_displaying_double())
             {
-                std::swap(pixbuf_list[0], pixbuf_list[1]);
+                std::swap(images[0], images[1]);
             }
             break;
         }
@@ -1106,10 +1106,10 @@ gui::main_window::_draw_pages() noexcept
 
     std::vector<std::array<std::int32_t, 2>> scaled_sizes;
     std::vector<Glib::RefPtr<Gdk::Paintable>> paintables;
-    for (const auto& [idx, pixbuf] : std::views::enumerate(pixbuf_list))
+    for (const auto& [idx, image] : std::views::enumerate(images))
     {
         auto paintable =
-            vfs::image_tools::fit_to_rectangle(pixbuf, max_width, max_height, settings->rotation);
+            vfs::image_tools::fit_to_rectangle(image, max_width, max_height, settings->rotation);
 
         scaled_sizes.push_back(
             {paintable->get_intrinsic_width(), paintable->get_intrinsic_height()});
