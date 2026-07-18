@@ -46,11 +46,18 @@ class extractor
         return signal_file_extracted_;
     }
 
+    [[nodiscard]] auto
+    signal_extraction_finished() noexcept
+    {
+        return signal_extraction_finished_;
+    }
+
   private:
     std::filesystem::path archive_;
     std::filesystem::path destination_;
 
     sigc::signal<void(std::vector<std::filesystem::path>)> signal_file_listed_;
     sigc::signal<void(std::filesystem::path)> signal_file_extracted_;
+    sigc::signal<void()> signal_extraction_finished_;
 };
 } // namespace vfs

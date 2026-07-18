@@ -137,4 +137,6 @@ vfs::extractor::extract() noexcept
 
         signal_file_extracted().emit(path);
     }
+
+    signal_extraction_finished().emit();
 }

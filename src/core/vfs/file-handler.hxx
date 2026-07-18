@@ -122,10 +122,17 @@ class file_handler
         return signal_page_available_;
     }
 
+    [[nodiscard]] auto
+    signal_extraction_finished() noexcept
+    {
+        return signal_extraction_finished_;
+    }
+
   private:
     sigc::signal<void()> signal_file_closed_;
     sigc::signal<void()> signal_file_opened_;
     sigc::signal<void(std::int32_t)> signal_page_set_;
     sigc::signal<void(std::int32_t)> signal_page_available_;
+    sigc::signal<void()> signal_extraction_finished_;
 };
 } // namespace vfs

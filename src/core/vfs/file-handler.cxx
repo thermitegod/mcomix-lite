@@ -214,6 +214,9 @@ vfs::file_handler::open_archive(const std::filesystem::path& archive) noexcept
         extractor_->signal_file_listed().connect(
             [this](const std::span<const std::filesystem::path> files) { file_listed(files); });
 
+        extractor_->signal_extraction_finished().connect([this]()
+                                                         { signal_extraction_finished().emit(); });
+
         extractor_->list();
     }
     catch (const std::exception& ex)
