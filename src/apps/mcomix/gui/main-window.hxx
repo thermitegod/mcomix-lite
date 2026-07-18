@@ -95,7 +95,8 @@ class main_window : public Gtk::ApplicationWindow
     std::shared_ptr<gui::lib::view_state> view_state =
         std::make_shared<gui::lib::view_state>(file_handler_);
 
-    std::shared_ptr<vfs::bookmarks> bookmarks_ = std::make_shared<vfs::bookmarks>();
+    std::shared_ptr<vfs::bookmarks> bookmarks_ =
+        std::make_shared<vfs::bookmarks>(vfs::bookmarks::frontend::mcomix);
 
     bool waiting_for_redraw_{false};
 

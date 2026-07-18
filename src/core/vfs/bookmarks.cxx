@@ -30,7 +30,6 @@
 namespace bookmark_disk_format
 {
 constexpr u64 version = 2_u64;
-const std::filesystem::path path = vfs::program::data() / "bookmarks.json";
 
 struct bookmark_data final
 {
@@ -38,6 +37,18 @@ struct bookmark_data final
     std::vector<vfs::bookmarks::bookmark_data> bookmarks;
 };
 } // namespace bookmark_disk_format
+
+vfs::bookmarks::bookmarks(const frontend frontend) noexcept
+{
+    if (frontend == frontend::mcomix)
+    {
+        bookmark_file_ = vfs::program::data() / "bookmarks.json";
+    }
+    else
+    {
+        std::unreachable();
+    }
+}
 
 void
 vfs::bookmarks::save() noexcept
@@ -52,9 +63,7 @@ vfs::bookmarks::save() noexcept
 
     std::string buffer;
     const auto ec =
-        glz::write_file_json<glz::opts{.prettify = true}>(data,
-                                                          bookmark_disk_format::path.c_str(),
-                                                          buffer);
+        glz::write_file_json<glz::opts{.prettify = true}>(data, bookmark_file_.c_str(), buffer);
 
     if (ec)
     {
@@ -66,12 +75,12 @@ vfs::bookmarks::save() noexcept
 void
 vfs::bookmarks::load() noexcept
 {
-    if (!std::filesystem::exists(bookmark_disk_format::path))
+    if (!std::filesystem::exists(bookmark_file_))
     {
         return;
     }
 
-    const auto statx = ztd::stat::create(bookmark_disk_format::path);
+    const auto statx = ztd::stat::create(bookmark_file_);
     if (statx->mtime() == bookmark_mtime_)
     { // Bookmark file has not been modified since last read
         return;
@@ -80,10 +89,10 @@ vfs::bookmarks::load() noexcept
 
     bookmark_disk_format::bookmark_data config_data;
     std::string buffer;
-    const auto ec = glz::read_file_json<glz::opts{.error_on_unknown_keys = false}>(
-        config_data,
-        bookmark_disk_format::path.c_str(),
-        buffer);
+    const auto ec =
+        glz::read_file_json<glz::opts{.error_on_unknown_keys = false}>(config_data,
+                                                                       bookmark_file_.c_str(),
+                                                                       buffer);
 
     if (ec)
     {

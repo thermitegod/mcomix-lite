@@ -38,6 +38,13 @@ class bookmarks
         std::chrono::system_clock::time_point created;
     };
 
+    enum frontend
+    {
+        mcomix,
+    };
+
+    explicit bookmarks(const frontend frontend) noexcept;
+
     void load() noexcept;
     void save() noexcept;
 
@@ -48,6 +55,7 @@ class bookmarks
     [[nodiscard]] std::span<const bookmark_data> get_bookmarks() noexcept;
 
   private:
+    std::filesystem::path bookmark_file_;
     std::vector<bookmark_data> bookmarks_;
     std::chrono::system_clock::time_point bookmark_mtime_;
 
