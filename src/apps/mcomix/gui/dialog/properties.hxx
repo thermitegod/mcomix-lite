@@ -50,8 +50,7 @@ class properties : public Gtk::ApplicationWindow
     Gtk::Box box_;
     Gtk::Notebook notebook_;
 
-    Gtk::Box button_box_;
-    Gtk::Button button_close_;
+    Gtk::Button* button_close_;
 
     std::shared_ptr<vfs::file_handler> file_handler_;
     std::shared_ptr<gui::lib::view_state> view_state_;

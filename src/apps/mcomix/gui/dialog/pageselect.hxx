@@ -42,9 +42,8 @@ class pageselect final : public Gtk::Window
     Gtk::Label spin_label;
     Gtk::Box spin_box_;
 
-    Gtk::Button button_cancel_;
-    Gtk::Button button_ok_;
-    Gtk::Box button_box_;
+    Gtk::Button* button_cancel_;
+    Gtk::Button* button_ok_;
 
     void on_button_cancel_clicked() noexcept;
     void on_button_ok_clicked() noexcept;

@@ -18,6 +18,7 @@
 #include <gtkmm.h>
 
 #include "gui/dialog/pageselect.hxx"
+#include "gui/dialog/widgets/button-box.hxx"
 
 #include "vfs/file-handler.hxx"
 #include "vfs/image-tools/image-tools.hxx"
@@ -83,19 +84,12 @@ gui::dialog::pageselect::pageselect(Gtk::ApplicationWindow& parent,
     spin_box_.append(spin_label);
     box_.append(spin_box_);
 
-    button_box_ = Gtk::Box(Gtk::Orientation::HORIZONTAL, 5);
-    button_cancel_ = Gtk::Button("Cancel", true);
-    button_cancel_.set_focus_on_click(false);
-    button_ok_ = Gtk::Button("Go", true);
-    button_ok_.set_focus_on_click(false);
-    button_box_.set_halign(Gtk::Align::END);
-    button_box_.append(button_cancel_);
-    button_box_.append(button_ok_);
-
-    button_ok_.signal_clicked().connect([this]() { on_button_ok_clicked(); });
-    button_cancel_.signal_clicked().connect([this]() { on_button_cancel_clicked(); });
-
-    box_.append(button_box_);
+    // Buttons //
+    auto* buttons = gui::widget::ButtonBox::create({
+        {"Cancel", [this] { on_button_cancel_clicked(); }, &button_cancel_},
+        {"Go", [this] { on_button_ok_clicked(); }, &button_ok_},
+    });
+    box_.append(*buttons);
 
     set_thumbnail(image_handler->get_current_page());
 
