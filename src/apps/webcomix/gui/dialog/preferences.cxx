@@ -74,6 +74,18 @@ class PreferencePage : public Gtk::ScrolledWindow
         box_.append(item);
     }
 
+    void
+    add_checkbox(const std::string_view label, bool& option) noexcept
+    {
+        auto* button = Gtk::make_managed<Gtk::CheckButton>(std::format("{}", label));
+        button->set_active(option);
+        button->set_focus_on_click(false);
+
+        button->signal_toggled().connect([button, &option]() { option = button->get_active(); });
+
+        add_row(*button);
+    }
+
   private:
     void
     new_split_vboxes(Gtk::Box& left_box, Gtk::Box& right_box) noexcept
@@ -196,16 +208,7 @@ gui::dialog::preferences::init_behaviour_tab() noexcept
 
     page.add_section("Navigation");
 
-    {
-        auto& opt = settings_->confirm_archive_change;
-
-        auto button = Gtk::make_managed<Gtk::CheckButton>();
-        button->set_label("Prompt before auto opening next/prev archive");
-        button->set_active(opt);
-        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
-
-        page.add_row(*button);
-    }
+    page.add_checkbox("Prompt before auto changing archive", settings_->confirm_archive_change);
 
     auto tab_label = Gtk::Label("Behaviour");
     notebook_.append_page(page, tab_label);
@@ -236,64 +239,17 @@ gui::dialog::preferences::init_display_tab() noexcept
 
     page.add_section("Bookmark Manager");
 
-    {
-        auto& opt = settings_->bookmark_manager_fullpath;
-
-        auto button = Gtk::make_managed<Gtk::CheckButton>();
-        button->set_label("Show full bookmark path");
-        button->set_active(opt);
-        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
-
-        page.add_row(*button);
-    }
+    page.add_checkbox("Show full bookmark path", settings_->bookmark_manager_fullpath);
 
     page.add_section("General");
 
-    {
-        auto& opt = settings_->hide_menubar;
-
-        auto button = Gtk::make_managed<Gtk::CheckButton>();
-        button->set_label("Always hide menubar");
-        button->set_active(opt);
-        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
-
-        page.add_row(*button);
-    }
-
-    {
-        auto& opt = settings_->hide_statusbar;
-
-        auto button = Gtk::make_managed<Gtk::CheckButton>();
-        button->set_label("Always hide statusbar");
-        button->set_active(opt);
-        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
-
-        page.add_row(*button);
-    }
+    page.add_checkbox("Always hide menubar", settings_->hide_menubar);
+    page.add_checkbox("Always hide statusbar", settings_->hide_statusbar);
 
     page.add_section("Fullscreen");
 
-    {
-        auto& opt = settings_->fullscreen.hide_menubar;
-
-        auto button = Gtk::make_managed<Gtk::CheckButton>();
-        button->set_label("Hide menubar when fullscreen");
-        button->set_active(opt);
-        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
-
-        page.add_row(*button);
-    }
-
-    {
-        auto& opt = settings_->fullscreen.hide_statusbar;
-
-        auto button = Gtk::make_managed<Gtk::CheckButton>();
-        button->set_label("Hide statusbar when fullscreen");
-        button->set_active(opt);
-        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
-
-        page.add_row(*button);
-    }
+    page.add_checkbox("Hide menubar when fullscreen", settings_->fullscreen.hide_menubar);
+    page.add_checkbox("Hide statusbar when fullscreen", settings_->fullscreen.hide_statusbar);
 
     auto tab_label = Gtk::Label("Display");
     notebook_.append_page(page, tab_label);
@@ -306,62 +262,15 @@ gui::dialog::preferences::init_statusbar_tab() noexcept
 
     page.add_section("Statusbar Fields");
 
-    {
-        auto& opt = settings_->statusbar.page_numbers;
-
-        auto button = Gtk::make_managed<Gtk::CheckButton>();
-        button->set_label("Show page numbers");
-        button->set_active(opt);
-        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
-
-        page.add_row(*button);
-    }
-
-    {
-        auto& opt = settings_->statusbar.file_numbers;
-
-        auto button = Gtk::make_managed<Gtk::CheckButton>();
-        button->set_label("Show file numbers");
-        button->set_active(opt);
-        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
-
-        page.add_row(*button);
-    }
-
-    {
-        auto& opt = settings_->statusbar.archive_filename;
-
-        auto button = Gtk::make_managed<Gtk::CheckButton>();
-        button->set_label("Show archive filename");
-        button->set_active(opt);
-        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
-
-        page.add_row(*button);
-    }
-
-    {
-        auto& opt = settings_->statusbar.archive_filesize;
-
-        auto button = Gtk::make_managed<Gtk::CheckButton>();
-        button->set_label("Show archive filesize");
-        button->set_active(opt);
-        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
-
-        page.add_row(*button);
-    }
+    page.add_checkbox("Show page numbers", settings_->statusbar.page_numbers);
+    page.add_checkbox("Show file numbers", settings_->statusbar.file_numbers);
+    page.add_checkbox("Show archive filename", settings_->statusbar.archive_filename);
+    page.add_checkbox("Show archive filesize", settings_->statusbar.archive_filesize);
 
     page.add_section("Statusbar Field Modifiers");
 
-    {
-        auto& opt = settings_->statusbar.archive_filename_fullpath;
-
-        auto button = Gtk::make_managed<Gtk::CheckButton>();
-        button->set_label("Show full path of current file");
-        button->set_active(opt);
-        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
-
-        page.add_row(*button);
-    }
+    page.add_checkbox("Show full path of current file",
+                      settings_->statusbar.archive_filename_fullpath);
 
     auto tab_label = Gtk::Label("Statusbar");
     notebook_.append_page(page, tab_label);
@@ -386,16 +295,7 @@ gui::dialog::preferences::init_advanced_tab() noexcept
         page.add_row("Move file location (relative)", *entry);
     }
 
-    {
-        auto& opt = settings_->si_units;
-
-        auto button = Gtk::make_managed<Gtk::CheckButton>();
-        button->set_label("Use SI units");
-        button->set_active(opt);
-        button->signal_toggled().connect([button, &opt]() { opt = button->get_active(); });
-
-        page.add_row(*button);
-    }
+    page.add_checkbox("Use SI units", settings_->si_units);
 
     auto tab_label = Gtk::Label("Advanced");
     notebook_.append_page(page, tab_label);
