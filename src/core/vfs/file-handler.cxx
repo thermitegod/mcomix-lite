@@ -27,9 +27,8 @@
 #include "vfs/file-supported.hxx"
 #include "vfs/image-handler.hxx"
 
-#include "vfs/utils/sort.hxx"
-
 #include "logger.hxx"
+#include "natsort/natsort.hxx"
 
 void
 vfs::file_handler::refresh_opened() noexcept
@@ -242,7 +241,7 @@ std::vector<std::filesystem::path>
 vfs::file_handler::sort_archive_images(const std::span<const std::filesystem::path> files) noexcept
 {
     auto sorted_files = std::vector<std::filesystem::path>{files.cbegin(), files.cend()};
-    vfs::utils::sort_alphanumeric(sorted_files);
+    std::ranges::sort(sorted_files, natsort::sorter{});
     return sorted_files;
 }
 

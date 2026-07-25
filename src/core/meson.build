@@ -2,13 +2,9 @@
 
 spdlog_dep = dependency('spdlog', required: true)
 
-logger_sources = files(
-  'logger/logger.cxx',
-)
-
 logger_lib = static_library(
     'logger',
-    sources : logger_sources,
+    files('logger/logger.cxx'),
     include_directories : include_directories('./logger'),
     dependencies : spdlog_dep,
     install: false,
@@ -18,6 +14,20 @@ logger_dep = declare_dependency(
     link_with : logger_lib,
     include_directories : include_directories('./logger'),
     dependencies : spdlog_dep,
+)
+
+# natsort static library
+
+natsort_lib = static_library(
+    'natsort',
+    files('natsort/natsort.cxx'),
+    include_directories : include_directories('.'),
+    install: false,
+)
+
+natsort_dep = declare_dependency(
+    link_with : natsort_lib,
+    include_directories : include_directories('.'),
 )
 
 # vfs static library
@@ -34,9 +44,7 @@ vfs_sources = files(
   'vfs/trash-can.cxx',
   'vfs/user-dirs.cxx',
 
-  'vfs/utils/sort.cxx',
   'vfs/utils/utils.cxx',
-  'vfs/utils/natsort/strnatcmp.cxx',
 
   'vfs/libarchive/entry.cxx',
   'vfs/libarchive/reader.cxx',
@@ -50,7 +58,7 @@ vfs_dependencies = [
     gtk_dependencies,
 
     logger_dep,
-
+    natsort_dep,
     botan_dep,
     libarchive_dep,
 ]

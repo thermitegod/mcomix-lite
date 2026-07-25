@@ -4,6 +4,8 @@ doctest_dep = dependency('doctest', required : true)
 test_sources = files(
     'src/main.cxx',
 
+    'src/natsort/natsort.cxx',
+
     'src/settings/property.cxx',
 
     'src/vfs/error.cxx',
@@ -11,7 +13,6 @@ test_sources = files(
 
     'src/vfs/utils/utils.cxx',
     'src/vfs/utils/file-ops.cxx',
-    'src/vfs/utils/natsort.cxx',
 )
 
 test_suite = build_target(

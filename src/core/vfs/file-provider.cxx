@@ -19,10 +19,9 @@
 #include <utility>
 #include <vector>
 
-#include "vfs/utils/sort.hxx"
-
 #include "file-provider.hxx"
 #include "file-supported.hxx"
+#include "natsort/natsort.hxx"
 
 vfs::file_provider::file_provider(const std::span<const std::filesystem::path> files) noexcept
     : files_(files.cbegin(), files.cend())
@@ -58,7 +57,7 @@ vfs::file_provider::sort_files() noexcept
         return;
     }
 
-    vfs::utils::sort_alphanumeric(files_);
+    std::ranges::sort(files_, natsort::sorter{});
 }
 
 std::span<const std::filesystem::path>
