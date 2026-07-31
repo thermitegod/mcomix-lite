@@ -45,7 +45,7 @@ gui::statusbar::statusbar(const std::shared_ptr<config::settings>& settings) noe
 }
 
 void
-gui::statusbar::set_message(const std::string_view message) noexcept
+gui::statusbar::set_message(std::string_view message) noexcept
 {
     statusbar_.set_label(std::format("    {}", message));
 }

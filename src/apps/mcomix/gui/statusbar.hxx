@@ -35,7 +35,7 @@ class statusbar : public Gtk::Box
     explicit statusbar(const std::shared_ptr<config::settings>& settings,
                        const std::shared_ptr<gui::lib::view_state>& view_state) noexcept;
 
-    void set_message(const std::string_view message) noexcept;
+    void set_message(std::string_view message) noexcept;
     void set_page_number(const std::int32_t page, const std::int32_t total_pages) noexcept;
     void set_view_mode() noexcept;
     void set_file_number(std::int32_t file_number, std::int32_t total) noexcept;

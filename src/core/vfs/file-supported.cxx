@@ -39,7 +39,7 @@ vfs::is_archive(const std::filesystem::path& filename) noexcept
     };
 
     return std::ranges::any_of(extensions,
-                               [&filename](const std::string_view ext)
+                               [&filename](std::string_view ext)
                                { return filename.extension() == ext; });
 }
 
@@ -71,6 +71,6 @@ vfs::is_image(const std::filesystem::path& filename) noexcept
 #endif
 
     return std::ranges::any_of(extensions,
-                               [&filename](const std::string_view ext)
+                               [&filename](std::string_view ext)
                                { return filename.extension() == ext; });
 }

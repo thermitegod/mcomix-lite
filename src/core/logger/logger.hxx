@@ -45,7 +45,7 @@ enum loglevel : std::uint8_t
     off,
 };
 
-void logger(const loglevel level, const domain d, const std::string_view msg) noexcept;
+void logger(const loglevel level, const domain d, std::string_view msg) noexcept;
 } // namespace detail
 
 void initialize(const std::flat_map<std::string, std::string>& options,
