@@ -30,6 +30,22 @@ natsort_dep = declare_dependency(
     include_directories : include_directories('.'),
 )
 
+# glycin wrapper static library
+
+glycin_wrapper_lib = static_library(
+    'glycin_wrapper',
+    files('glycin/glycin.cxx'),
+    include_directories : include_directories('.'),
+    dependencies : gtk_dependencies,
+    install: false,
+)
+
+glycin_wrapper_dep = declare_dependency(
+    link_with : glycin_wrapper_lib,
+    include_directories : include_directories('.'),
+    dependencies : gtk_dependencies,
+)
+
 # vfs static library
 
 vfs_sources = files(
@@ -56,6 +72,7 @@ vfs_sources = files(
 
 vfs_dependencies = [
     gtk_dependencies,
+    glycin_wrapper_dep,
 
     logger_dep,
     natsort_dep,

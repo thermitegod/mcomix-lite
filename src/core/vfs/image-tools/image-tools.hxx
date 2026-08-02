@@ -21,7 +21,7 @@
 #include <glibmm.h>
 #include <gtkmm.h>
 
-#include "vfs/image-tools/glycin-wrapper.hxx"
+#include "glycin/glycin.hxx"
 
 namespace vfs::image_tools
 {

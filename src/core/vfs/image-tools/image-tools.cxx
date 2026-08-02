@@ -23,9 +23,9 @@
 
 #include <ztd/ztd.hxx>
 
-#include "vfs/image-tools/glycin-wrapper.hxx"
 #include "vfs/image-tools/image-tools.hxx"
 
+#include "glycin/glycin.hxx"
 #include "logger.hxx"
 
 #if defined(PIXBUF_BACKEND)

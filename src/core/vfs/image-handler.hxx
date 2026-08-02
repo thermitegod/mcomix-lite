@@ -26,7 +26,8 @@
 #include <glibmm.h>
 
 #include "vfs/image-files.hxx"
-#include "vfs/image-tools/glycin-wrapper.hxx"
+
+#include "glycin/glycin.hxx"
 
 // #define PIXBUF_BACKEND
 // #undef PIXBUF_BACKEND
