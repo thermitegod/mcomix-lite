@@ -13,6 +13,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <array>
 #include <string_view>
 #include <utility>
 
@@ -25,10 +26,10 @@
 #include "gui/dialog/preferences.hxx"
 #include "gui/dialog/widgets/button-box.hxx"
 
-class PreferencePage : public Gtk::ScrolledWindow
+class preference_page : public Gtk::ScrolledWindow
 {
   public:
-    explicit PreferencePage() noexcept
+    explicit preference_page() noexcept
     {
         box_.set_orientation(Gtk::Orientation::VERTICAL);
         box_.set_margin(6);
@@ -41,32 +42,28 @@ class PreferencePage : public Gtk::ScrolledWindow
     void
     add_section(std::string_view header) noexcept
     {
-        Gtk::Label label;
-        label.set_markup(std::format("<b>{}</b>", header.data()));
-        label.set_xalign(0.0f);
-        box_.append(label);
+        auto* label = Gtk::make_managed<Gtk::Label>();
+        label->set_markup(std::format("<b>{}</b>", header));
+        label->set_xalign(0.0f);
+        box_.append(*label);
     }
 
     void
     add_row(std::string_view left_item_name, Gtk::Widget& right_item) noexcept
     {
-        Gtk::Label left_item(left_item_name.data());
+        auto* left_item = Gtk::make_managed<Gtk::Label>(std::string(left_item_name));
 
-        Gtk::Box left_box;
-        Gtk::Box right_box;
-        new_split_vboxes(left_box, right_box);
-        left_box.append(left_item);
-        right_box.append(right_item);
+        auto [left_box, right_box] = create_split_vboxes();
+        left_box->append(*left_item);
+        right_box->append(right_item);
     }
 
     void
-    add_row(Gtk::Label& left_item, Gtk::Widget& right_item) noexcept
+    add_row(Gtk::Widget& left_item, Gtk::Widget& right_item) noexcept
     {
-        Gtk::Box left_box;
-        Gtk::Box right_box;
-        new_split_vboxes(left_box, right_box);
-        left_box.append(left_item);
-        right_box.append(right_item);
+        auto [left_box, right_box] = create_split_vboxes();
+        left_box->append(left_item);
+        right_box->append(right_item);
     }
 
     void
@@ -78,7 +75,7 @@ class PreferencePage : public Gtk::ScrolledWindow
     void
     add_checkbox(std::string_view label, bool& option) noexcept
     {
-        auto* button = Gtk::make_managed<Gtk::CheckButton>(std::format("{}", label));
+        auto* button = Gtk::make_managed<Gtk::CheckButton>(std::string(label));
         button->set_active(option);
         button->set_focus_on_click(false);
 
@@ -90,7 +87,7 @@ class PreferencePage : public Gtk::ScrolledWindow
     void
     add_checkbox(std::string_view label, ::Property<bool>& option) noexcept
     {
-        auto* button = Gtk::make_managed<Gtk::CheckButton>(std::format("{}", label));
+        auto* button = Gtk::make_managed<Gtk::CheckButton>(std::string(label));
         button->set_active(option);
         button->set_focus_on_click(false);
 
@@ -100,20 +97,24 @@ class PreferencePage : public Gtk::ScrolledWindow
     }
 
   private:
-    void
-    new_split_vboxes(Gtk::Box& left_box, Gtk::Box& right_box) noexcept
+    std::array<Gtk::Box*, 2>
+    create_split_vboxes() noexcept
     {
-        left_box.set_spacing(6);
-        left_box.set_homogeneous(false);
+        auto* left_box = Gtk::make_managed<Gtk::Box>();
+        left_box->set_spacing(6);
+        left_box->set_homogeneous(false);
 
-        right_box.set_spacing(6);
-        right_box.set_homogeneous(false);
+        auto* right_box = Gtk::make_managed<Gtk::Box>();
+        right_box->set_spacing(6);
+        right_box->set_homogeneous(false);
 
-        Gtk::Box hbox = Gtk::Box(Gtk::Orientation::HORIZONTAL, 12);
-        hbox.append(left_box);
-        hbox.append(right_box);
+        auto* hbox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::HORIZONTAL, 12);
+        hbox->append(*left_box);
+        hbox->append(*right_box);
 
-        box_.append(hbox);
+        box_.append(*hbox);
+
+        return {left_box, right_box};
     }
 
     Gtk::Box box_;
@@ -198,16 +199,17 @@ gui::dialog::preferences::on_bind_item(const Glib::RefPtr<Gtk::ListItem>& item) 
 void
 gui::dialog::preferences::init_behaviour_tab() noexcept
 {
-    auto page = PreferencePage();
+    auto page = Gtk::make_managed<preference_page>();
+    notebook_.append_page(*page, "Behaviour");
 
-    page.add_section("Page orientation");
+    page->add_section("Page orientation");
 
-    page.add_checkbox("Set page orientation for manga", settings_->default_manga_mode);
+    page->add_checkbox("Set page orientation for manga", settings_->default_manga_mode);
 
-    page.add_section("Double Page Mode");
+    page->add_section("Double Page Mode");
 
-    page.add_checkbox("Show two pages at a time", settings_->default_double_page);
-    page.add_checkbox("Change two pages at a time", settings_->double_step_in_double_page_mode);
+    page->add_checkbox("Show two pages at a time", settings_->default_double_page);
+    page->add_checkbox("Change two pages at a time", settings_->double_step_in_double_page_mode);
 
     {
         auto& opt = settings_->virtual_double_page_for_fitting_images;
@@ -230,10 +232,10 @@ gui::dialog::preferences::init_behaviour_tab() noexcept
         drop->property_selected_item().signal_changed().connect(
             [&opt, drop]() { opt = static_cast<config::double_page>(drop->get_selected()); });
 
-        page.add_row("When to only show a single page", *drop);
+        page->add_row("When to only show a single page", *drop);
     }
 
-    page.add_section("Page Selection");
+    page->add_section("Page Selection");
 
     {
         auto& opt = settings_->page_ff_step;
@@ -248,27 +250,25 @@ gui::dialog::preferences::init_behaviour_tab() noexcept
         button->set_value(opt);
         button->set_adjustment(adjust);
 
-        page.add_row("Pages to change when fast forwarding", *button);
+        page->add_row("Pages to change when fast forwarding", *button);
     }
 
-    page.add_section("Navigation");
+    page->add_section("Navigation");
 
-    page.add_checkbox("Prompt before auto changing archive", settings_->confirm_archive_change);
-
-    auto tab_label = Gtk::Label("Behaviour");
-    notebook_.append_page(page, tab_label);
+    page->add_checkbox("Prompt before auto changing archive", settings_->confirm_archive_change);
 }
 
 void
 gui::dialog::preferences::init_display_tab() noexcept
 {
-    auto page = PreferencePage();
+    auto page = Gtk::make_managed<preference_page>();
+    notebook_.append_page(*page, "Display");
 
-    page.add_section("Image Layout");
+    page->add_section("Image Layout");
 
-    page.add_checkbox("Show a page break between pages", settings_->double_page_center_space);
+    page->add_checkbox("Show a page break between pages", settings_->double_page_center_space);
 
-    page.add_section("Image Rotation");
+    page->add_section("Image Rotation");
 
     {
         auto& opt = settings_->rotation;
@@ -318,12 +318,12 @@ gui::dialog::preferences::init_display_tab() noexcept
                 }
             });
 
-        page.add_row("Page rotation", *drop);
+        page->add_row("Page rotation", *drop);
     }
 
-    page.add_checkbox("Keep rotation between page changes", settings_->keep_transformation);
+    page->add_checkbox("Keep rotation between page changes", settings_->keep_transformation);
 
-    page.add_section("Thumbnails");
+    page->add_section("Thumbnails");
 
     {
         auto& opt = settings_->thumbnail_size;
@@ -338,60 +338,58 @@ gui::dialog::preferences::init_display_tab() noexcept
         button->set_value(opt);
         button->set_adjustment(adjust);
 
-        page.add_row("Thumbnail size (pixels)", *button);
+        page->add_row("Thumbnail size (pixels)", *button);
     }
 
-    page.add_section("Bookmark Manager");
+    page->add_section("Bookmark Manager");
 
-    page.add_checkbox("Show full bookmark path", settings_->bookmark_manager_fullpath);
+    page->add_checkbox("Show full bookmark path", settings_->bookmark_manager_fullpath);
 
-    page.add_section("General");
+    page->add_section("General");
 
-    page.add_checkbox("Always hide thumbnail sidebar", settings_->hide_thumbar);
-    page.add_checkbox("Always hide menubar", settings_->hide_menubar);
-    page.add_checkbox("Always hide statusbar", settings_->hide_statusbar);
+    page->add_checkbox("Always hide thumbnail sidebar", settings_->hide_thumbar);
+    page->add_checkbox("Always hide menubar", settings_->hide_menubar);
+    page->add_checkbox("Always hide statusbar", settings_->hide_statusbar);
 
-    page.add_section("Fullscreen");
+    page->add_section("Fullscreen");
 
-    page.add_checkbox("Hide thumbnail sidebar when fullscreen", settings_->fullscreen.hide_thumbar);
-    page.add_checkbox("Hide menubar when fullscreen", settings_->fullscreen.hide_menubar);
-    page.add_checkbox("Hide statusbar when fullscreen", settings_->fullscreen.hide_statusbar);
-
-    auto tab_label = Gtk::Label("Display");
-    notebook_.append_page(page, tab_label);
+    page->add_checkbox("Hide thumbnail sidebar when fullscreen",
+                       settings_->fullscreen.hide_thumbar);
+    page->add_checkbox("Hide menubar when fullscreen", settings_->fullscreen.hide_menubar);
+    page->add_checkbox("Hide statusbar when fullscreen", settings_->fullscreen.hide_statusbar);
 }
 
 void
 gui::dialog::preferences::init_statusbar_tab() noexcept
 {
-    auto page = PreferencePage();
+    auto page = Gtk::make_managed<preference_page>();
+    notebook_.append_page(*page, "Statusbar");
 
-    page.add_section("Statusbar Fields");
+    page->add_section("Statusbar Fields");
 
-    page.add_checkbox("Show page numbers", settings_->statusbar.page_numbers);
-    page.add_checkbox("Show file numbers", settings_->statusbar.file_numbers);
-    page.add_checkbox("Show page resolution", settings_->statusbar.page_resolution);
-    page.add_checkbox("Show archive filename", settings_->statusbar.archive_filename);
-    page.add_checkbox("Show page filesize", settings_->statusbar.page_filesize);
-    page.add_checkbox("Show archive filesize", settings_->statusbar.archive_filesize);
-    page.add_checkbox("Show current view mode", settings_->statusbar.view_mode);
+    page->add_checkbox("Show page numbers", settings_->statusbar.page_numbers);
+    page->add_checkbox("Show file numbers", settings_->statusbar.file_numbers);
+    page->add_checkbox("Show page resolution", settings_->statusbar.page_resolution);
+    page->add_checkbox("Show archive filename", settings_->statusbar.archive_filename);
+    page->add_checkbox("Show page filesize", settings_->statusbar.page_filesize);
+    page->add_checkbox("Show archive filesize", settings_->statusbar.archive_filesize);
+    page->add_checkbox("Show current view mode", settings_->statusbar.view_mode);
 
-    page.add_section("Statusbar Field Modifiers");
+    page->add_section("Statusbar Field Modifiers");
 
-    page.add_checkbox("Show page scaling percent", settings_->statusbar.page_resolution_zoom_scale);
-    page.add_checkbox("Show full path of current file",
-                      settings_->statusbar.archive_filename_fullpath);
-
-    auto tab_label = Gtk::Label("Statusbar");
-    notebook_.append_page(page, tab_label);
+    page->add_checkbox("Show page scaling percent",
+                       settings_->statusbar.page_resolution_zoom_scale);
+    page->add_checkbox("Show full path of current file",
+                       settings_->statusbar.archive_filename_fullpath);
 }
 
 void
 gui::dialog::preferences::init_advanced_tab() noexcept
 {
-    auto page = PreferencePage();
+    auto page = Gtk::make_managed<preference_page>();
+    notebook_.append_page(*page, "Advanced");
 
-    page.add_section("Moving Files");
+    page->add_section("Moving Files");
 
     {
         const auto current = settings_->move_file;
@@ -402,11 +400,8 @@ gui::dialog::preferences::init_advanced_tab() noexcept
         entry->set_hexpand(true);
         entry->signal_changed().connect([entry, &opt]() { opt = entry->get_text(); });
 
-        page.add_row("Move file location (relative)", *entry);
+        page->add_row("Move file location (relative)", *entry);
     }
 
-    page.add_checkbox("Use SI units", settings_->si_units);
-
-    auto tab_label = Gtk::Label("Advanced");
-    notebook_.append_page(page, tab_label);
+    page->add_checkbox("Use SI units", settings_->si_units);
 }
