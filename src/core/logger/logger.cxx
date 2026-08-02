@@ -40,14 +40,17 @@ logger::initialize(const std::flat_map<std::string, std::string>& options,
                               default_logger_options_data,
                               magic_enum::enum_count<logger::domain>()>
         default_logger_options{{
-            {logger::domain::basic, {spdlog::level::trace, "%^%H:%M:%S.%F [%t] %-10l\t\t\t%v%$"}},
 #if defined(DEV_MODE)
+            {logger::domain::basic, {spdlog::level::trace, "%^%H:%M:%S.%F [%t] %-10l\t\t\t%v%$"}},
             {logger::domain::dev, {spdlog::level::trace, "%^%H:%M:%S.%F [%t] %-10l %n\t\t%v%$"}},
-#else
-            {logger::domain::dev, {spdlog::level::off, "%^%H:%M:%S.%F [%t] %-10l %n\t\t%v%$"}},
-#endif
             {logger::domain::gui, {spdlog::level::trace, "%^%H:%M:%S.%F [%t] %-10l %n\t\t%v%$"}},
             {logger::domain::vfs, {spdlog::level::trace, "%^%H:%M:%S.%F [%t] %-10l %n\t\t%v%$"}},
+#else
+            {logger::domain::basic, {spdlog::level::info, "%^%H:%M:%S.%F [%t] %-10l\t\t\t%v%$"}},
+            {logger::domain::dev, {spdlog::level::off, "%^%H:%M:%S.%F [%t] %-10l %n\t\t%v%$"}},
+            {logger::domain::gui, {spdlog::level::info, "%^%H:%M:%S.%F [%t] %-10l %n\t\t%v%$"}},
+            {logger::domain::vfs, {spdlog::level::info, "%^%H:%M:%S.%F [%t] %-10l %n\t\t%v%$"}},
+#endif
         }};
 
     spdlog::sink_ptr file_sink = nullptr;
