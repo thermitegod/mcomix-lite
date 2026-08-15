@@ -44,7 +44,7 @@ run_commandline(const commandline_opt_data_t& opt) noexcept
 
     if (opt->version)
     {
-        std::println("{} {}", PACKAGE_NAME_WEBCOMIX_FANCY, PACKAGE_VERSION);
+        std::println("{} {}", PACKAGE_NAME_FANCY, PACKAGE_VERSION);
         std::exit(EXIT_SUCCESS);
     }
 

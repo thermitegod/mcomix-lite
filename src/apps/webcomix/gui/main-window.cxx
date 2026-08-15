@@ -55,7 +55,7 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
     set_application(app);
     assert(get_application() != nullptr);
 
-    set_title(PACKAGE_NAME_WEBCOMIX_FANCY);
+    set_title(PACKAGE_NAME_FANCY);
     set_size_request(500, 500);
     set_resizable(true);
     set_visible(true);
@@ -668,7 +668,7 @@ gui::main_window::on_file_opened() noexcept
 void
 gui::main_window::on_file_closed() noexcept
 {
-    set_title(PACKAGE_NAME_WEBCOMIX_FANCY);
+    set_title(PACKAGE_NAME_FANCY);
 
     viewport_.hide_images();
     statusbar_.set_message("");

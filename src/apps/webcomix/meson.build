@@ -31,5 +31,9 @@ spacefm = build_target(
         gtk_dependencies,
         vfs_dep,
     ],
+    cpp_args: [
+        '-DPACKAGE_NAME="webcomix"',
+        '-DPACKAGE_NAME_FANCY="WebComix"',
+    ],
     cpp_pch: '../../../pch/pch.hxx',
 )

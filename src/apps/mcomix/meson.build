@@ -36,5 +36,9 @@ spacefm = build_target(
         gtk_dependencies,
         vfs_dep,
     ],
+    cpp_args: [
+        '-DPACKAGE_NAME="mcomix"',
+        '-DPACKAGE_NAME_FANCY="MComix"',
+    ],
     cpp_pch: '../../../pch/pch.hxx',
 )

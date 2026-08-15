@@ -28,6 +28,9 @@ test_suite = build_target(
         gtk_dependencies,
         vfs_dep,
     ],
+    cpp_args: [
+        '-DPACKAGE_NAME="mcomix"',
+    ],
     cpp_pch: '../pch/pch.hxx',
 )
 

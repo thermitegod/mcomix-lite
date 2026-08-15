@@ -25,14 +25,14 @@
 int
 main(int argc, char* argv[])
 {
-    CLI::App cli_app{PACKAGE_NAME_WEBCOMIX_FANCY, "Webcomic Reader"};
+    CLI::App cli_app{PACKAGE_NAME_FANCY, "Webcomic Reader"};
 
     const auto opt = std::make_shared<commandline_opt_data>();
     setup_commandline(cli_app, opt);
 
     CLI11_PARSE(cli_app, argc, argv);
 
-    Glib::set_prgname(PACKAGE_NAME_WEBCOMIX);
+    Glib::set_prgname(PACKAGE_NAME);
 
     // command line is not handled by GTK
     auto app =

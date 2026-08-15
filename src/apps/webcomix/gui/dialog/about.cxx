@@ -29,7 +29,7 @@ gui::dialog::about::about(Gtk::ApplicationWindow& parent) noexcept
     // TODO - need to make a logo
     // set_logo(Gdk::Texture::create_from_filename(""));
 
-    set_program_name(PACKAGE_NAME_WEBCOMIX_FANCY);
+    set_program_name(PACKAGE_NAME_FANCY);
     set_version(PACKAGE_VERSION);
     set_comments("Webcomix is an image viewer specifically designed to handle webcomics, "
                  "and image files.");

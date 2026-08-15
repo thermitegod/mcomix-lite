@@ -86,6 +86,9 @@ vfs_lib = static_library(
     include_directories : include_directories('.'),
     dependencies : vfs_dependencies,
     install: false,
+    cpp_args: [
+        '-DPACKAGE_NAME="mcomix"',
+    ],
     cpp_pch: '../../pch/pch.hxx',
 )
 

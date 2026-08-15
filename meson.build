@@ -274,12 +274,6 @@ endforeach
 ## preprocessor static
 
 preprocessor = [
-    '-DPACKAGE_NAME="mcomix"',
-    '-DPACKAGE_NAME_FANCY="MComix"',
-
-    '-DPACKAGE_NAME_WEBCOMIX="webcomix"',
-    '-DPACKAGE_NAME_WEBCOMIX_FANCY="WebComix"',
-
     '-DPACKAGE_VERSION="@0@"'.format(meson.project_version()),
 
     '-DPACKAGE_GITHUB="https://www.github.com/thermitegod/mcomix-lite"',
@@ -310,7 +304,9 @@ endforeach
 
 # Subdirectories
 
-subdir('src')
+subdir('src/core')
+subdir('src/apps/mcomix')
+subdir('src/apps/webcomix')
 
 if get_option('tests')
     subdir('tests')
