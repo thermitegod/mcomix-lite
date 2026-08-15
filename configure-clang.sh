@@ -21,7 +21,6 @@ meson setup \
     -Ddev=true \
     -Duse-pixbuf-backend=true \
     -Dwith-system-glaze=true \
-    -Dwith-system-spdlog=true \
     -Dwith-system-ztd=true \
     --buildtype=debug \
     --prefix=$(pwd)/build ./build-clang
