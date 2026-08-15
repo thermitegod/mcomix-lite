@@ -305,8 +305,14 @@ endforeach
 # Subdirectories
 
 subdir('src/core')
-subdir('src/apps/mcomix')
-subdir('src/apps/webcomix')
+
+if get_option('mcomix')
+    subdir('src/apps/mcomix')
+endif
+
+if get_option('webcomix')
+    subdir('src/apps/webcomix')
+endif
 
 if get_option('tests')
     subdir('tests')

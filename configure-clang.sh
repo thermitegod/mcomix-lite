@@ -19,6 +19,8 @@ ADDR2LINE=llvm-addr2line
 meson setup \
     -Dtests=true \
     -Ddev=true \
+    -Dmcomix=true \
+    -Dwebcomix=true \
     -Duse-pixbuf-backend=true \
     -Dwith-system-glaze=true \
     -Dwith-system-ztd=true \

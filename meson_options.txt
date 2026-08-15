@@ -13,6 +13,20 @@ option(
 )
 
 option(
+    'mcomix',
+    type : 'boolean',
+    value: true,
+    description : 'Build the mcomix frontend'
+)
+
+option(
+    'webcomix',
+    type : 'boolean',
+    value: true,
+    description : 'Build the webcomix frontend'
+)
+
+option(
     'use-pixbuf-backend',
     type : 'boolean',
     value: true,
