@@ -19,13 +19,12 @@ sources = files(
   'settings/config.cxx',
 )
 
-spacefm = build_target(
+webcomix_exe = executable(
     'webcomix',
     sources,
-    target_type: 'executable',
-    include_directories : include_directories('.'),
-    install : true,
-    install_dir : bindir,
+    include_directories: include_directories('.'),
+    install: true,
+    install_dir: bindir,
     dependencies: [
         base_dependencies,
         gtk_dependencies,

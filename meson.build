@@ -1,8 +1,8 @@
 project(
-    'rcomix', ['c', 'cpp'],
-    version : '4.0.0-dev',
-    license : 'GPL3',
-    default_options : [
+    'mcomix', ['c', 'cpp'],
+    version: '4.0.0-dev',
+    license: 'GPL3',
+    default_options: [
         'cpp_std=c++26',
         # 'cpp_debugstl=true',
         # 'cpp_importstd=true',
@@ -12,7 +12,7 @@ project(
         'prefix=/usr',
         'sysconfdir=/etc',
     ],
-    meson_version : '>= 1.7.0'
+    meson_version: '>= 1.7.0'
 )
 
 build_root = meson.project_build_root()
@@ -23,14 +23,14 @@ incdir = include_directories('src')
 package = meson.project_name()
 version = meson.project_version()
 prefix = get_option('prefix')
-bindir = join_paths(prefix, get_option('bindir'))
-datadir = join_paths(prefix, get_option('datadir'))
-libdir = join_paths(prefix, get_option('libdir'), package)
+bindir = prefix / get_option('bindir')
+datadir = prefix / get_option('datadir')
+libdir = prefix / get_option('libdir') / package
 sysconfdir = get_option('sysconfdir')
-localedir = join_paths(prefix, get_option('localedir'))
-mandir = join_paths(prefix, get_option('mandir'))
+localedir = prefix / get_option('localedir')
+mandir = prefix / get_option('mandir')
 
-## compiler stuff
+## Compiler stuff
 
 cc = meson.get_compiler('c')
 cpp = meson.get_compiler('cpp')
@@ -43,7 +43,8 @@ flags = [
     # '-fmodules',
     # '--compile-std-module',
 
-    # '-freflection', # very slow builds
+    # very slow builds
+    # '-freflection',
 ]
 
 if get_option('buildtype') == 'debug' or get_option('buildtype') == 'debugoptimized'
@@ -209,21 +210,25 @@ link_flags += cpp.get_supported_link_arguments([
     '-Wl,-z,defs',
 ])
 
-add_global_arguments(flags, language: ['c', 'cpp'])
-add_global_link_arguments(link_flags, language: ['c', 'cpp'])
+add_project_arguments(flags, language: ['c', 'cpp'])
+add_project_link_arguments(link_flags, language: ['c', 'cpp'])
 
-## dependencies
+## Dependencies
 
 botan_dep = dependency('botan-3', required: true)
 cli11_dep = dependency('CLI11', required: true)
-libarchive_dep = dependency('libarchive', required : true)
+libarchive_dep = dependency('libarchive', required: true)
 magic_enum_dep = dependency('magic_enum', required: true, version: '>=0.9.7')
 
-# Gtk4 CPP
+base_dependencies = [
+    cli11_dep,
+    magic_enum_dep,
+]
+
 gtkmm_dep = dependency('gtkmm-4.0', required: true)
 glibmm_dep = dependency('glibmm-2.68', required: true)
 giomm_dep = dependency('giomm-2.68', required: true)
-sigc_dep = dependency('sigc++-3.0', required : true)
+sigc_dep = dependency('sigc++-3.0', required: true)
 glycin_dep = dependency('glycin-gtk4-2', required: true)
 
 gtk_dependencies = [
@@ -231,47 +236,23 @@ gtk_dependencies = [
     glibmm_dep,
     giomm_dep,
     sigc_dep,
-
     glycin_dep,
 ]
 
-base_dependencies = [
-    cli11_dep,
-    magic_enum_dep,
-]
-
 if get_option('with-system-glaze')
-    glaze_dep = dependency('glaze', required: true, version: '>=6.3.0')
-    base_dependencies += glaze_dep
+    base_dependencies += dependency('glaze', required: true, version: '>=6.3.0')
 else
     incdir += include_directories('subprojects/glaze/include')
 endif
 
 if get_option('with-system-ztd')
-    ztd_dep = dependency('ztd', required: true)
-    base_dependencies += ztd_dep
+    base_dependencies += dependency('ztd', required: true)
 else
     ztd_proj = subproject('ztd', required: true)
-    ztd_dep = ztd_proj.get_variable('ztd_dep')
-    base_dependencies += ztd_dep
+    base_dependencies += ztd_proj.get_variable('ztd_dep')
 endif
 
-## preprocessor features
-features = []
-
-if get_option('dev')
-    features += '-DDEV_MODE'
-endif
-
-if get_option('use-pixbuf-backend')
-    features += '-DPIXBUF_BACKEND'
-endif
-
-foreach a: features
-    add_project_arguments(a, language: ['c', 'cpp'])
-endforeach
-
-## preprocessor static
+## Preprocessor / Features
 
 preprocessor = [
     '-DPACKAGE_VERSION="@0@"'.format(meson.project_version()),
@@ -281,11 +262,11 @@ preprocessor = [
     '-DPACKAGE_ONLINE_DOCS="TODO"',
 
     # data paths
-    '-DPACKAGE_IMAGES="/usr/share/mcomix/images"',
-    '-DPACKAGE_IMAGES_LOCAL="@0@"'.format(join_paths(meson.current_source_dir(), 'share/mcomix/images')),
+    '-DPACKAGE_IMAGES="@0@"'.format(datadir / 'mcomix' / 'images'),
+    '-DPACKAGE_IMAGES_LOCAL="@0@"'.format(meson.current_source_dir() / 'share/mcomix/images'),
 
     # test data paths
-    '-DTEST_DATA_PATH="@0@"'.format(join_paths(meson.current_source_dir(), 'tests/test_data')),
+    '-DTEST_DATA_PATH="@0@"'.format(meson.current_source_dir() / 'tests/test_data'),
 ]
 
 if get_option('dev')
@@ -296,13 +277,27 @@ if get_option('dev')
         '-DGLIBMM_DISABLE_DEPRECATED',
         '-DGIOMM_DISABLE_DEPRECATED',
     ]
+
+    if not get_option('use-pixbuf-backend')
+        preprocessor += [
+            # GTKMM
+            '-DGTKMM_DISABLE_DEPRECATED',
+            '-DGDKMM_DISABLE_DEPRECATED',
+        ]
+    endif
 endif
 
-foreach a : preprocessor
-    add_project_arguments(a, language : ['c', 'cpp'])
-endforeach
+if get_option('dev')
+    preprocessor += '-DDEV_MODE'
+endif
 
-# Subdirectories
+if get_option('use-pixbuf-backend')
+    preprocessor += '-DPIXBUF_BACKEND'
+endif
+
+add_project_arguments(preprocessor, language: ['c', 'cpp'])
+
+## Build
 
 subdir('src/core')
 
@@ -318,7 +313,7 @@ if get_option('tests')
     subdir('tests')
 endif
 
-# Install
+## Install
 
 install_subdir('share/applications', install_dir: datadir)
 install_subdir('share/icons', install_dir: datadir)

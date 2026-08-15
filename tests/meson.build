@@ -1,7 +1,8 @@
 ## Test only dependencies
-doctest_dep = dependency('doctest', required : true)
 
-test_sources = files(
+doctest_dep = dependency('doctest', required: true)
+
+sources = files(
     'src/main.cxx',
 
     'src/natsort/natsort.cxx',
@@ -15,10 +16,10 @@ test_sources = files(
     'src/vfs/utils/file-ops.cxx',
 )
 
-test_suite = build_target(
+
+test_suite_exe = executable(
     'test_suite',
-    sources: test_sources,
-    target_type: 'executable',
+    sources,
     include_directories: include_directories(['./src', '../src/apps/mcomix']),
     install: false,
     dependencies: [
@@ -34,4 +35,4 @@ test_suite = build_target(
     cpp_pch: '../pch/pch.hxx',
 )
 
-test('Test Suite', test_suite)
+test('Test Suite', test_suite_exe)

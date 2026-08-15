@@ -1,48 +1,48 @@
 option(
     'tests',
-    type : 'boolean',
-    value : false,
-    description : 'Build the test suite'
+    type: 'boolean',
+    value: false,
+    description: 'Build the test suite'
 )
 
 option(
     'dev',
-    type : 'boolean',
+    type: 'boolean',
     value: false,
-    description : 'enable development features'
+    description: 'enable development features'
 )
 
 option(
     'mcomix',
-    type : 'boolean',
+    type: 'boolean',
     value: true,
-    description : 'Build the mcomix frontend'
+    description: 'Build the mcomix frontend'
 )
 
 option(
     'webcomix',
-    type : 'boolean',
+    type: 'boolean',
     value: true,
-    description : 'Build the webcomix frontend'
+    description: 'Build the webcomix frontend'
 )
 
 option(
     'use-pixbuf-backend',
-    type : 'boolean',
+    type: 'boolean',
     value: true,
-    description : 'Use the deprecated Gdk::Pixbuf backend, otherwise use the new Gdk::Texture backend'
+    description: 'Use the deprecated Gdk::Pixbuf backend, otherwise use the new Gdk::Texture backend'
 )
 
 option(
     'with-system-glaze',
-    type : 'boolean',
+    type: 'boolean',
     value: false,
-    description : 'Use system glaze instead of bundled version'
+    description: 'Use system glaze instead of bundled version'
 )
 
 option(
     'with-system-ztd',
-    type : 'boolean',
+    type: 'boolean',
     value: false,
-    description : 'Use system ztd instead of bundled version'
+    description: 'Use system ztd instead of bundled version'
 )
