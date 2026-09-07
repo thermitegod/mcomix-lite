@@ -82,7 +82,7 @@ class PropertiesPage : public Gtk::Box
     }
 
     void
-    set_main_info(std::vector<std::string> info) noexcept
+    set_main_info(std::span<const std::string> info) noexcept
     {
         for (const auto& text : info)
         {
@@ -95,7 +95,7 @@ class PropertiesPage : public Gtk::Box
     }
 
     void
-    set_secondary_info(const std::vector<std::array<std::string, 2>>& info) noexcept
+    set_secondary_info(std::span<const std::array<std::string, 2>> info) noexcept
     {
         auto lbox = Gtk::make_managed<Gtk::Box>();
         lbox->set_orientation(Gtk::Orientation::VERTICAL);
@@ -241,9 +241,9 @@ gui::dialog::properties::init_archive_tab() noexcept
     auto thumb = file_handler_->image_handler()->get_thumbnail(1, 256);
     page.set_thumbnail(thumb);
 
-    page.set_main_info(
-        {std::format("{} pages", file_handler_->image_handler()->get_number_of_pages()),
-         file_handler_->is_archive() ? "Archive File" : "Image File"});
+    page.set_main_info(std::array<std::string, 2>{
+        std::format("{} pages", file_handler_->image_handler()->get_number_of_pages()),
+        file_handler_->is_archive() ? "Archive File" : "Image File"});
 
     page.set_secondary_info(secondary_info(file_handler_->get_real_path()));
 
@@ -266,7 +266,8 @@ gui::dialog::properties::init_image_tab(const std::int32_t p, std::string_view l
     const auto [width, height] = file_handler_->image_handler()->get_page_size(p);
 
     page.set_main_info(
-        {std::format("{}x{}", width, height), file_handler_->image_handler()->get_mime_name(p)});
+        std::array<std::string, 2>{std::format("{}x{}", width, height),
+                                   file_handler_->image_handler()->get_mime_name(p)});
 
     page.set_secondary_info(secondary_info(path));
 

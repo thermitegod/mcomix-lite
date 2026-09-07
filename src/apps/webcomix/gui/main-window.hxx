@@ -19,7 +19,7 @@
 #include <filesystem>
 #include <memory>
 #include <optional>
-#include <vector>
+#include <span>
 
 #include <gdkmm.h>
 #include <glibmm.h>
@@ -41,7 +41,7 @@ class main_window : public Gtk::ApplicationWindow
 {
   public:
     explicit main_window(const Glib::RefPtr<Gtk::Application>& app,
-                         const std::vector<std::filesystem::path>& filelist) noexcept;
+                         std::span<const std::filesystem::path> filelist) noexcept;
 
   private:
     void draw_pages() noexcept;

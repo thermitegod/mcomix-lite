@@ -19,6 +19,7 @@
 #include <format>
 #include <optional>
 #include <ranges>
+#include <span>
 #include <string>
 #include <system_error>
 #include <utility>
@@ -52,7 +53,7 @@
 #include "logger.hxx"
 
 gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
-                              const std::vector<std::filesystem::path>& filelist) noexcept
+                              std::span<const std::filesystem::path> filelist) noexcept
 {
     set_application(app);
     assert(get_application() != nullptr);

@@ -17,7 +17,11 @@
 
 #include <array>
 #include <filesystem>
+#include <span>
 #include <string>
+#include <string_view>
+
+#include <cstdint>
 
 #include <gdkmm.h>
 #include <glibmm.h>
@@ -39,8 +43,8 @@ class statusbar : public Gtk::Box
     void set_page_number(const std::int32_t page, const std::int32_t total_pages) noexcept;
     void set_view_mode() noexcept;
     void set_file_number(std::int32_t file_number, std::int32_t total) noexcept;
-    void set_resolution(std::vector<std::array<std::int32_t, 2>> scaled_sizes,
-                        std::vector<std::array<std::int32_t, 2>> size_list) noexcept;
+    void set_resolution(std::span<const std::array<std::int32_t, 2>> scaled_sizes,
+                        std::span<const std::array<std::int32_t, 2>> size_list) noexcept;
     void set_archive_filename(const std::filesystem::path& filename) noexcept;
     void set_filename(std::string filename) noexcept;
     void set_filesize(std::string filesize) noexcept;

@@ -13,8 +13,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <array>
 #include <filesystem>
 #include <format>
+#include <span>
+#include <string_view>
+
+#include <cstdint>
 
 #include <gdkmm.h>
 #include <glibmm.h>
@@ -96,8 +101,8 @@ gui::statusbar::set_file_number(std::int32_t file_number, std::int32_t total) no
 }
 
 void
-gui::statusbar::set_resolution(std::vector<std::array<std::int32_t, 2>> scaled_sizes,
-                               std::vector<std::array<std::int32_t, 2>> size_list) noexcept
+gui::statusbar::set_resolution(std::span<const std::array<std::int32_t, 2>> scaled_sizes,
+                               std::span<const std::array<std::int32_t, 2>> size_list) noexcept
 {
     std::vector<std::tuple<std::int32_t, std::int32_t, double>> resolutions;
     resolutions.reserve(scaled_sizes.size());
