@@ -15,11 +15,18 @@
 
 #include <algorithm>
 #include <filesystem>
+#include <flat_map>
+#include <optional>
 #include <print>
+#include <vector>
+
+#include <cstdint>
 
 #include <magic_enum/magic_enum.hpp>
 
 #include <CLI/CLI.hpp>
+
+#include <ztd/ztd.hxx>
 
 #include "commandline/commandline.hxx"
 
@@ -27,49 +34,46 @@
 
 #include "logger.hxx"
 
-void
-run_commandline(const commandline_opt_data_t& opt) noexcept
+struct opts_data final
 {
-    if (opt->crash_list)
-    {
-        vfs::crash::list();
-        std::exit(EXIT_SUCCESS);
-    }
+    std::vector<std::filesystem::path> files;
 
-    if (opt->crash_recover)
-    {
-        vfs::crash::recover();
-        std::exit(EXIT_SUCCESS);
-    }
+    std::vector<std::string> raw_log_levels;
+    std::flat_map<std::string, std::string> log_levels;
+    // std::filesystem::path logfile{"/tmp/test.log"};
+    std::filesystem::path logfile;
 
-    if (opt->version)
-    {
-        std::println("{} {}", PACKAGE_NAME_FANCY, PACKAGE_VERSION);
-        std::exit(EXIT_SUCCESS);
-    }
+    bool crash_list{false};
+    bool crash_recover{false};
 
-    logger::initialize(opt->log_levels, opt->logfile);
-}
+    bool build_debug{false};
+    bool version{false};
+};
 
-void
-setup_commandline(CLI::App& app, const commandline_opt_data_t& opt) noexcept
+std::optional<commandline::opts>
+commandline::run(int argc, char* argv[]) noexcept
 {
-    app.add_flag("--crash-list", opt->crash_list, "List all crash files");
+    CLI::App app{PACKAGE_NAME_FANCY, "Webcomic Reader"};
+    opts_data opt{};
+
+    ////////////////////////////////////
+
+    app.add_flag("--crash-list", opt.crash_list, "List all crash files");
     app.add_flag("--crash-recover",
-                 opt->crash_recover,
+                 opt.crash_recover,
                  "Reopen archives using crash files (check with --crash-list first)");
 
-    app.add_option("--loglevel", opt->raw_log_levels, "Set the loglevel. Format: domain=level")
+    app.add_option("--loglevel", opt.raw_log_levels, "Set the loglevel. Format: domain=level")
         ->check(
-            [&opt](const auto& value)
+            [&opt](const std::string& value) -> std::string
             {
-                auto log_levels = magic_enum::enum_names<logger::detail::loglevel>();
-                auto valid_domains = magic_enum::enum_names<logger::domain>();
+                constexpr auto log_levels = magic_enum::enum_names<logger::detail::loglevel>();
+                constexpr auto valid_domains = magic_enum::enum_names<logger::domain>();
 
                 const auto pos = value.find('=');
                 if (pos == std::string::npos)
                 {
-                    return std::string("Must be in format domain=level");
+                    return "Must be in format domain=level";
                 }
 
                 const auto domain = value.substr(0, pos);
@@ -84,27 +88,88 @@ setup_commandline(CLI::App& app, const commandline_opt_data_t& opt) noexcept
                     return std::format("Invalid log level: {}", level);
                 }
 
-                opt->log_levels.insert({domain, level});
+                opt.log_levels.insert({domain, level});
 
-                return std::string();
+                return {};
             });
 
-    app.add_option("--logfile", opt->logfile, "absolute path to the logfile")
+    app.add_option("--logfile", opt.logfile, "absolute path to the logfile")
         ->expected(1)
         ->check(
-            [](const std::filesystem::path& input)
+            [](const std::filesystem::path& input) -> std::string
             {
                 if (input.is_absolute())
                 {
-                    return std::string();
+                    return {};
                 }
-                return std::format("Logfile path must be absolute: {}", input);
+                return std::format("Logfile path must be absolute: {}", input.string());
             });
 
-    app.add_flag("-v,--version", opt->version, "Show version information");
+#if defined(DEV_MODE)
+    app.add_flag("--build-debug", opt.build_debug, "Show build information");
+#endif
+
+    app.add_flag("-v,--version", opt.version, "Show version information");
 
     // Everything else
-    app.add_option("files", opt->files, "[DIR | FILE | URL]...")->expected(0, -1);
+    app.add_option("files", opt.files, "[FILES]...")->expected(0, -1);
 
-    app.callback([opt]() { run_commandline(opt); });
+    ////////////////////////////////////
+
+    try
+    {
+        app.parse(argc, argv);
+    }
+    catch (const CLI::CallForHelp& e)
+    {
+        std::println("{}", app.help());
+        return std::nullopt;
+    }
+    catch (const CLI::ParseError& e)
+    {
+        return std::nullopt;
+    }
+
+    ////////////////////////////////////
+
+    if (opt.crash_list)
+    {
+        vfs::crash::list();
+        return std::nullopt;
+    }
+
+    if (opt.crash_recover)
+    {
+        vfs::crash::recover();
+        return std::nullopt;
+    }
+
+    if (opt.version)
+    {
+        std::println("{} {}", PACKAGE_NAME_FANCY, PACKAGE_VERSION);
+        return std::nullopt;
+    }
+
+#if defined(DEV_MODE)
+    if (opt.build_debug)
+    {
+        std::println("PACKAGE_NAME          = {}", PACKAGE_NAME);
+        std::println("PACKAGE_NAME_FANCY    = {}", PACKAGE_NAME_FANCY);
+        std::println("PACKAGE_VERSION       = {}", PACKAGE_VERSION);
+        std::println("PACKAGE_GITHUB        = {}", PACKAGE_GITHUB);
+        std::println("PACKAGE_BUGREPORT     = {}", PACKAGE_BUGREPORT);
+        std::println("PACKAGE_ONLINE_DOCS   = {}", PACKAGE_ONLINE_DOCS);
+        std::println("PACKAGE_IMAGES        = {}", PACKAGE_IMAGES);
+        std::println("PACKAGE_IMAGES_LOCAL  = {}", PACKAGE_IMAGES_LOCAL);
+        return std::nullopt;
+    }
+#endif
+
+    logger::initialize(opt.log_levels, opt.logfile);
+
+    ////////////////////////////////////
+
+    return commandline::opts{
+        .files = std::move(opt.files),
+    };
 }

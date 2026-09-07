@@ -16,27 +16,15 @@
 #pragma once
 
 #include <filesystem>
-#include <flat_map>
-#include <memory>
+#include <optional>
 #include <vector>
 
-#include <CLI/CLI.hpp>
-
-struct commandline_opt_data : public std::enable_shared_from_this<commandline_opt_data>
+namespace commandline
+{
+struct opts final
 {
     std::vector<std::filesystem::path> files;
-
-    std::vector<std::string> raw_log_levels;
-    std::flat_map<std::string, std::string> log_levels;
-    // std::filesystem::path logfile{"/tmp/test.log"};
-    std::filesystem::path logfile;
-
-    bool crash_list{false};
-    bool crash_recover{false};
-
-    bool version{false};
 };
 
-using commandline_opt_data_t = std::shared_ptr<commandline_opt_data>;
-
-void setup_commandline(CLI::App& app, const commandline_opt_data_t& opt) noexcept;
+std::optional<opts> run(int argc, char* argv[]) noexcept;
+} // namespace commandline
