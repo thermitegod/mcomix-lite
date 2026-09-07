@@ -34,7 +34,7 @@ gui::lib::thumbnailer::request(const request_data& request) noexcept
 }
 
 void
-gui::lib::thumbnailer::run(const std::stop_token& stoken) noexcept
+gui::lib::thumbnailer::run(std::stop_token stoken) noexcept
 {
     while (!stoken.stop_requested())
     {
@@ -43,7 +43,7 @@ gui::lib::thumbnailer::run(const std::stop_token& stoken) noexcept
 }
 
 void
-gui::lib::thumbnailer::run_once(const std::stop_token& stoken) noexcept
+gui::lib::thumbnailer::run_once(std::stop_token stoken) noexcept
 {
     request_data request;
     {

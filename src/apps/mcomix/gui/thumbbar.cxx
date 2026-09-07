@@ -65,7 +65,7 @@ gui::thumbbar::thumbbar(const std::shared_ptr<config::settings>& settings) noexc
                                                     { add_item(page, paintable); });
 
     thumbnailer_thread_ =
-        std::jthread([this](const std::stop_token& stoken) { thumbnailer_.run(stoken); });
+        std::jthread([this](std::stop_token stoken) { thumbnailer_.run(stoken); });
     pthread_setname_np(thumbnailer_thread_.native_handle(), "thumbnailer");
 }
 
@@ -114,7 +114,7 @@ gui::thumbbar::clear() noexcept
     thumbnailer_thread_.join();
 
     thumbnailer_thread_ =
-        std::jthread([this](const std::stop_token& stoken) { thumbnailer_.run(stoken); });
+        std::jthread([this](std::stop_token stoken) { thumbnailer_.run(stoken); });
     pthread_setname_np(thumbnailer_thread_.native_handle(), "thumbnailer");
 
     liststore_->remove_all();
