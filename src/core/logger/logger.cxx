@@ -36,9 +36,9 @@ logger::initialize(const std::flat_map<std::string, std::string>& options,
         spdlog::level::level_enum default_level;
         std::string_view format;
     };
-    static constexpr ztd::map<logger::domain,
-                              default_logger_options_data,
-                              magic_enum::enum_count<logger::domain>()>
+    static constexpr ztd::static_map<logger::domain,
+                                     default_logger_options_data,
+                                     magic_enum::enum_count<logger::domain>()>
         default_logger_options{{
 #if defined(DEV_MODE)
             {logger::domain::basic, {spdlog::level::trace, "%^%H:%M:%S.%F [%t] %-10l\t\t\t%v%$"}},
