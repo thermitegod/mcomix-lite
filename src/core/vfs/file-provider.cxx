@@ -23,7 +23,7 @@
 #include "file-supported.hxx"
 #include "natsort/natsort.hxx"
 
-vfs::file_provider::file_provider(const std::span<const std::filesystem::path> files) noexcept
+vfs::file_provider::file_provider(std::span<const std::filesystem::path> files) noexcept
     : files_(files.cbegin(), files.cend())
 {
     if (files.empty())

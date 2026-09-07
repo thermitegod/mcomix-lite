@@ -31,7 +31,7 @@ class viewport : public Gtk::Box
   public:
     explicit viewport(const std::shared_ptr<config::settings>& settings) noexcept;
 
-    void set(const std::span<Glib::RefPtr<Gdk::Paintable>>& paintables) noexcept;
+    void set(std::span<Glib::RefPtr<Gdk::Paintable>> paintables) noexcept;
 
     void hide_images() noexcept;
     void toggle_page_padding() noexcept;

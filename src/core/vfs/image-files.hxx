@@ -24,7 +24,7 @@ namespace vfs
 class image_files
 {
   public:
-    void set_image_files(const std::span<const std::filesystem::path> filelist) noexcept;
+    void set_image_files(std::span<const std::filesystem::path> filelist) noexcept;
     void cleanup() noexcept;
 
     [[nodiscard]] std::int32_t total_pages() const noexcept;

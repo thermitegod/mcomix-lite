@@ -27,7 +27,7 @@ class file_provider
 {
   public:
     explicit file_provider() = default;
-    explicit file_provider(const std::span<const std::filesystem::path> files) noexcept;
+    explicit file_provider(std::span<const std::filesystem::path> files) noexcept;
 
     enum class file_type
     {

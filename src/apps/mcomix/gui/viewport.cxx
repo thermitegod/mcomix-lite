@@ -68,7 +68,7 @@ gui::viewport::viewport(const std::shared_ptr<config::settings>& settings) noexc
 }
 
 void
-gui::viewport::set(const std::span<Glib::RefPtr<Gdk::Paintable>>& paintables) noexcept
+gui::viewport::set(std::span<Glib::RefPtr<Gdk::Paintable>> paintables) noexcept
 {
     assert(paintables.size() == 1 || paintables.size() == 2);
 

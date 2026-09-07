@@ -54,7 +54,7 @@ vfs::file_handler::refresh_opened() noexcept
 }
 
 void
-vfs::file_handler::open_file_init(const std::span<const std::filesystem::path> filelist,
+vfs::file_handler::open_file_init(std::span<const std::filesystem::path> filelist,
                                   const std::int32_t start_page) noexcept
 {
     if (filelist.empty())
@@ -102,7 +102,7 @@ vfs::file_handler::open_file(const std::filesystem::path& path,
 }
 
 void
-vfs::file_handler::archive_opened(const std::span<const std::filesystem::path> image_files) noexcept
+vfs::file_handler::archive_opened(std::span<const std::filesystem::path> image_files) noexcept
 {
     image_handler_->image_files()->set_image_files(image_files);
     file_opened();
@@ -195,8 +195,7 @@ vfs::file_handler::close(bool close_provider) noexcept
 }
 
 void
-vfs::file_handler::initialize_fileprovider(
-    const std::span<const std::filesystem::path> filelist) noexcept
+vfs::file_handler::initialize_fileprovider(std::span<const std::filesystem::path> filelist) noexcept
 {
     file_provider_ = std::make_unique<file_provider>(filelist);
 }
@@ -211,7 +210,7 @@ vfs::file_handler::open_archive(const std::filesystem::path& archive) noexcept
         extractor_->signal_file_extracted().connect([this](const std::filesystem::path& file)
                                                     { extracted_file(file); });
         extractor_->signal_file_listed().connect(
-            [this](const std::span<const std::filesystem::path> files) { file_listed(files); });
+            [this](std::span<const std::filesystem::path> files) { file_listed(files); });
 
         extractor_->signal_extraction_finished().connect([this]()
                                                          { signal_extraction_finished().emit(); });
@@ -226,7 +225,7 @@ vfs::file_handler::open_archive(const std::filesystem::path& archive) noexcept
 }
 
 void
-vfs::file_handler::file_listed(const std::span<const std::filesystem::path> files) noexcept
+vfs::file_handler::file_listed(std::span<const std::filesystem::path> files) noexcept
 {
     if (!file_loading_)
     {
@@ -238,7 +237,7 @@ vfs::file_handler::file_listed(const std::span<const std::filesystem::path> file
 }
 
 std::vector<std::filesystem::path>
-vfs::file_handler::sort_archive_images(const std::span<const std::filesystem::path> files) noexcept
+vfs::file_handler::sort_archive_images(std::span<const std::filesystem::path> files) noexcept
 {
     auto sorted_files = std::vector<std::filesystem::path>{files.cbegin(), files.cend()};
     std::ranges::sort(sorted_files, natsort::sorter{});

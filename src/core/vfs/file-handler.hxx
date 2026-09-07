@@ -32,7 +32,7 @@ class file_handler
   public:
     file_handler() = default;
 
-    void open_file_init(const std::span<const std::filesystem::path> filelist,
+    void open_file_init(std::span<const std::filesystem::path> filelist,
                         const std::int32_t start_page = 1) noexcept;
 
     void open_file(const std::filesystem::path& path, const std::int32_t start_page = 1) noexcept;
@@ -60,13 +60,13 @@ class file_handler
     }
 
   private:
-    void archive_opened(const std::span<const std::filesystem::path> image_files) noexcept;
+    void archive_opened(std::span<const std::filesystem::path> image_files) noexcept;
     void close(bool close_provider = false) noexcept;
-    void initialize_fileprovider(const std::span<const std::filesystem::path> filelist) noexcept;
+    void initialize_fileprovider(std::span<const std::filesystem::path> filelist) noexcept;
     void open_archive(const std::filesystem::path& archive) noexcept;
-    void file_listed(const std::span<const std::filesystem::path> files) noexcept;
+    void file_listed(std::span<const std::filesystem::path> files) noexcept;
     [[nodiscard]] std::vector<std::filesystem::path>
-    sort_archive_images(const std::span<const std::filesystem::path> files) noexcept;
+    sort_archive_images(std::span<const std::filesystem::path> files) noexcept;
     [[nodiscard]] std::span<const std::filesystem::path> get_file_list() noexcept;
 
     [[nodiscard]] static std::optional<std::size_t>

@@ -22,7 +22,7 @@
 #include "vfs/image-files.hxx"
 
 void
-vfs::image_files::set_image_files(const std::span<const std::filesystem::path> filelist) noexcept
+vfs::image_files::set_image_files(std::span<const std::filesystem::path> filelist) noexcept
 {
     assert(!filelist.empty());
     assert(pages_.empty());
