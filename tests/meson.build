@@ -6,6 +6,7 @@ sources = files(
     'src/main.cxx',
 
     'src/natsort/natsort.cxx',
+    'src/reflection/enum.cxx',
 
     'src/settings/property.cxx',
 

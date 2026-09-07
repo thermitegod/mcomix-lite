@@ -22,8 +22,6 @@
 
 #include <cstdint>
 
-#include <magic_enum/magic_enum.hpp>
-
 #include <CLI/CLI.hpp>
 
 #include <ztd/ztd.hxx>
@@ -33,6 +31,7 @@
 #include "vfs/crash/crash.hxx"
 
 #include "logger.hxx"
+#include "reflection/enum.hxx"
 
 struct opts_data final
 {
@@ -67,8 +66,8 @@ commandline::run(int argc, char* argv[]) noexcept
         ->check(
             [&opt](const std::string& value) -> std::string
             {
-                constexpr auto log_levels = magic_enum::enum_names<logger::detail::loglevel>();
-                constexpr auto valid_domains = magic_enum::enum_names<logger::domain>();
+                constexpr auto log_levels = reflection::enum_names<logger::detail::loglevel>();
+                constexpr auto valid_domains = reflection::enum_names<logger::domain>();
 
                 const auto pos = value.find('=');
                 if (pos == std::string::npos)
