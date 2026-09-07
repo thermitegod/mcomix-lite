@@ -161,7 +161,7 @@ vfs::image_handler::get_path_to_page(const std::optional<std::int32_t> query) co
     return image_files_->path_from_page(page);
 }
 
-const std::vector<std::string>
+std::vector<std::string>
 vfs::image_handler::get_page_filename(const std::optional<std::int32_t> query) const noexcept
 {
     const auto page = query.value_or(get_current_page());
@@ -192,7 +192,7 @@ vfs::image_handler::get_page_filename(const std::optional<std::int32_t> query) c
     return page_data;
 }
 
-const std::vector<std::string>
+std::vector<std::string>
 vfs::image_handler::get_page_filesize(const std::optional<std::int32_t> query) const noexcept
 {
     const auto page = query.value_or(get_current_page());

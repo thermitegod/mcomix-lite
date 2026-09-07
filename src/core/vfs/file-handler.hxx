@@ -44,7 +44,7 @@ class file_handler
     [[nodiscard]] bool is_file_loaded() noexcept;
     [[nodiscard]] bool is_archive() noexcept;
     [[nodiscard]] const std::filesystem::path get_base_path() noexcept;
-    [[nodiscard]] const std::array<std::int32_t, 2> get_file_number() noexcept;
+    [[nodiscard]] std::array<std::int32_t, 2> get_file_number() noexcept;
     [[nodiscard]] const std::filesystem::path get_real_path() noexcept;
     [[nodiscard]] bool open_next_archive() noexcept;
     [[nodiscard]] bool open_prev_archive() noexcept;

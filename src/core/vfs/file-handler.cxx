@@ -268,7 +268,7 @@ vfs::file_handler::get_file_list() noexcept
     return file_provider_->list_files(vfs::file_provider::file_type::archives);
 }
 
-const std::array<std::int32_t, 2>
+std::array<std::int32_t, 2>
 vfs::file_handler::get_file_number() noexcept
 {
     if (!is_archive_)

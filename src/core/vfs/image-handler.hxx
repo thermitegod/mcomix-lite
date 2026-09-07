@@ -77,10 +77,10 @@ class image_handler
     [[nodiscard]] std::filesystem::path
     get_path_to_page(const std::optional<std::int32_t> query = std::nullopt) const noexcept;
 
-    [[nodiscard]] const std::vector<std::string>
+    [[nodiscard]] std::vector<std::string>
     get_page_filename(const std::optional<std::int32_t> query = std::nullopt) const noexcept;
 
-    [[nodiscard]] const std::vector<std::string>
+    [[nodiscard]] std::vector<std::string>
     get_page_filesize(const std::optional<std::int32_t> query = std::nullopt) const noexcept;
 
     [[nodiscard]] std::array<std::int32_t, 2>
