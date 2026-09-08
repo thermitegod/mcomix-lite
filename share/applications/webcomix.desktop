@@ -1,9 +1,9 @@
 [Desktop Entry]
-Name=MComix
-GenericName=Manga Viewer
-Comment=Image viewer for manga and comic books
-Exec=mcomix %F
-Icon=mcomix
+Name=WebComix
+GenericName=Webcomic Viewer
+Comment=Image viewer for webcomics
+Exec=webcomix %F
+Icon=webcomix
 Terminal=false
 Type=Application
 StartupNotify=false
