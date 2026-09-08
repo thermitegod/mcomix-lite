@@ -25,6 +25,7 @@
 #include <utility>
 #include <vector>
 
+#include <cassert>
 #include <cmath>
 
 #include <gdkmm.h>
