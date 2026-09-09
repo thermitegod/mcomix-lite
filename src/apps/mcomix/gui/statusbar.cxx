@@ -16,6 +16,7 @@
 #include <array>
 #include <filesystem>
 #include <format>
+#include <ranges>
 #include <span>
 #include <string_view>
 
@@ -107,10 +108,10 @@ gui::statusbar::set_resolution(std::span<const std::array<std::int32_t, 2>> scal
     std::vector<std::tuple<std::int32_t, std::int32_t, double>> resolutions;
     resolutions.reserve(scaled_sizes.size());
 
-    for (std::size_t i = 0; i < scaled_sizes.size(); ++i)
+    for (auto idx : std::views::iota(0uz, scaled_sizes.size()))
     {
-        const auto& scaled_size = scaled_sizes[i];
-        const auto& size = size_list[i];
+        const auto& scaled_size = scaled_sizes[idx];
+        const auto& size = size_list[idx];
         const double scale = static_cast<double>(scaled_size[0]) / size[0];
         resolutions.emplace_back(size[0], size[1], scale);
     }

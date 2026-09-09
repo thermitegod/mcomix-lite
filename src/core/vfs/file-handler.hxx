@@ -72,7 +72,7 @@ class file_handler
     [[nodiscard]] static std::optional<std::size_t>
     current_file_index(auto&& v, auto& e) noexcept
     {
-        const auto it = std::ranges::find(v.cbegin(), v.cend(), e);
+        const auto it = std::ranges::find(v, e);
         if (it == v.cend())
         {
             return std::nullopt;
