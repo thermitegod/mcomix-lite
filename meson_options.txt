@@ -20,6 +20,13 @@ option(
 )
 
 option(
+    'mview',
+    type: 'boolean',
+    value: true,
+    description: 'Build the mview frontend'
+)
+
+option(
     'webcomix',
     type: 'boolean',
     value: true,

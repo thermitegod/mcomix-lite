@@ -304,6 +304,10 @@ if get_option('mcomix')
     subdir('src/apps/mcomix')
 endif
 
+if get_option('mview')
+    subdir('src/apps/mview')
+endif
+
 if get_option('webcomix')
     subdir('src/apps/webcomix')
 endif
