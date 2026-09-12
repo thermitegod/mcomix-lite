@@ -68,6 +68,12 @@ class viewport : public Gtk::ScrolledWindow
     static constexpr std::double_t ZOOM_MAX = 10.0;
     static constexpr std::double_t ZOOM_STEP = 0.1;
 
+    void on_drag_begin(std::double_t start_x, std::double_t start_y) noexcept;
+    void on_drag_update(std::double_t offset_x, std::double_t offset_y) noexcept;
+    Glib::RefPtr<Gtk::GestureDrag> drag_controller_;
+    std::double_t drag_start_hadj_val_ = 0.0;
+    std::double_t drag_start_vadj_val_ = 0.0;
+
     std::shared_ptr<config::settings> settings_;
 };
 } // namespace gui

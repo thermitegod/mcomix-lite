@@ -76,6 +76,15 @@ gui::viewport::viewport(const std::shared_ptr<config::settings>& settings) noexc
                                                 false);
 
     add_controller(scroll_controller_);
+
+    drag_controller_ = Gtk::GestureDrag::create();
+    drag_controller_->set_button(GDK_BUTTON_PRIMARY);
+    drag_controller_->signal_drag_begin().connect(
+        sigc::mem_fun(*this, &gui::viewport::on_drag_begin));
+    drag_controller_->signal_drag_update().connect(
+        sigc::mem_fun(*this, &gui::viewport::on_drag_update));
+
+    add_controller(drag_controller_);
 }
 
 bool
@@ -108,6 +117,48 @@ bool
 gui::viewport::is_default_zoom() const noexcept
 {
     return std::abs(zoom_ - 1.0) < 0.01;
+}
+
+void
+gui::viewport::on_drag_begin(std::double_t start_x, std::double_t start_y) noexcept
+{
+    (void)start_x;
+    (void)start_y;
+
+    auto hadj = get_hadjustment();
+    auto vadj = get_vadjustment();
+
+    if (hadj)
+    {
+        drag_start_hadj_val_ = hadj->get_value();
+    }
+    if (vadj)
+    {
+        drag_start_vadj_val_ = vadj->get_value();
+    }
+}
+
+void
+gui::viewport::on_drag_update(std::double_t offset_x, std::double_t offset_y) noexcept
+{
+    auto hadj = get_hadjustment();
+    auto vadj = get_vadjustment();
+
+    if (hadj)
+    {
+        const std::double_t new_val = drag_start_hadj_val_ - offset_x;
+        const std::double_t clamped_val =
+            std::clamp(new_val, hadj->get_lower(), hadj->get_upper() - hadj->get_page_size());
+        hadj->set_value(clamped_val);
+    }
+
+    if (vadj)
+    {
+        const std::double_t new_val = drag_start_vadj_val_ - offset_y;
+        const std::double_t clamped_val =
+            std::clamp(new_val, vadj->get_lower(), vadj->get_upper() - vadj->get_page_size());
+        vadj->set_value(clamped_val);
+    }
 }
 
 void
