@@ -23,7 +23,6 @@ namespace config
 {
 struct settings final
 {
-    std::int32_t page_ff_step = 10;
     std::int32_t thumbnail_size = 80;
     bool si_units = false;
     std::string move_file = "keep";

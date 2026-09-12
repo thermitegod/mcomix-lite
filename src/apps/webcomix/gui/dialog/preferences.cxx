@@ -188,24 +188,6 @@ gui::dialog::preferences::init_behaviour_tab() noexcept
 {
     auto page = PreferencePage();
 
-    page.add_section("Page Selection");
-
-    {
-        auto& opt = settings_->page_ff_step;
-
-        auto adjust = Gtk::Adjustment::create(opt, 1, 100);
-        adjust->set_step_increment(1);
-        adjust->set_page_increment(1);
-        adjust->signal_value_changed().connect(
-            [&opt, adjust]() { opt = static_cast<std::int32_t>(adjust->get_value()); });
-
-        auto button = Gtk::make_managed<Gtk::SpinButton>();
-        button->set_value(opt);
-        button->set_adjustment(adjust);
-
-        page.add_row("Pages to change when fast forwarding", *button);
-    }
-
     page.add_section("Navigation");
 
     page.add_checkbox("Prompt before auto changing archive", settings_->confirm_archive_change);
