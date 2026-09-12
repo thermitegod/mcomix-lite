@@ -113,6 +113,10 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
     app->add_action("bookmark_add", [this]() { on_bookmark_add(); });
     app->add_action("bookmark_manager", [this]() { on_bookmark_manager(); });
 
+    app->add_action("zoom_reset", [this]() { viewport_.zoom_reset(); });
+    app->add_action("zoom_in", [this]() { viewport_.zoom_in(); });
+    app->add_action("zoom_out", [this]() { viewport_.zoom_out(); });
+
     app->add_action("toggle_menubar",
                     [this]()
                     {
@@ -259,6 +263,34 @@ gui::main_window::add_shortcuts() noexcept
                                                              Gdk::ModifierType::CONTROL_MASK |
                                                                  Gdk::ModifierType::SHIFT_MASK),
                                   action));
+    }
+
+    // View //
+
+    { // Zoom In
+        auto action = Gtk::CallbackAction::create(
+            [this](Gtk::Widget&, const Glib::VariantBase&)
+            {
+                activate_action("app.zoom_in");
+                return true;
+            });
+
+        controller->add_shortcut(Gtk::Shortcut::create(
+            Gtk::KeyvalTrigger::create(GDK_KEY_equal, Gdk::ModifierType::CONTROL_MASK),
+            action));
+    }
+
+    { // Zoom Out
+        auto action = Gtk::CallbackAction::create(
+            [this](Gtk::Widget&, const Glib::VariantBase&)
+            {
+                activate_action("app.zoom_out");
+                return true;
+            });
+
+        controller->add_shortcut(Gtk::Shortcut::create(
+            Gtk::KeyvalTrigger::create(GDK_KEY_minus, Gdk::ModifierType::CONTROL_MASK),
+            action));
     }
 
     // General UI //

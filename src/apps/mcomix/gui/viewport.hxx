@@ -15,6 +15,7 @@
 
 #pragma once
 
+#include <array>
 #include <memory>
 #include <span>
 
@@ -26,7 +27,7 @@
 
 namespace gui
 {
-class viewport : public Gtk::Box
+class viewport : public Gtk::ScrolledWindow
 {
   public:
     explicit viewport(const std::shared_ptr<config::settings>& settings) noexcept;
@@ -36,14 +37,36 @@ class viewport : public Gtk::Box
     void hide_images() noexcept;
     void toggle_page_padding() noexcept;
 
+    void zoom_reset() noexcept;
+    void zoom_in() noexcept;
+    void zoom_out() noexcept;
+
+    void set_rotation(const std::int32_t rotation) noexcept;
+
+    [[nodiscard]] std::double_t get_zoom() const noexcept;
+
   private:
     void set_left(const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept;
     void set_right(const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept;
 
-    // Need to use two boxes to get images to stay connected
-    Gtk::Box image_box_;
+    void update_rotation(Gtk::Orientation orientation, bool reverse) noexcept;
+
+    Gtk::Box container_box_{Gtk::Orientation::HORIZONTAL};
+    Gtk::Box image_box_{Gtk::Orientation::HORIZONTAL};
     Gtk::Picture image_left_;
     Gtk::Picture image_right_;
+
+    std::array<Glib::RefPtr<Gdk::Paintable>, 2> paintables_;
+
+    Glib::RefPtr<Gtk::EventControllerScroll> scroll_controller_;
+
+    bool on_scroll(std::double_t dx, std::double_t dy) noexcept;
+    void set_zoom(std::double_t zoom) noexcept;
+    bool is_default_zoom() const noexcept;
+    std::double_t zoom_ = 1.0;
+    static constexpr std::double_t ZOOM_MIN = 1.0;
+    static constexpr std::double_t ZOOM_MAX = 10.0;
+    static constexpr std::double_t ZOOM_STEP = 0.1;
 
     std::shared_ptr<config::settings> settings_;
 };

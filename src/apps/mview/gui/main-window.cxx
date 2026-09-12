@@ -99,6 +99,10 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
     app->add_action("rotate_180", [this]() { rotate_x(180); });
     app->add_action("rotate_270", [this]() { rotate_x(270); });
 
+    app->add_action("zoom_reset", [this]() { viewport_.zoom_reset(); });
+    app->add_action("zoom_in", [this]() { viewport_.zoom_in(); });
+    app->add_action("zoom_out", [this]() { viewport_.zoom_out(); });
+
     app->add_action("toggle_menubar",
                     [this]()
                     {
@@ -263,17 +267,6 @@ gui::main_window::add_shortcuts() noexcept
     }
 
     // View //
-    { // Keep Transformation
-        auto action = Gtk::CallbackAction::create(
-            [this](Gtk::Widget&, const Glib::VariantBase&)
-            {
-                activate_action("app.keep_transformation");
-                return true;
-            });
-
-        controller->add_shortcut(
-            Gtk::Shortcut::create(Gtk::KeyvalTrigger::create(GDK_KEY_k), action));
-    }
 
     { // Rotate 90
         auto action = Gtk::CallbackAction::create(
@@ -310,6 +303,32 @@ gui::main_window::add_shortcuts() noexcept
 
         controller->add_shortcut(Gtk::Shortcut::create(
             Gtk::KeyvalTrigger::create(GDK_KEY_r, Gdk::ModifierType::CONTROL_MASK),
+            action));
+    }
+
+    { // Zoom In
+        auto action = Gtk::CallbackAction::create(
+            [this](Gtk::Widget&, const Glib::VariantBase&)
+            {
+                activate_action("app.zoom_in");
+                return true;
+            });
+
+        controller->add_shortcut(Gtk::Shortcut::create(
+            Gtk::KeyvalTrigger::create(GDK_KEY_equal, Gdk::ModifierType::CONTROL_MASK),
+            action));
+    }
+
+    { // Zoom Out
+        auto action = Gtk::CallbackAction::create(
+            [this](Gtk::Widget&, const Glib::VariantBase&)
+            {
+                activate_action("app.zoom_out");
+                return true;
+            });
+
+        controller->add_shortcut(Gtk::Shortcut::create(
+            Gtk::KeyvalTrigger::create(GDK_KEY_minus, Gdk::ModifierType::CONTROL_MASK),
             action));
     }
 
@@ -715,6 +734,7 @@ gui::main_window::set_page(const std::int32_t page) noexcept
 
     if (!settings->keep_transformation)
     {
+        viewport_.zoom_reset();
         settings->rotation = 0;
     }
 

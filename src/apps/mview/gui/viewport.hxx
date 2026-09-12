@@ -16,7 +16,6 @@
 #pragma once
 
 #include <memory>
-#include <span>
 
 #include <gdkmm.h>
 #include <glibmm.h>
@@ -26,17 +25,34 @@
 
 namespace gui
 {
-class viewport : public Gtk::Box
+class viewport : public Gtk::ScrolledWindow
 {
   public:
     explicit viewport(const std::shared_ptr<config::settings>& settings) noexcept;
 
     void set(Glib::RefPtr<Gdk::Paintable> paintable) noexcept;
-
     void hide_images() noexcept;
+
+    void zoom_reset() noexcept;
+    void zoom_in() noexcept;
+    void zoom_out() noexcept;
+
+    [[nodiscard]] std::double_t get_zoom() const noexcept;
 
   private:
     Gtk::Picture image_;
+
+    Glib::RefPtr<Gdk::Paintable> paintable_;
+
+    Glib::RefPtr<Gtk::EventControllerScroll> scroll_controller_;
+
+    bool on_scroll(std::double_t dx, std::double_t dy) noexcept;
+    void set_zoom(std::double_t zoom) noexcept;
+    bool is_default_zoom() const noexcept;
+    std::double_t zoom_ = 1.0;
+    static constexpr std::double_t ZOOM_MIN = 1.0;
+    static constexpr std::double_t ZOOM_MAX = 10.0;
+    static constexpr std::double_t ZOOM_STEP = 0.1;
 
     std::shared_ptr<config::settings> settings_;
 };

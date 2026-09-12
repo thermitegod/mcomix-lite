@@ -274,19 +274,43 @@ gui::menubar::create_tools() noexcept
     auto menu = Gio::Menu::create();
     Glib::RefPtr<Gio::MenuItem> item;
 
-    menu->append("Reset Rotation", "app.rotate_reset");
+    {
+        auto section = Gio::Menu::create();
 
-    item = Gio::MenuItem::create("Rotate 90°", "app.rotate_90");
-    item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("R"));
-    menu->append_item(item);
+        item = Gio::MenuItem::create("Reset Rotation", "app.rotate_reset");
+        section->append_item(item);
 
-    item = Gio::MenuItem::create("Rotate 180°", "app.rotate_180");
-    item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("<Shift>R"));
-    menu->append_item(item);
+        item = Gio::MenuItem::create("Rotate 90°", "app.rotate_90");
+        item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("R"));
+        section->append_item(item);
 
-    item = Gio::MenuItem::create("Rotate 270°", "app.rotate_270");
-    item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("<Control>R"));
-    menu->append_item(item);
+        item = Gio::MenuItem::create("Rotate 180°", "app.rotate_180");
+        item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("<Shift>R"));
+        section->append_item(item);
+
+        item = Gio::MenuItem::create("Rotate 270°", "app.rotate_270");
+        item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("<Control>R"));
+        section->append_item(item);
+
+        menu->append_section(section);
+    }
+
+    {
+        auto section = Gio::Menu::create();
+
+        item = Gio::MenuItem::create("Reset Zoom", "app.zoom_reset");
+        section->append_item(item);
+
+        item = Gio::MenuItem::create("Zoom In", "app.zoom_in");
+        item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("<Control>equal"));
+        section->append_item(item);
+
+        item = Gio::MenuItem::create("Zoom Out", "app.zoom_out");
+        item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("<Control>minus"));
+        section->append_item(item);
+
+        menu->append_section(section);
+    }
 
     return menu;
 }

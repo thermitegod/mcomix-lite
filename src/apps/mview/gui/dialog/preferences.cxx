@@ -242,7 +242,7 @@ gui::dialog::preferences::init_display_tab() noexcept
         page->add_row("Image rotation", *drop);
     }
 
-    page->add_checkbox("Keep rotation between page changes", settings_->keep_transformation);
+    page->add_checkbox("Keep rotation / zoom between page changes", settings_->keep_transformation);
 
     page->add_section("General");
 

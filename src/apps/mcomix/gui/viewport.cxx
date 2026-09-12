@@ -13,6 +13,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <array>
 #include <memory>
 #include <span>
 #include <utility>
@@ -30,11 +31,14 @@
 gui::viewport::viewport(const std::shared_ptr<config::settings>& settings) noexcept
     : settings_(settings)
 {
-    set_orientation(Gtk::Orientation::HORIZONTAL);
-    set_halign(Gtk::Align::CENTER);
-    set_valign(Gtk::Align::CENTER);
     set_hexpand(true);
     set_vexpand(true);
+    set_policy(Gtk::PolicyType::AUTOMATIC, Gtk::PolicyType::AUTOMATIC);
+
+    container_box_.set_halign(Gtk::Align::CENTER);
+    container_box_.set_valign(Gtk::Align::CENTER);
+    container_box_.set_hexpand(true);
+    container_box_.set_vexpand(true);
 
     image_box_.set_halign(Gtk::Align::CENTER);
     image_box_.set_valign(Gtk::Align::CENTER);
@@ -42,29 +46,156 @@ gui::viewport::viewport(const std::shared_ptr<config::settings>& settings) noexc
     image_box_.set_vexpand(false);
 
     image_left_.set_content_fit(Gtk::ContentFit::CONTAIN);
+    image_left_.set_can_shrink(true);
+    image_left_.set_halign(Gtk::Align::START);
+    image_left_.set_valign(Gtk::Align::START);
     image_left_.set_hexpand(true);
     image_left_.set_vexpand(true);
-    image_left_.set_halign(Gtk::Align::CENTER);
-    image_left_.set_valign(Gtk::Align::CENTER);
+
+    image_right_.set_content_fit(Gtk::ContentFit::CONTAIN);
+    image_right_.set_can_shrink(true);
+    image_right_.set_halign(Gtk::Align::START);
+    image_right_.set_valign(Gtk::Align::START);
+    image_right_.set_hexpand(true);
+    image_right_.set_vexpand(true);
 
     if (settings_->double_page_center_space)
     {
         image_box_.set_spacing(2);
     }
 
-    image_right_.set_content_fit(Gtk::ContentFit::CONTAIN);
-    image_right_.set_hexpand(true);
-    image_right_.set_vexpand(true);
-    image_right_.set_halign(Gtk::Align::CENTER);
-    image_right_.set_valign(Gtk::Align::CENTER);
-
     image_box_.append(image_left_);
     image_box_.append(image_right_);
+    container_box_.append(image_box_);
 
-    append(image_box_);
+    set_child(container_box_);
 
-    property_orientation().signal_changed().connect(
-        [this]() { image_box_.set_orientation(get_orientation()); });
+    scroll_controller_ = Gtk::EventControllerScroll::create();
+    scroll_controller_->set_flags(Gtk::EventControllerScroll::Flags::VERTICAL);
+    scroll_controller_->signal_scroll().connect(sigc::mem_fun(*this, &gui::viewport::on_scroll),
+                                                false);
+
+    add_controller(scroll_controller_);
+}
+
+bool
+gui::viewport::on_scroll(std::double_t dx, std::double_t dy) noexcept
+{
+    (void)dx;
+
+    const auto state = scroll_controller_->get_current_event_state();
+    const auto ctrl_pressed =
+        (state & Gdk::ModifierType::CONTROL_MASK) == Gdk::ModifierType::CONTROL_MASK;
+
+    if (!ctrl_pressed)
+    {
+        return false;
+    }
+
+    if (dy < 0.0)
+    {
+        zoom_in();
+    }
+    else
+    {
+        zoom_out();
+    }
+
+    return true;
+}
+
+bool
+gui::viewport::is_default_zoom() const noexcept
+{
+    return std::abs(zoom_ - 1.0) < 0.01;
+}
+
+void
+gui::viewport::zoom_reset() noexcept
+{
+    if (!is_default_zoom())
+    {
+        set_zoom(1.0);
+    }
+}
+
+void
+gui::viewport::zoom_in() noexcept
+{
+    set_zoom(std::clamp(zoom_ + ZOOM_STEP, ZOOM_MIN, ZOOM_MAX));
+}
+
+void
+gui::viewport::zoom_out() noexcept
+{
+    set_zoom(std::clamp(zoom_ - ZOOM_STEP, ZOOM_MIN, ZOOM_MAX));
+}
+
+void
+gui::viewport::set_zoom(std::double_t zoom) noexcept
+{
+    zoom_ = zoom;
+
+    if (paintables_.empty())
+    {
+        return;
+    }
+
+    const bool is_default = is_default_zoom();
+
+    // zoom left
+    if (paintables_[0])
+    {
+        image_left_.set_content_fit(Gtk::ContentFit::CONTAIN);
+
+        if (is_default)
+        {
+            image_left_.set_size_request(-1, -1);
+            image_left_.set_hexpand(true);
+            image_left_.set_vexpand(true);
+        }
+        else
+        {
+            const auto orig_w = static_cast<std::double_t>(paintables_[0]->get_intrinsic_width());
+            const auto orig_h = static_cast<std::double_t>(paintables_[0]->get_intrinsic_height());
+            const auto target_w = static_cast<std::int32_t>(orig_w * zoom_);
+            const auto target_h = static_cast<std::int32_t>(orig_h * zoom_);
+
+            image_left_.set_hexpand(false);
+            image_left_.set_vexpand(false);
+            image_left_.set_size_request(target_w, target_h);
+        }
+    }
+
+    // zoom right
+    if (paintables_[1])
+    {
+        image_right_.set_content_fit(Gtk::ContentFit::CONTAIN);
+
+        if (is_default)
+        {
+            image_right_.set_size_request(-1, -1);
+            image_right_.set_hexpand(true);
+            image_right_.set_vexpand(true);
+        }
+        else
+        {
+            const auto orig_w = static_cast<std::double_t>(paintables_[1]->get_intrinsic_width());
+            const auto orig_h = static_cast<std::double_t>(paintables_[1]->get_intrinsic_height());
+            const auto target_w = static_cast<std::int32_t>(orig_w * zoom_);
+            const auto target_h = static_cast<std::int32_t>(orig_h * zoom_);
+
+            image_right_.set_hexpand(false);
+            image_right_.set_vexpand(false);
+            image_right_.set_size_request(target_w, target_h);
+        }
+    }
+}
+
+std::double_t
+gui::viewport::get_zoom() const noexcept
+{
+    return zoom_;
 }
 
 void
@@ -72,19 +203,29 @@ gui::viewport::set(std::span<Glib::RefPtr<Gdk::Paintable>> paintables) noexcept
 {
     assert(paintables.size() == 1 || paintables.size() == 2);
 
+    paintables_[0] = nullptr;
+    paintables_[1] = nullptr;
+
     if (paintables.size() == 1)
     {
-        set_left(paintables[0]);
+        paintables_[0] = paintables[0];
+
+        set_left(paintables_[0]);
     }
     else if (paintables.size() == 2)
     {
-        set_left(paintables[0]);
-        set_right(paintables[1]);
+        paintables_[0] = paintables[0];
+        paintables_[1] = paintables[1];
+
+        set_left(paintables_[0]);
+        set_right(paintables_[1]);
     }
     else
     {
         std::unreachable();
     }
+
+    set_zoom(zoom_);
 }
 
 void
@@ -126,4 +267,56 @@ gui::viewport::hide_images() noexcept
     // image is going to be shown, prevents a ghost second image
     image_left_.set_visible(false);
     image_right_.set_visible(false);
+}
+
+void
+gui::viewport::set_rotation(std::int32_t rotation) noexcept
+{
+    switch (rotation)
+    {
+        case 0:
+        {
+            update_rotation(Gtk::Orientation::HORIZONTAL, false);
+            break;
+        }
+        case 90:
+        {
+            update_rotation(Gtk::Orientation::VERTICAL, false);
+            break;
+        }
+        case 180:
+        {
+            update_rotation(Gtk::Orientation::HORIZONTAL, true);
+            break;
+        }
+        case 270:
+        {
+            update_rotation(Gtk::Orientation::VERTICAL, true);
+            break;
+        }
+        default:
+        {
+            std::unreachable();
+        }
+    }
+}
+
+void
+gui::viewport::update_rotation(Gtk::Orientation orientation, bool reverse) noexcept
+{
+    image_box_.set_orientation(orientation);
+
+    image_box_.remove(image_left_);
+    image_box_.remove(image_right_);
+
+    if (!reverse)
+    {
+        image_box_.append(image_left_);
+        image_box_.append(image_right_);
+    }
+    else
+    {
+        image_box_.append(image_right_);
+        image_box_.append(image_left_);
+    }
 }

@@ -27,6 +27,7 @@ gui::menubar::menubar() noexcept
     menu->append_submenu("View", create_view());
     menu->append_submenu("Navigation", create_navigation());
     menu->append_submenu("Bookmarks", create_bookmarks());
+    menu->append_submenu("Tools", create_tools());
     menu->append_submenu("Help", create_help());
 
     set_menu_model(menu);
@@ -173,6 +174,32 @@ gui::menubar::create_bookmarks() noexcept
     item = Gio::MenuItem::create("Open Bookmark Manager", "app.bookmark_manager");
     item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("<Shift><Control>O"));
     menu->append_item(item);
+
+    return menu;
+}
+
+Glib::RefPtr<Gio::Menu>
+gui::menubar::create_tools() noexcept
+{
+    auto menu = Gio::Menu::create();
+    Glib::RefPtr<Gio::MenuItem> item;
+
+    {
+        auto section = Gio::Menu::create();
+
+        item = Gio::MenuItem::create("Reset Zoom", "app.zoom_reset");
+        section->append_item(item);
+
+        item = Gio::MenuItem::create("Zoom In", "app.zoom_in");
+        item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("<Control>equal"));
+        section->append_item(item);
+
+        item = Gio::MenuItem::create("Zoom Out", "app.zoom_out");
+        item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("<Control>minus"));
+        section->append_item(item);
+
+        menu->append_section(section);
+    }
 
     return menu;
 }

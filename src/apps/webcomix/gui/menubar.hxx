@@ -32,6 +32,7 @@ class menubar : public Gtk::PopoverMenuBar
     [[nodiscard]] Glib::RefPtr<Gio::Menu> create_view() noexcept;
     [[nodiscard]] Glib::RefPtr<Gio::Menu> create_navigation() noexcept;
     [[nodiscard]] Glib::RefPtr<Gio::Menu> create_bookmarks() noexcept;
+    [[nodiscard]] Glib::RefPtr<Gio::Menu> create_tools() noexcept;
     [[nodiscard]] Glib::RefPtr<Gio::Menu> create_help() noexcept;
 };
 } // namespace gui

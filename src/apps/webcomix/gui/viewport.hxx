@@ -35,8 +35,28 @@ class viewport : public Gtk::ScrolledWindow
 
     void hide_images() noexcept;
 
+    void zoom_reset() noexcept;
+    void zoom_in() noexcept;
+    void zoom_out() noexcept;
+
+    [[nodiscard]] std::double_t get_zoom() const noexcept;
+
   private:
-    Gtk::Box box_;
+    Gtk::Box box_{Gtk::Orientation::VERTICAL};
+
+    std::vector<Glib::RefPtr<Gdk::Paintable>> paintables_;
+
+    Glib::RefPtr<Gtk::EventControllerScroll> scroll_controller_;
+
+    bool on_scroll(std::double_t dx, std::double_t dy) noexcept;
+    void set_zoom(std::double_t zoom) noexcept;
+    void set_picture_zoom(Gtk::Picture& picture,
+                          const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept;
+    bool is_default_zoom() const noexcept;
+    std::double_t zoom_ = 1.0;
+    static constexpr std::double_t ZOOM_MIN = 1.0;
+    static constexpr std::double_t ZOOM_MAX = 10.0;
+    static constexpr std::double_t ZOOM_STEP = 0.1;
 
     std::shared_ptr<config::settings> settings_;
 };
