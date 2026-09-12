@@ -17,9 +17,9 @@
 #include <glibmm.h>
 #include <gtkmm.h>
 
-#include "settings/settings.hxx"
-
 #include "gui/viewport.hxx"
+
+#include "settings.hxx"
 
 gui::viewport::viewport(const std::shared_ptr<config::settings>& settings) noexcept
     : settings_(settings)

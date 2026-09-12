@@ -21,9 +21,9 @@
 
 #include <ztd/ztd.hxx>
 
-#include "settings/settings.hxx"
-
 #include "gui/thumbbar.hxx"
+
+#include "settings.hxx"
 
 // very helpful, used as the template for this widget.
 // https://github.com/GNOME/gtkmm/blob/master/demos/gtk-demo/example_listview_applauncher.cc

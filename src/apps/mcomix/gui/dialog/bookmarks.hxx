@@ -19,10 +19,10 @@
 
 #include <gtkmm.h>
 
-#include "settings/settings.hxx"
-
 #include "vfs/bookmarks.hxx"
 #include "vfs/file-handler.hxx"
+
+#include "settings.hxx"
 
 namespace gui::dialog
 {

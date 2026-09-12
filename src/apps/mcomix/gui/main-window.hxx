@@ -26,7 +26,6 @@
 #include <gtkmm.h>
 
 #include "settings/config.hxx"
-#include "settings/settings.hxx"
 
 #include "gui/menubar.hxx"
 #include "gui/statusbar.hxx"
@@ -37,6 +36,8 @@
 
 #include "vfs/bookmarks.hxx"
 #include "vfs/file-handler.hxx"
+
+#include "settings.hxx"
 
 namespace gui
 {
@@ -90,7 +91,8 @@ class main_window : public Gtk::ApplicationWindow
     std::array<std::int32_t, 2> get_visible_area_size() noexcept;
 
     std::shared_ptr<config::settings> settings = std::make_shared<config::settings>();
-    std::shared_ptr<config::manager> config_manager_ = std::make_shared<config::manager>(settings);
+    std::shared_ptr<config::manager<config::settings>> config_manager_ =
+        std::make_shared<config::manager<config::settings>>(settings, PACKAGE_NAME);
     std::shared_ptr<vfs::file_handler> file_handler_ = std::make_shared<vfs::file_handler>();
     std::shared_ptr<gui::lib::view_state> view_state =
         std::make_shared<gui::lib::view_state>(file_handler_);

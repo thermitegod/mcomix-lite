@@ -15,8 +15,6 @@ sources = files(
   'gui/dialog/properties.cxx',
 
   'gui/dialog/widgets/button-box.cxx',
-
-  'settings/config.cxx',
 )
 
 webcomix_exe = executable(

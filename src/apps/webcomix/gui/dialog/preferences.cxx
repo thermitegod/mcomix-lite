@@ -20,10 +20,10 @@
 #include <gtkmm.h>
 #include <sigc++/sigc++.h>
 
-#include "settings/settings.hxx"
-
 #include "gui/dialog/preferences.hxx"
 #include "gui/dialog/widgets/button-box.hxx"
+
+#include "settings.hxx"
 
 class PreferencePage : public Gtk::ScrolledWindow
 {

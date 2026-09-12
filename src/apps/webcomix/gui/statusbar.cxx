@@ -22,11 +22,11 @@
 
 #include <ztd/ztd.hxx>
 
-#include "settings/settings.hxx"
-
 #include "gui/statusbar.hxx"
 
 #include "vfs/utils/utils.hxx"
+
+#include "settings.hxx"
 
 gui::statusbar::statusbar(const std::shared_ptr<config::settings>& settings) noexcept
     : settings(settings)

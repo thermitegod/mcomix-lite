@@ -24,14 +24,14 @@
 
 #include <ztd/ztd.hxx>
 
-#include "settings/settings.hxx"
-
 #include "gui/dialog/properties.hxx"
 #include "gui/dialog/widgets/button-box.hxx"
 
 #include "vfs/file-handler.hxx"
 
 #include "vfs/utils/utils.hxx"
+
+#include "settings.hxx"
 
 class PropertiesPage : public Gtk::Box
 {

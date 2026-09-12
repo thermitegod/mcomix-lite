@@ -28,13 +28,13 @@
 
 #include <ztd/ztd.hxx>
 
-#include "settings/settings.hxx"
-
 #include "gui/statusbar.hxx"
 
 #include "gui/lib/view-state.hxx"
 
 #include "vfs/utils/utils.hxx"
+
+#include "settings.hxx"
 
 gui::statusbar::statusbar(const std::shared_ptr<config::settings>& settings,
                           const std::shared_ptr<gui::lib::view_state>& view_state) noexcept

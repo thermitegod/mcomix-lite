@@ -21,10 +21,10 @@
 
 #include <ztd/ztd.hxx>
 
-#include "settings/settings.hxx"
-
 #include "gui/dialog/bookmarks.hxx"
 #include "gui/dialog/widgets/button-box.hxx"
+
+#include "settings.hxx"
 
 gui::dialog::bookmarks::bookmarks(Gtk::ApplicationWindow& parent,
                                   const std::shared_ptr<vfs::file_handler>& file_handler,
