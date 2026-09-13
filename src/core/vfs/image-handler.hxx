@@ -29,9 +29,6 @@
 
 #include "glycin/glycin.hxx"
 
-// #define PIXBUF_BACKEND
-// #undef PIXBUF_BACKEND
-
 namespace vfs
 {
 /**
@@ -50,13 +47,8 @@ class image_handler
 
     [[nodiscard]] std::shared_ptr<vfs::image_files> image_files() const noexcept;
 
-#if defined(PIXBUF_BACKEND)
-    [[nodiscard]] std::vector<Glib::RefPtr<Gdk::Pixbuf>>
-    get_images(const std::int32_t number) noexcept;
-#else
     [[nodiscard]] std::vector<Glib::RefPtr<Gly::Image>>
     get_images(const std::int32_t number) noexcept;
-#endif
 
     void set_page(const std::int32_t page) noexcept;
 
@@ -102,22 +94,14 @@ class image_handler
     void set_view_state(const state_info& view_state) noexcept;
 
   private:
-#if defined(PIXBUF_BACKEND)
-    [[nodiscard]] Glib::RefPtr<Gdk::Pixbuf> get_image(const std::int32_t page) noexcept;
-#else
     [[nodiscard]] Glib::RefPtr<Gly::Image> get_image(const std::int32_t page) noexcept;
-#endif
 
     std::shared_ptr<vfs::image_files> image_files_;
 
     std::optional<std::int32_t> current_image_ = std::nullopt;
     std::flat_set<std::int32_t> available_images_;
 
-#if defined(PIXBUF_BACKEND)
-    std::flat_map<std::int32_t, Glib::RefPtr<Gdk::Pixbuf>> cache_;
-#else
     std::flat_map<std::int32_t, Glib::RefPtr<Gly::Image>> cache_;
-#endif
 
     state_info view_state_{false, false};
 

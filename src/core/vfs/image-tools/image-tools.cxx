@@ -35,101 +35,6 @@
 #include "glycin/glycin.hxx"
 #include "logger.hxx"
 
-#if defined(PIXBUF_BACKEND)
-
-Glib::RefPtr<Gdk::Pixbuf>
-vfs::image_tools::load_pixbuf(const std::filesystem::path& path) noexcept
-{
-    try
-    {
-        return Gdk::Pixbuf::create_from_file(path);
-    }
-    catch (const Glib::Error& ex)
-    {
-        logger::error<logger::gui>("Failed to load image: {} ", path);
-        return nullptr;
-    }
-}
-
-Glib::RefPtr<Gdk::Paintable>
-vfs::image_tools::fit_to_rectangle(const Glib::RefPtr<Gdk::Pixbuf>& src, std::int32_t max_width,
-                                   std::int32_t max_height, std::int32_t rotation) noexcept
-{
-    // return fit_to_rectangle(Gdk::Texture::create_for_pixbuf(src), max_width, max_height);
-
-    static auto get_fitting_size = [](const std::int32_t src_width,
-                                      const std::int32_t src_height,
-                                      const std::int32_t max_width,
-                                      const std::int32_t max_height) -> std::array<std::int32_t, 2>
-    {
-        const auto use_width =
-            static_cast<std::int64_t>(src_width) * static_cast<std::int64_t>(max_height) >
-            static_cast<std::int64_t>(max_width) * static_cast<std::int64_t>(src_height);
-
-        if (use_width)
-        {
-            return {max_width, std::max(1, (src_height * max_width) / src_width)};
-        }
-        else
-        {
-            return {std::max(1, (src_width * max_height) / src_height), max_height};
-        }
-    };
-
-    const auto is_sideways = (rotation == 90 || rotation == 270);
-    if (is_sideways)
-    {
-        std::swap(max_width, max_height);
-    }
-
-    const auto src_width = src->get_width();
-    const auto src_height = src->get_height();
-
-    const auto [new_width, new_height] =
-        get_fitting_size(src_width, src_height, max_width, max_height);
-
-    // logger::info<logger::gui>("new {}x{} | src {}x{}", new_width, new_height, src_width, src_height);
-
-    Glib::RefPtr<Gdk::Pixbuf> new_pixbuf;
-    if (src->get_has_alpha())
-    {
-        new_pixbuf = src->composite_color_simple(new_width,
-                                                 new_height,
-                                                 Gdk::InterpType::BILINEAR,
-                                                 255,
-                                                 16,
-                                                 0x777777,
-                                                 0x999999);
-    }
-    else if (new_width != src_width || new_height != src_height)
-    {
-        new_pixbuf = src->scale_simple(new_width, new_height, Gdk::InterpType::BILINEAR);
-    }
-    else
-    {
-        new_pixbuf = src;
-    }
-
-    switch (rotation)
-    {
-        case 0:
-            return Gdk::Texture::create_for_pixbuf(new_pixbuf);
-        case 90:
-            return Gdk::Texture::create_for_pixbuf(
-                new_pixbuf->rotate_simple(Gdk::Pixbuf::Rotation::CLOCKWISE));
-        case 180:
-            return Gdk::Texture::create_for_pixbuf(
-                new_pixbuf->rotate_simple(Gdk::Pixbuf::Rotation::UPSIDEDOWN));
-        case 270:
-            return Gdk::Texture::create_for_pixbuf(
-                new_pixbuf->rotate_simple(Gdk::Pixbuf::Rotation::COUNTERCLOCKWISE));
-        default:
-            std::unreachable();
-    }
-}
-
-#endif
-
 Glib::RefPtr<Gly::Image>
 vfs::image_tools::load_image(const std::filesystem::path& path) noexcept
 {
@@ -223,11 +128,7 @@ vfs::image_tools::fit_to_rectangle(const Glib::RefPtr<Gly::Image>& src, std::int
 Glib::RefPtr<Gdk::Paintable>
 vfs::image_tools::create_thumbnail(const std::filesystem::path& path, std::int32_t size) noexcept
 {
-#if defined(PIXBUF_BACKEND)
-    auto image = vfs::image_tools::load_pixbuf(path);
-#else
     auto image = vfs::image_tools::load_image(path);
-#endif
     if (!image)
     {
         return nullptr;
@@ -235,15 +136,6 @@ vfs::image_tools::create_thumbnail(const std::filesystem::path& path, std::int32
 
     return create_thumbnail(image, size);
 }
-
-#if defined(PIXBUF_BACKEND)
-Glib::RefPtr<Gdk::Paintable>
-vfs::image_tools::create_thumbnail(const Glib::RefPtr<Gdk::Pixbuf>& src, std::int32_t size) noexcept
-{
-    // return create_thumbnail(Gdk::Texture::create_for_pixbuf(src), size);
-    return fit_to_rectangle(src, size, size);
-}
-#endif
 
 static Glib::RefPtr<Gdk::Texture>
 texture_downsample(const Glib::RefPtr<Gdk::Texture>& src, std::int32_t max_width,

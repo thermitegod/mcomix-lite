@@ -271,27 +271,15 @@ preprocessor = [
 if get_option('dev')
     preprocessor += [
         # GTKMM
-        # '-DGTKMM_DISABLE_DEPRECATED', # TODO Gdk::Pixbuf
-        # '-DGDKMM_DISABLE_DEPRECATED', # TODO Gdk::Pixbuf
+        '-DGTKMM_DISABLE_DEPRECATED',
+        '-DGDKMM_DISABLE_DEPRECATED',
         '-DGLIBMM_DISABLE_DEPRECATED',
         '-DGIOMM_DISABLE_DEPRECATED',
     ]
-
-    if not get_option('use-pixbuf-backend')
-        preprocessor += [
-            # GTKMM
-            '-DGTKMM_DISABLE_DEPRECATED',
-            '-DGDKMM_DISABLE_DEPRECATED',
-        ]
-    endif
 endif
 
 if get_option('dev')
     preprocessor += '-DDEV_MODE'
-endif
-
-if get_option('use-pixbuf-backend')
-    preprocessor += '-DPIXBUF_BACKEND'
 endif
 
 add_project_arguments(preprocessor, language: ['c', 'cpp'])
