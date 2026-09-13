@@ -661,7 +661,10 @@ gui::main_window::_draw_pages() noexcept
     for (const auto& image : images)
     {
         auto paintable =
-            vfs::image_tools::fit_to_rectangle(image, image->get_width(), image->get_height(), 0);
+            vfs::image_tools::fit_to_rectangle(image,
+                                               static_cast<std::int32_t>(image->get_width()),
+                                               static_cast<std::int32_t>(image->get_height()),
+                                               0);
 
         viewport_.add_picture(paintable);
     }
