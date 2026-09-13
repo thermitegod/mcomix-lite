@@ -13,9 +13,16 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <algorithm>
 #include <filesystem>
 #include <format>
 #include <utility>
+#include <vector>
+
+#include <cmath>
+#include <cstdint>
+
+#include <cairomm/cairomm.h>
 
 #include <gdkmm.h>
 #include <glibmm.h>
@@ -235,7 +242,7 @@ vfs::image_tools::create_thumbnail(const std::filesystem::path& path, std::int32
 }
 
 #if defined(PIXBUF_BACKEND)
-[[nodiscard]] Glib::RefPtr<Gdk::Paintable>
+Glib::RefPtr<Gdk::Paintable>
 vfs::image_tools::create_thumbnail(const Glib::RefPtr<Gdk::Pixbuf>& src, std::int32_t size) noexcept
 {
     // return create_thumbnail(Gdk::Texture::create_for_pixbuf(src), size);
@@ -243,8 +250,60 @@ vfs::image_tools::create_thumbnail(const Glib::RefPtr<Gdk::Pixbuf>& src, std::in
 }
 #endif
 
-[[nodiscard]] Glib::RefPtr<Gdk::Paintable>
+static Glib::RefPtr<Gdk::Texture>
+texture_downsample(const Glib::RefPtr<Gdk::Texture>& src, std::int32_t max_width,
+                   std::int32_t max_height) noexcept
+{
+    const auto src_width = src->get_width();
+    const auto src_height = src->get_height();
+
+    const auto scale =
+        std::min(static_cast<std::float_t>(max_width) / static_cast<std::float_t>(src_width),
+                 static_cast<std::float_t>(max_height) / static_cast<std::float_t>(src_height));
+
+    const auto final_width =
+        static_cast<std::int32_t>(std::lround(static_cast<std::float_t>(src_width) * scale));
+    const auto final_height =
+        static_cast<std::int32_t>(std::lround(static_cast<std::float_t>(src_height) * scale));
+
+    // logger::info<logger::gui>("down {}x{} | src {}x{}", final_width, final_height, src_width, src_height);
+
+    const auto src_stride = src_width * 4;
+    std::vector<std::uint8_t> src_pixels(static_cast<std::size_t>(src_stride * src_height));
+
+    src->download(src_pixels.data(), static_cast<std::size_t>(src_stride));
+
+    auto src_surface = Cairo::ImageSurface::create(src_pixels.data(),
+                                                   Cairo::Surface::Format::ARGB32,
+                                                   src_width,
+                                                   src_height,
+                                                   src_stride);
+
+    auto pattern = Cairo::SurfacePattern::create(src_surface);
+    pattern->set_filter(Cairo::SurfacePattern::Filter::GOOD);
+
+    auto surface =
+        Cairo::ImageSurface::create(Cairo::Surface::Format::ARGB32, final_width, final_height);
+    auto cr = Cairo::Context::create(surface);
+    cr->scale(scale, scale);
+    cr->set_source(pattern);
+    cr->paint();
+
+    surface->flush();
+
+    const auto stride = surface->get_stride();
+    auto bytes =
+        Glib::Bytes::create(surface->get_data(), static_cast<std::size_t>(stride * final_height));
+
+    return Gdk::MemoryTexture::create(final_width,
+                                      final_height,
+                                      Gdk::MemoryTexture::Format::B8G8R8A8_PREMULTIPLIED,
+                                      bytes,
+                                      static_cast<std::size_t>(stride));
+}
+
+Glib::RefPtr<Gdk::Paintable>
 vfs::image_tools::create_thumbnail(const Glib::RefPtr<Gly::Image>& src, std::int32_t size) noexcept
 {
-    return fit_to_rectangle(src, size, size);
+    return texture_downsample(src->next_frame()->get_texture(), size, size);
 }
