@@ -5,6 +5,7 @@ doctest_dep = dependency('doctest', required: true)
 sources = files(
     'src/main.cxx',
 
+    'src/bitflags/bitflags.cxx',
     'src/natsort/natsort.cxx',
     'src/reflection/enum.cxx',
 
