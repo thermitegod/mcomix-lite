@@ -21,14 +21,16 @@
 
 #include "settings/property.hxx"
 
+#include "bitflags/bitflags.hxx"
+
 namespace config
 {
-enum double_page
+enum class double_page : std::uint32_t
 {
-    never,
-    as_one_title,
-    as_one_wide,
-    always,
+    never = 0,
+    first_page = 1 << 0,
+    wide_page = 1 << 1,
+    always = first_page | wide_page,
 };
 
 struct settings final
@@ -36,7 +38,7 @@ struct settings final
     bool default_double_page = true;
     bool default_manga_mode = true;
     std::int32_t page_ff_step = 10;
-    double_page virtual_double_page_for_fitting_images = double_page::always;
+    bit_flags<double_page> virtual_double_page_mode{double_page::always};
     bool double_step_in_double_page_mode = true;
     bool double_page_center_space = true;
     std::int32_t thumbnail_size = 80;

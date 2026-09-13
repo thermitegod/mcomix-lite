@@ -1171,30 +1171,29 @@ gui::main_window::update_page_information() noexcept
 bool
 gui::main_window::get_virtual_double_page(const std::optional<std::int32_t> query) noexcept
 {
-    const auto page = query.value_or(file_handler_->image_handler()->get_current_page());
+    const auto image_handler = file_handler_->image_handler();
+    const auto page = query.value_or(image_handler->get_current_page());
+    const auto mode = settings->virtual_double_page_mode;
 
-    if (page == 1 &&
-        settings->virtual_double_page_for_fitting_images & config::double_page::as_one_title &&
-        file_handler_->is_archive())
+    if (page == 1 && mode.is_set(config::double_page::first_page) && file_handler_->is_archive())
     {
         return true;
     }
 
-    if (!settings->default_double_page ||
-        !(settings->virtual_double_page_for_fitting_images & config::double_page::as_one_wide) ||
-        file_handler_->image_handler()->is_last_page(page))
+    if (!settings->default_double_page || !mode.is_set(config::double_page::wide_page) ||
+        image_handler->is_last_page(page))
     {
         return false;
     }
 
     for (const auto p : {page, page + 1})
     {
-        if (!file_handler_->image_handler()->is_page_available(p))
+        if (!image_handler->is_page_available(p))
         {
             return false;
         }
 
-        const auto [width, height] = file_handler_->image_handler()->get_page_size(p);
+        const auto [width, height] = image_handler->get_page_size(p);
         if (width > height)
         {
             return true;

@@ -212,25 +212,47 @@ gui::dialog::preferences::init_behaviour_tab() noexcept
     page->add_checkbox("Change two pages at a time", settings_->double_step_in_double_page_mode);
 
     {
-        auto& opt = settings_->virtual_double_page_for_fitting_images;
+        auto& opt = settings_->virtual_double_page_mode;
 
         auto factory = Gtk::SignalListItemFactory::create();
         factory->signal_setup().connect(sigc::mem_fun(*this, &preferences::on_setup_item));
         factory->signal_bind().connect(sigc::mem_fun(*this, &preferences::on_bind_item));
 
         auto store = Gio::ListStore<ListColumns>::create();
-        store->append(ListColumns::create("Never", config::double_page::never));
-        store->append(ListColumns::create("Title pages only", config::double_page::as_one_title));
-        store->append(ListColumns::create("Wide pages Only", config::double_page::as_one_wide));
-        store->append(ListColumns::create("Title and wide pages", config::double_page::always));
+        // clang-format off
+        store->append(ListColumns::create("Never", std::to_underlying(config::double_page::never)));
+        store->append(ListColumns::create("Title pages only", std::to_underlying(config::double_page::first_page)));
+        store->append(ListColumns::create("Wide pages Only", std::to_underlying(config::double_page::wide_page)));
+        store->append(ListColumns::create("Title and wide pages", std::to_underlying(config::double_page::always)));
+        // clang-format on
 
         auto drop = Gtk::make_managed<Gtk::DropDown>();
         drop->set_model(store);
         drop->set_factory(factory);
-        drop->set_selected(opt);
+        drop->set_selected(
+            [opt]() -> std::uint32_t
+            {
+                switch (opt.unwrap())
+                {
+                    case config::double_page::never:
+                        return 0;
+                    case config::double_page::first_page:
+                        return 1;
+                    case config::double_page::wide_page:
+                        return 2;
+                    case config::double_page::always:
+                        return 3;
+                    default:
+                        std::unreachable();
+                }
+            }());
 
         drop->property_selected_item().signal_changed().connect(
-            [&opt, drop]() { opt = static_cast<config::double_page>(drop->get_selected()); });
+            [&opt, drop]()
+            {
+                opt.clear();
+                opt.set(static_cast<config::double_page>(drop->get_selected()));
+            });
 
         page->add_row("When to only show a single page", *drop);
     }
