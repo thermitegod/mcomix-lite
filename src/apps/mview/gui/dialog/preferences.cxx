@@ -199,10 +199,12 @@ gui::dialog::preferences::init_display_tab() noexcept
         factory->signal_bind().connect(sigc::mem_fun(*this, &preferences::on_bind_item));
 
         auto store = Gio::ListStore<ListColumns>::create();
-        store->append(ListColumns::create("0°", 0));
-        store->append(ListColumns::create("90°", 90));
-        store->append(ListColumns::create("180°", 180));
-        store->append(ListColumns::create("270°", 270));
+        // clang-format off
+        store->append(ListColumns::create("0°", std::to_underlying(config::rotate::none)));
+        store->append(ListColumns::create("90°", std::to_underlying(config::rotate::clockwise)));
+        store->append(ListColumns::create("180°", std::to_underlying(config::rotate::upsidedown)));
+        store->append(ListColumns::create("270°", std::to_underlying(config::rotate::counterclockwise)));
+        // clang-format on
 
         auto drop = Gtk::make_managed<Gtk::DropDown>();
         drop->set_model(store);
@@ -210,23 +212,19 @@ gui::dialog::preferences::init_display_tab() noexcept
         drop->set_selected(
             [opt]() -> std::uint32_t
             {
-                if (opt == 0)
+                switch (opt)
                 {
-                    return 0;
+                    case config::rotate::none:
+                        return 0;
+                    case config::rotate::clockwise:
+                        return 1;
+                    case config::rotate::upsidedown:
+                        return 2;
+                    case config::rotate::counterclockwise:
+                        return 3;
+                    default:
+                        std::unreachable();
                 }
-                else if (opt == 90)
-                {
-                    return 1;
-                }
-                else if (opt == 180)
-                {
-                    return 2;
-                }
-                else if (opt == 270)
-                {
-                    return 3;
-                }
-                std::unreachable();
             }());
 
         drop->property_selected_item().signal_changed().connect(
@@ -235,7 +233,7 @@ gui::dialog::preferences::init_display_tab() noexcept
                 if (auto selected =
                         std::dynamic_pointer_cast<ListColumns>(drop->get_selected_item()))
                 {
-                    opt = static_cast<std::int32_t>(selected->value_);
+                    opt = static_cast<config::rotate>(selected->value_);
                 }
             });
 

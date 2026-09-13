@@ -41,7 +41,7 @@ class viewport : public Gtk::ScrolledWindow
     void zoom_in() noexcept;
     void zoom_out() noexcept;
 
-    void set_rotation(const std::int32_t rotation) noexcept;
+    void set_rotation(const config::rotate rotation) noexcept;
 
     [[nodiscard]] std::double_t get_zoom() const noexcept;
 

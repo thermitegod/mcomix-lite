@@ -89,15 +89,10 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
     app->add_action("page_first", [this]() { first_page(); });
     app->add_action("page_last", [this]() { last_page(); });
 
-    app->add_action("rotate_reset",
-                    [this]()
-                    {
-                        settings->rotation = 0;
-                        rotate_x(0);
-                    });
-    app->add_action("rotate_90", [this]() { rotate_x(90); });
-    app->add_action("rotate_180", [this]() { rotate_x(180); });
-    app->add_action("rotate_270", [this]() { rotate_x(270); });
+    app->add_action("rotate_reset", [this]() { rotate_x(config::rotate::none); });
+    app->add_action("rotate_90", [this]() { rotate_x(config::rotate::clockwise); });
+    app->add_action("rotate_180", [this]() { rotate_x(config::rotate::upsidedown); });
+    app->add_action("rotate_270", [this]() { rotate_x(config::rotate::counterclockwise); });
 
     app->add_action("zoom_reset", [this]() { viewport_.zoom_reset(); });
     app->add_action("zoom_in", [this]() { viewport_.zoom_in(); });
@@ -634,7 +629,10 @@ gui::main_window::_draw_pages() noexcept
     const auto [max_width, max_height] = get_visible_area_size();
 
     Glib::RefPtr<Gdk::Paintable> paintable =
-        vfs::image_tools::fit_to_rectangle(image, max_width, max_height, settings->rotation);
+        vfs::image_tools::fit_to_rectangle(image,
+                                           max_width,
+                                           max_height,
+                                           std::to_underlying(settings->rotation));
 
     std::array<std::int32_t, 2> scaled_size = {paintable->get_intrinsic_width(),
                                                paintable->get_intrinsic_height()};
@@ -735,7 +733,7 @@ gui::main_window::set_page(const std::int32_t page) noexcept
     if (!settings->keep_transformation)
     {
         viewport_.zoom_reset();
-        settings->rotation = 0;
+        settings->rotation = config::rotate::none;
     }
 
     draw_pages();
@@ -792,9 +790,12 @@ gui::main_window::last_page() noexcept
 }
 
 void
-gui::main_window::rotate_x(const std::int32_t rotation) noexcept
+gui::main_window::rotate_x(const config::rotate rotation) noexcept
 {
-    settings->rotation = (settings->rotation + rotation) % 360;
+    const auto current = std::to_underlying(settings->rotation);
+    const auto amount = std::to_underlying(rotation);
+
+    settings->rotation = static_cast<config::rotate>((current + amount) % 360);
 
     draw_pages();
 }

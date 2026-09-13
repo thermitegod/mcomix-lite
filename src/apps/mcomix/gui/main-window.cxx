@@ -122,15 +122,10 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
     app->add_action("archive_first", [this]() { auto _ = file_handler_->open_first_archive(); });
     app->add_action("archive_last", [this]() { auto _ = file_handler_->open_last_archive(); });
 
-    app->add_action("rotate_reset",
-                    [this]()
-                    {
-                        settings->rotation = 0;
-                        rotate_x(0);
-                    });
-    app->add_action("rotate_90", [this]() { rotate_x(90); });
-    app->add_action("rotate_180", [this]() { rotate_x(180); });
-    app->add_action("rotate_270", [this]() { rotate_x(270); });
+    app->add_action("rotate_reset", [this]() { rotate_x(config::rotate::none); });
+    app->add_action("rotate_90", [this]() { rotate_x(config::rotate::clockwise); });
+    app->add_action("rotate_180", [this]() { rotate_x(config::rotate::upsidedown); });
+    app->add_action("rotate_270", [this]() { rotate_x(config::rotate::counterclockwise); });
 
     app->add_action("zoom_reset", [this]() { viewport_.zoom_reset(); });
     app->add_action("zoom_in", [this]() { viewport_.zoom_in(); });
@@ -1089,20 +1084,22 @@ gui::main_window::_draw_pages() noexcept
     // Rotation handling
     switch (settings->rotation)
     {
-        case 0:
-        case 180:
+        case config::rotate::none:
+        case config::rotate::upsidedown:
         {
-            if (view_state->is_displaying_double() && settings->rotation == 180)
+            if (view_state->is_displaying_double() &&
+                settings->rotation == config::rotate::upsidedown)
             {
                 std::swap(images[0], images[1]);
             }
             break;
         }
-        case 90:
-        case 270:
+        case config::rotate::clockwise:
+        case config::rotate::counterclockwise:
         {
             std::ranges::for_each(size_list, [](auto& list) { std::ranges::reverse(list); });
-            if (view_state->is_displaying_double() && settings->rotation == 270)
+            if (view_state->is_displaying_double() &&
+                settings->rotation == config::rotate::counterclockwise)
             {
                 std::swap(images[0], images[1]);
             }
@@ -1121,8 +1118,10 @@ gui::main_window::_draw_pages() noexcept
     std::vector<Glib::RefPtr<Gdk::Paintable>> paintables;
     for (const auto& [idx, image] : std::views::enumerate(images))
     {
-        auto paintable =
-            vfs::image_tools::fit_to_rectangle(image, max_width, max_height, settings->rotation);
+        auto paintable = vfs::image_tools::fit_to_rectangle(image,
+                                                            max_width,
+                                                            max_height,
+                                                            std::to_underlying(settings->rotation));
 
         scaled_sizes.push_back(
             {paintable->get_intrinsic_width(), paintable->get_intrinsic_height()});
@@ -1279,7 +1278,7 @@ gui::main_window::set_page(const std::int32_t page) noexcept
     if (!settings->keep_transformation)
     {
         viewport_.zoom_reset();
-        settings->rotation = 0;
+        settings->rotation = config::rotate::none;
     }
 
     draw_pages();
@@ -1420,9 +1419,12 @@ gui::main_window::last_page() noexcept
 }
 
 void
-gui::main_window::rotate_x(const std::int32_t rotation) noexcept
+gui::main_window::rotate_x(const config::rotate rotation) noexcept
 {
-    settings->rotation = (settings->rotation + rotation) % 360;
+    const auto current = std::to_underlying(settings->rotation);
+    const auto amount = std::to_underlying(rotation);
+
+    settings->rotation = static_cast<config::rotate>((current + amount) % 360);
 
     draw_pages();
 }

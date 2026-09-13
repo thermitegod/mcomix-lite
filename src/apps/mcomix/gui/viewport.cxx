@@ -321,26 +321,26 @@ gui::viewport::hide_images() noexcept
 }
 
 void
-gui::viewport::set_rotation(std::int32_t rotation) noexcept
+gui::viewport::set_rotation(const config::rotate rotation) noexcept
 {
     switch (rotation)
     {
-        case 0:
+        case config::rotate::none:
         {
             update_rotation(Gtk::Orientation::HORIZONTAL, false);
             break;
         }
-        case 90:
+        case config::rotate::clockwise:
         {
             update_rotation(Gtk::Orientation::VERTICAL, false);
             break;
         }
-        case 180:
+        case config::rotate::upsidedown:
         {
             update_rotation(Gtk::Orientation::HORIZONTAL, true);
             break;
         }
-        case 270:
+        case config::rotate::counterclockwise:
         {
             update_rotation(Gtk::Orientation::VERTICAL, true);
             break;

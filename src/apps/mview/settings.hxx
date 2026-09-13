@@ -21,10 +21,18 @@
 
 namespace config
 {
+enum class rotate : std::int32_t
+{
+    none = 0,
+    clockwise = 90,
+    upsidedown = 180,
+    counterclockwise = 270,
+};
+
 struct settings final
 {
     bool keep_transformation = false;
-    std::int32_t rotation = 0;
+    rotate rotation = rotate::none;
     bool si_units = false;
     std::string move_file = "keep";
 

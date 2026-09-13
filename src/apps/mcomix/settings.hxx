@@ -33,6 +33,14 @@ enum class double_page : std::uint32_t
     always = first_page | wide_page,
 };
 
+enum class rotate : std::int32_t
+{
+    none = 0,
+    clockwise = 90,
+    upsidedown = 180,
+    counterclockwise = 270,
+};
+
 struct settings final
 {
     bool default_double_page = true;
@@ -43,7 +51,7 @@ struct settings final
     bool double_page_center_space = true;
     std::int32_t thumbnail_size = 80;
     bool keep_transformation = false;
-    std::int32_t rotation = 0;
+    rotate rotation = rotate::none;
     bool si_units = false;
     std::string move_file = "keep";
     bool confirm_archive_change = false;
