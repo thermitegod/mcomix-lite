@@ -177,22 +177,18 @@ vfs::image_tools::fit_to_rectangle(const Glib::RefPtr<Gly::Image>& src, std::int
                                    std::int32_t max_height, std::int32_t rotation) noexcept
 {
     const auto is_sideways = (rotation == 90 || rotation == 270);
-    if (is_sideways)
-    {
-        std::swap(max_width, max_height);
-    }
 
     const auto src_width = static_cast<std::float_t>(src->get_width());
     const auto src_height = static_cast<std::float_t>(src->get_height());
 
-    const auto scale = std::min(static_cast<std::float_t>(max_width) / src_width,
-                                static_cast<std::float_t>(max_height) / src_height);
+    const auto rotated_width = is_sideways ? src_height : src_width;
+    const auto rotated_height = is_sideways ? src_width : src_height;
 
-    const auto scaled_width = src_width * scale;
-    const auto scaled_height = src_height * scale;
+    const auto scale = std::min(static_cast<std::float_t>(max_width) / rotated_width,
+                                static_cast<std::float_t>(max_height) / rotated_height);
 
-    const auto final_width = is_sideways ? scaled_height : scaled_width;
-    const auto final_height = is_sideways ? scaled_width : scaled_height;
+    const auto final_width = rotated_width * scale;
+    const auto final_height = rotated_height * scale;
 
     // logger::info<logger::gui>("new {}x{} | src {}x{}", final_width, final_height, src_width, src_height);
 
