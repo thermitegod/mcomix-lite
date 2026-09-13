@@ -1300,7 +1300,7 @@ gui::main_window::flip_page(const std::int32_t number_of_pages, bool single_step
 
     auto new_page = current_page + number_of_pages;
     if (std::abs(number_of_pages) == 1 && !single_step && settings->default_double_page &&
-        settings->double_step_in_double_page_mode)
+        settings->double_page_change)
     {
         if (number_of_pages == 1 && !get_virtual_double_page())
         {

@@ -209,7 +209,7 @@ gui::dialog::preferences::init_behaviour_tab() noexcept
     page->add_section("Double Page Mode");
 
     page->add_checkbox("Show two pages at a time", settings_->default_double_page);
-    page->add_checkbox("Change two pages at a time", settings_->double_step_in_double_page_mode);
+    page->add_checkbox("Change two pages at a time", settings_->double_page_change);
 
     {
         auto& opt = settings_->virtual_double_page_mode;

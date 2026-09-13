@@ -39,7 +39,7 @@ struct settings final
     bool default_manga_mode = true;
     std::int32_t page_ff_step = 10;
     bit_flags<double_page> virtual_double_page_mode{double_page::always};
-    bool double_step_in_double_page_mode = true;
+    bool double_page_change = true;
     bool double_page_center_space = true;
     std::int32_t thumbnail_size = 80;
     bool keep_transformation = false;
