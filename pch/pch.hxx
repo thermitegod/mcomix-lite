@@ -19,8 +19,10 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wsign-conversion"
 #pragma GCC diagnostic ignored "-Wconversion"
+#if !defined(__clang__)
 #pragma GCC diagnostic ignored "-Walloc-zero"
-#ifdef __clang__
+#endif
+#if defined(__clang__)
 #pragma GCC diagnostic ignored "-Wshorten-64-to-32"
 #endif
 #include <gtkmm.h>
