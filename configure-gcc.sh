@@ -21,7 +21,6 @@ meson setup \
     -Ddev=true \
     -Dmcomix=true \
     -Dwebcomix=true \
-    -Duse-pixbuf-backend=true \
     -Dwith-system-glaze=true \
     -Dwith-system-ztd=true \
     --buildtype=debug \

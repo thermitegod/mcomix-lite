@@ -41,11 +41,7 @@ vfs::image_handler::image_files() const noexcept
     return image_files_;
 }
 
-#if defined(PIXBUF_BACKEND)
-Glib::RefPtr<Gdk::Pixbuf>
-#else
 Glib::RefPtr<Gly::Image>
-#endif
 vfs::image_handler::get_image(const std::int32_t page) noexcept
 {
     if (cache_.contains(page))
@@ -57,11 +53,7 @@ vfs::image_handler::get_image(const std::int32_t page) noexcept
     const auto path = image_files_->path_from_page(page);
 
     // logger::trace<logger::vfs>("reading page {} from disk: '{}'", page, path);
-#if defined(PIXBUF_BACKEND)
-    auto image = vfs::image_tools::load_pixbuf(path);
-#else
     auto image = vfs::image_tools::load_image(path);
-#endif
     if (!image)
     {
         return nullptr;
@@ -72,20 +64,12 @@ vfs::image_handler::get_image(const std::int32_t page) noexcept
     return cache_[page];
 }
 
-#if defined(PIXBUF_BACKEND)
-std::vector<Glib::RefPtr<Gdk::Pixbuf>>
-#else
 std::vector<Glib::RefPtr<Gly::Image>>
-#endif
 vfs::image_handler::get_images(const std::int32_t number) noexcept
 {
     assert(number > 0);
 
-#if defined(PIXBUF_BACKEND)
-    std::vector<Glib::RefPtr<Gdk::Pixbuf>> images;
-#else
     std::vector<Glib::RefPtr<Gly::Image>> images;
-#endif
     for (const auto& i : std::views::iota(*current_image_) | std::views::take(number))
     {
         images.push_back(get_image(i));

@@ -46,31 +46,9 @@ vfs::is_archive(const std::filesystem::path& filename) noexcept
 bool
 vfs::is_image(const std::filesystem::path& filename) noexcept
 {
-#if defined(PIXBUF_BACKEND)
-    static const auto extensions = std::invoke(
-        []()
-        {
-            using namespace std::string_literals;
-            std::flat_set<std::string> extensions;
-            for (const auto& format : Gdk::Pixbuf::get_formats())
-            {
-                for (const auto& ext : format.get_extensions())
-                {
-                    extensions.emplace("."s += ext.data());
-                }
-            }
-            // std::println("{}", extensions);
-            return extensions;
-        });
-
-    return std::ranges::any_of(extensions,
-                               [&filename](std::string_view ext)
-                               { return filename.extension() == ext; });
-#else
     bool result_uncertain = false;
     const auto content_type =
         Gio::content_type_guess(filename.string(), nullptr, 0, result_uncertain);
 
     return content_type.raw().contains("image/");
-#endif
 }
