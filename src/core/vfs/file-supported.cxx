@@ -16,10 +16,10 @@
 #include <algorithm>
 #include <array>
 #include <filesystem>
-#include <flat_set>
 #include <string_view>
 
 #include <gdkmm.h>
+#include <giomm.h>
 #include <glibmm.h>
 
 #include "vfs/file-supported.hxx"
@@ -62,15 +62,15 @@ vfs::is_image(const std::filesystem::path& filename) noexcept
             // std::println("{}", extensions);
             return extensions;
         });
-#else
-    static constexpr std::array<std::string_view, 27> extensions{
-        ".tga",   ".svgz", ".pbm",  ".svg", ".jpeg",   ".icns", ".ani", ".ppm", ".bmp",
-        ".targa", ".tif",  ".pnm",  ".gif", ".svg.gz", ".pgm",  ".jpe", ".ico", ".qif",
-        ".jpg",   ".xpm",  ".tiff", ".png", ".xbm",    ".qtif", ".jxl", ".cur", ".webp",
-    };
-#endif
 
     return std::ranges::any_of(extensions,
                                [&filename](std::string_view ext)
                                { return filename.extension() == ext; });
+#else
+    bool result_uncertain = false;
+    const auto content_type =
+        Gio::content_type_guess(filename.string(), nullptr, 0, result_uncertain);
+
+    return content_type.raw().contains("image/");
+#endif
 }
