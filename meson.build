@@ -224,6 +224,7 @@ base_dependencies = [
     libarchive_dep,
 ]
 
+cairomm_dep = dependency('cairomm-1.16', required: true)
 gtkmm_dep = dependency('gtkmm-4.0', required: true)
 glibmm_dep = dependency('glibmm-2.68', required: true)
 giomm_dep = dependency('giomm-2.68', required: true)
@@ -231,6 +232,7 @@ sigc_dep = dependency('sigc++-3.0', required: true)
 glycin_dep = dependency('glycin-gtk4-2', required: true)
 
 gtk_dependencies = [
+    cairomm_dep,
     gtkmm_dep,
     glibmm_dep,
     giomm_dep,
@@ -271,6 +273,7 @@ preprocessor = [
 if get_option('dev')
     preprocessor += [
         # GTKMM
+        '-DCAIROMM_DISABLE_DEPRECATED',
         '-DGTKMM_DISABLE_DEPRECATED',
         '-DGDKMM_DISABLE_DEPRECATED',
         '-DGLIBMM_DISABLE_DEPRECATED',

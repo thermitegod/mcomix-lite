@@ -23,7 +23,6 @@
 #include <cstdint>
 
 #include <cairomm/cairomm.h>
-
 #include <gdkmm.h>
 #include <glibmm.h>
 #include <gtkmm.h>
