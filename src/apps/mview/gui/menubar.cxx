@@ -80,7 +80,7 @@ gui::menubar::create_file() noexcept
     {
         auto section = Gio::Menu::create();
 
-        item = Gio::MenuItem::create("Exit", "app.exit");
+        item = Gio::MenuItem::create("Save and Exit", "app.exit");
         item->set_attribute_value("accel", Glib::Variant<Glib::ustring>::create("<Control>Q"));
         section->append_item(item);
 
