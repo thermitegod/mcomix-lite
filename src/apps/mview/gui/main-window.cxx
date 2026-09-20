@@ -56,9 +56,32 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
     assert(get_application() != nullptr);
 
     set_title(PACKAGE_NAME_FANCY);
-    set_size_request(500, 500);
     set_resizable(true);
     set_visible(true);
+
+    state_manager_.signal_load_error().connect(
+        [this](const std::string& msg)
+        {
+            auto dialog = Gtk::AlertDialog::create("State Load Error");
+            dialog->set_detail(msg);
+            dialog->set_modal(true);
+            dialog->show(*this);
+        });
+    state_manager_.signal_save_error().connect(
+        [this](const std::string& msg)
+        {
+            auto dialog = Gtk::AlertDialog::create("State Save Error");
+            dialog->set_detail(msg);
+            dialog->set_modal(true);
+            dialog->show(*this);
+        });
+    state_manager_.load();
+
+    set_default_size(state_.width, state_.height);
+    if (state_.maximized)
+    {
+        maximize();
+    }
 
     config_manager_->signal_load_error().connect(
         [this](const std::string& msg)
@@ -467,6 +490,18 @@ gui::main_window::add_shortcuts() noexcept
 void
 gui::main_window::on_exit() noexcept
 {
+    state_.maximized = property_maximized().get_value();
+    if (state_.maximized)
+    {
+        state_.width = property_default_width().get_value();
+        state_.height = property_default_height().get_value();
+    }
+    else
+    {
+        get_default_size(state_.width, state_.height);
+    }
+    state_manager_.save();
+
     config_manager_->save();
 
     close();
