@@ -78,8 +78,7 @@ class main_window : public Gtk::ApplicationWindow
     std::array<std::int32_t, 2> get_visible_area_size() noexcept;
 
     std::shared_ptr<config::settings> settings = std::make_shared<config::settings>();
-    std::shared_ptr<config::manager<config::settings>> config_manager_ =
-        std::make_shared<config::manager<config::settings>>(settings, PACKAGE_NAME);
+    config::manager<config::settings> config_manager_{settings, PACKAGE_NAME};
 
     config::state_t state_;
     config::state_manager state_manager_{state_, PACKAGE_NAME};

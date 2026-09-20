@@ -81,7 +81,7 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
         });
     state_manager_.load();
 
-    config_manager_->signal_load_error().connect(
+    config_manager_.signal_load_error().connect(
         [this](const std::string& msg)
         {
             auto dialog = Gtk::AlertDialog::create("Config Load Error");
@@ -89,7 +89,7 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
             dialog->set_modal(true);
             dialog->show(*this);
         });
-    config_manager_->signal_save_error().connect(
+    config_manager_.signal_save_error().connect(
         [this](const std::string& msg)
         {
             auto dialog = Gtk::AlertDialog::create("Config Save Error");
@@ -97,7 +97,7 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
             dialog->set_modal(true);
             dialog->show(*this);
         });
-    config_manager_->load();
+    config_manager_.load();
 
     bookmarks_->signal_load_error().connect(
         [this](std::string msg)
@@ -836,7 +836,7 @@ gui::main_window::on_exit() noexcept
     }
     state_manager_.save();
 
-    config_manager_->save();
+    config_manager_.save();
 
     close();
 }
