@@ -84,7 +84,75 @@ class preference_page : public Gtk::ScrolledWindow
         add_row(*button);
     }
 
+    template<typename Enum, std::size_t N>
+    void
+    add_dropdown(std::string_view label,
+                 const std::array<std::pair<Enum, std::string_view>, N>& data, Enum& opt) noexcept
+    {
+        auto factory = Gtk::SignalListItemFactory::create();
+        factory->signal_setup().connect(sigc::mem_fun(*this, &preference_page::on_setup_item));
+        factory->signal_bind().connect(sigc::mem_fun(*this, &preference_page::on_bind_item));
+
+        auto store = Gio::ListStore<ListColumns>::create();
+        for (const auto& [value, label] : data)
+        {
+            store->append(
+                ListColumns::create(label, static_cast<std::uint32_t>(std::to_underlying(value))));
+        }
+
+        auto it = std::ranges::find_if(data, [opt](const auto& pair) { return pair.first == opt; });
+        const auto index = it != data.end() ? std::distance(data.begin(), it) : 0;
+
+        auto drop = Gtk::make_managed<Gtk::DropDown>();
+        drop->set_model(store);
+        drop->set_factory(factory);
+        drop->set_selected(static_cast<std::uint32_t>(index));
+
+        drop->property_selected_item().signal_changed().connect(
+            [&opt, data, drop]() { opt = data[drop->get_selected()].first; });
+
+        add_row(label, *drop);
+    }
+
   private:
+    class ListColumns : public Glib::Object
+    {
+      public:
+        std::string entry_;
+        std::uint32_t value_;
+
+        static Glib::RefPtr<ListColumns>
+        create(std::string_view entry, const std::uint32_t value) noexcept
+        {
+            return Glib::make_refptr_for_instance<ListColumns>(new ListColumns(entry, value));
+        }
+
+      protected:
+        explicit ListColumns(std::string_view entry, const std::uint32_t value) noexcept
+            : entry_(entry), value_(value)
+        {
+        }
+    };
+
+    void
+    on_setup_item(const Glib::RefPtr<Gtk::ListItem>& item) noexcept
+    {
+        auto* label = Gtk::make_managed<Gtk::Label>();
+        item->set_child(*label);
+    }
+
+    void
+    on_bind_item(const Glib::RefPtr<Gtk::ListItem>& item) noexcept
+    {
+        if (auto* label = dynamic_cast<Gtk::Label*>(item->get_child()))
+        {
+            if (auto info = std::dynamic_pointer_cast<ListColumns>(item->get_item()))
+            {
+                label->set_label(info->entry_);
+            }
+        }
+    }
+
     std::array<Gtk::Box*, 2>
     create_split_vboxes() noexcept
     {
@@ -165,25 +233,6 @@ gui::dialog::preferences::on_button_close_clicked() noexcept
 }
 
 void
-gui::dialog::preferences::on_setup_item(const Glib::RefPtr<Gtk::ListItem>& item) noexcept
-{
-    auto* label = Gtk::make_managed<Gtk::Label>();
-    item->set_child(*label);
-}
-
-void
-gui::dialog::preferences::on_bind_item(const Glib::RefPtr<Gtk::ListItem>& item) noexcept
-{
-    if (auto* label = dynamic_cast<Gtk::Label*>(item->get_child()))
-    {
-        if (auto info = std::dynamic_pointer_cast<ListColumns>(item->get_item()))
-        {
-            label->set_label(info->entry_);
-        }
-    }
-}
-
-void
 gui::dialog::preferences::init_display_tab() noexcept
 {
     auto page = Gtk::make_managed<preference_page>();
@@ -192,52 +241,15 @@ gui::dialog::preferences::init_display_tab() noexcept
     page->add_section("Image Rotation");
 
     {
-        auto& opt = settings_->rotation;
-
-        auto factory = Gtk::SignalListItemFactory::create();
-        factory->signal_setup().connect(sigc::mem_fun(*this, &preferences::on_setup_item));
-        factory->signal_bind().connect(sigc::mem_fun(*this, &preferences::on_bind_item));
-
-        auto store = Gio::ListStore<ListColumns>::create();
-        // clang-format off
-        store->append(ListColumns::create("0°", std::to_underlying(config::rotate::none)));
-        store->append(ListColumns::create("90°", std::to_underlying(config::rotate::clockwise)));
-        store->append(ListColumns::create("180°", std::to_underlying(config::rotate::upsidedown)));
-        store->append(ListColumns::create("270°", std::to_underlying(config::rotate::counterclockwise)));
-        // clang-format on
-
-        auto drop = Gtk::make_managed<Gtk::DropDown>();
-        drop->set_model(store);
-        drop->set_factory(factory);
-        drop->set_selected(
-            [opt]() -> std::uint32_t
-            {
-                switch (opt)
-                {
-                    case config::rotate::none:
-                        return 0;
-                    case config::rotate::clockwise:
-                        return 1;
-                    case config::rotate::upsidedown:
-                        return 2;
-                    case config::rotate::counterclockwise:
-                        return 3;
-                    default:
-                        std::unreachable();
-                }
-            }());
-
-        drop->property_selected_item().signal_changed().connect(
-            [&opt, drop]()
-            {
-                if (auto selected =
-                        std::dynamic_pointer_cast<ListColumns>(drop->get_selected_item()))
-                {
-                    opt = static_cast<config::rotate>(selected->value_);
-                }
-            });
-
-        page->add_row("Image rotation", *drop);
+        {
+            constexpr std::array<std::pair<config::rotate, std::string_view>, 4> data = {{
+                {config::rotate::none, "0°"},
+                {config::rotate::clockwise, "90°"},
+                {config::rotate::upsidedown, "180°"},
+                {config::rotate::counterclockwise, "270°"},
+            }};
+            page->add_dropdown("Image rotation", data, settings_->rotation);
+        }
     }
 
     page->add_checkbox("Keep rotation / zoom between page changes", settings_->keep_transformation);
