@@ -29,7 +29,7 @@
 // https://github.com/GNOME/gtkmm/blob/master/demos/gtk-demo/example_listview_applauncher.cc
 
 gui::thumbbar::thumbbar(const std::shared_ptr<config::settings>& settings) noexcept
-    : settings(settings)
+    : settings_(settings)
 {
     set_has_frame(true);
     set_policy(Gtk::PolicyType::NEVER, Gtk::PolicyType::AUTOMATIC);
@@ -78,7 +78,7 @@ gui::thumbbar::~thumbbar() noexcept
 void
 gui::thumbbar::request(const std::int32_t page, const std::filesystem::path& filename) noexcept
 {
-    thumbnailer_.request({page, filename, settings->thumbnail_size});
+    thumbnailer_.request({page, filename, settings_->thumbnail_size});
 }
 
 void
@@ -126,7 +126,7 @@ gui::thumbbar::on_setup_item(const Glib::RefPtr<Gtk::ListItem>& item) noexcept
     auto box = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::HORIZONTAL, 5);
     box->set_hexpand(false);
     box->set_vexpand(false);
-    box->set_size_request(-1, settings->thumbnail_size);
+    box->set_size_request(-1, settings_->thumbnail_size);
     box->set_halign(Gtk::Align::CENTER);
     box->set_valign(Gtk::Align::CENTER);
     box->set_margin_end(20);

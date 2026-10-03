@@ -110,8 +110,8 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
     app->add_action("page_prev", [this]() { flip_page(-1); });
     app->add_action("page_next_single", [this]() { flip_page(1, true); });
     app->add_action("page_prev_single", [this]() { flip_page(-1, true); });
-    app->add_action("page_next_ff", [this]() { flip_page(settings->page_ff_step); });
-    app->add_action("page_prev_ff", [this]() { flip_page(-settings->page_ff_step); });
+    app->add_action("page_next_ff", [this]() { flip_page(settings_->page_ff_step); });
+    app->add_action("page_prev_ff", [this]() { flip_page(-settings_->page_ff_step); });
     app->add_action("page_first", [this]() { first_page(); });
     app->add_action("page_last", [this]() { last_page(); });
     app->add_action("page_select", [this]() { on_open_page_select(); });
@@ -140,20 +140,20 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
     app->add_action("toggle_thumbar",
                     [this]()
                     {
-                        settings->hide_thumbar = !settings->hide_thumbar;
-                        thumb_sidebar_.set_visible(!settings->hide_thumbar);
+                        settings_->hide_thumbar = !settings_->hide_thumbar;
+                        thumb_sidebar_.set_visible(!settings_->hide_thumbar);
                     });
     app->add_action("toggle_menubar",
                     [this]()
                     {
-                        settings->hide_menubar = !settings->hide_menubar;
-                        menubar_.set_visible(!settings->hide_menubar);
+                        settings_->hide_menubar = !settings_->hide_menubar;
+                        menubar_.set_visible(!settings_->hide_menubar);
                     });
     app->add_action("toggle_statusbar",
                     [this]()
                     {
-                        settings->hide_statusbar = !settings->hide_statusbar;
-                        statusbar_.set_visible(!settings->hide_statusbar);
+                        settings_->hide_statusbar = !settings_->hide_statusbar;
+                        statusbar_.set_visible(!settings_->hide_statusbar);
                     });
     app->add_action("page_center_space", [this]() { viewport_.toggle_page_padding(); });
 
@@ -176,7 +176,7 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
 
     add_shortcuts();
 
-    view_state->set_manga_mode(settings->default_manga_mode);
+    view_state->set_manga_mode(settings_->default_manga_mode);
     view_state->set_displaying_double(false);
 
     thumb_sidebar_.set_visible(false);
@@ -200,15 +200,15 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
 
     set_child(box_);
 
-    if (settings->hide_thumbar)
+    if (settings_->hide_thumbar)
     {
         thumb_sidebar_.set_visible(false);
     }
-    if (settings->hide_statusbar)
+    if (settings_->hide_statusbar)
     {
         statusbar_.set_visible(false);
     }
-    if (settings->hide_menubar)
+    if (settings_->hide_menubar)
     {
         menubar_.set_visible(false);
     }
@@ -217,14 +217,14 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
     // Statusbar
     // TODO, does not work if put in the statusbar constructor
     // clang-format off
-    settings->statusbar.page_numbers.signal_changed().connect([this]() {statusbar_.update(); });
-    settings->statusbar.file_numbers.signal_changed().connect([this]() {statusbar_.update(); });
-    settings->statusbar.page_resolution.signal_changed().connect([this]() {statusbar_.update(); });
-    settings->statusbar.archive_filename.signal_changed().connect([this]() {statusbar_.update(); });
-    settings->statusbar.page_filename.signal_changed().connect([this]() {statusbar_.update(); });
-    settings->statusbar.page_filesize.signal_changed().connect([this]() {statusbar_.update(); });
-    settings->statusbar.archive_filesize.signal_changed().connect([this]() {statusbar_.update(); });
-    settings->statusbar.view_mode.signal_changed().connect([this]() {statusbar_.update(); });
+    settings_->statusbar.page_numbers.signal_changed().connect([this]() {statusbar_.update(); });
+    settings_->statusbar.file_numbers.signal_changed().connect([this]() {statusbar_.update(); });
+    settings_->statusbar.page_resolution.signal_changed().connect([this]() {statusbar_.update(); });
+    settings_->statusbar.archive_filename.signal_changed().connect([this]() {statusbar_.update(); });
+    settings_->statusbar.page_filename.signal_changed().connect([this]() {statusbar_.update(); });
+    settings_->statusbar.page_filesize.signal_changed().connect([this]() {statusbar_.update(); });
+    settings_->statusbar.archive_filesize.signal_changed().connect([this]() {statusbar_.update(); });
+    settings_->statusbar.view_mode.signal_changed().connect([this]() {statusbar_.update(); });
     // clang-format on
 
     // DnD support
@@ -831,7 +831,7 @@ gui::main_window::on_bookmark_add() noexcept
 void
 gui::main_window::on_bookmark_manager() noexcept
 {
-    Gtk::make_managed<gui::dialog::bookmarks>(*this, file_handler_, bookmarks_, settings);
+    Gtk::make_managed<gui::dialog::bookmarks>(*this, file_handler_, bookmarks_, settings_);
 }
 
 void
@@ -978,7 +978,7 @@ gui::main_window::on_open_keybindings() noexcept
 void
 gui::main_window::on_open_preferences() noexcept
 {
-    auto dialog = Gtk::make_managed<gui::dialog::preferences>(*this, settings);
+    auto dialog = Gtk::make_managed<gui::dialog::preferences>(*this, settings_);
     dialog->signal_destroy().connect(
         [this]()
         {
@@ -997,7 +997,7 @@ gui::main_window::on_open_properties() noexcept
         return;
     }
 
-    Gtk::make_managed<gui::dialog::properties>(*this, file_handler_, view_state, settings);
+    Gtk::make_managed<gui::dialog::properties>(*this, file_handler_, view_state, settings_);
 }
 
 void
@@ -1055,7 +1055,7 @@ gui::main_window::_draw_pages() noexcept
         return false;
     }
 
-    if (!settings->hide_thumbar)
+    if (!settings_->hide_thumbar)
     {
         thumb_sidebar_.set_visible(true);
     }
@@ -1069,7 +1069,7 @@ gui::main_window::_draw_pages() noexcept
     // Limited to at most 2 pages
     const auto image_count = view_state->is_displaying_double() ? 2 : 1;
     auto images = image_handler->get_images(image_count);
-    if (settings->default_manga_mode && view_state->is_displaying_double())
+    if (settings_->default_manga_mode && view_state->is_displaying_double())
     {
         std::swap(images[0], images[1]);
     }
@@ -1082,13 +1082,13 @@ gui::main_window::_draw_pages() noexcept
     }
 
     // Rotation handling
-    switch (settings->rotation)
+    switch (settings_->rotation)
     {
         case config::rotate::none:
         case config::rotate::upsidedown:
         {
             if (view_state->is_displaying_double() &&
-                settings->rotation == config::rotate::upsidedown)
+                settings_->rotation == config::rotate::upsidedown)
             {
                 std::swap(images[0], images[1]);
             }
@@ -1099,7 +1099,7 @@ gui::main_window::_draw_pages() noexcept
         {
             std::ranges::for_each(size_list, [](auto& list) { std::ranges::reverse(list); });
             if (view_state->is_displaying_double() &&
-                settings->rotation == config::rotate::counterclockwise)
+                settings_->rotation == config::rotate::counterclockwise)
             {
                 std::swap(images[0], images[1]);
             }
@@ -1110,7 +1110,7 @@ gui::main_window::_draw_pages() noexcept
             std::unreachable();
         }
     }
-    viewport_.set_rotation(settings->rotation);
+    viewport_.set_rotation(settings_->rotation);
 
     const auto [max_width, max_height] = get_visible_area_size();
 
@@ -1118,10 +1118,11 @@ gui::main_window::_draw_pages() noexcept
     std::vector<Glib::RefPtr<Gdk::Paintable>> paintables;
     for (const auto& [idx, image] : std::views::enumerate(images))
     {
-        auto paintable = vfs::image_tools::fit_to_rectangle(image,
-                                                            max_width,
-                                                            max_height,
-                                                            std::to_underlying(settings->rotation));
+        auto paintable =
+            vfs::image_tools::fit_to_rectangle(image,
+                                               max_width,
+                                               max_height,
+                                               std::to_underlying(settings_->rotation));
 
         scaled_sizes.push_back(
             {paintable->get_intrinsic_width(), paintable->get_intrinsic_height()});
@@ -1172,14 +1173,14 @@ gui::main_window::get_virtual_double_page(const std::optional<std::int32_t> quer
 {
     const auto image_handler = file_handler_->image_handler();
     const auto page = query.value_or(image_handler->get_current_page());
-    const auto mode = settings->virtual_double_page_mode;
+    const auto mode = settings_->virtual_double_page_mode;
 
     if (page == 1 && mode.is_set(config::double_page::first_page) && file_handler_->is_archive())
     {
         return true;
     }
 
-    if (!settings->default_double_page || !mode.is_set(config::double_page::wide_page) ||
+    if (!settings_->default_double_page || !mode.is_set(config::double_page::wide_page) ||
         image_handler->is_last_page(page))
     {
         return false;
@@ -1226,12 +1227,12 @@ gui::main_window::on_file_opened() noexcept
 {
     displayed_double();
 
-    if (!settings->hide_thumbar)
+    if (!settings_->hide_thumbar)
     {
         thumb_sidebar_.set_visible(true);
     }
 
-    if (settings->statusbar.archive_filename_fullpath)
+    if (settings_->statusbar.archive_filename_fullpath)
     {
         statusbar_.set_archive_filename(file_handler_->get_base_path());
     }
@@ -1275,10 +1276,10 @@ gui::main_window::set_page(const std::int32_t page) noexcept
 
     update_page_information();
 
-    if (!settings->keep_transformation)
+    if (!settings_->keep_transformation)
     {
         viewport_.zoom_reset();
-        settings->rotation = config::rotate::none;
+        settings_->rotation = config::rotate::none;
     }
 
     draw_pages();
@@ -1298,8 +1299,8 @@ gui::main_window::flip_page(const std::int32_t number_of_pages, bool single_step
     const auto current_number_of_pages = image_handler->get_number_of_pages();
 
     auto new_page = current_page + number_of_pages;
-    if (std::abs(number_of_pages) == 1 && !single_step && settings->default_double_page &&
-        settings->double_page_change)
+    if (std::abs(number_of_pages) == 1 && !single_step && settings_->default_double_page &&
+        settings_->double_page_change)
     {
         if (number_of_pages == 1 && !get_virtual_double_page())
         {
@@ -1318,7 +1319,7 @@ gui::main_window::flip_page(const std::int32_t number_of_pages, bool single_step
         // archive case).
         if (number_of_pages == -1 && current_page <= 1)
         {
-            if (settings->confirm_archive_change)
+            if (settings_->confirm_archive_change)
             {
                 auto dialog = Gtk::AlertDialog::create("Open Previous Archive?");
                 dialog->set_modal(true);
@@ -1356,7 +1357,7 @@ gui::main_window::flip_page(const std::int32_t number_of_pages, bool single_step
     {
         if (number_of_pages == 1)
         {
-            if (settings->confirm_archive_change)
+            if (settings_->confirm_archive_change)
             {
                 auto dialog = Gtk::AlertDialog::create("Open Next Archive?");
                 dialog->set_modal(true);
@@ -1421,10 +1422,10 @@ gui::main_window::last_page() noexcept
 void
 gui::main_window::rotate_x(const config::rotate rotation) noexcept
 {
-    const auto current = std::to_underlying(settings->rotation);
+    const auto current = std::to_underlying(settings_->rotation);
     const auto amount = std::to_underlying(rotation);
 
-    settings->rotation = static_cast<config::rotate>((current + amount) % 360);
+    settings_->rotation = static_cast<config::rotate>((current + amount) % 360);
 
     draw_pages();
 }
@@ -1432,7 +1433,7 @@ gui::main_window::rotate_x(const config::rotate rotation) noexcept
 void
 gui::main_window::change_double_page() noexcept
 {
-    settings->default_double_page = !settings->default_double_page;
+    settings_->default_double_page = !settings_->default_double_page;
     displayed_double();
     update_page_information();
 
@@ -1442,9 +1443,9 @@ gui::main_window::change_double_page() noexcept
 void
 gui::main_window::change_manga_mode() noexcept
 {
-    settings->default_manga_mode = !settings->default_manga_mode;
+    settings_->default_manga_mode = !settings_->default_manga_mode;
 
-    view_state->set_manga_mode(settings->default_manga_mode);
+    view_state->set_manga_mode(settings_->default_manga_mode);
 
     statusbar_.set_view_mode();
     update_page_information();
@@ -1459,15 +1460,15 @@ gui::main_window::change_fullscreen() noexcept
     {
         unfullscreen();
 
-        if (settings->fullscreen.hide_thumbar && !settings->hide_thumbar)
+        if (settings_->fullscreen.hide_thumbar && !settings_->hide_thumbar)
         {
             thumb_sidebar_.set_visible(true);
         }
-        if (settings->fullscreen.hide_statusbar && !settings->hide_statusbar)
+        if (settings_->fullscreen.hide_statusbar && !settings_->hide_statusbar)
         {
             statusbar_.set_visible(true);
         }
-        if (settings->fullscreen.hide_menubar && !settings->hide_menubar)
+        if (settings_->fullscreen.hide_menubar && !settings_->hide_menubar)
         {
             menubar_.set_visible(true);
         }
@@ -1476,15 +1477,15 @@ gui::main_window::change_fullscreen() noexcept
     {
         fullscreen();
 
-        if (settings->fullscreen.hide_thumbar || settings->hide_thumbar)
+        if (settings_->fullscreen.hide_thumbar || settings_->hide_thumbar)
         {
             thumb_sidebar_.set_visible(false);
         }
-        if (settings->fullscreen.hide_statusbar || settings->hide_statusbar)
+        if (settings_->fullscreen.hide_statusbar || settings_->hide_statusbar)
         {
             statusbar_.set_visible(false);
         }
-        if (settings->fullscreen.hide_menubar || settings->hide_menubar)
+        if (settings_->fullscreen.hide_menubar || settings_->hide_menubar)
         {
             menubar_.set_visible(false);
         }
@@ -1498,8 +1499,8 @@ gui::main_window::displayed_double() noexcept
     const auto image_handler = file_handler_->image_handler();
 
     view_state->set_displaying_double(image_handler->get_current_page() != 0 &&
-                                      settings->default_double_page && !get_virtual_double_page() &&
-                                      !image_handler->is_last_page());
+                                      settings_->default_double_page &&
+                                      !get_virtual_double_page() && !image_handler->is_last_page());
 }
 
 std::array<std::int32_t, 2>
@@ -1521,7 +1522,7 @@ gui::main_window::on_move_current_file() noexcept
 
     on_trash_or_move_load_next_file();
 
-    const auto target = current_file.parent_path() / settings->move_file / current_file.filename();
+    const auto target = current_file.parent_path() / settings_->move_file / current_file.filename();
     if (!std::filesystem::exists(target.parent_path()))
     {
         std::filesystem::create_directories(target.parent_path());

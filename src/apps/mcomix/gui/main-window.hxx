@@ -90,9 +90,9 @@ class main_window : public Gtk::ApplicationWindow
 
     std::array<std::int32_t, 2> get_visible_area_size() noexcept;
 
-    std::shared_ptr<config::settings> settings = std::make_shared<config::settings>();
+    std::shared_ptr<config::settings> settings_ = std::make_shared<config::settings>();
     std::shared_ptr<config::manager<config::settings>> config_manager_ =
-        std::make_shared<config::manager<config::settings>>(settings, PACKAGE_NAME);
+        std::make_shared<config::manager<config::settings>>(settings_, PACKAGE_NAME);
     std::shared_ptr<vfs::file_handler> file_handler_ = std::make_shared<vfs::file_handler>();
     std::shared_ptr<gui::lib::view_state> view_state =
         std::make_shared<gui::lib::view_state>(file_handler_);
@@ -108,9 +108,9 @@ class main_window : public Gtk::ApplicationWindow
     Gtk::Box center_box_;
 
     gui::menubar menubar_ = gui::menubar();
-    gui::thumbbar thumb_sidebar_ = gui::thumbbar(settings);
-    gui::viewport viewport_ = gui::viewport(settings);
-    gui::statusbar statusbar_ = gui::statusbar(settings, view_state);
+    gui::thumbbar thumb_sidebar_ = gui::thumbbar(settings_);
+    gui::viewport viewport_ = gui::viewport(settings_);
+    gui::statusbar statusbar_ = gui::statusbar(settings_, view_state);
 
     bool on_drag_data_received(const Glib::ValueBase& value, double x, double y) noexcept;
     Glib::RefPtr<Gtk::DropTarget> drop_target_;

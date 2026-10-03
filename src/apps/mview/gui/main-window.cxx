@@ -101,14 +101,14 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
     app->add_action("toggle_menubar",
                     [this]()
                     {
-                        settings->hide_menubar = !settings->hide_menubar;
-                        menubar_.set_visible(!settings->hide_menubar);
+                        settings_->hide_menubar = !settings_->hide_menubar;
+                        menubar_.set_visible(!settings_->hide_menubar);
                     });
     app->add_action("toggle_statusbar",
                     [this]()
                     {
-                        settings->hide_statusbar = !settings->hide_statusbar;
-                        statusbar_.set_visible(!settings->hide_statusbar);
+                        settings_->hide_statusbar = !settings_->hide_statusbar;
+                        statusbar_.set_visible(!settings_->hide_statusbar);
                     });
 
     app->add_action("escape", [this]() { on_escape_event(); });
@@ -145,11 +145,11 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
 
     set_child(box_);
 
-    if (settings->hide_statusbar)
+    if (settings_->hide_statusbar)
     {
         statusbar_.set_visible(false);
     }
-    if (settings->hide_menubar)
+    if (settings_->hide_menubar)
     {
         menubar_.set_visible(false);
     }
@@ -564,7 +564,7 @@ gui::main_window::on_open_keybindings() noexcept
 void
 gui::main_window::on_open_preferences() noexcept
 {
-    Gtk::make_managed<gui::dialog::preferences>(*this, settings);
+    Gtk::make_managed<gui::dialog::preferences>(*this, settings_);
 }
 
 void
@@ -632,7 +632,7 @@ gui::main_window::_draw_pages() noexcept
         vfs::image_tools::fit_to_rectangle(image,
                                            max_width,
                                            max_height,
-                                           std::to_underlying(settings->rotation));
+                                           std::to_underlying(settings_->rotation));
 
     std::array<std::int32_t, 2> scaled_size = {paintable->get_intrinsic_width(),
                                                paintable->get_intrinsic_height()};
@@ -696,7 +696,7 @@ gui::main_window::page_available(const std::int32_t page) noexcept
 void
 gui::main_window::on_file_opened() noexcept
 {
-    if (settings->statusbar.archive_filename_fullpath)
+    if (settings_->statusbar.archive_filename_fullpath)
     {
         statusbar_.set_archive_filename(file_handler_->get_base_path());
     }
@@ -730,10 +730,10 @@ gui::main_window::set_page(const std::int32_t page) noexcept
 
     update_page_information();
 
-    if (!settings->keep_transformation)
+    if (!settings_->keep_transformation)
     {
         viewport_.zoom_reset();
-        settings->rotation = config::rotate::none;
+        settings_->rotation = config::rotate::none;
     }
 
     draw_pages();
@@ -792,10 +792,10 @@ gui::main_window::last_page() noexcept
 void
 gui::main_window::rotate_x(const config::rotate rotation) noexcept
 {
-    const auto current = std::to_underlying(settings->rotation);
+    const auto current = std::to_underlying(settings_->rotation);
     const auto amount = std::to_underlying(rotation);
 
-    settings->rotation = static_cast<config::rotate>((current + amount) % 360);
+    settings_->rotation = static_cast<config::rotate>((current + amount) % 360);
 
     draw_pages();
 }
@@ -807,11 +807,11 @@ gui::main_window::change_fullscreen() noexcept
     {
         unfullscreen();
 
-        if (settings->fullscreen.hide_statusbar && !settings->hide_statusbar)
+        if (settings_->fullscreen.hide_statusbar && !settings_->hide_statusbar)
         {
             statusbar_.set_visible(true);
         }
-        if (settings->fullscreen.hide_menubar && !settings->hide_menubar)
+        if (settings_->fullscreen.hide_menubar && !settings_->hide_menubar)
         {
             menubar_.set_visible(true);
         }
@@ -820,11 +820,11 @@ gui::main_window::change_fullscreen() noexcept
     {
         fullscreen();
 
-        if (settings->fullscreen.hide_statusbar || settings->hide_statusbar)
+        if (settings_->fullscreen.hide_statusbar || settings_->hide_statusbar)
         {
             statusbar_.set_visible(false);
         }
-        if (settings->fullscreen.hide_menubar || settings->hide_menubar)
+        if (settings_->fullscreen.hide_menubar || settings_->hide_menubar)
         {
             menubar_.set_visible(false);
         }
@@ -850,7 +850,7 @@ gui::main_window::on_move_current_file() noexcept
 
     on_trash_or_move_load_next_file();
 
-    const auto target = current_file.parent_path() / settings->move_file / current_file.filename();
+    const auto target = current_file.parent_path() / settings_->move_file / current_file.filename();
     if (!std::filesystem::exists(target.parent_path()))
     {
         std::filesystem::create_directories(target.parent_path());

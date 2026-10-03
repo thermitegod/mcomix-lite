@@ -120,14 +120,14 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
     app->add_action("toggle_menubar",
                     [this]()
                     {
-                        settings->hide_menubar = !settings->hide_menubar;
-                        menubar_.set_visible(!settings->hide_menubar);
+                        settings_->hide_menubar = !settings_->hide_menubar;
+                        menubar_.set_visible(!settings_->hide_menubar);
                     });
     app->add_action("toggle_statusbar",
                     [this]()
                     {
-                        settings->hide_statusbar = !settings->hide_statusbar;
-                        statusbar_.set_visible(!settings->hide_statusbar);
+                        settings_->hide_statusbar = !settings_->hide_statusbar;
+                        statusbar_.set_visible(!settings_->hide_statusbar);
                     });
 
     app->add_action("escape", [this]() { on_escape_event(); });
@@ -165,11 +165,11 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
 
     set_child(box_);
 
-    if (settings->hide_statusbar)
+    if (settings_->hide_statusbar)
     {
         statusbar_.set_visible(false);
     }
-    if (settings->hide_menubar)
+    if (settings_->hide_menubar)
     {
         menubar_.set_visible(false);
     }
@@ -498,7 +498,7 @@ gui::main_window::on_bookmark_add() noexcept
 void
 gui::main_window::on_bookmark_manager() noexcept
 {
-    Gtk::make_managed<gui::dialog::bookmarks>(*this, file_handler_, bookmarks_, settings);
+    Gtk::make_managed<gui::dialog::bookmarks>(*this, file_handler_, bookmarks_, settings_);
 }
 
 void
@@ -593,7 +593,7 @@ gui::main_window::on_open_keybindings() noexcept
 void
 gui::main_window::on_open_preferences() noexcept
 {
-    auto dialog = Gtk::make_managed<gui::dialog::preferences>(*this, settings);
+    auto dialog = Gtk::make_managed<gui::dialog::preferences>(*this, settings_);
     dialog->signal_destroy().connect(
         [this]()
         {
@@ -612,7 +612,7 @@ gui::main_window::on_open_properties() noexcept
         return;
     }
 
-    Gtk::make_managed<gui::dialog::properties>(*this, file_handler_, settings);
+    Gtk::make_managed<gui::dialog::properties>(*this, file_handler_, settings_);
 }
 
 void
@@ -688,7 +688,7 @@ gui::main_window::update_page_information() noexcept
 void
 gui::main_window::on_file_opened() noexcept
 {
-    if (settings->statusbar.archive_filename_fullpath)
+    if (settings_->statusbar.archive_filename_fullpath)
     {
         statusbar_.set_archive_filename(file_handler_->get_base_path());
     }
@@ -757,11 +757,11 @@ gui::main_window::change_fullscreen() noexcept
     {
         unfullscreen();
 
-        if (settings->fullscreen.hide_statusbar && !settings->hide_statusbar)
+        if (settings_->fullscreen.hide_statusbar && !settings_->hide_statusbar)
         {
             statusbar_.set_visible(true);
         }
-        if (settings->fullscreen.hide_menubar && !settings->hide_menubar)
+        if (settings_->fullscreen.hide_menubar && !settings_->hide_menubar)
         {
             menubar_.set_visible(true);
         }
@@ -770,11 +770,11 @@ gui::main_window::change_fullscreen() noexcept
     {
         fullscreen();
 
-        if (settings->fullscreen.hide_statusbar || settings->hide_statusbar)
+        if (settings_->fullscreen.hide_statusbar || settings_->hide_statusbar)
         {
             statusbar_.set_visible(false);
         }
-        if (settings->fullscreen.hide_menubar || settings->hide_menubar)
+        if (settings_->fullscreen.hide_menubar || settings_->hide_menubar)
         {
             menubar_.set_visible(false);
         }
@@ -788,7 +788,7 @@ gui::main_window::on_move_current_file() noexcept
 
     on_trash_or_move_load_next_file();
 
-    const auto target = current_file.parent_path() / settings->move_file / current_file.filename();
+    const auto target = current_file.parent_path() / settings_->move_file / current_file.filename();
     if (!std::filesystem::exists(target.parent_path()))
     {
         std::filesystem::create_directories(target.parent_path());

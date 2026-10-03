@@ -38,7 +38,7 @@
 
 gui::statusbar::statusbar(const std::shared_ptr<config::settings>& settings,
                           const std::shared_ptr<gui::lib::view_state>& view_state) noexcept
-    : settings(settings), view_state(view_state)
+    : settings_(settings), view_state(view_state)
 {
     set_halign(Gtk::Align::START);
     set_valign(Gtk::Align::END);
@@ -124,7 +124,7 @@ gui::statusbar::set_resolution(std::span<const std::array<std::int32_t, 2>> scal
     std::string page_resolution;
     for (const auto& [x, y, scale] : resolutions)
     {
-        if (settings->statusbar.page_resolution_zoom_scale)
+        if (settings_->statusbar.page_resolution_zoom_scale)
         {
             page_resolution.append(std::format("{}x{} ({:.2f}%), ", x, y, scale * 100));
         }
@@ -164,7 +164,7 @@ gui::statusbar::set_filesize_archive(const std::filesystem::path& filename) noex
     }
     else
     {
-        archive_filesize_ = vfs::utils::file_size(filename, settings->si_units);
+        archive_filesize_ = vfs::utils::file_size(filename, settings_->si_units);
     }
 }
 
@@ -173,35 +173,35 @@ gui::statusbar::update() noexcept
 {
     std::string text;
 
-    if (settings->statusbar.page_numbers)
+    if (settings_->statusbar.page_numbers)
     {
         text.append(std::format("{}{}", total_page_numbers_, sep_));
     }
-    if (settings->statusbar.file_numbers)
+    if (settings_->statusbar.file_numbers)
     {
         text.append(std::format("{}{}", total_file_numbers_, sep_));
     }
-    if (settings->statusbar.page_resolution)
+    if (settings_->statusbar.page_resolution)
     {
         text.append(std::format("{}{}", page_resolution_, sep_));
     }
-    if (settings->statusbar.archive_filename)
+    if (settings_->statusbar.archive_filename)
     {
         text.append(std::format("{}{}", archive_filename_, sep_));
     }
-    if (settings->statusbar.page_filename)
+    if (settings_->statusbar.page_filename)
     {
         text.append(std::format("{}{}", page_filename_, sep_));
     }
-    if (settings->statusbar.page_filesize)
+    if (settings_->statusbar.page_filesize)
     {
         text.append(std::format("{}{}", page_filesize_, sep_));
     }
-    if (settings->statusbar.archive_filesize)
+    if (settings_->statusbar.archive_filesize)
     {
         text.append(std::format("{}{}", archive_filesize_, sep_));
     }
-    if (settings->statusbar.view_mode)
+    if (settings_->statusbar.view_mode)
     {
         text.append(std::format("{}{}", current_view_mode_, sep_));
     }

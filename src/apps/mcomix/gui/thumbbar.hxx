@@ -78,7 +78,7 @@ class thumbbar : public Gtk::ScrolledWindow
     std::jthread thumbnailer_thread_;
     gui::lib::thumbnailer thumbnailer_;
 
-    std::shared_ptr<config::settings> settings;
+    std::shared_ptr<config::settings> settings_;
 
   public:
     [[nodiscard]] auto

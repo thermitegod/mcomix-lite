@@ -34,7 +34,7 @@
 #include "settings.hxx"
 
 gui::statusbar::statusbar(const std::shared_ptr<config::settings>& settings) noexcept
-    : settings(settings)
+    : settings_(settings)
 {
     set_halign(Gtk::Align::START);
     set_valign(Gtk::Align::END);
@@ -70,7 +70,7 @@ gui::statusbar::set_resolution(std::array<std::int32_t, 2> scaled_size,
     const double scale = static_cast<double>(scaled_size[0]) / size_list[0];
 
     std::string page_resolution;
-    if (settings->statusbar.page_resolution_zoom_scale)
+    if (settings_->statusbar.page_resolution_zoom_scale)
     {
         page_resolution.append(std::format("{}x{} ({:.2f}%), ", x, y, scale * 100));
     }
@@ -105,23 +105,23 @@ gui::statusbar::update() noexcept
 {
     std::string text;
 
-    if (settings->statusbar.page_numbers)
+    if (settings_->statusbar.page_numbers)
     {
         text.append(std::format("{}{}", total_page_numbers_, sep_));
     }
-    if (settings->statusbar.page_resolution)
+    if (settings_->statusbar.page_resolution)
     {
         text.append(std::format("{}{}", page_resolution_, sep_));
     }
-    if (settings->statusbar.archive_filename)
+    if (settings_->statusbar.archive_filename)
     {
         text.append(std::format("{}{}", archive_filename_, sep_));
     }
-    if (settings->statusbar.page_filename)
+    if (settings_->statusbar.page_filename)
     {
         text.append(std::format("{}{}", page_filename_, sep_));
     }
-    if (settings->statusbar.page_filesize)
+    if (settings_->statusbar.page_filesize)
     {
         text.append(std::format("{}{}", page_filesize_, sep_));
     }

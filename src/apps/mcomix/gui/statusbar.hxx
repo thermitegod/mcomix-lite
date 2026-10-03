@@ -56,7 +56,7 @@ class statusbar : public Gtk::Box
     Gtk::Label statusbar_;
 
   private:
-    std::shared_ptr<config::settings> settings;
+    std::shared_ptr<config::settings> settings_;
     std::shared_ptr<gui::lib::view_state> view_state;
 
     const std::string sep_ = "  |  ";

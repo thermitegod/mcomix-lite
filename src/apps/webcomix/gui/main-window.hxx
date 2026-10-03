@@ -76,9 +76,9 @@ class main_window : public Gtk::ApplicationWindow
     void on_trash_current_file() noexcept;
     void on_trash_or_move_load_next_file() noexcept; // shared logic
 
-    std::shared_ptr<config::settings> settings = std::make_shared<config::settings>();
+    std::shared_ptr<config::settings> settings_ = std::make_shared<config::settings>();
     std::shared_ptr<config::manager<config::settings>> config_manager_ =
-        std::make_shared<config::manager<config::settings>>(settings, PACKAGE_NAME);
+        std::make_shared<config::manager<config::settings>>(settings_, PACKAGE_NAME);
     std::shared_ptr<vfs::file_handler> file_handler_ = std::make_shared<vfs::file_handler>();
 
     std::shared_ptr<vfs::bookmarks> bookmarks_ =
@@ -92,8 +92,8 @@ class main_window : public Gtk::ApplicationWindow
     Gtk::Box center_box_;
 
     gui::menubar menubar_ = gui::menubar();
-    gui::viewport viewport_ = gui::viewport(settings);
-    gui::statusbar statusbar_ = gui::statusbar(settings);
+    gui::viewport viewport_ = gui::viewport(settings_);
+    gui::statusbar statusbar_ = gui::statusbar(settings_);
 
     bool on_drag_data_received(const Glib::ValueBase& value, double x, double y) noexcept;
     Glib::RefPtr<Gtk::DropTarget> drop_target_;

@@ -29,7 +29,7 @@
 #include "settings.hxx"
 
 gui::statusbar::statusbar(const std::shared_ptr<config::settings>& settings) noexcept
-    : settings(settings)
+    : settings_(settings)
 {
     set_halign(Gtk::Align::START);
     set_valign(Gtk::Align::END);
@@ -77,7 +77,7 @@ gui::statusbar::set_filesize_archive(const std::filesystem::path& filename) noex
     }
     else
     {
-        archive_filesize_ = vfs::utils::file_size(filename, settings->si_units);
+        archive_filesize_ = vfs::utils::file_size(filename, settings_->si_units);
     }
 }
 
@@ -86,19 +86,19 @@ gui::statusbar::update() noexcept
 {
     std::string text;
 
-    if (settings->statusbar.page_numbers)
+    if (settings_->statusbar.page_numbers)
     {
         text.append(std::format("{}{}", total_page_numbers_, sep_));
     }
-    if (settings->statusbar.file_numbers)
+    if (settings_->statusbar.file_numbers)
     {
         text.append(std::format("{}{}", total_file_numbers_, sep_));
     }
-    if (settings->statusbar.archive_filename)
+    if (settings_->statusbar.archive_filename)
     {
         text.append(std::format("{}{}", archive_filename_, sep_));
     }
-    if (settings->statusbar.archive_filesize)
+    if (settings_->statusbar.archive_filesize)
     {
         text.append(std::format("{}{}", archive_filesize_, sep_));
     }
