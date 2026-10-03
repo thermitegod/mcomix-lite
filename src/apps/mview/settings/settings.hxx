@@ -59,6 +59,13 @@ struct settings_on_disk
         bool archive_filesize = true;
         bool view_mode = true;
     } statusbar;
+
+    struct state_t
+    {
+        bool maximized = false;
+        std::int32_t width = 800;
+        std::int32_t height = 600;
+    } state;
 };
 
 struct settings final : public settings_on_disk

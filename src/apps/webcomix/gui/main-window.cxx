@@ -60,9 +60,36 @@ gui::main_window::main_window(const Glib::RefPtr<Gtk::Application>& app,
     assert(get_application() != nullptr);
 
     set_title(PACKAGE_NAME_FANCY);
-    set_size_request(500, 500);
     set_resizable(true);
     set_visible(true);
+
+    set_default_size(settings_->state.width, settings_->state.height);
+    if (settings_->state.maximized)
+    {
+        maximize();
+    }
+
+    signal_close_request().connect(
+        [this, app]()
+        {
+            auto& width = settings_->state.width;
+            auto& height = settings_->state.height;
+            auto& maximized = settings_->state.maximized;
+
+            maximized = property_maximized().get_value();
+            if (maximized)
+            {
+                width = property_default_width().get_value();
+                height = property_default_height().get_value();
+            }
+            else
+            {
+                get_default_size(width, height);
+            }
+
+            return false;
+        },
+        false);
 
     bookmarks_->signal_load_error().connect(
         [this](std::string msg)
@@ -458,6 +485,8 @@ gui::main_window::add_shortcuts() noexcept
 void
 gui::main_window::on_exit() noexcept
 {
+    settings_->signal_autosave_request().emit();
+
     close();
 }
 

@@ -17,9 +17,8 @@
 
 #include <glaze/glaze.hpp>
 
-#include "property/property.hxx"
-
 #include "bitflags/bitflags.hxx"
+#include "property/property.hxx"
 
 // property
 
