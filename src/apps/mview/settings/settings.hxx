@@ -19,6 +19,8 @@
 
 #include <cstdint>
 
+#include <sigc++/sigc++.h>
+
 namespace config
 {
 enum class rotate : std::int32_t
@@ -29,7 +31,7 @@ enum class rotate : std::int32_t
     counterclockwise = 270,
 };
 
-struct settings final
+struct settings_on_disk
 {
     bool keep_transformation = false;
     rotate rotation = rotate::none;
@@ -57,5 +59,27 @@ struct settings final
         bool archive_filesize = true;
         bool view_mode = true;
     } statusbar;
+};
+
+struct settings final : public settings_on_disk
+{
+    using base_type = settings_on_disk;
+
+  public:
+    [[nodiscard]] auto
+    signal_autosave_request() noexcept
+    {
+        return signal_autosave_request_;
+    }
+
+    [[nodiscard]] auto
+    signal_autosave_cancel() noexcept
+    {
+        return signal_autosave_cancel_;
+    }
+
+  private:
+    sigc::signal<void()> signal_autosave_request_;
+    sigc::signal<void()> signal_autosave_cancel_;
 };
 } // namespace config

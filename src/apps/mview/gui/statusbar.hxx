@@ -27,7 +27,7 @@
 #include <glibmm.h>
 #include <gtkmm.h>
 
-#include "settings.hxx"
+#include "settings/settings.hxx"
 
 namespace gui
 {

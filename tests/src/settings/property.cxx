@@ -19,7 +19,7 @@
 
 #include <doctest/doctest.h>
 
-#include "settings/property.hxx"
+#include "property/property.hxx"
 
 enum class property_enum_test
 {

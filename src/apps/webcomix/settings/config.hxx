@@ -16,10 +16,11 @@
 #pragma once
 
 #include <filesystem>
+#include <format>
+
+#include <cstdint>
 
 #include <sigc++/sigc++.h>
-
-#include <ztd/ztd.hxx>
 
 #include "settings/settings.hxx"
 
@@ -29,21 +30,33 @@ namespace config
 {
 struct config_file_format final
 {
-    u64 version{version};
-    config::settings settings;
+    std::uint64_t version{version};
+    config::settings_on_disk settings;
 };
 
 class manager
 {
   public:
     manager(const std::shared_ptr<config::settings>& settings);
+    ~manager();
+
+    manager(const manager&) = delete;
+    manager& operator=(const manager&) = delete;
+    manager(manager&&) = delete;
+    manager& operator=(manager&&) = delete;
+
     void load() noexcept;
     void save() noexcept;
 
   private:
     std::shared_ptr<config::settings> settings_;
-    std::filesystem::path file_ = vfs::program::config() / "webcomix.json";
-    u64 version_ = 1_u64; // 1.0.0
+    std::filesystem::path file_ = vfs::program::config() / std::format("{}.json", PACKAGE_NAME);
+    std::uint64_t version_ = 1;
+
+    void request_add() noexcept;
+    void request_cancel() noexcept;
+
+    bool pending_ = false;
 
   public:
     [[nodiscard]] auto

@@ -13,6 +13,8 @@ sources = files(
   'gui/dialog/preferences.cxx',
 
   'gui/dialog/widgets/button-box.cxx',
+
+  'settings/config.cxx',
 )
 
 mview_exe = executable(

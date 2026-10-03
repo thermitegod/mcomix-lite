@@ -26,14 +26,13 @@
 #include <gtkmm.h>
 
 #include "settings/config.hxx"
+#include "settings/settings.hxx"
 
 #include "gui/menubar.hxx"
 #include "gui/statusbar.hxx"
 #include "gui/viewport.hxx"
 
 #include "vfs/file-handler.hxx"
-
-#include "settings.hxx"
 
 namespace gui
 {

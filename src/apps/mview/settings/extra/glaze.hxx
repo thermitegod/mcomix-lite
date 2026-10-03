@@ -17,40 +17,7 @@
 
 #include <glaze/glaze.hpp>
 
-#include "property/property.hxx"
-
 #include "bitflags/bitflags.hxx"
-
-// property
-
-namespace glz
-{
-template<typename T> struct from<JSON, Property<T>>
-{
-    static constexpr bool can_error = false;
-
-    template<auto Opts>
-    static void
-    op(Property<T>& value, auto&&... args)
-    {
-        T raw{};
-        parse<JSON>::template op<Opts>(raw, std::forward<decltype(args)>(args)...);
-        value = Property<T>{raw};
-    }
-};
-
-template<typename T> struct to<JSON, Property<T>>
-{
-    static constexpr bool can_error = false;
-
-    template<auto Opts>
-    static void
-    op(const Property<T>& value, auto&&... args) noexcept
-    {
-        serialize<JSON>::template op<Opts>(value.get(), std::forward<decltype(args)>(args)...);
-    }
-};
-} // namespace glz
 
 // bit_flags
 

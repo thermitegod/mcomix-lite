@@ -22,9 +22,9 @@
 #include <glibmm.h>
 #include <gtkmm.h>
 
-#include "gui/viewport.hxx"
+#include "settings/settings.hxx"
 
-#include "settings.hxx"
+#include "gui/viewport.hxx"
 
 gui::viewport::viewport(const std::shared_ptr<config::settings>& settings) noexcept
     : settings_(settings)

@@ -26,15 +26,23 @@
 
 #include "logger.hxx"
 
-config::manager::manager(const std::shared_ptr<config::settings>& settings) : settings_(settings) {}
+config::manager::manager(const std::shared_ptr<config::settings>& settings) : settings_(settings)
+{
+    logger::trace<logger::autosave>("starting autosave thread");
+
+    settings_->signal_autosave_request().connect([this]() { request_add(); });
+    settings_->signal_autosave_cancel().connect([this]() { request_cancel(); });
+}
+
+config::manager::~manager() {}
 
 static void
-parse_settings(const u64 version, const config::settings& loaded,
+parse_settings(const u64 version, const config::settings_on_disk& loaded,
                const std::shared_ptr<config::settings>& settings) noexcept
 {
     (void)version;
 
-    *settings = loaded;
+    static_cast<config::settings_on_disk&>(*settings) = loaded;
 }
 
 void
@@ -62,10 +70,10 @@ config::manager::load() noexcept
     parse_settings(config_data.version, config_data.settings, settings_);
 }
 
-[[nodiscard]] static config::settings
+[[nodiscard]] static config::settings_on_disk
 pack_settings(const std::shared_ptr<config::settings>& settings) noexcept
 {
-    config::settings s = *settings;
+    config::settings_on_disk s = *settings;
 
     return s;
 }
@@ -73,6 +81,12 @@ pack_settings(const std::shared_ptr<config::settings>& settings) noexcept
 void
 config::manager::save() noexcept
 {
+    if (!pending_)
+    {
+        return;
+    }
+    pending_ = false;
+
     if (!std::filesystem::exists(file_.parent_path()))
     {
         std::filesystem::create_directories(file_.parent_path());
@@ -86,8 +100,22 @@ config::manager::save() noexcept
 
     if (ec)
     {
-        logger::error("Failed to write config file: {}", glz::format_error(ec, buffer));
+        // logger::error("Failed to write config file: {}", glz::format_error(ec, buffer));
 
         signal_save_error().emit(glz::format_error(ec, buffer));
     }
+}
+
+void
+config::manager::request_add() noexcept
+{
+    logger::trace<logger::autosave>("adding request");
+    pending_ = true;
+}
+
+void
+config::manager::request_cancel() noexcept
+{
+    logger::trace<logger::autosave>("canceling request");
+    pending_ = false;
 }

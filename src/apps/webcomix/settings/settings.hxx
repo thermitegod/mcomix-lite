@@ -17,11 +17,13 @@
 
 #include <string>
 
-#include <glibmm.h>
+#include <cstdint>
+
+#include <sigc++/sigc++.h>
 
 namespace config
 {
-struct settings final
+struct settings_on_disk
 {
     std::int32_t thumbnail_size = 80;
     bool si_units = false;
@@ -47,5 +49,27 @@ struct settings final
         bool archive_filename_fullpath = true;
         bool archive_filesize = true;
     } statusbar;
+};
+
+struct settings final : public settings_on_disk
+{
+    using base_type = settings_on_disk;
+
+  public:
+    [[nodiscard]] auto
+    signal_autosave_request() noexcept
+    {
+        return signal_autosave_request_;
+    }
+
+    [[nodiscard]] auto
+    signal_autosave_cancel() noexcept
+    {
+        return signal_autosave_cancel_;
+    }
+
+  private:
+    sigc::signal<void()> signal_autosave_request_;
+    sigc::signal<void()> signal_autosave_cancel_;
 };
 } // namespace config
