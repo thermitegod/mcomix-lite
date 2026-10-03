@@ -24,9 +24,9 @@
 #include <gtkmm.h>
 #include <sigc++/sigc++.h>
 
-#include "gui/lib/thumbnailer.hxx"
+#include "settings/settings.hxx"
 
-#include "settings.hxx"
+#include "gui/lib/thumbnailer.hxx"
 
 namespace gui
 {

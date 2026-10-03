@@ -20,9 +20,9 @@
 
 #include <gtkmm.h>
 
-#include "vfs/file-handler.hxx"
+#include "settings/settings.hxx"
 
-#include "settings.hxx"
+#include "vfs/file-handler.hxx"
 
 namespace gui::dialog
 {

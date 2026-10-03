@@ -20,6 +20,8 @@ sources = files(
 
   'gui/lib/thumbnailer.cxx',
   'gui/lib/view-state.cxx',
+
+  'settings/config.cxx',
 )
 
 mcomix_exe = executable(

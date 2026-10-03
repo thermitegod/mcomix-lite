@@ -17,7 +17,7 @@
 
 #include <string>
 
-#include <cstdint>
+#include <glibmm.h>
 
 namespace config
 {

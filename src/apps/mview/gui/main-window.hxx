@@ -77,8 +77,7 @@ class main_window : public Gtk::ApplicationWindow
     std::array<std::int32_t, 2> get_visible_area_size() noexcept;
 
     std::shared_ptr<config::settings> settings_ = std::make_shared<config::settings>();
-    std::shared_ptr<config::manager<config::settings>> config_manager_ =
-        std::make_shared<config::manager<config::settings>>(settings_, PACKAGE_NAME);
+    std::shared_ptr<config::manager> config_manager_ = std::make_shared<config::manager>(settings_);
     std::shared_ptr<vfs::file_handler> file_handler_ = std::make_shared<vfs::file_handler>();
 
     bool waiting_for_redraw_{false};
