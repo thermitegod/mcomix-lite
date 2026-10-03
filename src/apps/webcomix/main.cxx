@@ -29,10 +29,23 @@ main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
-    Glib::set_prgname(PACKAGE_NAME);
-
-    // command line is not handled by GTK
     auto app =
         Gtk::Application::create("org.thermitegod.webcomix", Gio::Application::Flags::NON_UNIQUE);
-    return app->make_window_and_run<gui::main_window>(0, nullptr, app, opts->files);
+
+    auto settings = std::make_shared<config::settings>();
+    config::manager config_manager(settings);
+    config_manager.load();
+
+    app->signal_startup().connect(
+        [&]()
+        {
+            auto* window = Gtk::make_managed<gui::main_window>(app, opts->files, settings);
+            window->present();
+        });
+
+    const auto status = app->run(0, nullptr);
+
+    config_manager.save();
+
+    return status;
 }

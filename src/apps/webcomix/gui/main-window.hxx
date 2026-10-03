@@ -41,7 +41,8 @@ class main_window : public Gtk::ApplicationWindow
 {
   public:
     explicit main_window(const Glib::RefPtr<Gtk::Application>& app,
-                         std::span<const std::filesystem::path> filelist) noexcept;
+                         std::span<const std::filesystem::path> filelist,
+                         const std::shared_ptr<config::settings>& settings) noexcept;
 
   private:
     void draw_pages() noexcept;
@@ -75,8 +76,8 @@ class main_window : public Gtk::ApplicationWindow
     void on_trash_current_file() noexcept;
     void on_trash_or_move_load_next_file() noexcept; // shared logic
 
-    std::shared_ptr<config::settings> settings_ = std::make_shared<config::settings>();
-    std::shared_ptr<config::manager> config_manager_ = std::make_shared<config::manager>(settings_);
+    std::shared_ptr<config::settings> settings_;
+
     std::shared_ptr<vfs::file_handler> file_handler_ = std::make_shared<vfs::file_handler>();
 
     std::shared_ptr<vfs::bookmarks> bookmarks_ =
