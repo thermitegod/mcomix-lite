@@ -37,7 +37,7 @@ enum class b_flags_2 : std::int32_t
     flag3 = 1 << 2,
 };
 
-TEST_SUITE("bit_flags tests" * doctest::description(""))
+TEST_SUITE("bit_flags tests")
 {
     TEST_CASE_TEMPLATE("bit_flags", T, b_flags_1, b_flags_2)
     {

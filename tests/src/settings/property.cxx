@@ -35,7 +35,7 @@ struct property_struct_test
     bool operator==(const property_struct_test& other) const = default;
 };
 
-TEST_SUITE("Property<T>" * doctest::description(""))
+TEST_SUITE("Property<T>")
 {
     TEST_CASE("bool")
     {
