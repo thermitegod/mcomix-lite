@@ -41,15 +41,15 @@ TEST_SUITE("Property<T>")
     {
         Property<bool> prop = true;
 
-        REQUIRE_EQ(prop, true);
+        REQUIRE(prop);
 
         SUBCASE("assignment")
         {
             bool value = prop;
-            CHECK_EQ(value, true);
+            CHECK(value);
 
             prop = false;
-            CHECK_EQ(prop, false);
+            CHECK_FALSE(prop);
         }
 
         SUBCASE("signals")
@@ -59,18 +59,18 @@ TEST_SUITE("Property<T>")
             prop.signal_changed().connect([&emit_counter]() { emit_counter++; });
 
             prop = false;
-            CHECK_EQ(emit_counter, 1);
+            CHECK(emit_counter == 1);
 
             SUBCASE("same value")
             {
                 prop = false;
-                CHECK_EQ(emit_counter, 1);
+                CHECK(emit_counter == 1);
             }
 
             SUBCASE("different value")
             {
                 prop = true;
-                CHECK_EQ(emit_counter, 2);
+                CHECK(emit_counter == 2);
             }
         }
     }
@@ -79,15 +79,15 @@ TEST_SUITE("Property<T>")
     {
         Property<std::int32_t> prop = 50;
 
-        REQUIRE_EQ(prop, 50);
+        REQUIRE(prop == 50);
 
         SUBCASE("assignment")
         {
             std::int32_t value = prop;
-            CHECK_EQ(value, 50);
+            CHECK(value == 50);
 
             prop = 100;
-            CHECK_EQ(prop, 100);
+            CHECK(prop == 100);
         }
 
         SUBCASE("signals")
@@ -97,18 +97,18 @@ TEST_SUITE("Property<T>")
             prop.signal_changed().connect([&emit_counter]() { emit_counter++; });
 
             prop = 100;
-            CHECK_EQ(emit_counter, 1);
+            CHECK(emit_counter == 1);
 
             SUBCASE("same value")
             {
                 prop = 100;
-                CHECK_EQ(emit_counter, 1);
+                CHECK(emit_counter == 1);
             }
 
             SUBCASE("different value")
             {
                 prop = 200;
-                CHECK_EQ(emit_counter, 2);
+                CHECK(emit_counter == 2);
             }
         }
     }
@@ -117,15 +117,15 @@ TEST_SUITE("Property<T>")
     {
         Property<std::uint32_t> prop = 50u;
 
-        REQUIRE_EQ(prop, 50u);
+        REQUIRE(prop == 50u);
 
         SUBCASE("assignment")
         {
             std::uint32_t value = prop;
-            CHECK_EQ(value, 50u);
+            CHECK(value == 50u);
 
             prop = 100u;
-            CHECK_EQ(prop, 100u);
+            CHECK(prop == 100u);
         }
 
         SUBCASE("signals")
@@ -135,18 +135,18 @@ TEST_SUITE("Property<T>")
             prop.signal_changed().connect([&emit_counter]() { emit_counter++; });
 
             prop = 100u;
-            CHECK_EQ(emit_counter, 1);
+            CHECK(emit_counter == 1);
 
             SUBCASE("same value")
             {
                 prop = 100u;
-                CHECK_EQ(emit_counter, 1);
+                CHECK(emit_counter == 1);
             }
 
             SUBCASE("different value")
             {
                 prop = 200u;
-                CHECK_EQ(emit_counter, 2);
+                CHECK(emit_counter == 2);
             }
         }
     }
@@ -155,15 +155,15 @@ TEST_SUITE("Property<T>")
     {
         Property<std::string> prop = "string";
 
-        REQUIRE_EQ(prop, "string");
+        REQUIRE(prop == "string");
 
         SUBCASE("assignment")
         {
             std::string value = prop;
-            CHECK_EQ(value, "string");
+            CHECK(value == "string");
 
             prop = "test string";
-            CHECK_EQ(prop, "test string");
+            CHECK(prop == "test string");
         }
 
         SUBCASE("signals")
@@ -173,18 +173,18 @@ TEST_SUITE("Property<T>")
             prop.signal_changed().connect([&emit_counter]() { emit_counter++; });
 
             prop = "test string";
-            CHECK_EQ(emit_counter, 1);
+            CHECK(emit_counter == 1);
 
             SUBCASE("same value")
             {
                 prop = "test string";
-                CHECK_EQ(emit_counter, 1);
+                CHECK(emit_counter == 1);
             }
 
             SUBCASE("different value")
             {
                 prop = "string";
-                CHECK_EQ(emit_counter, 2);
+                CHECK(emit_counter == 2);
             }
         }
     }
@@ -193,17 +193,17 @@ TEST_SUITE("Property<T>")
     {
         Property<property_enum_test> prop = property_enum_test::a;
 
-        REQUIRE_EQ(prop, property_enum_test::a);
+        REQUIRE(prop == property_enum_test::a);
 
         SUBCASE("assignment")
         {
-            CHECK_EQ(prop, property_enum_test::a);
+            CHECK(prop == property_enum_test::a);
 
             property_enum_test value = prop;
-            CHECK_EQ(value, property_enum_test::a);
+            CHECK(value == property_enum_test::a);
 
             prop = property_enum_test::b;
-            CHECK_EQ(prop, property_enum_test::b);
+            CHECK(prop == property_enum_test::b);
         }
 
         SUBCASE("signals")
@@ -213,18 +213,18 @@ TEST_SUITE("Property<T>")
             prop.signal_changed().connect([&emit_counter]() { emit_counter++; });
 
             prop = property_enum_test::b;
-            CHECK_EQ(emit_counter, 1);
+            CHECK(emit_counter == 1);
 
             SUBCASE("same value")
             {
                 prop = property_enum_test::b;
-                CHECK_EQ(emit_counter, 1);
+                CHECK(emit_counter == 1);
             }
 
             SUBCASE("different value")
             {
                 prop = property_enum_test::a;
-                CHECK_EQ(emit_counter, 2);
+                CHECK(emit_counter == 2);
             }
         }
     }
@@ -233,15 +233,15 @@ TEST_SUITE("Property<T>")
     {
         Property<property_struct_test> prop = property_struct_test{10, 20};
 
-        REQUIRE_EQ(prop, property_struct_test{10, 20});
+        REQUIRE(prop == property_struct_test{10, 20});
 
         SUBCASE("assignment")
         {
             property_struct_test value = prop;
-            CHECK_EQ(value, property_struct_test{10, 20});
+            CHECK(value == property_struct_test{10, 20});
 
             prop = property_struct_test{100, 200};
-            CHECK_EQ(prop, property_struct_test{100, 200});
+            CHECK(prop == property_struct_test{100, 200});
         }
 
         SUBCASE("signals")
@@ -251,18 +251,18 @@ TEST_SUITE("Property<T>")
             prop.signal_changed().connect([&emit_counter]() { emit_counter++; });
 
             prop = property_struct_test{100, 200};
-            CHECK_EQ(emit_counter, 1);
+            CHECK(emit_counter == 1);
 
             SUBCASE("same value")
             {
                 prop = property_struct_test{100, 200};
-                CHECK_EQ(emit_counter, 1);
+                CHECK(emit_counter == 1);
             }
 
             SUBCASE("different value")
             {
                 prop = property_struct_test{10, 20};
-                CHECK_EQ(emit_counter, 2);
+                CHECK(emit_counter == 2);
             }
         }
     }
