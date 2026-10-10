@@ -1,6 +1,6 @@
 ## Test only dependencies
 
-doctest_dep = dependency('doctest', required: true)
+doctest_dep = dependency('doctest', include_type: 'system', required: true)
 
 sources = files(
     'src/main.cxx',

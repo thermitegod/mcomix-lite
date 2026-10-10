@@ -210,9 +210,9 @@ add_project_link_arguments(link_flags, language: ['c', 'cpp'])
 
 ## Dependencies
 
-botan_dep = dependency('botan-3', required: true)
-cli11_dep = dependency('CLI11', required: true)
-libarchive_dep = dependency('libarchive', required: true)
+botan_dep = dependency('botan-3', include_type: 'system', required: true)
+cli11_dep = dependency('CLI11', include_type: 'system', required: true)
+libarchive_dep = dependency('libarchive', include_type: 'system', required: true)
 
 base_dependencies = [
     botan_dep,
@@ -220,12 +220,12 @@ base_dependencies = [
     libarchive_dep,
 ]
 
-cairomm_dep = dependency('cairomm-1.16', required: true)
-gtkmm_dep = dependency('gtkmm-4.0', required: true)
-glibmm_dep = dependency('glibmm-2.68', required: true)
-giomm_dep = dependency('giomm-2.68', required: true)
-sigc_dep = dependency('sigc++-3.0', required: true)
-glycin_dep = dependency('glycin-gtk4-2', required: true)
+cairomm_dep = dependency('cairomm-1.16', include_type: 'system', required: true)
+gtkmm_dep = dependency('gtkmm-4.0', include_type: 'system', required: true)
+glibmm_dep = dependency('glibmm-2.68', include_type: 'system', required: true)
+giomm_dep = dependency('giomm-2.68', include_type: 'system', required: true)
+sigc_dep = dependency('sigc++-3.0', include_type: 'system', required: true)
+glycin_dep = dependency('glycin-gtk4-2', include_type: 'system', required: true)
 
 gtk_dependencies = [
     cairomm_dep,
@@ -237,7 +237,7 @@ gtk_dependencies = [
 ]
 
 if get_option('with-system-glaze')
-    base_dependencies += dependency('glaze', required: true, version: '>=6.3.0')
+    base_dependencies += dependency('glaze', include_type: 'system', required: true, version: '>=6.3.0')
 else
     incdir += include_directories('subprojects/glaze/include')
 endif
