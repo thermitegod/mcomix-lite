@@ -226,8 +226,8 @@ gui::dialog::properties::secondary_info(const std::filesystem::path& path) noexc
         {"Metadata", std::format("{}", std::chrono::floor<std::chrono::seconds>(stat->ctime()))},
         {"Modified", std::format("{}", std::chrono::floor<std::chrono::seconds>(stat->mtime()))},
         {"Permissions", std::format("{}", stat->perms_fancy())},
-        {"Owner", std::format("{}", ztd::passwd::create(stat->uid().data())->name())},
-        {"Group", std::format("{}", ztd::group::create(stat->gid().data())->name())},
+        {"Owner", std::format("{}", ztd::passwd::create(stat->uid())->name())},
+        {"Group", std::format("{}", ztd::group::create(stat->gid())->name())},
     };
 }
 
