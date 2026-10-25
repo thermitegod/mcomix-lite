@@ -211,12 +211,10 @@ add_project_link_arguments(link_flags, language: ['c', 'cpp'])
 ## Dependencies
 
 botan_dep = dependency('botan-3', include_type: 'system', required: true)
-cli11_dep = dependency('CLI11', include_type: 'system', required: true)
 libarchive_dep = dependency('libarchive', include_type: 'system', required: true)
 
 base_dependencies = [
     botan_dep,
-    cli11_dep,
     libarchive_dep,
 ]
 

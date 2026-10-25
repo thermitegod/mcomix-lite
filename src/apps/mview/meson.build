@@ -1,8 +1,6 @@
 sources = files(
   'main.cxx',
 
-  'commandline/commandline.cxx',
-
   'gui/main-window.cxx',
   'gui/menubar.cxx',
   'gui/statusbar.cxx',
