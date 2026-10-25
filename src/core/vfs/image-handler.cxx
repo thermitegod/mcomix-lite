@@ -22,6 +22,8 @@
 
 #include <cassert>
 
+#include <giomm.h>
+
 #include "vfs/image-files.hxx"
 #include "vfs/image-handler.hxx"
 #include "vfs/image-tools/image-tools.hxx"
@@ -230,12 +232,15 @@ vfs::image_handler::get_page_size(const std::optional<std::int32_t> query) noexc
 }
 
 std::string
-vfs::image_handler::get_mime_name(const std::optional<std::int32_t> query) const noexcept
+vfs::image_handler::get_mime_type(const std::optional<std::int32_t> query) const noexcept
 {
-    // TODO
     const auto page = query.value_or(get_current_page());
-    (void)page;
-    return "";
+    const auto path = image_files_->path_from_page(page);
+
+    [[maybe_unused]] bool uncertain;
+    auto type = Gio::content_type_guess(path, nullptr, 0, uncertain);
+
+    return type;
 }
 
 Glib::RefPtr<Gdk::Paintable>

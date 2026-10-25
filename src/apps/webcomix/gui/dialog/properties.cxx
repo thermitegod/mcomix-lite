@@ -267,7 +267,7 @@ gui::dialog::properties::init_image_tab(const std::int32_t p, std::string_view l
 
     page.set_main_info(
         std::array<std::string, 2>{std::format("{}x{}", width, height),
-                                   file_handler_->image_handler()->get_mime_name(p)});
+                                   file_handler_->image_handler()->get_mime_type(p)});
 
     page.set_secondary_info(secondary_info(path));
 

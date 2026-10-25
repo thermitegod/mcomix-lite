@@ -79,7 +79,7 @@ class image_handler
     get_page_size(const std::optional<std::int32_t> query = std::nullopt) noexcept;
 
     [[nodiscard]] std::string
-    get_mime_name(const std::optional<std::int32_t> query = std::nullopt) const noexcept;
+    get_mime_type(const std::optional<std::int32_t> query = std::nullopt) const noexcept;
 
     [[nodiscard]] Glib::RefPtr<Gdk::Paintable> get_thumbnail(const std::int32_t page,
                                                              const std::int32_t size) noexcept;
