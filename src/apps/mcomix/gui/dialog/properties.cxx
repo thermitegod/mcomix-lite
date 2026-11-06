@@ -153,7 +153,9 @@ gui::dialog::properties::properties(Gtk::ApplicationWindow& parent,
                                     const std::shared_ptr<vfs::file_handler>& file_handler,
                                     const std::shared_ptr<gui::lib::view_state>& view_state,
                                     const std::shared_ptr<config::settings>& settings) noexcept
-    : file_handler_(file_handler), view_state_(view_state), settings_(settings)
+    : file_handler_(file_handler),
+      view_state_(view_state),
+      settings_(settings)
 {
     set_transient_for(parent);
     set_modal(true);

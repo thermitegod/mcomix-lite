@@ -44,7 +44,8 @@ class preferences : public Gtk::ApplicationWindow
 
       protected:
         explicit ListColumns(std::string_view entry, const std::uint32_t value) noexcept
-            : entry_(entry), value_(value)
+            : entry_(entry),
+              value_(value)
         {
         }
     };

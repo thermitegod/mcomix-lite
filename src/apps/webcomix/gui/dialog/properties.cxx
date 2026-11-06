@@ -152,7 +152,8 @@ class PropertiesPage : public Gtk::Box
 gui::dialog::properties::properties(Gtk::ApplicationWindow& parent,
                                     const std::shared_ptr<vfs::file_handler>& file_handler,
                                     const std::shared_ptr<config::settings>& settings) noexcept
-    : file_handler_(file_handler), settings_(settings)
+    : file_handler_(file_handler),
+      settings_(settings)
 {
     set_transient_for(parent);
     set_modal(true);

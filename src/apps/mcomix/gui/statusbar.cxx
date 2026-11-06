@@ -38,7 +38,8 @@
 
 gui::statusbar::statusbar(const std::shared_ptr<config::settings>& settings,
                           const std::shared_ptr<gui::lib::view_state>& view_state) noexcept
-    : settings_(settings), view_state(view_state)
+    : settings_(settings),
+      view_state(view_state)
 {
     set_halign(Gtk::Align::START);
     set_valign(Gtk::Align::END);

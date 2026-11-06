@@ -28,7 +28,8 @@
 namespace vfs::libarchive
 {
 entry::entry(archive_entry* entry, const std::shared_ptr<archive>& archive) noexcept
-    : entry_(entry, [](archive_entry*) { /* do nothing */ }), archive_(archive)
+    : entry_(entry, [](archive_entry*) { /* do nothing */ }),
+      archive_(archive)
 {
 }
 

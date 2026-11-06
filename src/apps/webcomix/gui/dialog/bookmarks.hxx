@@ -56,8 +56,11 @@ class bookmarks : public Gtk::ApplicationWindow
         explicit ModelColumns(const std::filesystem::path path, const std::int32_t current_page,
                               const std::int32_t total_pages,
                               const std::chrono::system_clock::time_point created) noexcept
-            : Glib::ObjectBase(typeid(ModelColumns)), path_(path), current_page_(current_page),
-              total_pages_(total_pages), created_(created)
+            : Glib::ObjectBase(typeid(ModelColumns)),
+              path_(path),
+              current_page_(current_page),
+              total_pages_(total_pages),
+              created_(created)
         {
         }
     };

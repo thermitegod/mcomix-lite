@@ -27,7 +27,8 @@ namespace vfs::libarchive
 {
 vfs::libarchive::reader::reader(std::shared_ptr<::archive> ar,
                                 std::unique_ptr<reader_context> ctx) noexcept
-    : archive_(std::move(ar)), context_(std::move(ctx)),
+    : archive_(std::move(ar)),
+      context_(std::move(ctx)),
       current_entry_(std::unexpected(std::make_error_code(std::errc::state_not_recoverable)))
 {
 }

@@ -148,7 +148,9 @@ vfs::trash_can::empty(const std::filesystem::path& path) noexcept
 }
 
 vfs::trash_can::trash_dir::trash_dir(const std::filesystem::path& path) noexcept
-    : trash_path_(path), files_path_(path / "files"), info_path_(path / "info")
+    : trash_path_(path),
+      files_path_(path / "files"),
+      info_path_(path / "info")
 {
     create_trash_dir();
 }

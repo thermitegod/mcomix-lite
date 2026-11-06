@@ -56,7 +56,9 @@ class thumbbar : public Gtk::ScrolledWindow
       protected:
         explicit ModelList(const std::int32_t page,
                            const Glib::RefPtr<Gdk::Paintable>& paintable) noexcept
-            : Glib::ObjectBase(typeid(ModelList)), page(page), paintable(paintable)
+            : Glib::ObjectBase(typeid(ModelList)),
+              page(page),
+              paintable(paintable)
         {
         }
     };

@@ -69,7 +69,8 @@ class reader
       public:
         explicit reader_context(const std::filesystem::path& path,
                                 const std::size_t buffer_size) noexcept
-            : stream_(path, std::ios::binary), buffer_(buffer_size)
+            : stream_(path, std::ios::binary),
+              buffer_(buffer_size)
         {
         }
 

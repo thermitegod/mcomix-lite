@@ -30,7 +30,9 @@ gui::dialog::bookmarks::bookmarks(Gtk::ApplicationWindow& parent,
                                   const std::shared_ptr<vfs::file_handler>& file_handler,
                                   const std::shared_ptr<vfs::bookmarks>& bookmarks,
                                   const std::shared_ptr<config::settings>& settings) noexcept
-    : file_handler_(file_handler), bookmarks_(bookmarks), settings_(settings)
+    : file_handler_(file_handler),
+      bookmarks_(bookmarks),
+      settings_(settings)
 {
     set_transient_for(parent);
     set_modal(true);
